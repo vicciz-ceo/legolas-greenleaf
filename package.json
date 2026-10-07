@@ -1,0 +1,26 @@
+{
+  "name": "legolas-greenleaf",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Greenleaf: a 3D third-person Legolas fan game built entirely in code with Three.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "snap": "node scripts/snap.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "dependencies": {
+    "simplex-noise": "4.0.3",
+    "three": "0.185.1",
+    "three-mesh-bvh": "0.9.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.185.0",
+    "playwright-core": "1.56.1",
+    "typescript": "5.9.3",
+    "vite": "7.1.12"
+  }
+}

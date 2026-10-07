@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "checkpoint": "deno run --allow-all scripts/checkpoint.ts",
+    "sweep": "deno run --allow-all scripts/sweep-param.ts",
+    "diff-checkpoints": "deno run --allow-all scripts/diff-checkpoints.ts",
+    "export-report": "deno run --allow-all scripts/export-report.ts",
+    "replay": "deno run --allow-all scripts/replay.ts",
+    "visual:run": "deno run --allow-all test/visual/run.ts run",
+    "visual:accept": "deno run --allow-read --allow-write test/visual/run.ts accept"
+  },
+  "nodeModulesDir": "none",
+  "imports": {
+    "playwright": "npm:playwright@^1.62.0",
+    "pixelmatch": "npm:pixelmatch@^7.2.0",
+    "pngjs": "npm:pngjs@^7.0.0",
+    "@std/assert": "jsr:@std/assert@^1.0.19"
+  }
+}
