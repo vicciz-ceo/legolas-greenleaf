@@ -220,7 +220,9 @@
     "reused_source_sha256": "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462",
     "imagegen_calls": 0,
     "by_eye_review": "Frontal native head-and-shoulders crop preserves the accepted original long-oval ranger identity, complete shoulder-length wavy hair and neck. Both eyes, lids, brow, nose bridge, lips, cheek weathering and short beard remain legible. Complete hair contour and shoulder tops are inside the crop; lower chest is deliberately cropped. No pixels were invented or edited.",
-    "reviewed_crop_receipt_sha256": "608df1830726f2630c324a25d435770a5bea4807dcd16c1c45b2e26853dc1d59"
+    "reviewed_crop_receipt_sha256": "608df1830726f2630c324a25d435770a5bea4807dcd16c1c45b2e26853dc1d59",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/three_quarter": {
     "original_full_resolution_path": "/workspace/generated_images/exec-c175949c-9360-4016-8369-5ac3ed58de44.png",
@@ -244,7 +246,9 @@
     "reused_source_sha256": "a75e04ced14b2792090ff529976ac22a9b3e732df8e228a6c4554897f56ae7df",
     "imagegen_calls": 0,
     "by_eye_review": "Native three-quarter head-and-shoulders crop preserves the accepted same ranger identity and original rotation toward image right. Complete crown, shoulder-length wavy hair, neck and shoulder tops remain framed. Near and far eye shapes, brow, nose, lips, cheek weathering and short beard are legible. Lower chest is deliberately cropped; no pixels were invented or edited.",
-    "reviewed_crop_receipt_sha256": "658a69edd37eba677042a8198eb79deaeed627f448a6929ac6c07b562e9e53df"
+    "reviewed_crop_receipt_sha256": "658a69edd37eba677042a8198eb79deaeed627f448a6929ac6c07b562e9e53df",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-d69e43eb-ae32-4ae7-864f-071c89a14260.png",
@@ -268,7 +272,9 @@
     "reused_source_sha256": "5ccc4a0b2473a5f838202999e211273f569f07aef8fc3deea8d1a97a4c6b9934",
     "imagegen_calls": 0,
     "by_eye_review": "Native exact right-profile head-and-shoulders crop preserves the accepted same ranger identity with nose pointing image right and one eye visible. Complete crown, wavy hair ends, ear, neck and near shoulder remain framed; the narrow original crown margin is intact. Eye/lid, brow, nose bridge, lips and short-beard silhouette are legible. Lower chest is deliberately cropped; no pixels were invented or edited.",
-    "reviewed_crop_receipt_sha256": "99674d65849cf122b67e4bc8dac3c6ba6894a2b9d8801c0f15f3074e3ddd5b70"
+    "reviewed_crop_receipt_sha256": "99674d65849cf122b67e4bc8dac3c6ba6894a2b9d8801c0f15f3074e3ddd5b70",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/weapon_metal": {
     "original_full_resolution_path": "/workspace/generated_images/exec-ac58a79a-ba09-490f-8de2-8a2ca0fec8c4.png",

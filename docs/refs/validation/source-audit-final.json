@@ -1,0 +1,2914 @@
+{
+  "status": "PASS",
+  "retained_sources_verified": 360,
+  "initial_head": "5107b510cf78c4bf6d5cfb91112f984642666321",
+  "preserved_accepted_folders_unchanged": [
+    "thranduil",
+    "elf_mirkwood",
+    "elf_galadhrim",
+    "boromir",
+    "gondor",
+    "rohirrim",
+    "laketown_man",
+    "orc",
+    "goblin",
+    "gundabad",
+    "uruk",
+    "berserker",
+    "lurtz",
+    "easterling",
+    "haradrim",
+    "war_troll",
+    "mirkwood_spider",
+    "brood_mother",
+    "mumak",
+    "gundabad_bat",
+    "great_eagle",
+    "fell_beast",
+    "weapons",
+    "orc_variants",
+    "mumak_howdah"
+  ],
+  "entries": [
+    {
+      "character": "aragorn",
+      "key": "views/front",
+      "retained_path": "aragorn/views/front.png",
+      "sha256": "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462",
+      "size_bytes": 134180,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "views/three_quarter",
+      "retained_path": "aragorn/views/three_quarter.png",
+      "sha256": "a75e04ced14b2792090ff529976ac22a9b3e732df8e228a6c4554897f56ae7df",
+      "size_bytes": 121665,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "views/side",
+      "retained_path": "aragorn/views/side.png",
+      "sha256": "5ccc4a0b2473a5f838202999e211273f569f07aef8fc3deea8d1a97a4c6b9934",
+      "size_bytes": 77977,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "views/back",
+      "retained_path": "aragorn/views/back.png",
+      "sha256": "9ea6549dc135e3d483984270c00239054bfb98fe8f2f767d146cd25450aa9655",
+      "size_bytes": 126066,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "details/cloth_leather",
+      "retained_path": "aragorn/details/cloth_leather.png",
+      "sha256": "5b73ec1ed480c92f14507238514f0ecd666636501f70edfac5be07fda74bb4ec",
+      "size_bytes": 94625,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/front",
+      "retained_path": "aragorn/face_views/front.png",
+      "sha256": "1847ac6c94f66612f4823eac98e9f101aecfc19bc8bdc65dc966c0b956e2bde1",
+      "size_bytes": 121000,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/three_quarter",
+      "retained_path": "aragorn/face_views/three_quarter.png",
+      "sha256": "1bfd5c61262f77cdf8e793f9f4040611acbdf3793b48cc5db24b985e3c0360a8",
+      "size_bytes": 117318,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/side",
+      "retained_path": "aragorn/face_views/side.png",
+      "sha256": "a422c68d63438bb9c5785962d4f8d8575e5ddb50dad527801ba71a2ae44811d6",
+      "size_bytes": 90349,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "details/weapon_metal",
+      "retained_path": "aragorn/details/weapon_metal.png",
+      "sha256": "50321da0ae604fb4352e99942a961e7938772cb6bac0660f66c7b803344b3873",
+      "size_bytes": 93990,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "details/skin",
+      "retained_path": "aragorn/details/skin.png",
+      "sha256": "453247b8d6c2d1dd95d582cc9c7324aca4a36fe7446ef1fd14b30d5ad441905c",
+      "size_bytes": 132850,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "aragorn",
+      "key": "details/hair",
+      "retained_path": "aragorn/details/hair.png",
+      "sha256": "8fb73a31bc9ad528c97bf3244fe37340b632c514fccb179b8c6978dda1deeb6a",
+      "size_bytes": 105872,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "berserker",
+      "key": "views/front",
+      "retained_path": "berserker/views/front.png",
+      "sha256": "72b3ac595ca36f4aad37e27a4c5d957a3438c00c6686d15e75076c0a089d242f",
+      "size_bytes": 203805,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "views/three_quarter",
+      "retained_path": "berserker/views/three_quarter.png",
+      "sha256": "03e40fa0173d7ad31e1be5a54d0f5b20faaf2d619be701edf2013cea610d77e2",
+      "size_bytes": 189514,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "views/side",
+      "retained_path": "berserker/views/side.png",
+      "sha256": "7b19f109c13027e819c3da339a1d4728509de36b04689fe037b1d3d440db8077",
+      "size_bytes": 159043,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "views/back",
+      "retained_path": "berserker/views/back.png",
+      "sha256": "16b1ae8dadbef52512f473a540c2a229842abbb6e3055ce49f6c8ef0df44a288",
+      "size_bytes": 201387,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "face_views/front",
+      "retained_path": "berserker/face_views/front.png",
+      "sha256": "9d9b77f15f69a4e5f1d261b0e6334ee425cc124c50a0ca15075431f2c651e371",
+      "size_bytes": 140238,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "face_views/three_quarter",
+      "retained_path": "berserker/face_views/three_quarter.png",
+      "sha256": "9498de48d5a883c1ee48792fecbed52d87c887198e62ca370a0236e0a7c8d753",
+      "size_bytes": 134705,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "face_views/side",
+      "retained_path": "berserker/face_views/side.png",
+      "sha256": "793011ddc74198ed8e3fc556b8e5fa13f906b473497f73ec896b4973d8a0e6d7",
+      "size_bytes": 116019,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "details/cloth_leather",
+      "retained_path": "berserker/details/cloth_leather.png",
+      "sha256": "2d19f02bcd57c5e2b831ca90e056c78e680351e7d63c91df3fc4afb751e5de82",
+      "size_bytes": 46351,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "details/weapon_metal",
+      "retained_path": "berserker/details/weapon_metal.png",
+      "sha256": "c04b094191ca1f56abce4b026bedeb9fc028d8158786708a720b923037601ff1",
+      "size_bytes": 14787,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "details/skin",
+      "retained_path": "berserker/details/skin.png",
+      "sha256": "bb19e96754b13d009fdb78c14a635fb2ba0f2ed8df3ec4058016aa556e3f9cee",
+      "size_bytes": 75445,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "berserker",
+      "key": "details/hair",
+      "retained_path": "berserker/details/hair.png",
+      "sha256": "33a181f977f997266e1e30cd46f3b290abb9b51652ae0082d921ff7186d81f0c",
+      "size_bytes": 15294,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "bolg",
+      "key": "views/front",
+      "retained_path": "bolg/views/front.png",
+      "sha256": "b053259884c5a5da91462a3dd4044e2f8521f6af93912bfe4bd069b27d90c8b6",
+      "size_bytes": 210545,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "views/three_quarter",
+      "retained_path": "bolg/views/three_quarter.png",
+      "sha256": "4eff838b6804b12cae610e714af4bff2d117692d9d05dd55e22613dc1a244974",
+      "size_bytes": 198526,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "views/side",
+      "retained_path": "bolg/views/side.png",
+      "sha256": "90f4e69d2a3ba7b6f3f657baf67462329383e502bdf189c46415b72d2d3a77e5",
+      "size_bytes": 121796,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "views/back",
+      "retained_path": "bolg/views/back.png",
+      "sha256": "cdf07d6f28deffd285db36bc9ae48a6b638e7813fd897b40326366e407c62ac0",
+      "size_bytes": 206325,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/front",
+      "retained_path": "bolg/face_views/front.png",
+      "sha256": "4adfc292e5e20aab56c7199d1de29bb1fcc03466565c853921ed1bcb3c0ae2bf",
+      "size_bytes": 168104,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/three_quarter",
+      "retained_path": "bolg/face_views/three_quarter.png",
+      "sha256": "3a83942d3b7fb2443ebe13b83b60d695de76015647e3fec003a617f507246400",
+      "size_bytes": 154967,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/side",
+      "retained_path": "bolg/face_views/side.png",
+      "sha256": "93d47f6b0670314a551d9923391c28828b10b438afa2a50a7422b89ac2b934b7",
+      "size_bytes": 117285,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "details/cloth_leather",
+      "retained_path": "bolg/details/cloth_leather.png",
+      "sha256": "33e97753f45ae4fb2a410044b875bbbff9987dfc31140572b0d2ddd7e15ff06b",
+      "size_bytes": 107529,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "details/weapon_metal",
+      "retained_path": "bolg/details/weapon_metal.png",
+      "sha256": "409c7b02c689feafcd6abfc83e29dab6d80a47d98afe80229a25a73e23e8a6a1",
+      "size_bytes": 64690,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "details/skin",
+      "retained_path": "bolg/details/skin.png",
+      "sha256": "59f069a6846afd230e4dfe0246cdc10bda4b7db0f7232f2bc0ad679e3280778a",
+      "size_bytes": 110411,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "bolg",
+      "key": "details/hair",
+      "retained_path": "bolg/details/hair.png",
+      "sha256": "0ea0d6af045f61b36a5d374d378a92a88643e85c84fe53c56c71092d896d1c2a",
+      "size_bytes": 147562,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "boromir",
+      "key": "views/front",
+      "retained_path": "boromir/views/front.png",
+      "sha256": "4de8fd2f93976df49c4e4e3db5045500e85da0d3ced1b5819eea60903733eb57",
+      "size_bytes": 262398,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "views/three_quarter",
+      "retained_path": "boromir/views/three_quarter.png",
+      "sha256": "0968b185718d849aa2f3eb55cc0ca08ed7fa03a87a5ba3b312dc4b8f660f1fe0",
+      "size_bytes": 245180,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "views/side",
+      "retained_path": "boromir/views/side.png",
+      "sha256": "4754d45c854698e038244e25146f884a10ca7f55552f861712d6ae05df2e4b22",
+      "size_bytes": 182464,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "views/back",
+      "retained_path": "boromir/views/back.png",
+      "sha256": "7eb0d2712c4cc28e7d2af7325eccbd1d8fc732894266272377309807ffc4b25b",
+      "size_bytes": 273148,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "face_views/front",
+      "retained_path": "boromir/face_views/front.png",
+      "sha256": "652a6c1f69e89da450dc67f4c0496c8dd233c2f6a4c94bbc25d37dab1b4c7a55",
+      "size_bytes": 143154,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "face_views/three_quarter",
+      "retained_path": "boromir/face_views/three_quarter.png",
+      "sha256": "637e32beb918a3ac13b9c81eaf82a35476edfb31cfd3a1d82599d34494a159bd",
+      "size_bytes": 145454,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "face_views/side",
+      "retained_path": "boromir/face_views/side.png",
+      "sha256": "85d774c76ab23009d350871f64e6f2e48a8b1a27d16be51430804158f41ed70f",
+      "size_bytes": 138785,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "details/cloth_leather",
+      "retained_path": "boromir/details/cloth_leather.png",
+      "sha256": "6ee64078ff558c270d200172e80fb384502bf4ce6ba6ed94108c65020ef2150d",
+      "size_bytes": 101592,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "details/weapon_metal",
+      "retained_path": "boromir/details/weapon_metal.png",
+      "sha256": "5f7fe23d7569868339dc9bb6c2cbd1dfc9c04ecb3bdc5b9910a144f616d98327",
+      "size_bytes": 55255,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "details/skin",
+      "retained_path": "boromir/details/skin.png",
+      "sha256": "c7a0bdd75c6299d8bbea65d7a33ca359c4a91565bc03816ec1ffe0453809db84",
+      "size_bytes": 68816,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "boromir",
+      "key": "details/hair",
+      "retained_path": "boromir/details/hair.png",
+      "sha256": "32d04f60fee6d314fcb31ca422b513716506d42230e2fb3ed3fbe2504b353121",
+      "size_bytes": 95119,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "views/side",
+      "retained_path": "brood_mother/views/side.png",
+      "sha256": "010027cfe5cabff1f14165bac334e3c7314739e73fffe04e53f5942eb23e33d7",
+      "size_bytes": 246872,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "views/front",
+      "retained_path": "brood_mother/views/front.png",
+      "sha256": "45385e91667bbedc45ffccf61cb4ad4804a1330038308c71ef417f16d431bd13",
+      "size_bytes": 237886,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "views/top",
+      "retained_path": "brood_mother/views/top.png",
+      "sha256": "336cacf368f1493ef8056829640c1a51ee13cffbfee11a762d1f809488e24aaa",
+      "size_bytes": 178692,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "views/three_quarter",
+      "retained_path": "brood_mother/views/three_quarter.png",
+      "sha256": "852061e025a97f8d3dac10d47c55c0285d89cf6b936d1c239f4230eb989b269e",
+      "size_bytes": 238357,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "face_views/front",
+      "retained_path": "brood_mother/face_views/front.png",
+      "sha256": "6e79f8c15b4ed6ec63d075bb6961c6318dd5e42103f1ad8b3d34b9c5e4ff16a2",
+      "size_bytes": 164910,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "face_views/three_quarter",
+      "retained_path": "brood_mother/face_views/three_quarter.png",
+      "sha256": "ca780047f4ab7402db4b7c08943dbdbab849a8fbb69a4d5c5a4a6d2a3d195ed7",
+      "size_bytes": 161134,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "face_views/side",
+      "retained_path": "brood_mother/face_views/side.png",
+      "sha256": "e35f59220db462be8b7531fa7ca5f4c01a763046e2d939eb4d5e427d59cb12f9",
+      "size_bytes": 140334,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "details/cloth_leather",
+      "retained_path": "brood_mother/details/cloth_leather.png",
+      "sha256": "487201ff149f5dae5a19d28607e379fce5912e450e20eeec35ff33b57b73c632",
+      "size_bytes": 106688,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "details/weapon_metal",
+      "retained_path": "brood_mother/details/weapon_metal.png",
+      "sha256": "9aa9cd19c91dbe56aa9eae40a32263e79769b25078d694cb5654600b8bd8609c",
+      "size_bytes": 100296,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "details/skin",
+      "retained_path": "brood_mother/details/skin.png",
+      "sha256": "8dd75c260f39cb820e759899eb2e13091402ffd1345f23bc5e18c80750f6c190",
+      "size_bytes": 118796,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "brood_mother",
+      "key": "details/hair",
+      "retained_path": "brood_mother/details/hair.png",
+      "sha256": "3ff217a5ff0362718cd5f596fa596b9905564ad39cb24b9cb883aecc3c2cab8c",
+      "size_bytes": 87922,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/front",
+      "retained_path": "cave_troll/views/front.png",
+      "sha256": "9aa6dad9621e6995ebe544c7d236a070643f201cc727a0b2a38b249c5cf58928",
+      "size_bytes": 260408,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/three_quarter",
+      "retained_path": "cave_troll/views/three_quarter.png",
+      "sha256": "fb1e8fd7bf801fe335a7332023e6ea82fe8be2327c727f005a63379a9eb5eb9e",
+      "size_bytes": 243492,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/side",
+      "retained_path": "cave_troll/views/side.png",
+      "sha256": "b7c37a443e0c6185cfea1d94f7fd27904f99bfba41cb711afaab54d47c198321",
+      "size_bytes": 177815,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/back",
+      "retained_path": "cave_troll/views/back.png",
+      "sha256": "94ba4f9ae3e0bb6a0c8c49cf5a78c57a0beb82cc2f4e58301349aa70c71878b7",
+      "size_bytes": 263089,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/front",
+      "retained_path": "cave_troll/face_views/front.png",
+      "sha256": "7f184c35842d429939274a64134a491a3836732c872ba132eac93c2a3a0ae4de",
+      "size_bytes": 125359,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/three_quarter",
+      "retained_path": "cave_troll/face_views/three_quarter.png",
+      "sha256": "c1ddc14015eb81e90c181743bcfb2ba2737f4d02172bf5720efc8d32e85e563d",
+      "size_bytes": 113983,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/side",
+      "retained_path": "cave_troll/face_views/side.png",
+      "sha256": "46baf66d2ac9220e9fa6bbd7d54f8dac7daffd14194af614b62af7f7eabe88a0",
+      "size_bytes": 96481,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/cloth_leather",
+      "retained_path": "cave_troll/details/cloth_leather.png",
+      "sha256": "0bd331a640c8f2008a3aa9978fae1abb3e6db2cb4df0d8a7355e93a44eeb90cd",
+      "size_bytes": 158106,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/weapon_metal",
+      "retained_path": "cave_troll/details/weapon_metal.png",
+      "sha256": "2c0bd73f4a9bdceeb7cee841e9bd51353e1f6c7a24ce0653bf99f85813a6eeeb",
+      "size_bytes": 132681,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/skin",
+      "retained_path": "cave_troll/details/skin.png",
+      "sha256": "8b21e8a89f17a7a300b5079f4f54342e191727106635f2325d57fb7b974c06a6",
+      "size_bytes": 159035,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/hair",
+      "retained_path": "cave_troll/details/hair.png",
+      "sha256": "39664a9a7bc7096fedaf1152570d3155d48225c27b89196add7b501b1be2d840",
+      "size_bytes": 146222,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/front",
+      "retained_path": "dwarf_bald/views/front.png",
+      "sha256": "ca8ca87e3b9ba89bcc301b5b2df7c0a41aa118215e0c973bb30624ebe0f2153b",
+      "size_bytes": 203280,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/three_quarter",
+      "retained_path": "dwarf_bald/views/three_quarter.png",
+      "sha256": "57fcdd736a77dfeef60740ff5106b3d6180b42fce15df608f7e69c0c9749537b",
+      "size_bytes": 185738,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/side",
+      "retained_path": "dwarf_bald/views/side.png",
+      "sha256": "3e4eab431f8e9f7ce2ef093673550e360ffe2c8a1e2e78ad7c47a51849292203",
+      "size_bytes": 126375,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/back",
+      "retained_path": "dwarf_bald/views/back.png",
+      "sha256": "5cf80e6d322838c65df38f0334e980d347cda9e2e3166fbeeeccae7fbccf4d61",
+      "size_bytes": 199622,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "face_views/front",
+      "retained_path": "dwarf_bald/face_views/front.png",
+      "sha256": "ddf6a8217b488523c6214dbdef8f42764a1571782436c25251f242316d190920",
+      "size_bytes": 154220,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "face_views/three_quarter",
+      "retained_path": "dwarf_bald/face_views/three_quarter.png",
+      "sha256": "d98b492c6d348afdb0869f485e0c9a4edd329e7f03fb1ff73d8c04a602990d68",
+      "size_bytes": 142161,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "details/cloth_leather",
+      "retained_path": "dwarf_bald/details/cloth_leather.png",
+      "sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+      "size_bytes": 108558,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "details/weapon_metal",
+      "retained_path": "dwarf_bald/details/weapon_metal.png",
+      "sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+      "size_bytes": 40448,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "face_views/side",
+      "retained_path": "dwarf_bald/face_views/side.png",
+      "sha256": "20127e5c11c28439d356d31666ee4e2af439ed221fa1ccd55f8b5b4593276a82",
+      "size_bytes": 96334,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "details/skin",
+      "retained_path": "dwarf_bald/details/skin.png",
+      "sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+      "size_bytes": 143534,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "details/hair",
+      "retained_path": "dwarf_bald/details/hair.png",
+      "sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+      "size_bytes": 148288,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_company",
+      "key": "dwarf_bald",
+      "retained_path": "dwarf_company/views/dwarf_bald.png",
+      "sha256": "1effe1de342af9958ef0b255a38c0f5b215950b6d9dd8bacf07abb95e4fbe20a",
+      "size_bytes": 84553,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_company",
+      "key": "dwarf_hat",
+      "retained_path": "dwarf_company/views/dwarf_hat.png",
+      "sha256": "c318761cda8ffcf1a6ad4094caa28a0dbf2cf5cf4a2a4287a43c2e4310499abc",
+      "size_bytes": 77379,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_company",
+      "key": "dwarf_elder",
+      "retained_path": "dwarf_company/views/dwarf_elder.png",
+      "sha256": "5db986483f2501c5d01ce6ded4cdac6a07cccbe19145990db4f5721637f4f4a7",
+      "size_bytes": 81497,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_company",
+      "key": "dwarf_redbeard",
+      "retained_path": "dwarf_company/views/dwarf_redbeard.png",
+      "sha256": "55b32c21b9e87b4a6835a4f6a14e9f9708fc73f22491ab9fb992d043923ebf72",
+      "size_bytes": 84691,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "views/front",
+      "retained_path": "dwarf_elder/views/front.png",
+      "sha256": "570ea6513dc30d821d918a37d273cf0247e72bf82d8790e14924835a967e9e70",
+      "size_bytes": 156432,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "views/three_quarter",
+      "retained_path": "dwarf_elder/views/three_quarter.png",
+      "sha256": "78a38ff0ebe0a78b87ef8d7263fb4db28ee74ec144ab2168788f2c85e1bd1ca7",
+      "size_bytes": 144087,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "views/side",
+      "retained_path": "dwarf_elder/views/side.png",
+      "sha256": "e19878232d31c439cac6946b93bf82cc96ba67d22e0d4a26163d77dc597239e3",
+      "size_bytes": 98290,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "views/back",
+      "retained_path": "dwarf_elder/views/back.png",
+      "sha256": "2c3c7111449399f28ea9a568126b782c5794f41af27de9dbb8dca7d4bf876374",
+      "size_bytes": 148171,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "face_views/front",
+      "retained_path": "dwarf_elder/face_views/front.png",
+      "sha256": "748b46b3773bab21f7a3bcc665f2ceaaa052db6f70d65e63913c917687d71d4e",
+      "size_bytes": 110373,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "face_views/side",
+      "retained_path": "dwarf_elder/face_views/side.png",
+      "sha256": "6f63e371d93648d8fd3a11313320ae4816184f1bb3cbbc2c989cea60bb2826e8",
+      "size_bytes": 68662,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "face_views/three_quarter",
+      "retained_path": "dwarf_elder/face_views/three_quarter.png",
+      "sha256": "ea68d26c5beb775f6d5fcf29a8cd216e7a38f41ea57badac16a2d0b680c2c1a2",
+      "size_bytes": 97760,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "details/cloth_leather",
+      "retained_path": "dwarf_elder/details/cloth_leather.png",
+      "sha256": "0dad637d4544f5cbc5407bdfc3d6d743eabf309857a0a627888ef53be5e4b2ee",
+      "size_bytes": 152054,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "details/weapon_metal",
+      "retained_path": "dwarf_elder/details/weapon_metal.png",
+      "sha256": "a170bc9feeed57311ad991af2acb247e7f1f3034bedc073bc0902918bdff1685",
+      "size_bytes": 139155,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "details/skin",
+      "retained_path": "dwarf_elder/details/skin.png",
+      "sha256": "58ab018e0299f73c1388e8d2515c5f31ab4f76284e26af9ef27dfc39c8f520df",
+      "size_bytes": 165317,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_elder",
+      "key": "details/hair",
+      "retained_path": "dwarf_elder/details/hair.png",
+      "sha256": "f4eaefceecdbaa4ae9b45964226338f4fa1e57045b80c8a825648d9e1dea8a20",
+      "size_bytes": 128429,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "views/front",
+      "retained_path": "dwarf_hat/views/front.png",
+      "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+      "size_bytes": 162358,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "face_views/front",
+      "retained_path": "dwarf_hat/face_views/front.png",
+      "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+      "size_bytes": 123181,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "views/three_quarter",
+      "retained_path": "dwarf_hat/views/three_quarter.png",
+      "sha256": "5a94812a177df1d9cd62e22d0c7c692dcfd689d6fe7af1b7f42144a5bf5e625a",
+      "size_bytes": 154367,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "views/side",
+      "retained_path": "dwarf_hat/views/side.png",
+      "sha256": "8fb552f41c9142c49834a30f8104b56fa354a777d374e9275ff652bfe89e4344",
+      "size_bytes": 113746,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "views/back",
+      "retained_path": "dwarf_hat/views/back.png",
+      "sha256": "c2b4dc363b70ccbee688bc9d1dda9bd25ec2705e061bcbfd2d08b0382b92c674",
+      "size_bytes": 157892,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "face_views/three_quarter",
+      "retained_path": "dwarf_hat/face_views/three_quarter.png",
+      "sha256": "6adf299470a4f2dadf4a4b9cfb081ce419ecd1f317cf6af1fb50e0332109c5e4",
+      "size_bytes": 129159,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "face_views/side",
+      "retained_path": "dwarf_hat/face_views/side.png",
+      "sha256": "752d07913310ebbe6a182862d462182fab930e21dba521102fbeffd515ab9dca",
+      "size_bytes": 116330,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "details/cloth_leather",
+      "retained_path": "dwarf_hat/details/cloth_leather.png",
+      "sha256": "8bf3c9a152fd963ad74a4c6f0486965bae9dafdce1a1dad6dc1ddbf45011414e",
+      "size_bytes": 82215,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "details/weapon_metal",
+      "retained_path": "dwarf_hat/details/weapon_metal.png",
+      "sha256": "553c8784a2f0bd756f7c53617d85446d81b0430a5646f6b165564b7fc3bdf14e",
+      "size_bytes": 138609,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "details/skin",
+      "retained_path": "dwarf_hat/details/skin.png",
+      "sha256": "347b4cdfbdb1bf29988f6eac005e3cbe4da053025da87080e2ef182415f12f9a",
+      "size_bytes": 126161,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_hat",
+      "key": "details/hair",
+      "retained_path": "dwarf_hat/details/hair.png",
+      "sha256": "4b7ece1911f45bd519f4a19e442fb9590fde5a7d0a3eb7d7295b131cc0c59c81",
+      "size_bytes": 156188,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "views/front",
+      "retained_path": "dwarf_redbeard/views/front.png",
+      "sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "size_bytes": 172735,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "face_views/front",
+      "retained_path": "dwarf_redbeard/face_views/front.png",
+      "sha256": "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68",
+      "size_bytes": 127177,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "views/three_quarter",
+      "retained_path": "dwarf_redbeard/views/three_quarter.png",
+      "sha256": "08402f28e3c8a8a36e67b1d802943c9576e50e2ff6e5327bd6718a54353f434a",
+      "size_bytes": 165064,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "views/side",
+      "retained_path": "dwarf_redbeard/views/side.png",
+      "sha256": "40bcc34b6b83d7402d9b7f0aeb9316abe51d8e2d9760b83491aa6c6a60725a0a",
+      "size_bytes": 115353,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "views/back",
+      "retained_path": "dwarf_redbeard/views/back.png",
+      "sha256": "4fb2ce25d08d2cc0e0e5388dcb8644963867895a7cffbaa8abd34d90d715bb45",
+      "size_bytes": 168287,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "face_views/three_quarter",
+      "retained_path": "dwarf_redbeard/face_views/three_quarter.png",
+      "sha256": "4bad7938f4e206813410f2a650f9dabdf03e5fa800f0dc648668ec81e1810ebd",
+      "size_bytes": 145849,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "face_views/side",
+      "retained_path": "dwarf_redbeard/face_views/side.png",
+      "sha256": "e0b2d90dfe9b78e70df0cd8fdbd83892391dc819d9b42bb19ab6ef0f362a7aa0",
+      "size_bytes": 121732,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "details/cloth_leather",
+      "retained_path": "dwarf_redbeard/details/cloth_leather.png",
+      "sha256": "2b418819fe714122930f476ce38224d6e8686591b7b60be7779157dc216d3df3",
+      "size_bytes": 139010,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "details/weapon_metal",
+      "retained_path": "dwarf_redbeard/details/weapon_metal.png",
+      "sha256": "2f1799a16502f07d65ca5806d342f350eff6a3460fe1695ff03018a28ba7a3a1",
+      "size_bytes": 138315,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "details/skin",
+      "retained_path": "dwarf_redbeard/details/skin.png",
+      "sha256": "1b1396b001dae2049ce34354bdc1faf10242166afa1eefc4eede337de38852f5",
+      "size_bytes": 134226,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "dwarf_redbeard",
+      "key": "details/hair",
+      "retained_path": "dwarf_redbeard/details/hair.png",
+      "sha256": "50df8c5de67b2285335588052bf117194a2b308c6a53dea89a1ace11716215d4",
+      "size_bytes": 144056,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "easterling",
+      "key": "views/front",
+      "retained_path": "easterling/views/front.png",
+      "sha256": "d25de16ffc399bbe26c433c4290896b768ef67dc468ae58eded227c05ea10154",
+      "size_bytes": 240064,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "views/three_quarter",
+      "retained_path": "easterling/views/three_quarter.png",
+      "sha256": "4842ecb75d84c9855e3f80f51591e192361163b97ad2fb21dd2269dfa5fa1aba",
+      "size_bytes": 228888,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "views/side",
+      "retained_path": "easterling/views/side.png",
+      "sha256": "9239b232100a203757a1aa6d32a5426ecb7dbd20c7aefe920f17ba90d7ff3557",
+      "size_bytes": 167112,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "views/back",
+      "retained_path": "easterling/views/back.png",
+      "sha256": "29d4426a54ab8ff49cad6dc48dd3e034c4bbd89736da4fe7fa7d46bf4b2eff78",
+      "size_bytes": 238210,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "face_views/front",
+      "retained_path": "easterling/face_views/front.png",
+      "sha256": "5f0eccb7247643f4606b6eb1fc6fe82829a47ab445d7a404191912714bab3966",
+      "size_bytes": 162088,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "face_views/three_quarter",
+      "retained_path": "easterling/face_views/three_quarter.png",
+      "sha256": "5b9670a0e00fdb18184fafdff50dbb8cb3d1acaad0ee4bc8315a2062788d8752",
+      "size_bytes": 156878,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "face_views/side",
+      "retained_path": "easterling/face_views/side.png",
+      "sha256": "b19fc40a4e4054de0ce4ee3c09ceba2456c90bf8abd47f714c00ac2337beb798",
+      "size_bytes": 118542,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "details/cloth_leather",
+      "retained_path": "easterling/details/cloth_leather.png",
+      "sha256": "a8ae860526b8ffe768691fa3194ee1776e791f6b6a9a83fc158d8973a7bcb193",
+      "size_bytes": 57438,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "details/weapon_metal",
+      "retained_path": "easterling/details/weapon_metal.png",
+      "sha256": "22f9b43d5f9d8e0c52108205ffc9d7343d546e08a968889862ae62560fe39922",
+      "size_bytes": 49678,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "details/skin",
+      "retained_path": "easterling/details/skin.png",
+      "sha256": "480e026cb9cf0d5df05bf1d7a87f7bb44c5c1ee896c9eaecae2dc61f1220ef0e",
+      "size_bytes": 72830,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "easterling",
+      "key": "details/hair",
+      "retained_path": "easterling/details/hair.png",
+      "sha256": "b4890b2d748c68fab4f0d7c93b02b90b327af14a9246dc805af944a772fc99d4",
+      "size_bytes": 73585,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "views/front",
+      "retained_path": "elf_galadhrim/views/front.png",
+      "sha256": "7a1f2387a87c5147c3333771d4f2239dd0691da710bdfac782903f189d2f5d9d",
+      "size_bytes": 249228,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "views/three_quarter",
+      "retained_path": "elf_galadhrim/views/three_quarter.png",
+      "sha256": "e929ee6711a6bc30c092da3bbbdd2858981f8bcb3e0e0b9b93b895007c257f62",
+      "size_bytes": 219070,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "views/side",
+      "retained_path": "elf_galadhrim/views/side.png",
+      "sha256": "4b63930a44c4c6aea82317ae40b2af65614a45f2877b1ff75d84ed3004b19cf8",
+      "size_bytes": 182250,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "views/back",
+      "retained_path": "elf_galadhrim/views/back.png",
+      "sha256": "8bbd0ac4b0dbf3d758bd49e33fb59f20536f41f059f52d10d6c10e1e3efc3bea",
+      "size_bytes": 217910,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "face_views/front",
+      "retained_path": "elf_galadhrim/face_views/front.png",
+      "sha256": "1c18a2f363c8eae43e5bc5f7eb823871c47941ed78f3ea4bcbced9e5668d104e",
+      "size_bytes": 144373,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "face_views/three_quarter",
+      "retained_path": "elf_galadhrim/face_views/three_quarter.png",
+      "sha256": "e19ac39cab30db7d379c5db469ac497cd1f855e48c6d79c6079d593293db4648",
+      "size_bytes": 147480,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "details/cloth_leather",
+      "retained_path": "elf_galadhrim/details/cloth_leather.png",
+      "sha256": "6fe603f87f0d07e34d369822c713450b92d5d7f5e2855b3711cfd97a9895c0c8",
+      "size_bytes": 95432,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "details/weapon_metal",
+      "retained_path": "elf_galadhrim/details/weapon_metal.png",
+      "sha256": "fcd331cd31b0c7761e748c8b86c7d1688a120d31885cefc1275562cd7de93c20",
+      "size_bytes": 15880,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "face_views/side",
+      "retained_path": "elf_galadhrim/face_views/side.png",
+      "sha256": "0e8f6db5cf4b1ca36d4f4ecc28b64bfe530fe0b2ac9a3282bf5f87d17ee6f2a5",
+      "size_bytes": 140895,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "details/skin",
+      "retained_path": "elf_galadhrim/details/skin.png",
+      "sha256": "cffbffa55b5916f1a34d9baebe87c6bb198c85194f7f8ad8f16ca72402135368",
+      "size_bytes": 63671,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_galadhrim",
+      "key": "details/hair",
+      "retained_path": "elf_galadhrim/details/hair.png",
+      "sha256": "e3907b28cc02465306bba4dd9f777584c960081bf87ca9cd5dabf358f3e8076b",
+      "size_bytes": 92495,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "views/front",
+      "retained_path": "elf_mirkwood/views/front.png",
+      "sha256": "ba163053d5329d0d6d0510010f01dad529da5fd019a5d1a7185db29322a5ff4a",
+      "size_bytes": 206698,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "views/three_quarter",
+      "retained_path": "elf_mirkwood/views/three_quarter.png",
+      "sha256": "439ab2a9f2c186483674fc91525ffd9b4a281712958187cfb2a77833ba45fb91",
+      "size_bytes": 191818,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "views/side",
+      "retained_path": "elf_mirkwood/views/side.png",
+      "sha256": "f20b8b7f1aea3f486b39c1eefb0b2dc656353c05a7140a413c8cb1ad8befbbad",
+      "size_bytes": 138488,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "views/back",
+      "retained_path": "elf_mirkwood/views/back.png",
+      "sha256": "6308c37d64553dd17d51e3d595a2899a19ae6e883a20702537a7d6d84f36a68b",
+      "size_bytes": 184411,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "face_views/front",
+      "retained_path": "elf_mirkwood/face_views/front.png",
+      "sha256": "bd50938f0a5553fdee465924bbc6f557b1ae5681b46c3f8950aee9f75ca9c2e9",
+      "size_bytes": 110477,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "face_views/three_quarter",
+      "retained_path": "elf_mirkwood/face_views/three_quarter.png",
+      "sha256": "ef25a1cd4ee9d87399c392a13c24aea75808a32e334bc838efb47cdb75562c51",
+      "size_bytes": 112111,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "face_views/side",
+      "retained_path": "elf_mirkwood/face_views/side.png",
+      "sha256": "3a313ed2160ce765a1b2635608e960c28d8b64ef716f13f00631daac073ad84d",
+      "size_bytes": 94273,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "details/cloth_leather",
+      "retained_path": "elf_mirkwood/details/cloth_leather.png",
+      "sha256": "9f5223d432491ccffb49205e838f2c023b21c829e87052f5562e11086bf7e600",
+      "size_bytes": 99977,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "details/skin",
+      "retained_path": "elf_mirkwood/details/skin.png",
+      "sha256": "8d36fdbd22e6b8688e85132326038943ca876eae63e1568119b8cbcef1e7e72e",
+      "size_bytes": 58554,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "details/hair",
+      "retained_path": "elf_mirkwood/details/hair.png",
+      "sha256": "bc4a1cddd84314912deb99bbb5bd44ae832b3c3b5134b24924968cf831dafe77",
+      "size_bytes": 67688,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "elf_mirkwood",
+      "key": "details/weapon_metal",
+      "retained_path": "elf_mirkwood/details/weapon_metal.png",
+      "sha256": "d731354c6505cf82672f4246cc7423d784c4545dd3b8ef275193c1485c37e6f2",
+      "size_bytes": 12995,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "fell_beast",
+      "key": "views/side",
+      "retained_path": "fell_beast/views/side.png",
+      "sha256": "3806e25e411fed38b808aa6eb6acade9275785aeaadcb08c9490128233fe7411",
+      "size_bytes": 93447,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "fell_beast",
+      "key": "views/front",
+      "retained_path": "fell_beast/views/front.png",
+      "sha256": "67d4c23c590259a31a03c125669feed5b7c54f9256f6ff4f7ed2a75a87042e54",
+      "size_bytes": 100104,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "fell_beast",
+      "key": "views/top",
+      "retained_path": "fell_beast/views/top.png",
+      "sha256": "ccedc4a72c6ed0985c4370aba9a1c505489759cf80bfcc3bc5a7500b8d56cfca",
+      "size_bytes": 65706,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "fell_beast",
+      "key": "views/three_quarter",
+      "retained_path": "fell_beast/views/three_quarter.png",
+      "sha256": "fe5165101311b608235fee4023f91976ce8af68771d637850756f783a3379c91",
+      "size_bytes": 129027,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gimli",
+      "key": "views/front",
+      "retained_path": "gimli/views/front.png",
+      "sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012",
+      "size_bytes": 343525,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "views/three_quarter",
+      "retained_path": "gimli/views/three_quarter.png",
+      "sha256": "41924c42872973536c1c30c9a1766e45a4ed5ed61f7bad83a91b74344030d78f",
+      "size_bytes": 188324,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "views/side",
+      "retained_path": "gimli/views/side.png",
+      "sha256": "0a2b31da0e6866879b853b211868aff91b5ea88e9626c7deda0f95cdf09be2bf",
+      "size_bytes": 152423,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/front",
+      "retained_path": "gimli/face_views/front.png",
+      "sha256": "e57d0e5e66ed425abcb9db49de9c8fa0d16328727904ef617ffd5ec3ac2e090f",
+      "size_bytes": 145148,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "views/back",
+      "retained_path": "gimli/views/back.png",
+      "sha256": "59b064fd6f74e452177762f063ec56b580dfd31a8e2b2ecb348044c7bcddc95a",
+      "size_bytes": 219469,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/three_quarter",
+      "retained_path": "gimli/face_views/three_quarter.png",
+      "sha256": "f069143c9d4521fca971cdf860146a2f19c613abe46c097771f216c81137f2df",
+      "size_bytes": 137689,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "details/cloth_leather",
+      "retained_path": "gimli/details/cloth_leather.png",
+      "sha256": "67417cf5df9e24e9bd117562cf1dce5a3999b236ecd18da824538bca7728c024",
+      "size_bytes": 120581,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/side",
+      "retained_path": "gimli/face_views/side.png",
+      "sha256": "0cf4896a01b8933b1a80a8c9003d0abda8c213d7d5e56de1574f4e4fcb3b0a22",
+      "size_bytes": 100150,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "details/weapon_metal",
+      "retained_path": "gimli/details/weapon_metal.png",
+      "sha256": "86011041b4def96c24ff1c2f54144376080a31e92e6a5f97e2876c92a8788d05",
+      "size_bytes": 52959,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "details/skin",
+      "retained_path": "gimli/details/skin.png",
+      "sha256": "20913afad4b477bfc86e5b582552ca2ef0fc4d828c3aac660d249587ce4e9ac3",
+      "size_bytes": 118355,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "gimli",
+      "key": "details/hair",
+      "retained_path": "gimli/details/hair.png",
+      "sha256": "c77da197303d607539e88af3872124d41028ab69b33c1e9830ea184d56021fcd",
+      "size_bytes": 123934,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "goblin",
+      "key": "views/front",
+      "retained_path": "goblin/views/front.png",
+      "sha256": "79b7174b580355e67fcb980d0ae677ade15997b16cade1fd4efa799b0fbfe04a",
+      "size_bytes": 257976,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "views/three_quarter",
+      "retained_path": "goblin/views/three_quarter.png",
+      "sha256": "984039b30b59c81e99e9380aa68e2bc8819fb05fef68bfef6de76f31b9bbd0fb",
+      "size_bytes": 236932,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "views/side",
+      "retained_path": "goblin/views/side.png",
+      "sha256": "76f7f980c0027f83bf629a73a52630d5928885c51b6d26a122718ee5d3d370bf",
+      "size_bytes": 226940,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "views/back",
+      "retained_path": "goblin/views/back.png",
+      "sha256": "d4ab41ab60b94f66b4bc3ce530f4e84d787f4bd5366dbd77275dae5cdc1faaae",
+      "size_bytes": 254933,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "face_views/front",
+      "retained_path": "goblin/face_views/front.png",
+      "sha256": "7cc8228d5525b373dfa608a396f4300add677c3476aed4eefc3e9656aaaaa237",
+      "size_bytes": 199338,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "face_views/three_quarter",
+      "retained_path": "goblin/face_views/three_quarter.png",
+      "sha256": "389ecdc88b6caedf4f35f6c38c0d7916afa72d2057834331e78231e476a164e4",
+      "size_bytes": 191453,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "face_views/side",
+      "retained_path": "goblin/face_views/side.png",
+      "sha256": "9cc823bbb627255f29fad7bc3080682d241ed6bb5dd8e1da06b37ec6189eeb48",
+      "size_bytes": 168818,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "details/cloth_leather",
+      "retained_path": "goblin/details/cloth_leather.png",
+      "sha256": "f0819525abc6354e883f6087b570f0ed0a591bdb959b73dab6b763348be56e3d",
+      "size_bytes": 127892,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "details/weapon_metal",
+      "retained_path": "goblin/details/weapon_metal.png",
+      "sha256": "6adf3a87bbc4f3a24ddad8cc5707f02cb55a78df350f6265a0f69cd0aa46adda",
+      "size_bytes": 27043,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "details/skin",
+      "retained_path": "goblin/details/skin.png",
+      "sha256": "863716d748f5ad7fc97fd753241c66460652243df4206522cc58656b621aec85",
+      "size_bytes": 93594,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "goblin",
+      "key": "details/hair",
+      "retained_path": "goblin/details/hair.png",
+      "sha256": "8ed10cad8f6071de9968b377b0a468ba04ffa99f2ba9134d83603a4fc5765679",
+      "size_bytes": 71276,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "views/front",
+      "retained_path": "gondor/views/front.png",
+      "sha256": "4a47d1531f501560569ebf28e1cc5496bdb8f2657836e32260d51b669cf4950e",
+      "size_bytes": 217664,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "views/three_quarter",
+      "retained_path": "gondor/views/three_quarter.png",
+      "sha256": "139870c5da428a5105d1b935ede264eae8b81a9dc98a75bcace3d1e1faee8e23",
+      "size_bytes": 207186,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "views/side",
+      "retained_path": "gondor/views/side.png",
+      "sha256": "8f775a7d92e8295345c45b7d2030fd6cdf351e23840027a58dcf9fbf99179002",
+      "size_bytes": 125038,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "views/back",
+      "retained_path": "gondor/views/back.png",
+      "sha256": "2a118527fe6caec713f195487b0242e223694ffa3e26bbca5ea2098e06490e29",
+      "size_bytes": 192377,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "face_views/front",
+      "retained_path": "gondor/face_views/front.png",
+      "sha256": "c13ed9a18d92eb3c9ae61723157922993a84fd075c75c451de46ba3702fc053a",
+      "size_bytes": 105337,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "face_views/three_quarter",
+      "retained_path": "gondor/face_views/three_quarter.png",
+      "sha256": "4eaa520b72fdf3a92a6c43fde13053473b0c9031c0638690871d8eb471c8ae54",
+      "size_bytes": 107143,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "face_views/side",
+      "retained_path": "gondor/face_views/side.png",
+      "sha256": "8061ddf9f37835a9ba18c845f3350c8b86753585a67e979a3380691a0f366bfe",
+      "size_bytes": 96029,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "details/cloth_leather",
+      "retained_path": "gondor/details/cloth_leather.png",
+      "sha256": "8288f8c42d205e2828c424b54847b349235328508cc1ab945bcef7b563925a9f",
+      "size_bytes": 96511,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "details/weapon_metal",
+      "retained_path": "gondor/details/weapon_metal.png",
+      "sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960",
+      "size_bytes": 50649,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "details/skin",
+      "retained_path": "gondor/details/skin.png",
+      "sha256": "aa26eda58f45ab1d07317cbf38ccac02cf84810bf4797484545759014534d305",
+      "size_bytes": 109658,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gondor",
+      "key": "details/hair",
+      "retained_path": "gondor/details/hair.png",
+      "sha256": "2926fbbc9d634cfaf9e3ef6e229d70664a9344eaa53b45ca70323118ee62e0e6",
+      "size_bytes": 24341,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "great_eagle",
+      "key": "views/side",
+      "retained_path": "great_eagle/views/side.png",
+      "sha256": "02867c9d47e95da6d87b0647bb9f4a8a368fea40adef7f63af3e3d72bc6b32d7",
+      "size_bytes": 132339,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "great_eagle",
+      "key": "views/front",
+      "retained_path": "great_eagle/views/front.png",
+      "sha256": "6ea4fbc5f8cf822a0f4a26ce80ffd5c04033270e861f1d2d1405ad763db0a532",
+      "size_bytes": 220819,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "great_eagle",
+      "key": "views/top",
+      "retained_path": "great_eagle/views/top.png",
+      "sha256": "0ec7aa3ec5a54d87d333f8b67f6996264c182da6540f849cb75b456214311b48",
+      "size_bytes": 163670,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "great_eagle",
+      "key": "views/three_quarter",
+      "retained_path": "great_eagle/views/three_quarter.png",
+      "sha256": "3285241114f42f0dc3ec22ce61de84ec2ba03c84e17a78ddce7b06e880e76c48",
+      "size_bytes": 140575,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "views/front",
+      "retained_path": "gundabad/views/front.png",
+      "sha256": "4053b6d7e7331af5e2696560bc3bd7963337be8f910d4f37b9966959ad141dc5",
+      "size_bytes": 293689,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "views/three_quarter",
+      "retained_path": "gundabad/views/three_quarter.png",
+      "sha256": "c1f8edd6494f2337e7dc171b201a52a187d08b145b9760225a497fb1d696fb5c",
+      "size_bytes": 275850,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "views/side",
+      "retained_path": "gundabad/views/side.png",
+      "sha256": "cf84d3e0a20391788a29d71ac326e0f9c7672975140c8d6c388ec538063b4b09",
+      "size_bytes": 168531,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "views/back",
+      "retained_path": "gundabad/views/back.png",
+      "sha256": "0909d32c80ae9b249652f210eabae9de284c36a71ceef6173307718a433b87f8",
+      "size_bytes": 297892,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "face_views/front",
+      "retained_path": "gundabad/face_views/front.png",
+      "sha256": "67daaa5d15911e97a923ad34cc7dc5b0a611d89d9d695771334b303884adb542",
+      "size_bytes": 161490,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "face_views/three_quarter",
+      "retained_path": "gundabad/face_views/three_quarter.png",
+      "sha256": "eb80c48bc87b47840218716f75bf31506913484ba85405f8a434271dfa6b75ee",
+      "size_bytes": 151385,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "face_views/side",
+      "retained_path": "gundabad/face_views/side.png",
+      "sha256": "41e16b25a99bcd6b3b0848175fed153cc1245fe4b45ceb3eaa45187a70b0f9db",
+      "size_bytes": 144774,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "details/cloth_leather",
+      "retained_path": "gundabad/details/cloth_leather.png",
+      "sha256": "5573affb254d0ad7139b542f978b5d6f2ab358a1224af1b2b3657240a4bc2a0c",
+      "size_bytes": 101003,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "details/weapon_metal",
+      "retained_path": "gundabad/details/weapon_metal.png",
+      "sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64",
+      "size_bytes": 22988,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "details/skin",
+      "retained_path": "gundabad/details/skin.png",
+      "sha256": "ea6acf4360621ac1585b99f427e76803195518996c622afec1e9dc124d342688",
+      "size_bytes": 135135,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad",
+      "key": "details/hair",
+      "retained_path": "gundabad/details/hair.png",
+      "sha256": "f9f47ffd6262a0302608506f4e3b0d81ce46819c3362e31ba22fbbbdf68f8ef7",
+      "size_bytes": 38425,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "views/side",
+      "retained_path": "gundabad_bat/views/side.png",
+      "sha256": "d94c82fbfbc71e9616cd186638468ddefcc8d9d8593a7bb9d181cc60346c0453",
+      "size_bytes": 124806,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "views/front",
+      "retained_path": "gundabad_bat/views/front.png",
+      "sha256": "ee2bdd552187f0b1aeeb3e7cc9b71065607c1a302f82dd1ced43218cebc39717",
+      "size_bytes": 215711,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "views/top",
+      "retained_path": "gundabad_bat/views/top.png",
+      "sha256": "fe7157556822db941032c58e8e75f0e2759579c5748d51785976193c8afd28eb",
+      "size_bytes": 161465,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "views/three_quarter",
+      "retained_path": "gundabad_bat/views/three_quarter.png",
+      "sha256": "f30c6d69b8914a357f3850c5d8628d32fda2f45fe82897129730d6b01d9a5098",
+      "size_bytes": 146901,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "views/folded",
+      "retained_path": "gundabad_bat/views/folded.png",
+      "sha256": "c8ec65ef3cb05fccf00cab2b9c6713bd215cddb656b3e14bc23d672ca4395e03",
+      "size_bytes": 63060,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "face_views/front",
+      "retained_path": "gundabad_bat/face_views/front.png",
+      "sha256": "077ad0a478f8895c4d25b13d1ec0374c22766d0af48a6aabdfeb48277299f047",
+      "size_bytes": 90538,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "face_views/three_quarter",
+      "retained_path": "gundabad_bat/face_views/three_quarter.png",
+      "sha256": "d830a343614aa8ecb541100b6816d53f67e3f78f0109b76227a069a19fa234e7",
+      "size_bytes": 87465,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "face_views/side",
+      "retained_path": "gundabad_bat/face_views/side.png",
+      "sha256": "8759f4b424829d89873fc43a8f88e7e4243e877307f569d03e5158759de93330",
+      "size_bytes": 93414,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "details/cloth_leather",
+      "retained_path": "gundabad_bat/details/cloth_leather.png",
+      "sha256": "89caf4df4c6a1ebd94894973b562c830c9d5df2a67494f89846cca8a6d50782d",
+      "size_bytes": 82371,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "details/weapon_metal",
+      "retained_path": "gundabad_bat/details/weapon_metal.png",
+      "sha256": "f8a15c3d69e32626ce9ed38867e94cedc1d86df152721690a1ffa5a74e6fae1d",
+      "size_bytes": 76273,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "details/skin",
+      "retained_path": "gundabad_bat/details/skin.png",
+      "sha256": "df8a8975692dd1abb1bd92480258861d97653151a4ed73c1d6cdb7dfa334ae76",
+      "size_bytes": 127296,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "gundabad_bat",
+      "key": "details/hair",
+      "retained_path": "gundabad_bat/details/hair.png",
+      "sha256": "39f9fdd61cb57c5e13607c843ca5cb2128078867f318bb5c02cfc4d06c636cd4",
+      "size_bytes": 111608,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "views/front",
+      "retained_path": "haradrim/views/front.png",
+      "sha256": "8310ef41f794c2200d0f566bb4aac60141cef53369ada6a3f6b83e9584d1987f",
+      "size_bytes": 197768,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "views/three_quarter",
+      "retained_path": "haradrim/views/three_quarter.png",
+      "sha256": "d7ab1ae6f781ef4d4fc020ac4fb29f3e0fd87e61ecd04504f93ea1c1d3b45fbc",
+      "size_bytes": 193185,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "views/side",
+      "retained_path": "haradrim/views/side.png",
+      "sha256": "99873a00ae2ec436e35f6d1f65e2754e88b7776d52e410a90e11ff259998b422",
+      "size_bytes": 138715,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "views/back",
+      "retained_path": "haradrim/views/back.png",
+      "sha256": "3c359796448a464d645cfaeaa14d4eb225a18610cfa0bf58b74f92822209163b",
+      "size_bytes": 189239,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "face_views/front",
+      "retained_path": "haradrim/face_views/front.png",
+      "sha256": "ef3ee7a072a293b6b71df5fec0cc57ea88c1b4c16619ca525feafd91bfd65e93",
+      "size_bytes": 121616,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "face_views/three_quarter",
+      "retained_path": "haradrim/face_views/three_quarter.png",
+      "sha256": "c5203ff5ab418218f05e8b1ed04885173cf42a1cab97bdb60de431ad1c5e7e41",
+      "size_bytes": 118255,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "face_views/side",
+      "retained_path": "haradrim/face_views/side.png",
+      "sha256": "77bf431b5472b35db3c5ae27b302e9536d050fab930475435aa850dfa683c7d1",
+      "size_bytes": 118301,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "details/cloth_leather",
+      "retained_path": "haradrim/details/cloth_leather.png",
+      "sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+      "size_bytes": 54116,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "details/weapon_metal",
+      "retained_path": "haradrim/details/weapon_metal.png",
+      "sha256": "61ad50113c897be3275a0296c411371bbbb6d7ec9583fb0da4f4ee1d3e5d7010",
+      "size_bytes": 11006,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "details/skin",
+      "retained_path": "haradrim/details/skin.png",
+      "sha256": "835a9d1e4aa47f9e06b9da651677b65f1c38ac3e51ec2a7a1e2db91e9c13879d",
+      "size_bytes": 29403,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "haradrim",
+      "key": "details/hair",
+      "retained_path": "haradrim/details/hair.png",
+      "sha256": "10bb2244a03fd573de9b7bfc02eb3edb47b23bf94806c358b4bb374e5ca27d14",
+      "size_bytes": 61373,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "views/front",
+      "retained_path": "laketown_man/views/front.png",
+      "sha256": "d4a3debc9e2753dd34122bec1833ff58a88a3ec1158391ac49a72e26ace915ee",
+      "size_bytes": 184196,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "views/three_quarter",
+      "retained_path": "laketown_man/views/three_quarter.png",
+      "sha256": "5d9c9c8958d72cc46dda77e98e010771cc118f3d113e9d4975c479b346013441",
+      "size_bytes": 170205,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "views/side",
+      "retained_path": "laketown_man/views/side.png",
+      "sha256": "42c1b8515787a426860fc6f71351cc8d026e3e16cb3058c25ac77ce31afc4325",
+      "size_bytes": 112699,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "views/back",
+      "retained_path": "laketown_man/views/back.png",
+      "sha256": "a0c82656b86f394152da72a629f44e8061d82cdc7cae6975e32b6bcd00e9fbf1",
+      "size_bytes": 180942,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "face_views/front",
+      "retained_path": "laketown_man/face_views/front.png",
+      "sha256": "dda1f276541d86c3110646e0f2dda20e0d43bf5dec847c5899c67aef8d1fc3cc",
+      "size_bytes": 123072,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "face_views/three_quarter",
+      "retained_path": "laketown_man/face_views/three_quarter.png",
+      "sha256": "8c9adce818d8c320ce5389bb5eb5e899a66a6b04392d6b0a8b1a21e5306e2265",
+      "size_bytes": 118018,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "face_views/side",
+      "retained_path": "laketown_man/face_views/side.png",
+      "sha256": "f46e58455ae5fa9dfe37d6b005289f6564c1db5e445fc21a08361c56b9d9e378",
+      "size_bytes": 118421,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "details/cloth_leather",
+      "retained_path": "laketown_man/details/cloth_leather.png",
+      "sha256": "5aea7b90a4cd011937104a48cb6917f69b7392b72888da158526ae9e0fb10179",
+      "size_bytes": 92652,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "details/weapon_metal",
+      "retained_path": "laketown_man/details/weapon_metal.png",
+      "sha256": "7adb3370e67481ff926783416c2431205f387f65d5c83c3b8a4eec7cbc5a9738",
+      "size_bytes": 56440,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "details/skin",
+      "retained_path": "laketown_man/details/skin.png",
+      "sha256": "5991a672a796b69610ef336d2950fff62967b486eaeecaca617d30f674feeb18",
+      "size_bytes": 119920,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "laketown_man",
+      "key": "details/hair",
+      "retained_path": "laketown_man/details/hair.png",
+      "sha256": "ad63e5692b38a50949aa966c81bf1ec60ba1432cb992623d78180046bd6b02a9",
+      "size_bytes": 77569,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "legolas",
+      "key": "views/front",
+      "retained_path": "legolas/views/front.png",
+      "sha256": "0f70ffa852cedd7ab277039687d6662cacc4b0e2eb5fe927b38390fc82c1379a",
+      "size_bytes": 183249,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/front",
+      "retained_path": "legolas/face_views/front.png",
+      "sha256": "a1fd29d0465607ab02e244aac5efd616f55bab9fd8a211f58f36d0bba5ec2e8d",
+      "size_bytes": 161006,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "views/side",
+      "retained_path": "legolas/views/side.png",
+      "sha256": "ac148ac066f42a46938c0856db032701566008cb90b465be23129d3852abcd68",
+      "size_bytes": 94463,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "views/three_quarter",
+      "retained_path": "legolas/views/three_quarter.png",
+      "sha256": "8c374be152f6fba331a63d128a7e73e9bc74fdcdbfd1e51a3fc6a9e718394efa",
+      "size_bytes": 114538,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "views/back",
+      "retained_path": "legolas/views/back.png",
+      "sha256": "e2eac3b9f7bc9390407771058f4cf2d533d7f9ac0ed5b3b64d746566ec47a00d",
+      "size_bytes": 116921,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/three_quarter",
+      "retained_path": "legolas/face_views/three_quarter.png",
+      "sha256": "74a738b6b9c399ff9549b1e6f0ec960d6ebfca53dd86aed20162e143926a011e",
+      "size_bytes": 120455,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "details/cloth_leather",
+      "retained_path": "legolas/details/cloth_leather.png",
+      "sha256": "844de096fb2269a48eff1a0814a16962659bce20997a59fde2f544d2bf3ff15a",
+      "size_bytes": 145739,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "details/weapon_metal",
+      "retained_path": "legolas/details/weapon_metal.png",
+      "sha256": "850e4ce2a3bf9be7891b3831ffc1c036d4ee2747fa1940de760278ab2679653f",
+      "size_bytes": 14839,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/side",
+      "retained_path": "legolas/face_views/side.png",
+      "sha256": "a5a3853ab5c2e222392a681297aae65275e9de940185a3eb69d4fc2c5ad62620",
+      "size_bytes": 91125,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "details/skin",
+      "retained_path": "legolas/details/skin.png",
+      "sha256": "daf41267137cd200ecb5b4289f597c1f25bdb3ab2de9da2a62c23bd347d15c3a",
+      "size_bytes": 115176,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "legolas",
+      "key": "details/hair",
+      "retained_path": "legolas/details/hair.png",
+      "sha256": "02685f8da1a07a9d281358f9480309a0fa71cb908b4991e33a3a1c6fc2336a78",
+      "size_bytes": 129083,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "views/front",
+      "retained_path": "lurtz/views/front.png",
+      "sha256": "bf2b871b6f4a16f864909244d36f7072d7a61140b30bc62357e18db4db2ba2e0",
+      "size_bytes": 226319,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "views/three_quarter",
+      "retained_path": "lurtz/views/three_quarter.png",
+      "sha256": "3490e8fc5653180b9893ca74af2e8e78781323a41a5e9832e3df73eeb28c5388",
+      "size_bytes": 215393,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "views/side",
+      "retained_path": "lurtz/views/side.png",
+      "sha256": "7c85376aba4817cc7b30530cfba737408989efc59d50f3c39138fca1b734833e",
+      "size_bytes": 146476,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "views/back",
+      "retained_path": "lurtz/views/back.png",
+      "sha256": "f9062f34168ecb612a3818bf7d4732dbc3d07e499e93c198d45b653c0ccbd6f6",
+      "size_bytes": 223925,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "face_views/front",
+      "retained_path": "lurtz/face_views/front.png",
+      "sha256": "1114a49df73d804c721f177faf1caf1b8d88190d1e2a5f88a7935bbf80d0f28f",
+      "size_bytes": 128286,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "face_views/three_quarter",
+      "retained_path": "lurtz/face_views/three_quarter.png",
+      "sha256": "d7e743daea021e11a88ab18aa843332a954222ff5f6c55225a27e024ced46ee3",
+      "size_bytes": 126582,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "face_views/side",
+      "retained_path": "lurtz/face_views/side.png",
+      "sha256": "b47b82b036ed86e6f64efa8f4b59929bf2e1b99f2c82ee278735512873fbf3a1",
+      "size_bytes": 113735,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "details/cloth_leather",
+      "retained_path": "lurtz/details/cloth_leather.png",
+      "sha256": "15826cbb837a38e3ddc594feb591064b667104911a3a3824650f75725d9749fe",
+      "size_bytes": 50470,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "details/weapon_metal",
+      "retained_path": "lurtz/details/weapon_metal.png",
+      "sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13",
+      "size_bytes": 16235,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "details/skin",
+      "retained_path": "lurtz/details/skin.png",
+      "sha256": "44f16e154459af91c3c4fefbd45b651cc65d835ce5c92e3f45ee1de6592ec963",
+      "size_bytes": 107154,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "lurtz",
+      "key": "details/hair",
+      "retained_path": "lurtz/details/hair.png",
+      "sha256": "28735635f66ed694f0bfff03e90010aac0ccb58ddb2c385dd621afaf2c742299",
+      "size_bytes": 43004,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "views/side",
+      "retained_path": "mirkwood_spider/views/side.png",
+      "sha256": "8974c4d3f4a30bf381f5e6ba265502ce9a523783d61acc7a490ba7615d4e2e49",
+      "size_bytes": 246227,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "views/front",
+      "retained_path": "mirkwood_spider/views/front.png",
+      "sha256": "2834974683f7730f7a0652ba99b6c5a0f56538b62b1f5bb98cb80e242249ed2a",
+      "size_bytes": 232714,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "views/top",
+      "retained_path": "mirkwood_spider/views/top.png",
+      "sha256": "024396c4523e5de861d486c9b1e61a045d95b0faf730660eac20c71784e6331d",
+      "size_bytes": 183950,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "views/three_quarter",
+      "retained_path": "mirkwood_spider/views/three_quarter.png",
+      "sha256": "1def49e02b230a0ccc60d5416e91273f8bbec4e1185b2e6497c1f27404256a56",
+      "size_bytes": 238362,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "face_views/front",
+      "retained_path": "mirkwood_spider/face_views/front.png",
+      "sha256": "f0810b53c185dff8eb7a7471d590daa8465daba5520c8f938a5cdb85f75afb35",
+      "size_bytes": 178836,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "face_views/three_quarter",
+      "retained_path": "mirkwood_spider/face_views/three_quarter.png",
+      "sha256": "f07daf9ece22ad48ea780cec7452e27e38a21c9de0b581a2436be6353a2de753",
+      "size_bytes": 174088,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "face_views/side",
+      "retained_path": "mirkwood_spider/face_views/side.png",
+      "sha256": "d1ba28289fb53a6347b406a8c7f32e9ba69be0fcb2f4e7ea2d34e88edd052d69",
+      "size_bytes": 142631,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "details/cloth_leather",
+      "retained_path": "mirkwood_spider/details/cloth_leather.png",
+      "sha256": "2a7596d18e0fa2eb453c97931314f44100685c65f3139191bcab64d804e446f9",
+      "size_bytes": 109575,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "details/weapon_metal",
+      "retained_path": "mirkwood_spider/details/weapon_metal.png",
+      "sha256": "5abf57e0756707ce264572f80febb5bef4472b40a5f0f5d2a6949ba24cfa6c1e",
+      "size_bytes": 110943,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "details/skin",
+      "retained_path": "mirkwood_spider/details/skin.png",
+      "sha256": "5c9aee6991d952e8927b9214f6c4d0bf1b62beda83da3ef2cb5477dcbf370b9d",
+      "size_bytes": 90273,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mirkwood_spider",
+      "key": "details/hair",
+      "retained_path": "mirkwood_spider/details/hair.png",
+      "sha256": "3061552a56c893af92621f23abdcd0258a2a6b1cf75d2a39cc83369f175394dc",
+      "size_bytes": 106325,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "views/side",
+      "retained_path": "mumak/views/side.png",
+      "sha256": "8b5ee4289d00770ff29659529e2870fd868a7c05fd1fb7d3989e6214167d88a8",
+      "size_bytes": 193948,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "views/front",
+      "retained_path": "mumak/views/front.png",
+      "sha256": "18cddce19671f93c9131dbbb821e46103f5caa9d573e0839701928632b6428f8",
+      "size_bytes": 111191,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "views/top",
+      "retained_path": "mumak/views/top.png",
+      "sha256": "da415d09ae80814e8a347ebfe94d3af43b8ac4775f232a4db4f547633cf69bfc",
+      "size_bytes": 66070,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "views/three_quarter",
+      "retained_path": "mumak/views/three_quarter.png",
+      "sha256": "687db62bd57c054edfe958e02cb62fec4f58be86951261bb6af13c4c4d4061f0",
+      "size_bytes": 171861,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "face_views/front",
+      "retained_path": "mumak/face_views/front.png",
+      "sha256": "35ed0b5f93ebf0796d3439a9b899b7782e61c9f1dcc315748baeaa5c39f640c5",
+      "size_bytes": 72517,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "face_views/three_quarter",
+      "retained_path": "mumak/face_views/three_quarter.png",
+      "sha256": "70b7fbafdb1821ef7681c7a97dfe0fd353875cb9fd92a9c72bffcd20105904c2",
+      "size_bytes": 73221,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "face_views/side",
+      "retained_path": "mumak/face_views/side.png",
+      "sha256": "b6af4f86356466f2c345f637574a9751c8ef85d884ecead8bf0ddf28c6a67eaa",
+      "size_bytes": 61105,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "details/cloth_leather",
+      "retained_path": "mumak/details/cloth_leather.png",
+      "sha256": "4344f26985dadba0790fbf2f604b6dec1bb6451799eb3af9f56f4192b2282102",
+      "size_bytes": 92294,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "details/weapon_metal",
+      "retained_path": "mumak/details/weapon_metal.png",
+      "sha256": "85f0e69758f65b2f88f74e027540ed05ad90e69181f3f3c50769e4ea89e0c478",
+      "size_bytes": 43094,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "details/skin",
+      "retained_path": "mumak/details/skin.png",
+      "sha256": "022c2880e2815c41aefb96dbab9861f851678deb504508f45ca52d4f0473b0a5",
+      "size_bytes": 31991,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "mumak",
+      "key": "details/hair",
+      "retained_path": "mumak/details/hair.png",
+      "sha256": "e4e0df12dc94a41e29facafd1bc028439981ea9185447a1aa5f1f5224b9c95da",
+      "size_bytes": 20236,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "views/front",
+      "retained_path": "orc/views/front.png",
+      "sha256": "5351578963fabc30849860f315926c1d5b6135ad13521dd1abb92660c6aab10b",
+      "size_bytes": 234593,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "views/three_quarter",
+      "retained_path": "orc/views/three_quarter.png",
+      "sha256": "8ee2eeb28844a3430811e9fbe606b40557c50f139f2c985554b674b55bba1c99",
+      "size_bytes": 231081,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "views/side",
+      "retained_path": "orc/views/side.png",
+      "sha256": "e90eb95bd0ce01d05aa2bc9df07aabddbcf40391544c75e8dad0dc2ba4da415d",
+      "size_bytes": 176917,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "views/back",
+      "retained_path": "orc/views/back.png",
+      "sha256": "c52a3742a754ec666456d00c6a2549be706885ef006b94a8519c9acaa4cbb29c",
+      "size_bytes": 233012,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "face_views/front",
+      "retained_path": "orc/face_views/front.png",
+      "sha256": "fd114ec380b8f208897c5b664195cfa95fb179e94ae9eb64c06422b18051f71b",
+      "size_bytes": 154470,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "face_views/three_quarter",
+      "retained_path": "orc/face_views/three_quarter.png",
+      "sha256": "9a08d65f6f57522d1430b545fd888c02fa37308bb4a139bcbf7e5b406a5a16c0",
+      "size_bytes": 152995,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "face_views/side",
+      "retained_path": "orc/face_views/side.png",
+      "sha256": "777fd98fcd38a16c0446d731372dfef1f6c3e6817a7e663a2c33584c21b0d3f6",
+      "size_bytes": 147861,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "details/cloth_leather",
+      "retained_path": "orc/details/cloth_leather.png",
+      "sha256": "3fd15cd51bfd02d020989d59e325dc5e2861ea49997ef09bdcc5d45df43ac894",
+      "size_bytes": 96511,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "details/weapon_metal",
+      "retained_path": "orc/details/weapon_metal.png",
+      "sha256": "4a756ef1fce58c281b130dd36ce7a6ff6cd2428914e0b26778ae02a64a905b04",
+      "size_bytes": 34149,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "details/skin",
+      "retained_path": "orc/details/skin.png",
+      "sha256": "8d440db3be5b20d7eaac49e9454ab731668eaa39d09b6be80582e5614b667a5d",
+      "size_bytes": 103148,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc",
+      "key": "details/hair",
+      "retained_path": "orc/details/hair.png",
+      "sha256": "4a6c3a4ffb3efc3e7a9d347eea53cce9401f19f91c17a222fc24d4480f38dc54",
+      "size_bytes": 70539,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc_variants",
+      "key": "wiry",
+      "retained_path": "orc_variants/views/wiry.png",
+      "sha256": "c7f0c5c92fa98e22fdd58f77f711946fe1f9060fc993070db46b866716382cfa",
+      "size_bytes": 81456,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc_variants",
+      "key": "brown",
+      "retained_path": "orc_variants/views/brown.png",
+      "sha256": "90a3bb82572ff2f3e2c7edc822452f9ca1c647215d43ab480baa6348f09ae1b1",
+      "size_bytes": 90834,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc_variants",
+      "key": "scarred",
+      "retained_path": "orc_variants/views/scarred.png",
+      "sha256": "c148d387123cc99aeee3c9197913ce1d094bdd8574655da459c935fb09815293",
+      "size_bytes": 88551,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "orc_variants",
+      "key": "matted",
+      "retained_path": "orc_variants/views/matted.png",
+      "sha256": "8ce488a4b34245ca53dc25e089fd070aa2d3adb1c86d54ac4061a8565791980f",
+      "size_bytes": 85311,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "views/front",
+      "retained_path": "rohirrim/views/front.png",
+      "sha256": "3ce675365d727a56432fed4a6ea4b48462e75ed1cdaf015c3c0870ba6119cc84",
+      "size_bytes": 229304,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "views/three_quarter",
+      "retained_path": "rohirrim/views/three_quarter.png",
+      "sha256": "b4892162a7fcbf9233af427abaae56ca94be499646652e6ab34d3d4321dd5c6e",
+      "size_bytes": 218165,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "views/side",
+      "retained_path": "rohirrim/views/side.png",
+      "sha256": "85bd89d9e6b290141f24001eaa32d07074a56d8ff46e5d7c499935fac369059f",
+      "size_bytes": 143671,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "views/back",
+      "retained_path": "rohirrim/views/back.png",
+      "sha256": "d291844fb500484e11ab5ee29b817b6c81578735364f9718e9cd117ef878199a",
+      "size_bytes": 229052,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "face_views/front",
+      "retained_path": "rohirrim/face_views/front.png",
+      "sha256": "5ca5ee7d72a9b1999be00c8c9ad4eb19d1fc15b85f94763f29589ed42ef9c015",
+      "size_bytes": 125057,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "face_views/three_quarter",
+      "retained_path": "rohirrim/face_views/three_quarter.png",
+      "sha256": "f7bf17b8d51fdecedd49f735d81816b182a6ae1529f54439bb98c0f1614bd10a",
+      "size_bytes": 133519,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "face_views/side",
+      "retained_path": "rohirrim/face_views/side.png",
+      "sha256": "8eaff900c6586d9d23473c4c2e1ae9492434d14c63e5c166350df6f2eed8594d",
+      "size_bytes": 130482,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "details/cloth_leather",
+      "retained_path": "rohirrim/details/cloth_leather.png",
+      "sha256": "836feb65ac27f3ac9722ae79bdc520ab1ec9c1a8cb6a010fbdad5fc10304d60b",
+      "size_bytes": 111089,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "details/weapon_metal",
+      "retained_path": "rohirrim/details/weapon_metal.png",
+      "sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df",
+      "size_bytes": 134561,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "details/skin",
+      "retained_path": "rohirrim/details/skin.png",
+      "sha256": "17da5e48ddc2594ebdb7d18430970d2e4c6416711b7db4e61af2dc8cb921a03d",
+      "size_bytes": 110524,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "rohirrim",
+      "key": "details/hair",
+      "retained_path": "rohirrim/details/hair.png",
+      "sha256": "e6b379d6a073c14bba200f3b0bab7a2e50404090a3be0da680caa0ff288cb5f9",
+      "size_bytes": 116989,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "views/front",
+      "retained_path": "tauriel/views/front.png",
+      "sha256": "ab07ea2e4da064a6e2bb017923af5cc838a127a8537f4014c8170335966dd68e",
+      "size_bytes": 112478,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "views/three_quarter",
+      "retained_path": "tauriel/views/three_quarter.png",
+      "sha256": "694ec658cf8bc2218510f08ef2470a4a71b2ddb0268be2bfc5c07a7cc5e4908c",
+      "size_bytes": 114554,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "views/side",
+      "retained_path": "tauriel/views/side.png",
+      "sha256": "00a97e12ec1d1e73b5848441c7d9ae553edd622249f6c172f8560d211558c24b",
+      "size_bytes": 87837,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "views/back",
+      "retained_path": "tauriel/views/back.png",
+      "sha256": "b8568a3202b7a2c610549b1f197fc6cba591234d4bf8b3f4e047be785ae47c37",
+      "size_bytes": 105543,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/front",
+      "retained_path": "tauriel/face_views/front.png",
+      "sha256": "5e0f2ef7c5d6e1f6dcfdcad3173fcd2a6a6f4cbfce2b331927f631b2071f55f8",
+      "size_bytes": 97994,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/three_quarter",
+      "retained_path": "tauriel/face_views/three_quarter.png",
+      "sha256": "900d0ee7f33b0ba16c87b28c6b5ba394018bca4427e2a491c0ecd5a1ecffafd1",
+      "size_bytes": 102075,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/side",
+      "retained_path": "tauriel/face_views/side.png",
+      "sha256": "91e234c50200db97b30df9cbf9c51ef6c220efa1699c549069dae19f4de127cb",
+      "size_bytes": 88231,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "details/cloth_leather",
+      "retained_path": "tauriel/details/cloth_leather.png",
+      "sha256": "7ca1b274338d2c7e63b5d530650f2dcb7f75ab7fa651aab7b99550abb1e48f5c",
+      "size_bytes": 157375,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "details/weapon_metal",
+      "retained_path": "tauriel/details/weapon_metal.png",
+      "sha256": "fb8cd45fb5c09f44de4efbbf14bcab44be020ca67c710be364f98698e30c7401",
+      "size_bytes": 156438,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "details/skin",
+      "retained_path": "tauriel/details/skin.png",
+      "sha256": "7d1e5584914f06b1100f49833316e0f84a19822beb4313b0726f5abf60285c06",
+      "size_bytes": 127497,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "tauriel",
+      "key": "details/hair",
+      "retained_path": "tauriel/details/hair.png",
+      "sha256": "6d9697b4163e7ea46508562c62a7c089eb87ce36ab64cc31d9f8d61936d73c97",
+      "size_bytes": 138701,
+      "original_verification": "available outside retained library; original hash verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "views/front",
+      "retained_path": "thranduil/views/front.png",
+      "sha256": "b14eefedcd744fa33dda7142d454c247bdfccb80ab19d2b556dc3f54377170e5",
+      "size_bytes": 240110,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "views/three_quarter",
+      "retained_path": "thranduil/views/three_quarter.png",
+      "sha256": "cda1f2ed193a41a008eea8d72bcdb9b06efe87f1a9461ae1362848a7337ea9d4",
+      "size_bytes": 232154,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "views/side",
+      "retained_path": "thranduil/views/side.png",
+      "sha256": "761e6a21b84a8754ee14cfbadef41d3e068a6c8f87d6a1f9356e469c2fa5ba8d",
+      "size_bytes": 169978,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "views/back",
+      "retained_path": "thranduil/views/back.png",
+      "sha256": "eb984f8715bc7ad41da0021c9c3bff238de54693650b7213d5c9f98d39ed70a7",
+      "size_bytes": 238901,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "face_views/front",
+      "retained_path": "thranduil/face_views/front.png",
+      "sha256": "489545c3d0a7c27a4c0b1e4627634a8da6d87f2d58514f26dc2e5a3917888305",
+      "size_bytes": 137288,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "face_views/three_quarter",
+      "retained_path": "thranduil/face_views/three_quarter.png",
+      "sha256": "2da823ff4cd5f57789b5429f950ad592b9ae3895ec56a0f3f38e690ec1d8be0f",
+      "size_bytes": 127558,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "face_views/side",
+      "retained_path": "thranduil/face_views/side.png",
+      "sha256": "c85e6037ed91e7ea5b78f7e07bad259b8eff24dd23a46ba40f89d85180d590e9",
+      "size_bytes": 106780,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "details/cloth_leather",
+      "retained_path": "thranduil/details/cloth_leather.png",
+      "sha256": "c18d82ca9766347d10afad2d77d1d09c0e27de683e1743e9fbe29ecad39073aa",
+      "size_bytes": 106467,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "details/skin",
+      "retained_path": "thranduil/details/skin.png",
+      "sha256": "f7c304a119389b421a7471af81be16e3312fefc2cc36dff8752df9ea200606f3",
+      "size_bytes": 87701,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "thranduil",
+      "key": "details/hair",
+      "retained_path": "thranduil/details/hair.png",
+      "sha256": "45429b7b2ac8fe05e1794aa15cea9ab7d0ec029c2c7cfcb3d8ce94190833919d",
+      "size_bytes": 49893,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "views/front",
+      "retained_path": "uruk/views/front.png",
+      "sha256": "2ad8be22b4c586e8f363c0ac590d61a1df7b6d65bccb8374ac0b37473146b03d",
+      "size_bytes": 257632,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "views/three_quarter",
+      "retained_path": "uruk/views/three_quarter.png",
+      "sha256": "f25298f2f065bc24c45ca88d4b8f5da5fd5956f191d8e2b5efe00252bfff7df6",
+      "size_bytes": 235433,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "views/side",
+      "retained_path": "uruk/views/side.png",
+      "sha256": "b7203169969620afb9970b13f8b01e58833b3a0cda680de44fbfc6e0d775106e",
+      "size_bytes": 163344,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "views/back",
+      "retained_path": "uruk/views/back.png",
+      "sha256": "053be45ed1cffa4c6424848d7e1c669694b27f19b4a9ae59579c0b1c923b3db9",
+      "size_bytes": 257169,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "face_views/front",
+      "retained_path": "uruk/face_views/front.png",
+      "sha256": "4b020dcb3380368a0181dd31c33c9d61162ff1c245b237f88f3a8a6056882534",
+      "size_bytes": 131087,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "face_views/three_quarter",
+      "retained_path": "uruk/face_views/three_quarter.png",
+      "sha256": "e6c0b0b570743da002c356a279cc23a37555ac618770ecfa70c72bcbf88156a4",
+      "size_bytes": 128069,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "face_views/side",
+      "retained_path": "uruk/face_views/side.png",
+      "sha256": "9ca94af810d99125d50e403f914aa359810e2d58c19184c24e85825c9aa079ac",
+      "size_bytes": 125357,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "details/cloth_leather",
+      "retained_path": "uruk/details/cloth_leather.png",
+      "sha256": "0a5fc9ce1d60d8d109f70c5114f383cff8b3e48f36adcbb88786f2036605f2c0",
+      "size_bytes": 89210,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "details/weapon_metal",
+      "retained_path": "uruk/details/weapon_metal.png",
+      "sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452",
+      "size_bytes": 50875,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "details/skin",
+      "retained_path": "uruk/details/skin.png",
+      "sha256": "8ae7fa215f227bca00908e12cd036bafcb6df68a1f8c2c1fcc7bd5ea108fdafe",
+      "size_bytes": 122025,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "uruk",
+      "key": "details/hair",
+      "retained_path": "uruk/details/hair.png",
+      "sha256": "ce52f5ff2b56a7d95ff5e41ce984dde21219732178688fe599e8ab20a6ee8b62",
+      "size_bytes": 75492,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "views/front",
+      "retained_path": "war_troll/views/front.png",
+      "sha256": "3e01860bba93e9d4fa96fc6c94c685c0aa9aa4c679e02a403af57e93c088dcc3",
+      "size_bytes": 270066,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "views/three_quarter",
+      "retained_path": "war_troll/views/three_quarter.png",
+      "sha256": "f775fd7bd593b0ff2ffec3193be039a269360d1b7cfb55bcd12e9f434c36bdc8",
+      "size_bytes": 252709,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "views/side",
+      "retained_path": "war_troll/views/side.png",
+      "sha256": "8f88402f6d921c4446bea02e5ffe7f98ffbd6ead1a633f04bad6fc979e15e2f3",
+      "size_bytes": 181671,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "views/back",
+      "retained_path": "war_troll/views/back.png",
+      "sha256": "49d8c5e8b134d5c224392c5b63b6a23fe8326e63957d8fa656440cfb0b5a769f",
+      "size_bytes": 269019,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "face_views/front",
+      "retained_path": "war_troll/face_views/front.png",
+      "sha256": "6864933fdb72c5620850b7b1797e1f5a0617df416ef4c7c32f6de895d452dea3",
+      "size_bytes": 140445,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "face_views/three_quarter",
+      "retained_path": "war_troll/face_views/three_quarter.png",
+      "sha256": "ef5cfe77447fd99551feaeebdef9d2ef10db271eacccf4f04b1b34880a2ec361",
+      "size_bytes": 134852,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "face_views/side",
+      "retained_path": "war_troll/face_views/side.png",
+      "sha256": "79bc609f7941854a9a21a7ea67cd62e41ef56e6270eb9d6e41e4ebd99932f549",
+      "size_bytes": 127939,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "details/skin",
+      "retained_path": "war_troll/details/skin.png",
+      "sha256": "7ed7ffc834e6a90fc405e1ef417dd1ab8d1309e4345f1b8fdfd928d48ff93176",
+      "size_bytes": 68138,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "details/hair",
+      "retained_path": "war_troll/details/hair.png",
+      "sha256": "8b0c4a03862c8fe8f0a956ee9d65319924c2434c56ae70c3ef28115f1bebffdf",
+      "size_bytes": 105751,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "details/cloth_leather",
+      "retained_path": "war_troll/details/cloth_leather.png",
+      "sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+      "size_bytes": 90233,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "war_troll",
+      "key": "details/weapon_metal",
+      "retained_path": "war_troll/details/weapon_metal.png",
+      "sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072",
+      "size_bytes": 55964,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "galadhrim_bow",
+      "retained_path": "weapons/details/galadhrim_bow.png",
+      "sha256": "39a05cf89ab7aef65c5f6f5d5f764eb575702bbf8479765958ed4a34a1afb3d3",
+      "size_bytes": 13772,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "orc_cleaver",
+      "retained_path": "weapons/details/orc_cleaver.png",
+      "sha256": "831f62258ea500a342c69f7601bbb7623e64ec8b21ef43d2e93de72e334e3f5f",
+      "size_bytes": 31161,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "war_hammer",
+      "retained_path": "weapons/details/war_hammer.png",
+      "sha256": "f75b55ab84e9effdf418926f54c0baccb9369fe4ba356fe75a4eb91c59971811",
+      "size_bytes": 53415,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "uruk_shield",
+      "retained_path": "weapons/details/uruk_shield.png",
+      "sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452",
+      "size_bytes": 50875,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "rohan_shield",
+      "retained_path": "weapons/details/rohan_shield.png",
+      "sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df",
+      "size_bytes": 134561,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "gondor_shield",
+      "retained_path": "weapons/details/gondor_shield.png",
+      "sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960",
+      "size_bytes": 50649,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "uruk_falchion",
+      "retained_path": "weapons/details/uruk_falchion.png",
+      "sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13",
+      "size_bytes": 16235,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "bolg_mace",
+      "retained_path": "weapons/details/bolg_mace.png",
+      "sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64",
+      "size_bytes": 22988,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "elven_knives",
+      "retained_path": "weapons/details/elven_knives.png",
+      "sha256": "ddb8713bd5681413932205fa527dad60c4207becdfe08ba5ad0c246dc4ade59c",
+      "size_bytes": 46661,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "gimli_axe",
+      "retained_path": "weapons/details/gimli_axe.png",
+      "sha256": "0b1b8b5ddbb36e2d9075bfe671a217c7e50a76b6956bb34f72bd00d7156207b5",
+      "size_bytes": 74249,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "orc_scimitar",
+      "retained_path": "weapons/details/orc_scimitar.png",
+      "sha256": "75d9efeb54bf44c0c18f6e0af16a21ae19a91ada1ab5ef5d74642d5c25b42bf8",
+      "size_bytes": 38718,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "cave_troll_club",
+      "retained_path": "weapons/details/cave_troll_club.png",
+      "sha256": "82a15511c943f1249cb08fbadb261be700855240fb5993ebd29165291c3149d1",
+      "size_bytes": 69391,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "pike",
+      "retained_path": "weapons/details/pike.png",
+      "sha256": "46483b9949f1904fd5b06f2fe619c451d3f294e036f66c2a477c80cbc976309c",
+      "size_bytes": 9704,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    },
+    {
+      "character": "weapons",
+      "key": "torch",
+      "retained_path": "weapons/details/torch.png",
+      "sha256": "f2bb676779083d1edb4eb59944c9fa5b2e122ef7b8e844678213415cce136571",
+      "size_bytes": 56725,
+      "original_verification": "historical original unavailable; retained reconstruction source verified"
+    }
+  ]
+}

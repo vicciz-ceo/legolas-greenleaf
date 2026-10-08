@@ -157,7 +157,9 @@
     "reused_source_sha256": "b053259884c5a5da91462a3dd4044e2f8521f6af93912bfe4bd069b27d90c8b6",
     "imagegen_calls": 0,
     "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Exact frontal face; complete scarred bald crown, bolted skull plates, both ears, heavy brow and eyes, flattened nose, tusked mouth and entire jaw brace. Upper shoulders and rusted pauldrons included. Native facial detail is adequate for the configured 256px face source; no appearance edits or enlargement needed. Proper grey alpha composite reviewed; negligible-alpha background RGB is not a visual defect.",
-    "reviewed_crop_receipt_sha256": "72fb46a9057655250ed53040be99d6d881b764fd90d494068d007715a35917ad"
+    "reviewed_crop_receipt_sha256": "72fb46a9057655250ed53040be99d6d881b764fd90d494068d007715a35917ad",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/three_quarter": {
     "original_full_resolution_path": "/workspace/generated_images/exec-d6c39d9f-7586-4619-ba67-76af78e6d58c.png",
@@ -181,7 +183,9 @@
     "reused_source_sha256": "4eff838b6804b12cae610e714af4bff2d117692d9d05dd55e22613dc1a244974",
     "imagegen_calls": 0,
     "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Front three-quarter view with anatomical right side nearer and nose image right. Complete scarred bald crown, near ear, flush bolted skull plate and whole jaw brace retained; far ear is naturally occluded by the rotation. Heavy brow, near eye and lid, flattened nose, tusked mouth and scars are resolved natively. Full shoulder width and spiked pauldrons retained. Native detail is adequate for the configured 256px face source without enlargement. Correct grey alpha composite shows no vivid red crown/face fringe; red RGB ghost pixels at alpha1-4/255 are viewer artifacts.",
-    "reviewed_crop_receipt_sha256": "df4e79d2807f23745acdb33e9836ec46a4e6b433d1ad17d899ccca4dd7d15d58"
+    "reviewed_crop_receipt_sha256": "df4e79d2807f23745acdb33e9836ec46a4e6b433d1ad17d899ccca4dd7d15d58",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-82bfb52d-5bee-4399-90bb-be0e1845ac42.png",
@@ -205,7 +209,9 @@
     "reused_source_sha256": "90f4e69d2a3ba7b6f3f657baf67462329383e502bdf189c46415b72d2d3a77e5",
     "imagegen_calls": 0,
     "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Right-side profile, nose image right, one near eye and near right ear visible; far eye/ear naturally occluded. Complete scarred bald scalp contour, flush bolted skull plate, ear, nose/lip/tusk outline, chin and whole jaw brace retained with the near spiked shoulder pauldron. Native eye, scar, bolt and mouth detail is adequate for the configured 256px face source without enlargement. Grey alpha composite confirms the vivid red raw-viewer crown fringe is negligible alpha1-5/255 RGB ghosting, not an actual visible grey-composite defect.",
-    "reviewed_crop_receipt_sha256": "c88988610dfca907af887e98461b27b65d3c4c725357058813f7e22a4cd20653"
+    "reviewed_crop_receipt_sha256": "c88988610dfca907af887e98461b27b65d3c4c725357058813f7e22a4cd20653",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/cloth_leather": {
     "original_full_resolution_path": "/workspace/generated_images/exec-a5d02e5e-7e1e-4789-b95a-d4254e586e99.png",
@@ -276,5 +282,83 @@
         "Microscopic scratches/rust distribution and rivet rendering vary naturally with macro enlargement."
       ]
     }
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2340809e-5012-476a-adfc-61fb69b6f992.png",
+    "original_sha256": "2a206f0c2f55e1c956422c78ed17d92e7e8cd7cae77bb51a21e33e11aba6cf0c",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "59f069a6846afd230e4dfe0246cdc10bda4b7db0f7232f2bc0ad679e3280778a",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; individual healed-cheek skin macro beside existing flush jaw brace conditioned on inspected accepted full-resolution front. Native alpha preserved during detail intake without rembg.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "appearance": "One continuous macro of accepted original pale white-grey cheek, resolved pores and fine organic wrinkles, darker old healed scar seams; adjacent existing flush curved rusted jaw-brace plate and round bolt at right edge. No fresh injury, blood, gore or new hardware.",
+      "view_type": "Single individual skin material macro, no grid or generated text. Partial eye edge naturally contextualizes cheek without creating another portrait.",
+      "original_identity": "Conditioned on inspected accepted full-resolution original orc face; cheek/scar/jaw-brace language preserved, no actor likeness.",
+      "segmentation_edges": "Full-resolution proper grey native-alpha composite and 171x256 retained composite reviewed. Existing alpha preserved without rembg; material fills frame, no backdrop. Slight native alpha translucency retained as generated (retained sample239-246/255).",
+      "material_sampling": "Retained skin rectangle [55,65,91,90] reviewed on clear cheek pores between healed scar seams, excludes iron plate, bolt and eye. Entire rectangle contains skin, alpha239-246/255, safely above source sampling opacity gate.",
+      "tolerated_drift": [
+        "Pore/scar microtexture amplified and scar line arrangement varies naturally under close macro framing.",
+        "Mildly warm rendered skin highlights within accepted pale original skin language."
+      ]
+    }
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1a36dbc3-6a4c-4c0e-beea-5de6e4a4f59a.png",
+    "original_sha256": "a22d3873d1c8e0e2780d569c8c97a76f79d821c5f56a0ceb32ff8b5605f0d213",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      2,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "0ea0d6af045f61b36a5d374d378a92a88643e85c84fe53c56c71092d896d1c2a",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png"
+    ],
+    "provenance": "Individually generated continuous scalp/plate-edge macro conditioned on accepted full-resolution front; no hair is visible because Bolg is bald. Newly authored recovery, not a recovered historical original.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "continuous_macro": "One continuous scalp surface adjoining the existing rusty lateral plate; physical worn metal edges and bolts, visible pores and healed scar network.",
+      "appearance_match": "Pale scarred bald crown and rusty brown iron match the accepted front. No added implants or invented hair.",
+      "hair_not_visible": "Bolg has design hair length 0: no visible hair. The fourth tile documents pale scarred bald scalp and existing flush bolted rusty skull plates instead of inventing hair.",
+      "anatomy": "Surface-only macro; no hands or digits required.",
+      "text_or_grid": false,
+      "fresh_wounds_or_gore": false,
+      "alpha_review": "Proper #7f7f7f composite reviewed; existing alpha preserved by intake, without rembg.",
+      "tolerated_drift": [
+        "Minor pore/bolt texture and soft-light variation appropriate to a newly authored macro."
+      ]
+    },
+    "segmentation_backend": "existing_alpha",
+    "hair_not_visible": "Bolg has design hair length 0: no visible hair. The fourth tile documents pale scarred bald scalp and existing flush bolted rusty skull plates instead of inventing hair.",
+    "imagegen_calls": 1
   }
 }

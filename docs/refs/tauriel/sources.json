@@ -99,7 +99,9 @@
     "reused_source_sha256": "ab07ea2e4da064a6e2bb017923af5cc838a127a8537f4014c8170335966dd68e",
     "imagegen_calls": 0,
     "by_eye_review": "Full-resolution original reviewed by eye at native resolution. True frontal face with both eyes, almond lids, brows, nose bridge, closed lips and fine auburn strands sufficiently resolved. Half-open full-original crop includes the complete crown, both pointed ears, both visible temple braids and their ends, full shoulder/cowl outline and all visible low-quiver fletchings; lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
-    "reviewed_crop_receipt_sha256": "c70de3718695b7f146cb54d226abc9afdb3c99cafb380c087d50f54145734d45"
+    "reviewed_crop_receipt_sha256": "c70de3718695b7f146cb54d226abc9afdb3c99cafb380c087d50f54145734d45",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/three_quarter": {
     "original_full_resolution_path": "/workspace/generated_images/exec-db30900f-d76c-45ce-9949-15bccd4d830d.png",
@@ -123,7 +125,9 @@
     "reused_source_sha256": "694ec658cf8bc2218510f08ef2470a4a71b2ddb0268be2bfc5c07a7cc5e4908c",
     "imagegen_calls": 0,
     "by_eye_review": "Full-resolution original reviewed by eye at native resolution. Face corresponds to a front three-quarter approximately 45-degree turn toward image RIGHT, with both eyes visible and the far side foreshortened; native lids, brows, nose, closed lips and auburn hair/braid detail are adequate. Half-open full-original crop includes complete crown, visible pointed near ear, both visible temple braids and their ends, shoulder/cowl outline and all visible low-quiver fletchings; far ear is naturally occluded by the angle/hair. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
-    "reviewed_crop_receipt_sha256": "6a00c293f9364c5c986e478770f4f09708e0762584a7506ebb56897ff4a82e38"
+    "reviewed_crop_receipt_sha256": "6a00c293f9364c5c986e478770f4f09708e0762584a7506ebb56897ff4a82e38",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-25564c41-6599-4338-a1ba-0490eeec75fc.png",
@@ -147,7 +151,9 @@
     "reused_source_sha256": "00a97e12ec1d1e73b5848441c7d9ae553edd622249f6c172f8560d211558c24b",
     "imagegen_calls": 0,
     "by_eye_review": "Full-resolution original reviewed by eye at native resolution. Exact right facial profile with nose image RIGHT, one visible eye and no far-eye leakage; native near-eye lids/lashes, brow, nose bridge and tip, closed lips, pointed ear and auburn hair/braid strands are sufficiently resolved. Half-open full-original crop includes complete crown, visible pointed near ear, visible near temple braid through its end, shoulder/cowl outline and every existing visible low-quiver fletching. Far ear and far temple detail remain naturally occluded; no invented visibility. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
-    "reviewed_crop_receipt_sha256": "8daf71dfafab3f5f9e25546633c6b959aa4ba494d631f9d4c335d4b0afd42b23"
+    "reviewed_crop_receipt_sha256": "8daf71dfafab3f5f9e25546633c6b959aa4ba494d631f9d4c335d4b0afd42b23",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/cloth_leather": {
     "original_full_resolution_path": "/workspace/generated_images/exec-9ce53566-d86d-4590-82c2-78b86f8bd195.png",

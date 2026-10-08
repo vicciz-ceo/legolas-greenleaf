@@ -11,3 +11,7 @@
 - Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
 
 - Three portraits reuse author-reviewed native head-and-shoulders crops from their corresponding accepted body originals, without mirroring or new generation. The scalp is bald: its detail tile shows bolted scalp plates, and observed hair colour is explicitly null.
+
+Lost-source recovery: retained appearance assets are newly authored from the preserved design, including explicitly reviewed portrait derivatives; they are not recovered historical originals. Original attempts and the separate capped replacement series remain in progress.json.
+
+Independent re-review confirmed that the riveted abdominal plate in the initial rotation candidates matches the accepted front. Earlier rejection reasons remain historical; proper alpha composites also resolved the apparent red fringe, so those two sources were accepted without new generation calls.

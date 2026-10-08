@@ -487,6 +487,80 @@
         }
       ],
       "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "bolg_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "54bfd1e1ac31c65f50f697f88f0641e1a40082447f8945e104dddba4c4a0acb6",
+      "size_bytes": 210312,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "d55e731c374aae58359e35e2f32954bbf4835197b04394744c3dd05a1e6d42cc",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / STITCHED LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "33e97753f45ae4fb2a410044b875bbbff9987dfc31140572b0d2ddd7e15ff06b",
+          "sheet_bbox_px": [
+            110,
+            12,
+            401,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "WEAPON / WORN METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "409c7b02c689feafcd6abfc83e29dab6d80a47d98afe80229a25a73e23e8a6a1",
+          "sheet_bbox_px": [
+            626,
+            12,
+            910,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE SURFACE",
+          "source": "details/skin.png",
+          "source_sha256": "59f069a6846afd230e4dfe0246cdc10bda4b7db0f7232f2bc0ad679e3280778a",
+          "sheet_bbox_px": [
+            107,
+            524,
+            404,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "BALD SCALP / BOLTED PLATES",
+          "source": "details/hair.png",
+          "source_sha256": "0ea0d6af045f61b36a5d374d378a92a88643e85c84fe53c56c71092d896d1c2a",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
     }
   },
   "sampling": [
@@ -509,6 +583,127 @@
         152,
         110
       ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        70,
+        137,
+        94,
+        150
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        55,
+        65,
+        91,
+        90
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "face",
+      "not_visible": "The prescribed scarred scalp is bald with flush bolted plates and jaw braces; no hair is visible. The fourth detail tile documents that bald scalp rather than inventing hair."
     }
-  ]
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "cloth": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "33e97753f45ae4fb2a410044b875bbbff9987dfc31140572b0d2ddd7e15ff06b",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          60,
+          75,
+          85,
+          110
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          67,
+          58,
+          54
+        ],
+        "srgb_hex": "#433a36",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "33e97753f45ae4fb2a410044b875bbbff9987dfc31140572b0d2ddd7e15ff06b",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          140,
+          70,
+          152,
+          110
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          103,
+          69,
+          57
+        ],
+        "srgb_hex": "#674539",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "409c7b02c689feafcd6abfc83e29dab6d80a47d98afe80229a25a73e23e8a6a1",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          70,
+          137,
+          94,
+          150
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          159,
+          138,
+          128
+        ],
+        "srgb_hex": "#9f8a80",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "59f069a6846afd230e4dfe0246cdc10bda4b7db0f7232f2bc0ad679e3280778a",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          55,
+          65,
+          91,
+          90
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          188,
+          160,
+          149
+        ],
+        "srgb_hex": "#bca095",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "bolg_face.jpg",
+        "sheet_sha256": "f627daa40266f45e97137b7952fbca2779184c2c2d62344a57b858ed5606ab9e",
+        "rect_px": null,
+        "rgb": null,
+        "srgb_hex": null,
+        "visibility": "not_visible",
+        "reason": "The prescribed scarred scalp is bald with flush bolted plates and jaw braces; no hair is visible. The fourth detail tile documents that bald scalp rather than inventing hair.",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
 }

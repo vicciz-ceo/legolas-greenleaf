@@ -1680,34 +1680,64 @@
           "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Actual matching right-hand spiked iron mace head/upper haft; rusty worn iron visible. Proper alpha composites reviewed.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Actual matching right-hand spiked iron mace head/upper haft; rusty worn iron visible. Proper alpha composites reviewed.",
+                "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/weapon_metal.png",
+                "receipt_fingerprint": "c95f900ffa90e3c5dcd4faa77f7aeeb5a6bfb423dc513b5410683ee9d697a0ae",
+                "receipt": "/workspace/greenleaf-receipts/bolg_weapon_skin.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Matching original pale scarred cheek pores beside existing flush jaw brace; healed scars with no fresh injury/gore/new plate. Proper alpha composites reviewed.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Matching original pale scarred cheek pores beside existing flush jaw brace; healed scars with no fresh injury/gore/new plate. Proper alpha composites reviewed.",
+                "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/skin.png",
+                "receipt_fingerprint": "aad7d1705b933cf5171fd7bf8063669d4648edb8d685778b151014d2517c8c98",
+                "receipt": "/workspace/greenleaf-receipts/bolg_weapon_skin.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Bolg has design hair length 0: no visible hair. The fourth tile documents pale scarred bald scalp and existing flush bolted rusty skull plates instead of inventing hair. Proper grey alpha composite passes by-eye review.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Bolg has design hair length 0: no visible hair. The fourth tile documents pale scarred bald scalp and existing flush bolted rusty skull plates instead of inventing hair. Proper grey alpha composite passes by-eye review.",
+                "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/hair.png",
+                "receipt_fingerprint": "8f4d237402fa6a043d6c5be113b335747e6856320dbc700c89ea1408a6c5c6ba",
+                "receipt": "/workspace/greenleaf-receipts/bolg_bald_scalp.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/hair.png"
         },
         "turnaround": {
           "status": "pending",
@@ -1971,60 +2001,100 @@
           "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Single continuous shoulder-hide macro matches accepted earthy grey-green wrinkled warty hide; pores, scuffed dry surface, broad natural folds and irregular raised warts. Grey-composited original and retained 256px RGBA reviewed. No lettering, panels, new anatomy or gear; material contours intentionally continue beyond macro bounds.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Single continuous shoulder-hide macro matches accepted earthy grey-green wrinkled warty hide; pores, scuffed dry surface, broad natural folds and irregular raised warts. Grey-composited original and retained 256px RGBA reviewed. No lettering, panels, new anatomy or gear; material contours intentionally continue beyond macro bounds.",
+                "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/details/skin.png",
+                "receipt_fingerprint": "a24b8614f995ca1ca3d780176fe04343bbbeded78e4d82094b58e56ca7a35981",
+                "receipt": "/workspace/greenleaf-receipts/cave_troll_skin_hair.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Single continuous warty curved scalp macro with sparse coarse dark wiry bristles and tiny loose tufts over predominantly bare hide, matching visible accepted crown/shoulder bristles. No mane, dense fur, accessory, new anatomy or lettering. Grey-composited full-resolution original and retained 256x244 RGBA reviewed; existing alpha preserved without rembg. Bristles have natural uneven lean/curvature; acceptable macro emphasis.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Single continuous warty curved scalp macro with sparse coarse dark wiry bristles and tiny loose tufts over predominantly bare hide, matching visible accepted crown/shoulder bristles. No mane, dense fur, accessory, new anatomy or lettering. Grey-composited full-resolution original and retained 256x244 RGBA reviewed; existing alpha preserved without rembg. Bristles have natural uneven lean/curvature; acceptable macro emphasis.",
+                "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/details/hair.png",
+                "receipt_fingerprint": "06ed81309e2fc62239ebb850950ba31ddcfb9d3c415e6021121c817276c36bde",
+                "receipt": "/workspace/greenleaf-receipts/cave_troll_skin_hair.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Final turnaround, optimized portrait sheet, material sheet and 64px silhouette strip pass by-eye review. Original small-head barrel-chest hanging-belly design, natural anatomy, anatomical right-hand club/right-ankle shackle, opaque knee-length kilt, correct angles and complete framing remain readable and consistent.",
+        "receipt_sha256": "485933457c6f4915bafbb7827aa677335d6f0b1b6e0a2b6e555861d6fd418f4e",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/cave_troll_turnaround.jpg",
+            "sha256": "7a9824c4209626a8411819d898388c8e2d73974e183885ba6eea9981c397a209"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/cave_troll_face.jpg",
+            "sha256": "fafba3309307850db00f6d7147068ecfaff84a0ef46fc0b705d2ee03066b38c7"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/cave_troll_details.jpg",
+            "sha256": "47a64ef3ebf3406cb9fafe5705153e12603ad64672c20c83779279203f5c5085"
+          }
+        ],
+        "defects": []
       }
     },
     "thranduil": {
@@ -7198,7 +7268,7 @@
   },
   "validation_summary": [
     "24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
-    "34 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
+    "35 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }

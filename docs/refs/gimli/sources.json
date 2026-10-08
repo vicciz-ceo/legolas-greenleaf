@@ -311,7 +311,9 @@
     "reused_source_sha256": "0a2b31da0e6866879b853b211868aff91b5ea88e9626c7deda0f95cdf09be2bf",
     "imagegen_calls": 0,
     "by_eye_review": "Accept a half-open full-original upper-body crop [250,0,805,710]. It preserves the complete helmet apex, head, native cheek/ear-covering plate, both forked braided beard branches with bronze clasps and all loose tips, complete near pauldron, and upper chest. The lower torso boundary is intentional and below both beard tips. The accepted source remains an exact right profile with nose image right and only the near eye visible; cropping introduces no change of angle or appearance.",
-    "reviewed_crop_receipt_sha256": "5ad001f0eca72b6a745205065466c86e80f36666cc118ad1b33c867af7537cba"
+    "reviewed_crop_receipt_sha256": "5ad001f0eca72b6a745205065466c86e80f36666cc118ad1b33c867af7537cba",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/weapon_metal": {
     "original_full_resolution_path": "/workspace/generated_images/exec-d63b4edf-8487-40b7-bcaf-8a41e24eab48.png",

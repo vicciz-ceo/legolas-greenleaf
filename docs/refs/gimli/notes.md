@@ -11,3 +11,5 @@
 - Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
 
 - face_views/side: accepted single-view body original reused with an author-reviewed head-and-shoulders crop; no new angle or identity generated. Portrait call history is preserved.
+
+Lost-source recovery: retained appearance assets are newly authored from the preserved design, including explicitly reviewed portrait derivatives; they are not recovered historical originals. Original attempts and the separate capped replacement series remain in progress.json.

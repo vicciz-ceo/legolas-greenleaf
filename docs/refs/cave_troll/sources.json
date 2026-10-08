@@ -93,13 +93,21 @@
     "detail_background_removed": false,
     "detail_trim_box_in_cropped_source_px": null,
     "saved_cutout": "face_views/front.png",
-    "cutout_sha256": "387541fbde049b185aca8b004bd35c4187e7d67a21fa2213507603ab551678ce",
+    "cutout_sha256": "7f184c35842d429939274a64134a491a3836732c872ba132eac93c2a3a0ae4de",
     "classification": "derivative_of_accepted_single_view",
     "reused_accepted_key": "views/front",
     "reused_source_sha256": "9aa6dad9621e6995ebe544c7d236a070643f201cc727a0b2a38b249c5cf58928",
     "imagegen_calls": 0,
     "by_eye_review": "Reviewed the full original and unscaled native crop by eye. Exact front preserves the complete small head, both thick ears, paired tusks, full crown bristles, and both broad shoulders with their sparse bristles. At native resolution both small deep-set eyes and lids, heavy brow folds, broad nose and nostrils, relaxed lips, chin and warty hide remain distinct. Lower edge deliberately crosses upper chest and upper arms, yielding head-and-shoulders framing without changing the tiny-head proportion. Original SHA-256 matches sources.json.",
-    "reviewed_crop_receipt_sha256": "5640f35de5bf1ea45e9f094a9049445dff25170e23554278736c56f408f30927"
+    "reviewed_crop_receipt_sha256": "5640f35de5bf1ea45e9f094a9049445dff25170e23554278736c56f408f30927",
+    "newly_authored_recovery": true,
+    "storage_optimization": {
+      "operation": "uniform downsample from the same original reviewed crop",
+      "previous_retained_sha256": "387541fbde049b185aca8b004bd35c4187e7d67a21fa2213507603ab551678ce",
+      "retained_silhouette_height_px": 200,
+      "generation_calls": 0
+    },
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/three_quarter": {
     "original_full_resolution_path": "/workspace/generated_images/exec-5aac9196-6498-47e6-bce6-bf23fcf7fd06.png",
@@ -117,13 +125,21 @@
     "detail_background_removed": false,
     "detail_trim_box_in_cropped_source_px": null,
     "saved_cutout": "face_views/three_quarter.png",
-    "cutout_sha256": "c4ac1dc45fc1b3e6ca5ffdbc81e676dac575824e38ab93eae77daf00471a6971",
+    "cutout_sha256": "c1ddc14015eb81e90c181743bcfb2ba2737f4d02172bf5720efc8d32e85e563d",
     "classification": "derivative_of_accepted_single_view",
     "reused_accepted_key": "views/three_quarter",
     "reused_source_sha256": "fb1e8fd7bf801fe335a7332023e6ea82fe8be2327c727f005a63379a9eb5eb9e",
     "imagegen_calls": 0,
     "by_eye_review": "Reviewed the full original and unscaled native crop by eye. Clear three-quarter angle with nose directed image right; complete small head, visible thick ear, both tusks, crown bristles, near shoulder and naturally receding far shoulder fit inside the crop. Heavy brow, near deep-set eye and lid, partly occluded far eye, nose bridge and nostril, mouth contour, chin and warty skin resolve at native size. The sparse scalp/shoulder bristles and tiny-head proportion are preserved. Lower edge crosses upper chest and upper arms. Original SHA-256 matches sources.json; no resynthesis, enlargement, mirroring or appearance alteration.",
-    "reviewed_crop_receipt_sha256": "db1774ba672f779f3467f5986214cfa253912650a9b2a6561c1a5d88454f60c5"
+    "reviewed_crop_receipt_sha256": "db1774ba672f779f3467f5986214cfa253912650a9b2a6561c1a5d88454f60c5",
+    "newly_authored_recovery": true,
+    "storage_optimization": {
+      "operation": "uniform downsample from the same original reviewed crop",
+      "previous_retained_sha256": "c4ac1dc45fc1b3e6ca5ffdbc81e676dac575824e38ab93eae77daf00471a6971",
+      "retained_silhouette_height_px": 200,
+      "generation_calls": 0
+    },
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-2491c748-3a03-4ffb-b06b-231259a10cb4.png",
@@ -141,13 +157,21 @@
     "detail_background_removed": false,
     "detail_trim_box_in_cropped_source_px": null,
     "saved_cutout": "face_views/side.png",
-    "cutout_sha256": "81a5643ea921c918292f435afaf64f54fd310bae4969bada54f9210a423812ea",
+    "cutout_sha256": "46baf66d2ac9220e9fa6bbd7d54f8dac7daffd14194af614b62af7f7eabe88a0",
     "classification": "derivative_of_accepted_single_view",
     "reused_accepted_key": "views/side",
     "reused_source_sha256": "b7c37a443e0c6185cfea1d94f7fd27904f99bfba41cb711afaab54d47c198321",
     "imagegen_calls": 0,
     "by_eye_review": "Reviewed the full accepted original and unscaled native crop by eye. Right profile with nose image right preserves the complete small head contour, thick near ear, near tusk and relaxed mouth, scalp bristles and the full visible shoulder hump; the far side is naturally occluded. Native pixels clearly describe the brow overhang, deep-set eye/lid, projecting broad nose, nostril, lips, chin, ear folds and warty hide. Lower edge intentionally crosses upper chest and upper arm. Original SHA-256 matches sources.json. No native-detail insufficiency or crop clipping found; no appearance alteration or enlargement.",
-    "reviewed_crop_receipt_sha256": "0ef4c4796feaa32636263b525e02f13a5119e1890b886fb69ce2bad873dc74f0"
+    "reviewed_crop_receipt_sha256": "0ef4c4796feaa32636263b525e02f13a5119e1890b886fb69ce2bad873dc74f0",
+    "newly_authored_recovery": true,
+    "storage_optimization": {
+      "operation": "uniform downsample from the same original reviewed crop",
+      "previous_retained_sha256": "81a5643ea921c918292f435afaf64f54fd310bae4969bada54f9210a423812ea",
+      "retained_silhouette_height_px": 200,
+      "generation_calls": 0
+    },
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/cloth_leather": {
     "original_full_resolution_path": "/workspace/generated_images/exec-66a39160-0aa4-46ab-95c3-a909ce92324f.png",
@@ -224,5 +248,30 @@
     "provenance": "newly_authored_recovery; actual accepted grey-green warty shoulder hide; existing_alpha preserved without rembg",
     "classification": "newly_authored_recovery",
     "by_eye_review": "Single continuous shoulder-hide macro matches accepted earthy grey-green wrinkled warty hide; pores, scuffed dry surface, broad natural folds and irregular raised warts. Grey-composited original and retained 256px RGBA reviewed. No lettering, panels, new anatomy or gear; material contours intentionally continue beyond macro bounds."
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5a7246be-fb27-4648-9b6f-ee3932b1e5e3.png",
+    "original_sha256": "c44e1cd8d70b1a73a1445709425366850e485a6a016cbb9c81ff526bdcf07e51",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      57,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "39664a9a7bc7096fedaf1152570d3155d48225c27b89196add7b501b1be2d840",
+    "generation": "image_gen single continuous sparse-scalp-bristles macro conditioned on accepted full-resolution front",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; actual visible accepted sparse dark scalp/shoulder bristles; existing_alpha preserved without rembg",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Single continuous warty curved scalp macro with sparse coarse dark wiry bristles and tiny loose tufts over predominantly bare hide, matching visible accepted crown/shoulder bristles. No mane, dense fur, accessory, new anatomy or lettering. Grey-composited full-resolution original and retained 256x244 RGBA reviewed; existing alpha preserved without rembg. Bristles have natural uneven lean/curvature; acceptable macro emphasis."
   }
 }

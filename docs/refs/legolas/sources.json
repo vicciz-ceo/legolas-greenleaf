@@ -207,7 +207,9 @@
     "reused_source_sha256": "ac148ac066f42a46938c0856db032701566008cb90b465be23129d3852abcd68",
     "imagegen_calls": 0,
     "by_eye_review": "Accept portrait crop from the accepted exact right-profile body original, without any new synthesis or mirroring. Nose points image right and only one eye is visible. Entire crown, near pointed ear, single visible near-temple braid (the far braid is occluded), hairline and head hair, complete white-fletching bundle, and exactly two distinct ivory grips remain inside safe side margins. Near shoulder outline and upper chest are included; long back hair and torso continue through the intentional bottom portrait crop. Native original resolves the visible eye and both lid edges, brow, straight nose bridge and tip, neutral closed lips, ear cartilage, fine hair strands and braid structure adequately for portrait intake. Review used only retained views/side.png and its full-resolution original; previous rejected face-profile attempts remain unchanged.",
-    "reviewed_crop_receipt_sha256": "6e63bb5ab2cdbca075bf20cf686170f338b823acafc555c6f17b20c84f305b38"
+    "reviewed_crop_receipt_sha256": "6e63bb5ab2cdbca075bf20cf686170f338b823acafc555c6f17b20c84f305b38",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
   },
   "details/skin": {
     "original_full_resolution_path": "/workspace/generated_images/exec-8ef30b27-439d-4ffb-85ab-4c74b7cc753f.png",
