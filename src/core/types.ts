@@ -205,6 +205,10 @@ export interface AudioSys {
   musicVolume: number;
   sfxVolume: number;
   update(dtReal: number): void;
+  /** room reverb: amount 0..1 (0 = dry), decay 0.3–9 s. Default (0.4, 1.7); caves ≈ (0.9, 5.5) */
+  setReverb?(amount: number, decaySec?: number): void;
+  /** 0..1 — more drums/horns and slightly faster tempo for the current mood (default 0.5) */
+  setMusicIntensity?(v: number): void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -296,6 +300,8 @@ export interface Hud {
   setProgress(label: string | null, frac?: number): void;
   setFps(fps: number | null): void;
   update(dtReal: number): void;
+  /** honour Settings.subtitles */
+  setSubtitlesEnabled?(v: boolean): void;
 }
 
 export interface ChapterResult {
@@ -382,6 +388,11 @@ export interface SaveData {
   upgrades: Partial<Record<UpgradeId, number>>;
   settings: Settings;
   rivalryTotals: { legolas: number; gimli: number };
+  /**
+   * optional: each chapter's own share of the rivalry on its latest clear (so a replay replaces its
+   * share instead of adding it to the totals again). rivalryTotals is the sum of these.
+   */
+  rivalryByChapter?: Record<string, { legolas: number; gimli: number }>;
   /** resume info */
   last?: { chapterId: string; checkpoint: number };
 }
@@ -814,6 +825,16 @@ export interface Enemy extends Combatant {
   aiEnabled: boolean;
   /** force a target position to walk to (null = AI decides) */
   moveTarget: THREE.Vector3 | null;
+  /**
+   * Boss scripting: start a telegraphed attack now (wind-up defaults to the archetype's). Plays out
+   * even while aiEnabled is false. Returns false while dead or already attacking. Troll 'slam' and
+   * 'stomp' are area attacks; the others hit the target in a cone in front.
+   */
+  attack?(kind: AttackAnim, opts?: { windup?: number; target?: Combatant | null }): boolean;
+  /** hold a special pose ('roar', 'stagger', 'kneel', 'block'...) for `seconds` */
+  playPose?(pose: SpecialPose, seconds: number): void;
+  /** true while an attack winds up, strikes or recovers */
+  readonly attacking?: boolean;
 }
 
 export type AllyKind = 'gimli' | 'aragorn' | 'tauriel' | 'elf_archer' | 'rohirrim' | 'dwarf' | 'gondor' | 'man';
@@ -947,6 +968,11 @@ export interface LevelAPI {
   terrain(opts: TerrainOpts): { mesh: THREE.Mesh; heightAt: (x: number, z: number) => number };
   /** true once disposed (use to stop async scripts) */
   readonly disposed: boolean;
+  /**
+   * Pin the music mood (e.g. 'epic' for a charge, 'tension' before an ambush); null hands control
+   * back to the adaptive score (explore / tension / combat / boss). Cleared when the level ends.
+   */
+  music?(mood: MusicMood | null): void;
 }
 
 export interface TerrainOpts {
@@ -958,6 +984,14 @@ export interface TerrainOpts {
   material?: SurfaceMaterial;
   /** centre offset */
   center?: [number, number];
+  /** optional look tweaks understood by src/world/terrain.ts */
+  theme?: 'mirkwood' | 'autumn' | 'wet' | 'dry';
+  tint?: number;
+  layers?: unknown;
+  patchiness?: number;
+  /** hidden skirt below the border (default true) */
+  skirt?: boolean;
+  cavity?: number;
 }
 
 export interface ChapterDef {
@@ -976,6 +1010,11 @@ export interface ChapterDef {
   /** Gimli kill-count rivalry active in this chapter */
   rivalry?: boolean;
   dev?: boolean;
+  /**
+   * Humanoid kinds this chapter spawns. The shell meshes them in worker threads during the loading
+   * screen (preloadHumanoids) so createHumanoid is a cache hit in play. 'legolas' is always included.
+   */
+  preload?: HumanoidKind[];
   create(level: LevelAPI): ChapterInstance | Promise<ChapterInstance>;
 }
 

@@ -21,6 +21,8 @@
 //   --advance <sec>        before the first shot, call window.__game.advance(sec) (fixed-step sim, no input)
 //   --frames <n>           number of shots (default 1)
 //   --interval <sec>       game seconds advanced between shots (uses __game.advance) (default 1)
+//   --pre "<js>"           evaluate an expression (awaited if it returns a Promise) after ready/keys and
+//                          BEFORE --advance and the shots: stage a scenario (spawn, teleport, open a menu)
 //   --eval "<js>"          evaluate an expression after the shots and print its result
 //   --keys "<k1,k2>"       press keys after ready (e.g. "Escape" or "KeyW:500" to hold 500ms)
 //   --no-fail              exit 0 even if page errors occurred
@@ -49,6 +51,7 @@ const advance = Number(opt('advance', 0));
 const frames = Number(opt('frames', 1));
 const interval = Number(opt('interval', 1));
 const evalExpr = opt('eval', null);
+const preExpr = opt('pre', null);
 const keys = opt('keys', null);
 const noFail = args.includes('--no-fail');
 
@@ -119,6 +122,18 @@ try {
         await page.waitForTimeout(Number(hold));
         await page.keyboard.up(key);
       } else await page.keyboard.press(key);
+    }
+  }
+
+  if (preExpr) {
+    try {
+      result.preResult = await page.evaluate((src) => {
+        // eslint-disable-next-line no-eval
+        const v = (0, eval)(src);
+        return v instanceof Promise ? v.then((x) => x) : v;
+      }, String(preExpr));
+    } catch (e) {
+      errors.push(`pre failed: ${e.message}`);
     }
   }
 
