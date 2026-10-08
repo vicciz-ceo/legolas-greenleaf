@@ -69,6 +69,15 @@ export function paintGeometry(src: THREE.BufferGeometry, o: PaintOpts): THREE.Bu
   for (const name of Object.keys(g.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'uv') g.deleteAttribute(name);
   if (!g.attributes.normal) g.computeVertexNormals();
   if (o.matrix) g.applyMatrix4(o.matrix);
+  {
+    // degenerate input (e.g. a dynamic geometry whose positions are still zero) yields zero normals,
+    // and normalize(vec3(0)) is NaN in the shader: give such vertices a valid up normal instead
+    const nr = g.attributes.normal as THREE.BufferAttribute;
+    for (let i = 0; i < nr.count; i++) {
+      const x = nr.getX(i), y = nr.getY(i), z = nr.getZ(i);
+      if (!(x * x + y * y + z * z > 1e-12)) nr.setXYZ(i, 0, 1, 0);
+    }
+  }
   if (g.attributes.uv) g.deleteAttribute('uv');
   if (!g.index) {
     const n = g.attributes.position.count;

@@ -9,9 +9,11 @@
 import type { HumanoidKind } from '../../../core/types';
 import type { KindDef } from '../types';
 import { taurielDef } from './elves_men/tauriel';
+import { thranduilDef } from './elves_men/thranduil';
 
 export { loadoutFor, seedForBucket, type Loadout } from './elves_men/loadout';
 
 export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
   tauriel: taurielDef,
+  thranduil: thranduilDef,
 };

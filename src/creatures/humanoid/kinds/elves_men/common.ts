@@ -72,9 +72,10 @@ export function hairMaterial(color: number, opts: { rough?: number } = {}): THRE
  * skinWeight in the rig's bone indices). `KindContext.object` can only add rigid objects, so the
  * object handed back is an empty holder that, the first time it is updated, finds the body's
  * skeleton among its ancestors and adds a SkinnedMesh bound to it next to the body. The mesh
- * follows the holder's visibility (LOD2 hides `small` extras).
+ * follows the holder's visibility (LOD2 hides `small` extras). Pass `'body'` as the material to
+ * share the instance's own body material (kit-attribute geometry such as cloth sheets, hit flash included).
  */
-export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: THREE.Material, o: { small?: boolean; castShadow?: boolean } = {}) {
+export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: THREE.Material | 'body', o: { small?: boolean; castShadow?: boolean } = {}) {
   geo.userData.shared = true;
   ctx.object(
     () => {
@@ -89,7 +90,7 @@ export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: 
           while (p && !mesh) {
             const body = p.children.find((c) => (c as THREE.SkinnedMesh).isSkinnedMesh) as THREE.SkinnedMesh | undefined;
             if (body) {
-              mesh = makeSkinnedMesh(geo, mat, { skeleton: body.skeleton } as never, body.boundingSphere?.radius ?? 2, body.boundingSphere ? ([body.boundingSphere.center.x, body.boundingSphere.center.y, body.boundingSphere.center.z] as V3) : undefined);
+              mesh = makeSkinnedMesh(geo, mat === 'body' ? (body.material as THREE.Material) : mat, { skeleton: body.skeleton } as never, body.boundingSphere?.radius ?? 2, body.boundingSphere ? ([body.boundingSphere.center.x, body.boundingSphere.center.y, body.boundingSphere.center.z] as V3) : undefined);
               mesh.name = 'skinned-extra-mesh';
               mesh.castShadow = o.castShadow ?? true;
               mesh.receiveShadow = true;
@@ -136,6 +137,29 @@ export function mergeHairGeos(list: THREE.BufferGeometry[]): THREE.BufferGeometr
   out.setIndex(idx);
   out.computeBoundingSphere();
   return out;
+}
+
+const pendingHair = new WeakMap<object, { geos: THREE.BufferGeometry[]; color: number }>();
+
+/** collect a hair/beard geometry; `flushHair` merges everything queued for this build into ONE skinned mesh (one draw call) */
+export function queueHair(ctx: KindContext, geo: THREE.BufferGeometry, color: number) {
+  let e = pendingHair.get(ctx);
+  if (!e) pendingHair.set(ctx, (e = { geos: [], color }));
+  e.geos.push(geo);
+}
+
+export function flushHair(ctx: KindContext) {
+  const e = pendingHair.get(ctx);
+  if (!e) return;
+  pendingHair.delete(ctx);
+  const merged = mergeHairGeos(e.geos);
+  if (merged) attachSkinned(ctx, merged, hairMaterial(e.color));
+}
+
+/** run a kind's extras and merge all the hair/beard geometry it queued into one skinned mesh */
+export function withHair(ctx: KindContext, fn: () => void) {
+  fn();
+  flushHair(ctx);
 }
 
 /** dev-only: read a numeric override from the URL (?em_<name>=…), used while tuning in the lab */

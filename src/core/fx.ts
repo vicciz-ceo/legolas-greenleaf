@@ -829,6 +829,14 @@ class DecalLayer {
 
 const TRAIL_POINTS = 28;
 const TRAIL_SLOTS = 16;
+/** half-width of a trail ribbon at the arrow (m): the visible streak is about 4 cm across */
+const TRAIL_HALF_WIDTH = 0.02;
+/** ...but never thinner than about a pixel and a half on screen (half-width per metre of distance) */
+const TRAIL_MIN_PX = 0.0018;
+/** a point lives this long (game seconds; slow-mo stretches it in real time) */
+const TRAIL_LIFE = 0.32;
+/** the streak never gets longer than this behind the arrow (m), whatever the speed */
+const TRAIL_MAX_LEN = 5.5;
 
 class TrailSlot {
   active = false;
@@ -839,7 +847,7 @@ class TrailSlot {
   head = 0;
   count = 0;
   color = new THREE.Color(1, 1, 1);
-  width = 0.06;
+  width = TRAIL_HALF_WIDTH;
   handle: TrailHandle | null = null;
   hasGeometry = false;
 }
@@ -848,7 +856,7 @@ class TrailHandle implements FxHandle {
   readonly position = new THREE.Vector3();
   constructor(private slot: TrailSlot) {}
   setIntensity(v: number): void {
-    this.slot.width = 0.06 * Math.max(0, v);
+    this.slot.width = TRAIL_HALF_WIDTH * Math.max(0, v);
   }
   stop(): void {
     this.slot.stopping = true;
@@ -1140,9 +1148,14 @@ export function createFx(engine: Engine): Fx & FxExtras {
   // trails
   const trailSlots: TrailSlot[] = [];
   for (let i = 0; i < TRAIL_SLOTS; i++) trailSlots.push(new TrailSlot());
+  /** scratch: distance from the head of each sample of the slot being built */
+  const trailDist = new Float32Array(TRAIL_POINTS);
   const trailVerts = TRAIL_SLOTS * TRAIL_POINTS * 2;
   const trailPos = new Float32Array(trailVerts * 3);
   const trailCol = new Float32Array(trailVerts * 4);
+  // -1 / +1 across the ribbon: the fragment shader turns it into a soft core profile
+  const trailSide = new Float32Array(trailVerts);
+  for (let v = 0; v < trailVerts; v++) trailSide[v] = v % 2 === 0 ? -1 : 1;
   const trailIdx: number[] = [];
   for (let s = 0; s < TRAIL_SLOTS; s++) {
     for (let p = 0; p < TRAIL_POINTS - 1; p++) {
@@ -1157,21 +1170,29 @@ export function createFx(engine: Engine): Fx & FxExtras {
   trailColAttr.setUsage(THREE.DynamicDrawUsage);
   trailGeo.setAttribute('position', trailPosAttr);
   trailGeo.setAttribute('aColor', trailColAttr);
+  trailGeo.setAttribute('aSide', new THREE.BufferAttribute(trailSide, 1));
   trailGeo.setIndex(trailIdx);
   const trailMat = new THREE.ShaderMaterial({
     vertexShader: /* glsl */ `
       attribute vec4 aColor;
+      attribute float aSide;
       varying vec4 vCol;
       varying vec3 vW;
-      void main() { vCol = aColor; vW = position; gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0); }`,
+      varying float vSide;
+      void main() { vCol = aColor; vW = position; vSide = aSide; gl_Position = projectionMatrix * viewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
       precision highp float;
       uniform vec3 uFogColor; uniform float uFogDensity;
-      varying vec4 vCol; varying vec3 vW;
+      varying vec4 vCol; varying vec3 vW; varying float vSide;
       void main() {
         float d = length(vW - cameraPosition);
         float f = 1.0 - exp(-uFogDensity * uFogDensity * d * d);
-        float a = vCol.a * (1.0 - f);
+        // soft round profile across the ribbon: a bright core that falls off to nothing at the edges
+        float prof = 1.0 - vSide * vSide;
+        prof *= prof * (2.0 - prof);
+        // never let the streak smear across the lens when it starts right by the camera
+        float nearFade = smoothstep(0.7, 2.4, d);
+        float a = vCol.a * (1.0 - f) * prof * nearFade;
         gl_FragColor = vec4(vCol.rgb * a, 0.0);
       }`,
     uniforms: { uFogColor: U.uFogColor, uFogDensity: U.uFogDensity },
@@ -1520,7 +1541,7 @@ export function createFx(engine: Engine): Fx & FxExtras {
     for (const s of trailSlots) if (!s.active) { slot = s; break; }
     if (!slot) slot = trailSlots.find((s) => s.stopping) ?? trailSlots[0];
     slot.active = true; slot.stopping = false; slot.obj = obj; slot.count = 0; slot.head = 0;
-    slot.color.setHex(color); slot.width = 0.06; slot.hasGeometry = false;
+    slot.color.setHex(color); slot.width = TRAIL_HALF_WIDTH; slot.hasGeometry = false;
     const h = new TrailHandle(slot);
     slot.handle = h;
     obj.getWorldPosition(h.position);
@@ -1801,8 +1822,13 @@ export function createFx(engine: Engine): Fx & FxExtras {
   }
 
   // ── trails ──────────────────────────────────────────────────────────────
+  /**
+   * Camera-facing ribbons, rebuilt each update: TRAIL_POINTS samples of the followed object, a soft
+   * core a couple of centimetres wide that tapers to nothing toward the tail, capped at
+   * TRAIL_MAX_LEN metres, and fading out over TRAIL_LIFE (also after stop(), at the impact point).
+   */
   function updateTrails(): void {
-    const LIFE = 0.42;
+    const LIFE = TRAIL_LIFE;
     let any = false;
     let anyVisible = false;
     for (let s = 0; s < TRAIL_SLOTS; s++) {
@@ -1827,11 +1853,20 @@ export function createFx(engine: Engine): Fx & FxExtras {
         sl.t[h] = time;
         if (sl.count < TRAIL_POINTS) sl.count++;
       }
+      // keep the samples that are young enough AND within TRAIL_MAX_LEN of the head
       let valid = 0;
+      let len = 0;
       for (let i = 0; i < sl.count; i++) {
         const idx = (sl.head - i + TRAIL_POINTS) % TRAIL_POINTS;
-        if (time - sl.t[idx] <= LIFE) valid++;
-        else break;
+        if (time - sl.t[idx] > LIFE) break;
+        if (i > 0) {
+          const pIdx = (sl.head - i + 1 + TRAIL_POINTS) % TRAIL_POINTS;
+          const dx = sl.pos[idx * 3] - sl.pos[pIdx * 3], dy = sl.pos[idx * 3 + 1] - sl.pos[pIdx * 3 + 1], dz = sl.pos[idx * 3 + 2] - sl.pos[pIdx * 3 + 2];
+          len += Math.sqrt(dx * dx + dy * dy + dz * dz);
+          if (len > TRAIL_MAX_LEN) break;
+        }
+        trailDist[i] = len;
+        valid++;
       }
       sl.count = valid;
       if (valid === 0 && sl.stopping) {
@@ -1860,12 +1895,15 @@ export function createFx(engine: Engine): Fx & FxExtras {
           _v2.crossVectors(_v1, _v2);
           if (_v2.lengthSq() < 1e-10) _v2.set(1, 0, 0);
           _v2.normalize();
-          const age = (time - sl.t[idx]) / LIFE;
-          const w = sl.width * (1 - age) * (i === 0 ? 0.6 : 1);
+          const age = Math.min(1, (time - sl.t[idx]) / LIFE);
+          // taper toward the tail (by length) and thin out with age
+          const tail = 1 - trailDist[i] / TRAIL_MAX_LEN;
+          const camD = Math.sqrt((_camPos.x - px) ** 2 + (_camPos.y - py) ** 2 + (_camPos.z - pz) ** 2);
+          const w = Math.max(sl.width * (0.35 + 0.65 * tail) * (1 - 0.5 * age), camD * TRAIL_MIN_PX * (sl.width / TRAIL_HALF_WIDTH));
           trailPos[vi] = px - _v2.x * w; trailPos[vi + 1] = py - _v2.y * w; trailPos[vi + 2] = pz - _v2.z * w;
           trailPos[vi + 3] = px + _v2.x * w; trailPos[vi + 4] = py + _v2.y * w; trailPos[vi + 5] = pz + _v2.z * w;
-          const a = Math.pow(1 - age, 1.6);
-          const hdr = 3.2;
+          const a = Math.pow(1 - age, 1.6) * tail * tail;
+          const hdr = 3.0;
           for (let k = 0; k < 2; k++) {
             trailCol[ci + k * 4] = r * hdr; trailCol[ci + k * 4 + 1] = g * hdr; trailCol[ci + k * 4 + 2] = b * hdr; trailCol[ci + k * 4 + 3] = a;
           }

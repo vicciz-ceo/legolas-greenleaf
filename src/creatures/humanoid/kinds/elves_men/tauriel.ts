@@ -7,11 +7,9 @@
 import * as THREE from 'three';
 import type { KindContext, KindDef } from '../../types';
 import { quiverGear, type QuiverOpts } from '../../gear';
-import { createWeapon } from '../../../weapons';
-import { put, studs, tube } from './geo';
 import { sculptCowl, sculptPouch, sculptShoulderCap, sculptStrap } from './garments';
-import { shade } from './common';
-import { laceFront } from './detail';
+import { devNum, shade } from './common';
+import { laceFront, sheathed } from './detail';
 
 const PAL = {
   hair: 0x8f3216,
@@ -47,20 +45,18 @@ function tauriExtras(ctx: KindContext) {
   // a thin dark under-sleeve is the tunic itself; a pale green cowl sits on the shoulders
   sculptCowl(ctx, { color: PAL.cowl, color2: shade(PAL.cowl, 0.8), size: 1.0, drape: 0.07 });
   // asymmetric layered leather shoulder wrap on the left (+X) shoulder
-  sculptShoulderCap(ctx, { color: PAL.shoulder, mat: 'leather_worn', side: 'l', inflate: 0.024 * sc, reach: 0.55 });
+  sculptShoulderCap(ctx, { color: PAL.shoulder, mat: 'leather_worn', side: 'l', inflate: 0.013 * sc, reach: 0.42 });
   // baldric across the chest for the quiver (right shoulder to left hip)
   sculptStrap(ctx, { color: PAL.quiver, mat: 'leather_worn', width: 0.032 * sc, inflate: 0.026 * sc, sign: 1 });
+  // a hint of a feminine cut in the vest
+  s.group('union', 0.01 * sc, () => {
+    s.mirrored(() => s.ellipsoid([0.05 * sc, cy + 0.098 * sc, 0.066 * sc], [0.044 * sc, 0.04 * sc, 0.03 * sc], { color: PAL.vest, mat: 'suede', bone: 'chest', k: 0.03 * sc }));
+  });
   // belt pouches
   sculptPouch(ctx, { x: -0.115 * sc, z: 0.045 * sc, size: 0.85, color: PAL.belt });
   sculptPouch(ctx, { x: 0.12 * sc, z: 0.04 * sc, size: 0.7, color: PAL.bracers, drop: 0.07 });
   // lacing down the vest front
   laceFront(ctx, { y0: j.chest[1] - 0.075 * sc, y1: j.neck[1] - 0.04 * sc, inflate: 0.0165 * sc, color: 0x2e2014 });
-  // brass studs on the vest edge
-  {
-    const pts: [number, number, number][] = [];
-    for (let i = 0; i < 5; i++) pts.push([0.088 * sc, cy + 0.18 * sc - i * 0.045 * sc, 0.088 * sc]);
-    void pts;
-  }
 
   // ── quiver on the back, strap crossing the chest ──
   const q: QuiverOpts = {
@@ -80,22 +76,19 @@ function tauriExtras(ctx: KindContext) {
   quiverGear({ add: (geo, o) => ctx.gear(geo, o) }, q);
 
   // ── two curved knives in hip sheaths (hidden while drawn) ──
+  const hipY = j.thigh_l[1];
   for (const side of [1, -1] as const) {
-    const hand = side > 0 ? 'hand_l' : 'hand_r';
-    const hip = j.thigh_l;
-    const x = side * (P.hipX + 0.11 * sc * Math.sqrt(P.build.bulk));
-    const sheath = tube([[x, hip[1] + 0.06 * sc, 0.0], [x + side * 0.012 * sc, hip[1] - 0.06 * sc, 0.022 * sc], [x + side * 0.02 * sc, hip[1] - 0.15 * sc, 0.05 * sc]], 0.019 * sc, { seg: 8, radial: 6 });
-    put(ctx, sheath, { bone: 'hips', color: PAL.belt, mat: 'leather_worn', small: true });
-    const stud = studs([[x + side * 0.003 * sc, hip[1] + 0.055 * sc, 0.0]], 0.012 * sc);
-    put(ctx, stud, { bone: 'hips', color: 0x9a8040, mat: 'gold', small: true });
-    ctx.object(
-      () => {
-        const k = createWeapon('elven_knives', side > 0 ? 5 : 6);
-        k.userData.stowFor = { hand, weapon: 'elven_knives' };
-        return k;
-      },
-      { socket: side > 0 ? 'hip_l' : 'hip_r', small: true },
-    );
+    sheathed(ctx, {
+      kind: 'elven_knives',
+      hand: side > 0 ? 'hand_l' : 'hand_r',
+      pos: [side * (P.hipX + 0.115 * sc * Math.sqrt(P.build.bulk)), hipY + 0.07 * sc, -0.045 * sc],
+      dir: [side * 0.1, -0.42, -0.9],
+      len: 0.3,
+      r: 0.021 * sc,
+      color: PAL.belt,
+      trim: 0x9a8444,
+      seed: side > 0 ? 5 : 6,
+    });
   }
 }
 
@@ -121,7 +114,7 @@ export const taurielDef: KindDef = {
   },
   skin: { color: PAL.skin, color2: PAL.skin2, blotch: 0.08, blemish: 0.02, wrinkles: 0, lips: PAL.lips, brows: PAL.brows, scatter: 0xc87a68, surface: 'skin' },
   eyes: { color: PAL.eyes, sclera: 0xefeae2 },
-  hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, braids: 'temple', length: 1.0, density: 0.85, bounce: 0.8 },
+  hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, braids: 'temple', length: 1.0, density: devNum('density', 0.42), bounce: 0.8 },
   beard: null,
   outfit: [
     { type: 'leggings', color: PAL.leggings },
@@ -137,6 +130,6 @@ export const taurielDef: KindDef = {
   sfx: { voice: 'elf', hurt: 'hurt', die: 'player_death', footstep: 'footstep', weight: 0.3 },
   anim: { grace: 1, swagger: 0.05, aggression: 0.3, stance: 0.95, armSwing: 0.85, cadence: 1.02 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { detailScale: 1, faceRes: 0.0058 },
+  detail: { detailScale: 1, res: devNum('res', 0.034), headRes: devNum('headRes', 0.0068), faceRes: 0 },
   extras: tauriExtras,
 };

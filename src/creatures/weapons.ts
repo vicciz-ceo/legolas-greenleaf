@@ -275,6 +275,18 @@ function buildBow(o: BowOpts): THREE.Object3D {
     sIdx.push(b, b + 1, b + 2, b + 1, b + 3, b + 2, b + 4, b + 5, b + 6, b + 5, b + 7, b + 6);
   }
   sGeo.setIndex(sIdx);
+  // Explicit normals. The positions are all zero until setDraw() writes them, so computed normals
+  // would be (0,0,0); normalize(0) in the shader is NaN, which bloom/SMAA then smear over the whole
+  // frame (the "medium quality goes black" bug). The x-offset quad faces ±Z, the z-offset quad ±X.
+  const sNor = new Float32Array(2 * 8 * 3);
+  for (let seg = 0; seg < 2; seg++) {
+    for (let i = 0; i < 8; i++) {
+      const k = (seg * 8 + i) * 3;
+      if (i < 4) sNor[k + 2] = 1;
+      else sNor[k] = 1;
+    }
+  }
+  sGeo.setAttribute('normal', new THREE.BufferAttribute(sNor, 3));
   const painted = paintGeometry(sGeo, { color: o.stringColor, mat: 'linen', bone: 0 });
   sGeo.dispose();
   const string = new THREE.Mesh(painted, material());

@@ -13,10 +13,21 @@ const COPY_VS = /* glsl */ `
     vUv = uv;
     gl_Position = vec4(position.xy, 0.0, 1.0);
   }`;
+/**
+ * The copy doubles as the post chain's NaN/Inf guard: a single non-finite scene pixel (a zero
+ * normal, a 0/0 in a custom shader) would otherwise be smeared over the whole frame by bloom's blur
+ * pyramid and SMAA's neighbourhood blend. Non-finite pixels become black and HDR is clamped to a
+ * sane ceiling (well above anything AgX distinguishes) so bloom never accumulates to Inf.
+ */
 const COPY_FS = /* glsl */ `
   uniform sampler2D tDiffuse;
   varying vec2 vUv;
-  void main() { gl_FragColor = texture2D(tDiffuse, vUv); }`;
+  void main() {
+    vec4 c = texture2D(tDiffuse, vUv);
+    bvec4 bad = bvec4(isnan(c.r) || isinf(c.r), isnan(c.g) || isinf(c.g), isnan(c.b) || isinf(c.b), isnan(c.a) || isinf(c.a));
+    if (any(bad)) c = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_FragColor = min(c, vec4(4096.0));
+  }`;
 
 export class ScenePass extends Pass {
   readonly rt: THREE.WebGLRenderTarget;
