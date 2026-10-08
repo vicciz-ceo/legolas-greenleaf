@@ -27,7 +27,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | lurtz | 2.1 | <img src="lurtz/lurtz_turnaround.jpg" width="180" alt="lurtz"> | [spec](lurtz/spec.json) | [notes](lurtz/notes.md) | accepted |
 | easterling | 1.8 | <img src="easterling/easterling_turnaround.jpg" width="180" alt="easterling"> | [spec](easterling/spec.json) | [notes](easterling/notes.md) | accepted |
 | haradrim | 1.8 | <img src="haradrim/haradrim_turnaround.jpg" width="180" alt="haradrim"> | [spec](haradrim/spec.json) | [notes](haradrim/notes.md) | accepted |
-| war_troll | 4.5 | — | [spec](war_troll/spec.json) | [notes](war_troll/notes.md) | pending |
+| war_troll | 4.5 | <img src="war_troll/war_troll_turnaround.jpg" width="180" alt="war_troll"> | [spec](war_troll/spec.json) | [notes](war_troll/notes.md) | accepted |
 | mirkwood_spider | 2.75 | — | [spec](mirkwood_spider/spec.json) | [notes](mirkwood_spider/notes.md) | pending |
 | brood_mother | 6 | — | [spec](brood_mother/spec.json) | [notes](brood_mother/notes.md) | pending |
 | mumak | 14 | — | [spec](mumak/spec.json) | [notes](mumak/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **32,624,915 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **34,426,784 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

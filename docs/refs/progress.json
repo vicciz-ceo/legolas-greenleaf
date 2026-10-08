@@ -3733,56 +3733,101 @@
           "path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same tusked face and iron helm, clear oblique angle and natural features, no text.",
+              "path": "/workspace/generated_images/exec-19d15ccd-c480-43eb-9295-8003b0094ad8.png"
+            }
+          ],
+          "reason": "Same tusked face and iron helm, clear oblique angle and natural features, no text.",
+          "path": "/workspace/generated_images/exec-19d15ccd-c480-43eb-9295-8003b0094ad8.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Single near eye and true profile of same tusked face and pointed iron helmet, no text.",
+              "path": "/workspace/generated_images/exec-e3652341-e6f2-4b5a-9d64-3a9512823024.png"
+            }
+          ],
+          "reason": "Single near eye and true profile of same tusked face and pointed iron helmet, no text.",
+          "path": "/workspace/generated_images/exec-e3652341-e6f2-4b5a-9d64-3a9512823024.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same iron harness, pauldrons and shins, opaque dark leather kilt and wrapped feet; no text.",
+              "path": "/workspace/generated_images/exec-afdddab5-c3d4-4df2-9c54-fc5967571671.png"
+            }
+          ],
+          "reason": "Same iron harness, pauldrons and shins, opaque dark leather kilt and wrapped feet; no text.",
+          "path": "/workspace/generated_images/exec-afdddab5-c3d4-4df2-9c54-fc5967571671.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete same riveted block-head iron warhammer and wrapped haft; no hands or text.",
+              "path": "/workspace/generated_images/exec-02d68cc8-b71d-40fb-97eb-9122fbe541bf.png"
+            }
+          ],
+          "reason": "Complete same riveted block-head iron warhammer and wrapped haft; no hands or text.",
+          "path": "/workspace/generated_images/exec-02d68cc8-b71d-40fb-97eb-9122fbe541bf.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed crop of accepted portrait: warty bare skin."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed iron-helm crop; hair concealed, explicit exception with no false hair sample."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass."
         }
       }
     },
@@ -3791,20 +3836,56 @@
       "design_extent_m": 2.75,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text.",
+              "path": "/workspace/generated_images/exec-25b76143-715c-4a71-9dde-72a7383441d8.png"
+            }
+          ],
+          "reason": "Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text.",
+          "path": "/workspace/generated_images/exec-25b76143-715c-4a71-9dde-72a7383441d8.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text.",
+              "path": "/workspace/generated_images/exec-dd64f0ec-1e0f-4700-9fa4-f934b3c0a1e0.png"
+            }
+          ],
+          "reason": "Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text.",
+          "path": "/workspace/generated_images/exec-dd64f0ec-1e0f-4700-9fa4-f934b3c0a1e0.png"
         },
         "views/top": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen.",
+              "path": "/workspace/generated_images/exec-5e202521-15a6-4efc-8364-a5a9753546ba.png"
+            }
+          ],
+          "reason": "Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen.",
+          "path": "/workspace/generated_images/exec-5e202521-15a6-4efc-8364-a5a9753546ba.png"
         },
         "views/three_quarter": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-30ce70c2-2054-4885-b3c7-dfc85449153b.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-30ce70c2-2054-4885-b3c7-dfc85449153b.png"
         },
         "face_views/front": {
           "status": "pending",
@@ -4099,6 +4180,11 @@
         "observed": {
           "status": "pending",
           "attempts": []
+        },
+        "folded_sheet": {
+          "status": "pending",
+          "attempts": [],
+          "reason": "Additional folded-wing JPEG at main creature scale, drawn human and ruler."
         }
       }
     },

@@ -1,10 +1,9 @@
-# War Troll modelling notes
+# War troll modelling notes
 
-- Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.
-- Preserve the original face; no actor likeness.
-- Keep gear on its own anatomical side under rotation.
-- Build surface weave, skin and hair as procedural detail.
-- Do not infer 3D dimensions from the image normalization.
-- Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
-- Minor seams, buckle shapes, strap count and mild light differences may vary.
-- Maintain natural joints and all required limb and digit counts.
+Nominal troll height 4.5 m; authored overall normalization target 4.95 m includes the pointed iron helmet. One massive barrel chest/belly, small original tusked heavy-brow face, soot-dark warty hide, iron plate harness and spiked pauldrons. Hammer remains in own RIGHT hand in every body view. Solid opaque knee-length leather kilt covers pelvis and thighs from all viewpoints.
+
+Front attempt 1 had an ambiguous curled empty hand. Accepted front 2 shows four fingers and a thumb. Rear attempt 1 put the hammer in own LEFT hand; accepted rear 2 fixes the attachment without mirroring. Three-quarter, side, three portraits and two independent detail sources passed first attempts. Skin and covered-helmet tiles are reviewed crops of the accepted front portrait, not additional generation calls.
+
+The scalp is covered; hair observation is explicitly null rather than a fabricated hair colour. Named rectangles sample each garment and each iron component plus the hammer and haft. Values are rendered and lit, not albedo. Costume seams, rivets, kilt fraying and mild lighting drift are tolerated. Five visible digits and all complete extremities were checked; the 64-pixel silhouette strip is readable.
+
+Code reduces all views to one common scale to fit the broad shoulders and hammer, records the fit reason, and draws the ruler, labels and baseline. Normalization does not recover 3D anatomy. Full-resolution originals and source crops are listed in sources.json.

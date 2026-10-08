@@ -116,6 +116,20 @@ class ComposeTests(unittest.TestCase):
         im=Image.open(self.folder/'fixture.png');im.putpixel((1,1),(128,127,127));im.save(self.folder/'fixture.png')
         with self.assertRaisesRegex(ValueError,'PNG changed'):c.check('fixture')
 
+    def test_additional_creature_pose_same_scale_and_stale_failure(self):
+        self.data['composition'].update(creature=True, views=list(c.VIEWS), reference_view='side',
+                                        scale_axis='height',scale_extent_m=1.85,
+                                        projected_extents_m={v:1.85 for v in c.VIEWS},
+                                        pose_targets={'folded':{'axis':'height','extent_m':1.85}})
+        self.store(self.data)
+        with Image.open(self.folder/'views/front.png') as im:im.save(self.folder/'views/folded.png')
+        self.ready();c.poses('fixture')
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text())
+        self.assertEqual(data['measured']['pose_folded']['px_per_m'],data['measured']['turnaround']['px_per_m'])
+        data['measured']['pose_folded']['px_per_m']+=1;self.store(data)
+        with self.assertRaisesRegex(ValueError,'recorded px_per_m|different scale'):c.check('fixture')
+
     def test_supplement_accepted_ledger_cannot_hide_missing_assets(self):
         (c.ROOT/'progress.json').write_text(json.dumps({'entries':{'fixture':{'kind':'supplement','deliverables':{'sheet':{'status':'accepted'}}}}}))
         report=c.check_all()

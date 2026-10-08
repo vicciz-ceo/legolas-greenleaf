@@ -498,28 +498,28 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/side | accepted | 1 | True profile, near right-hand low hammer, opaque knee-kilt, complete feet and helmet; no text. |
 | views/back | accepted | 2 | True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame. |
 | face_views/front | accepted | 1 | Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text. |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/three_quarter | accepted | 1 | Same tusked face and iron helm, clear oblique angle and natural features, no text. |
+| face_views/side | accepted | 1 | Single near eye and true profile of same tusked face and pointed iron helmet, no text. |
+| details/cloth_leather | accepted | 1 | Same iron harness, pauldrons and shins, opaque dark leather kilt and wrapped feet; no text. |
+| details/weapon_metal | accepted | 1 | Complete same riveted block-head iron warhammer and wrapped haft; no hands or text. |
+| details/skin | accepted | 0 | Reviewed crop of accepted portrait: warty bare skin. |
+| details/hair | accepted | 0 | Reviewed iron-helm crop; hair concealed, explicit exception with no false hair sample. |
+| turnaround | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| spec | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| notes | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| check | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| face | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| details | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| observed | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
 
 ## mirkwood_spider
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
+| views/side | accepted | 1 | Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text. |
+| views/front | accepted | 1 | Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text. |
+| views/top | accepted | 1 | Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen. |
+| views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
@@ -604,6 +604,7 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | face | pending | 0 |  |
 | details | pending | 0 |  |
 | observed | pending | 0 |  |
+| folded_sheet | pending | 0 | Additional folded-wing JPEG at main creature scale, drawn human and ruler. |
 
 ## great_eagle
 

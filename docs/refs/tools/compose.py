@@ -350,14 +350,19 @@ def measurement_span(crop, srcbox, axis, region=None):
             'source_region_px':list(region),'definition':'half-open alpha>127 projected extrema inside author-reviewed landmark region'}
 
 
-def creature(cid):
+def creature(cid, pose=None):
     folder, specpath, data = load(cid)
-    cfg = data['composition']
+    cfg = dict(data['composition'])
+    if pose:
+        target = cfg['pose_targets'][pose]
+        cfg.update(views=[pose], reference_view=pose, scale_axis=target['axis'],
+                   scale_extent_m=target['extent_m'], projected_extents_m={pose:target['extent_m']})
+        cfg['landmark_regions_px'] = {pose:target['region_px']} if target.get('region_px') else {}
     axis = cfg.get('scale_axis', 'width')
     reference_view = cfg.get('reference_view', 'side')
     extent = float(cfg['scale_extent_m'])
     views = cfg.get('views', ['front', 'side', 'top', 'three_quarter'])
-    require(len(views) == 4 and axis in ('width', 'height'), 'Creature requires four views and a width/height axis')
+    require(len(views) == (1 if pose else 4) and axis in ('width', 'height'), 'Creature requires four views, or one additional pose, and a width/height axis')
     images = []
     for view in views:
         path, im = source(folder, f'views/{view}.png')
@@ -371,13 +376,14 @@ def creature(cid):
     extents = cfg.get('projected_extents_m', {})
     require(all(view in extents for view in views), 'Supply projected_extents_m for each creature view')
     require(float(extents[reference_view])==extent,'Reference extent differs from ruler target')
-    available_w, available_h = 440, 360
+    available_w, available_h = (1200, 850) if pose else (440, 360)
     max_ppm = [available_h/1.85]
     for view, path, crop, srcbox in images:
         e = float(extents[view])
         base = measurements[view]['source_span_px']
         max_ppm += [available_w * base / (crop.width * e), available_h * base / (crop.height * e)]
-    ppm = min(max_ppm)
+    ppm = data['measured']['turnaround']['px_per_m'] if pose else min(max_ppm)
+    require(ppm <= min(max_ppm), 'Additional pose does not fit at the main sheet scale')
     canvas = Image.new('RGB', TURN_SIZE, BG)
     draw = ImageDraw.Draw(canvas)
     boxes = []
@@ -387,13 +393,13 @@ def creature(cid):
         factor = e * ppm / base
         w, h = round(crop.width*factor), round(crop.height*factor)
         panel_x = (i%2)*768
-        baseline = 430 + (i//2)*512
+        baseline = 940 if pose else 430 + (i//2)*512
         x = panel_x+205+(available_w-w)//2
         y = baseline-h
         image = crop.resize((w, h), Image.Resampling.LANCZOS)
         canvas.paste(image, (x, y), image)
-        text(draw, (panel_x+420, baseline+50), LABELS.get(view, view.upper()), 18)
-        marker = human(draw, panel_x+55, baseline, ppm)
+        text(draw, (panel_x+(805 if pose else 420), baseline+(40 if pose else 50)), cfg.get('turnaround_labels',{}).get(view,LABELS.get(view, view.upper())), 18)
+        marker = human(draw, panel_x+100, baseline, ppm)
         annotation = measurements[view]
         points = [[x+round((p[0]-srcbox[0])*w/crop.width),y+round((p[1]-srcbox[1])*h/crop.height)]
                   for p in annotation['source_endpoints_px']]
@@ -435,15 +441,22 @@ def creature(cid):
     else:
         calibration = ruler(draw, (y1-y0)/extent, y1, extent, max(100,source_bounds[0]-25))
         calibration['px_per_m'] = (y1-y0)/extent
-    result = save_sheet(canvas, folder/f'{cid}_turnaround.jpg')
+    key = f'pose_{pose}' if pose else 'turnaround'
+    result = save_sheet(canvas, folder/f'{cid}_{pose if pose else "turnaround"}.jpg')
     result.update({'creature':True,'px_per_m':ppm,'views':boxes,'ruler':calibration,
                    'layout':{'subject_max_width_px':available_w,'subject_max_height_px':available_h,
                              'human_max_height_px':available_h,'scale_reason':'Fit all views and reserve a separate human/ruler lane'},
                    'scale_axis':axis,'reference_view':reference_view,'scale_extent_m':extent,
                    'interpretation':'Projected extents are design targets; no 3D measurement inferred from generated views.'})
-    data.setdefault('measured',{})['turnaround'] = result
+    data.setdefault('measured',{})[key] = result
     write_spec(specpath,data)
     return result
+
+
+def poses(cid):
+    _,_,data = load(cid)
+    require(data['composition'].get('pose_targets'), 'No additional pose targets')
+    return {name:creature(cid,name) for name in data['composition']['pose_targets']}
 
 
 def face(cid):
@@ -587,6 +600,7 @@ def check(cid):
     expected={'turnaround':TURN_SIZE,'face':FACE_SIZE,'details':GRID_SIZE}
     if data.get('composition',{}).get('silhouette_only'):
         expected={'turnaround':TURN_SIZE}
+    expected.update({f'pose_{name}':TURN_SIZE for name in data.get('composition',{}).get('pose_targets',{})})
     for sheet,size in expected.items():
         rec=measured[sheet]
         path=folder/rec['path']
@@ -599,7 +613,7 @@ def check(cid):
         require(np.max(np.abs(np.asarray(im.convert('RGB')).astype(int)[y0:y1,x0:x1]-np.array(BG))) <= rec['decoded_background_tolerance'],f'{sheet}: safe background patch changed')
         objects=rec.get('views',rec.get('tiles',[]))
         cfg=data.get('composition',{})
-        expected_names=cfg.get('views',list(VIEWS)) if sheet=='turnaround' else ['front','three_quarter','side'] if sheet=='face' else [t['name'] for t in cfg['detail_tiles']]
+        expected_names=[sheet[5:]] if sheet.startswith('pose_') else cfg.get('views',list(VIEWS)) if sheet=='turnaround' else ['front','three_quarter','side'] if sheet=='face' else [t['name'] for t in cfg['detail_tiles']]
         actual_names=[v.get('view',v.get('name')) for v in objects]
         require(len(actual_names)==len(expected_names) and set(actual_names)==set(expected_names), f'{sheet}: missing or duplicated object geometry')
         for index, left in enumerate(objects):
@@ -621,6 +635,14 @@ def check(cid):
             if key in actual_geometry:require(rec.get(key)==actual_geometry[key], f'{sheet}: recorded {key} differs from actual composition')
         require(hashlib.sha256(rebuilt.tobytes()).hexdigest() == rec['pre_jpeg_sha256'], f'{sheet}: pre-JPEG canvas or geometry changed')
         require(np.all(np.asarray(rebuilt)[y0:y1,x0:x1] == np.array(BG)), f'{sheet}: wrong pre-JPEG background')
+        if sheet.startswith('pose_'):
+            require(rec['px_per_m']==measured['turnaround']['px_per_m'], 'Additional pose has a different scale')
+            check_text_boxes(rec['ruler']['label_bboxes_px'])
+            for obj in rec['views']:
+                require(abs(obj['measurement']['sheet_span_px']-obj['projected_extent_m']*rec['px_per_m'])<=1.1, 'Additional pose scale mismatch')
+                hb=obj['human']['sheet_bbox_px']
+                require(hb[3]-hb[1]==round(1.85*rec['px_per_m']), 'Additional pose human height wrong')
+                require(hb[2]<=obj['sheet_bbox_px'][0], 'Additional pose overlaps human')
     turn=measured['turnaround']
     check_text_boxes(turn['ruler']['label_bboxes_px'])
     if not turn.get('creature'):
@@ -745,7 +767,7 @@ def reconstruct(cid, sheet, metadata=False):
     try:
         globals()['save_sheet']=capture
         globals()['write_spec']=lambda path,data: None
-        result=globals()[{'turnaround':'turnaround','face':'face','details':'grid'}[sheet]](cid)
+        result=creature(cid,sheet[5:]) if sheet.startswith('pose_') else globals()[{'turnaround':'turnaround','face':'face','details':'grid'}[sheet]](cid)
     finally:
         globals()['save_sheet']=oldsave
         globals()['write_spec']=oldwrite
@@ -910,7 +932,7 @@ def main():
     s.add_argument('--threshold',type=float,default=38)
     s.add_argument('--max-height',type=int,default=768)
     s.add_argument('--backend',choices=('auto','threshold','rembg'),default='auto')
-    for name in ('turnaround','face','grid','sample','preview64','check','supplement'):
+    for name in ('turnaround','face','grid','sample','preview64','check','supplement','poses'):
         p=commands.add_parser(name);p.add_argument('id', nargs='?');
         if name=='check':p.add_argument('--all',action='store_true')
     args=parser.parse_args()

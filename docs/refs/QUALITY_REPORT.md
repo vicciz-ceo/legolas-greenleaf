@@ -418,23 +418,23 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | war_troll | views/back | accepted | 2 | True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame. |
 | war_troll | views/back attempt 1 | rejected | — | Hammer is on viewer right in rear view, therefore character left; required own right-hand attachment fails. |
 | war_troll | face_views/front | accepted | 1 | Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text. |
-| war_troll | face_views/three_quarter | pending | 0 | Not yet attempted |
-| war_troll | face_views/side | pending | 0 | Not yet attempted |
-| war_troll | details/cloth_leather | pending | 0 | Not yet attempted |
-| war_troll | details/weapon_metal | pending | 0 | Not yet attempted |
-| war_troll | details/skin | pending | 0 | Not yet attempted |
-| war_troll | details/hair | pending | 0 | Not yet attempted |
-| war_troll | turnaround | pending | 0 | Not yet attempted |
-| war_troll | spec | pending | 0 | Not yet attempted |
-| war_troll | notes | pending | 0 | Not yet attempted |
-| war_troll | check | pending | 0 | Not yet attempted |
-| war_troll | face | pending | 0 | Not yet attempted |
-| war_troll | details | pending | 0 | Not yet attempted |
-| war_troll | observed | pending | 0 | Not yet attempted |
-| mirkwood_spider | views/side | pending | 0 | Not yet attempted |
-| mirkwood_spider | views/front | pending | 0 | Not yet attempted |
-| mirkwood_spider | views/top | pending | 0 | Not yet attempted |
-| mirkwood_spider | views/three_quarter | pending | 0 | Not yet attempted |
+| war_troll | face_views/three_quarter | accepted | 1 | Same tusked face and iron helm, clear oblique angle and natural features, no text. |
+| war_troll | face_views/side | accepted | 1 | Single near eye and true profile of same tusked face and pointed iron helmet, no text. |
+| war_troll | details/cloth_leather | accepted | 1 | Same iron harness, pauldrons and shins, opaque dark leather kilt and wrapped feet; no text. |
+| war_troll | details/weapon_metal | accepted | 1 | Complete same riveted block-head iron warhammer and wrapped haft; no hands or text. |
+| war_troll | details/skin | accepted | 0 | Reviewed crop of accepted portrait: warty bare skin. |
+| war_troll | details/hair | accepted | 0 | Reviewed iron-helm crop; hair concealed, explicit exception with no false hair sample. |
+| war_troll | turnaround | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | spec | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | notes | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | check | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | face | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | details | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| war_troll | observed | accepted | 0 | All individual views, final sheets and 64 px silhouettes reviewed; source reconstruction, material coverage, geometry and budget checks pass. |
+| mirkwood_spider | views/side | accepted | 1 | Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text. |
+| mirkwood_spider | views/front | accepted | 1 | Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text. |
+| mirkwood_spider | views/top | accepted | 1 | Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen. |
+| mirkwood_spider | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
 | mirkwood_spider | face_views/front | pending | 0 | Not yet attempted |
 | mirkwood_spider | face_views/three_quarter | pending | 0 | Not yet attempted |
 | mirkwood_spider | face_views/side | pending | 0 | Not yet attempted |
@@ -504,6 +504,7 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | gundabad_bat | face | pending | 0 | Not yet attempted |
 | gundabad_bat | details | pending | 0 | Not yet attempted |
 | gundabad_bat | observed | pending | 0 | Not yet attempted |
+| gundabad_bat | folded_sheet | pending | 0 | Additional folded-wing JPEG at main creature scale, drawn human and ruler. |
 | great_eagle | views/side | pending | 0 | Not yet attempted |
 | great_eagle | views/front | pending | 0 | Not yet attempted |
 | great_eagle | views/top | pending | 0 | Not yet attempted |
