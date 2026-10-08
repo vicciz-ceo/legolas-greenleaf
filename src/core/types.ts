@@ -964,6 +964,14 @@ export interface TerrainOpts {
   material?: SurfaceMaterial;
   /** centre offset */
   center?: [number, number];
+  /** optional look tweaks understood by src/world/terrain.ts */
+  theme?: 'mirkwood' | 'autumn' | 'wet' | 'dry';
+  tint?: number;
+  layers?: unknown;
+  patchiness?: number;
+  /** hidden skirt below the border (default true) */
+  skirt?: boolean;
+  cavity?: number;
 }
 
 export interface ChapterDef {
@@ -982,6 +990,11 @@ export interface ChapterDef {
   /** Gimli kill-count rivalry active in this chapter */
   rivalry?: boolean;
   dev?: boolean;
+  /**
+   * Humanoid kinds this chapter spawns. The shell meshes them in worker threads during the loading
+   * screen (preloadHumanoids) so createHumanoid is a cache hit in play. 'legolas' is always included.
+   */
+  preload?: HumanoidKind[];
   create(level: LevelAPI): ChapterInstance | Promise<ChapterInstance>;
 }
 

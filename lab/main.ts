@@ -49,18 +49,30 @@ const focusPart = params.get('focus') ?? 'body';
 const bg = new THREE.Color('#' + (params.get('bg') ?? '1a1c1e'));
 
 // ── discover subjects ───────────────────────────────────────────────────────
-const modules = import.meta.glob<{ subjects?: LabSubject[] }>('/src/**/*.lab.ts', { eager: true });
+// Lazy glob + per-module try/catch: one broken *.lab.ts must not take down the whole lab.
+const loaders = import.meta.glob<{ subjects?: LabSubject[] }>('/src/**/*.lab.ts');
 const allSubjects: LabSubject[] = [];
-for (const [path, mod] of Object.entries(modules)) {
-  for (const s of mod.subjects ?? []) {
-    if (!s || typeof s.create !== 'function') {
-      console.error(`[lab] invalid subject in ${path}`);
-      continue;
-    }
-    allSubjects.push(s);
-  }
+const brokenModules: string[] = [];
+async function discoverSubjects(): Promise<void> {
+  await Promise.all(
+    Object.entries(loaders).map(async ([path, load]) => {
+      try {
+        const mod = await load();
+        for (const s of mod.subjects ?? []) {
+          if (!s || typeof s.create !== 'function') {
+            console.warn(`[lab] invalid subject in ${path}`);
+            continue;
+          }
+          allSubjects.push(s);
+        }
+      } catch (e) {
+        brokenModules.push(path);
+        console.warn(`[lab] failed to load ${path}:`, e);
+      }
+    }),
+  );
+  allSubjects.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 }
-allSubjects.sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
 // ── renderer & scene ────────────────────────────────────────────────────────
 const host = document.getElementById('view')!;
@@ -227,6 +239,8 @@ function applyWire(root: THREE.Object3D) {
 }
 
 async function main() {
+  await discoverSubjects();
+  if (brokenModules.length) label(`broken lab modules (see console): ${brokenModules.join(', ')}`, 6, innerHeight - 48);
   if (allSubjects.length === 0) {
     label('No lab subjects found. Create src/**/<name>.lab.ts exporting `subjects`.', 12, 12);
     window.__snapReady = true;
