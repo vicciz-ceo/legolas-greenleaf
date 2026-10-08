@@ -191,6 +191,16 @@
           "attempts": [],
           "reason": "Requires missing accepted source views or original Legolas sheet files."
         }
+      },
+      "historical_multipanel_attempts": {
+        "counts": {
+          "turnaround": 5,
+          "face": 3,
+          "details": 1
+        },
+        "status": "rejected",
+        "source": "recovery/first-pass-QUALITY_REPORT.md",
+        "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
       }
     },
     "gimli": {
@@ -331,6 +341,14 @@
           "attempts": [],
           "reason": "Requires missing accepted source views or original Legolas sheet files."
         }
+      },
+      "historical_multipanel_attempts": {
+        "counts": {
+          "turnaround": 2
+        },
+        "status": "rejected",
+        "source": "recovery/first-pass-QUALITY_REPORT.md",
+        "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
       }
     },
     "aragorn": {
@@ -2230,81 +2248,182 @@
           "path": "/workspace/generated_images/exec-473c3dc6-b3d9-482e-ac3b-12f1f1a5dceb.png"
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "Three-quarter hunched rotation consistent with front; cleaver own RIGHT, left hand empty and all anatomy/tips clear.",
               "path": "/workspace/generated_images/exec-fc456455-6d3b-4fef-a261-f3faff742167.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "Three-quarter hunched rotation consistent with front; cleaver own RIGHT, left hand empty and all anatomy/tips clear.",
           "path": "/workspace/generated_images/exec-fc456455-6d3b-4fef-a261-f3faff742167.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile and hunch; own RIGHT cleaver near, own LEFT empty far; original scars, hair, rags and wrapped feet consistent.",
+              "path": "/workspace/generated_images/exec-83194a13-4659-49f7-aeca-ab70d3c62de2.png"
+            }
+          ],
+          "reason": "Exact side profile and hunch; own RIGHT cleaver near, own LEFT empty far; original scars, hair, rags and wrapped feet consistent.",
+          "path": "/workspace/generated_images/exec-83194a13-4659-49f7-aeca-ab70d3c62de2.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear, matted loose back hair and scrap armour side preserved; cleaver own RIGHT image right, five fingers where visible, full extremities.",
+              "path": "/workspace/generated_images/exec-fb0ca7bc-4c16-44ea-9127-50fed61ad201.png"
+            }
+          ],
+          "reason": "True rear, matted loose back hair and scrap armour side preserved; cleaver own RIGHT image right, five fingers where visible, full extremities.",
+          "path": "/workspace/generated_images/exec-fb0ca7bc-4c16-44ea-9127-50fed61ad201.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original mottled grey-green face, amber eyes scars fangs pointed ears matted black hair, no actor likeness, full crown.",
+              "path": "/workspace/generated_images/exec-a2249298-b870-4427-b04b-825f10918230.png"
+            }
+          ],
+          "reason": "Original mottled grey-green face, amber eyes scars fangs pointed ears matted black hair, no actor likeness, full crown.",
+          "path": "/workspace/generated_images/exec-a2249298-b870-4427-b04b-825f10918230.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same original face/scars/teeth; correct three-quarter portrait, pointed ears and hair crown complete.",
+              "path": "/workspace/generated_images/exec-dcb87b80-413a-4ef8-9dad-1d6b77c218cf.png"
+            }
+          ],
+          "reason": "Same original face/scars/teeth; correct three-quarter portrait, pointed ears and hair crown complete.",
+          "path": "/workspace/generated_images/exec-dcb87b80-413a-4ef8-9dad-1d6b77c218cf.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact original-face profile, matching scars/fangs/matted hair, full ear and crown.",
+              "path": "/workspace/generated_images/exec-56e98c53-0f0e-4fdc-b9df-157996959b7a.png"
+            }
+          ],
+          "reason": "Exact original-face profile, matching scars/fangs/matted hair, full ear and crown.",
+          "path": "/workspace/generated_images/exec-56e98c53-0f0e-4fdc-b9df-157996959b7a.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Coarse torn brown cloth, leather and rusty scrap plate match original accepted outfit.",
+              "path": "/workspace/generated_images/exec-90972ec6-7710-4c3d-a665-a4acbf63b5d4.png"
+            }
+          ],
+          "reason": "Coarse torn brown cloth, leather and rusty scrap plate match original accepted outfit.",
+          "path": "/workspace/generated_images/exec-90972ec6-7710-4c3d-a665-a4acbf63b5d4.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Flat broad blade tip replaces the pointed triangular cleaver in accepted front; regenerate from tight weapon reference.",
+              "path": "/workspace/generated_images/exec-9b02ab0f-407f-4dd0-8f9b-d094b2b4d7ea.png",
+              "review_updates": [
+                {
+                  "previous_status": "accepted",
+                  "previous_reason": "Complete rusty jagged broad cleaver with one blade hole and wrapped handle matches character source.",
+                  "resolution": "Close comparison with accepted front shows flat distal blade shape instead of the pointed triangular blade."
+                }
+              ]
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second object preserves pointed triangular blade, single spine hole, rust and wrapped handle from accepted front.",
+              "path": "/workspace/generated_images/exec-c9a8393b-f69f-4862-8cb1-dcaf61c9ca32.png"
+            }
+          ],
+          "reason": "Second object preserves pointed triangular blade, single spine hole, rust and wrapped handle from accepted front.",
+          "path": "/workspace/generated_images/exec-c9a8393b-f69f-4862-8cb1-dcaf61c9ca32.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Mottled skin/scar crop from independently generated accepted front portrait.",
+              "path": "/workspace/generated_images/exec-a2249298-b870-4427-b04b-825f10918230.png"
+            }
+          ],
+          "reason": "Mottled skin/scar crop from independently generated accepted front portrait.",
+          "path": "/workspace/generated_images/exec-a2249298-b870-4427-b04b-825f10918230.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Matted black hair crop from independently generated accepted profile portrait.",
+              "path": "/workspace/generated_images/exec-56e98c53-0f0e-4fdc-b9df-157996959b7a.png"
+            }
+          ],
+          "reason": "Matted black hair crop from independently generated accepted profile portrait.",
+          "path": "/workspace/generated_images/exec-56e98c53-0f0e-4fdc-b9df-157996959b7a.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass."
         }
       }
     },
@@ -2313,24 +2432,75 @@
       "design_extent_m": 1.48,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Empty left hand lacks five clearly separate digits and shows merged/overlapping finger geometry; repair anatomy before accepting front.",
+              "path": "/workspace/generated_images/exec-577e71b9-52ee-4272-b8ad-f1dd3225c5fe.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second front repairs hand: close crop confirms one thumb and four separate clawed fingers. Correct deep crouch, own-right low blade, two arms/legs and complete ears/feet.",
+              "path": "/workspace/generated_images/exec-7a78795f-8978-4944-adac-df588af79fb3.png"
+            }
+          ],
+          "reason": "Second front repairs hand: close crop confirms one thumb and four separate clawed fingers. Correct deep crouch, own-right low blade, two arms/legs and complete ears/feet.",
+          "path": "/workspace/generated_images/exec-7a78795f-8978-4944-adac-df588af79fb3.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same deep crouch and original large-eyed face, correct 3/4 rotation; own-right blade low, left empty hand retains five digits and all extremities intact.",
+              "path": "/workspace/generated_images/exec-5ad13f74-845b-4d89-a571-1e28bf5a3364.png"
+            }
+          ],
+          "reason": "Same deep crouch and original large-eyed face, correct 3/4 rotation; own-right blade low, left empty hand retains five digits and all extremities intact.",
+          "path": "/workspace/generated_images/exec-5ad13f74-845b-4d89-a571-1e28bf5a3364.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile deep crouch, two legs with natural knees/feet, own-right blade near and left empty hand far; identity/ears/rags consistent.",
+              "path": "/workspace/generated_images/exec-c998417c-3776-4294-b9a7-3e0587d1ca62.png"
+            }
+          ],
+          "reason": "Exact side profile deep crouch, two legs with natural knees/feet, own-right blade near and left empty hand far; identity/ears/rags consistent.",
+          "path": "/workspace/generated_images/exec-c998417c-3776-4294-b9a7-3e0587d1ca62.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear deep crouch, loose sparse back hair and ear silhouette consistent; blade own RIGHT image right, empty left hand retains five digits, feet/gear complete.",
+              "path": "/workspace/generated_images/exec-116b626d-73ba-4ccd-ac45-6377f5d151c3.png"
+            }
+          ],
+          "reason": "True rear deep crouch, loose sparse back hair and ear silhouette consistent; blade own RIGHT image right, empty left hand retains five digits, feet/gear complete.",
+          "path": "/workspace/generated_images/exec-116b626d-73ba-4ccd-ac45-6377f5d151c3.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original large-eyed pale-grey face, sparse hair/long bat ears match accepted front; full ear tips visible, no actor likeness.",
+              "path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png"
+            }
+          ],
+          "reason": "Original large-eyed pale-grey face, sparse hair/long bat ears match accepted front; full ear tips visible, no actor likeness.",
+          "path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png"
         },
         "face_views/three_quarter": {
           "status": "pending",
@@ -3284,6 +3454,14 @@
           "status": "pending",
           "attempts": []
         }
+      },
+      "historical_multipanel_attempts": {
+        "counts": {
+          "flight_sheet": 1
+        },
+        "status": "rejected",
+        "source": "recovery/first-pass-QUALITY_REPORT.md",
+        "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
       }
     },
     "fell_beast": {
@@ -3322,6 +3500,14 @@
           "status": "pending",
           "attempts": []
         }
+      },
+      "historical_multipanel_attempts": {
+        "counts": {
+          "flight_sheet": 1
+        },
+        "status": "rejected",
+        "source": "recovery/first-pass-QUALITY_REPORT.md",
+        "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
       }
     },
     "dwarf_bald": {

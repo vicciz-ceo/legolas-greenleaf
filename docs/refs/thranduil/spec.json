@@ -365,8 +365,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
-      "size_bytes": 194492,
+      "sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+      "size_bytes": 193803,
       "background_rgb": [
         127,
         127,
@@ -378,14 +378,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "dc4d3071a8948dc06590031a12186858c51810f76983c21e6e12666e161a0917",
+      "pre_jpeg_sha256": "1f245d1d0633816f1a5de04bd55d29158cae3c1f1286552117a95222b62eac8c",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "VELVET / SILVER BROCADE",
           "source": "details/cloth_leather.png",
-          "source_sha256": "d4d7165818bfc8a915446c21e4c4755dcc2a23faf8a54c4705b0a54481441e09",
+          "source_sha256": "c18d82ca9766347d10afad2d77d1d09c0e27de683e1743e9fbe29ecad39073aa",
           "sheet_bbox_px": [
             107,
             12,
@@ -500,7 +500,7 @@
     "samples": {
       "skin": {
         "sheet": "thranduil_details.jpg",
-        "sheet_sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
         "rect_px": [
           310,
           620,
@@ -519,7 +519,7 @@
       },
       "hair": {
         "sheet": "thranduil_details.jpg",
-        "sheet_sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
         "rect_px": [
           760,
           650,
@@ -538,7 +538,7 @@
       },
       "coat": {
         "sheet": "thranduil_details.jpg",
-        "sheet_sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
         "rect_px": [
           120,
           130,
@@ -547,17 +547,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          102,
+          101,
           67,
-          58
+          59
         ],
-        "srgb_hex": "#66433a",
+        "srgb_hex": "#65433b",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "robe": {
         "sheet": "thranduil_details.jpg",
-        "sheet_sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
         "rect_px": [
           225,
           150,
@@ -566,17 +566,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          155,
-          139,
-          130
+          153,
+          138,
+          129
         ],
-        "srgb_hex": "#9b8b82",
+        "srgb_hex": "#998a81",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "crown_wood": {
         "sheet": "thranduil_details.jpg",
-        "sheet_sha256": "30c7efb9702dd01759113beb1ed3e6965582f54cd35ef3070d4194754c9d5479",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
         "rect_px": [
           780,
           405,

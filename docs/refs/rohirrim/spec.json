@@ -40,20 +40,52 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "tunic",
+        "material": "green woven wool",
         "color_hex": "#4d593c",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Rohirrim human soldier: original weathered bearded face; mail shirt, green tunic, round steel helm with horsehair crest, brown boots; sword in own RIGHT hand, round painted wood shield with horse motif on own LEFT arm."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "trousers",
+        "material": "brown woven wool",
+        "color_hex": "#483d33",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "bracers",
+        "material": "leather",
         "color_hex": "#67503b",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
+        "color_hex": "#67503b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "diagonal_strap",
+        "material": "leather",
+        "color_hex": "#67503b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#67503b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [
@@ -99,7 +131,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Rohirrim human soldier: original weathered bearded face; mail shirt, green tunic, round steel helm with horsehair crest, brown boots; sword in own RIGHT hand, round painted wood shield with horse motif on own LEFT arm."
+    "description": "Rohirrim human soldier: original weathered bearded face; mail shirt, green tunic, round steel helm with horsehair crest, brown boots; sword in own RIGHT hand, round painted wood shield with horse motif on own LEFT arm.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#4d593c",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Rohirrim human soldier: original weathered bearded face; mail shirt, green tunic, round steel helm with horsehair crest, brown boots; sword in own RIGHT hand, round painted wood shield with horse motif on own LEFT arm."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#67503b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -375,8 +425,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
-      "size_bytes": 232124,
+      "sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+      "size_bytes": 229703,
       "background_rgb": [
         127,
         127,
@@ -388,14 +438,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "8918c0e7c0f2e2526b3a5c3f88c09a24f12203277f191c688bf3e00e0d7ff091",
+      "pre_jpeg_sha256": "f1046e48a7873c59ad9ac3ceb6f04d3ad62530db585cb551dd8a29094fefce12",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "8a53b78d811cf4eec6f1bbf35216ddbdfc18bfe49dd35abdde7878db31e3bf70",
+          "source_sha256": "836feb65ac27f3ac9722ae79bdc520ab1ec9c1a8cb6a010fbdad5fc10304d60b",
           "sheet_bbox_px": [
             107,
             12,
@@ -570,7 +620,7 @@
     "samples": {
       "skin": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           70,
           825,
@@ -589,7 +639,7 @@
       },
       "hair": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           780,
           710,
@@ -608,7 +658,7 @@
       },
       "green_tunic": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           145,
           170,
@@ -627,7 +677,7 @@
       },
       "steel_mail": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           175,
           90,
@@ -646,7 +696,7 @@
       },
       "leather_bracers": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           135,
           260,
@@ -655,17 +705,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          100,
+          99,
           71,
           60
         ],
-        "srgb_hex": "#64473c",
+        "srgb_hex": "#63473c",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "leather_belt": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           245,
           212,
@@ -684,7 +734,7 @@
       },
       "leather_strap": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           270,
           165,
@@ -694,16 +744,16 @@
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
           87,
-          67,
+          68,
           54
         ],
-        "srgb_hex": "#574336",
+        "srgb_hex": "#574436",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "shield_green_wood": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           750,
           375,
@@ -722,7 +772,7 @@
       },
       "shield_steel_boss": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           750,
           210,
@@ -741,7 +791,7 @@
       },
       "shield_bronze_rim": {
         "sheet": "rohirrim_details.jpg",
-        "sheet_sha256": "9200ab586e7446294ebf94ffb5dfd4c0dcc72151b92d178e71931b074566e878",
+        "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
         "rect_px": [
           967,
           215,

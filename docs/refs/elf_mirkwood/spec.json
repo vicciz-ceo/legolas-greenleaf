@@ -24,7 +24,7 @@
         "shape": "almond",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
-      "brow": "lightly arched pale gold brows",
+      "brow": "natural dark brown brows",
       "nose": "straight refined bridge and narrow tip",
       "lips": "neutral closed, natural narrow upper lip",
       "ears": "pointed elf ears",
@@ -40,20 +40,52 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "tunic",
+        "material": "woven green wool",
         "color_hex": "#4c6137",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "cloak",
+        "material": "woven green wool",
+        "color_hex": "#4c6137",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "trousers",
+        "material": "dark woven wool",
+        "color_hex": "#383d30",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "bracers",
+        "material": "stitched leather",
         "color_hex": "#62462e",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
+        "color_hex": "#62462e",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#62462e",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [
@@ -93,7 +125,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty."
+    "description": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#4c6137",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#62462e",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -369,8 +419,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
-      "size_bytes": 134476,
+      "sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
+      "size_bytes": 134779,
       "background_rgb": [
         127,
         127,
@@ -382,14 +432,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "5387f45d8a455317dcc6e8c29a6c168daf5a0b4e4fa8ed2546de4463a7d5fe00",
+      "pre_jpeg_sha256": "62f71f480ad179fde90a1f3d0969598c1efa3bdc58f58fe55c2d3e8d92825a58",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "b48101a06cbf9dc1fc6f72144338c361479fb103e66b75f4449f8aa5cff7a00e",
+          "source_sha256": "9f5223d432491ccffb49205e838f2c023b21c829e87052f5562e11086bf7e600",
           "sheet_bbox_px": [
             107,
             12,
@@ -516,6 +566,16 @@
         292,
         924
       ]
+    },
+    {
+      "name": "trousers",
+      "sheet": "turnaround",
+      "rect_px": [
+        298,
+        802,
+        306,
+        817
+      ]
     }
   ],
   "observed": {
@@ -524,7 +584,7 @@
     "samples": {
       "skin": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           160,
           610,
@@ -543,7 +603,7 @@
       },
       "hair": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           750,
           650,
@@ -562,7 +622,7 @@
       },
       "tunic": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           195,
           145,
@@ -581,7 +641,7 @@
       },
       "cloak": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           122,
           100,
@@ -592,15 +652,15 @@
         "rgb": [
           48,
           52,
-          40
+          39
         ],
-        "srgb_hex": "#303428",
+        "srgb_hex": "#303427",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "bracers": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           135,
           275,
@@ -619,7 +679,7 @@
       },
       "belt": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           250,
           235,
@@ -638,7 +698,7 @@
       },
       "metal_armour": {
         "sheet": "elf_mirkwood_details.jpg",
-        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "sheet_sha256": "a1808d7561de1d836eaf7b86fca2bdf019e6d09be4b52f9f58b1c469a56db6e3",
         "rect_px": [
           305,
           60,
@@ -671,6 +731,25 @@
           44
         ],
         "srgb_hex": "#42352c",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "trousers": {
+        "sheet": "elf_mirkwood_turnaround.jpg",
+        "sheet_sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
+        "rect_px": [
+          298,
+          802,
+          306,
+          817
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          67,
+          62,
+          55
+        ],
+        "srgb_hex": "#433e37",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       }

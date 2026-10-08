@@ -4,6 +4,8 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 
 ## legolas
 
+Legacy sheet-call history (separate from individual-view calls): {"turnaround": 5, "face": 3, "details": 1}. See recovery/first-pass-QUALITY_REPORT.md.
+
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
 | views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
@@ -26,6 +28,8 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
 
 ## gimli
+
+Legacy sheet-call history (separate from individual-view calls): {"turnaround": 2}. See recovery/first-pass-QUALITY_REPORT.md.
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
@@ -306,33 +310,33 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
 | views/front | accepted | 2 | Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent. |
-| views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/three_quarter | accepted | 1 | Three-quarter hunched rotation consistent with front; cleaver own RIGHT, left hand empty and all anatomy/tips clear. |
+| views/side | accepted | 1 | Exact side profile and hunch; own RIGHT cleaver near, own LEFT empty far; original scars, hair, rags and wrapped feet consistent. |
+| views/back | accepted | 1 | True rear, matted loose back hair and scrap armour side preserved; cleaver own RIGHT image right, five fingers where visible, full extremities. |
+| face_views/front | accepted | 1 | Original mottled grey-green face, amber eyes scars fangs pointed ears matted black hair, no actor likeness, full crown. |
+| face_views/three_quarter | accepted | 1 | Same original face/scars/teeth; correct three-quarter portrait, pointed ears and hair crown complete. |
+| face_views/side | accepted | 1 | Exact original-face profile, matching scars/fangs/matted hair, full ear and crown. |
+| details/cloth_leather | accepted | 1 | Coarse torn brown cloth, leather and rusty scrap plate match original accepted outfit. |
+| details/weapon_metal | accepted | 2 | Second object preserves pointed triangular blade, single spine hole, rust and wrapped handle from accepted front. |
+| details/skin | accepted | 1 | Mottled skin/scar crop from independently generated accepted front portrait. |
+| details/hair | accepted | 1 | Matted black hair crop from independently generated accepted profile portrait. |
+| turnaround | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| spec | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| notes | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| check | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| face | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| details | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| observed | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
 
 ## goblin
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
+| views/front | accepted | 2 | Second front repairs hand: close crop confirms one thumb and four separate clawed fingers. Correct deep crouch, own-right low blade, two arms/legs and complete ears/feet. |
+| views/three_quarter | accepted | 1 | Same deep crouch and original large-eyed face, correct 3/4 rotation; own-right blade low, left empty hand retains five digits and all extremities intact. |
+| views/side | accepted | 1 | Exact side profile deep crouch, two legs with natural knees/feet, own-right blade near and left empty hand far; identity/ears/rags consistent. |
+| views/back | accepted | 1 | True rear deep crouch, loose sparse back hair and ear silhouette consistent; blade own RIGHT image right, empty left hand retains five digits, feet/gear complete. |
+| face_views/front | accepted | 1 | Original large-eyed pale-grey face, sparse hair/long bat ears match accepted front; full ear tips visible, no actor likeness. |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
 | details/cloth_leather | pending | 0 |  |
@@ -603,6 +607,8 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 
 ## great_eagle
 
+Legacy sheet-call history (separate from individual-view calls): {"flight_sheet": 1}. See recovery/first-pass-QUALITY_REPORT.md.
+
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
 | views/side | pending | 0 |  |
@@ -615,6 +621,8 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | check | pending | 0 |  |
 
 ## fell_beast
+
+Legacy sheet-call history (separate from individual-view calls): {"flight_sheet": 1}. See recovery/first-pass-QUALITY_REPORT.md.
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |

@@ -87,8 +87,9 @@
       1536
     ],
     "crop_px": null,
+    "detail_background_removed": true,
     "saved_cutout": "details/cloth_leather.png",
-    "cutout_sha256": "d4d7165818bfc8a915446c21e4c4755dcc2a23faf8a54c4705b0a54481441e09"
+    "cutout_sha256": "c18d82ca9766347d10afad2d77d1d09c0e27de683e1743e9fbe29ecad39073aa"
   },
   "details/skin": {
     "original_full_resolution_path": "/workspace/generated_images/exec-8ab45d47-19c3-4dd9-aac9-b8a2113457b5.png",

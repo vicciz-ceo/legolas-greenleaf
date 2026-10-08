@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 All four body views, three portraits and details individually reviewed. Own LEFT pouch stays fixed, invisible from right profile and image LEFT from back. No weapon or armour is prescribed: fourth material group uses his leather belt pouch and small metal fastening. Minor toggle count, quilting seam and pouch buckle drift tolerated. Skin/hair tiles crop independent portraits; jacket macro and gear object separately generated. Samples cover cap, jacket, tunic, trousers, boots, belt, pouch, fastening, skin and hair, rendered and lit, not albedo.
+
+Studio backdrop in costume macro replaced through code segmentation; original appearance pixels and full-resolution source retained. Sampling regions reviewed against visible material boundaries; concealed material exceptions have null values instead of invented colours.

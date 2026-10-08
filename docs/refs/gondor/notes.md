@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 All body views and portraits reviewed individually. Sword own RIGHT hand, shield own LEFT forearm throughout; side required a second attempt because first torso was oblique. Shield tree is prescribed pictorial heraldry, not generated lettering. Minor helm-wing engraving, mail rings and buckle drift tolerated. Hair is mostly concealed by helmet: detail source shows the visible brown tuft with helmet edge and mail; hair sample selects that tuft. Skin/hair tiles crop independent portraits, costume/shield are separate generations. Samples are rendered and lit, not albedo; greaves and sword share steel palette.
+
+Studio backdrop in costume macro replaced through code segmentation; original appearance pixels and full-resolution source retained. Sampling regions reviewed against visible material boundaries; concealed material exceptions have null values instead of invented colours.

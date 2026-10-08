@@ -5,29 +5,29 @@
     "source": "design_target",
     "display_name": "Goblin",
     "height_m": 1.48,
-    "overall_height_m": 1.48,
+    "overall_height_m": 1.1,
     "proportions": {
-      "head_height_m": 0.184,
+      "head_height_m": 0.25,
       "shoulder_width_m": 0.355,
       "hip_width_m": 0.274,
       "arm_length_m": 0.622,
       "leg_length_m": 0.77,
       "hand_length_m": 0.152,
       "neck_length_m": 0.089,
-      "bulk_0to1": 0.5,
-      "hunch_0to1": 0.15
+      "bulk_0to1": 0.15,
+      "hunch_0to1": 0.7
     },
     "face": {
       "shape": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
+        "iris_hex": "#bb8b32",
+        "shape": "large glinting round eyes",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
+      "brow": "sparse dark brows and exaggerated bony brow ridges",
+      "nose": "small upturned rough nose",
+      "lips": "thin ragged lips with small uneven teeth",
+      "ears": "large bat-like pointed ears",
       "skin_base_hex": "#9a9e92",
       "skin_variation": "faint redness on cheeks, nose and ears"
     },
@@ -93,7 +93,8 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty."
+    "description": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty.",
+    "pose_exception": "Original brief requires a deep crouch. Nominal standing height_m stays 1.48; authored posed silhouette target overall_height_m=1.10 includes ears. This is design intent, not inferred 3D anatomy."
   },
   "composition": {
     "fit_policy": "fit",
@@ -118,6 +119,10 @@
         "label": "HAIR / STRANDS",
         "source": "details/hair.png"
       }
-    ]
+    ],
+    "source_heights": {
+      "body": 448,
+      "face": 320
+    }
   }
 }

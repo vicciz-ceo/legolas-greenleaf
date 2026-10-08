@@ -48,7 +48,9 @@ def record(cid,key,status,reason='',path=None,attempt=False):
 def render():
  data=json.loads(STATE.read_text());lines=['# Full character-library checklist','', 'Statuses are evidence-based. Accepted design notes do not certify a completed visual reference. Historical accepted files that are missing here are blocked for delivery, not rejected.','']
  for cid,e in data['entries'].items():
-  lines+=['## '+cid,'','| Deliverable | Status | Attempts | Evidence / next action |','| --- | --- | --- | --- |']
+  lines+=['## '+cid,'']
+  if e.get('historical_multipanel_attempts'):lines += ['Legacy sheet-call history (separate from individual-view calls): '+json.dumps(e['historical_multipanel_attempts']['counts'])+'. See recovery/first-pass-QUALITY_REPORT.md.','']
+  lines+=['| Deliverable | Status | Attempts | Evidence / next action |','| --- | --- | --- | --- |']
   for k,d in e['deliverables'].items():lines.append(f"| {k} | {d['status']} | {len(d['attempts'])} | {d.get('reason','')} |")
   lines.append('')
  (ROOT/'CHECKLIST.md').write_text('\n'.join(lines).rstrip()+'\n')
@@ -77,7 +79,7 @@ def index_and_report(data):
    for attempt in d['attempts']:
     if attempt['status']=='rejected':quality.append(f"| {cid} | {key} attempt {attempt['number']} | rejected | — | {attempt['reason']} |")
  lines+=['','## Composition and storage','',f'Retained library size: **{stored_bytes(ROOT):,} bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.','', 'Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.','', 'Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.']
- quality+=['','## Validation','', '- Eleven compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).','- Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
+ quality+=['','## Validation','', '- Thirteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).','- Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
  (ROOT/'README.md').write_text('\n'.join(lines).rstrip()+'\n');(ROOT/'QUALITY_REPORT.md').write_text('\n'.join(quality)+'\n')
 
 if __name__=='__main__':

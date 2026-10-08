@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 Tolerated drift: small embroidery and twig arrangements, gathered back hair, mild lighting. Portrait shoulder cropping is intentional; crowns remain complete. Skin and hair detail tiles use separately generated portrait/detail images with recorded crops. No metal armour or weapon is prescribed for this character; the signature-gear tile shows the crown.
+
+Studio backdrop in costume macro replaced through code segmentation; original appearance pixels and full-resolution source retained. Sampling regions reviewed against visible material boundaries; concealed material exceptions have null values instead of invented colours.

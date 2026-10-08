@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 Reviewed four body views and three portraits individually. Own RIGHT glaive remains fixed through rotation. Minor leaf engraving, belt and cloak fold drift is tolerated; portraits deliberately crop shoulders. A-pose angles remain within 20–40 degrees where projected. Skin and hair tiles are crops of separately generated portrait sources; costume and glaive are independent detail generations. Fine hair and crest segmentation reviewed; material samples are rendered and lit, not albedo.
+
+Studio backdrop in costume macro replaced through code segmentation; original appearance pixels and full-resolution source retained. Sampling regions reviewed against visible material boundaries; concealed material exceptions have null values instead of invented colours.

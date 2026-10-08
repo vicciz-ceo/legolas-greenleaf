@@ -40,20 +40,52 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "cloak",
+        "material": "deep red woven cloth",
         "color_hex": "#74242c",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Galadhrim male elf of Lothlorien: original face, pointed ears, long warm blond hair; ornate fluted golden armour, deep red cloak, dark leggings and boots; longbow held low in own LEFT hand, back quiver, right hand empty."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "tunic",
+        "material": "dark olive wool",
+        "color_hex": "#424832",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "trousers",
+        "material": "dark olive wool",
+        "color_hex": "#424832",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "bracers",
+        "material": "leather",
         "color_hex": "#584231",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
+        "color_hex": "#584231",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#584231",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [
@@ -94,7 +126,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Galadhrim male elf of Lothlorien: original face, pointed ears, long warm blond hair; ornate fluted golden armour, deep red cloak, dark leggings and boots; longbow held low in own LEFT hand, back quiver, right hand empty."
+    "description": "Galadhrim male elf of Lothlorien: original face, pointed ears, long warm blond hair; ornate fluted golden armour, deep red cloak, dark leggings and boots; longbow held low in own LEFT hand, back quiver, right hand empty.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#74242c",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Galadhrim male elf of Lothlorien: original face, pointed ears, long warm blond hair; ornate fluted golden armour, deep red cloak, dark leggings and boots; longbow held low in own LEFT hand, back quiver, right hand empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#584231",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -373,8 +423,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
-      "size_bytes": 137995,
+      "sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+      "size_bytes": 137257,
       "background_rgb": [
         127,
         127,
@@ -386,14 +436,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "4fd6973eff258b4fd8bf9a9e1ae47e3faf5db970a2f692bee6ee09a90dc90ddc",
+      "pre_jpeg_sha256": "248ef1477d601880019234719a450cdba46f0e7597006b5037c41f17443dab9b",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "2f0f379742b3d9dc4afda0419233f0f169d0aebaf5de79c77e776caacf8dfcc0",
+          "source_sha256": "6fe603f87f0d07e34d369822c713450b92d5d7f5e2855b3711cfd97a9895c0c8",
           "sheet_bbox_px": [
             107,
             12,
@@ -520,6 +570,16 @@
         263,
         918
       ]
+    },
+    {
+      "name": "trousers",
+      "sheet": "turnaround",
+      "rect_px": [
+        252,
+        805,
+        264,
+        818
+      ]
     }
   ],
   "observed": {
@@ -528,7 +588,7 @@
     "samples": {
       "skin": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           170,
           610,
@@ -547,7 +607,7 @@
       },
       "hair": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           750,
           620,
@@ -566,7 +626,7 @@
       },
       "tunic": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           205,
           400,
@@ -575,17 +635,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          49,
+          50,
           36,
           22
         ],
-        "srgb_hex": "#312416",
+        "srgb_hex": "#322416",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "cloak": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           155,
           200,
@@ -594,17 +654,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          84,
+          83,
           18,
           22
         ],
-        "srgb_hex": "#541216",
+        "srgb_hex": "#531216",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "bracers": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           183,
           230,
@@ -615,15 +675,15 @@
         "rgb": [
           91,
           65,
-          50
+          51
         ],
-        "srgb_hex": "#5b4132",
+        "srgb_hex": "#5b4133",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "belt": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           290,
           147,
@@ -642,7 +702,7 @@
       },
       "gold_armour": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+        "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
         "rect_px": [
           295,
           20,
@@ -651,11 +711,11 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          156,
+          154,
           118,
           73
         ],
-        "srgb_hex": "#9c7649",
+        "srgb_hex": "#9a7649",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
@@ -675,6 +735,25 @@
           57
         ],
         "srgb_hex": "#5a4739",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "trousers": {
+        "sheet": "elf_galadhrim_turnaround.jpg",
+        "sheet_sha256": "66c57ee676625e2b2d65d24fdbf4a9cd85ea16b7deb92b0aff22ae501df0237b",
+        "rect_px": [
+          252,
+          805,
+          264,
+          818
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          47,
+          15,
+          12
+        ],
+        "srgb_hex": "#2f0f0c",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       }

@@ -40,20 +40,60 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "jacket",
+        "material": "dull blue quilted cloth",
         "color_hex": "#566473",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "tunic",
+        "material": "coarse beige wool",
+        "color_hex": "#b5a58b",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "cap",
+        "material": "brown wool",
+        "color_hex": "#685444",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "trousers",
+        "material": "dark brown wool",
+        "color_hex": "#493f35",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
         "color_hex": "#5c4431",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "pouch",
+        "material": "leather",
+        "color_hex": "#5c4431",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#5c4431",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [],
@@ -79,7 +119,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour."
+    "description": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#566473",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#5c4431",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -355,8 +413,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
-      "size_bytes": 181370,
+      "sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+      "size_bytes": 179352,
       "background_rgb": [
         127,
         127,
@@ -368,14 +426,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "94bfe43dbf58bc94b079f1adc4b1e304fa8616a7a8e2af7e169cef3b1545c761",
+      "pre_jpeg_sha256": "0eb7ebec2e4052e9e590bae6b8c1f5fc8abee888351a1ffccbe6dadcf8f0220e",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "f18505da745f45820a062a631a03319b12338ef89a87f7242edee6f8608a9bfd",
+          "source_sha256": "5aea7b90a4cd011937104a48cb6917f69b7392b72888da158526ae9e0fb10179",
           "sheet_bbox_px": [
             107,
             12,
@@ -530,7 +588,7 @@
     "samples": {
       "skin": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           310,
           525,
@@ -549,7 +607,7 @@
       },
       "hair": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           680,
           600,
@@ -568,7 +626,7 @@
       },
       "jacket": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           125,
           85,
@@ -577,17 +635,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          59,
+          60,
           62,
           69
         ],
-        "srgb_hex": "#3b3e45",
+        "srgb_hex": "#3c3e45",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "tunic": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           220,
           120,
@@ -606,7 +664,7 @@
       },
       "belt": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           220,
           235,
@@ -616,16 +674,16 @@
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
           103,
-          74,
+          75,
           51
         ],
-        "srgb_hex": "#674a33",
+        "srgb_hex": "#674b33",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "pouch": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           315,
           270,
@@ -635,16 +693,16 @@
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
           59,
-          47,
+          48,
           40
         ],
-        "srgb_hex": "#3b2f28",
+        "srgb_hex": "#3b3028",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "pouch_fastening_metal": {
         "sheet": "laketown_man_details.jpg",
-        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
         "rect_px": [
           866,
           231,

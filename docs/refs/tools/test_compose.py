@@ -38,6 +38,8 @@ class ComposeTests(unittest.TestCase):
                    'sampling':[{'name':'cloth','sheet':'details','rect_px':[64,64,128,128]}]}
         design=self.data['design']
         design.update(display_name='Fixture',height_m=1.85,proportions={f:0.2 for f in c.PROPORTION_FIELDS},face={f:'fixture' for f in ('shape','eyes','brow','nose','lips','ears','skin_base_hex','skin_variation')},hair={f:'fixture' for f in ('root_hex','tip_hex','length_m','style','braids')},outfit_layers=[],armor=[],weapons=[],silhouette_keywords=[],avoid=[])
+        design['face'].update(eyes={'iris_hex':'#506070','shape':'almond','size_note':'natural'},skin_base_hex='#c0a090')
+        design['hair'].update(root_hex='#503020',tip_hex='#503020',length_m=.35)
         (self.folder/'notes.md').write_text('Synthetic fixture only.')
         self.store(self.data)
 
@@ -83,6 +85,24 @@ class ComposeTests(unittest.TestCase):
         report=c.check_all()
         self.assertEqual(report['status'],'PARTIAL')
         self.assertEqual(report['entries'][0]['status'],'FAIL')
+
+    def test_invalid_design_colours_and_material_ranges_fail(self):
+        data=copy.deepcopy(self.data);data['design']['face']['eyes']['iris_hex']='brown'
+        with self.assertRaisesRegex(ValueError,'sRGB'):c.validate_schema(data)
+        data=copy.deepcopy(self.data);data['design']['armor']=[{'name':'plate','material':'steel','color_hex':'#aaaaaa','roughness':1.1,'metalness':1}]
+        with self.assertRaisesRegex(ValueError,'allowed range'):c.validate_schema(data)
+        data=copy.deepcopy(self.data);data['design']['hair']['length_m']=True
+        with self.assertRaisesRegex(ValueError,'finite number'):c.validate_schema(data)
+
+    def test_concealed_material_never_gets_fabricated_colour(self):
+        self.data['design']['concealed_materials']={'hair':'Completely covered by prescribed helmet.'}
+        self.data['sampling'].append({'name':'hair','sheet':'face','not_visible':'Completely covered by prescribed helmet.'})
+        self.store(self.data);self.ready()
+        sample=json.loads((self.folder/'spec.json').read_text())['observed']['samples']['hair']
+        self.assertIsNone(sample['rgb']);self.assertIsNone(sample['rect_px'])
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text());data['observed']['samples']['hair']['rgb']=[1,2,3];self.store(data)
+        with self.assertRaisesRegex(ValueError,'fabricated'):c.check('fixture')
 
     def test_detects_stale_source_and_height_change(self):
         self.ready()

@@ -40,20 +40,60 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "surcoat",
+        "material": "black embroidered wool",
         "color_hex": "#292929",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Gondor soldier: original human face; black surcoat bearing a decorative white tree emblem, mail, polished steel plates, tall winged Minas Tirith helmet; sword in own RIGHT hand, kite shield on own LEFT arm; leather boots."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "cloak",
+        "material": "black wool",
+        "color_hex": "#292929",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "trousers",
+        "material": "dark woven wool",
+        "color_hex": "#292929",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
         "color_hex": "#574735",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "bracers",
+        "material": "leather",
+        "color_hex": "#574735",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "gloves",
+        "material": "leather",
+        "color_hex": "#574735",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#574735",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [
@@ -100,7 +140,28 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Gondor soldier: original human face; black surcoat bearing a decorative white tree emblem, mail, polished steel plates, tall winged Minas Tirith helmet; sword in own RIGHT hand, kite shield on own LEFT arm; leather boots."
+    "description": "Gondor soldier: original human face; black surcoat bearing a decorative white tree emblem, mail, polished steel plates, tall winged Minas Tirith helmet; sword in own RIGHT hand, kite shield on own LEFT arm; leather boots.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#292929",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Gondor soldier: original human face; black surcoat bearing a decorative white tree emblem, mail, polished steel plates, tall winged Minas Tirith helmet; sword in own RIGHT hand, kite shield on own LEFT arm; leather boots."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#574735",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "concealed_materials": {
+      "trousers": "Trousers are fully concealed by mail, surcoat and steel greaves in the prescribed outfit."
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -380,8 +441,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
-      "size_bytes": 151847,
+      "sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+      "size_bytes": 150580,
       "background_rgb": [
         127,
         127,
@@ -393,14 +454,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "dabaad107577cde96c109c231c9ce7bd34d40cd1c4cd2a3382a9dfd7d285feef",
+      "pre_jpeg_sha256": "f92b2c036f997e7a69e5e6803be0bb4f161e0f531c83945feb81f1c301e3af2c",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "1bfc630a3da8e410e7562274f2123851bf8bc8d8e8b9a1575a30d0d46dbdf083",
+          "source_sha256": "8288f8c42d205e2828c424b54847b349235328508cc1ab945bcef7b563925a9f",
           "sheet_bbox_px": [
             107,
             12,
@@ -473,9 +534,9 @@
       "sheet": "details",
       "rect_px": [
         275,
-        210,
+        330,
         300,
-        240
+        370
       ]
     },
     {
@@ -522,20 +583,20 @@
       "name": "steel_mail",
       "sheet": "details",
       "rect_px": [
-        220,
-        90,
-        265,
-        165
+        151,
+        137,
+        170,
+        170
       ]
     },
     {
       "name": "steel_plate",
       "sheet": "details",
       "rect_px": [
-        155,
-        30,
-        180,
-        65
+        187,
+        55,
+        212,
+        82
       ]
     },
     {
@@ -557,6 +618,11 @@
         276,
         925
       ]
+    },
+    {
+      "name": "trousers",
+      "sheet": "turnaround",
+      "not_visible": "Trousers are fully concealed by mail, surcoat and steel greaves in the prescribed outfit."
     }
   ],
   "observed": {
@@ -565,7 +631,7 @@
     "samples": {
       "skin": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           150,
           730,
@@ -584,7 +650,7 @@
       },
       "hair": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           635,
           550,
@@ -603,26 +669,26 @@
       },
       "surcoat": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           275,
-          210,
+          330,
           300,
-          240
+          370
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          27,
-          27,
-          29
+          25,
+          25,
+          26
         ],
-        "srgb_hex": "#1b1b1d",
+        "srgb_hex": "#19191a",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "cloak": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           300,
           20,
@@ -632,16 +698,16 @@
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
           55,
-          51,
+          50,
           48
         ],
-        "srgb_hex": "#373330",
+        "srgb_hex": "#373230",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "belt": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           265,
           263,
@@ -650,17 +716,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          76,
+          77,
           60,
           52
         ],
-        "srgb_hex": "#4c3c34",
+        "srgb_hex": "#4d3c34",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "bracers": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           140,
           270,
@@ -679,7 +745,7 @@
       },
       "gloves": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           125,
           420,
@@ -698,45 +764,45 @@
       },
       "steel_mail": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
-          220,
-          90,
-          265,
-          165
+          151,
+          137,
+          170,
+          170
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          24,
-          23,
-          23
+          79,
+          75,
+          74
         ],
-        "srgb_hex": "#181717",
+        "srgb_hex": "#4f4b4a",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "steel_plate": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
-          155,
-          30,
-          180,
-          65
+          187,
+          55,
+          212,
+          82
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          171,
-          171,
-          176
+          204,
+          200,
+          197
         ],
-        "srgb_hex": "#ababb0",
+        "srgb_hex": "#ccc8c5",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "dark_shield_steel": {
         "sheet": "gondor_details.jpg",
-        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
         "rect_px": [
           770,
           250,
@@ -770,6 +836,16 @@
         ],
         "srgb_hex": "#463b36",
         "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "trousers": {
+        "sheet": "gondor_turnaround.jpg",
+        "sheet_sha256": "66e038e5e21f8cf5280b364c7a53e2a871a4c4044c0e1d57cbaeb824103a404c",
+        "rect_px": null,
+        "rgb": null,
+        "srgb_hex": null,
+        "visibility": "not_visible",
+        "reason": "Trousers are fully concealed by mail, surcoat and steel greaves in the prescribed outfit.",
         "interpretation": "rendered and lit, not albedo"
       }
     }

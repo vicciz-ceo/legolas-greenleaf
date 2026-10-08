@@ -21,7 +21,9 @@ def intake(cid,key,path,crop=None,remove_detail_bg=False):
   temp=Path('/tmp/greenleaf-intake-crop.png');image.save(temp);inp=temp
  else:inp=original
  if key.startswith(('views/','face_views/')):
-  result=compose.segment(inp,folder/relative,max_height=560 if key.startswith('views/') else 320,backend='rembg')
+  config=json.loads((folder/'spec.json').read_text()).get('composition',{}).get('source_heights',{})
+  height=config.get('body',560) if key.startswith('views/') else config.get('face',320)
+  result=compose.segment(inp,folder/relative,max_height=height,backend='rembg')
  else:
   image=image.convert('RGBA' if remove_detail_bg else 'RGB');image.thumbnail((256,256),Image.Resampling.LANCZOS)
   (folder/relative).parent.mkdir(parents=True,exist_ok=True);image.save(folder/relative,optimize=True)

@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+Original deep-crouch pose is an explicit exception to standing A-pose. Nominal standing height remains 1.48 m; posed overall silhouette target 1.10 m includes ears and is authored intent. Arm separation still follows relaxed A-pose.

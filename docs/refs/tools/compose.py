@@ -462,6 +462,13 @@ def sample(cid):
         sheet = item['sheet']
         require(sheet in ('turnaround','face','details'), 'Unknown sampling sheet')
         filename = f'{cid}_{sheet}.jpg'
+        if item.get('not_visible'):
+            require(item['name'] in data['design'].get('concealed_materials',{}), 'Unobservable sample needs an explicit design concealment exception')
+            samples[item['name']]={'sheet':filename,'sheet_sha256':digest(folder/filename),
+                                  'rect_px':None,'rgb':None,'srgb_hex':None,
+                                  'visibility':'not_visible','reason':item['not_visible'],
+                                  'interpretation':'rendered and lit, not albedo'}
+            continue
         im = Image.open(folder/filename).convert('RGB')
         rect = item['rect_px']
         x0,y0,x1,y1 = map(int,rect)
@@ -579,8 +586,13 @@ def check(cid):
             human_rec=v['human']
             require(human_rec['height_px']==round(1.85*turn['px_per_m']),'Human comparison height wrong')
     require(data.get('observed',{}).get('interpretation')=='rendered and lit, not albedo' or data.get('composition',{}).get('silhouette_only'), 'Missing observed rendered colour samples')
-    for s in data.get('observed',{}).get('samples',{}).values():
+    for name,s in data.get('observed',{}).get('samples',{}).items():
         require(digest(folder/s['sheet'])==s['sheet_sha256'],'Observed sample is stale')
+        if s.get('visibility')=='not_visible':
+            require(name in data['design'].get('concealed_materials',{}),'Unobservable material lacks a design exception')
+            require(s['rect_px'] is None and s['rgb'] is None and s['srgb_hex'] is None,'Unobservable material must not have fabricated sampled values')
+            require(bool(s.get('reason')),'Unobservable material needs a reason')
+            continue
         im=np.asarray(Image.open(folder/s['sheet']).convert('RGB'))
         x0,y0,x1,y1=s['rect_px']
         rgb=np.floor(np.median(im[y0:y1,x0:x1].reshape(-1,3),axis=0)+.5).astype(int).tolist()
@@ -612,6 +624,28 @@ def validate_schema(data):
     for field in ('root_hex','tip_hex','length_m','style','braids'):
         require(field in design['hair'],f'Missing hair.{field}')
     require(all(isinstance(design[f],list) for f in ('outfit_layers','armor','weapons','silhouette_keywords','avoid')), 'Design list fields must be arrays')
+    def number(value, label, minimum=0, maximum=None):
+        require(isinstance(value,(int,float)) and not isinstance(value,bool) and math.isfinite(value), f'{label}: expected finite number')
+        require(value>=minimum and (maximum is None or value<=maximum), f'{label}: outside allowed range')
+    def colour(value,label):
+        require(isinstance(value,str) and len(value)==7 and value[0]=='#' and all(c in '0123456789abcdefABCDEF' for c in value[1:]), f'{label}: expected sRGB #rrggbb')
+    number(design['height_m'],'height_m',.001)
+    number(design['overall_height_m'],'overall_height_m',.001)
+    for name,value in design['proportions'].items():
+        if name in PROPORTION_FIELDS:number(value,'proportions.'+name,0,1 if name in ('bulk_0to1','hunch_0to1') else None)
+    eyes=design['face']['eyes']
+    require(isinstance(eyes,dict) and all(k in eyes for k in ('iris_hex','shape','size_note')),'Missing structured face.eyes')
+    colour(eyes['iris_hex'],'face.eyes.iris_hex');colour(design['face']['skin_base_hex'],'face.skin_base_hex')
+    for key in ('root_hex','tip_hex'):colour(design['hair'][key],'hair.'+key)
+    number(design['hair']['length_m'],'hair.length_m')
+    for category,fields in [('outfit_layers',('name','material','color_hex','roughness','sheen','notes')),('armor',('name','material','color_hex','roughness','metalness'))]:
+        for item in design[category]:
+            require(isinstance(item,dict) and all(k in item for k in fields),'Missing '+category+' component fields')
+            colour(item['color_hex'],category+'.color_hex');number(item['roughness'],category+'.roughness',0,1)
+            field='sheen' if category=='outfit_layers' else 'metalness';number(item[field],category+'.'+field,0,1)
+    for item in design['weapons']:
+        require(isinstance(item,dict) and all(k in item for k in ('kind','length_m','notes')),'Missing weapon fields')
+        number(item['length_m'],'weapon.length_m',.001)
 
 
 def stored_bytes(folder):
@@ -654,6 +688,8 @@ def check_all():
             continue
         try:
             result=check(cid)
+            statuses=[d['status'] for d in entry.get('deliverables',{}).values()]
+            require(not statuses or all(s=='accepted' for s in statuses),'Visual review checklist remains incomplete')
         except (ValueError,KeyError,OSError,StopIteration) as error:
             statuses=[d['status'] for d in entry.get('deliverables',{}).values()]
             result={'id':cid,'status':'FAIL' if statuses and all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING','reason':str(error)}

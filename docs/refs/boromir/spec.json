@@ -40,20 +40,60 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
+        "name": "tunic",
+        "material": "dark embroidered wool",
         "color_hex": "#474f64",
         "roughness": 0.85,
         "sheen": 0.3,
-        "notes": "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet; fur-collared dark cloak over blue-grey tunic, leather belt and boots; carved pale Horn of Gondor at own RIGHT hip; sheathed sword own LEFT hip; both hands empty."
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
+        "name": "cloak",
+        "material": "dark wool",
+        "color_hex": "#383837",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "fur_collar",
+        "material": "coarse brown fur",
+        "color_hex": "#786451",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "trousers",
+        "material": "dark wool",
+        "color_hex": "#413a32",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "bracers",
+        "material": "leather",
         "color_hex": "#614d37",
         "roughness": 0.72,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "belt",
+        "material": "leather",
+        "color_hex": "#614d37",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
+      },
+      {
+        "name": "boots",
+        "material": "leather",
+        "color_hex": "#614d37",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Authored component design target from original clothing description; numerical colour/PBR intent is not measured albedo."
       }
     ],
     "armor": [
@@ -96,7 +136,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet; fur-collared dark cloak over blue-grey tunic, leather belt and boots; carved pale Horn of Gondor at own RIGHT hip; sheathed sword own LEFT hip; both hands empty."
+    "description": "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet; fur-collared dark cloak over blue-grey tunic, leather belt and boots; carved pale Horn of Gondor at own RIGHT hip; sheathed sword own LEFT hip; both hands empty.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#474f64",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet; fur-collared dark cloak over blue-grey tunic, leather belt and boots; carved pale Horn of Gondor at own RIGHT hip; sheathed sword own LEFT hip; both hands empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#614d37",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -372,8 +430,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
-      "size_bytes": 187358,
+      "sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+      "size_bytes": 185987,
       "background_rgb": [
         127,
         127,
@@ -385,14 +443,14 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "ab2060cf7a961293459540a8928ecf7839065c382eb28c635edd69ef6cc42300",
+      "pre_jpeg_sha256": "3ca238f3c8ab9d0be01c1492a8efa605fb3ed0f309c9f74705e076962b4a333b",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
           "name": "cloth_leather",
           "label": "CLOTH / LEATHER",
           "source": "details/cloth_leather.png",
-          "source_sha256": "5a4234dd8d0cc4c3210191d88475e6dd1050b5707c11d952af629bdb57ec391b",
+          "source_sha256": "6ee64078ff558c270d200172e80fb384502bf4ce6ba6ed94108c65020ef2150d",
           "sheet_bbox_px": [
             107,
             12,
@@ -557,7 +615,7 @@
     "samples": {
       "skin": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           300,
           540,
@@ -576,7 +634,7 @@
       },
       "hair": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           700,
           620,
@@ -595,7 +653,7 @@
       },
       "tunic": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           180,
           110,
@@ -614,7 +672,7 @@
       },
       "cloak": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           360,
           180,
@@ -623,17 +681,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          66,
+          65,
           55,
-          50
+          49
         ],
-        "srgb_hex": "#423732",
+        "srgb_hex": "#413731",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "fur_collar": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           280,
           25,
@@ -652,7 +710,7 @@
       },
       "leather_bracers": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           320,
           235,
@@ -661,17 +719,17 @@
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          86,
+          85,
           71,
           68
         ],
-        "srgb_hex": "#564744",
+        "srgb_hex": "#554744",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "leather_belt": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           215,
           245,
@@ -682,15 +740,15 @@
         "rgb": [
           75,
           56,
-          50
+          51
         ],
-        "srgb_hex": "#4b3832",
+        "srgb_hex": "#4b3833",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },
       "steel_mail": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           320,
           150,
@@ -709,7 +767,7 @@
       },
       "horn_bronze_fittings": {
         "sheet": "boromir_details.jpg",
-        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
           650,
           35,

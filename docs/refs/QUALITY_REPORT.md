@@ -259,28 +259,30 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | laketown_man | observed | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
 | orc | views/front | accepted | 2 | Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent. |
 | orc | views/front attempt 1 | rejected | — | Arms below 20-degree A-pose requirement; first front otherwise has correct wiry hunch and own-right cleaver. |
-| orc | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
-| orc | views/side | pending | 0 | Not yet attempted |
-| orc | views/back | pending | 0 | Not yet attempted |
-| orc | face_views/front | pending | 0 | Not yet attempted |
-| orc | face_views/three_quarter | pending | 0 | Not yet attempted |
-| orc | face_views/side | pending | 0 | Not yet attempted |
-| orc | details/cloth_leather | pending | 0 | Not yet attempted |
-| orc | details/weapon_metal | pending | 0 | Not yet attempted |
-| orc | details/skin | pending | 0 | Not yet attempted |
-| orc | details/hair | pending | 0 | Not yet attempted |
-| orc | turnaround | pending | 0 | Not yet attempted |
-| orc | spec | pending | 0 | Not yet attempted |
-| orc | notes | pending | 0 | Not yet attempted |
-| orc | check | pending | 0 | Not yet attempted |
-| orc | face | pending | 0 | Not yet attempted |
-| orc | details | pending | 0 | Not yet attempted |
-| orc | observed | pending | 0 | Not yet attempted |
-| goblin | views/front | pending | 0 | Not yet attempted |
-| goblin | views/three_quarter | pending | 0 | Not yet attempted |
-| goblin | views/side | pending | 0 | Not yet attempted |
-| goblin | views/back | pending | 0 | Not yet attempted |
-| goblin | face_views/front | pending | 0 | Not yet attempted |
+| orc | views/three_quarter | accepted | 1 | Three-quarter hunched rotation consistent with front; cleaver own RIGHT, left hand empty and all anatomy/tips clear. |
+| orc | views/side | accepted | 1 | Exact side profile and hunch; own RIGHT cleaver near, own LEFT empty far; original scars, hair, rags and wrapped feet consistent. |
+| orc | views/back | accepted | 1 | True rear, matted loose back hair and scrap armour side preserved; cleaver own RIGHT image right, five fingers where visible, full extremities. |
+| orc | face_views/front | accepted | 1 | Original mottled grey-green face, amber eyes scars fangs pointed ears matted black hair, no actor likeness, full crown. |
+| orc | face_views/three_quarter | accepted | 1 | Same original face/scars/teeth; correct three-quarter portrait, pointed ears and hair crown complete. |
+| orc | face_views/side | accepted | 1 | Exact original-face profile, matching scars/fangs/matted hair, full ear and crown. |
+| orc | details/cloth_leather | accepted | 1 | Coarse torn brown cloth, leather and rusty scrap plate match original accepted outfit. |
+| orc | details/weapon_metal | accepted | 2 | Second object preserves pointed triangular blade, single spine hole, rust and wrapped handle from accepted front. |
+| orc | details/weapon_metal attempt 1 | rejected | — | Flat broad blade tip replaces the pointed triangular cleaver in accepted front; regenerate from tight weapon reference. |
+| orc | details/skin | accepted | 1 | Mottled skin/scar crop from independently generated accepted front portrait. |
+| orc | details/hair | accepted | 1 | Matted black hair crop from independently generated accepted profile portrait. |
+| orc | turnaround | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | spec | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | notes | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | check | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | face | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | details | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| orc | observed | accepted | 0 | Body, face, detail and 64px silhouette gates pass; deterministic checks and 2.26 MB budget pass. |
+| goblin | views/front | accepted | 2 | Second front repairs hand: close crop confirms one thumb and four separate clawed fingers. Correct deep crouch, own-right low blade, two arms/legs and complete ears/feet. |
+| goblin | views/front attempt 1 | rejected | — | Empty left hand lacks five clearly separate digits and shows merged/overlapping finger geometry; repair anatomy before accepting front. |
+| goblin | views/three_quarter | accepted | 1 | Same deep crouch and original large-eyed face, correct 3/4 rotation; own-right blade low, left empty hand retains five digits and all extremities intact. |
+| goblin | views/side | accepted | 1 | Exact side profile deep crouch, two legs with natural knees/feet, own-right blade near and left empty hand far; identity/ears/rags consistent. |
+| goblin | views/back | accepted | 1 | True rear deep crouch, loose sparse back hair and ear silhouette consistent; blade own RIGHT image right, empty left hand retains five digits, feet/gear complete. |
+| goblin | face_views/front | accepted | 1 | Original large-eyed pale-grey face, sparse hair/long bat ears match accepted front; full ear tips visible, no actor likeness. |
 | goblin | face_views/three_quarter | pending | 0 | Not yet attempted |
 | goblin | face_views/side | pending | 0 | Not yet attempted |
 | goblin | details/cloth_leather | pending | 0 | Not yet attempted |
@@ -623,6 +625,6 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 
 ## Validation
 
-- Eleven compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
+- Thirteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

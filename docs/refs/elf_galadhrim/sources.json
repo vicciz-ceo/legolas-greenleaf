@@ -73,8 +73,9 @@
       1536
     ],
     "crop_px": null,
+    "detail_background_removed": true,
     "saved_cutout": "details/cloth_leather.png",
-    "cutout_sha256": "2f0f379742b3d9dc4afda0419233f0f169d0aebaf5de79c77e776caacf8dfcc0"
+    "cutout_sha256": "6fe603f87f0d07e34d369822c713450b92d5d7f5e2855b3711cfd97a9895c0c8"
   },
   "details/weapon_metal": {
     "original_full_resolution_path": "/workspace/generated_images/exec-d49009a5-6487-4f49-82af-f9f12416ca4d.png",

@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+Four body views, three portraits and detail sources reviewed individually. First front rejected for narrow arms; second accepted after blade-edge crop/pixel audit confirmed complete outline. One provisional clipping rejection was reversed with that evidence and retained in review history. First weapon object rejected because it changed pointed blade to flat tip; second conditioned on tight source crop matches. Cleaver stays own RIGHT, left hand empty. Minor rust chips, strap count and rag tears vary; tolerated. Mottled grey-green/brown skin and black hair samples are rendered and lit, not albedo. No rejected image is retained as a source.
