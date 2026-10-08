@@ -10,7 +10,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | gimli | 1.37 | <img src="gimli/gimli_turnaround.jpg" width="180" alt="gimli"> | [spec](gimli/spec.json) | [notes](gimli/notes.md) | accepted |
 | aragorn | 1.88 | <img src="aragorn/aragorn_turnaround.jpg" width="180" alt="aragorn"> | [spec](aragorn/spec.json) | [notes](aragorn/notes.md) | accepted |
 | tauriel | 1.78 | <img src="tauriel/tauriel_turnaround.jpg" width="180" alt="tauriel"> | [spec](tauriel/spec.json) | [notes](tauriel/notes.md) | accepted |
-| bolg | 2.6 | — | [spec](bolg/spec.json) | [notes](bolg/notes.md) | pending |
+| bolg | 2.6 | <img src="bolg/bolg_turnaround.jpg" width="180" alt="bolg"> | [spec](bolg/spec.json) | [notes](bolg/notes.md) | accepted |
 | cave_troll | 4.5 | <img src="cave_troll/cave_troll_turnaround.jpg" width="180" alt="cave_troll"> | [spec](cave_troll/spec.json) | [notes](cave_troll/notes.md) | accepted |
 | thranduil | 1.9 | <img src="thranduil/thranduil_turnaround.jpg" width="180" alt="thranduil"> | [spec](thranduil/spec.json) | [notes](thranduil/notes.md) | accepted |
 | elf_mirkwood | 1.85 | <img src="elf_mirkwood/elf_mirkwood_turnaround.jpg" width="180" alt="elf_mirkwood"> | [spec](elf_mirkwood/spec.json) | [notes](elf_mirkwood/notes.md) | accepted |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **69,536,619 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **69,545,737 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

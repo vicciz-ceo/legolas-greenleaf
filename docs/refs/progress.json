@@ -1740,40 +1740,60 @@
           "path": "/workspace/greenleaf-refs/docs/refs/bolg/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Independent by-eye review of all three final JPEG sheets and the 64px silhouette strip passed. The giant pale scarred original orc, bald bolted skull/jaw, heavy rusted armor, central riveted abdominal plate, right-hand mace and empty left hand remain consistent. All required body angles and complete contours are present; portraits and four individual detail macros adequately document the accepted appearance.",
+        "receipt_sha256": "3daa19c63742e5c0a31c172e292c97c55729aa3d30495973d27c4bcea9735a96",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/bolg/bolg_turnaround.jpg",
+            "sha256": "1e6ff2722de11ec2a138b6d39b6cf1812403ca0251ad48be637b67bf6920d03c"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/bolg/bolg_face.jpg",
+            "sha256": "f627daa40266f45e97137b7952fbca2779184c2c2d62344a57b858ed5606ab9e"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/bolg/bolg_details.jpg",
+            "sha256": "54bfd1e1ac31c65f50f697f88f0641e1a40082447f8945e104dddba4c4a0acb6"
+          }
+        ],
+        "defects": []
       }
     },
     "cave_troll": {
@@ -7268,7 +7288,7 @@
   },
   "validation_summary": [
     "24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
-    "35 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
+    "36 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }
