@@ -35,5 +35,111 @@
     "detail_background_removed": false,
     "saved_cutout": "views/side.png",
     "cutout_sha256": "76f7f980c0027f83bf629a73a52630d5928885c51b6d26a122718ee5d3d370bf"
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-116b626d-73ba-4ccd-ac45-6377f5d151c3.png",
+    "original_sha256": "168f643d145f9ec626e181d17908c3d5eba2746d44648993e1a80aef0dffb961",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "d4ab41ab60b94f66b4bc3ce530f4e84d787f4bd5366dbd77275dae5cdc1faaae"
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png",
+    "original_sha256": "89e7056e109d06257afa8445fa56330f47b7fc55e5e9f7d50569bea912cb631c",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "7cc8228d5525b373dfa608a396f4300add677c3476aed4eefc3e9656aaaaa237"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5c2a97cc-02a6-4a78-aa83-4ccf4cb2ded2.png",
+    "original_sha256": "f0c385a9c9e4515ee5ec829853e48ca7b38e96ec7281c15542ed86aad4138495",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "389ecdc88b6caedf4f35f6c38c0d7916afa72d2057834331e78231e476a164e4"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c6b96018-f7c4-4d16-82f2-10b8e0f04452.png",
+    "original_sha256": "c9811ec30e5ccb3d91d986da1197e57ffedfd1dd6903a9b756228f9c8d58a025",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "9cc823bbb627255f29fad7bc3080682d241ed6bb5dd8e1da06b37ec6189eeb48"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-ebd9d21e-5b11-43b4-9d8c-739b52354c22.png",
+    "original_sha256": "d0d1476a46bda0ac9df7e9ef994b2353da0ed7f5cb218ac55e7314a4c39be9c4",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "f0819525abc6354e883f6087b570f0ed0a591bdb959b73dab6b763348be56e3d"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-bff825c8-361b-4f0a-be96-2da085b69aa0.png",
+    "original_sha256": "34ce1c44b3a8c3023d75e75c43a55bb042e66f7f3c6569671483d2beb55235ea",
+    "original_size_px": [
+      1046,
+      1504
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "6adf3a87bbc4f3a24ddad8cc5707f02cb55a78df350f6265a0f69cd0aa46adda"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png",
+    "original_sha256": "89e7056e109d06257afa8445fa56330f47b7fc55e5e9f7d50569bea912cb631c",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": [
+      450,
+      280,
+      735,
+      750
+    ],
+    "detail_background_removed": true,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "863716d748f5ad7fc97fd753241c66460652243df4206522cc58656b621aec85"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png",
+    "original_sha256": "89e7056e109d06257afa8445fa56330f47b7fc55e5e9f7d50569bea912cb631c",
+    "original_size_px": [
+      1225,
+      1284
+    ],
+    "crop_px": [
+      325,
+      30,
+      850,
+      290
+    ],
+    "detail_background_removed": true,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "8ed10cad8f6071de9968b377b0a468ba04ffa99f2ba9134d83603a4fc5765679"
   }
 }

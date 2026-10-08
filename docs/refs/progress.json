@@ -2503,56 +2503,101 @@
           "path": "/workspace/generated_images/exec-25d78ffe-90ad-436d-8b18-928430785dfd.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct three-quarter original large-eyed face with complete ear tips, consistent sparse hair/rusty shoulder scraps.",
+              "path": "/workspace/generated_images/exec-5c2a97cc-02a6-4a78-aa83-4ccf4cb2ded2.png"
+            }
+          ],
+          "reason": "Correct three-quarter original large-eyed face with complete ear tips, consistent sparse hair/rusty shoulder scraps.",
+          "path": "/workspace/generated_images/exec-5c2a97cc-02a6-4a78-aa83-4ccf4cb2ded2.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile, original large amber eye and long ear; full sparse crown, consistent teeth and rusty shoulder scraps.",
+              "path": "/workspace/generated_images/exec-c6b96018-f7c4-4d16-82f2-10b8e0f04452.png"
+            }
+          ],
+          "reason": "Exact side profile, original large amber eye and long ear; full sparse crown, consistent teeth and rusty shoulder scraps.",
+          "path": "/workspace/generated_images/exec-c6b96018-f7c4-4d16-82f2-10b8e0f04452.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same coarse brown torn wraps, leather waist ties and rusty shoulder/hip scraps; no invented ornamental gear.",
+              "path": "/workspace/generated_images/exec-ebd9d21e-5b11-43b4-9d8c-739b52354c22.png"
+            }
+          ],
+          "reason": "Same coarse brown torn wraps, leather waist ties and rusty shoulder/hip scraps; no invented ornamental gear.",
+          "path": "/workspace/generated_images/exec-ebd9d21e-5b11-43b4-9d8c-739b52354c22.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete same jagged pointed rusty triangular blade and leather handle, isolated with no hand or redesign.",
+              "path": "/workspace/generated_images/exec-bff825c8-361b-4f0a-be96-2da085b69aa0.png"
+            }
+          ],
+          "reason": "Complete same jagged pointed rusty triangular blade and leather handle, isolated with no hand or redesign.",
+          "path": "/workspace/generated_images/exec-bff825c8-361b-4f0a-be96-2da085b69aa0.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed crop of independently generated accepted portrait; original skin/hair preserved, background removed."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed crop of independently generated accepted portrait; original skin/hair preserved, background removed."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheet/64 px review and compose.py check passed; all sources within budget."
         }
       }
     },
@@ -2561,12 +2606,36 @@
       "design_extent_m": 2.1,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arms remain near vertical, below required 20\u201340 degree A-pose; otherwise complete broad orc/gear. Repair before rotations.",
+              "path": "/workspace/generated_images/exec-b04caf03-57b4-4bd3-a9ff-6315a4e861ed.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Repaired A-pose separates both hands from hips; close crop confirms thumb and four fingers. Pale broad orc, own-right complete mace and opaque kilt match design.",
+              "path": "/workspace/generated_images/exec-32ea9dd0-26b9-41ac-bb32-577f4629427f.png"
+            }
+          ],
+          "reason": "Repaired A-pose separates both hands from hips; close crop confirms thumb and four fingers. Pale broad orc, own-right complete mace and opaque kilt match design.",
+          "path": "/workspace/generated_images/exec-32ea9dd0-26b9-41ac-bb32-577f4629427f.png"
         },
         "views/three_quarter": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-26ff87ee-f737-44c1-8c18-74aa17b837d7.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-26ff87ee-f737-44c1-8c18-74aa17b837d7.png"
         },
         "views/side": {
           "status": "pending",

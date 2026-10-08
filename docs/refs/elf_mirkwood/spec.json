@@ -179,8 +179,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
-      "size_bytes": 113910,
+      "sha256": "bfa8c1e59dd7a8e45b3b4e2f8a6e2129347a44c7f2e695961e71cd77036d9e85",
+      "size_bytes": 113908,
       "background_rgb": [
         127,
         127,
@@ -192,7 +192,7 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "31ff75dfb92428ec800755a1aec580a25d236b008e0cdba79acda86744ad9ea8",
+      "pre_jpeg_sha256": "497f165581348bb36a18bc6b2bb897d16e70167350c49308a3925b0d70f1aac6",
       "decoded_background_tolerance": 3,
       "px_per_m": 220.81218274111674,
       "baseline_y_px": 940,
@@ -220,6 +220,13 @@
           "silhouette_height_px": 435,
           "baseline_y_px": 940,
           "resize_uniform_scale": 0.7767857142857143,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            435
+          ],
+          "alpha_threshold": 127,
           "mirrored": false
         },
         {
@@ -241,6 +248,13 @@
           "silhouette_height_px": 435,
           "baseline_y_px": 940,
           "resize_uniform_scale": 0.7767857142857143,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            263,
+            435
+          ],
+          "alpha_threshold": 127,
           "mirrored": false
         },
         {
@@ -262,6 +276,13 @@
           "silhouette_height_px": 435,
           "baseline_y_px": 940,
           "resize_uniform_scale": 0.7767857142857143,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            151,
+            435
+          ],
+          "alpha_threshold": 127,
           "mirrored": false
         },
         {
@@ -283,6 +304,13 @@
           "silhouette_height_px": 435,
           "baseline_y_px": 940,
           "resize_uniform_scale": 0.7767857142857143,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            296,
+            435
+          ],
+          "alpha_threshold": 127,
           "mirrored": false
         }
       ],
@@ -717,7 +745,7 @@
       },
       "boots": {
         "sheet": "elf_mirkwood_turnaround.jpg",
-        "sheet_sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
+        "sheet_sha256": "bfa8c1e59dd7a8e45b3b4e2f8a6e2129347a44c7f2e695961e71cd77036d9e85",
         "rect_px": [
           278,
           910,
@@ -736,7 +764,7 @@
       },
       "trousers": {
         "sheet": "elf_mirkwood_turnaround.jpg",
-        "sheet_sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
+        "sheet_sha256": "bfa8c1e59dd7a8e45b3b4e2f8a6e2129347a44c7f2e695961e71cd77036d9e85",
         "rect_px": [
           298,
           802,

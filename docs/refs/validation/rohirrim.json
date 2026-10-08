@@ -2,9 +2,9 @@
   "id": "rohirrim",
   "status": "PASS",
   "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
-  "character_bytes": 2332246,
+  "character_bytes": 2332842,
   "character_budget_bytes": 2500000,
-  "library_bytes": 18217948,
+  "library_bytes": 19202159,
   "library_budget_bytes": 70000000,
   "px_per_m": 238.54166666666669,
   "visual_review": "Separate by-eye gate; not certified by this command."

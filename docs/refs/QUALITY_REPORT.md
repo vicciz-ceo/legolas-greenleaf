@@ -283,21 +283,22 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | goblin | views/side | accepted | 1 | Exact side profile deep crouch, two legs with natural knees/feet, own-right blade near and left empty hand far; identity/ears/rags consistent. |
 | goblin | views/back | accepted | 1 | True rear deep crouch, loose sparse back hair and ear silhouette consistent; blade own RIGHT image right, empty left hand retains five digits, feet/gear complete. |
 | goblin | face_views/front | accepted | 1 | Original large-eyed pale-grey face, sparse hair/long bat ears match accepted front; full ear tips visible, no actor likeness. |
-| goblin | face_views/three_quarter | pending | 0 | Not yet attempted |
-| goblin | face_views/side | pending | 0 | Not yet attempted |
-| goblin | details/cloth_leather | pending | 0 | Not yet attempted |
-| goblin | details/weapon_metal | pending | 0 | Not yet attempted |
-| goblin | details/skin | pending | 0 | Not yet attempted |
-| goblin | details/hair | pending | 0 | Not yet attempted |
-| goblin | turnaround | pending | 0 | Not yet attempted |
-| goblin | spec | pending | 0 | Not yet attempted |
-| goblin | notes | pending | 0 | Not yet attempted |
-| goblin | check | pending | 0 | Not yet attempted |
-| goblin | face | pending | 0 | Not yet attempted |
-| goblin | details | pending | 0 | Not yet attempted |
-| goblin | observed | pending | 0 | Not yet attempted |
-| gundabad | views/front | pending | 0 | Not yet attempted |
-| gundabad | views/three_quarter | pending | 0 | Not yet attempted |
+| goblin | face_views/three_quarter | accepted | 1 | Correct three-quarter original large-eyed face with complete ear tips, consistent sparse hair/rusty shoulder scraps. |
+| goblin | face_views/side | accepted | 1 | Exact side profile, original large amber eye and long ear; full sparse crown, consistent teeth and rusty shoulder scraps. |
+| goblin | details/cloth_leather | accepted | 1 | Same coarse brown torn wraps, leather waist ties and rusty shoulder/hip scraps; no invented ornamental gear. |
+| goblin | details/weapon_metal | accepted | 1 | Complete same jagged pointed rusty triangular blade and leather handle, isolated with no hand or redesign. |
+| goblin | details/skin | accepted | 0 | Reviewed crop of independently generated accepted portrait; original skin/hair preserved, background removed. |
+| goblin | details/hair | accepted | 0 | Reviewed crop of independently generated accepted portrait; original skin/hair preserved, background removed. |
+| goblin | turnaround | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | spec | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | notes | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | check | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | face | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | details | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| goblin | observed | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
+| gundabad | views/front | accepted | 2 | Repaired A-pose separates both hands from hips; close crop confirms thumb and four fingers. Pale broad orc, own-right complete mace and opaque kilt match design. |
+| gundabad | views/front attempt 1 | rejected | — | Arms remain near vertical, below required 20–40 degree A-pose; otherwise complete broad orc/gear. Repair before rotations. |
+| gundabad | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
 | gundabad | views/side | pending | 0 | Not yet attempted |
 | gundabad | views/back | pending | 0 | Not yet attempted |
 | gundabad | face_views/front | pending | 0 | Not yet attempted |

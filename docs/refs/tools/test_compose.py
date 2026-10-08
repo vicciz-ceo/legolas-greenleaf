@@ -65,6 +65,18 @@ class ComposeTests(unittest.TestCase):
             self.assertEqual(image.size,(1024,1024))
         self.assertEqual(c.preview64('fixture')['temporary_directory'].startswith(tempfile.gettempdir()),True)
 
+    def test_resampled_alpha_bounds_define_calibrated_height(self):
+        im = Image.new('RGBA', (100, 400), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(im)
+        draw.rectangle((20, 8, 79, 399), fill=(90, 70, 50, 255))
+        draw.line((50, 0, 50, 8), fill=(90, 70, 50, 129), width=1)
+        crop, _ = c.tight(im)
+        old = crop.resize((25, 100), Image.Resampling.LANCZOS)
+        self.assertLess(c.bbox(old, require_transparency=False)[3] - c.bbox(old, require_transparency=False)[1], 100)
+        normalized, scale, bounds = c.resize_silhouette(crop, 100)
+        self.assertEqual(c.bbox(normalized, require_transparency=False), (0, 0, normalized.width, 100))
+        self.assertAlmostEqual(scale * crop.height - (bounds[1]), 100, delta=1)
+
     def test_supplement_actual_scale_png_and_stale_files(self):
         data=copy.deepcopy(self.data)
         data['composition']={'supplement':True,'metric':True,'columns':2,'rows':1,'png_name':'fixture.png',

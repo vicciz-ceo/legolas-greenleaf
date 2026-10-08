@@ -71,11 +71,11 @@ def text(draw, xy, label, size=22, anchor='mm'):
     draw.text(xy, label, fill=(238, 238, 238), font=font(size), anchor=anchor)
 
 
-def bbox(im):
+def bbox(im, require_transparency=True):
     require(im.mode == 'RGBA', 'Source must be RGBA, not an opaque studio render')
     alpha = np.asarray(im.getchannel('A'))
     mask = alpha > 127
-    require(mask.any() and (~mask).any(), 'Source needs a nonempty cutout and transparent background')
+    require(mask.any() and (not require_transparency or (~mask).any()), 'Source needs a nonempty cutout and transparent background')
     yy, xx = np.where(mask)
     return (int(xx.min()), int(yy.min()), int(xx.max()) + 1, int(yy.max()) + 1)
 
@@ -84,6 +84,31 @@ def tight(im):
     # Ignore only near-transparent background. Do not rotate, warp or mirror.
     b = bbox(im)
     return im.crop(b), b
+
+
+def resize_silhouette(crop, target_height):
+    """Uniformly resample, then measure alpha instead of assuming raster bounds.
+
+    Subpixel thin tips can lose one alpha-threshold row during downsampling.
+    Preserve one original extremal pixel at each vertical edge if resampling
+    fades it below half opacity. This protects thin hair/weapon tips without
+    stretching either axis or adding any new subject colour.
+    """
+    width = max(1, round(crop.width * target_height / crop.height))
+    resized = crop.resize((width, target_height), Image.Resampling.LANCZOS)
+    pixels = np.array(resized)
+    original = np.asarray(crop)
+    for edge, original_edge in ((0, 0), (-1, -1)):
+        if pixels[edge, :, 3].max() <= 127:
+            original_x = int(original[original_edge, :, 3].argmax())
+            x = min(width - 1, round(original_x * width / crop.width))
+            if pixels[edge, x, 3] == 0:
+                pixels[edge, x, :3] = original[original_edge, original_x, :3]
+            pixels[edge, x, 3] = 128
+    resized = Image.fromarray(pixels, 'RGBA')
+    bounds = bbox(resized, require_transparency=False)
+    require(bounds[3]-bounds[1] == target_height, 'Resampled alpha height lost calibration')
+    return resized.crop(bounds), target_height / crop.height, bounds
 
 
 def source(folder, relative):
@@ -258,9 +283,9 @@ def turnaround(cid):
     # Set ppm from the actual integer silhouette height, not an unrounded target.
     ppm = target_height / height
     for i, (view, path, crop, srcbox) in enumerate(images):
-        width = max(1, round(crop.width * target_height / crop.height))
+        resized, uniform_scale, raster_bounds = resize_silhouette(crop, target_height)
+        width = resized.width
         require(width <= panel_width, f'{view}: panel overflow')
-        resized = crop.resize((width, target_height), Image.Resampling.LANCZOS)
         x = left + i*(panel_width + gap) + (panel_width-width)//2
         y = baseline-target_height
         canvas.paste(resized, (x, y), resized)
@@ -269,7 +294,8 @@ def turnaround(cid):
         boxes.append({'view': view, 'source': str(path.relative_to(folder)), 'source_sha256': digest(path),
                       'source_bbox_px': list(srcbox), 'sheet_bbox_px': [x, y, x+width, baseline],
                       'silhouette_height_px': target_height, 'baseline_y_px': baseline,
-                      'resize_uniform_scale': target_height/crop.height, 'mirrored': False})
+                      'resize_uniform_scale': uniform_scale, 'resampled_alpha_bbox_px': list(raster_bounds),
+                      'alpha_threshold': 127, 'mirrored': False})
     scale = ruler(draw, ppm, baseline, height)
     output = folder / f'{cid}_turnaround.jpg'
     result = save_sheet(canvas, output)

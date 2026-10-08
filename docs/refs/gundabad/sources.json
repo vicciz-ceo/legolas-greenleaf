@@ -1,0 +1,14 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-32ea9dd0-26b9-41ac-bb32-577f4629427f.png",
+    "original_sha256": "8c1c2515fcb8d34ff0283d4c08aab50058d84e6503dabfc1598bde6c257efdd4",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "4053b6d7e7331af5e2696560bc3bd7963337be8f910d4f37b9966959ad141dc5"
+  }
+}

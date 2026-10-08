@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 Original deep-crouch pose is an explicit exception to standing A-pose. Nominal standing height remains 1.48 m; posed overall silhouette target 1.10 m includes ears and is authored intent. Arm separation still follows relaxed A-pose.
+
+Accepted front attempt 2 repairs merged/four-digit left hand from attempt 1. All subsequent views retain deep crouch, own-right blade, large amber eyes and bat ears. Width fitting reduces common scale to 275.455 px/m. Torso/kilt rags, fibrous waist bindings and rusty plate patches are authored costume choices where the original brief is silent. Minor plate-edge, ties and lighting drift tolerated.
