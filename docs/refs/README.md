@@ -16,7 +16,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | elf_mirkwood | 1.85 | <img src="elf_mirkwood/elf_mirkwood_turnaround.jpg" width="180" alt="elf_mirkwood"> | [spec](elf_mirkwood/spec.json) | [notes](elf_mirkwood/notes.md) | accepted |
 | elf_galadhrim | 1.85 | <img src="elf_galadhrim/elf_galadhrim_turnaround.jpg" width="180" alt="elf_galadhrim"> | [spec](elf_galadhrim/spec.json) | [notes](elf_galadhrim/notes.md) | accepted |
 | boromir | 1.85 | <img src="boromir/boromir_turnaround.jpg" width="180" alt="boromir"> | [spec](boromir/spec.json) | [notes](boromir/notes.md) | accepted |
-| gondor | 1.82 | — | [spec](gondor/spec.json) | [notes](gondor/notes.md) | pending |
+| gondor | 1.82 | <img src="gondor/gondor_turnaround.jpg" width="180" alt="gondor"> | [spec](gondor/spec.json) | [notes](gondor/notes.md) | accepted |
 | rohirrim | 1.8 | — | [spec](rohirrim/spec.json) | [notes](rohirrim/notes.md) | pending |
 | laketown_man | 1.75 | — | [spec](laketown_man/spec.json) | [notes](laketown_man/notes.md) | pending |
 | orc | 1.7 | — | [spec](orc/spec.json) | [notes](orc/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **9,074,462 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **10,922,480 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

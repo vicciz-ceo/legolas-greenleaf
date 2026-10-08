@@ -18,7 +18,7 @@ python -m unittest discover -s docs/refs/tools -p 'test_*.py' -v
 
 Run from any working directory; the library root is resolved relative to the script. `segment` accepts `--threshold`, `--max-height`, and `--backend auto|threshold|rembg`. It trims transparent margins, downsizes uniformly, adds a four-pixel transparent safety border, and writes optimized RGBA PNG. Height including padding must not exceed 1024 px.
 
-A character has `spec.json` with top-level `id`, `design`, `composition` and optional `sampling`. Every design value is intent, marked `design.source: "design_target"`. Unspecified proportions and materials are authored targets, not measured anatomy. `measured` is written by the three composition commands; `observed` is written by `sample`. Both include source or sheet hashes so `check` rejects stale files.
+A character has `spec.json` with top-level `id`, `design`, `composition` and optional `sampling`. Every design value is intent, marked `design.source: "design_target"`. Unspecified proportions and materials are authored targets, not measured anatomy. `measured` is written only by composition commands; `observed` is written by `sample`. Both include source or sheet hashes so `check` rejects stale files.
 
 Humanoid sources are `views/{front,three_quarter,side,back}.png`. The alpha > 127 bounding box is the silhouette datum. All views receive the same silhouette height and foot baseline. The ruler measures **overall height including hair, ears and headgear**, not necessarily bare crown height. Nothing held or mounted may extend above the headgear or below the feet.
 
@@ -30,6 +30,14 @@ For creatures, set `composition.creature: true`, `views` (four names), `referenc
 
 `sampling` is an array of author-reviewed rectangles: `{"name":"skin","sheet":"face","rect_px":[x0,y0,x1,y1]}`. Coordinates are half-open rectangles in the final JPEG. Per-channel median sRGB, rectangle, sheet hash and the statement **rendered and lit, not albedo** are stored under `observed`. The design palette is preserved.
 
-All three output canvases begin at exact RGB (127,127,127). JPEG quality is 88 with no chroma subsampling. JPEG is lossy: ringing immediately beside a subject or label can perturb background pixels. `check` asserts the exact safe 16×16 background patch in the decoded JPEG; metadata records the exact pre-encoding canvas colour. It does not falsely claim that every decoded edge pixel is lossless.
+All three output canvases begin at exact RGB (127,127,127). JPEG quality is 88 with no chroma subsampling. JPEG is lossy: ringing immediately beside a subject or label can perturb background pixels. `check` reconstructs the lossless canvas from retained sources and compares its raw-pixel hash and exact safe background patch. The decoded JPEG patch uses a maximum per-channel tolerance of 3; metadata records the exact pre-encoding canvas colour. It does not falsely claim that every decoded edge pixel is lossless.
 
 Budgets use decimal bytes: 2,500,000 per character and 70,000,000 for the whole library, including source images, JSON, notes and tooling. Previews go to the operating system's temporary directory and are never committed. A passing `check` certifies construction and freshness, **not** anatomy, identity, gear sides or artistic quality; those receive a separate by-eye review.
+
+Creature `scale_axes` can override the projected axis by view. `landmark_regions_px` holds reviewed rectangles in retained-cutout coordinates, for example the mumak body region below its shoulder and excluding the howdah. Code computes half-open alpha extrema, source and sheet endpoints and effective scale. The reference view extent must equal `scale_extent_m`; other projected extents are explicitly authored design targets, never inferred anatomy.
+
+`turnaround_labels` overrides body-view labels where a character uses a left profile. Face labels are independent.
+
+`compose.py supplement <id>` composes supplemental object lineups and comparison sources. Specify `composition.supplement: true`, `columns`, `rows`, `items` (name, label, relative source), and optional `metric`, per-item `extent_m`, `canvas_px` and `png_name`. Metric extents are projected vertical end-to-end spans of reviewed upright objects. One common scale fits every item; code draws quarter-metre rulers. Nonmetric howdah close-ups and dwarf upper-body comparisons explicitly record their original-brief exceptions. `check <id>` and `check --all` validate actual sources, reconstructed canvas, PNG/JPEG, layout and budgets; an accepted ledger alone never certifies a supplement.
+
+Current regression suite: eleven tests. For fine crowns and hair, the current intake uses `GREENLEAF_REMBG_MODEL=bria-rmbg`. Run only one segmentation worker and reuse its rembg session to avoid excess memory. Full-resolution originals remain under `/workspace/generated_images`, and `sources.json` records their paths, hashes and retained crop coordinates.

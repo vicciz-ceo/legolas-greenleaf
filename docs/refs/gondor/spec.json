@@ -126,5 +126,652 @@
         "source": "details/hair.png"
       }
     ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "gondor_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "66e038e5e21f8cf5280b364c7a53e2a871a4c4044c0e1d57cbaeb824103a404c",
+      "size_bytes": 139410,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "d0d1d0de59b4fe6522571555bc01df12d5c0b5ce9968783f787bb3f224e0c958",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 258.3333333333333,
+      "baseline_y_px": 940,
+      "overall_height_m": 2.04,
+      "height_fill_fraction": 0.5146484375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "4a47d1531f501560569ebf28e1cc5496bdb8f2657836e32260d51b669cf4950e",
+          "source_bbox_px": [
+            4,
+            4,
+            329,
+            564
+          ],
+          "sheet_bbox_px": [
+            165,
+            413,
+            471,
+            940
+          ],
+          "silhouette_height_px": 527,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9410714285714286,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "139870c5da428a5105d1b935ede264eae8b81a9dc98a75bcace3d1e1faee8e23",
+          "source_bbox_px": [
+            4,
+            4,
+            326,
+            564
+          ],
+          "sheet_bbox_px": [
+            510,
+            413,
+            813,
+            940
+          ],
+          "silhouette_height_px": 527,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9410714285714286,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "8f775a7d92e8295345c45b7d2030fd6cdf351e23840027a58dcf9fbf99179002",
+          "source_bbox_px": [
+            4,
+            4,
+            184,
+            564
+          ],
+          "sheet_bbox_px": [
+            920,
+            413,
+            1089,
+            940
+          ],
+          "silhouette_height_px": 527,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9410714285714286,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "2a118527fe6caec713f195487b0242e223694ffa3e26bbca5ea2098e06490e29",
+          "source_bbox_px": [
+            4,
+            4,
+            343,
+            564
+          ],
+          "sheet_bbox_px": [
+            1188,
+            413,
+            1507,
+            940
+          ],
+          "silhouette_height_px": 527,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9410714285714286,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 413,
+        "endpoint_m": 2.04,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 875
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 811
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 746
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 682
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 617
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 552
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 488
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 423
+          }
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "gondor_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "52d258482a02e7f2e82786e461234c054c8c10804bab07f3d2c5cbdc7b99ad5b",
+      "size_bytes": 187552,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "d900ce4baef2c5306eed251857b41ee2b361b2941471cc39bb997f4747e9e839",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "c13ed9a18d92eb3c9ae61723157922993a84fd075c75c451de46ba3702fc053a",
+          "source_bbox_px": [
+            4,
+            4,
+            224,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            251,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "4eaa520b72fdf3a92a6c43fde13053473b0c9031c0638690871d8eb471c8ae54",
+          "source_bbox_px": [
+            4,
+            4,
+            219,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            235,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "8061ddf9f37835a9ba18c845f3350c8b86753585a67e979a3380691a0f366bfe",
+          "source_bbox_px": [
+            4,
+            4,
+            178,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            74,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "gondor_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+      "size_bytes": 151847,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "dabaad107577cde96c109c231c9ce7bd34d40cd1c4cd2a3382a9dfd7d285feef",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "1bfc630a3da8e410e7562274f2123851bf8bc8d8e8b9a1575a30d0d46dbdf083",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960",
+          "sheet_bbox_px": [
+            674,
+            12,
+            862,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "aa26eda58f45ab1d07317cbf38ccac02cf84810bf4797484545759014534d305",
+          "sheet_bbox_px": [
+            42,
+            524,
+            469,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "2926fbbc9d634cfaf9e3ef6e229d70664a9344eaa53b45ca70323118ee62e0e6",
+          "sheet_bbox_px": [
+            583,
+            524,
+            953,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        150,
+        730,
+        220,
+        810
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        635,
+        550,
+        675,
+        590
+      ]
+    },
+    {
+      "name": "surcoat",
+      "sheet": "details",
+      "rect_px": [
+        275,
+        210,
+        300,
+        240
+      ]
+    },
+    {
+      "name": "cloak",
+      "sheet": "details",
+      "rect_px": [
+        300,
+        20,
+        330,
+        40
+      ]
+    },
+    {
+      "name": "belt",
+      "sheet": "details",
+      "rect_px": [
+        265,
+        263,
+        295,
+        279
+      ]
+    },
+    {
+      "name": "bracers",
+      "sheet": "details",
+      "rect_px": [
+        140,
+        270,
+        170,
+        345
+      ]
+    },
+    {
+      "name": "gloves",
+      "sheet": "details",
+      "rect_px": [
+        125,
+        420,
+        145,
+        445
+      ]
+    },
+    {
+      "name": "steel_mail",
+      "sheet": "details",
+      "rect_px": [
+        220,
+        90,
+        265,
+        165
+      ]
+    },
+    {
+      "name": "steel_plate",
+      "sheet": "details",
+      "rect_px": [
+        155,
+        30,
+        180,
+        65
+      ]
+    },
+    {
+      "name": "dark_shield_steel",
+      "sheet": "details",
+      "rect_px": [
+        770,
+        250,
+        800,
+        340
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        265,
+        903,
+        276,
+        925
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          150,
+          730,
+          220,
+          810
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          172,
+          138,
+          122
+        ],
+        "srgb_hex": "#ac8a7a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          635,
+          550,
+          675,
+          590
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          35,
+          25,
+          20
+        ],
+        "srgb_hex": "#231914",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "surcoat": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          275,
+          210,
+          300,
+          240
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          27,
+          27,
+          29
+        ],
+        "srgb_hex": "#1b1b1d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "cloak": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          300,
+          20,
+          330,
+          40
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          55,
+          51,
+          48
+        ],
+        "srgb_hex": "#373330",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "belt": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          265,
+          263,
+          295,
+          279
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          76,
+          60,
+          52
+        ],
+        "srgb_hex": "#4c3c34",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "bracers": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          140,
+          270,
+          170,
+          345
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          90,
+          78,
+          74
+        ],
+        "srgb_hex": "#5a4e4a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "gloves": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          125,
+          420,
+          145,
+          445
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          72,
+          61,
+          59
+        ],
+        "srgb_hex": "#483d3b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "steel_mail": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          220,
+          90,
+          265,
+          165
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          24,
+          23,
+          23
+        ],
+        "srgb_hex": "#181717",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "steel_plate": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          155,
+          30,
+          180,
+          65
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          171,
+          171,
+          176
+        ],
+        "srgb_hex": "#ababb0",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "dark_shield_steel": {
+        "sheet": "gondor_details.jpg",
+        "sheet_sha256": "5baf4240d2eee81299bfe0d044787b28101f6fbd912dbd2b1f0ae13bacb97f05",
+        "rect_px": [
+          770,
+          250,
+          800,
+          340
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          35,
+          35,
+          34
+        ],
+        "srgb_hex": "#232322",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "gondor_turnaround.jpg",
+        "sheet_sha256": "66e038e5e21f8cf5280b364c7a53e2a871a4c4044c0e1d57cbaeb824103a404c",
+        "rect_px": [
+          265,
+          903,
+          276,
+          925
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          70,
+          59,
+          54
+        ],
+        "srgb_hex": "#463b36",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
   }
 }

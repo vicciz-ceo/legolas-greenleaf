@@ -63,6 +63,27 @@ class ComposeTests(unittest.TestCase):
             self.assertEqual(image.size,(1024,1024))
         self.assertEqual(c.preview64('fixture')['temporary_directory'].startswith(tempfile.gettempdir()),True)
 
+    def test_supplement_actual_scale_png_and_stale_files(self):
+        data=copy.deepcopy(self.data)
+        data['composition']={'supplement':True,'metric':True,'columns':2,'rows':1,'png_name':'fixture.png',
+                             'items':[{'name':v,'source':f'views/{v}.png','label':v.upper(),'extent_m':1.0+i}
+                                      for i,v in enumerate(('front','back'))]}
+        self.store(data)
+        rec=c.supplement('fixture')
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        for obj in rec['objects']:
+            box=obj['sheet_bbox_px']
+            self.assertEqual(box[3]-box[1],round(obj['extent_m']*rec['px_per_m']))
+        self.assertEqual(rec['rulers'][0]['top_y_px'],934-round(2*rec['px_per_m']))
+        im=Image.open(self.folder/'fixture.png');im.putpixel((1,1),(128,127,127));im.save(self.folder/'fixture.png')
+        with self.assertRaisesRegex(ValueError,'PNG changed'):c.check('fixture')
+
+    def test_supplement_accepted_ledger_cannot_hide_missing_assets(self):
+        (c.ROOT/'progress.json').write_text(json.dumps({'entries':{'fixture':{'kind':'supplement','deliverables':{'sheet':{'status':'accepted'}}}}}))
+        report=c.check_all()
+        self.assertEqual(report['status'],'PARTIAL')
+        self.assertEqual(report['entries'][0]['status'],'FAIL')
+
     def test_detects_stale_source_and_height_change(self):
         self.ready()
         source=self.folder/'views/front.png'
@@ -119,6 +140,24 @@ class ComposeTests(unittest.TestCase):
         self.store(self.data)
         c.turnaround('fixture')
         self.assertEqual(c.check('fixture')['status'],'PASS')
+
+    def test_creature_landmark_excludes_headgear_and_changes_axis(self):
+        Image.open(self.folder/'views/side.png').save(self.folder/'views/top.png')
+        config={'creature':True,'silhouette_only':True,'reference_view':'side',
+                'scale_axis':'height','scale_extent_m':14,
+                'views':['front','side','top','three_quarter'],
+                'projected_extents_m':{'front':14,'side':14,'top':20,'three_quarter':14},
+                'scale_axes':{'top':'width'},
+                'landmark_regions_px':{'side':[20,60,58,201]}}
+        self.data['composition'].update(config);self.store(self.data)
+        result=c.turnaround('fixture')
+        side=next(v for v in result['views'] if v['view']=='side')
+        self.assertEqual(side['measurement']['source_span_px'],141)
+        self.assertEqual(side['measurement']['source_endpoints_px'][0][1],60)
+        self.assertEqual(result['ruler']['endpoint_m'],14)
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text());data['composition']['landmark_regions_px']['side']=[20,59,58,201];self.store(data)
+        with self.assertRaisesRegex(ValueError,'recorded views|canvas'):c.check('fixture')
 
 
     def test_missing_schema_and_overlap_fail(self):

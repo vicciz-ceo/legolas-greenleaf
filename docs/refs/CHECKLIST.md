@@ -240,29 +240,29 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/three_quarter | accepted | 1 | Three-quarter torso consistent, sword own RIGHT far and shield own LEFT near camera; unclipped. |
 | views/side | accepted | 2 | Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge. |
 | views/back | accepted | 1 | True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/front | accepted | 1 | Whole winged helm, original frontal face clear, no headgear clipping. |
+| face_views/three_quarter | accepted | 1 | Original face and consistent helm; three-quarter portrait, wings complete. |
+| face_views/side | accepted | 1 | Exact original-face profile; winged helmet complete and consistent. |
+| details/cloth_leather | accepted | 1 | Black tree surcoat, steel mail and plates, brown leather match. |
+| details/weapon_metal | accepted | 1 | Tall steel shield correct outline and pictorial white tree; no letters. |
+| details/skin | accepted | 1 | Skin crop from independently generated front portrait. |
+| details/hair | accepted | 1 | Visible dark hair below helmet crop from independent profile portrait. |
+| turnaround | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| spec | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| notes | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| check | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| face | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| details | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| observed | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
 
 ## rohirrim
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
+| views/front | accepted | 2 | Second front has 30-degree A-pose, right sword and left horse shield, full tips and crest. |
+| views/three_quarter | accepted | 1 | Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side. |
+| views/side | accepted | 1 | Exact right side profile, left shield occluded naturally on far side; all extremities present. |
+| views/back | accepted | 1 | Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |

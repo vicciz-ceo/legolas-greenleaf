@@ -206,24 +206,25 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | gondor | views/side | accepted | 2 | Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge. |
 | gondor | views/side attempt 1 | rejected | — | Torso remained oblique and showed too much frontal tree; exact side body alignment required. |
 | gondor | views/back | accepted | 1 | True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete. |
-| gondor | face_views/front | pending | 0 | Not yet attempted |
-| gondor | face_views/three_quarter | pending | 0 | Not yet attempted |
-| gondor | face_views/side | pending | 0 | Not yet attempted |
-| gondor | details/cloth_leather | pending | 0 | Not yet attempted |
-| gondor | details/weapon_metal | pending | 0 | Not yet attempted |
-| gondor | details/skin | pending | 0 | Not yet attempted |
-| gondor | details/hair | pending | 0 | Not yet attempted |
-| gondor | turnaround | pending | 0 | Not yet attempted |
-| gondor | spec | pending | 0 | Not yet attempted |
-| gondor | notes | pending | 0 | Not yet attempted |
-| gondor | check | pending | 0 | Not yet attempted |
-| gondor | face | pending | 0 | Not yet attempted |
-| gondor | details | pending | 0 | Not yet attempted |
-| gondor | observed | pending | 0 | Not yet attempted |
-| rohirrim | views/front | pending | 0 | Not yet attempted |
-| rohirrim | views/three_quarter | pending | 0 | Not yet attempted |
-| rohirrim | views/side | pending | 0 | Not yet attempted |
-| rohirrim | views/back | pending | 0 | Not yet attempted |
+| gondor | face_views/front | accepted | 1 | Whole winged helm, original frontal face clear, no headgear clipping. |
+| gondor | face_views/three_quarter | accepted | 1 | Original face and consistent helm; three-quarter portrait, wings complete. |
+| gondor | face_views/side | accepted | 1 | Exact original-face profile; winged helmet complete and consistent. |
+| gondor | details/cloth_leather | accepted | 1 | Black tree surcoat, steel mail and plates, brown leather match. |
+| gondor | details/weapon_metal | accepted | 1 | Tall steel shield correct outline and pictorial white tree; no letters. |
+| gondor | details/skin | accepted | 1 | Skin crop from independently generated front portrait. |
+| gondor | details/hair | accepted | 1 | Visible dark hair below helmet crop from independent profile portrait. |
+| gondor | turnaround | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | spec | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | notes | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | check | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | face | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | details | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| gondor | observed | accepted | 0 | Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB. |
+| rohirrim | views/front | accepted | 2 | Second front has 30-degree A-pose, right sword and left horse shield, full tips and crest. |
+| rohirrim | views/front attempt 1 | rejected | — | Sword arm below 20-degree A-pose threshold; front needs wider arm abduction. |
+| rohirrim | views/three_quarter | accepted | 1 | Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side. |
+| rohirrim | views/side | accepted | 1 | Exact right side profile, left shield occluded naturally on far side; all extremities present. |
+| rohirrim | views/back | accepted | 1 | Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact. |
 | rohirrim | face_views/front | pending | 0 | Not yet attempted |
 | rohirrim | face_views/three_quarter | pending | 0 | Not yet attempted |
 | rohirrim | face_views/side | pending | 0 | Not yet attempted |
@@ -621,6 +622,6 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 
 ## Validation
 
-- Eight compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, fallback segmentation and whole-library entrypoint).
+- Eleven compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

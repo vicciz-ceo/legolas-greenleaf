@@ -1698,60 +1698,130 @@
           "path": "/workspace/generated_images/exec-4c9078fc-8d9d-469a-9fe6-1285f75245fe.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Whole winged helm, original frontal face clear, no headgear clipping.",
+              "path": "/workspace/generated_images/exec-fdfa6ac3-242f-4736-9e1b-0c4ae7079523.png"
+            }
+          ],
+          "reason": "Whole winged helm, original frontal face clear, no headgear clipping.",
+          "path": "/workspace/generated_images/exec-fdfa6ac3-242f-4736-9e1b-0c4ae7079523.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original face and consistent helm; three-quarter portrait, wings complete.",
+              "path": "/workspace/generated_images/exec-12be31cd-53de-4ccb-acc9-7618776053c2.png"
+            }
+          ],
+          "reason": "Original face and consistent helm; three-quarter portrait, wings complete.",
+          "path": "/workspace/generated_images/exec-12be31cd-53de-4ccb-acc9-7618776053c2.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact original-face profile; winged helmet complete and consistent.",
+              "path": "/workspace/generated_images/exec-da26f073-3081-4319-ac91-186bf3103357.png"
+            }
+          ],
+          "reason": "Exact original-face profile; winged helmet complete and consistent.",
+          "path": "/workspace/generated_images/exec-da26f073-3081-4319-ac91-186bf3103357.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Black tree surcoat, steel mail and plates, brown leather match.",
+              "path": "/workspace/generated_images/exec-72cf1fc5-d9fb-4f91-a5c1-b4d62fc2eb15.png"
+            }
+          ],
+          "reason": "Black tree surcoat, steel mail and plates, brown leather match.",
+          "path": "/workspace/generated_images/exec-72cf1fc5-d9fb-4f91-a5c1-b4d62fc2eb15.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Tall steel shield correct outline and pictorial white tree; no letters.",
+              "path": "/workspace/generated_images/exec-eaa0ae4c-da2d-431f-b84b-b2504418cd53.png"
+            }
+          ],
+          "reason": "Tall steel shield correct outline and pictorial white tree; no letters.",
+          "path": "/workspace/generated_images/exec-eaa0ae4c-da2d-431f-b84b-b2504418cd53.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Skin crop from independently generated front portrait.",
+              "path": "/workspace/generated_images/exec-fdfa6ac3-242f-4736-9e1b-0c4ae7079523.png"
+            }
+          ],
+          "reason": "Skin crop from independently generated front portrait.",
+          "path": "/workspace/generated_images/exec-fdfa6ac3-242f-4736-9e1b-0c4ae7079523.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Visible dark hair below helmet crop from independent profile portrait.",
+              "path": "/workspace/generated_images/exec-da26f073-3081-4319-ac91-186bf3103357.png"
+            }
+          ],
+          "reason": "Visible dark hair below helmet crop from independent profile portrait.",
+          "path": "/workspace/generated_images/exec-da26f073-3081-4319-ac91-186bf3103357.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual gate plus scale/schema/background/hash/budget checks pass, approximately 1.83 MB."
         }
       }
     },
@@ -1760,20 +1830,62 @@
       "design_extent_m": 1.8,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Sword arm below 20-degree A-pose threshold; front needs wider arm abduction.",
+              "path": "/workspace/generated_images/exec-ec70ea59-7cf7-43d9-a9f1-42d53ff54860.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second front has 30-degree A-pose, right sword and left horse shield, full tips and crest.",
+              "path": "/workspace/generated_images/exec-136995be-80d7-46dd-af70-8349711554ac.png"
+            }
+          ],
+          "reason": "Second front has 30-degree A-pose, right sword and left horse shield, full tips and crest.",
+          "path": "/workspace/generated_images/exec-136995be-80d7-46dd-af70-8349711554ac.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side.",
+              "path": "/workspace/generated_images/exec-87600941-568d-4c7f-9d5c-abe19a9ceefb.png"
+            }
+          ],
+          "reason": "Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side.",
+          "path": "/workspace/generated_images/exec-87600941-568d-4c7f-9d5c-abe19a9ceefb.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact right side profile, left shield occluded naturally on far side; all extremities present.",
+              "path": "/workspace/generated_images/exec-0509172d-bcba-4839-92db-dec332c7f52e.png"
+            }
+          ],
+          "reason": "Exact right side profile, left shield occluded naturally on far side; all extremities present.",
+          "path": "/workspace/generated_images/exec-0509172d-bcba-4839-92db-dec332c7f52e.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact.",
+              "path": "/workspace/generated_images/exec-a83590fd-203c-4257-8b26-a03b63dd2181.png"
+            }
+          ],
+          "reason": "Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact.",
+          "path": "/workspace/generated_images/exec-a83590fd-203c-4257-8b26-a03b63dd2181.png"
         },
         "face_views/front": {
           "status": "pending",

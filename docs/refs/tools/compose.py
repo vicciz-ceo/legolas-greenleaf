@@ -277,6 +277,34 @@ def turnaround(cid):
     return result
 
 
+def measurement_span(crop, srcbox, axis, region=None):
+    """Measure projected alpha extrema within a reviewed landmark region.
+
+    Region coordinates are author annotations in the retained cutout, not
+    claimed anatomical measurements. Only this function computes the span.
+    Endpoints use half-open silhouette edges, matching composition bounds.
+    """
+    require(axis in ('width','height'), 'Invalid measurement axis')
+    if region is None:
+        region = list(srcbox)
+    x0,y0,x1,y1 = map(int,region)
+    require(srcbox[0]<=x0<x1<=srcbox[2] and srcbox[1]<=y0<y1<=srcbox[3], 'Landmark region outside cutout silhouette bounds')
+    mask = np.asarray(crop.getchannel('A'))[y0-srcbox[1]:y1-srcbox[1],x0-srcbox[0]:x1-srcbox[0]] > 127
+    require(mask.any(), 'Landmark region has no subject')
+    yy,xx = np.where(mask)
+    bounds = [x0+int(xx.min()),y0+int(yy.min()),x0+int(xx.max())+1,y0+int(yy.max())+1]
+    if axis=='width':
+        mid = (bounds[1]+bounds[3])/2
+        points = [[bounds[0],mid],[bounds[2],mid]]
+        span = bounds[2]-bounds[0]
+    else:
+        mid = (bounds[0]+bounds[2])/2
+        points = [[mid,bounds[1]],[mid,bounds[3]]]
+        span = bounds[3]-bounds[1]
+    return {'source_endpoints_px':points,'source_span_px':span,'axis':axis,
+            'source_region_px':list(region),'definition':'half-open alpha>127 projected extrema inside author-reviewed landmark region'}
+
+
 def creature(cid):
     folder, specpath, data = load(cid)
     cfg = data['composition']
@@ -291,17 +319,18 @@ def creature(cid):
         require(im.height <= 1024, 'Creature source exceeds 1024 px')
         crop, srcbox = tight(im)
         images.append((view, path, crop, srcbox))
-    ref = next(item for item in images if item[0] == reference_view)
-    ref_pixels = ref[2].width if axis == 'width' else ref[2].height
+    measurements = {view:measurement_span(crop,srcbox,cfg.get('scale_axes',{}).get(view,axis),cfg.get('landmark_regions_px',{}).get(view))
+                    for view,path,crop,srcbox in images}
     # All creature views are generated at independent crops. Their explicit target
     # projected extents must be supplied; a side length is not a top wingspan.
     extents = cfg.get('projected_extents_m', {})
     require(all(view in extents for view in views), 'Supply projected_extents_m for each creature view')
+    require(float(extents[reference_view])==extent,'Reference extent differs from ruler target')
     available_w, available_h = 610, 360
     max_ppm = []
     for view, path, crop, srcbox in images:
         e = float(extents[view])
-        base = crop.width if axis == 'width' else crop.height
+        base = measurements[view]['source_span_px']
         max_ppm += [available_w * base / (crop.width * e), available_h * base / (crop.height * e)]
     ppm = min(max_ppm)
     canvas = Image.new('RGB', TURN_SIZE, BG)
@@ -309,7 +338,7 @@ def creature(cid):
     boxes = []
     for i, (view, path, crop, srcbox) in enumerate(images):
         e = float(extents[view])
-        base = crop.width if axis == 'width' else crop.height
+        base = measurements[view]['source_span_px']
         factor = e * ppm / base
         w, h = round(crop.width*factor), round(crop.height*factor)
         panel_x = (i%2)*768
@@ -320,16 +349,27 @@ def creature(cid):
         canvas.paste(image, (x, y), image)
         text(draw, (panel_x+420, baseline+50), LABELS.get(view, view.upper()), 18)
         marker = human(draw, panel_x+55, baseline, ppm)
+        annotation = measurements[view]
+        points = [[x+round((p[0]-srcbox[0])*w/crop.width),y+round((p[1]-srcbox[1])*h/crop.height)]
+                  for p in annotation['source_endpoints_px']]
+        coordinate = 0 if annotation['axis']=='width' else 1
+        actual_span = points[1][coordinate]-points[0][coordinate]
         boxes.append({'view': view, 'source': str(path.relative_to(folder)), 'source_sha256': digest(path),
                       'source_bbox_px': list(srcbox), 'sheet_bbox_px': [x,y,x+w,baseline],
-                      'projected_extent_m': e, 'scale_axis': axis, 'mirrored': False,
+                      'projected_extent_m': e, 'scale_axis': annotation['axis'], 'mirrored': False,
+                      'measurement':dict(annotation,sheet_endpoints_px=points,sheet_span_px=actual_span,
+                                         effective_px_per_m=actual_span/e),
                       'human': marker})
     # Calibrated quarter-metre ticks on the reference view's own extent.
     refbox = next(b for b in boxes if b['view'] == reference_view)
-    x0,y0,x1,y1 = refbox['sheet_bbox_px']
+    source_bounds = refbox['sheet_bbox_px']
+    start,end = refbox['measurement']['sheet_endpoints_px']
+    x0,y0 = start
+    x1,y1 = end
+    axis = refbox['scale_axis']
     ticks = []
     if axis == 'width':
-        ruler_y = y1+12
+        ruler_y = source_bounds[3]+12
         draw.line((x0, ruler_y, x1-1, ruler_y), fill=(225,225,225))
         effective_ppm = (x1-x0)/float(extents[reference_view])
         for i in range(math.floor(extent/.25)+1):
@@ -342,7 +382,8 @@ def creature(cid):
         calibration = {'axis':'horizontal','start_x_px':x0,'end_x_px':x1,'y_px':ruler_y,
                        'endpoint_m':extent,'px_per_m':effective_ppm,'step_m':.25,'ticks':ticks}
     else:
-        calibration = ruler(draw, (y1-y0)/extent, y1, extent, max(100,x0-25))
+        calibration = ruler(draw, (y1-y0)/extent, y1, extent, max(100,source_bounds[0]-25))
+        calibration['px_per_m'] = (y1-y0)/extent
     result = save_sheet(canvas, folder/f'{cid}_turnaround.jpg')
     result.update({'creature':True,'px_per_m':ppm,'views':boxes,'ruler':calibration,
                    'scale_axis':axis,'reference_view':reference_view,'scale_extent_m':extent,
@@ -452,6 +493,8 @@ def preview64(cid):
 
 def check(cid):
     folder,_,data = load(cid)
+    if data.get('composition', {}).get('supplement'):
+        return check_supplement(cid)
     validate_schema(data)
     require((folder/'notes.md').is_file(), 'Missing notes.md')
     measured=data.get('measured',{})
@@ -514,8 +557,11 @@ def check(cid):
             for t in r['ticks']:
                 require(t['x_px']==r['start_x_px']+round(t['value_m']*r['px_per_m']),'Creature tick wrong')
         else:
-            require(r['top_y_px']==r['baseline_y_px']-round(r['endpoint_m']*turn['px_per_m']),'Creature vertical ruler wrong')
+            require(r['top_y_px']==r['baseline_y_px']-round(r['endpoint_m']*r['px_per_m']),'Creature vertical ruler wrong')
+            for tick in r['ticks']:
+                require(tick['y_px']==r['baseline_y_px']-round(tick['value_m']*r['px_per_m']),'Creature vertical tick wrong')
         for v in turn['views']:
+            require(abs(v['measurement']['sheet_span_px']-v['projected_extent_m']*turn['px_per_m'])<=1.1,'Creature landmark scale mismatch')
             human_rec=v['human']
             require(human_rec['height_px']==round(1.85*turn['px_per_m']),'Human comparison height wrong')
     require(data.get('observed',{}).get('interpretation')=='rendered and lit, not albedo' or data.get('composition',{}).get('silhouette_only'), 'Missing observed rendered colour samples')
@@ -585,8 +631,12 @@ def check_all():
     for cid,entry in entries.items():
         if entry.get('kind')=='supplement':
             statuses=[d['status'] for d in entry['deliverables'].values()]
-            status='PASS' if all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING'
-            results.append({'id':cid,'status':status})
+            try:
+                result = check_supplement(cid)
+                require(all(s=='accepted' for s in statuses), 'Supplement review remains incomplete')
+            except (ValueError, KeyError, OSError, StopIteration) as error:
+                result = {'id':cid, 'status':'FAIL' if all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING', 'reason':str(error)}
+            results.append(result)
             continue
         try:
             result=check(cid)
@@ -599,6 +649,120 @@ def check_all():
     return {'status':'PASS' if all(r['status']=='PASS' for r in results) else 'PARTIAL','library_bytes':library,'library_budget_bytes':LIB_BUDGET,'entries':results}
 
 
+def supplement(cid):
+    """Compose reviewed object/variant sources; all layout and scale come from code."""
+    folder, specpath, data = load(cid)
+    cfg = data['composition']
+    require(cfg.get('supplement'), 'Not a supplemental sheet')
+    items = cfg['items']
+    columns, rows = cfg['columns'], cfg['rows']
+    require(0 < len(items) <= columns*rows, 'Invalid supplement grid')
+    canvas_size = tuple(cfg.get('canvas_px', TURN_SIZE))
+    canvas = Image.new('RGB', canvas_size, BG)
+    draw = ImageDraw.Draw(canvas)
+    left_margin = 80 if cfg.get('metric', False) else 0
+    cw, ch = (canvas_size[0]-left_margin)/columns, canvas_size[1]/rows
+    objects = []
+    for item in items:
+        path, im = source(folder, item['source'])
+        require(im.height <= 1024, 'Supplement source exceeds 1024 px')
+        crop, srcbox = tight(im)
+        objects.append((item, path, crop, srcbox))
+    metric = cfg.get('metric', False)
+    ppm = None
+    if metric:
+        # The specified extent is the projected end-to-end vertical span, not
+        # a curved surface length. Upright source geometry is reviewed first.
+        ppm = min(min((ch-140)/item['extent_m'],
+                      (cw-40)*crop.height/(crop.width*item['extent_m']))
+                  for item,path,crop,srcbox in objects)
+    geometry = []
+    for i,(item,path,crop,srcbox) in enumerate(objects):
+        factor = item['extent_m']*ppm/crop.height if metric else min((cw-40)/crop.width,(ch-100)/crop.height)
+        w,h = round(crop.width*factor),round(crop.height*factor)
+        baseline = round((i//columns+1)*ch-90)
+        x = round(left_margin+(i%columns)*cw+(cw-w)/2)
+        y = baseline-h
+        image = crop.resize((w,h),Image.Resampling.LANCZOS)
+        canvas.paste(image,(x,y),image)
+        text(draw,(round(left_margin+(i%columns+.5)*cw),baseline+35),item['label'],14 if columns>4 else 19)
+        geometry.append({'name':item['name'],'source':str(path.relative_to(folder)),
+                         'source_sha256':digest(path),'source_bbox_px':list(srcbox),
+                         'sheet_bbox_px':[x,y,x+w,baseline], 'mirrored':False,
+                         'extent_m':item.get('extent_m'), 'scale_axis':'vertical' if metric else None})
+    rulers = []
+    if metric:
+        # A narrow code ruler occupies the reserved left margin of each row.
+        # Item layout is inset enough that it cannot touch the ruler.
+        for row in range(rows):
+            baseline = round((row+1)*ch-90)
+            maximum = max(x['extent_m'] for x in items[row*columns:(row+1)*columns])
+            rulers.append(ruler(draw,ppm,baseline,maximum,65))
+    result = save_sheet(canvas,folder/f'{cid}.jpg')
+    if cfg.get('png_name'):
+        pngpath = folder/cfg['png_name']
+        require(pngpath.parent == folder, 'PNG must be directly in supplement folder')
+        canvas.save(pngpath,optimize=True)
+        result['lossless_png'] = {'path':pngpath.name,'sha256':digest(pngpath)}
+    result.update({'objects':geometry,'px_per_m':ppm,'rulers':rulers,
+                   'scale_requirement':'projected vertical design span' if metric else 'none; original supplemental close-up / upper-body exception'})
+    data.setdefault('measured',{})['supplement'] = result
+    write_spec(specpath,data)
+    return result
+
+
+def check_supplement(cid):
+    folder,_,data = load(cid)
+    require(data['design']['source']=='design_target','Wrong supplement design source')
+    require((folder/'notes.md').is_file(),'Missing supplement notes')
+    rec = data['measured']['supplement']
+    cfg = data['composition']
+    path = folder/rec['path']
+    require(digest(path)==rec['sha256'],'Supplement JPEG changed')
+    im = Image.open(path)
+    require(im.format=='JPEG' and list(im.size)==rec['canvas_px'],'Wrong supplement dimensions')
+    require(rec['jpeg_quality']==88,'Wrong supplement JPEG quality')
+    captured=[]
+    oldsave,oldwrite=globals()['save_sheet'],globals()['write_spec']
+    # Disable optional PNG output during reconstruction, without changing the
+    # spec on disk. Reconstruction must never mutate retained assets.
+    oldload=globals()['load']
+    def load_without_png(name):
+        folder,specpath,copydata=oldload(name)
+        copydata['composition'].pop('png_name',None)
+        return folder,specpath,copydata
+    try:
+        globals()['load']=load_without_png
+        globals()['save_sheet']=lambda image,path: captured.append(image.copy()) or {}
+        globals()['write_spec']=lambda path,data: None
+        rebuilt=supplement(cid)
+    finally:
+        globals()['save_sheet'],globals()['write_spec'],globals()['load']=oldsave,oldwrite,oldload
+    require(len(captured)==1,'Wrong supplement canvas count')
+    raw=captured[0]
+    require(hashlib.sha256(raw.tobytes()).hexdigest()==rec['pre_jpeg_sha256'],'Supplement pre-JPEG canvas changed')
+    for key in ('objects','px_per_m','rulers'):
+        require(rec[key]==rebuilt[key],f'Supplement {key} changed')
+    require(np.all(np.asarray(raw)[:8,:8]==BG),'Wrong exact supplement background')
+    require(np.max(np.abs(np.asarray(im.convert('RGB')).astype(int)[:8,:8]-BG))<=3,'Supplement decoded JPEG background changed')
+    if cfg.get('png_name'):
+        p=folder/rec['lossless_png']['path']
+        require(digest(p)==rec['lossless_png']['sha256'],'Lossless PNG changed')
+        require(np.array_equal(np.asarray(Image.open(p).convert('RGB')),np.asarray(raw)),'PNG differs from composition')
+    for i,a in enumerate(rec['objects']):
+        b=a['sheet_bbox_px']; require(0<=b[0]<b[2]<=im.width and 0<=b[1]<b[3]<=im.height,'Clipped supplement object')
+        with Image.open(folder/a['source']) as source_im:
+            require(source_im.height<=1024,'Oversized supplement source')
+        require(not a['mirrored'],'Mirrored supplement source')
+        if cfg.get('metric'):require(b[3]-b[1]==round(a['extent_m']*rec['px_per_m']),'Supplement scale mismatch')
+        for other in rec['objects'][i+1:]:
+            c=other['sheet_bbox_px']
+            require(min(b[2],c[2])<=max(b[0],c[0]) or min(b[3],c[3])<=max(b[1],c[1]),'Overlapping supplement objects')
+    require(stored_bytes(folder)<=CHAR_BUDGET,'Supplement exceeds 2.5 MB')
+    require(stored_bytes(ROOT)<=LIB_BUDGET,'Library exceeds 70 MB')
+    return {'id':cid,'status':'PASS','character_bytes':stored_bytes(folder),'checked':'source reconstruction, scale, layout, PNG, JPEG and budgets'}
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     commands=parser.add_subparsers(dest='command',required=True)
@@ -607,7 +771,7 @@ def main():
     s.add_argument('--threshold',type=float,default=38)
     s.add_argument('--max-height',type=int,default=768)
     s.add_argument('--backend',choices=('auto','threshold','rembg'),default='auto')
-    for name in ('turnaround','face','grid','sample','preview64','check'):
+    for name in ('turnaround','face','grid','sample','preview64','check','supplement'):
         p=commands.add_parser(name);p.add_argument('id', nargs='?');
         if name=='check':p.add_argument('--all',action='store_true')
     args=parser.parse_args()
