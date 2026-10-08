@@ -93,6 +93,9 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
   if (A.lods[0].hair) {
     hairMesh = makeSkinnedMesh(A.lods[0].hair, hairMat, inst, radius, center);
     hairMesh.name = 'hair';
+    // alpha-tested strand cards: the GTAO / depth-of-field pre-passes ignore alphaTest and would
+    // draw them as solid quads (blocky AO halos around the head), and they cost a full extra draw
+    hairMesh.userData.noAO = true;
     body.add(hairMesh);
   }
   const eyeMesh = makeSkinnedMesh(A.eyes, A.eyeMat, inst, radius, center);
