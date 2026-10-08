@@ -480,6 +480,24 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     audio.music('menu');
     menus.hideLoading();
     if (showMenu) menus.showTitle();
+    warmNextChapter();
+  }
+
+  /**
+   * While the title is up, mesh the humanoids of the chapter "Continue" would start, in the worker
+   * pool, so pressing it skips most of the preload. Purely a cache warm-up: loadChapter still
+   * awaits its own preload (instant for whatever is already cached).
+   */
+  function warmNextChapter(): void {
+    if (ctx.flags.preload === '0') return;
+    const story = deps.chapters().filter((c) => !c.dev && c.number > 0).sort((a, b) => a.number - b.number);
+    const lastId = progression.data.last?.chapterId;
+    const def = story.find((c) => c.id === lastId) ?? story.find((c) => progression.data.unlocked.includes(c.id));
+    const kinds = (def?.preload ?? []).filter((k) => k !== 'legolas');
+    if (!kinds.length) return;
+    void preloadHumanoids(kinds, { seeds: BUCKET_SEEDS }).catch(() => {
+      /* best effort */
+    });
   }
 
   async function loadChapter(def: ChapterDef, cp: number, respawn: boolean): Promise<void> {

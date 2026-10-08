@@ -45,31 +45,49 @@ class ScaledGTAOPass extends GTAOPass {
   }
 }
 
-/** objects that must not appear in depth/normal pre-passes: lines, points, particle quads, decals */
+/**
+ * objects that must not appear in depth/normal pre-passes: lines, points, particle quads, decals,
+ * alpha-tested cards flagged `userData.noAO`. They are hidden through their layer mask, not
+ * `visible`: THREE.LOD.update() (run inside renderer.render) rewrites `visible` on its levels, which
+ * silently put grass and foliage back into the GTAO pass.
+ */
 let _hideCache: THREE.Object3D[] = [];
+let _hideMasks: number[] = [];
+function hide(o: THREE.Object3D): void {
+  if (o.layers.mask === 0) return; // already hidden (or never rendered): never record a 0 to restore
+  _hideCache.push(o);
+  _hideMasks.push(o.layers.mask);
+  o.layers.mask = 0;
+}
 function visitHide(o: THREE.Object3D): void {
   const a = o as THREE.Mesh & { isPoints?: boolean; isLine?: boolean };
-  if (a.isPoints || a.isLine || o.userData.noAO === true) {
-    o.visible = false;
-    _hideCache.push(o);
+  if (o.userData.noAO === true) {
+    o.traverse(hide); // a flagged group hides its whole subtree (layers are not inherited)
+    return;
+  }
+  if (a.isPoints || a.isLine) {
+    hide(o);
     return;
   }
   if (a.isMesh) {
     const m = a.material as THREE.Material | THREE.Material[] | undefined;
     const first = Array.isArray(m) ? m[0] : m;
-    if (first && first.transparent && !first.depthWrite) {
-      o.visible = false;
-      _hideCache.push(o);
-    }
+    if (first && first.transparent && !first.depthWrite) hide(o);
   }
 }
+const _masks = new WeakMap<THREE.Object3D[], number[]>();
 function hideNonDepth(scene: THREE.Object3D, cache: THREE.Object3D[]): void {
   _hideCache = cache;
+  let masks = _masks.get(cache);
+  if (!masks) _masks.set(cache, (masks = []));
+  _hideMasks = masks;
   scene.traverseVisible(visitHide);
 }
 function showNonDepth(cache: THREE.Object3D[]): void {
-  for (let i = 0; i < cache.length; i++) cache[i].visible = true;
+  const masks = _masks.get(cache) ?? [];
+  for (let i = 0; i < cache.length; i++) cache[i].layers.mask = masks[i];
   cache.length = 0;
+  masks.length = 0;
 }
 
 /** Bokeh renders its own depth pre-pass; wrap it so particle quads do not leave focus artefacts. */
@@ -251,6 +269,13 @@ export class Pipeline {
       this.bloom.enabled = post.bloomStrength > 0.001;
       this.bloom.threshold = 1.7 / Math.max(0.3, post.exposure);
     }
+    // Shadow maps once per frame. three re-renders every shadow map on EVERY renderer.render(scene)
+    // while shadowMap.autoUpdate is on, and the GTAO normal pre-pass and the depth-of-field depth
+    // pass are full scene renders: on High that drew the whole shadow pass twice (three times with
+    // DOF). needsUpdate is consumed by the first render of the frame (the ScenePass).
+    const sm = this.renderer.shadowMap;
+    sm.autoUpdate = false;
+    sm.needsUpdate = true;
     this.composer.render(info.dt);
   }
 

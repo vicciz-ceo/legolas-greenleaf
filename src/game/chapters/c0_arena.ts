@@ -108,8 +108,10 @@ function heightAt(x: number, z: number): number {
 //    - Keep gameplay lanes clear with `exclude: (x, z) => boolean` instead of hand-placing.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** the open fighting ground: nothing tall may stand here (arrows need clear lines) */
-const inFightZone = (x: number, z: number): boolean => Math.hypot(x, z - 18) < 21;
+/** the open core of the fighting ground: no walls or columns here (arrows need clear lines) */
+const inFightCore = (x: number, z: number): boolean => Math.hypot(x, z - 18) < 11;
+/** the elves' camp around the spawn */
+const inCamp = (x: number, z: number): boolean => Math.hypot(x, z) < 6;
 /** the slide lane down the hill must stay clear of trunks and rocks */
 const inSlideLane = (x: number, z: number): boolean => z > 58 && z < 178 && Math.abs(x) < 30;
 /** where waves walk in from, and the troll's straight run at the player */
@@ -151,7 +153,7 @@ function buildLevel(level: LevelAPI): { shield: THREE.Object3D } {
     seed: 6,
     material: 'mossy',
     grandeur: 0.55,
-    exclude: (x, z) => Math.hypot(x, z - 18) < 11 || inSpawnLane(x, z) || Math.hypot(x, z) < 6,
+    exclude: (x, z) => inFightCore(x, z) || inSpawnLane(x, z) || inCamp(x, z),
   });
   level.root.add(stones.object);
   addColliders(physics, stones.colliders);

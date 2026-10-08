@@ -578,8 +578,12 @@ spears and banners. Density scales with quality. Keep crowds at least ~25 m from
 
 **Preload.** List every `HumanoidKind` your chapter spawns in `ChapterDef.preload` (enemy
 archetypes map to kinds: `orc_archer` -> `orc`, `uruk_archer`/`uruk_pike` -> `uruk`). The loading
-screen meshes them in parallel; anything missing is meshed on the main thread when first
-spawned, which hitches mid-fight. `?preload=0` disables it (A/B the hitch).
+screen meshes them in the worker pool (4 variation buckets per kind, LOD0 + LOD1) while your
+`create()` builds the world; anything missing is meshed on the main thread when first spawned,
+which hitches mid-fight (measured in the arena: a 280–560 ms freeze when the first wave spawns
+without preload, 18 ms with it). It is not free: each listed kind costs about as much loading as
+four characters, so list what spawns, not every kind in the book. While the title screen is up
+the shell already warms the "Continue" chapter's list. `?preload=0` disables it (A/B the hitch).
 
 **Weather** comes from the environment preset (`weather`, `weatherIntensity`). Override with
 `level.ctx.fx.setWeather('rain', 0.8)` (kinds `none rain storm snow embers ash spores dust`);
@@ -608,21 +612,27 @@ death. Intensity rises with the number of engaged enemies. Pin a mood for a scri
 High preset target: 60 fps at 1080p on a mid-range desktop GPU. Per frame, everything included
 (shadow pass + scene + post):
 
-| | Budget | The arena today (High, 20 enemies) |
+| | Budget | The arena (High, 22 enemies + Gimli + Legolas all within 20 m) |
 |---|---|---|
-| Draw calls | ≤ 700 | see `__game.state().perf.calls` |
-| Triangles | ≤ 1.5 M | `perf.triangles` |
-| Live AI enemies | 12–30 | |
-| Shadow-casting lights | the sun only (fire lights never cast) | |
-| Fire lights | through `fx.fire` / `fx.torch` only (2/4/6/8 by quality) | |
-| JS per frame | ≤ 6 ms for game update | `perf.frameMs`, per phase in `perf.phases` |
+| Draw calls | ≤ 700 | 527 (shadow 185, scene 209, GTAO 147) — `__game.state().perf.calls` |
+| Triangles | ≤ 1.5 M | 1.25 M (characters ≈ 60 %) — `perf.triangles` |
+| Live AI enemies | 12–30 | 22 |
+| Shadow-casting lights | the sun only (fire lights never cast) | sun |
+| Fire lights | through `fx.fire` / `fx.torch` only (2/4/6/8 by quality) | 2 torches |
+| JS per frame | ≤ 6 ms for game update | ≈ 1–2 ms (combatants 0.7–1.8 ms) — `perf.frameMs`, `perf.phases` |
 
 Rules of thumb:
 - Instance everything repeated (the builders do). One `THREE.Mesh` per prop placed 200 times is
   200 draw calls; a scatter builder is a handful.
 - Use `exclude` and `lodNear` / `lodFar` on forests; trees within `lodNear` are full detail.
 - Far set dressing does not need shadows: `obj.traverse(o => (o.castShadow = false))`. The shadow
-  map only covers ±35 m around the player, but a low sun drags long strips of casters into it.
+  map only covers ±35 m around the player, but a low sun drags long strips of casters into it,
+  and every caster in that box is drawn, including the ones behind the camera.
+- Characters are the biggest cost (LOD0 within 18 m, ~20–25 k triangles each, drawn in the shadow,
+  scene and, on High, GTAO passes). 20 enemies close to the player is the ceiling; park the rest
+  of the army in a crowd.
+- Alpha-tested cards (leaves, hair, webs) should carry `userData.noAO = true` so the GTAO/DOF
+  pre-passes skip them (forest leaves and webs, grass and humanoid hair already do).
 - No allocations in `update` / `onUpdate` (preallocate vectors at module or closure scope).
 - Crowds for armies, not combatants. Enemies beyond 35 m already drop to cheap LODs.
 - Measure: `node scripts/snap.mjs "/?chapter=<id>&cp=N&quality=high&skipIntro=1&god=1&bot=1" --advance 10 --eval "JSON.stringify(__game.state().perf)"`.
