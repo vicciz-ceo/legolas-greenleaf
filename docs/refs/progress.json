@@ -1056,40 +1056,60 @@
           "path": "/workspace/greenleaf-refs/docs/refs/aragorn/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "All three final sheets pass the visual gate. The original weathered ranger identity, natural relaxed A-pose, empty hands, anatomical-left sheathed sword, right-facing exact profile, rear view and complete contours are consistent. All ten observed sample rectangles semantically cover their named visible materials. Tool verification passes construction, decoded background probes and current sample/hash checks.",
+        "receipt_sha256": "093ee58c5a8fc69582de4038fd62676f589141df208ee06467b6e3dc4f7f8390",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/aragorn/aragorn_turnaround.jpg",
+            "sha256": "491e5e03fe0bec5f88cde1d10b7891f161b69f87571de40c915bb8a5a1a21b78"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/aragorn/aragorn_face.jpg",
+            "sha256": "4509640ea78b553614a727f441e986cfd02c93e566be43b9e9017251e16893ed"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/aragorn/aragorn_details.jpg",
+            "sha256": "193487415079ee1f0731b7d60467aec5b36eeb3ab54a28043dc9d9d36ab4021c"
+          }
+        ],
+        "defects": []
       }
     },
     "tauriel": {
@@ -7178,7 +7198,7 @@
   },
   "validation_summary": [
     "24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
-    "33 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
+    "34 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }

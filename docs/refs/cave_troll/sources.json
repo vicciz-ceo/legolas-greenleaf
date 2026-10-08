@@ -199,5 +199,30 @@
     "provenance": "newly_authored_recovery; actual anatomical right ankle rusty iron shackle and short chain; existing_alpha preserved without rembg",
     "classification": "newly_authored_recovery",
     "by_eye_review": "Single continuous macro shows corroded flat iron ankle cuff with short complete oval-link chain over accepted warty earthy grey-green ankle hide. Correct reference material and right ankle; no torso armour or new weapon, no letters, no definite anatomy defect. Normal macro crop bounds truncate lower shin/foot, complete chain retained. Minor cuff rivet drift tolerated."
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-f84cb2a3-930b-4edb-9c39-592098bc9535.png",
+    "original_sha256": "cccee42132fe7865ce41fa28a62c004ceae7bd44a0a1a70f35223e28f63e162d",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "8b21e8a89f17a7a300b5079f4f54342e191727106635f2325d57fb7b974c06a6",
+    "generation": "image_gen single continuous skin/shoulder macro conditioned on accepted full-resolution front",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; actual accepted grey-green warty shoulder hide; existing_alpha preserved without rembg",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Single continuous shoulder-hide macro matches accepted earthy grey-green wrinkled warty hide; pores, scuffed dry surface, broad natural folds and irregular raised warts. Grey-composited original and retained 256px RGBA reviewed. No lettering, panels, new anatomy or gear; material contours intentionally continue beyond macro bounds."
   }
 }
