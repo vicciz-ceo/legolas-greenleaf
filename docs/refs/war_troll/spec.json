@@ -5,17 +5,17 @@
     "source": "design_target",
     "display_name": "War Troll",
     "height_m": 4.5,
-    "overall_height_m": 4.5,
+    "overall_height_m": 4.95,
     "proportions": {
-      "head_height_m": 0.558,
-      "shoulder_width_m": 1.08,
-      "hip_width_m": 0.833,
-      "arm_length_m": 1.89,
-      "leg_length_m": 2.34,
-      "hand_length_m": 0.463,
-      "neck_length_m": 0.27,
-      "bulk_0to1": 0.85,
-      "hunch_0to1": 0
+      "head_height_m": 0.55,
+      "shoulder_width_m": 1.6,
+      "hip_width_m": 1.2,
+      "arm_length_m": 2.15,
+      "leg_length_m": 2.25,
+      "hand_length_m": 0.5,
+      "neck_length_m": 0.22,
+      "bulk_0to1": 0.95,
+      "hunch_0to1": 0.15
     },
     "face": {
       "shape": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
@@ -34,9 +34,10 @@
     "hair": {
       "root_hex": "#34352b",
       "tip_hex": "#34352b",
-      "length_m": 0.35,
-      "style": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
-      "braids": "as described, no additional ornamental braids"
+      "length_m": 0,
+      "style": "No visible scalp hair; pointed helmet covers the crown. Original brief does not prescribe exposed hair.",
+      "braids": "as described, no additional ornamental braids",
+      "visibility": "Covered by helmet."
     },
     "outfit_layers": [
       {
@@ -94,7 +95,10 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand."
+    "description": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
+    "concealed_materials": {
+      "hair": "Pointed helmet covers scalp and no exposed hair appears in accepted design."
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -116,9 +120,13 @@
       },
       {
         "name": "hair",
-        "label": "HAIR / STRANDS",
+        "label": "HELM / HAIR COVERED",
         "source": "details/hair.png"
       }
-    ]
+    ],
+    "source_heights": {
+      "body": 480,
+      "face": 288
+    }
   }
 }

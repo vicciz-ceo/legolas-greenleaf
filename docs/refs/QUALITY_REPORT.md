@@ -396,26 +396,28 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | haradrim | views/three_quarter | accepted | 1 | Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip. |
 | haradrim | views/side | accepted | 2 | Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry. |
 | haradrim | views/side attempt 1 | rejected | — | Head is profile but torso/pelvis remain oblique with broad frontal tunic/jewelry window and far shoulder exposed; needs exact body side view. |
-| haradrim | views/back | pending | 0 | Not yet attempted |
-| haradrim | face_views/front | pending | 0 | Not yet attempted |
-| haradrim | face_views/three_quarter | pending | 0 | Not yet attempted |
-| haradrim | face_views/side | pending | 0 | Not yet attempted |
-| haradrim | details/cloth_leather | pending | 0 | Not yet attempted |
-| haradrim | details/weapon_metal | pending | 0 | Not yet attempted |
-| haradrim | details/skin | pending | 0 | Not yet attempted |
-| haradrim | details/hair | pending | 0 | Not yet attempted |
-| haradrim | turnaround | pending | 0 | Not yet attempted |
-| haradrim | spec | pending | 0 | Not yet attempted |
-| haradrim | notes | pending | 0 | Not yet attempted |
-| haradrim | check | pending | 0 | Not yet attempted |
-| haradrim | face | pending | 0 | Not yet attempted |
-| haradrim | details | pending | 0 | Not yet attempted |
-| haradrim | observed | pending | 0 | Not yet attempted |
-| war_troll | views/front | pending | 0 | Not yet attempted |
-| war_troll | views/three_quarter | pending | 0 | Not yet attempted |
-| war_troll | views/side | pending | 0 | Not yet attempted |
-| war_troll | views/back | pending | 0 | Not yet attempted |
-| war_troll | face_views/front | pending | 0 | Not yet attempted |
+| haradrim | views/back | accepted | 1 | True rear turban/robe with matching red-black layers and belt/boots, own-right low curved sword image right, gold cuffs, full tips/feet and natural left hand. |
+| haradrim | face_views/front | accepted | 1 | Same original broad-nosed warm-brown painted face/short beard, red turban/cowl and gold jewelry, complete crown/chin, no actor likeness. |
+| haradrim | face_views/three_quarter | accepted | 1 | Clear oblique head/chest, near cheek broad/far cheek compressed, same original face paint/beard/headwrap/jewelry. |
+| haradrim | face_views/side | accepted | 1 | Exact single-eye profile, original broad nose/short beard/white paint, full red headwrap and gold ear hoop/necklace; no actor likeness. |
+| haradrim | details/cloth_leather | accepted | 1 | Same red cowl/long split red coat and black underrobe/trousers, belt/boots/gold necklace/cuffs; natural hands and complete costume. Minor pendant/buckle pattern drift tolerated. |
+| haradrim | details/weapon_metal | accepted | 1 | Same long slender gently curved steel scimitar, short brass guard/wrapped grip/small pommel, complete isolated tip and no redesign. |
+| haradrim | details/skin | accepted | 0 | Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered. |
+| haradrim | details/hair | accepted | 0 | Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered. |
+| haradrim | turnaround | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | spec | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | notes | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | check | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | face | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | details | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| haradrim | observed | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| war_troll | views/front | accepted | 2 | Second front repairs ambiguous curled hand: close crop shows one thumb/four separated fingers, natural palm. Same single massive torso/iron armor, opaque kilt, own-right complete low hammer. |
+| war_troll | views/front attempt 1 | rejected | — | Empty left curled finger bundle does not clearly resolve four separate fingers beside thumb; anatomy gate cannot be verified. Open-hand repair required before accepting front. |
+| war_troll | views/three_quarter | accepted | 1 | Clear oblique whole body/tusked head, same armor and opaque kilt, near own-right low hammer, far empty left hand has separated digits; all extremities complete. |
+| war_troll | views/side | accepted | 1 | True profile, near right-hand low hammer, opaque knee-kilt, complete feet and helmet; no text. |
+| war_troll | views/back | accepted | 2 | True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame. |
+| war_troll | views/back attempt 1 | rejected | — | Hammer is on viewer right in rear view, therefore character left; required own right-hand attachment fails. |
+| war_troll | face_views/front | accepted | 1 | Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text. |
 | war_troll | face_views/three_quarter | pending | 0 | Not yet attempted |
 | war_troll | face_views/side | pending | 0 | Not yet attempted |
 | war_troll | details/cloth_leather | pending | 0 | Not yet attempted |
@@ -632,6 +634,6 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 
 ## Validation
 
-- Thirteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
+- Sixteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

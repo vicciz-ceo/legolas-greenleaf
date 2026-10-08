@@ -1,0 +1,28 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2135ba09-c97d-43a3-8092-a7ae2664a9fd.png",
+    "original_sha256": "1274c22f910ab56451db73363bc36d25160471b55f8ccc6c017cbd51fcd198e3",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "3e01860bba93e9d4fa96fc6c94c685c0aa9aa4c679e02a403af57e93c088dcc3"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-99949cfd-7c4c-4244-bcea-e166e0bef461.png",
+    "original_sha256": "a657b5dfc23b1ce5fe1c9baa7b43ea4726694919b02b80e04d8340d8532fd1d6",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "f775fd7bd593b0ff2ffec3193be039a269360d1b7cfb55bcd12e9f434c36bdc8"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "status": "PARTIAL",
-  "library_bytes": 30474306,
+  "library_bytes": 32616958,
   "library_budget_bytes": 70000000,
   "entries": [
     {
@@ -39,7 +39,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2313296,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 279.8076923076923,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -50,7 +50,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 1785038,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 220.81218274111674,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -61,7 +61,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2189501,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 261.6216216216216,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -72,7 +72,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2336464,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 242.70270270270268,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -83,7 +83,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 1841385,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 258.3333333333333,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -94,7 +94,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2334619,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 238.54166666666669,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -105,7 +105,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 1893212,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 299.42857142857144,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -116,7 +116,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2262454,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 281.1764705882353,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -127,7 +127,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2409920,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 275.45454545454544,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -136,9 +136,9 @@
       "id": "gundabad",
       "status": "PASS",
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
-      "character_bytes": 2439013,
+      "character_bytes": 2439161,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 226.66666666666666,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -147,9 +147,9 @@
       "id": "uruk",
       "status": "PASS",
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
-      "character_bytes": 2215234,
+      "character_bytes": 2215382,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 228.50467289719626,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -160,7 +160,7 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 1699206,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 213.33333333333334,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -169,9 +169,9 @@
       "id": "lurtz",
       "status": "PASS",
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
-      "character_bytes": 1930218,
+      "character_bytes": 1930366,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 258.57142857142856,
       "visual_review": "Separate by-eye gate; not certified by this command."
@@ -182,15 +182,21 @@
       "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
       "character_bytes": 2029242,
       "character_budget_bytes": 2500000,
-      "library_bytes": 30474306,
+      "library_bytes": 32616958,
       "library_budget_bytes": 70000000,
       "px_per_m": 132.30769230769232,
       "visual_review": "Separate by-eye gate; not certified by this command."
     },
     {
       "id": "haradrim",
-      "status": "PENDING",
-      "reason": "'turnaround'"
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1807356,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 32616958,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 270.46632124352334,
+      "visual_review": "Separate by-eye gate; not certified by this command."
     },
     {
       "id": "war_troll",

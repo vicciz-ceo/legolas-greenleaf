@@ -473,31 +473,31 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/front | accepted | 2 | Second front gives clear relaxed A-pose and close crop confirms natural thumb/four fingers. Same original painted face, red-black robes/gold jewelry, own-right low sword, complete feet/tip. |
 | views/three_quarter | accepted | 1 | Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip. |
 | views/side | accepted | 2 | Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry. |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/back | accepted | 1 | True rear turban/robe with matching red-black layers and belt/boots, own-right low curved sword image right, gold cuffs, full tips/feet and natural left hand. |
+| face_views/front | accepted | 1 | Same original broad-nosed warm-brown painted face/short beard, red turban/cowl and gold jewelry, complete crown/chin, no actor likeness. |
+| face_views/three_quarter | accepted | 1 | Clear oblique head/chest, near cheek broad/far cheek compressed, same original face paint/beard/headwrap/jewelry. |
+| face_views/side | accepted | 1 | Exact single-eye profile, original broad nose/short beard/white paint, full red headwrap and gold ear hoop/necklace; no actor likeness. |
+| details/cloth_leather | accepted | 1 | Same red cowl/long split red coat and black underrobe/trousers, belt/boots/gold necklace/cuffs; natural hands and complete costume. Minor pendant/buckle pattern drift tolerated. |
+| details/weapon_metal | accepted | 1 | Same long slender gently curved steel scimitar, short brass guard/wrapped grip/small pommel, complete isolated tip and no redesign. |
+| details/skin | accepted | 0 | Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered. |
+| details/hair | accepted | 0 | Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered. |
+| turnaround | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| spec | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| notes | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| check | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| face | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| details | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
+| observed | accepted | 0 | Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass. |
 
 ## war_troll
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
+| views/front | accepted | 2 | Second front repairs ambiguous curled hand: close crop shows one thumb/four separated fingers, natural palm. Same single massive torso/iron armor, opaque kilt, own-right complete low hammer. |
+| views/three_quarter | accepted | 1 | Clear oblique whole body/tusked head, same armor and opaque kilt, near own-right low hammer, far empty left hand has separated digits; all extremities complete. |
+| views/side | accepted | 1 | True profile, near right-hand low hammer, opaque knee-kilt, complete feet and helmet; no text. |
+| views/back | accepted | 2 | True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame. |
+| face_views/front | accepted | 1 | Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text. |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
 | details/cloth_leather | pending | 0 |  |

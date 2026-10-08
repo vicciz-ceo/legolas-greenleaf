@@ -3527,64 +3527,127 @@
           "path": "/workspace/generated_images/exec-32de4a4a-5cb6-483e-9020-9f82c479d1c4.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear turban/robe with matching red-black layers and belt/boots, own-right low curved sword image right, gold cuffs, full tips/feet and natural left hand.",
+              "path": "/workspace/generated_images/exec-d030f89a-5f9b-4c93-96c1-29abea6bc53a.png"
+            }
+          ],
+          "reason": "True rear turban/robe with matching red-black layers and belt/boots, own-right low curved sword image right, gold cuffs, full tips/feet and natural left hand.",
+          "path": "/workspace/generated_images/exec-d030f89a-5f9b-4c93-96c1-29abea6bc53a.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same original broad-nosed warm-brown painted face/short beard, red turban/cowl and gold jewelry, complete crown/chin, no actor likeness.",
+              "path": "/workspace/generated_images/exec-0f440532-f8c1-43fd-8730-e468f2534e52.png"
+            }
+          ],
+          "reason": "Same original broad-nosed warm-brown painted face/short beard, red turban/cowl and gold jewelry, complete crown/chin, no actor likeness.",
+          "path": "/workspace/generated_images/exec-0f440532-f8c1-43fd-8730-e468f2534e52.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique head/chest, near cheek broad/far cheek compressed, same original face paint/beard/headwrap/jewelry.",
+              "path": "/workspace/generated_images/exec-507bda88-cd68-4cda-8ce0-8e76d770587c.png"
+            }
+          ],
+          "reason": "Clear oblique head/chest, near cheek broad/far cheek compressed, same original face paint/beard/headwrap/jewelry.",
+          "path": "/workspace/generated_images/exec-507bda88-cd68-4cda-8ce0-8e76d770587c.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact single-eye profile, original broad nose/short beard/white paint, full red headwrap and gold ear hoop/necklace; no actor likeness.",
+              "path": "/workspace/generated_images/exec-0e9fe5ca-0aa2-46aa-8cd9-79b25e269fda.png"
+            }
+          ],
+          "reason": "Exact single-eye profile, original broad nose/short beard/white paint, full red headwrap and gold ear hoop/necklace; no actor likeness.",
+          "path": "/workspace/generated_images/exec-0e9fe5ca-0aa2-46aa-8cd9-79b25e269fda.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same red cowl/long split red coat and black underrobe/trousers, belt/boots/gold necklace/cuffs; natural hands and complete costume. Minor pendant/buckle pattern drift tolerated.",
+              "path": "/workspace/generated_images/exec-b3f8f09e-3154-4817-b0e4-b4a92ac8a1da.png"
+            }
+          ],
+          "reason": "Same red cowl/long split red coat and black underrobe/trousers, belt/boots/gold necklace/cuffs; natural hands and complete costume. Minor pendant/buckle pattern drift tolerated.",
+          "path": "/workspace/generated_images/exec-b3f8f09e-3154-4817-b0e4-b4a92ac8a1da.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same long slender gently curved steel scimitar, short brass guard/wrapped grip/small pommel, complete isolated tip and no redesign.",
+              "path": "/workspace/generated_images/exec-99785229-8333-4800-b24c-d57594827d83.png"
+            }
+          ],
+          "reason": "Same long slender gently curved steel scimitar, short brass guard/wrapped grip/small pommel, complete isolated tip and no redesign.",
+          "path": "/workspace/generated_images/exec-99785229-8333-4800-b24c-d57594827d83.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed exposed neck skin/visible beard crop from accepted independent portrait; scalp hair stays covered."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review, 64 px silhouettes and compositor geometry/source/material/budget checks pass."
         }
       }
     },
@@ -3593,24 +3656,81 @@
       "design_extent_m": 4.5,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Empty left curled finger bundle does not clearly resolve four separate fingers beside thumb; anatomy gate cannot be verified. Open-hand repair required before accepting front.",
+              "path": "/workspace/generated_images/exec-2aa3a8f3-668e-490b-b5be-0a8390a17eaa.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second front repairs ambiguous curled hand: close crop shows one thumb/four separated fingers, natural palm. Same single massive torso/iron armor, opaque kilt, own-right complete low hammer.",
+              "path": "/workspace/generated_images/exec-2135ba09-c97d-43a3-8092-a7ae2664a9fd.png"
+            }
+          ],
+          "reason": "Second front repairs ambiguous curled hand: close crop shows one thumb/four separated fingers, natural palm. Same single massive torso/iron armor, opaque kilt, own-right complete low hammer.",
+          "path": "/workspace/generated_images/exec-2135ba09-c97d-43a3-8092-a7ae2664a9fd.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique whole body/tusked head, same armor and opaque kilt, near own-right low hammer, far empty left hand has separated digits; all extremities complete.",
+              "path": "/workspace/generated_images/exec-99949cfd-7c4c-4244-bcea-e166e0bef461.png"
+            }
+          ],
+          "reason": "Clear oblique whole body/tusked head, same armor and opaque kilt, near own-right low hammer, far empty left hand has separated digits; all extremities complete.",
+          "path": "/workspace/generated_images/exec-99949cfd-7c4c-4244-bcea-e166e0bef461.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True profile, near right-hand low hammer, opaque knee-kilt, complete feet and helmet; no text.",
+              "path": "/workspace/generated_images/exec-2047eee7-6f0c-4900-b424-07313c9ceb4a.png"
+            }
+          ],
+          "reason": "True profile, near right-hand low hammer, opaque knee-kilt, complete feet and helmet; no text.",
+          "path": "/workspace/generated_images/exec-2047eee7-6f0c-4900-b424-07313c9ceb4a.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Hammer is on viewer right in rear view, therefore character left; required own right-hand attachment fails.",
+              "path": "/workspace/generated_images/exec-fcc83b19-73a3-48e9-b825-4478d0ed3664.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame.",
+              "path": "/workspace/generated_images/exec-7cccbdda-d335-4839-a901-d16275c5c2b9.png"
+            }
+          ],
+          "reason": "True rear view; hammer own right (viewer left), solid opaque knee-kilt, complete anatomy and frame.",
+          "path": "/workspace/generated_images/exec-7cccbdda-d335-4839-a901-d16275c5c2b9.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text.",
+              "path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png"
+            }
+          ],
+          "reason": "Original tusked warty face under same pointed iron helm; front portrait, two eyes and natural anatomy, no text.",
+          "path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png"
         },
         "face_views/three_quarter": {
           "status": "pending",

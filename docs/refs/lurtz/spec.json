@@ -20,7 +20,7 @@
     "face": {
       "shape": "Original broad menacing fanged face with white hand paint across brow/nose/cheeks, scarred dark brown-black skin; no actor likeness.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
+        "iris_hex": "#b88c39",
         "shape": "almond",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
@@ -29,7 +29,8 @@
       "lips": "neutral closed, natural narrow upper lip",
       "ears": "as described; original natural anatomy",
       "skin_base_hex": "#55432f",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "skin_variation": "faint redness on cheeks, nose and ears",
+      "eye_colour_note": "Authored yellow/amber target from the individual-view appearance prompt; original brief does not prescribe an iris hex."
     },
     "hair": {
       "root_hex": "#24211b",

@@ -20,7 +20,7 @@
     "face": {
       "shape": "Huge Gundabad orc: pale bluish-grey skin, huge broad shoulders, original fanged scarred face, sparse dark hair; heavy scrap iron plates, spiked pauldrons, coarse opaque brown kilt, foot wraps; brutal mace own RIGHT hand, left empty.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
+        "iris_hex": "#baa24f",
         "shape": "almond",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
@@ -29,7 +29,8 @@
       "lips": "neutral closed, natural narrow upper lip",
       "ears": "as described; original natural anatomy",
       "skin_base_hex": "#aeb8b5",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "skin_variation": "faint redness on cheeks, nose and ears",
+      "eye_colour_note": "Authored yellow/amber target from the individual-view appearance prompt; original brief does not prescribe an iris hex."
     },
     "hair": {
       "root_hex": "#3a3934",
