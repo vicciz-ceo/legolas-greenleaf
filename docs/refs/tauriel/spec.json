@@ -98,10 +98,16 @@
     ],
     "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements.",
     "sample_aliases": {
-      "green_leggings": "cloth",
-      "tall_boots": "leather",
-      "bracers": "leather",
-      "belt": "leather"
+      "cloth": [
+        "cloth",
+        "green_leggings"
+      ],
+      "leather": [
+        "leather",
+        "tall_boots",
+        "bracers",
+        "belt"
+      ]
     }
   },
   "composition": {

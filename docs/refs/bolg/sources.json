@@ -241,5 +241,40 @@
         "Stitch scale/pattern naturally amplified for macro inspection."
       ]
     }
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-71478eef-cfb7-4e62-9392-152b927776ae.png",
+    "original_sha256": "924639cc4615e0bac32448035f584264726d03e64bb648df90a48345c963319f",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      37,
+      0,
+      983,
+      1481
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "409c7b02c689feafcd6abfc83e29dab6d80a47d98afe80229a25a73e23e8a6a1",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; individual signature-weapon macro conditioned on inspected accepted full-resolution front. Existing transparent alpha preserved during detail intake without rembg.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "appearance": "One continuous macro of actual right-hand faceted oval spiked iron mace head with upper wrapped iron haft. Dark beaten iron, orange-brown rust, polished scratched edges, round rivets and conical spikes match inspected accepted full front. Complete mace head/spikes framed; upper haft continues out of macro frame as intended.",
+      "view_type": "Single individual weapon macro, no extra weapon, figure, text, labels or grid.",
+      "segmentation_edges": "Original proper grey native-alpha composite and 164x256 retained composite inspected. Existing alpha preserved without rembg; spike tips intact.",
+      "material_sampling": "Retained rectangle [70,137,94,150] lies on solid worn iron front facet, clear of rivets, spike bases and transparent background.",
+      "tolerated_drift": [
+        "Microscopic scratches/rust distribution and rivet rendering vary naturally with macro enlargement."
+      ]
+    }
   }
 }
