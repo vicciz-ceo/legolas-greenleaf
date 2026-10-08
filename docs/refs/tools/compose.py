@@ -260,7 +260,8 @@ def turnaround(cid):
         x = left + i*(panel_width + gap) + (panel_width-width)//2
         y = baseline-target_height
         canvas.paste(resized, (x, y), resized)
-        text(draw, (left+i*(panel_width+gap)+panel_width//2, 980), LABELS[view], 18)
+        label = data['composition'].get('turnaround_labels', {}).get(view, LABELS[view])
+        text(draw, (left+i*(panel_width+gap)+panel_width//2, 980), label, 18)
         boxes.append({'view': view, 'source': str(path.relative_to(folder)), 'source_sha256': digest(path),
                       'source_bbox_px': list(srcbox), 'sheet_bbox_px': [x, y, x+width, baseline],
                       'silhouette_height_px': target_height, 'baseline_y_px': baseline,

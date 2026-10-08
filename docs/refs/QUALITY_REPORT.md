@@ -168,23 +168,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | elf_galadhrim | views/back | accepted | 1 | True back view; bow own LEFT image left, quiver own RIGHT; full boots/tips and gold/red silhouette pass. |
 | elf_galadhrim | face_views/front | accepted | 1 | Straight frontal original elf face, full crown and pointed ears; gold/red costume matches. |
 | elf_galadhrim | face_views/three_quarter | accepted | 1 | Original identity preserved; correct three-quarter portrait, ears and crown clear. |
-| elf_galadhrim | face_views/side | pending | 0 | Not yet attempted |
-| elf_galadhrim | details/cloth_leather | pending | 0 | Not yet attempted |
-| elf_galadhrim | details/weapon_metal | pending | 0 | Not yet attempted |
-| elf_galadhrim | details/skin | pending | 0 | Not yet attempted |
-| elf_galadhrim | details/hair | pending | 0 | Not yet attempted |
-| elf_galadhrim | turnaround | pending | 0 | Not yet attempted |
-| elf_galadhrim | spec | pending | 0 | Not yet attempted |
-| elf_galadhrim | notes | pending | 0 | Not yet attempted |
-| elf_galadhrim | check | pending | 0 | Not yet attempted |
-| elf_galadhrim | face | pending | 0 | Not yet attempted |
-| elf_galadhrim | details | pending | 0 | Not yet attempted |
-| elf_galadhrim | observed | pending | 0 | Not yet attempted |
-| boromir | views/front | pending | 0 | Not yet attempted |
-| boromir | views/three_quarter | pending | 0 | Not yet attempted |
-| boromir | views/side | pending | 0 | Not yet attempted |
-| boromir | views/back | pending | 0 | Not yet attempted |
-| boromir | face_views/front | pending | 0 | Not yet attempted |
+| elf_galadhrim | face_views/side | accepted | 1 | Exact profile, consistent original face and blond hair, complete crown and ear. |
+| elf_galadhrim | details/cloth_leather | accepted | 2 | Correct brown leather bracer and belt, red cloth and gold chest edge; material distinction restored. |
+| elf_galadhrim | details/cloth_leather attempt 1 | rejected | — | Brown leather forearm bracer redesigned as gold armour; regenerate correct material. |
+| elf_galadhrim | details/weapon_metal | accepted | 1 | Complete recurve bow with gold fittings and fine string, tips uncropped. |
+| elf_galadhrim | details/skin | accepted | 1 | Crop from independent accepted front portrait; skin pores and original features. |
+| elf_galadhrim | details/hair | accepted | 1 | Crop from independent accepted profile portrait, blond strand structure. |
+| elf_galadhrim | turnaround | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | spec | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | notes | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | check | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | face | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | details | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| elf_galadhrim | observed | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| boromir | views/front | accepted | 3 | Third front has 35–40 degree A-pose; own RIGHT horn and own LEFT sheathed sword; original face, boots and cloak complete. |
+| boromir | views/front attempt 1 | rejected | — | Arms almost vertical, outside relaxed A-pose range; gear and original face otherwise usable. |
+| boromir | views/front attempt 2 | rejected | — | Pose edit left both arms too close to torso; requirement still fails. |
+| boromir | views/three_quarter | accepted | 1 | Three-quarter rotation consistent with accepted front, A-pose, horn own RIGHT and sword own LEFT. |
+| boromir | views/side | accepted | 1 | Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally. |
+| boromir | views/back | accepted | 1 | Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass. |
+| boromir | face_views/front | accepted | 1 | Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar. |
 | boromir | face_views/three_quarter | pending | 0 | Not yet attempted |
 | boromir | face_views/side | pending | 0 | Not yet attempted |
 | boromir | details/cloth_leather | pending | 0 | Not yet attempted |

@@ -1,0 +1,24 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-612f4c89-7553-4a7d-ac20-861e859bd12d.png",
+    "original_sha256": "89f2e4ba161723d5731d3b2bbb98b2e77eb9017aa1f28b3dd30d15b48dbf42af",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "4de8fd2f93976df49c4e4e3db5045500e85da0d3ced1b5819eea60903733eb57"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-826f2b37-b8ec-4b78-8f40-8a4c6f580777.png",
+    "original_sha256": "a9701ac1408b5b7312177a224c10e835dac7c5534a252175273d17e3907191f6",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "0968b185718d849aa2f3eb55cc0ca08ed7fa03a87a5ba3b312dc4b8f660f1fe0"
+  }
+}

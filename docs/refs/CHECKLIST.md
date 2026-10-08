@@ -196,28 +196,28 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/back | accepted | 1 | True back view; bow own LEFT image left, quiver own RIGHT; full boots/tips and gold/red silhouette pass. |
 | face_views/front | accepted | 1 | Straight frontal original elf face, full crown and pointed ears; gold/red costume matches. |
 | face_views/three_quarter | accepted | 1 | Original identity preserved; correct three-quarter portrait, ears and crown clear. |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/side | accepted | 1 | Exact profile, consistent original face and blond hair, complete crown and ear. |
+| details/cloth_leather | accepted | 2 | Correct brown leather bracer and belt, red cloth and gold chest edge; material distinction restored. |
+| details/weapon_metal | accepted | 1 | Complete recurve bow with gold fittings and fine string, tips uncropped. |
+| details/skin | accepted | 1 | Crop from independent accepted front portrait; skin pores and original features. |
+| details/hair | accepted | 1 | Crop from independent accepted profile portrait, blond strand structure. |
+| turnaround | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| spec | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| notes | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| check | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| face | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| details | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
+| observed | accepted | 0 | Appearance review and deterministic checks pass; 2.18 MB below budget. |
 
 ## boromir
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
+| views/front | accepted | 3 | Third front has 35–40 degree A-pose; own RIGHT horn and own LEFT sheathed sword; original face, boots and cloak complete. |
+| views/three_quarter | accepted | 1 | Three-quarter rotation consistent with accepted front, A-pose, horn own RIGHT and sword own LEFT. |
+| views/side | accepted | 1 | Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally. |
+| views/back | accepted | 1 | Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass. |
+| face_views/front | accepted | 1 | Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar. |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
 | details/cloth_leather | pending | 0 |  |

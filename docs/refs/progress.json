@@ -1345,48 +1345,97 @@
           "path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Brown leather forearm bracer redesigned as gold armour; regenerate correct material.",
+              "path": "/workspace/generated_images/exec-42c1f7a7-6614-42b9-bc1d-6de33f303a76.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Correct brown leather bracer and belt, red cloth and gold chest edge; material distinction restored.",
+              "path": "/workspace/generated_images/exec-addba699-2dc5-4a2b-ad56-db63fc216683.png"
+            }
+          ],
+          "reason": "Correct brown leather bracer and belt, red cloth and gold chest edge; material distinction restored.",
+          "path": "/workspace/generated_images/exec-addba699-2dc5-4a2b-ad56-db63fc216683.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete recurve bow with gold fittings and fine string, tips uncropped.",
+              "path": "/workspace/generated_images/exec-d49009a5-6487-4f49-82af-f9f12416ca4d.png"
+            }
+          ],
+          "reason": "Complete recurve bow with gold fittings and fine string, tips uncropped.",
+          "path": "/workspace/generated_images/exec-d49009a5-6487-4f49-82af-f9f12416ca4d.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Crop from independent accepted front portrait; skin pores and original features.",
+              "path": "/workspace/generated_images/exec-bc078d6c-0c41-4fc1-987f-599c0e26f779.png"
+            }
+          ],
+          "reason": "Crop from independent accepted front portrait; skin pores and original features.",
+          "path": "/workspace/generated_images/exec-bc078d6c-0c41-4fc1-987f-599c0e26f779.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Crop from independent accepted profile portrait, blond strand structure.",
+              "path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png"
+            }
+          ],
+          "reason": "Crop from independent accepted profile portrait, blond strand structure.",
+          "path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic checks pass; 2.18 MB below budget."
         }
       }
     },
@@ -1395,24 +1444,81 @@
       "design_extent_m": 1.85,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arms almost vertical, outside relaxed A-pose range; gear and original face otherwise usable.",
+              "path": "/workspace/generated_images/exec-b46af3e9-54f7-453e-b574-5b8107c5dc5a.png"
+            },
+            {
+              "number": 2,
+              "status": "rejected",
+              "reason": "Pose edit left both arms too close to torso; requirement still fails.",
+              "path": "/workspace/generated_images/exec-00ed3caf-a5bd-46d7-80a6-a80f82b2f8c3.png"
+            },
+            {
+              "number": 3,
+              "status": "accepted",
+              "reason": "Third front has 35\u201340 degree A-pose; own RIGHT horn and own LEFT sheathed sword; original face, boots and cloak complete.",
+              "path": "/workspace/generated_images/exec-612f4c89-7553-4a7d-ac20-861e859bd12d.png"
+            }
+          ],
+          "reason": "Third front has 35\u201340 degree A-pose; own RIGHT horn and own LEFT sheathed sword; original face, boots and cloak complete.",
+          "path": "/workspace/generated_images/exec-612f4c89-7553-4a7d-ac20-861e859bd12d.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Three-quarter rotation consistent with accepted front, A-pose, horn own RIGHT and sword own LEFT.",
+              "path": "/workspace/generated_images/exec-826f2b37-b8ec-4b78-8f40-8a4c6f580777.png"
+            }
+          ],
+          "reason": "Three-quarter rotation consistent with accepted front, A-pose, horn own RIGHT and sword own LEFT.",
+          "path": "/workspace/generated_images/exec-826f2b37-b8ec-4b78-8f40-8a4c6f580777.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally.",
+              "path": "/workspace/generated_images/exec-04075e1e-6588-48cc-acd9-4f0f219493df.png"
+            }
+          ],
+          "reason": "Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally.",
+          "path": "/workspace/generated_images/exec-04075e1e-6588-48cc-acd9-4f0f219493df.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass.",
+              "path": "/workspace/generated_images/exec-23978ea4-64f2-4066-89aa-f48010bd1bf7.png"
+            }
+          ],
+          "reason": "Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass.",
+          "path": "/workspace/generated_images/exec-23978ea4-64f2-4066-89aa-f48010bd1bf7.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar.",
+              "path": "/workspace/generated_images/exec-d3a456ca-417e-4ac5-a2de-5daeeb88f34b.png"
+            }
+          ],
+          "reason": "Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar.",
+          "path": "/workspace/generated_images/exec-d3a456ca-417e-4ac5-a2de-5daeeb88f34b.png"
         },
         "face_views/three_quarter": {
           "status": "pending",
