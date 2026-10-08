@@ -1,0 +1,1527 @@
+{
+  "schema_version": 1,
+  "colour_space": "sRGB hex; metal albedo interpreted as conductor F0",
+  "units": "metres",
+  "source_texture_names": "src/world/textures.ts: ALL_TEXTURE_SETS / TILE_METERS, base 7ab3afd",
+  "tile_sizes_match_current": true,
+  "materials": {
+    "bark": {
+      "tile_size_m": 2.4,
+      "albedo_average": "#665343",
+      "albedo_range": [
+        "#302b23",
+        "#98816b"
+      ],
+      "roughness_range": [
+        0.78,
+        0.96
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Vertical fissures 2–4 cm deep, 8–15 cm apart; irregular plates 15–40 cm high.",
+      "image": "bark.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#6f5846",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "bark.jpg",
+        "range_p05_p95": [
+          "#402d1e",
+          "#9b826f"
+        ],
+        "boundary_mean_abs_error_rgb": 5.0966796875
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "mossy_bark": {
+      "tile_size_m": 2.4,
+      "albedo_average": "#526044",
+      "albedo_range": [
+        "#26362a",
+        "#8c9562"
+      ],
+      "roughness_range": [
+        0.82,
+        0.98
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Same fissures as bark; fine moss tufts 2–8 mm, 25–40% cover concentrated in north-facing crevices.",
+      "image": "mossy_bark.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#565430",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "mossy_bark.jpg",
+        "range_p05_p95": [
+          "#242307",
+          "#928f6b"
+        ],
+        "boundary_mean_abs_error_rgb": 6.0791015625
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "leaves": {
+      "tile_size_m": 1.5,
+      "albedo_average": "#52693b",
+      "albedo_range": [
+        "#293923",
+        "#92a858"
+      ],
+      "roughness_range": [
+        0.5,
+        0.8
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Oak/beech leaf blades 5–12 cm long; midrib 0.5–1 mm and branching veins; restrained hue variation, no giant wax leaves.",
+      "image": "leaves.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#516325",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "leaves.jpg",
+        "range_p05_p95": [
+          "#273407",
+          "#798a44"
+        ],
+        "boundary_mean_abs_error_rgb": 5.0703125
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "grass": {
+      "tile_size_m": 1.6,
+      "albedo_average": "#68754b",
+      "albedo_range": [
+        "#3c482f",
+        "#a3a974"
+      ],
+      "roughness_range": [
+        0.65,
+        0.9
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Blades 2–5 mm wide, 15–35 cm tall, some dry tips; clumps 3–8 cm, heterogeneous gaps.",
+      "image": "grass.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#575e30",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "grass.jpg",
+        "range_p05_p95": [
+          "#242a06",
+          "#92986a"
+        ],
+        "boundary_mean_abs_error_rgb": 6.811197916666666
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "forest_floor": {
+      "tile_size_m": 2.5,
+      "albedo_average": "#514738",
+      "albedo_range": [
+        "#2b2924",
+        "#867454"
+      ],
+      "roughness_range": [
+        0.8,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Compressed brown oak leaves 5–12 cm, twigs 2–10 mm, soil patches 15–35%, broken leaf edges; no repeated obvious motif.",
+      "image": "forest_floor.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#533d2e",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "forest_floor.jpg",
+        "range_p05_p95": [
+          "#221308",
+          "#8d715e"
+        ],
+        "boundary_mean_abs_error_rgb": 5.981608072916667
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "mud": {
+      "tile_size_m": 2.5,
+      "albedo_average": "#51473c",
+      "albedo_range": [
+        "#302c28",
+        "#7d6c57"
+      ],
+      "roughness_range": [
+        0.18,
+        0.75
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Wheel/boot ruts 1–8 cm deep, wet depressions 0.2–1 m; sheen only in wet regions, clods 1–4 cm.",
+      "image": "mud.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#5b4c40",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "mud.jpg",
+        "range_p05_p95": [
+          "#382a1e",
+          "#7c6c60"
+        ],
+        "boundary_mean_abs_error_rgb": 4.589518229166666
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "dirt": {
+      "tile_size_m": 2.5,
+      "albedo_average": "#75614b",
+      "albedo_range": [
+        "#493c2f",
+        "#a68a67"
+      ],
+      "roughness_range": [
+        0.85,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Grains 0.2–3 mm, pebble inclusions 5–30 mm, shallow compression cracks 1–4 mm.",
+      "image": "dirt.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#7b6147",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "dirt.jpg",
+        "range_p05_p95": [
+          "#513920",
+          "#aa8f75"
+        ],
+        "boundary_mean_abs_error_rgb": 5.223958333333334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "rock": {
+      "tile_size_m": 3,
+      "albedo_average": "#777970",
+      "albedo_range": [
+        "#444841",
+        "#a9aaa0"
+      ],
+      "roughness_range": [
+        0.65,
+        0.95
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Granular weathered grey rock, quartz grains 1–4 mm, fractures 1–5 cm apart, no baked large-scale shadow.",
+      "image": "rock.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#7c796d",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "rock.jpg",
+        "range_p05_p95": [
+          "#4e4c40",
+          "#aca99d"
+        ],
+        "boundary_mean_abs_error_rgb": 5.173828125
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "cliff": {
+      "tile_size_m": 4,
+      "albedo_average": "#77756c",
+      "albedo_range": [
+        "#41433f",
+        "#ada89b"
+      ],
+      "roughness_range": [
+        0.7,
+        0.98
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Layering 15–60 cm, angular fracture scars 3–12 cm, mineral specks 1–5 mm; broad geometry remains mesh responsibility.",
+      "image": "cliff.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#7f7769",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "cliff.jpg",
+        "range_p05_p95": [
+          "#554e41",
+          "#a8a093"
+        ],
+        "boundary_mean_abs_error_rgb": 4.97119140625
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "cobble": {
+      "tile_size_m": 2,
+      "albedo_average": "#777b73",
+      "albedo_range": [
+        "#404940",
+        "#aeb2a4"
+      ],
+      "roughness_range": [
+        0.7,
+        0.95
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Irregular rounded stones 12–24 cm across; 1–3 cm mortar joints, depressed mossy joints 2 cm, avoid uniform brick grid.",
+      "image": "cobble.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#666350",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "cobble.jpg",
+        "range_p05_p95": [
+          "#433f25",
+          "#8e8a78"
+        ],
+        "boundary_mean_abs_error_rgb": 4.889811197916667
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "stone_blocks": {
+      "tile_size_m": 3,
+      "albedo_average": "#8b8e82",
+      "albedo_range": [
+        "#545950",
+        "#b5b8ab"
+      ],
+      "roughness_range": [
+        0.7,
+        0.9
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Ashlar blocks 0.6–1.2 m wide and 0.3–0.6 m tall; 1.5–3 cm recessed mortar; chipped edges 0.5–2 cm.",
+      "image": "stone_blocks.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#8a8675",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "stone_blocks.jpg",
+        "range_p05_p95": [
+          "#6b6656",
+          "#a7a18f"
+        ],
+        "boundary_mean_abs_error_rgb": 4.42529296875
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "dwarven_stone": {
+      "tile_size_m": 2,
+      "albedo_average": "#6e7277",
+      "albedo_range": [
+        "#353c43",
+        "#a0a6ad"
+      ],
+      "roughness_range": [
+        0.65,
+        0.88
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Fine dark granite grain 1–3 mm; original geometric incisions 4–10 mm wide, 5–15 mm deep; no borrowed heraldry or text.",
+      "image": "dwarven_stone.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#6a6b6c",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "dwarven_stone.jpg",
+        "range_p05_p95": [
+          "#3f3f3f",
+          "#969697"
+        ],
+        "boundary_mean_abs_error_rgb": 5.388020833333334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "marble": {
+      "tile_size_m": 2,
+      "albedo_average": "#d5d4c9",
+      "albedo_range": [
+        "#a5aaa5",
+        "#f0eee0"
+      ],
+      "roughness_range": [
+        0.3,
+        0.6
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "White-grey calcite fine grain, low-contrast veins 1–4 mm wide, sparse warm inclusions; worn matt edges, no glossy plastic.",
+      "image": "marble.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#c6c0b5",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "marble.jpg",
+        "range_p05_p95": [
+          "#b8b3a8",
+          "#cfcabf"
+        ],
+        "boundary_mean_abs_error_rgb": 2.741048177083333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "wood_planks": {
+      "tile_size_m": 1.2,
+      "albedo_average": "#8b6948",
+      "albedo_range": [
+        "#4c3d30",
+        "#bd976b"
+      ],
+      "roughness_range": [
+        0.55,
+        0.85
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Planks 12–22 cm wide, joints 3–8 mm; grain 1–3 mm, knots 2–5 cm, nail heads 8 mm.",
+      "image": "wood_planks.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#8c694b",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "wood_planks.jpg",
+        "range_p05_p95": [
+          "#6f5135",
+          "#a58262"
+        ],
+        "boundary_mean_abs_error_rgb": 4.833821614583334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "old_wood": {
+      "tile_size_m": 1.2,
+      "albedo_average": "#716858",
+      "albedo_range": [
+        "#353b36",
+        "#a9a18b"
+      ],
+      "roughness_range": [
+        0.75,
+        0.98
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Grey weathered boards 12–20 cm; splinters 0.5–3 mm, cracks 1–4 mm, darker wet end-grain.",
+      "image": "old_wood.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#7a6c5c",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "old_wood.jpg",
+        "range_p05_p95": [
+          "#423627",
+          "#a69887"
+        ],
+        "boundary_mean_abs_error_rgb": 4.546549479166667
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "thatch": {
+      "tile_size_m": 1.5,
+      "albedo_average": "#ad9365",
+      "albedo_range": [
+        "#685838",
+        "#d8c18b"
+      ],
+      "roughness_range": [
+        0.85,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Reed stems 3–6 mm wide, lengths 20–50 cm; bundled overlaps 15–25 cm, broken stalk ends, sparse grey decay.",
+      "image": "thatch.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#977a59",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "thatch.jpg",
+        "range_p05_p95": [
+          "#593f23",
+          "#c9ab89"
+        ],
+        "boundary_mean_abs_error_rgb": 4.25146484375
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "snow": {
+      "tile_size_m": 3,
+      "albedo_average": "#e0e7e7",
+      "albedo_range": [
+        "#bccad0",
+        "#f4f7f3"
+      ],
+      "roughness_range": [
+        0.55,
+        0.9
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Ice grains 0.1–0.8 mm, soft wind ripples 5–20 cm spacing, 1–3 cm relief; no blue shading baked into albedo.",
+      "image": "snow.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#ccd2d8",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "snow.jpg",
+        "range_p05_p95": [
+          "#b6bfc7",
+          "#e0e3e7"
+        ],
+        "boundary_mean_abs_error_rgb": 3.05078125
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "ice": {
+      "tile_size_m": 2,
+      "albedo_average": "#adc1c7",
+      "albedo_range": [
+        "#71929f",
+        "#d4e1df"
+      ],
+      "roughness_range": [
+        0.08,
+        0.3
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Trapped bubbles 1–8 mm, branching hairline cracks 0.5–2 mm, frost margins; translucent volume handled by material.",
+      "image": "ice.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#869faa",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "ice.jpg",
+        "range_p05_p95": [
+          "#63808b",
+          "#a8bec8"
+        ],
+        "boundary_mean_abs_error_rgb": 4.249348958333334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "sand": {
+      "tile_size_m": 2,
+      "albedo_average": "#bba97b",
+      "albedo_range": [
+        "#8e7d5b",
+        "#ded0a0"
+      ],
+      "roughness_range": [
+        0.85,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Quartz grains 0.2–1 mm; wind ripples 5–12 cm, shallow 2–6 mm relief; sparse darker grains.",
+      "image": "sand.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#b3956d",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "sand.jpg",
+        "range_p05_p95": [
+          "#94774f",
+          "#cfb28a"
+        ],
+        "boundary_mean_abs_error_rgb": 5.502278645833334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "ash": {
+      "tile_size_m": 2.5,
+      "albedo_average": "#5a544e",
+      "albedo_range": [
+        "#292b2b",
+        "#8c8070"
+      ],
+      "roughness_range": [
+        0.85,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Fine grey soot 0.05–0.5 mm, char flakes 2–8 mm, slag specks 1–3 cm; cracks in underlying earth.",
+      "image": "ash.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#605b56",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "ash.jpg",
+        "range_p05_p95": [
+          "#312d29",
+          "#9f9893"
+        ],
+        "boundary_mean_abs_error_rgb": 5.474446614583334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "metal_dark": {
+      "tile_size_m": 1,
+      "albedo_average": "#555b5c",
+      "albedo_range": [
+        "#272e31",
+        "#82898b"
+      ],
+      "roughness_range": [
+        0.4,
+        0.75
+      ],
+      "metalness": 1,
+      "normal_strength": "subtle",
+      "micro_features": "Forged iron scale 1–3 mm, shallow hammer dimples 5–15 mm, narrow worn brighter edges; rust regions require separate metalness mask.",
+      "image": "metal_dark.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#504f4c",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "metal_dark.jpg",
+        "range_p05_p95": [
+          "#373532",
+          "#716f6c"
+        ],
+        "boundary_mean_abs_error_rgb": 5.18310546875
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "metal_bright": {
+      "tile_size_m": 1,
+      "albedo_average": "#c2c5c3",
+      "albedo_range": [
+        "#7d898c",
+        "#e5e7df"
+      ],
+      "roughness_range": [
+        0.18,
+        0.4
+      ],
+      "metalness": 1,
+      "normal_strength": "subtle",
+      "micro_features": "Steel polish striations 0.05–0.2 mm, sparse fine scratches 0.1–0.4 mm and 1–3 cm long; no reflected scene baked in.",
+      "image": "metal_bright.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#b2b3b2",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "metal_bright.jpg",
+        "range_p05_p95": [
+          "#a2a3a3",
+          "#c0c1c0"
+        ],
+        "boundary_mean_abs_error_rgb": 2.655598958333333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "gold": {
+      "tile_size_m": 0.6,
+      "albedo_average": "#d6b45f",
+      "albedo_range": [
+        "#917238",
+        "#f4da95"
+      ],
+      "roughness_range": [
+        0.18,
+        0.42
+      ],
+      "metalness": 1,
+      "normal_strength": "subtle",
+      "micro_features": "Warm hammered gold, 3–8 mm shallow dimples and 0.1–0.3 mm hairline scratches; metal F0 interpretation, no yellow paint.",
+      "image": "gold.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#ca953f",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "gold.jpg",
+        "range_p05_p95": [
+          "#ac7827",
+          "#ecbc5f"
+        ],
+        "boundary_mean_abs_error_rgb": 4.096516927083334
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "leather": {
+      "tile_size_m": 0.5,
+      "albedo_average": "#76543a",
+      "albedo_range": [
+        "#3d3026",
+        "#a77c54"
+      ],
+      "roughness_range": [
+        0.55,
+        0.85
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Pores 0.2–0.6 mm, creases 1–3 mm, worn raised grain; stitching and seams belong to mesh or separate mask.",
+      "image": "leather.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#744a30",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "leather.jpg",
+        "range_p05_p95": [
+          "#593117",
+          "#946a4f"
+        ],
+        "boundary_mean_abs_error_rgb": 5.218587239583333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "cloth_linen": {
+      "tile_size_m": 0.25,
+      "albedo_average": "#c9bb99",
+      "albedo_range": [
+        "#9b8b6b",
+        "#e4dcc5"
+      ],
+      "roughness_range": [
+        0.85,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Plain weave threads 0.25–0.5 mm, occasional slub 1 mm; matte linen, no large folds baked.",
+      "image": "cloth_linen.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#b7a68b",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "cloth_linen.jpg",
+        "range_p05_p95": [
+          "#8d7b60",
+          "#d6c5ac"
+        ],
+        "boundary_mean_abs_error_rgb": 4.751139322916666
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "cloth_wool": {
+      "tile_size_m": 0.3,
+      "albedo_average": "#7b7764",
+      "albedo_range": [
+        "#4b4d41",
+        "#aaa58b"
+      ],
+      "roughness_range": [
+        0.9,
+        1
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Fuzzy fibres 0.02–0.08 mm, weave yarn 0.6–1.2 mm, soft nap; folds remain geometry.",
+      "image": "cloth_wool.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#6d6654",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "cloth_wool.jpg",
+        "range_p05_p95": [
+          "#534c3a",
+          "#88806e"
+        ],
+        "boundary_mean_abs_error_rgb": 4.44580078125
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "web": {
+      "tile_size_m": 1,
+      "albedo_average": "#d3d7c8",
+      "albedo_range": [
+        "#889a92",
+        "#f1f2e5"
+      ],
+      "roughness_range": [
+        0.35,
+        0.7
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Silk threads 0.1–0.5 mm, intersecting bundles 1–4 mm; 70–90% transparent gaps; opacity mask necessary.",
+      "image": "web.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#8e9082",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "web.jpg",
+        "range_p05_p95": [
+          "#737566",
+          "#bcbdb1"
+        ],
+        "boundary_mean_abs_error_rgb": 4.1728515625
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "water_normal": {
+      "tile_size_m": 6,
+      "albedo_average": "#889f9f",
+      "albedo_range": [
+        "#536f73",
+        "#c3d0c5"
+      ],
+      "roughness_range": [
+        0.04,
+        0.18
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Crossing capillary waves 5–15 cm, larger low swells 0.5–1.5 m; two scrolling normal layers, never baked sky reflection.",
+      "image": "water_normal.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#638586",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "water_normal.jpg",
+        "range_p05_p95": [
+          "#4b706f",
+          "#90adaf"
+        ],
+        "boundary_mean_abs_error_rgb": 3.701334635416667
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "chitin": {
+      "tile_size_m": 0.8,
+      "albedo_average": "#50463d",
+      "albedo_range": [
+        "#221f1c",
+        "#807261"
+      ],
+      "roughness_range": [
+        0.3,
+        0.65
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Overlapping cuticle plates 2–5 cm, stippling 0.3–1 mm, sparse coarse hairs; glossy seams and matte body patches.",
+      "image": "chitin.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#4f3f32",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "chitin.jpg",
+        "range_p05_p95": [
+          "#2d2015",
+          "#796555"
+        ],
+        "boundary_mean_abs_error_rgb": 4.497233072916666
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "scales_rough": {
+      "tile_size_m": 0.6,
+      "albedo_average": "#6b6b4d",
+      "albedo_range": [
+        "#383e31",
+        "#9c9e73"
+      ],
+      "roughness_range": [
+        0.65,
+        0.95
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Irregular scales 1–3 cm across, 1–3 mm relief, narrow dark margins; organic alignment rather than brick courses.",
+      "image": "scales_rough.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#5f5b40",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "scales_rough.jpg",
+        "range_p05_p95": [
+          "#39361f",
+          "#898463"
+        ],
+        "boundary_mean_abs_error_rgb": 5.02587890625
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "hide": {
+      "tile_size_m": 0.8,
+      "albedo_average": "#807568",
+      "albedo_range": [
+        "#4b463f",
+        "#b3a28c"
+      ],
+      "roughness_range": [
+        0.65,
+        0.95
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Mumak-like thick hide wrinkles 1–4 cm deep and 5–20 cm apart, fine 1–4 mm cross wrinkles, earthy dust in creases.",
+      "image": "hide.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#705f4c",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "hide.jpg",
+        "range_p05_p95": [
+          "#4c3d2c",
+          "#92806c"
+        ],
+        "boundary_mean_abs_error_rgb": 4.4140625
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "skin_human": {
+      "tile_size_m": 0.5,
+      "albedo_average": "#b78a6d",
+      "albedo_range": [
+        "#805c4b",
+        "#ddae89"
+      ],
+      "roughness_range": [
+        0.45,
+        0.75
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Natural pores 0.1–0.3 mm, faint colour mottling 1–5 mm, no eyes hair or body parts; warm wrap-light response belongs to shader.",
+      "image": "skin_human.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#b57d5d",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "skin_human.jpg",
+        "range_p05_p95": [
+          "#a97050",
+          "#c28a6a"
+        ],
+        "boundary_mean_abs_error_rgb": 3.6328125
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "skin_orc": {
+      "tile_size_m": 0.8,
+      "albedo_average": "#797362",
+      "albedo_range": [
+        "#464d42",
+        "#aca28a"
+      ],
+      "roughness_range": [
+        0.6,
+        0.85
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Muted olive-grey pores 0.3–0.8 mm, coarse creases 1–3 mm, subtle scars; no green neon.",
+      "image": "skin_orc.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#686047",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "skin_orc.jpg",
+        "range_p05_p95": [
+          "#4e462e",
+          "#857d65"
+        ],
+        "boundary_mean_abs_error_rgb": 4.284016927083333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "skin_troll": {
+      "tile_size_m": 1.5,
+      "albedo_average": "#858078",
+      "albedo_range": [
+        "#4b514f",
+        "#bbb0a0"
+      ],
+      "roughness_range": [
+        0.65,
+        0.9
+      ],
+      "metalness": 0,
+      "normal_strength": "strong",
+      "micro_features": "Leathery pores 1–3 mm, pebbled nodules 4–10 mm, broad folds 1–3 cm, dusty grey-brown.",
+      "image": "skin_troll.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#6c5f51",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "skin_troll.jpg",
+        "range_p05_p95": [
+          "#4d4134",
+          "#8c7e70"
+        ],
+        "boundary_mean_abs_error_rgb": 4.403483072916666
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "birch_bark": {
+      "tile_size_m": 2.2,
+      "albedo_average": "#b9b9a1",
+      "albedo_range": [
+        "#555b4f",
+        "#e4e2c9"
+      ],
+      "roughness_range": [
+        0.7,
+        0.95
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Papery white bark sheets 5–20 cm, horizontal dark lenticels 1–4 cm, curled torn margins 1–3 mm.",
+      "image": "birch_bark.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#b5af9f",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "birch_bark.jpg",
+        "range_p05_p95": [
+          "#7c7361",
+          "#cdc7bb"
+        ],
+        "boundary_mean_abs_error_rgb": 4.347493489583333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "shingles": {
+      "tile_size_m": 1,
+      "albedo_average": "#665c4c",
+      "albedo_range": [
+        "#353932",
+        "#96866b"
+      ],
+      "roughness_range": [
+        0.7,
+        0.98
+      ],
+      "metalness": 0,
+      "normal_strength": "medium",
+      "micro_features": "Split timber shingles 12–18 cm width, 25–40 cm length, staggered 12–16 cm overlap; dark end splits.",
+      "image": "shingles.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#6c5d48",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "shingles.jpg",
+        "range_p05_p95": [
+          "#392f20",
+          "#8f7d65"
+        ],
+        "boundary_mean_abs_error_rgb": 4.285970052083333
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    },
+    "bone": {
+      "tile_size_m": 0.4,
+      "albedo_average": "#c9bc98",
+      "albedo_range": [
+        "#867c62",
+        "#e9dfc4"
+      ],
+      "roughness_range": [
+        0.6,
+        0.9
+      ],
+      "metalness": 0,
+      "normal_strength": "subtle",
+      "micro_features": "Aged ivory bone micropores 0.1–0.5 mm, hairline cracking 0.1–0.3 mm, dusty crevice staining; no actual skeletal form in swatch.",
+      "image": "bone.jpg",
+      "image_size_px": [
+        1024,
+        1024
+      ],
+      "interpretation": "Flat photographic appearance target, not a PBR texture channel or runtime image.",
+      "source": "design_target",
+      "observed_statistics": {
+        "source": "measured_script",
+        "method": "per-channel median in encoded sRGB",
+        "hex": "#d6ba8d",
+        "region_px": [
+          0,
+          0,
+          1024,
+          1024
+        ],
+        "pixel_count": 1048576,
+        "image": "bone.jpg",
+        "range_p05_p95": [
+          "#bc9e6f",
+          "#e2c89e"
+        ],
+        "boundary_mean_abs_error_rgb": 4.404947916666667
+      },
+      "seamless_method": "Half-tile offset plus raised-cosine crossfade on X/Y; matched boundary pixels before JPEG quality 88."
+    }
+  },
+  "source": "design_target"
+}
