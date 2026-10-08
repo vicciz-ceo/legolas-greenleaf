@@ -1,0 +1,9 @@
+{
+  "source": "measured_script",
+  "script": "tools/validate_refs.py",
+  "checks": 1107,
+  "errors": [],
+  "file_count": 485,
+  "library_bytes_before_this_report": 110934782,
+  "limit_bytes": 120000000
+}

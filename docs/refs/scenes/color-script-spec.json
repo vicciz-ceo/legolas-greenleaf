@@ -1,0 +1,132 @@
+{
+  "source": "measured_script",
+  "size_px": [
+    1536,
+    1024
+  ],
+  "order": [
+    "menu",
+    "mirkwood",
+    "barrels",
+    "laketown",
+    "ravenhill",
+    "moria",
+    "amon_hen",
+    "helms_deep",
+    "pelennor",
+    "black_gate"
+  ],
+  "entries": [
+    {
+      "chapter": "menu",
+      "thumbnail_rect_px": [
+        2,
+        155,
+        149,
+        102
+      ],
+      "source_image": "scenes/menu/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "mirkwood",
+      "thumbnail_rect_px": [
+        155,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/mirkwood/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "barrels",
+      "thumbnail_rect_px": [
+        309,
+        155,
+        149,
+        102
+      ],
+      "source_image": "scenes/barrels/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "laketown",
+      "thumbnail_rect_px": [
+        462,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/laketown/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "ravenhill",
+      "thumbnail_rect_px": [
+        616,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/ravenhill/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "moria",
+      "thumbnail_rect_px": [
+        770,
+        155,
+        149,
+        102
+      ],
+      "source_image": "scenes/moria/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "amon_hen",
+      "thumbnail_rect_px": [
+        923,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/amon_hen/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "helms_deep",
+      "thumbnail_rect_px": [
+        1077,
+        155,
+        149,
+        102
+      ],
+      "source_image": "scenes/helms_deep/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "pelennor",
+      "thumbnail_rect_px": [
+        1230,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/pelennor/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    },
+    {
+      "chapter": "black_gate",
+      "thumbnail_rect_px": [
+        1384,
+        155,
+        150,
+        102
+      ],
+      "source_image": "scenes/black_gate/establishing.jpg",
+      "colours_from": "observed_palette; design-intent fallback only when visible sample is unavailable"
+    }
+  ],
+  "script": "tools/compose_scenes.py:colour_script"
+}

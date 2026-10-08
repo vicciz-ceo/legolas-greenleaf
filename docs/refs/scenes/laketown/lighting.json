@@ -1,0 +1,228 @@
+{
+  "name": "Lake-town Night",
+  "sky": {
+    "kind": "gradient",
+    "top": "#03060f",
+    "horizon": "#1a2a46",
+    "bottom": "#05070d",
+    "stars": 0.85,
+    "clouds": 0.4,
+    "cloudColor": "#253350",
+    "moon": {
+      "elevation": 33,
+      "azimuth": 205,
+      "size": 2.2,
+      "color": "#d5e2ff"
+    }
+  },
+  "sunColor": "#a2b7da",
+  "sunIntensity": 0.9,
+  "hemiSky": "#1f3158",
+  "hemiGround": "#0e0d12",
+  "hemiIntensity": 0.65,
+  "envIntensity": 0.7,
+  "fog": {
+    "color": "#101b2f",
+    "density": 0.008
+  },
+  "exposure": 1.35,
+  "bloom": 0.24,
+  "grade": {
+    "lift": [
+      0,
+      0.006,
+      0.02
+    ],
+    "gamma": [
+      0.98,
+      1,
+      1.04
+    ],
+    "gain": [
+      0.96,
+      1,
+      1.1
+    ],
+    "saturation": 0.95,
+    "vignette": 0.32
+  },
+  "weather": "embers",
+  "weatherIntensity": 0.15,
+  "ambience": "wind",
+  "palette": {
+    "sky_top": "#03060f",
+    "horizon": "#1a2a46",
+    "fog": "#101b2f",
+    "sun": "#a2b7da",
+    "shadow_fill": "#1f3158",
+    "dominant_ground": "#302b28",
+    "dominant_structure": "#514239",
+    "accent": "#d8b16b",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunColor",
+      "current": "#86a4e6",
+      "recommended": "#a2b7da",
+      "reason": "Neutralise excessive orange/blue cast so fire, hide and wet stone keep distinguishable hues."
+    },
+    {
+      "field": "sunIntensity",
+      "current": 1.15,
+      "recommended": 0.9,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.55,
+      "recommended": 0.65,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0115,
+      "recommended": 0.008,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.5,
+      "recommended": 0.24,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.5,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "weatherIntensity",
+      "current": 0.5,
+      "recommended": 0.15,
+      "reason": "Reduce distractors across reticles and preserve night silhouettes."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1b2f4c",
+      "region_px": [
+        922,
+        20,
+        1152,
+        102
+      ],
+      "pixel_count": 18860,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#27364d",
+      "region_px": [
+        952,
+        205,
+        1167,
+        287
+      ],
+      "pixel_count": 17630,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#414252",
+      "region_px": [
+        1172,
+        625,
+        1213,
+        660
+      ],
+      "pixel_count": 1435,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#221510",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1e1e25",
+      "region_px": [
+        123,
+        881,
+        276,
+        963
+      ],
+      "pixel_count": 12546,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#211913",
+      "region_px": [
+        730,
+        287,
+        868,
+        410
+      ],
+      "pixel_count": 16974,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#7a3e17",
+      "region_px": [
+        783,
+        379,
+        852,
+        435
+      ],
+      "pixel_count": 3864,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#f8dc96",
+      "region_px": [
+        574,
+        756,
+        590,
+        793
+      ],
+      "pixel_count": 592,
+      "image": "looks/establishing.jpg",
+      "label": "fire_emissive"
+    }
+  },
+  "environment_name": "laketown_night"
+}

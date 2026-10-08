@@ -1,0 +1,868 @@
+{
+  "schema_version": 1,
+  "implementation": "DOM/CSS/SVG only; concept backdrop images in mocks are development references. Recreate backgrounds with existing procedural renderer; never import reference art.",
+  "fonts": {
+    "stack": [
+      "Cormorant Garamond",
+      "Palatino Linotype",
+      "Palatino",
+      "Georgia",
+      "serif"
+    ],
+    "web_fonts": false,
+    "fallback_metrics": "Layout tested with Georgia-compatible local serif; reserve 10% label width for OS font differences."
+  },
+  "colour_tokens": {
+    "gold": {
+      "hex": "#c9b57b",
+      "alpha": 1
+    },
+    "silver": {
+      "hex": "#c5d0cf",
+      "alpha": 1
+    },
+    "text": {
+      "hex": "#ece7d7",
+      "alpha": 1
+    },
+    "muted": {
+      "hex": "#aab6ae",
+      "alpha": 1
+    },
+    "panel": {
+      "hex": "#101b1a",
+      "alpha": 0.84
+    },
+    "line": {
+      "hex": "#c9b57b",
+      "alpha": 0.45
+    },
+    "health": {
+      "hex": "#739064",
+      "alpha": 1
+    },
+    "focus": {
+      "hex": "#85bcb7",
+      "alpha": 1
+    },
+    "danger": {
+      "hex": "#a04938",
+      "alpha": 1
+    },
+    "speaker_legolas": {
+      "hex": "#c9b57b",
+      "alpha": 1
+    },
+    "speaker_gimli": {
+      "hex": "#d8a775",
+      "alpha": 1
+    },
+    "speaker_tauriel": {
+      "hex": "#9fb88b",
+      "alpha": 1
+    }
+  },
+  "type_scale": {
+    "hero": {
+      "px": 72,
+      "weight": 400,
+      "letter_spacing_px": 12
+    },
+    "title": {
+      "px": 48,
+      "weight": 400,
+      "letter_spacing_px": 5
+    },
+    "section": {
+      "px": 32,
+      "weight": 400,
+      "letter_spacing_px": 3
+    },
+    "body": {
+      "px": 24,
+      "weight": 400,
+      "letter_spacing_px": 0.5
+    },
+    "label": {
+      "px": 18,
+      "weight": 400,
+      "letter_spacing_px": 2
+    },
+    "caption": {
+      "px": 16,
+      "weight": 400,
+      "letter_spacing_px": 1
+    },
+    "rank": {
+      "px": 160,
+      "weight": 400,
+      "letter_spacing_px": 4
+    },
+    "touch": {
+      "px": 12,
+      "weight": 600,
+      "letter_spacing_px": 0.5
+    }
+  },
+  "spacing_px": [
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96
+  ],
+  "border_width_px": {
+    "fine": 1,
+    "selected": 2
+  },
+  "corner_radius_px": {
+    "panel": 2,
+    "key_cap": 4,
+    "touch_button": 28,
+    "stick": 56
+  },
+  "shadows": {
+    "panel": "0 12px 36px rgba(0,0,0,.38)",
+    "text": "0 2px 6px rgba(0,0,0,.8)",
+    "focus_glow": "0 0 12px rgba(133,188,183,.24)"
+  },
+  "animation": {
+    "panel_enter": {
+      "ms": 220,
+      "easing": "cubic-bezier(.2,.8,.2,1)"
+    },
+    "hover": {
+      "ms": 120,
+      "easing": "ease-out"
+    },
+    "meter": {
+      "ms": 180,
+      "easing": "ease-out"
+    },
+    "hit_marker": {
+      "ms": 140,
+      "easing": "ease-out"
+    },
+    "headshot_marker": {
+      "ms": 240,
+      "easing": "ease-out"
+    },
+    "damage_arc": {
+      "ms": 450,
+      "easing": "ease-out"
+    },
+    "prompt": {
+      "ms": 160,
+      "easing": "ease-out"
+    },
+    "focus_target": {
+      "ms": 180,
+      "easing": "ease-out"
+    },
+    "chapter_unlock": {
+      "ms": 600,
+      "easing": "ease-in-out"
+    },
+    "reduced_motion": "0 ms transforms; 80 ms opacity only"
+  },
+  "elements": {
+    "health": {
+      "rect_px": [
+        76,
+        60,
+        320,
+        24
+      ],
+      "rect_percent": [
+        3.9583,
+        5.5556,
+        16.6667,
+        2.2222
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "focus_meter": {
+      "rect_px": [
+        76,
+        96,
+        220,
+        10
+      ],
+      "rect_percent": [
+        3.9583,
+        8.8889,
+        11.4583,
+        0.9259
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "objective": {
+      "rect_px": [
+        76,
+        158,
+        460,
+        80
+      ],
+      "rect_percent": [
+        3.9583,
+        14.6296,
+        23.9583,
+        7.4074
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "rivalry": {
+      "rect_px": [
+        1460,
+        60,
+        380,
+        104
+      ],
+      "rect_percent": [
+        76.0417,
+        5.5556,
+        19.7917,
+        9.6296
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "arrow_selector": {
+      "rect_px": [
+        76,
+        944,
+        344,
+        64
+      ],
+      "rect_percent": [
+        3.9583,
+        87.4074,
+        17.9167,
+        5.9259
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "crosshair": {
+      "rect_px": [
+        940,
+        520,
+        40,
+        40
+      ],
+      "rect_percent": [
+        48.9583,
+        48.1481,
+        2.0833,
+        3.7037
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "charge_ring": {
+      "rect_px": [
+        936,
+        516,
+        48,
+        48
+      ],
+      "rect_percent": [
+        48.75,
+        47.7778,
+        2.5,
+        4.4444
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "charge_examples": {
+      "rect_px": [
+        76,
+        760,
+        320,
+        108
+      ],
+      "rect_percent": [
+        3.9583,
+        70.3704,
+        16.6667,
+        10.0
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "hit_marker": {
+      "rect_px": [
+        946,
+        526,
+        28,
+        28
+      ],
+      "rect_percent": [
+        49.2708,
+        48.7037,
+        1.4583,
+        2.5926
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "headshot_marker": {
+      "rect_px": [
+        946,
+        526,
+        28,
+        28
+      ],
+      "rect_percent": [
+        49.2708,
+        48.7037,
+        1.4583,
+        2.5926
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "damage_arcs": {
+      "rect_px": [
+        860,
+        435,
+        200,
+        200
+      ],
+      "rect_percent": [
+        44.7917,
+        40.2778,
+        10.4167,
+        18.5185
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "boss_bar": {
+      "rect_px": [
+        570,
+        972,
+        780,
+        16
+      ],
+      "rect_percent": [
+        29.6875,
+        90.0,
+        40.625,
+        1.4815
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "boss_name": {
+      "rect_px": [
+        570,
+        938,
+        780,
+        28
+      ],
+      "rect_percent": [
+        29.6875,
+        86.8519,
+        40.625,
+        2.5926
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "subtitles": {
+      "rect_px": [
+        520,
+        824,
+        880,
+        96
+      ],
+      "rect_percent": [
+        27.0833,
+        76.2963,
+        45.8333,
+        8.8889
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "context_prompt": {
+      "rect_px": [
+        810,
+        716,
+        300,
+        52
+      ],
+      "rect_percent": [
+        42.1875,
+        66.2963,
+        15.625,
+        4.8148
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "focus_mark_1": {
+      "rect_px": [
+        1120,
+        420,
+        30,
+        30
+      ],
+      "rect_percent": [
+        58.3333,
+        38.8889,
+        1.5625,
+        2.7778
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "rotation_deg": 45,
+      "rect_semantics": "Unrotated CSS layout rectangle; actual rotated bounding rectangle is measured in mockup-measurements.json."
+    },
+    "focus_mark_2": {
+      "rect_px": [
+        1330,
+        500,
+        30,
+        30
+      ],
+      "rect_percent": [
+        69.2708,
+        46.2963,
+        1.5625,
+        2.7778
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "rotation_deg": 45,
+      "rect_semantics": "Unrotated CSS layout rectangle; actual rotated bounding rectangle is measured in mockup-measurements.json."
+    },
+    "title_logo": {
+      "rect_px": [
+        180,
+        210,
+        920,
+        176
+      ],
+      "rect_percent": [
+        9.375,
+        19.4444,
+        47.9167,
+        16.2963
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "title_menu": {
+      "rect_px": [
+        240,
+        460,
+        440,
+        350
+      ],
+      "rect_percent": [
+        12.5,
+        42.5926,
+        22.9167,
+        32.4074
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "chapter_grid": {
+      "rect_px": [
+        180,
+        225,
+        1560,
+        700
+      ],
+      "rect_percent": [
+        9.375,
+        20.8333,
+        81.25,
+        64.8148
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "modal_panel": {
+      "rect_px": [
+        480,
+        190,
+        960,
+        700
+      ],
+      "rect_percent": [
+        25.0,
+        17.5926,
+        50.0,
+        64.8148
+      ],
+      "viewport_px": [
+        1920,
+        1080
+      ]
+    },
+    "touch_movement_stick": {
+      "rect_px": [
+        52,
+        224,
+        112,
+        112
+      ],
+      "rect_percent": [
+        6.1611,
+        57.4359,
+        13.2701,
+        28.7179
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_look_area": {
+      "rect_px": [
+        240,
+        80,
+        340,
+        155
+      ],
+      "rect_percent": [
+        28.436,
+        20.5128,
+        40.2844,
+        39.7436
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_DRAW": {
+      "rect_px": [
+        744,
+        176,
+        74,
+        74
+      ],
+      "rect_percent": [
+        88.1517,
+        45.1282,
+        8.7678,
+        18.9744
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_AIM": {
+      "rect_px": [
+        678,
+        184,
+        56,
+        56
+      ],
+      "rect_percent": [
+        80.3318,
+        47.1795,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_KNIVES": {
+      "rect_px": [
+        612,
+        184,
+        56,
+        56
+      ],
+      "rect_percent": [
+        72.5118,
+        47.1795,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_JUMP": {
+      "rect_px": [
+        754,
+        258,
+        56,
+        56
+      ],
+      "rect_percent": [
+        89.3365,
+        66.1538,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_DASH": {
+      "rect_px": [
+        688,
+        258,
+        56,
+        56
+      ],
+      "rect_percent": [
+        81.5166,
+        66.1538,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_FOCUS": {
+      "rect_px": [
+        622,
+        258,
+        56,
+        56
+      ],
+      "rect_percent": [
+        73.6967,
+        66.1538,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_INTERACT": {
+      "rect_px": [
+        486,
+        258,
+        124,
+        56
+      ],
+      "rect_percent": [
+        57.5829,
+        66.1538,
+        14.6919,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_ARROW": {
+      "rect_px": [
+        688,
+        320,
+        56,
+        56
+      ],
+      "rect_percent": [
+        81.5166,
+        82.0513,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    },
+    "touch_PAUSE": {
+      "rect_px": [
+        758,
+        26,
+        56,
+        56
+      ],
+      "rect_percent": [
+        89.8104,
+        6.6667,
+        6.6351,
+        14.359
+      ],
+      "viewport_px": [
+        844,
+        390
+      ],
+      "safe_area": true
+    }
+  },
+  "touch": {
+    "viewport_px": [
+      844,
+      390
+    ],
+    "minimum_target_px": 56,
+    "safe_insets_px": {
+      "left": 26,
+      "right": 26,
+      "top": 14,
+      "bottom": 14
+    },
+    "runtime_safe_area": "max(design inset, env(safe-area-inset-*)); recompute layout when visible safe width changes",
+    "right_look_area": "Unoccupied region above buttons; multitouch zones never capture each other\u2019s pointers.",
+    "context_label": "INTERACT / Cut cocoon; disabled actions fade to .4 opacity but retain hitbox."
+  },
+  "states": {
+    "arrow_types": [
+      "standard",
+      "Galadhrim piercing",
+      "triple"
+    ],
+    "charge": [
+      0,
+      0.5,
+      1
+    ],
+    "rank_letters": [
+      "S",
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "speaker_colours": {
+      "Legolas": "#c9b57b",
+      "Gimli": "#d8a775",
+      "Tauriel": "#9fb88b"
+    }
+  },
+  "chapter_cards": {
+    "count": 9,
+    "image_size_px": [
+      1024,
+      512
+    ],
+    "text_safe_left_percent": 40,
+    "runtime": "Procedural viewport/CSS silhouettes; references never imported."
+  },
+  "icons": {
+    "viewBox": "0 0 24 24",
+    "fill": "currentColor",
+    "count": 33,
+    "stroke_design_min_px_at_24": 1,
+    "files": [
+      "arrow_standard",
+      "arrow_piercing",
+      "arrow_triple",
+      "knives",
+      "focus",
+      "health",
+      "gimli_axe",
+      "legolas_arrow",
+      "draw_speed",
+      "arrow_damage",
+      "knife_mastery",
+      "agility",
+      "vitality",
+      "piercing_arrows",
+      "triple_shot",
+      "settings",
+      "controls",
+      "chapters",
+      "credits",
+      "lock",
+      "checkpoint",
+      "rank_laurel",
+      "key_cap",
+      "gamepad_a",
+      "gamepad_b",
+      "gamepad_x",
+      "gamepad_y",
+      "gamepad_stick_left",
+      "gamepad_stick_right",
+      "gamepad_lb",
+      "gamepad_rb",
+      "gamepad_lt",
+      "gamepad_rt"
+    ]
+  },
+  "logo": {
+    "file": "logo/logo.svg",
+    "viewBox": "0 0 940 180",
+    "hand_drawn_letter_paths": true,
+    "gold_on_dark": "#c9b57b on #101b1a"
+  },
+  "source": "design_target",
+  "native_mockups": {
+    "source": "measured_script",
+    "authority": "mockup-measurements.json",
+    "fonts": "local OS serif fallback; no font network requests",
+    "screens": 13
+  }
+}
