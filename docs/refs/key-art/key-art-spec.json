@@ -1,0 +1,39 @@
+{
+  "poster": {
+    "size_px": [
+      1024,
+      1536
+    ],
+    "figure_height_m": 1.85,
+    "bow_length_m": 1.65,
+    "figure_height_percent": 70,
+    "safe_margin_percent": 5,
+    "landmarks": [
+      "Mirkwood",
+      "Deeping Wall",
+      "Mumak"
+    ],
+    "text": null,
+    "image": "poster.jpg"
+  },
+  "readme_banner": {
+    "size_px": [
+      1536,
+      512
+    ],
+    "aspect_ratio": 3,
+    "dark_left_percent": 35,
+    "safe_margin_percent": 5,
+    "text": null,
+    "image": "readme_banner.jpg"
+  },
+  "palette": [
+    "#273d34",
+    "#7eaaa8",
+    "#d0ad72",
+    "#253541"
+  ],
+  "originality": "Original faces, costume detailing, bow, architecture and composition; no actor likeness, logos or borrowed typography.",
+  "source": "design_target",
+  "measurement_note": "Figure/bow dimensions and crop proportions are composition targets. Photographic concept geometry is not calibrated."
+}
