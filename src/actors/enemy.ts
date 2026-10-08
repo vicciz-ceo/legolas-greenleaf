@@ -27,6 +27,7 @@ import type {
 import { clamp, dirFromYaw, wrapAngle, yawOf } from '../core/math';
 import { Rng, hashSeed } from '../core/rng';
 import { makeHumanoid } from './humanoids';
+import { applyLoadout } from '../creatures/loadouts';
 import { NpcBase, releaseSlot, requestAttackToken, requestSlot, slotHolders, vocal } from './npc';
 import { hostile, meleeLineClear } from './combatant';
 import { ARROW_GRAVITY, ballisticDir, leadTarget, spreadDir } from '../combat/aim';
@@ -127,7 +128,14 @@ class EnemyImpl extends NpcBase implements Enemy {
     const def = ARCHETYPES[spec.archetype] ?? ARCHETYPES.orc;
     const diff = DIFFICULTY[ctx.settings?.difficulty ?? 'normal'] ?? DIFFICULTY.normal;
     const seed = spec.seed ?? hashSeed(spec.archetype, pos.x.toFixed(2), pos.z.toFixed(2));
-    const humanoid = makeHumanoid({ kind: def.kind, seed, weapon: spec.weapon ?? def.weapon, offhand: def.offhand, scale: spec.scale ?? def.scale });
+    const melee = !def.ranged && def.behavior !== 'archer' && def.behavior !== 'hold';
+    const humanoid = makeHumanoid(
+      applyLoadout(
+        { kind: def.kind, seed, weapon: spec.weapon ?? def.weapon, offhand: def.offhand, scale: spec.scale ?? def.scale },
+        melee,
+        { weapon: spec.weapon !== undefined },
+      ),
+    );
     const hp = Math.round((spec.hp ?? def.hp) * diff.hp);
     super(ctx, {
       team: 'enemy',

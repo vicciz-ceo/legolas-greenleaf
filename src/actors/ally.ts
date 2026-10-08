@@ -10,6 +10,7 @@ import type { Ally, AllyKind, AllySpec, AttackAnim, Combatant, DamageInfo, GameC
 import { dirFromYaw } from '../core/math';
 import { Rng, hashSeed } from '../core/rng';
 import { makeHumanoid } from './humanoids';
+import { applyLoadout } from '../creatures/loadouts';
 import { NpcBase, vocal } from './npc';
 import { hostile, meleeLineClear } from './combatant';
 import { ARROW_GRAVITY, ballisticDir, spreadDir } from '../combat/aim';
@@ -68,7 +69,7 @@ class AllyImpl extends NpcBase implements Ally {
   constructor(ctx: GameContext, spec: AllySpec, pos: THREE.Vector3, facing = 0) {
     const def = ALLIES[spec.kind] ?? ALLIES.man;
     const seed = hashSeed('ally', spec.kind, pos.x.toFixed(1), pos.z.toFixed(1));
-    const humanoid = makeHumanoid({ kind: def.kind, seed, weapon: def.weapon, offhand: def.offhand });
+    const humanoid = makeHumanoid(applyLoadout({ kind: def.kind, seed, weapon: def.weapon, offhand: def.offhand }, !def.archer));
     super(ctx, {
       team: 'ally',
       name: spec.name ?? def.name,
