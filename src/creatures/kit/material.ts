@@ -311,12 +311,14 @@ varying vec3 vRestN;`,
       .replace(
         '#include <aomap_fragment>',
         `#include <aomap_fragment>
-	reflectedLight.indirectDiffuse *= vAO;
-	reflectedLight.indirectSpecular *= vAO * vAO;
-	reflectedLight.directDiffuse *= mix( 1.0, vAO, 0.35 );`,
+	// skin scatters light into its own creases: soften the baked AO there (no dark smears on faces)
+	float kitAO = mix( vAO, 1.0, 0.55 * vSurf.w );
+	reflectedLight.indirectDiffuse *= kitAO;
+	reflectedLight.indirectSpecular *= kitAO * kitAO;
+	reflectedLight.directDiffuse *= mix( 1.0, kitAO, 0.3 );`,
       );
   };
-  mat.customProgramCacheKey = () => 'kit-creature-v1';
+  mat.customProgramCacheKey = () => 'kit-creature-v2';
   return mat;
 }
 

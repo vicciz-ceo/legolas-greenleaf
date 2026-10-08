@@ -8,7 +8,7 @@
  */
 import * as THREE from 'three';
 import { hashSeed } from '../../../../core/rng';
-import { makeEvaluator, type Sculpt, type V3 } from '../../../kit/sdf';
+import { makeEvaluator, type PrimOpts, type Sculpt, type V3 } from '../../../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import type { KindContext } from '../../types';
 
@@ -248,7 +248,7 @@ export function ellipsoidFn(
 }
 
 /** a strip along a polyline: width across (side = tangent × normal), with thickness */
-export function ribbon(pts: THREE.Vector3[], nrm: THREE.Vector3[], width: number | ((t: number) => number), thick: number, sub = 1, opt: ShellOpts = {}): THREE.BufferGeometry {
+export function ribbon(pts: THREE.Vector3[], nrm: THREE.Vector3[], width: number | ((t: number) => number), thick: number, sub = 1, opt: ShellOpts = {}, segs?: number): THREE.BufferGeometry {
   const n = pts.length - 1;
   const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
   const tmpA = V();
@@ -263,7 +263,7 @@ export function ribbon(pts: THREE.Vector3[], nrm: THREE.Vector3[], width: number
       const w = typeof width === 'number' ? width : width(u);
       o.p.addScaledVector(side, (v - 0.5) * w);
     },
-    Math.max(4, n * 4),
+    segs ?? Math.max(4, n * 4),
     sub,
     thick,
     opt,
@@ -283,6 +283,29 @@ export function spike(r: number, h: number, seg = 6, bend = 0): THREE.BufferGeom
     g.computeVertexNormals();
   }
   return g;
+}
+
+/** hex bolt head pointing +Y from the origin */
+export function hexBolt(r: number, h: number): THREE.BufferGeometry {
+  return new THREE.CylinderGeometry(r * 0.92, r, h, 6, 1).translate(0, h / 2, 0);
+}
+
+/** crude skull (cranium + jaw), facing +Z, origin at the centre of the cranium */
+export function skullGeo(r: number): THREE.BufferGeometry {
+  const cr = new THREE.SphereGeometry(r, 8, 6).scale(0.9, 1, 1.05);
+  const jaw = new THREE.BoxGeometry(r * 1.0, r * 0.45, r * 0.8).translate(0, -r * 0.85, r * 0.25);
+  const cheek = new THREE.BoxGeometry(r * 1.5, r * 0.3, r * 0.5).translate(0, -r * 0.45, r * 0.45);
+  const merged = new THREE.BufferGeometry();
+  const parts = [cr, jaw, cheek].map((g) => g.toNonIndexed());
+  const pos: number[] = [];
+  const nor: number[] = [];
+  for (const g of parts) {
+    pos.push(...(g.attributes.position.array as Float32Array));
+    nor.push(...(g.attributes.normal.array as Float32Array));
+  }
+  merged.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  merged.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  return merged;
 }
 
 /** low-poly rivet / stud dome pointing +Z */
@@ -322,15 +345,15 @@ export function chainLinks(path: THREE.Vector3[], linkLen: number, tubeR: number
   const out: THREE.BufferGeometry[] = [];
   const curve = new THREE.CatmullRomCurve3(path, false, 'centripetal');
   const total = curve.getLength();
-  const n = Math.max(2, Math.floor(total / (linkLen * 0.8)));
+  const n = Math.max(2, Math.floor(total / (linkLen * 0.78)));
   for (let i = 0; i < n; i++) {
     const t = (i + 0.5) / n;
     const pos = curve.getPointAt(t);
     const dir = curve.getTangentAt(t);
-    const g = new THREE.TorusGeometry(linkLen * 0.38, tubeR, 4, 8).scale(1.0, 1.35, 1.0);
-    // link plane contains the chain direction; alternate 90° about the chain axis
-    const m = placeAlong(pos, dir, i % 2 ? up : up.clone().cross(dir).normalize());
-    g.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI / 2).premultiply(m));
+    // oval link in the local XY plane, long axis along Y (= the chain); every second link turned 90° about the chain
+    const g = new THREE.TorusGeometry(linkLen * 0.3, tubeR, 4, 8).scale(0.78, 1.25, 1.0);
+    if (i % 2) g.rotateY(Math.PI / 2);
+    g.applyMatrix4(placeAlong(pos, dir, up));
     out.push(g);
   }
   return out;
@@ -403,6 +426,8 @@ export function whiteHandEmblem(scale: number, depth: number): THREE.BufferGeome
 export interface Projector {
   /** snap a point onto the sculpt surface (Newton on the SDF); returns the surface normal */
   project(p: THREE.Vector3, nOut: THREE.Vector3, iters?: number): boolean;
+  /** sphere-trace from `origin` along `dir` to the first surface; writes the hit point and normal */
+  cast(origin: THREE.Vector3, dir: THREE.Vector3, maxT: number, pOut: THREE.Vector3, nOut: THREE.Vector3): boolean;
   /** signed distance (negative inside) */
   dist(x: number, y: number, z: number): number;
 }
@@ -417,8 +442,27 @@ export function makeProjector(s: Sculpt, box: { min: V3; max: V3 }): Projector |
     const list = Int32Array.from(tmp);
     const dist = (x: number, y: number, z: number) => ev.dist(x, y, z, list, 0, list.length);
     const e = 0.0025;
+    const gradient = (p: THREE.Vector3, nOut: THREE.Vector3) => {
+      nOut.set(dist(p.x + e, p.y, p.z) - dist(p.x - e, p.y, p.z), dist(p.x, p.y + e, p.z) - dist(p.x, p.y - e, p.z), dist(p.x, p.y, p.z + e) - dist(p.x, p.y, p.z - e));
+      return nOut.lengthSq() > 1e-12 ? nOut.normalize() : null;
+    };
     return {
       dist,
+      cast(origin, dir, maxT, pOut, nOut) {
+        let t = 0;
+        pOut.copy(origin);
+        for (let i = 0; i < 160 && t < maxT; i++) {
+          const d = dist(pOut.x, pOut.y, pOut.z);
+          if (d < 0.0006) {
+            gradient(pOut, nOut);
+            return true;
+          }
+          const step = Math.max(d * 0.9, 0.0015);
+          t += step;
+          pOut.copy(origin).addScaledVector(dir, t);
+        }
+        return false;
+      },
       project(p, nOut, iters = 5) {
         for (let i = 0; i < iters; i++) {
           const d = dist(p.x, p.y, p.z);
@@ -522,32 +566,13 @@ export function surfaceDecal(o: DecalOpts): { geo: THREE.BufferGeometry; colorFn
   return { geo: b.geometry(), colorFn };
 }
 
-/** a thin raised scar line (tube) hugging the sculpt along a polyline of rough surface points */
-export function scarTube(proj: Projector, pts: V3[], radius: number, lift = 0.0005, segsPerPoint = 6): THREE.BufferGeometry | null {
-  const curve = new THREE.CatmullRomCurve3(pts.map(v3), false, 'centripetal');
-  const n = Math.max(4, pts.length * segsPerPoint);
-  const path: THREE.Vector3[] = [];
-  const nrm: THREE.Vector3[] = [];
-  const nn = V();
-  for (let i = 0; i <= n; i++) {
-    const p = curve.getPointAt(i / n);
-    if (!proj.project(p, nn)) continue;
-    p.addScaledVector(nn, lift);
-    path.push(p);
-    nrm.push(nn.clone());
-  }
-  if (path.length < 3) return null;
-  const c2 = new THREE.CatmullRomCurve3(path, false, 'catmullrom');
-  const tube = new THREE.TubeGeometry(c2, path.length * 2, radius, 5, false);
-  return tube;
-}
-
 /** analytic projector for an ellipsoid (helmets, domes): snaps points onto the outer surface */
 export function ellipsoidProjector(c: V3 | THREE.Vector3, r: V3, rot?: THREE.Quaternion): Projector {
   const cc = c instanceof THREE.Vector3 ? c : v3(c);
   const inv = rot ? rot.clone().invert() : null;
   const q = V();
   return {
+    cast: () => false,
     dist(x, y, z) {
       q.set(x, y, z).sub(cc);
       if (inv) q.applyQuaternion(inv);
@@ -583,4 +608,167 @@ export function ringRadii(proj: Projector, y: number, cx = 0, cz = 0): { rx: num
     return (lo + hi) / 2;
   };
   return { rx: (march(1, 0) + march(-1, 0)) / 2, zf: march(0, 1), zb: march(0, -1) };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// strokes (paint / carve / straps) that follow the sculpt surface
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface PathOnSurface {
+  p: THREE.Vector3[];
+  n: THREE.Vector3[];
+}
+
+/** snap rough points onto the sculpt surface (points that fail to project are dropped) */
+export function projectPath(proj: Projector, pts: V3[], offset = 0): PathOnSurface {
+  const out: PathOnSurface = { p: [], n: [] };
+  const nn = V();
+  for (const q of pts) {
+    const p = V(q[0], q[1], q[2]);
+    if (!proj.project(p, nn)) continue;
+    out.p.push(p.addScaledVector(nn, offset));
+    out.n.push(nn.clone());
+  }
+  return out;
+}
+
+/** a painted stroke (capsule chain centred on the surface) */
+export function paintStroke(s: Sculpt, proj: Projector, pts: V3[], radius: number | number[], o: PrimOpts) {
+  const path = projectPath(proj, pts);
+  for (let i = 0; i + 1 < path.p.length; i++) {
+    const r0 = typeof radius === 'number' ? radius : radius[Math.min(i, radius.length - 1)];
+    const r1 = typeof radius === 'number' ? radius : radius[Math.min(i + 1, radius.length - 1)];
+    s.cone(tup(path.p[i]), tup(path.p[i + 1]), r0, r1, { op: 'paint', ...o });
+  }
+  if (path.p.length === 1) s.sphere(tup(path.p[0]), typeof radius === 'number' ? radius : radius[0], { op: 'paint', ...o });
+}
+
+/** a carved groove (scar, cut) following the surface, with the groove painted `color` */
+export function carveStroke(s: Sculpt, proj: Projector, pts: V3[], radius: number | number[], depth: number, o: PrimOpts) {
+  const path = projectPath(proj, pts, radius instanceof Array ? radius[0] - depth : (radius as number) - depth);
+  for (let i = 0; i + 1 < path.p.length; i++) {
+    const r0 = typeof radius === 'number' ? radius : radius[Math.min(i, radius.length - 1)];
+    const r1 = typeof radius === 'number' ? radius : radius[Math.min(i + 1, radius.length - 1)];
+    s.cone(tup(path.p[i]), tup(path.p[i + 1]), r0, r1, { op: 'subtract', paintCarve: true, ...o });
+  }
+}
+
+/** a strap hugging the sculpt along rough points, as rigid gear */
+export function strapGear(gear: GearFn, proj: Projector, pts: V3[], width: number, thick: number, o: GearOpts, lift = 0.0008) {
+  const path = projectPath(proj, pts, lift);
+  if (path.p.length < 3) return;
+  gear(ribbon(path.p, path.n, width, thick, 1, { outerOnly: true, noInner: true }), o);
+}
+
+/** place a geometry on the surface at a rough point: local +Y = surface normal (spikes, studs) */
+export function placeOnSurface(proj: Projector, pt: V3, upRef: THREE.Vector3 = V(0, 0, 1)): THREE.Matrix4 | null {
+  const p = V(pt[0], pt[1], pt[2]);
+  const n = V();
+  if (!proj.project(p, n)) return null;
+  return placeAlong(p, n, upRef);
+}
+
+export type SnapMode = 'f' | 'b' | 't' | 'u' | 'l' | 'r' | 'p';
+
+/** snap a rough point onto the surface by casting from outside: f = from the front (-z), b = back, t = from above, l/r = from the sides, p = Newton */
+export function snapPoint(proj: Projector, q: V3, mode: SnapMode, pOut: THREE.Vector3, nOut: THREE.Vector3, farIn = 0.7): boolean {
+  const far = farIn;
+  const o = V(q[0], q[1], q[2]);
+  const d = V();
+  switch (mode) {
+    case 'f': o.z += far; d.set(0, 0, -1); break;
+    case 'b': o.z -= far; d.set(0, 0, 1); break;
+    case 't': o.y += far; d.set(0, -1, 0); break;
+    case 'u': o.y -= far; d.set(0, 1, 0); break;
+    case 'l': o.x += far; d.set(-1, 0, 0); break;
+    case 'r': o.x -= far; d.set(1, 0, 0); break;
+    default:
+      pOut.copy(o);
+      return proj.project(pOut, nOut);
+  }
+  return proj.cast(o, d, far * 2, pOut, nOut);
+}
+
+export type SnapPoint = [number, number, number, SnapMode?, number?];
+
+export function snapPath(proj: Projector, pts: SnapPoint[], offset = 0): PathOnSurface {
+  const out: PathOnSurface = { p: [], n: [] };
+  const p = V(), n = V();
+  for (const q of pts) {
+    if (!snapPoint(proj, [q[0], q[1], q[2]], q[3] ?? 'p', p, n, q[4])) continue;
+    out.p.push(p.clone().addScaledVector(n, offset));
+    out.n.push(n.clone());
+  }
+  return out;
+}
+
+/** painted stroke following the surface (see `paintStroke`), points snapped by casting */
+export function paintSnapped(s: Sculpt, proj: Projector, pts: SnapPoint[], radius: number | number[], o: PrimOpts, inset = 0) {
+  const path = snapPath(proj, pts, -inset);
+  for (let i = 0; i + 1 < path.p.length; i++) {
+    const r0 = typeof radius === 'number' ? radius : radius[Math.min(i, radius.length - 1)];
+    const r1 = typeof radius === 'number' ? radius : radius[Math.min(i + 1, radius.length - 1)];
+    s.cone(tup(path.p[i]), tup(path.p[i + 1]), r0, r1, { op: 'paint', ...o });
+  }
+  if (path.p.length === 1) s.sphere(tup(path.p[0]), typeof radius === 'number' ? radius : radius[0], { op: 'paint', ...o });
+}
+
+export function carveSnapped(s: Sculpt, proj: Projector, pts: SnapPoint[], radius: number | number[], depth: number, o: PrimOpts) {
+  const r0 = typeof radius === 'number' ? radius : radius[0];
+  const path = snapPath(proj, pts, r0 - depth);
+  for (let i = 0; i + 1 < path.p.length; i++) {
+    const ra = typeof radius === 'number' ? radius : radius[Math.min(i, radius.length - 1)];
+    const rb = typeof radius === 'number' ? radius : radius[Math.min(i + 1, radius.length - 1)];
+    s.cone(tup(path.p[i]), tup(path.p[i + 1]), ra, rb, { op: 'subtract', paintCarve: true, ...o });
+  }
+}
+
+/** resample a snapped path every `step` metres and re-project it (so chords across bulges hug the surface) */
+export function densePath(proj: Projector, pts: SnapPoint[], step: number, offset = 0): PathOnSurface {
+  const rough = snapPath(proj, pts, 0);
+  const out: PathOnSurface = { p: [], n: [] };
+  if (rough.p.length < 2) return out;
+  const curve = new THREE.CatmullRomCurve3(rough.p, false, 'centripetal');
+  const n = Math.max(3, Math.ceil(curve.getLength() / step));
+  const nn = V();
+  for (let i = 0; i <= n; i++) {
+    const p = curve.getPointAt(i / n);
+    if (!proj.project(p, nn, 3)) continue;
+    out.p.push(p.addScaledVector(nn, offset));
+    out.n.push(nn.clone());
+  }
+  return out;
+}
+
+/** strap hugging the surface along snapped points */
+export function strapSnapped(gear: GearFn, proj: Projector, pts: SnapPoint[], width: number, thick: number, o: GearOpts, lift = 0.0008) {
+  const path = densePath(proj, pts, Math.max(0.012, width * 0.5), lift);
+  if (path.p.length < 3) return;
+  gear(ribbon(path.p, path.n, width, thick, 1, { outerOnly: true, noInner: true }, path.p.length - 1), o);
+}
+
+/** points around a body ring: radial cast toward the axis at angle a (0 = front, + toward +X) */
+export function ringSnap(proj: Projector, a: number, y: number, cx = 0, cz = 0, pOut = V(), nOut = V()): { p: THREE.Vector3; n: THREE.Vector3 } | null {
+  const o = V(cx + Math.sin(a) * 0.7, y, cz + Math.cos(a) * 0.7);
+  const d = V(-Math.sin(a), 0, -Math.cos(a));
+  if (!proj.cast(o, d, 0.7, pOut, nOut)) return null;
+  return { p: pOut, n: nOut };
+}
+
+/** a thin raised scar / welt (tube) hugging the sculpt along snapped points; returns null when it does not fit */
+export function scarTube(proj: Projector, pts: SnapPoint[], radius: number, lift = 0.0004): THREE.BufferGeometry | null {
+  const rough = snapPath(proj, pts, lift);
+  if (rough.p.length < 2) return null;
+  const curve = new THREE.CatmullRomCurve3(rough.p, false, 'centripetal');
+  const n = Math.max(6, rough.p.length * 5);
+  const path: THREE.Vector3[] = [];
+  const nn = V();
+  for (let i = 0; i <= n; i++) {
+    const p = curve.getPointAt(i / n);
+    if (!proj.project(p, nn)) continue;
+    path.push(p.addScaledVector(nn, lift));
+  }
+  if (path.length < 3) return null;
+  const c2 = new THREE.CatmullRomCurve3(path, false, 'catmullrom');
+  return new THREE.TubeGeometry(c2, Math.max(8, path.length), radius, 4, false);
 }

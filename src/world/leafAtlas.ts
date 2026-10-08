@@ -281,23 +281,23 @@ function paint(): THREE.DataTexture {
   // 0 oak: lobed leaves
   {
     const [ox, oy] = cell(0);
-    sprig(ctx, rng, ox, oy, { hue: 92, sat: 0.46, lit: 0.27, hueVar: 22, litVar: 0.07 }, { n: 9, len: 76, wid: 25, env: envOval, lobes: 3.5, lobeAmp: 0.22, teeth: 0, veins: 5, spread: 1.0, twig: '#3f3022' });
+    sprig(ctx, rng, ox, oy, { hue: 92, sat: 0.46, lit: 0.27, hueVar: 22, litVar: 0.07 }, { n: 14, len: 60, wid: 20, env: envOval, lobes: 3.5, lobeAmp: 0.22, teeth: 0, veins: 5, spread: 1.0, twig: '#3f3022' });
   }
   // 1 beech: oval, parallel veins, fine teeth
   {
     const [ox, oy] = cell(1);
-    sprig(ctx, rng, ox, oy, { hue: 84, sat: 0.5, lit: 0.34, hueVar: 20, litVar: 0.08 }, { n: 10, len: 70, wid: 24, env: envPointy, lobes: 0, lobeAmp: 0, teeth: 9, veins: 7, spread: 1.05, twig: '#4a3a2c' });
+    sprig(ctx, rng, ox, oy, { hue: 84, sat: 0.5, lit: 0.34, hueVar: 20, litVar: 0.08 }, { n: 15, len: 54, wid: 18, env: envPointy, lobes: 0, lobeAmp: 0, teeth: 9, veins: 7, spread: 1.05, twig: '#4a3a2c' });
   }
   { const [ox, oy] = cell(2); pineSpray(ctx, rng, ox, oy); }
   // 3 birch: small triangular, serrated
   {
     const [ox, oy] = cell(3);
-    sprig(ctx, rng, ox, oy, { hue: 80, sat: 0.55, lit: 0.4, hueVar: 24, litVar: 0.09 }, { n: 12, len: 54, wid: 22, env: envBirch, lobes: 0, lobeAmp: 0, teeth: 7, veins: 5, spread: 1.1, twig: '#5a4a3a' });
+    sprig(ctx, rng, ox, oy, { hue: 80, sat: 0.55, lit: 0.4, hueVar: 24, litVar: 0.09 }, { n: 18, len: 42, wid: 16, env: envBirch, lobes: 0, lobeAmp: 0, teeth: 7, veins: 5, spread: 1.1, twig: '#5a4a3a' });
   }
   // 4 dark oak
   {
     const [ox, oy] = cell(4);
-    sprig(ctx, rng, ox, oy, { hue: 112, sat: 0.34, lit: 0.15, hueVar: 26, litVar: 0.05 }, { n: 9, len: 80, wid: 26, env: envOval, lobes: 3.5, lobeAmp: 0.25, teeth: 0, veins: 5, spread: 1.0, twig: '#241a12' });
+    sprig(ctx, rng, ox, oy, { hue: 112, sat: 0.34, lit: 0.15, hueVar: 26, litVar: 0.05 }, { n: 14, len: 64, wid: 21, env: envOval, lobes: 3.5, lobeAmp: 0.25, teeth: 0, veins: 5, spread: 1.0, twig: '#241a12' });
   }
   { const [ox, oy] = cell(5); fernFrond(ctx, rng, ox, oy); }
   { const [ox, oy] = cell(6); ivySprig(ctx, rng, ox, oy); }

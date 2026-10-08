@@ -303,94 +303,153 @@ function trunkProfile(rng: Rng, H: number, r0: number, top: number, flare: numbe
   return { pts, radii };
 }
 
+// ───────────────────────────────────────────────────────────────────────────────────────────
+// recursive crowns (oak, beech, birch, dead)
+// ───────────────────────────────────────────────────────────────────────────────────────────
+
+interface Crown {
+  rng: Rng;
+  bark: Buf;
+  lc: CardCtx | null;
+  H: number;
+  tile: number;
+  wiggle: number;
+  bend: number;
+  fork: number[];
+  forkLen: number;
+  forkRad: number;
+  spread: number;
+  maxDepth: number;
+  step: number;
+  segs: number[];
+  lump: number;
+  clump: { radius: number; cards: number } | null;
+  broken: boolean;
+  windScale: number;
+}
+
+function foliageClump(c: Crown, p: V3, outward: V3): void {
+  if (!c.lc || !c.clump) return;
+  const rng = c.rng;
+  for (let k = 0; k < c.clump.cards; k++) {
+    const off: V3 = [(rng.float() - 0.5) * 2, (rng.float() - 0.5) * 1.3, (rng.float() - 0.5) * 2];
+    const l = len(off) || 1;
+    const r = c.clump.radius * Math.cbrt(rng.float());
+    const q: V3 = add(p, mul(off, r / l));
+    const d = norm(add(add(mul(off, 1 / l), mul(outward, 0.5)), [0, 0.25, 0]));
+    addLeafCard(c.lc, q, d, 1);
+  }
+}
+
+function crownBranch(c: Crown, start: V3, dir: V3, L: number, r0: number, depth: number): void {
+  const rEnd = Math.max(0.018, r0 * (depth >= c.maxDepth ? 0.14 : 0.4));
+  const br = growBranch(c.rng, { start, dir, length: L, r0, r1: rEnd, step: c.step, bend: c.bend, wiggle: c.wiggle, seg: 0, depth });
+  const seg = c.segs[Math.min(depth, c.segs.length - 1)];
+  tube(c.bark, br.pts, br.radii, {
+    seg, tile: c.tile, windH: c.H, lump: depth < 2 ? c.lump : 0.03, lumpSeed: c.rng.float() * 10, windScale: c.windScale * (1 + depth * 0.1), capStart: c.broken && depth >= c.maxDepth - 1,
+  });
+  const n = br.pts.length;
+  const endP = br.pts[n - 1];
+  const endDir = norm(sub(endP, br.pts[n - 2]));
+  if (depth < c.maxDepth) {
+    const nf = c.fork[depth] ?? 0;
+    for (let f = 0; f < nf; f++) {
+      const t = 0.3 + (0.6 * (f + 0.5)) / nf;
+      const fi = t * (n - 1);
+      const i0 = Math.min(n - 2, Math.floor(fi));
+      const p = lerp3(br.pts[i0], br.pts[i0 + 1], fi - i0);
+      const rp = br.radii[i0] + (br.radii[i0 + 1] - br.radii[i0]) * (fi - i0);
+      const rnd: V3 = [c.rng.float() - 0.5, c.rng.float() - 0.25, c.rng.float() - 0.5];
+      const d = norm(add(mul(dir, 1 - c.spread * 0.4), mul(rnd, c.spread * 2.2)));
+      crownBranch(c, p, d, L * c.forkLen * (0.75 + c.rng.float() * 0.5), Math.max(0.025, rp * c.forkRad), depth + 1);
+    }
+  }
+  if (depth >= c.maxDepth - 1) foliageClump(c, endP, endDir);
+  else if (depth >= 1 && c.lc && c.rng.chance(0.5)) foliageClump(c, ringLerp(br.pts, 0.7), endDir);
+}
+
+function crownCfg(rng: Rng, bark: Buf, lc: CardCtx | null, H: number, over: Partial<Crown>): Crown {
+  return {
+    rng, bark, lc, H, tile: 2.4, wiggle: 0.4, bend: -0.03, fork: [3, 2, 2], forkLen: 0.55, forkRad: 0.55, spread: 0.9, maxDepth: 3, step: 1.6,
+    segs: [10, 7, 5, 4], lump: 0.1, clump: null, broken: false, windScale: 1, ...over,
+  };
+}
+
 function buildMirkwoodOak(rng: Rng, lod: number, seed: number): TreeGeo {
   const bark = new Buf();
   const leaves = new Buf();
   const webs = new Buf();
   const H = 38 + rng.float() * 9;
-  const r0 = 1.45 + rng.float() * 1.5;
+  const r0 = 1.5 + rng.float() * 1.5;
   const tile = 2.4;
-  const seg = lod === 0 ? 20 : 9;
-  const top = H * 0.62;
-  const prof = trunkProfile(rng, H, r0, top, 0.55, 0.28, lod === 0 ? 2.0 : 4.0, seed);
-  tube(bark, prof.pts, prof.radii, { seg, tile, windH: H, lump: 0.12, lumpSeed: seed, windScale: 0.6 });
-  roots(bark, rng, r0 * 1.15, lod === 0 ? 8 : 5, 2.6, tile, H, lod === 0 ? 8 : 5, lod);
-  const crownR = 14;
-  const center: V3 = [0, H * 0.68, 0];
-  const lc: CardCtx = {
-    leaves, rng, center, crownR, H, cell: LEAF_CELLS.mirk, size: lod === 0 ? [2.4, 3.8] : [4, 6.2], tints: TINT_DARK, sphere: 0.85, flutter: 0.5,
-  };
-  const limbs = lod === 0 ? 9 + Math.floor(rng.float() * 3) : 7;
+  const top = H * 0.66;
+  const prof = trunkProfile(rng, H, r0, top, 0.6, 0.36, lod === 0 ? 2.0 : 4.0, seed);
+  tube(bark, prof.pts, prof.radii, { seg: lod === 0 ? 24 : 10, tile, windH: H, lump: 0.2, lumpSeed: seed, windScale: 0.6 });
+  roots(bark, rng, r0 * 1.2, lod === 0 ? 9 : 5, 2.5, tile, H, lod === 0 ? 10 : 5, lod);
+  const center: V3 = [0, H * 0.7, 0];
+  const lc: CardCtx = { leaves, rng, center, crownR: 14, H, cell: LEAF_CELLS.mirk, size: lod === 0 ? [2.6, 3.9] : [5, 7.5], tints: TINT_DARK, sphere: 0.85, flutter: 0.5 };
+  const limbs = lod === 0 ? 10 : 7;
   const anchors: V3[] = [];
   for (let i = 0; i < limbs; i++) {
     const lr = new Rng(seed * 7919 + i * 131 + 17);
     lc.rng = lr;
-    const t = 0.32 + (i / limbs) * 0.55 + (lr.float() - 0.5) * 0.05;
+    const t = 0.3 + (i / limbs) * 0.58 + (lr.float() - 0.5) * 0.04;
     const y = t * H;
     const base = ringLerp(prof.pts, Math.min(1, y / top));
     const rTrunk = prof.radii[Math.min(prof.radii.length - 1, Math.round((y / top) * (prof.radii.length - 1)))];
     const az = i * 2.399 + lr.float() * 0.6;
     const out = 0.9 + lr.float() * 0.5;
-    const up = 0.12 + lr.float() * 0.45 + (t > 0.7 ? 0.5 : 0);
+    const up = 0.1 + lr.float() * 0.4 + (t > 0.7 ? 0.5 : 0);
     const dir = norm([Math.cos(az) * out, up, Math.sin(az) * out]);
-    const L = (7 + lr.float() * 8) * (1 - Math.abs(t - 0.5) * 0.5);
-    const rb = Math.max(0.22, rTrunk * (0.3 + lr.float() * 0.1));
+    const L = (8 + lr.float() * 8) * (1 - Math.abs(t - 0.5) * 0.4);
+    const rb = Math.max(0.28, rTrunk * (0.34 + lr.float() * 0.1));
     const startP: V3 = [base[0] + Math.cos(az) * rTrunk * 0.4, y, base[2] + Math.sin(az) * rTrunk * 0.4];
-    const br = growBranch(lr, { start: startP, dir, length: L, r0: rb, r1: rb * 0.18, step: lod === 0 ? 1.7 : 3.4, bend: -0.035, wiggle: 0.5, seg: 8, depth: 1 });
-    tube(bark, br.pts, br.radii, { seg: lod === 0 ? 9 : 6, tile, windH: H, lump: 0.1, lumpSeed: i * 5.1, windScale: 1 });
-    anchors.push(br.pts[Math.floor(br.pts.length * 0.5)]);
-    // sub branches and leaves
-    const subs = lod === 0 ? 4 : 2;
-    for (let s = 0; s < subs; s++) {
-      const bt = 0.3 + (s / subs) * 0.6;
-      const bp = ringLerp(br.pts, bt);
-      const sd = norm([dir[0] + (lr.float() - 0.5) * 1.6, dir[1] + (lr.float() - 0.2) * 0.8, dir[2] + (lr.float() - 0.5) * 1.6]);
-      const sl = 3 + lr.float() * 4.5;
-      const sr = rb * 0.3;
-      const sbr = growBranch(lr, { start: bp, dir: sd, length: sl, r0: sr, r1: 0.04, step: 1.3, bend: -0.04, wiggle: 0.6, seg: 5, depth: 2 });
-      tube(bark, sbr.pts, sbr.radii, { seg: lod === 0 ? 5 : 4, tile, windH: H, windScale: 1.15 });
-      const nCards = lod === 0 ? 6 : 2;
-      for (let k = 0; k < nCards; k++) addLeafCard(lc, ringLerp(sbr.pts, 0.35 + (k / nCards) * 0.65), norm(sub(sbr.pts[sbr.pts.length - 1], sbr.pts[0])));
-    }
-    for (let k = 0; k < (lod === 0 ? 5 : 2); k++) addLeafCard(lc, ringLerp(br.pts, 0.5 + (k / 5) * 0.5), dir, 1.1);
+    const cfg = crownCfg(lr, bark, lc, H, {
+      maxDepth: lod === 0 ? 3 : 1, fork: lod === 0 ? [3, 2, 2] : [2, 0, 0], step: lod === 0 ? 1.7 : 3.4, wiggle: 0.5, bend: -0.03, lump: 0.12,
+      clump: { radius: lod === 0 ? 3.2 : 5, cards: lod === 0 ? 11 : 5 }, segs: lod === 0 ? [10, 7, 5, 4] : [6, 4, 3, 3],
+    });
+    crownBranch(cfg, startP, dir, L, rb, 0);
+    anchors.push(add(startP, mul(dir, L * 0.55)));
   }
-  // crown leader foliage
-  for (let k = 0; k < (lod === 0 ? 14 : 5); k++) {
-    const a = rng.float() * Math.PI * 2;
-    const r = rng.float() * 5;
-    addLeafCard(lc, [Math.cos(a) * r, H * (0.8 + rng.float() * 0.2), Math.sin(a) * r], [Math.cos(a), 0.6, Math.sin(a)], 1.2);
+  // leader foliage
+  const lt = new Rng(seed + 99);
+  lc.rng = lt;
+  for (let k = 0; k < (lod === 0 ? 24 : 8); k++) {
+    const a = lt.float() * Math.PI * 2;
+    const r = lt.float() * 6;
+    addLeafCard(lc, [Math.cos(a) * r, H * (0.78 + lt.float() * 0.22), Math.sin(a) * r], [Math.cos(a), 0.6, Math.sin(a)], 1.2);
   }
   // hanging vines and old webs (full detail only)
   if (lod === 0) {
-    const ivy: CardCtx = { ...lc, cell: LEAF_CELLS.ivy, size: [0.9, 1.5], tints: TINT_DARK, sphere: 0.2, flutter: 0.9 };
-    const vines = 9 + Math.floor(rng.float() * 6);
+    const vr = new Rng(seed * 31 + 5);
+    const ivy: CardCtx = { ...lc, rng: vr, cell: LEAF_CELLS.ivy, size: [1.0, 1.7], tints: TINT_DARK, sphere: 0.2, flutter: 0.9 };
+    const vines = 12 + Math.floor(vr.float() * 6);
     for (let i = 0; i < vines; i++) {
-      const a = anchors[Math.floor(rng.float() * anchors.length)];
-      const o: V3 = [a[0] + (rng.float() - 0.5) * 5, a[1] - rng.float() * 1.5, a[2] + (rng.float() - 0.5) * 5];
-      const Lh = 5 + rng.float() * 11;
+      const a = anchors[Math.floor(vr.float() * anchors.length)];
+      const o: V3 = [a[0] + (vr.float() - 0.5) * 6, a[1] - vr.float() * 1.5, a[2] + (vr.float() - 0.5) * 6];
+      const Lh = 5 + vr.float() * 12;
       const n = Math.round(Lh / 1.2);
       const pts: V3[] = [];
       const radii: number[] = [];
       for (let k = 0; k <= n; k++) {
         const t = k / n;
         pts.push([o[0] + Math.sin(k * 0.9 + i) * 0.12, o[1] - t * Lh, o[2] + Math.cos(k * 0.7 + i * 2) * 0.12]);
-        radii.push(0.055 * (1 - t * 0.6) + 0.012);
+        radii.push(0.06 * (1 - t * 0.6) + 0.012);
       }
       tube(bark, pts, radii, { seg: 4, tile: 1.0, windH: H, windFn: (t) => 0.55 + t * 0.45 });
-      for (let k = 2; k < n; k += 2) addLeafCard(ivy, pts[k], [0, -0.2, 0], 1);
+      for (let k = 1; k < n; k++) addLeafCard(ivy, pts[k], [vr.float() - 0.5, -0.15, vr.float() - 0.5], 1);
     }
-    // old webs: grey sheets sagging between limbs and trunk
-    for (let i = 0; i < 6; i++) {
-      const a = anchors[Math.floor(rng.float() * anchors.length)];
-      const b = anchors[Math.floor(rng.float() * anchors.length)];
+    for (let i = 0; i < 7; i++) {
+      const a = anchors[Math.floor(vr.float() * anchors.length)];
+      const b = anchors[Math.floor(vr.float() * anchors.length)];
       const ty = Math.max(5, Math.min(a[1], b[1]) - 1);
       const tr = prof.radii[Math.min(prof.radii.length - 1, Math.round((ty / top) * (prof.radii.length - 1)))];
       const az = Math.atan2(a[2], a[0]);
       const p0: V3 = [Math.cos(az) * tr, ty + 3, Math.sin(az) * tr];
-      sheet(webs, [p0, a, b, [b[0] * 0.5, ty - 2.5, b[2] * 0.5]], 7, rng.float() * 1.5 + 1.5);
+      sheet(webs, [p0, a, b, [b[0] * 0.5, ty - 2.5, b[2] * 0.5]], 7, vr.float() * 1.5 + 1.5);
     }
   }
-  return finish(bark, leaves, webs, H, r0, crownR);
+  return finish(bark, leaves, webs, H, r0, 14);
 }
 
 /** subdivided quad with sag, uv 0..1 (for the web alpha texture) */
@@ -418,19 +477,20 @@ export function sheet(buf: Buf, c: [V3, V3, V3, V3], div: number, sag: number): 
   }
 }
 
+
 function buildBeech(rng: Rng, lod: number, seed: number): TreeGeo {
   const bark = new Buf();
   const leaves = new Buf();
   const H = 21 + rng.float() * 6;
   const r0 = 0.42 + rng.float() * 0.25;
   const tile = 2.4;
-  const top = H * 0.78;
+  const top = H * 0.8;
   const prof = trunkProfile(rng, H, r0, top, 0.5, 0.12, lod === 0 ? 1.8 : 4, seed);
   tube(bark, prof.pts, prof.radii, { seg: lod === 0 ? 14 : 8, tile, windH: H, lump: 0.05, lumpSeed: seed, windScale: 0.7 });
   roots(bark, rng, r0, lod === 0 ? 6 : 4, 2.2, tile, H, 6, lod);
   const center: V3 = [0, H * 0.68, 0];
-  const lc: CardCtx = { leaves, rng, center, crownR: 9, H, cell: LEAF_CELLS.beech, size: lod === 0 ? [1.5, 2.3] : [2.8, 4.2], tints: rng.chance(0.25) ? TINT_GOLD : TINT_LIGHT, sphere: 0.9, flutter: 0.45 };
-  const limbs = lod === 0 ? 11 : 7;
+  const lc: CardCtx = { leaves, rng, center, crownR: 9, H, cell: LEAF_CELLS.beech, size: lod === 0 ? [1.5, 2.3] : [3, 4.4], tints: rng.chance(0.25) ? TINT_GOLD : TINT_LIGHT, sphere: 0.9, flutter: 0.45 };
+  const limbs = lod === 0 ? 10 : 7;
   for (let i = 0; i < limbs; i++) {
     const lr = new Rng(seed * 7919 + i * 131 + 17);
     lc.rng = lr;
@@ -440,23 +500,19 @@ function buildBeech(rng: Rng, lod: number, seed: number): TreeGeo {
     const az = i * 2.399 + lr.float() * 0.5;
     const up = 0.5 + lr.float() * 0.5 + t * 0.4;
     const dir = norm([Math.cos(az), up, Math.sin(az)]);
-    const L = (5.5 + lr.float() * 4) * (1.15 - t * 0.5);
-    const rb = Math.max(0.1, r0 * (0.38 - t * 0.2));
-    const br = growBranch(lr, { start: [base[0], y, base[2]], dir, length: L, r0: rb, r1: 0.04, step: lod === 0 ? 1.5 : 3, bend: -0.03, wiggle: 0.3, seg: 7, depth: 1 });
-    tube(bark, br.pts, br.radii, { seg: lod === 0 ? 7 : 5, tile, windH: H, lump: 0.04, windScale: 1 });
-    const subs = lod === 0 ? 3 : 1;
-    for (let s = 0; s < subs; s++) {
-      const bp = ringLerp(br.pts, 0.35 + s * 0.25);
-      const sd = norm([dir[0] + (lr.float() - 0.5) * 1.4, dir[1] + (lr.float() - 0.3) * 0.6, dir[2] + (lr.float() - 0.5) * 1.4]);
-      const sbr = growBranch(lr, { start: bp, dir: sd, length: 2.5 + lr.float() * 3, r0: rb * 0.35, r1: 0.025, step: 1.2, bend: -0.03, wiggle: 0.4, seg: 4, depth: 2 });
-      tube(bark, sbr.pts, sbr.radii, { seg: 4, tile, windH: H, windScale: 1.1 });
-      for (let k = 0; k < (lod === 0 ? 5 : 2); k++) addLeafCard(lc, ringLerp(sbr.pts, 0.3 + k * 0.17), sd);
-    }
-    for (let k = 0; k < (lod === 0 ? 7 : 3); k++) addLeafCard(lc, ringLerp(br.pts, 0.35 + k * 0.1), dir);
+    const L = (6 + lr.float() * 4) * (1.15 - t * 0.5);
+    const rb = Math.max(0.1, r0 * (0.4 - t * 0.2));
+    const cfg = crownCfg(lr, bark, lc, H, {
+      maxDepth: lod === 0 ? 3 : 1, fork: lod === 0 ? [2, 2, 2] : [2, 0, 0], step: lod === 0 ? 1.5 : 3, wiggle: 0.28, bend: -0.025, lump: 0.04,
+      clump: { radius: lod === 0 ? 2.3 : 3.6, cards: lod === 0 ? 9 : 5 }, segs: lod === 0 ? [8, 6, 4, 3] : [5, 4, 3, 3], forkLen: 0.6,
+    });
+    crownBranch(cfg, [base[0], y, base[2]], dir, L, rb, 0);
   }
-  for (let k = 0; k < (lod === 0 ? 14 : 5); k++) {
-    const a = rng.float() * Math.PI * 2;
-    addLeafCard(lc, [Math.cos(a) * 1.5, H * (0.84 + rng.float() * 0.16), Math.sin(a) * 1.5], [Math.cos(a), 0.8, Math.sin(a)], 1.2);
+  const lt = new Rng(seed + 99);
+  lc.rng = lt;
+  for (let k = 0; k < (lod === 0 ? 20 : 6); k++) {
+    const a = lt.float() * Math.PI * 2;
+    addLeafCard(lc, [Math.cos(a) * 1.8, H * (0.82 + lt.float() * 0.18), Math.sin(a) * 1.8], [Math.cos(a), 0.8, Math.sin(a)], 1.2);
   }
   return finish(bark, leaves, null, H, r0, 8);
 }
@@ -479,19 +535,20 @@ function buildPine(rng: Rng, lod: number, seed: number): TreeGeo {
     const t = y / H;
     const base = ringLerp(prof.pts, Math.min(1, t));
     const n = lod === 0 ? 5 : 4;
-    const L = (4.2 * (1 - t) + 0.9) * (0.85 + rng.float() * 0.3);
+    const L = (4.8 * (1 - t) + 1.1) * (0.85 + rng.float() * 0.3);
     for (let i = 0; i < n; i++) {
       const az = (i / n) * Math.PI * 2 + y * 1.7 + rng.float() * 0.5;
       const dir = norm([Math.cos(az), 0.12 + (1 - t) * 0.05, Math.sin(az)]);
       const br = growBranch(rng, { start: [base[0], y, base[2]], dir, length: L, r0: 0.07 * (1 - t) + 0.02, r1: 0.01, step: L / 3, bend: -0.1, wiggle: 0.15, seg: 4, depth: 1 });
       tube(bark, br.pts, br.radii, { seg: 4, tile, windH: H, windScale: 1.1 });
-      const cards = lod === 0 ? 3 : 1;
-      for (let k = 0; k < cards; k++) addLeafCard(lc, ringLerp(br.pts, 0.25 + (k / cards) * 0.7), norm(sub(br.pts[br.pts.length - 1], br.pts[0])), 1.0 + (1 - t) * 0.5);
+      const cards = lod === 0 ? 5 : 2;
+      for (let k = 0; k < cards; k++) addLeafCard(lc, ringLerp(br.pts, 0.25 + (k / cards) * 0.7), norm(sub(br.pts[br.pts.length - 1], br.pts[0])), 1.1 + (1 - t) * 0.7);
     }
   }
   for (let k = 0; k < 4; k++) addLeafCard(lc, [0, H * 0.93, 0], [Math.cos(k * 1.57), 0.9, Math.sin(k * 1.57)], 0.9);
   return finish(bark, leaves, null, H, r0, 4);
 }
+
 
 function buildDead(rng: Rng, lod: number, seed: number): TreeGeo {
   const bark = new Buf();
@@ -501,7 +558,7 @@ function buildDead(rng: Rng, lod: number, seed: number): TreeGeo {
   const tile = 2.4;
   const top = H * (0.55 + rng.float() * 0.3);
   const prof = trunkProfile(rng, H, r0, top, 0.5, 0.35, lod === 0 ? 1.6 : 3.2, seed);
-  tube(bark, prof.pts, prof.radii, { seg: lod === 0 ? 12 : 7, tile, windH: H, lump: 0.13, lumpSeed: seed, windScale: 0.4, capStart: true });
+  tube(bark, prof.pts, prof.radii, { seg: lod === 0 ? 12 : 7, tile, windH: H, lump: 0.15, lumpSeed: seed, windScale: 0.4, capStart: true });
   roots(bark, rng, r0, lod === 0 ? 6 : 4, 2.2, tile, H, 6, lod);
   const limbs = lod === 0 ? 8 : 5;
   const lc: CardCtx = { leaves, rng, center: [0, H * 0.6, 0], crownR: 5, H, cell: LEAF_CELLS.dead, size: [1.0, 1.6], tints: [[0.9, 0.8, 0.7], [0.7, 0.65, 0.55]], sphere: 0.4, flutter: 0.7 };
@@ -512,16 +569,14 @@ function buildDead(rng: Rng, lod: number, seed: number): TreeGeo {
     const base = ringLerp(prof.pts, Math.min(1, y / top));
     const az = i * 2.399 + lr.float() * 0.8;
     const dir = norm([Math.cos(az), 0.25 + lr.float() * 0.9, Math.sin(az)]);
-    const L = (2.5 + lr.float() * 4.5) * (1 - y / H * 0.5);
-    const rb = Math.max(0.07, r0 * 0.28 * (1 - y / H));
-    const br = growBranch(lr, { start: [base[0], y, base[2]], dir, length: L, r0: rb, r1: rb * 0.3, step: 1.2, bend: -0.015, wiggle: 0.9, seg: 6, depth: 1 });
-    tube(bark, br.pts, br.radii, { seg: lod === 0 ? 6 : 4, tile, windH: H, lump: 0.06, windScale: 0.9, capStart: true });
-    if (lod === 0 && lr.chance(0.7)) {
-      const bp = ringLerp(br.pts, 0.5);
-      const sbr = growBranch(lr, { start: bp, dir: norm([dir[0] + (lr.float() - 0.5), dir[1] + 0.3, dir[2] + (lr.float() - 0.5)]), length: 1.5 + lr.float() * 2, r0: rb * 0.4, r1: 0.015, step: 0.8, bend: -0.02, wiggle: 0.8, seg: 4, depth: 2 });
-      tube(bark, sbr.pts, sbr.radii, { seg: 4, tile, windH: H, windScale: 1, capStart: true });
-    }
-    if (lr.chance(0.3)) addLeafCard(lc, ringLerp(br.pts, 0.8), dir);
+    const L = (3 + lr.float() * 4.5) * (1 - (y / H) * 0.5);
+    const rb = Math.max(0.07, r0 * 0.3 * (1 - y / H));
+    const cfg = crownCfg(lr, bark, null, H, {
+      maxDepth: lod === 0 ? 2 : 1, fork: lod === 0 ? [2, 1, 0] : [1, 0, 0], step: 1.2, wiggle: 0.9, bend: -0.015, lump: 0.08, broken: true, forkLen: 0.5, forkRad: 0.5, windScale: 0.9,
+      segs: lod === 0 ? [7, 5, 4, 4] : [4, 4, 3, 3],
+    });
+    crownBranch(cfg, [base[0], y, base[2]], dir, L, rb, 0);
+    if (lr.chance(0.3)) addLeafCard(lc, [base[0] + dir[0] * L * 0.6, y + dir[1] * L * 0.6, base[2] + dir[2] * L * 0.6], dir);
   }
   return finish(bark, leaves, null, H, r0, 4);
 }
@@ -536,8 +591,8 @@ function buildBirch(rng: Rng, lod: number, seed: number): TreeGeo {
   for (let i = 0; i < prof.radii.length; i++) prof.radii[i] *= 1 - 0.65 * Math.pow(i / (prof.radii.length - 1), 1.2);
   tube(bark, prof.pts, prof.radii, { seg: lod === 0 ? 9 : 6, tile, windH: H, lump: 0.02, lumpSeed: seed, windScale: 1.2 });
   roots(bark, rng, r0 * 1.2, 4, 2.0, tile, H, 4, lod);
-  const lc: CardCtx = { leaves, rng, center: [0, H * 0.65, 0], crownR: 3.5, H, cell: LEAF_CELLS.birch, size: lod === 0 ? [0.8, 1.3] : [1.5, 2.2], tints: TINT_GOLD, sphere: 0.8, flutter: 0.9 };
-  const limbs = lod === 0 ? 14 : 8;
+  const lc: CardCtx = { leaves, rng, center: [0, H * 0.65, 0], crownR: 3.5, H, cell: LEAF_CELLS.birch, size: lod === 0 ? [0.8, 1.3] : [1.6, 2.4], tints: TINT_GOLD, sphere: 0.8, flutter: 0.9 };
+  const limbs = lod === 0 ? 12 : 7;
   for (let i = 0; i < limbs; i++) {
     const lr = new Rng(seed * 7919 + i * 131 + 17);
     lc.rng = lr;
@@ -545,15 +600,19 @@ function buildBirch(rng: Rng, lod: number, seed: number): TreeGeo {
     const y = t * H;
     const base = ringLerp(prof.pts, Math.min(1, y / (H * 0.96)));
     const az = i * 2.399 + lr.float() * 0.5;
-    const dir = norm([Math.cos(az), 0.7 + (t) * 0.4, Math.sin(az)]);
-    const L = (2.6 + lr.float() * 2.4) * (1.1 - t * 0.5);
-    const br = growBranch(lr, { start: [base[0], y, base[2]], dir, length: L, r0: 0.035 * (1 - t * 0.5) + 0.012, r1: 0.008, step: 0.9, bend: -0.08, wiggle: 0.25, seg: 4, depth: 1 });
-    tube(bark, br.pts, br.radii, { seg: 4, tile, windH: H, windScale: 1.2 });
-    for (let k = 0; k < (lod === 0 ? 5 : 2); k++) addLeafCard(lc, ringLerp(br.pts, 0.3 + k * 0.17), dir);
+    const dir = norm([Math.cos(az), 0.7 + t * 0.4, Math.sin(az)]);
+    const L = (2.8 + lr.float() * 2.4) * (1.1 - t * 0.5);
+    const cfg = crownCfg(lr, bark, lc, H, {
+      maxDepth: lod === 0 ? 2 : 1, fork: lod === 0 ? [2, 2, 0] : [2, 0, 0], step: 0.9, wiggle: 0.25, bend: -0.09, lump: 0.0, forkLen: 0.6, forkRad: 0.5, windScale: 1.2,
+      clump: { radius: lod === 0 ? 1.1 : 1.8, cards: lod === 0 ? 5 : 3 }, segs: lod === 0 ? [4, 4, 3] : [4, 3, 3], tile,
+    });
+    crownBranch(cfg, [base[0], y, base[2]], dir, L, Math.max(0.02, 0.034 * (1 - t * 0.5) + 0.01), 0);
   }
-  for (let k = 0; k < (lod === 0 ? 7 : 3); k++) {
-    const a = rng.float() * Math.PI * 2;
-    addLeafCard(lc, [Math.cos(a) * 0.3, H * (0.88 + rng.float() * 0.12), Math.sin(a) * 0.3], [Math.cos(a), 1, Math.sin(a)], 1.2);
+  const lt = new Rng(seed + 99);
+  lc.rng = lt;
+  for (let k = 0; k < (lod === 0 ? 8 : 3); k++) {
+    const a = lt.float() * Math.PI * 2;
+    addLeafCard(lc, [Math.cos(a) * 0.3, H * (0.88 + lt.float() * 0.12), Math.sin(a) * 0.3], [Math.cos(a), 1, Math.sin(a)], 1.2);
   }
   return finish(bark, leaves, null, H, r0, 3);
 }
@@ -581,3 +640,4 @@ export function buildTreeGeometry(kind: TreeKind, variant: number, lod: 0 | 1): 
 
 export { Buf, tube, card, growBranch };
 export type { V3 };
+

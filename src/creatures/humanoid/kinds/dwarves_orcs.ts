@@ -10,7 +10,9 @@ import type { HumanoidKind, WeaponKind } from '../../../core/types';
 import { hashSeed } from '../../../core/rng';
 import type { KindDef } from '../types';
 import { bucketOf } from './dwarves_orcs/common';
+import { dwarfDef } from './dwarves_orcs/dwarf';
 import { gimliDef } from './dwarves_orcs/gimli';
+import { orcDef } from './dwarves_orcs/orc';
 
 export interface Loadout {
   weapon?: WeaponKind;
@@ -21,6 +23,8 @@ export interface Loadout {
 
 export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
   gimli: gimliDef,
+  dwarf: dwarfDef,
+  orc: orcDef,
 };
 
 const seedMemo = new Map<number, number>();

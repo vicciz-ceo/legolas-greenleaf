@@ -8,9 +8,11 @@ import { Rng } from '../../../../core/rng';
 import type { V3 } from '../../../kit/sdf';
 import { createWeapon } from '../../../weapons';
 import type { KindContext, KindDef } from '../../types';
-import { lathe, mat4, mergeAll, put, shell, spike, studs, tube, arcPlate } from './armor';
+import { mat4, mergeAll, put, shell, spike, studs } from './armor';
+import { DOME_POINTED, STEEL, domeHelm } from './headgear';
 import { devNum, mix, shade } from './common';
-import { addBeard, addHairdo, sculptBeardMass } from './hair';
+import { addBeard, addBrows, addHairdo, sculptBeardMass } from './hair';
+import { sculptStrap, sculptTorsoGarment } from './garments';
 import { sculptHairCap } from '../../hairstyles';
 
 export const GIMLI = {
@@ -19,8 +21,8 @@ export const GIMLI = {
   hairLight: 0xa86a33,
   beard: 0x8e4a24,
   beardTip: 0xb06a30,
-  skin: 0xd59a7c,
-  skin2: 0xbf6c58,
+  skin: 0xbd7a58,
+  skin2: 0x9c5240,
   lips: 0xa85c52,
   eyes: 0x3a2a1c,
   trousers: 0x4a3a2c,
@@ -37,47 +39,9 @@ export const GIMLI = {
   brass: 0xb08a40,
 };
 
-/** Gimli's pointed iron helm: flared rim band, central ridge, rivets, hinged cheek plates */
+/** Gimli's pointed iron helm: flared bronze rim band, central ridge, rivets, hinged cheek plates */
 function dwarfHelm(ctx: KindContext) {
-  const { P } = ctx;
-  const u = P.headH;
-  const C = GIMLI;
-  const tilt = new THREE.Matrix4().makeRotationX(-0.1);
-  const centre = P.h(0, 0.04, -0.06);
-  const place = new THREE.Matrix4().makeTranslation(centre[0], centre[1], centre[2]).multiply(tilt).multiply(new THREE.Matrix4().makeScale(1, 1, 1.28));
-  // dome profile (radius, y) in head units around the helm axis
-  const prof: [number, number][] = [
-    [0.4, -0.04], [0.405, 0.03], [0.392, 0.12], [0.36, 0.22], [0.305, 0.32], [0.235, 0.41], [0.155, 0.48], [0.085, 0.53], [0.04, 0.565], [0.016, 0.59], [0.0, 0.605],
-  ].map(([r, y]) => [r * u, y * u]);
-  const dome = lathe(prof, 28);
-  put(ctx, dome, { bone: 'head', color: C.steel, mat: 'metal_dark', matrix: place, ao: 0.95 });
-  // flared bronze rim band
-  const band = lathe([[0.42 * u, -0.07 * u], [0.44 * u, -0.05 * u], [0.445 * u, 0.0], [0.425 * u, 0.055 * u], [0.405 * u, 0.06 * u], [0.4 * u, 0.0], [0.4 * u, -0.05 * u]], 28);
-  put(ctx, band, { bone: 'head', color: C.bronze, mat: 'gold', matrix: place });
-  // central ridge over the dome front → back, following the profile
-  const ridgePts: V3[] = [];
-  const up = prof.filter((_, i) => i >= 1);
-  for (let i = 0; i < up.length; i++) ridgePts.push([0, up[i][1] + 0.006 * u, up[i][0] + 0.01 * u]);
-  for (let i = up.length - 1; i >= 0; i--) ridgePts.push([0, up[i][1] + 0.006 * u, -(up[i][0] + 0.01 * u)]);
-  put(ctx, tube(ridgePts, 0.016 * u, { seg: 40, radial: 5 }), { bone: 'head', color: C.bronze, mat: 'gold', matrix: place });
-  // rivets along the rim band
-  const rv: V3[] = [];
-  for (let i = 0; i < 26; i++) {
-    const a = (i / 26) * Math.PI * 2;
-    rv.push([Math.sin(a) * 0.428 * u, 0.0, Math.cos(a) * 0.428 * u]);
-  }
-  const rg = studs(rv, 0.012 * u, 0.8);
-  if (rg) put(ctx, rg, { bone: 'head', color: C.brass, mat: 'gold', matrix: place, small: true });
-  // finial ball
-  put(ctx, new THREE.SphereGeometry(0.03 * u, 8, 6).translate(0, 0.605 * u, 0), { bone: 'head', color: C.bronze, mat: 'gold', matrix: place, small: true });
-  // hinged cheek plates
-  for (const sx of [1, -1]) {
-    const plate = arcPlate(0.375 * u, 0.26 * u, 1.0, sx > 0 ? 0 : Math.PI, 10);
-    plate.translate(...P.h(0, -0.15, -0.03));
-    put(ctx, plate, { bone: 'head', color: C.steelDark, mat: 'metal_dark', small: true });
-    const tr = arcPlate(0.381 * u, 0.02 * u, 1.0, sx > 0 ? 0 : Math.PI, 10).translate(...P.h(0, -0.285, -0.03));
-    put(ctx, tr, { bone: 'head', color: C.bronze, mat: 'gold', small: true });
-  }
+  domeHelm(ctx, { color: GIMLI.steel, trim: GIMLI.bronze, profile: DOME_POINTED, tilt: -0.1, y: 0, finial: 'spike' });
 }
 
 function pauldrons(ctx: KindContext) {
@@ -94,7 +58,7 @@ function pauldrons(ctx: KindContext) {
       const m = new THREE.Matrix4()
         .makeTranslation(sh[0] + sx * 0.02 * s, sh[1] + (0.035 - k * 0.032) * s, sh[2])
         .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.62 + k * 0.1)));
-      put(ctx, geo, { bone: `upperarm_${side}`, color: k === 2 ? C.steelDark : C.steel, mat: 'metal_dark', matrix: m });
+      put(ctx, geo, { bone: `upperarm_${side}`, color: k === 2 ? C.steelDark : C.steel, mat: STEEL, matrix: m });
       // bronze edge ring on each lamella
       const ring = new THREE.TorusGeometry(R * 0.985, 0.0045 * s * 1.3, 4, 20).rotateX(Math.PI / 2).scale(1, 1, 1.02);
       const th = Math.PI * (0.43 - k * 0.04);
@@ -155,11 +119,16 @@ export function gimliExtras(ctx: KindContext) {
   const hair = { style: 'long_wavy' as const, color: C.hair, tipColor: C.hairTip, length: 1.0, density: 1.25, bounce: 0.5 };
   sculptHairCap(s, P, hair);
   // bushy brows
-  s.mirrored((side) => {
-    s.cone(P.h(0.2, 0.09, 0.355), P.h(0.04, 0.095, 0.4), 0.021 * u, 0.017 * u, { op: 'paint', color: C.hair, mat: 'hair', bone: 'head', k: 0.012 * u, strength: 0.95 });
-    void side;
-  });
-  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 150, width: 0.042, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.2, back: -0.4, gravity: 5 }, new Rng(0x517));
+  addBrows(ctx, { color: mix(C.hair, 0x000000, 0.45), count: 12, length: 0.07, width: 0.014, y: 0.075, z: 0.395 }, new Rng(0xb70));
+  // deep-set eyes: dark sockets, ruddy cheeks and nose
+  s.mirrored(() => s.ellipsoid(P.h(0.135, -0.055, 0.33), [0.095 * u, 0.06 * u, 0.06 * u], { op: 'paint', color: 0x8a4a38, mat: 'skin_weathered', bone: 'head', k: 0.04 * u, strength: 0.5 }));
+  s.mirrored(() => s.ellipsoid(P.h(0.17, -0.2, 0.31), [0.1 * u, 0.08 * u, 0.06 * u], { op: 'paint', color: 0xa8503e, mat: 'skin_weathered', bone: 'head', k: 0.05 * u, strength: 0.7 }));
+  s.ellipsoid(P.h(0, -0.27, 0.52), [0.075 * u, 0.06 * u, 0.06 * u], { op: 'paint', color: 0xb4584a, mat: 'skin_weathered', bone: 'head', k: 0.04 * u, strength: 0.6 });
+  // ── hauberk (mail to mid-upper-arm, mail skirt from the outfit) with crossed leather straps ──
+  sculptTorsoGarment(ctx, { color: C.mail, mat: 'mail', inflate: 0.0145 * sc, hem: 0.0, sleeve: 0.8 });
+  sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: 1 });
+  sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: -1 });
+  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 150, width: 0.042, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5 }, new Rng(0x517));
   // ── beard: long, forked into a mass with two braids and a moustache ──
   if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.4 * sc, width: 1.06, fullness: 1.15 });
   if (!devNum('nobeard', 0)) addBeard(
@@ -196,11 +165,11 @@ export function gimliExtras(ctx: KindContext) {
 export const gimliDef: KindDef = {
   label: 'Gimli',
   height: 1.37,
-  build: { shoulders: 1.34, hips: 1.24, bulk: 1.4, belly: 0.4, chest: 1.3, armLength: 0.94, legLength: 0.8, headSize: 1.3, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: 1.15, muscle: 0.55 },
+  build: { shoulders: 1.46, hips: 1.1, bulk: 1.3, belly: 0.1, chest: 1.38, armLength: 0.95, legLength: 0.82, headSize: 1.3, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: 1.15, muscle: 0.55 },
   face: {
-    jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 1.5, cheekbones: 1.15,
+    jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 2.0, cheekbones: 1.2,
     nose: { length: 1.2, width: 1.5, bridge: 1.1, hook: 0.25, tip: 1.4 },
-    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.92, eyeOpen: 0.78, eyeSpacing: 1.0, foreheadSlope: 0.12,
+    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.8, eyeOpen: 0.5, eyeSpacing: 0.96, eyeTilt: -0.04, foreheadSlope: 0.1,
   },
   skin: { color: GIMLI.skin, color2: GIMLI.skin2, blotch: 0.45, blemish: 0.2, scars: 1, wrinkles: 0.55, lips: GIMLI.lips, brows: GIMLI.hair, surface: 'skin_weathered', scatter: 0xd0503a },
   eyes: { color: GIMLI.eyes, sclera: 0xe2d6c8 },
@@ -211,7 +180,6 @@ export const gimliDef: KindDef = {
     { type: 'trousers', color: GIMLI.trousers },
     { type: 'boots', color: GIMLI.boots, color2: GIMLI.bootsTrim, length: 0.95 },
     { type: 'mail_shirt', color: GIMLI.mail, length: 0.6 },
-    { type: 'jerkin', color: GIMLI.jerkin, color2: GIMLI.jerkinTrim, mat: 'leather_worn', length: 0.4 },
     { type: 'belt', color: GIMLI.belt },
     { type: 'bracers', color: GIMLI.bracers, color2: GIMLI.belt },
   ],

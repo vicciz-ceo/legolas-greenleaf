@@ -20,7 +20,9 @@ import { anatomyParts, emitParts } from './anatomy';
 import { sculptHead, type HeadInfo } from './face';
 import { sculptOutfit, type OutfitResult } from './outfit';
 import { skirtGeometry, cloakGeometry } from './cloth';
-import { sculptHairCap, buildHair } from './hairstyles';
+import { sculptHairCap, buildHair, mergeHair } from './hairstyles';
+import { faceHairGeometry } from './facehair';
+import { sdfProbe } from '../kit/sdf';
 import { makeGearSink, armorGear, buckleGear, type GearPiece } from './gear';
 import type { KindContext, ResolvedKind } from './types';
 
@@ -103,7 +105,7 @@ export function humanoidKey(spec: HumanoidSpec): string {
 }
 
 /** everything sculpted on the main thread before meshing (meshing may run in workers) */
-interface Prepared {
+export interface Prepared {
   key: string;
   spec: HumanoidSpec;
   def: ResolvedKind;
@@ -127,7 +129,7 @@ interface Prepared {
 const prepCache = new Map<string, Prepared>();
 
 /** phase 1: resolve the kind, compute proportions/rig and sculpt body, face, outfit, armour and gear */
-function prepareHumanoid(spec: HumanoidSpec): Prepared {
+export function prepareHumanoid(spec: HumanoidSpec): Prepared {
   const key = humanoidKey(spec);
   const hitP = prepCache.get(key);
   if (hitP) return hitP;
@@ -212,6 +214,13 @@ function prepareHumanoid(spec: HumanoidSpec): Prepared {
   const regions: MeshRegion[] = [
     { min: headMin, max: headMax, res: headRes, band: res * 1.5, aoScale: 0.6 },
     ...(faceRes > 0 ? [{ min: P.h(-0.27, -0.6, 0.14), max: P.h(0.27, 0.06, 0.56), res: faceRes, band: headRes * 3, aoScale: 0.3 }] : []),
+    // ears are thin plates: give heroes a finer region so the rim and point stay clean
+    ...(faceRes > 0
+      ? ([1, -1] as const).map((sx) => {
+          const a = P.h(sx * 0.285, -0.27, -0.19), b = P.h(sx * 0.44, 0.22, 0.05);
+          return { min: [Math.min(a[0], b[0]), a[1], a[2]] as [number, number, number], max: [Math.max(a[0], b[0]), b[1], b[2]] as [number, number, number], res: faceRes * 1.2, band: headRes * 2, aoScale: 0.4 };
+        })
+      : []),
     ...(hero ? (['l', 'r'] as const) : []).map((sd) => {
       const w = P.j[`hand_${sd}`];
       const r = (P.palm + P.finger) * 1.15;
@@ -256,13 +265,27 @@ function assembleHumanoid(prep: Prepared): HumanoidAssets {
     for (const g of [...cloth, ...bigGear, ...smallGear]) g.dispose();
     body1.userData.shared = true;
     body2.userData.shared = true;
-    const hair1 = buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 1, hooded);
-    if (hair1.geo) hair1.geo.userData.shared = true;
+    const hair1 = withFaceHair(buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 1, hooded).geo, 1);
+    if (hair1) hair1.userData.shared = true;
     prepCache.delete(key);
-    return { body1, body2, hair1: hair1.geo };
+    return { body1, body2, hair1 };
   };
 
-  const hair0 = buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 0, hooded);
+  // eyelashes + eyebrow cards placed on the sculpted surface
+  const probe = sdfProbe(sc.compile(), head.faceBox.min, head.faceBox.max);
+  const browCol = skin.brows;
+  const lashCol = mixHexB(skin.brows, 0x140e0a, 0.62);
+  const withFaceHair = (g: THREE.BufferGeometry | null, lod: 0 | 1) => {
+    if (def.face.brow > 1.5 && skin.surface !== 'skin') return g; // brutes: bare brow ridges
+    const fh = faceHairGeometry(P, head, probe, rig.boneIndex('head'), { browColor: browCol, lashColor: lashCol, brows: def.face.brow > 1.3 ? 0.6 : 1 }, lod);
+    if (!fh) return g;
+    if (!g) return fh;
+    const m = mergeHair([g, fh]);
+    g.dispose();
+    fh.dispose();
+    return m;
+  };
+  const hair0 = { geo: withFaceHair(buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 0, hooded).geo, 0) };
   if (hair0.geo) hair0.geo.userData.shared = true;
 
   // ── eyes: eyeballs + lashes rigid to the head ──
@@ -327,6 +350,7 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
  * thread (one spec per macrotask), the LOD0 + LOD1 meshing of every spec runs in the kit worker
  * pool at the same time, then geometry is assembled (cache hits). Already-built specs are skipped.
  */
+export const prebuildStats = { prepareMs: 0, meshWaitMs: 0, assembleMs: 0, specs: 0 };
 export async function prebuildHumanoids(specs: HumanoidSpec[], onProgress?: (frac: number) => void): Promise<void> {
   const seen = new Set<string>();
   const todo: HumanoidSpec[] = [];
@@ -346,19 +370,34 @@ export async function prebuildHumanoids(specs: HumanoidSpec[], onProgress?: (fra
   const tick = () => onProgress?.(Math.min(1, ++done / total));
   const preps: Prepared[] = [];
   const jobs: Promise<unknown>[] = [];
+  prebuildStats.specs += todo.length;
   for (const sp of todo) {
     await yieldTask();
+    const t0 = performance.now();
     const prep = prepareHumanoid(sp);
     preps.push(prep);
     tick();
-    jobs.push(meshSculptAsync(prep.sc, prep.opts0).then(tick), meshSculptAsync(prep.sc, prep.opts1).then(tick));
+    // LOD0 first for every spec, LOD1 jobs queue behind them
+    jobs.push(meshSculptAsync(prep.sc, prep.opts0).then(tick));
+    prebuildStats.prepareMs += performance.now() - t0;
   }
+  for (const prep of preps) jobs.push(meshSculptAsync(prep.sc, prep.opts1).then(tick));
+  const tw = performance.now();
   await Promise.all(jobs);
+  prebuildStats.meshWaitMs += performance.now() - tw;
   for (const prep of preps) {
     await yieldTask();
+    const t0 = performance.now();
     if (!cache.has(prep.key)) assembleHumanoid(prep).ensureLods?.();
+    prebuildStats.assembleMs += performance.now() - t0;
     tick();
   }
+}
+
+function mixHexB(a: number, b: number, t: number): number {
+  const c1 = new THREE.Color().setHex(a, THREE.SRGBColorSpace);
+  const c2 = new THREE.Color().setHex(b, THREE.SRGBColorSpace);
+  return c1.lerp(c2, t).getHex(THREE.SRGBColorSpace);
 }
 
 function hairMaterialFor(hairCol: number): THREE.MeshPhysicalMaterial {
@@ -374,7 +413,9 @@ function eyesGeometry(rig: RigDef, head: HeadInfo): THREE.BufferGeometry {
   const hb = rig.boneIndex('head');
   for (const sd of ['l', 'r'] as const) {
     const c = head.eyes[sd];
-    const g = new THREE.SphereGeometry(head.eyes.radius, 14, 10).rotateX(Math.PI / 2);
+    const g = new THREE.SphereGeometry(head.eyes.radius, 24, 16).rotateX(Math.PI / 2);
+    // the eye opening is wider than a sphere's silhouette: widen slightly so no corner shows a gap
+    g.scale(1.08, 1, 1);
     // slight outward gaze for a natural look
     g.rotateY(sd === 'l' ? 0.05 : -0.05);
     g.translate(c[0], c[1], c[2]);
@@ -415,44 +456,69 @@ function eyeTextures(iris: number, sclera: number) {
   const key = `${iris}|${sclera}`;
   const hit = eyeTexCache.get(key);
   if (hit) return hit;
-  const W = 128, H = 64;
+  // equirectangular around the eyeball; the +Y pole of the sphere (v = 1) is the front (pupil)
+  const W = 512, H = 256;
   const data = new Uint8Array(W * H * 4);
   const glow = new Uint8Array(W * H * 4);
   const ci = new THREE.Color().setHex(iris, THREE.SRGBColorSpace);
   const cs = new THREE.Color().setHex(sclera, THREE.SRGBColorSpace);
   const rnd = new Rng(hashSeed('eye', iris));
-  const streak = Array.from({ length: W }, () => 0.75 + rnd.float() * 0.5);
+  // radial iris fibres: a smooth random profile around the circumference
+  const fib = Array.from({ length: W }, () => rnd.float());
+  const fibS = fib.map((_, x) => {
+    let a = 0;
+    for (let k = -2; k <= 2; k++) a += fib[(x + k + W) % W] * (k === 0 ? 0.4 : 0.15);
+    return a;
+  });
+  const crypt = Array.from({ length: W }, () => (rnd.float() < 0.12 ? rnd.range(0.35, 0.75) : -1));
+  const pupil = 0.058 * Math.PI;
+  const irisR = 0.168 * Math.PI;
   for (let y = 0; y < H; y++) {
-    const v = y / (H - 1); // 0 bottom … 1 top (pole = front of the eye)
+    const v = y / (H - 1);
     const th = (1 - v) * Math.PI; // angle from the front pole
+    const sth = Math.sin(th);
     for (let x = 0; x < W; x++) {
       const i = (y * W + x) * 4;
+      const phi = (x / W) * Math.PI * 2;
+      // direction on the eyeball (after the sphere is rotated so +Y → +Z): dx lateral, dy up
+      const dx = -Math.cos(phi) * sth;
+      const dy = -Math.sin(phi) * sth;
       let r: number, g: number, b: number, gl = 0;
-      const pupil = 0.075 * Math.PI;
-      const irisR = 0.2 * Math.PI;
-      if (th < pupil) {
-        r = g = b = 0.015;
+      if (th < pupil * 0.92) {
+        r = g = b = 0.012;
       } else if (th < irisR) {
-        const f = (th - pupil) / (irisR - pupil);
-        const k = streak[x] * (0.55 + 0.6 * f) * (f > 0.86 ? 0.45 : 1);
-        const inner = f < 0.3 ? 0.75 + f : 1;
-        r = ci.r * k * inner;
-        g = ci.g * k * inner;
-        b = ci.b * k * inner;
-        gl = f > 0.86 ? 0.2 : 1;
+        const f = (th - pupil) / (irisR - pupil); // 0 pupil edge … 1 limbus
+        const fibre = 0.72 + 0.5 * fibS[x] + 0.12 * Math.sin(x * 0.9 + f * 9);
+        // collarette (lighter ring) and darker limbal ring
+        const coll = 1 + 0.35 * Math.exp(-Math.pow((f - 0.32) * 7, 2));
+        const limb = f > 0.82 ? 1 - 0.65 * Math.min(1, (f - 0.82) / 0.18) : 1;
+        const inner = 0.75 + 0.25 * Math.min(1, f * 3);
+        const cr = crypt[x] > 0 && Math.abs(f - crypt[x]) < 0.06 ? 0.7 : 1;
+        const pe = th < pupil ? (th - pupil * 0.92) / (pupil * 0.08) : 1; // soft pupil edge
+        const k = fibre * coll * limb * inner * cr * Math.max(0, Math.min(1, pe));
+        r = ci.r * k + 0.012 * (1 - pe);
+        g = ci.g * k + 0.012 * (1 - pe);
+        b = ci.b * k + 0.012 * (1 - pe);
+        gl = f > 0.85 ? 0.2 : 1;
       } else {
-        const back = Math.min(1, (th - irisR) / (0.6 * Math.PI));
-        const vein = Math.max(0, Math.sin(x * 0.9 + y * 0.3) * Math.sin(x * 0.23) - 0.6) * back;
-        r = cs.r * (1 - 0.12 * back) + vein * 0.25;
-        g = cs.g * (1 - 0.18 * back) - vein * 0.1;
-        b = cs.b * (1 - 0.2 * back) - vein * 0.1;
-        // limbal shadow ring
-        if (th < irisR + 0.03 * Math.PI) {
-          r *= 0.7;
-          g *= 0.7;
-          b *= 0.7;
-        }
+        const back = Math.min(1, (th - irisR) / (0.5 * Math.PI));
+        const corner = Math.min(1, Math.max(0, (Math.abs(dx) - 0.35) / 0.4));
+        const vein = Math.max(0, Math.sin(x * 0.45 + y * 0.31) * Math.sin(x * 0.11 + 1.7) - 0.75) * corner * 2;
+        r = cs.r * (1 - 0.08 * back) + vein * 0.12 + corner * 0.05;
+        g = cs.g * (1 - 0.14 * back) - vein * 0.06 - corner * 0.03;
+        b = cs.b * (1 - 0.16 * back) - vein * 0.06 - corner * 0.03;
+        // soft limbal shadow just outside the iris
+        const lr = Math.max(0, 1 - (th - irisR) / (0.035 * Math.PI));
+        r *= 1 - 0.35 * lr;
+        g *= 1 - 0.35 * lr;
+        b *= 1 - 0.35 * lr;
       }
+      // the upper lid and lashes shade the top of the eyeball; the corners are in shadow too
+      const lid = 1 - 0.5 * Math.min(1, Math.max(0, (dy - 0.12) / 0.32)) - 0.15 * Math.min(1, Math.max(0, (-dy - 0.3) / 0.3));
+      const side = 1 - 0.25 * Math.min(1, Math.max(0, (Math.abs(dx) - 0.45) / 0.35));
+      r *= lid * side;
+      g *= lid * side;
+      b *= lid * side;
       const toS = (c: number) => Math.round(Math.pow(Math.min(1, Math.max(0, c)), 1 / 2.2) * 255);
       data[i] = toS(r);
       data[i + 1] = toS(g);
@@ -469,6 +535,7 @@ function eyeTextures(iris: number, sclera: number) {
     t.minFilter = THREE.LinearMipmapLinearFilter;
     t.generateMipmaps = true;
     t.wrapS = THREE.RepeatWrapping;
+    t.anisotropy = 4;
     t.needsUpdate = true;
     t.userData.shared = true;
     return t;

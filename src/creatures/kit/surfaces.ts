@@ -30,8 +30,8 @@ const S = (rough: number, metal: number, sheen: number, skin: number, pat: Parti
 });
 
 export const SURFACES = {
-  /** smooth human/elf skin with pores */
-  skin: S(0.5, 0, 0, 1, { pores: 1, wrinkles: 0.08 }),
+  /** smooth human/elf skin with pores (a faint velvet sheen for peach fuzz) */
+  skin: S(0.5, 0, 0.12, 1, { pores: 1, wrinkles: 0.06 }),
   /** weathered human skin (dwarves, rangers) */
   skin_weathered: S(0.56, 0, 0, 0.9, { pores: 1.3, wrinkles: 0.35 }),
   /** orc/goblin skin: coarse, scarred */

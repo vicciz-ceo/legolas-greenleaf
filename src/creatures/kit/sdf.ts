@@ -1091,3 +1091,43 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
   }
   return { dist, full: fullImpl };
 }
+
+/**
+ * Point queries against a compiled program inside a box (cull once, evaluate many): distance,
+ * gradient and projection onto the surface. Used to place cards (lashes, brows, decals) exactly
+ * on a sculpted surface.
+ */
+export interface SdfProbe {
+  dist(x: number, y: number, z: number): number;
+  /** move p onto the surface along the gradient (Newton). Returns a new point. */
+  project(p: V3, iters?: number): [number, number, number];
+  /** unit outward normal at p */
+  normal(p: V3): [number, number, number];
+}
+
+export function sdfProbe(prog: SdfProgram, min: V3, max: V3): SdfProbe {
+  const ev = makeEvaluator(prog);
+  const tmp: number[] = [];
+  prog.cull(min[0], min[1], min[2], max[0], max[1], max[2], tmp);
+  const list = Int32Array.from(tmp);
+  const dist = (x: number, y: number, z: number) => ev.dist(x, y, z, list, 0, list.length);
+  const normal = (p: V3): [number, number, number] => {
+    const e = 0.0004;
+    const gx = dist(p[0] + e, p[1], p[2]) - dist(p[0] - e, p[1], p[2]);
+    const gy = dist(p[0], p[1] + e, p[2]) - dist(p[0], p[1] - e, p[2]);
+    const gz = dist(p[0], p[1], p[2] + e) - dist(p[0], p[1], p[2] - e);
+    const l = Math.hypot(gx, gy, gz) || 1;
+    return [gx / l, gy / l, gz / l];
+  };
+  const project = (p: V3, iters = 6): [number, number, number] => {
+    let q: [number, number, number] = [p[0], p[1], p[2]];
+    for (let i = 0; i < iters; i++) {
+      const d = dist(q[0], q[1], q[2]);
+      if (Math.abs(d) < 1e-5) break;
+      const n = normal(q);
+      q = [q[0] - n[0] * d, q[1] - n[1] * d, q[2] - n[2] * d];
+    }
+    return q;
+  };
+  return { dist, project, normal };
+}

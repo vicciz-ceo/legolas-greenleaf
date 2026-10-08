@@ -5,7 +5,7 @@
 import * as THREE from 'three';
 import type { AnimInput, HumanoidKind, LabInstance, LabSubject, SpecialPose, WeaponKind } from '../core/types';
 import { createHumanoid, preloadHumanoids, type HumanoidExt } from './humanoid';
-import { clearHumanoidCache } from './humanoid/build';
+import { clearHumanoidCache, prebuildStats } from './humanoid/build';
 import { clearKitCache, kitCacheStats } from './kit/cache';
 import { meshWorkerCount } from './kit/workers';
 import { ALL_KINDS, resolveKind } from './humanoid/registry';
@@ -27,6 +27,27 @@ interface Frame {
 }
 
 const _look = new THREE.Vector3();
+
+/**
+ * `&portrait=1&focus=head`: the lab frames `focus=head` from the bounding box top, which quivers,
+ * bows and helmets push off the face. Add an invisible two-point helper that makes the box centre
+ * land on the face (zoom ≈ 0.28 fills the frame with the head).
+ */
+function addPortraitFraming(holder: THREE.Group, h: HumanoidExt) {
+  holder.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(holder, true);
+  const P = h.assets.P;
+  const f = P.h(0, -0.12, 0.2);
+  const top = Math.max(box.max.y, P.H) + 0.4; // above anything a pose can raise
+  const W = 1.5;
+  const lowY = (f[1] - 0.9 * top) / 0.1;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute([f[0] - W, lowY, f[2] - W, f[0] + W, top, f[2] + W], 3));
+  const pts = new THREE.Points(g, new THREE.PointsMaterial({ size: 0 }));
+  pts.visible = false;
+  pts.name = 'portrait-framing';
+  holder.add(pts);
+}
 
 /** deterministic AnimInput timeline for a lab animation name at time t */
 export function labFrame(anim: string, t: number, h: HumanoidExt): Frame {
@@ -138,9 +159,13 @@ function humanoidSubject(name: string, kind: HumanoidKind, category: LabSubject[
       const lodQ = Number(new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('lod') ?? 0);
       if (lodQ === 1 || lodQ === 2) h.setLod(lodQ);
       const def = resolveKind(kind);
-      const defaults = { r: (def.weapons.right ?? 'none') as WeaponKind, l: (def.weapons.left ?? 'none') as WeaponKind };
+      // &weapons=none hides held weapons (centred head close-ups)
+      const noW = new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('weapons') === 'none';
+      const defaults = noW ? { r: 'none' as WeaponKind, l: 'none' as WeaponKind } : { r: (def.weapons.right ?? 'none') as WeaponKind, l: (def.weapons.left ?? 'none') as WeaponKind };
       const holder = new THREE.Group();
       holder.add(h.root);
+      if (noW) h.socket('back').visible = false;
+      if (new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('portrait')) addPortraitFraming(holder, h);
       console.info(`[lab] ${name}: ${h.triangles} tris (LOD0), assets ${h.buildMs.toFixed(0)} ms`, h.assets.lods.map((l) => l.tris));
       return {
         object: holder,
@@ -203,21 +228,36 @@ export const subjects: LabSubject[] = [
 
 const BENCH_KINDS: HumanoidKind[] = ['legolas', 'orc', 'uruk', 'gimli', 'troll', 'goblin'];
 
-async function benchBuild(kinds: HumanoidKind[] = BENCH_KINDS) {
-  const res: Record<string, unknown> = { workers: meshWorkerCount(), kinds };
-  // sequential synchronous builds (cold caches)
-  clearHumanoidCache();
-  clearKitCache();
-  let t0 = performance.now();
-  for (const k of kinds) createHumanoid({ kind: k }).assets.ensureLods?.();
-  res.syncMs = Math.round(performance.now() - t0);
-  // parallel preload through the worker pool (cold caches)
-  clearHumanoidCache();
-  clearKitCache();
-  t0 = performance.now();
-  await preloadHumanoids(kinds);
-  res.preloadMs = Math.round(performance.now() - t0);
-  t0 = performance.now();
+async function benchBuild(kinds: HumanoidKind[] = BENCH_KINDS, rounds = 2) {
+  const res: Record<string, unknown> = { workers: meshWorkerCount(), kinds, cores: navigator.hardwareConcurrency };
+  const cold = () => {
+    clearHumanoidCache();
+    clearKitCache();
+  };
+  const sync: number[] = [];
+  const pre: number[] = [];
+  const perKind: Record<string, number> = {};
+  // alternate sync / worker rounds (the first round of each also warms the JIT)
+  for (let r = 0; r < rounds; r++) {
+    cold();
+    let t0 = performance.now();
+    for (const k of kinds) {
+      const t1 = performance.now();
+      createHumanoid({ kind: k }).assets.ensureLods?.();
+      if (r === rounds - 1) perKind[k] = Math.round(performance.now() - t1);
+    }
+    sync.push(Math.round(performance.now() - t0));
+    cold();
+    t0 = performance.now();
+    Object.assign(prebuildStats, { prepareMs: 0, meshWaitMs: 0, assembleMs: 0, specs: 0 });
+    await preloadHumanoids(kinds);
+    pre.push(Math.round(performance.now() - t0));
+    res.preloadPhases = Object.fromEntries(Object.entries(prebuildStats).map(([k, v]) => [k, Math.round(v)]));
+  }
+  res.syncMs = sync;
+  res.syncPerKindMs = perKind;
+  res.preloadMs = pre;
+  const t0 = performance.now();
   for (const k of kinds) createHumanoid({ kind: k });
   res.createAfterPreloadMs = Math.round(performance.now() - t0);
   res.cache = kitCacheStats();

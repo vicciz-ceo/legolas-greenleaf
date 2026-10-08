@@ -135,3 +135,10 @@ export function devNum(name: string, def: number): number {
   const v = new URLSearchParams(location.search).get('dwo_' + name);
   return v === null || v === '' || Number.isNaN(Number(v)) ? def : Number(v);
 }
+
+/** dev-only: ?dwo_skip=tint,marks,… switches features off while measuring triangle cost */
+export function devSkip(name: string): boolean {
+  if (typeof location === 'undefined') return false;
+  const v = new URLSearchParams(location.search).get('dwo_skip');
+  return !!v && v.split(',').includes(name);
+}

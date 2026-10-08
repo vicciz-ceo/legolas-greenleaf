@@ -3,7 +3,7 @@
  * copy-paste examples (giant spider, quadruped, bat, troll).
  */
 export { RigDef, makeSkinnedMesh, type BoneDef, type RigInstance } from './rig';
-export { Sculpt, SdfProgram, makeEvaluator, cellular3, type PrimOpts, type NoiseDef, type SdfOp, type V3, type SdfProgramData } from './sdf';
+export { Sculpt, SdfProgram, makeEvaluator, sdfProbe, cellular3, type SdfProbe, type PrimOpts, type NoiseDef, type SdfOp, type V3, type SdfProgramData } from './sdf';
 export { meshSdf, type MeshOpts, type MeshData, type MeshRegion, type RefineOpts } from './mesher';
 export { meshSdfAsync, meshWorkerCount, terminateMeshWorkers } from './workers';
 export { meshSculpt, meshSculptAsync, hasMesh, meshKey, sculptGeometry, cached, kitCacheStats, clearKitCache } from './cache';

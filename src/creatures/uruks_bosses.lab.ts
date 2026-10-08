@@ -86,4 +86,10 @@ export const subjects: LabSubject[] = [
   subject('uruk_pike', { kind: 'uruk', weapon: 'pike', offhand: 'none', attack: 'thrust' }),
   subject('uruk_bare', { kind: 'uruk', helmet: false, attack: 'slash' }),
   subject('berserker', { kind: 'berserker', attack: 'overhead' }),
+  subject('lurtz', { kind: 'lurtz', attack: 'slash' }),
+  subject('bolg', { kind: 'bolg', attack: 'overhead' }),
+  subject('troll_cave', { kind: 'troll', seed: seedForBucket(0), attack: 'slam' }),
+  subject('troll_cave_b', { kind: 'troll', seed: seedForBucket(1), attack: 'sweep' }),
+  subject('troll_war', { kind: 'troll', seed: seedForBucket(2), weapon: 'warhammer', attack: 'overhead' }),
+  subject('troll_war_b', { kind: 'troll', seed: seedForBucket(3), weapon: 'warhammer', attack: 'slam' }),
 ];

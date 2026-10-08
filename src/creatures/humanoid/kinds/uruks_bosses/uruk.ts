@@ -12,6 +12,7 @@ import type { KindContext, KindDef } from '../../types';
 import { anatomyParts, emitParts, type Part } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
 import type { Sculpt } from '../../../kit/sdf';
+import { brawnBody } from './body';
 import {
   V, v3, bucketOf, gearOf, shellPatch, ellipsoidFn, ribbon, spike, rivet, ellipticalBand, placeAlong, lerp, smooth, makeProjector, ringRadii, surfaceDecal, ellipsoidProjector,
   whiteHandMask, type GearFn, type Projector, lathe,
@@ -69,42 +70,6 @@ export function urukLook(bucket: number): UrukLook {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// body shaping
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** extra muscle masses (skin material) so the build reads as a brutal V-shaped fighter */
-export function brawnBody(ctx: KindContext, o: { traps: number; lats: number; delts: number; forearm: number; thigh?: number }) {
-  const { P, sculpt: s } = ctx;
-  const sc = P.s;
-  const g = P.build.bulk;
-  const sh = P.build.shoulders;
-  const j = P.j;
-  const sk = ctx.def.skin;
-  const L = P.hand.l.L;
-  s.with({ color: sk.color, color2: sk.color2, colorNoise: sk.blotch, colorFreq: 14 / sc, mat: sk.surface, k: 0.05 * sc }, () => {
-    // trapezius mass: neck → shoulder tip
-    s.mirrored(() => s.cone([0.035 * sc, j.neck[1] + 0.005 * sc, -0.03 * sc], [0.15 * sc * sh, j.upperarm_l[1] + 0.035 * sc, -0.02 * sc], 0.062 * sc * o.traps, 0.046 * sc * o.traps, { bone: 'chest', bone2: 'shoulder_l', blend: [0.6, 1], k: 0.06 * sc }));
-    // lats / teres: V-taper of the back
-    s.mirrored(() => s.ellipsoid([0.1 * sc * sh, j.upperarm_l[1] - 0.15 * sc, -0.075 * sc * g], [0.05 * sc * g * o.lats, 0.115 * sc, 0.045 * sc * g * o.lats], { bone: 'chest', k: 0.05 * sc }));
-    // deltoid caps
-    s.mirrored(() => {
-      const c: [number, number, number] = [j.upperarm_l[0] + L.x * 0.03 * sc, j.upperarm_l[1] + L.y * 0.03 * sc + 0.012 * sc, j.upperarm_l[2]];
-      s.ellipsoid(c, [0.06 * sc * g * o.delts, 0.07 * sc * o.delts, 0.06 * sc * g * o.delts], { bone: 'upperarm_l', k: 0.04 * sc, rot: [0, 0, 0.6] });
-    });
-    // forearm brawn
-    s.mirrored(() => {
-      const a: [number, number, number] = [j.forearm_l[0] + L.x * 0.03 * sc, j.forearm_l[1] + L.y * 0.03 * sc, j.forearm_l[2]];
-      const b: [number, number, number] = [j.hand_l[0] - L.x * 0.05 * sc, j.hand_l[1] - L.y * 0.05 * sc, j.hand_l[2]];
-      s.cone(a, b, 0.047 * sc * g * o.forearm, 0.03 * sc * g * o.forearm, { bone: 'forearm_l', k: 0.03 * sc });
-    });
-    const th = o.thigh;
-    if (th) {
-      s.mirrored(() => s.ellipsoid([j.thigh_l[0] + 0.012 * sc, (j.thigh_l[1] + j.shin_l[1]) / 2 + 0.05 * sc, 0.0], [0.07 * sc * g * th, 0.16 * sc, 0.07 * sc * g * th], { bone: 'thigh_l', k: 0.05 * sc }));
-    }
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // armour
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -146,7 +111,7 @@ export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lame
 }
 
 /** SDF part of the torso armour; returns the lower edge height */
-function cuirassSdf(ctx: KindContext, look: UrukLook, parts: Part[]) {
+export function cuirassSdf(ctx: KindContext, look: Pick<UrukLook, 'cuirass'>, parts: Part[], o: { rusty?: boolean; color?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const j = P.j;
@@ -154,8 +119,8 @@ function cuirassSdf(ctx: KindContext, look: UrukLook, parts: Part[]) {
   const botY = hipY + 0.14 * sc;
   const kind = look.cuirass;
   const plate = kind === 'plate';
-  const mat = plate ? IRON : kind === 'mail' ? surface('mail', { rough: 0.5 }) : LEATHER;
-  const color = plate ? URUK_PAL.iron : kind === 'mail' ? 0x35353a : URUK_PAL.leather;
+  const mat = plate ? (o.rusty ? IRON_RUSTY : IRON) : kind === 'mail' ? surface('mail', { rough: 0.5 }) : LEATHER;
+  const color = o.color ?? (plate ? URUK_PAL.iron : kind === 'mail' ? 0x35353a : URUK_PAL.leather);
   const infl = (plate ? 0.021 : kind === 'mail' ? 0.014 : 0.018) * sc;
   s.group('union', 0.003 * sc, () => {
     emitParts(s, parts, ['ribs', 'chest', 'pecs', 'back', 'trap', 'waist'], {
@@ -174,7 +139,7 @@ function cuirassSdf(ctx: KindContext, look: UrukLook, parts: Part[]) {
 }
 
 /** rigid parts of the torso armour (needs a projector for the finished sculpt) */
-function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, look: UrukLook, botY: number) {
+export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, look: Pick<UrukLook, 'cuirass'>, botY: number) {
   const { P } = ctx;
   const sc = P.s;
   const j = P.j;
@@ -247,30 +212,31 @@ function limbCut(s: Sculpt, L: THREE.Vector3, at: [number, number, number], keep
   s.plane([n.x, n.y, n.z], n.x * at[0] + n.y * at[1] + n.z * at[2], { op: 'intersect', k });
 }
 
-/** forearm guards (plate) or bandage wraps */
-function forearms(ctx: KindContext, parts: Part[], kind: 'plate' | 'wraps') {
+/** forearm guards (plate / leather) or bandage wraps */
+export function forearms(ctx: KindContext, parts: Part[], kind: 'plate' | 'wraps' | 'leather') {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const L = P.hand.l.L;
   const j = P.j;
   const plate = kind === 'plate';
+  const from = kind === 'plate' ? 0.2 : kind === 'leather' ? 0.12 : 0.4;
   s.mirrored(() =>
     s.group('union', 0.002 * sc, () => {
       emitParts(s, parts, ['forearm'], {
-        color: plate ? URUK_PAL.iron : 0x4a4236,
-        mat: plate ? IRON : surface('rags', { rough: 0.95 }),
-        inflate: (plate ? 0.011 : 0.007) * sc,
+        color: plate ? URUK_PAL.iron : kind === 'leather' ? 0x1e1712 : 0x4a4236,
+        mat: plate ? IRON : kind === 'leather' ? LEATHER : surface('rags', { rough: 0.95 }),
+        inflate: (plate ? 0.011 : kind === 'leather' ? 0.01 : 0.007) * sc,
         k: 0.014 * sc,
         oneSide: true,
-        noise: plate ? undefined : { amp: 0.0025 * sc, freq: 50 / sc, type: 'ridged' },
+        noise: kind === 'wraps' ? { amp: 0.0025 * sc, freq: 50 / sc, type: 'ridged' } : undefined,
       });
       limbCut(s, L, [j.hand_l[0] - L.x * 0.012 * sc, j.hand_l[1] - L.y * 0.012 * sc, j.hand_l[2]], false, 0.004 * sc);
-      limbCut(s, L, [j.forearm_l[0] + L.x * P.foreArm * (plate ? 0.2 : 0.4) , j.forearm_l[1] + L.y * P.foreArm * (plate ? 0.2 : 0.4), j.forearm_l[2]], true, 0.004 * sc);
+      limbCut(s, L, [j.forearm_l[0] + L.x * P.foreArm * from, j.forearm_l[1] + L.y * P.foreArm * from, j.forearm_l[2]], true, 0.004 * sc);
     }),
   );
 }
 
-function gorget(ctx: KindContext, parts: Part[]) {
+export function gorget(ctx: KindContext, parts: Part[]) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const j = P.j;

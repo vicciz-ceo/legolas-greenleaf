@@ -59,6 +59,10 @@ export interface HairdoOpts {
   tail?: number;
   /** keep hair off the face and shoulders with bigger colliders */
   faceClear?: number;
+  /** only a ridge along the centre line, standing up (mohawk) */
+  mohawk?: boolean;
+  /** half-width of the mohawk ridge (head units) */
+  ridge?: number;
 }
 
 /**
@@ -131,12 +135,14 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     const slope = (front - back) / 0.87;
     if (hy < back + slope * (hz + 0.45)) continue;
     if (Math.abs(hx) > 0.27 && hy < 0.03 && hz > -0.22) continue;
+    if (o.mohawk && Math.abs(hx) > (o.ridge ?? 0.06)) continue;
     const nrm = new THREE.Vector3(dx / 0.34, dy / 0.41, dz / 0.435).normalize();
     const frontness = Math.max(0, Math.min(1, (hz + 0.1) / 0.5));
     // combed back; the front strands first lift over the forehead
     const want = new THREE.Vector3(dx * 0.4 + (rng.float() - 0.5) * (0.2 + wild), 0.25 * frontness - 0.3 * (1 - frontness) - 0.1, -comb - 0.2 * (1 - comb) * 0 + (rng.float() - 0.5) * wild * 0.6);
     want.addScaledVector(nrm, -want.dot(nrm));
     if (want.lengthSq() < 0.05) want.set(0, -1, -0.3);
+    if (o.mohawk) want.set((rng.float() - 0.5) * 0.3, 0.9, -0.35 - 0.5 * frontness * 0);
     want.normalize();
     const f = Math.min(1, Math.max(0, (hy - back) / (front - back + 0.6)));
     tmp.setHex(layer === 2 ? (o.deep ?? o.color) : layer === 1 ? (o.tip ?? o.color) : o.color, THREE.SRGBColorSpace);
@@ -157,7 +163,7 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     seed: rng.int(1, 1e6),
     taper: 0.4,
     wave: o.wave ? { amp: 0.016 * s * o.wave, length: 0.11 * s } : undefined,
-    hug: 0,
+    hug: o.mohawk ? undefined : 0,
     hugUntil: -0.3,
   });
   const braids: BraidDef[] = [];
@@ -202,6 +208,8 @@ export interface BeardOpts {
   segments?: number;
   /** sculpted hair volume under the cards: 0 = none */
   mass?: number;
+  /** extra clearance over the chest for thick garments (m, already scaled) */
+  clear?: number;
 }
 
 export interface BeardResult {
@@ -228,14 +236,15 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
   const s = P.s;
   const h = P.h;
   const bl = o.length;
+  const clr = o.clear ?? 0.02 * s;
   const spread = o.spread ?? 1;
   const shape = o.shape ?? 'spade';
   const colliders: EllipsoidCollider[] = [
     { c: h(0, -0.3, 0.12), r: [0.265 * u, 0.33 * u, 0.3 * u] },
     { c: h(0, -0.56, 0.2), r: [0.2 * u, 0.12 * u, 0.2 * u] },
     { c: [0, P.j.neck[1] + 0.0 * s, -0.01 * s], r: [0.08 * s * P.build.neckThick, 0.14 * s, 0.085 * s] },
-    { c: [0, P.j.chest[1] + 0.07 * s, 0.0], r: [0.165 * s * P.build.shoulders * Math.sqrt(P.build.bulk), 0.24 * s, 0.125 * s * P.build.chest * Math.sqrt(P.build.bulk)] },
-    { c: [0, (P.j.chest[1] + P.j.spine[1]) / 2, 0.012 * s], r: [0.15 * s * Math.sqrt(P.build.bulk), 0.2 * s, 0.12 * s * Math.sqrt(P.build.bulk) * (1 + P.build.belly * 0.5)] },
+    { c: [0, P.j.chest[1] + 0.07 * s, 0.0], r: [0.165 * s * P.build.shoulders * Math.sqrt(P.build.bulk) + clr, 0.24 * s + clr, 0.125 * s * P.build.chest * Math.sqrt(P.build.bulk) + clr] },
+    { c: [0, (P.j.chest[1] + P.j.spine[1]) / 2, 0.012 * s], r: [0.15 * s * Math.sqrt(P.build.bulk) + clr, 0.2 * s + clr, 0.12 * s * Math.sqrt(P.build.bulk) * (1 + P.build.belly * 0.5) + clr] },
   ];
   const strands: Strand[] = [];
   const nLocks = o.locks ?? 15;
@@ -328,7 +337,7 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
   // braids hanging from the chin
   const braids: BraidDef[] = [];
   const braidPaths: V3[][] = [];
-  const chestZ = 0.125 * s * P.build.chest * Math.sqrt(P.build.bulk) + 0.02 * s;
+  const chestZ = 0.125 * s * P.build.chest * Math.sqrt(P.build.bulk) + clr + 0.012 * s;
   for (const b of o.braids ?? []) {
     const x = b.x;
     const y0 = b.y ?? -0.6;
@@ -364,7 +373,7 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
  * Sculpted hair volume under the beard cards (so gaps never show skin and the beard has body).
  * Skinned jaw → beard1 → beard2 down its length.
  */
-export function sculptBeardMass(ctx: KindContext, o: { color: number; color2?: number; length: number; width?: number; fork?: number; fullness?: number; top?: number }) {
+export function sculptBeardMass(ctx: KindContext, o: { color: number; color2?: number; length: number; width?: number; fork?: number; fullness?: number; top?: number; clear?: number }) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
   const sc = P.s;
@@ -372,7 +381,7 @@ export function sculptBeardMass(ctx: KindContext, o: { color: number; color2?: n
   const full = o.fullness ?? 1;
   const bone = P.has.beard ? 'beard2' : 'jaw';
   const chin = h(0, -0.5, 0.26);
-  const bot: V3 = [0, P.headC[1] - 0.6 * u - o.length * 0.82, 0.075 * sc + 0.05 * u];
+  const bot: V3 = [0, P.headC[1] - 0.6 * u - o.length * 0.82, 0.075 * sc + 0.05 * u + (o.clear ?? 0.0)];
   const fork = o.fork ?? 0;
   s.with({ color: o.color, color2: o.color2 ?? o.color, colorNoise: 0.6, colorFreq: 40 / sc, mat: 'hair', noise: { amp: 0.0035 * sc, freq: 55 / sc, type: 'ridged', octaves: 2 } }, () => {
     // jaw covering: a shell over the lower face from the cheeks to the chin
@@ -398,6 +407,45 @@ export function sculptBeardMass(ctx: KindContext, o: { color: number; color2?: n
       s.cone(B, C, 0.14 * u * full, 0.03 * u, { bone: 'jaw', bone2: bone, blend: [0.0, 1.0], k: 0.06 * u });
     }
   });
+}
+
+/** bushy eyebrows as short strand cards along the brow ridge */
+export function addBrows(ctx: KindContext, o: { color: number; length?: number; count?: number; width?: number; y?: number; z?: number; x0?: number; x1?: number; lift?: number }, rng: Rng) {
+  const { P, rig } = ctx;
+  const u = P.headH;
+  const h = P.h;
+  const n = o.count ?? 9;
+  const x0 = o.x0 ?? 0.05;
+  const x1 = o.x1 ?? 0.24;
+  const roots: GrowRoot[] = [];
+  for (const sd of [1, -1]) {
+    for (let i = 0; i < n; i++) {
+      const f = i / (n - 1);
+      const x = sd * (x0 + (x1 - x0) * f);
+      // brow ridge surface: bulges at the middle, slopes back at the outer end
+      const y = (o.y ?? 0.075) + 0.012 * Math.sin(f * Math.PI) - 0.02 * f * f;
+      const z = (o.z ?? 0.4) - 0.1 * f * f;
+      roots.push({
+        p: h(x, y, z),
+        dir: [sd * (0.25 + 0.5 * f), 0.35 + 0.2 * (1 - f), 0.7],
+        length: (o.length ?? 0.07) * u * (0.8 + rng.float() * 0.4) * (1 - 0.3 * f),
+        lift: (o.lift ?? 0.004) * P.s,
+        width: (o.width ?? 0.016) * P.s,
+        color: o.color,
+      });
+    }
+  }
+  const strands = growStrands(roots, {
+    segments: 3,
+    gravity: 2,
+    colliders: [{ c: h(0, 0.02, 0.1), r: [0.33 * u, 0.4 * u, 0.4 * u] }],
+    jitter: 0.1,
+    seed: rng.int(1, 1e6),
+    taper: 0.3,
+  });
+  const iHead = rig.boneIndex('head');
+  const geo = hairGeometry(strands, [], { color: o.color, weights: (_p, _a, out) => out.push([iHead, 1]) });
+  attachSkinned(ctx, geo, hairMaterial(o.color));
 }
 
 export function addBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult {

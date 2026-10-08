@@ -262,7 +262,7 @@ export function buildHair(P: Proportions, rig: RigDef, hair: HairDef | null, bea
   return { geo: hairGeometry(strands, braids, { color: hair?.color ?? 0x302010, tipColor: hair?.tipColor, weights }), strands: strands.length };
 }
 
-function mergeHair(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
+export function mergeHair(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
   const names = ['position', 'normal', 'uv', 'color', 'skinIndex', 'skinWeight'];
   const out = new THREE.BufferGeometry();
   for (const n of names) {

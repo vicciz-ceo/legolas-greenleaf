@@ -66,6 +66,9 @@ export interface GrowOpts {
   hug?: number | 'nearest';
   /** outward-normal y below which hugging stops (default -0.2) */
   hugUntil?: number;
+  /** collider indices used for card normals (default: all). Leave out face/ear colliders so
+   *  cards near the hairline lie flat on the scalp instead of twisting toward the face. */
+  normalColliders?: number[];
 }
 
 /** signed-ish distance to an ellipsoid and its outward normal */
@@ -162,10 +165,11 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
     }
     // normals: away from the nearest collider (fallback: horizontal away from the axis)
     const nrm: THREE.Vector3[] = [];
+    const ncols = o.normalColliders ? o.normalColliders.map((i) => cols[i]).filter(Boolean) : cols;
     for (const q of pts) {
       let bestD = Infinity;
       _best.set(q.x, 0, q.z).normalize();
-      for (const c of cols) {
+      for (const c of ncols) {
         const lx = (q.x - c.c[0]) / c.r[0], ly = (q.y - c.c[1]) / c.r[1], lz = (q.z - c.c[2]) / c.r[2];
         const kk = Math.sqrt(lx * lx + ly * ly + lz * lz);
         if (kk < bestD) {
@@ -175,6 +179,9 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
       }
       nrm.push(_best.clone());
     }
+    // smooth the card normals along the strand (no sudden twists between colliders)
+    for (let pass = 0; pass < 2; pass++)
+      for (let i = 1; i < nrm.length - 1; i++) nrm[i].add(nrm[i - 1]).add(nrm[i + 1]).normalize();
     const width = r.width ?? o.width ?? 0.022;
     out.push({ points: pts, normals: nrm, width, tipWidth: width * (o.taper ?? 0.45), color: r.color, bone: r.bone });
   }

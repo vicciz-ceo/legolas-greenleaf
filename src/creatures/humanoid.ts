@@ -90,6 +90,8 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
   eyeMesh.name = 'eyes';
   eyeMesh.castShadow = false;
   body.add(eyeMesh);
+  if (dbg.includes('noeyes')) eyeMesh.visible = false;
+  if (dbg.includes('nohair') && hairMesh) hairMesh.visible = false;
 
   // ── sockets ──
   const B = inst.byName;

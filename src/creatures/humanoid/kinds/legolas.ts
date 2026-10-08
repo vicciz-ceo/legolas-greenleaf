@@ -14,7 +14,7 @@ import { createWeapon } from '../../weapons';
 const PALETTE = {
   hair: 0xd9c89c,
   hairTip: 0xe8dbb6,
-  brows: 0xb8a272,
+  brows: 0x8f7650,
   skin: 0xe2b99c,
   skin2: 0xd6a88c,
   lips: 0xc58d82,

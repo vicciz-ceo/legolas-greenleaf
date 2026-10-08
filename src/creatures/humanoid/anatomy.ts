@@ -56,7 +56,8 @@ export function anatomyParts(P: Proportions): Part[] {
   parts.push({ tag: 'pecs', side: 'l', t: 'ell', c: [0.062 * s * sh, shY - 0.088 * s, 0.062 * s * ch * g], r: [0.068 * s * sh * g, 0.048 * s, 0.032 * s * (0.6 + mus)], o: { bone: 'chest', k: 0.04 * s } });
   parts.push({ tag: 'back', side: 'l', t: 'ell', c: [0.065 * s * sh, shY - 0.075 * s, -0.052 * s * ch * g], r: [0.07 * s * sh * g, 0.095 * s, 0.045 * s * g], o: { bone: 'chest', k: 0.05 * s } });
   parts.push({ tag: 'trap', side: 'l', t: 'cone', a: [0.035 * s, neckY + 0.015 * s, -0.025 * s], b: [0.14 * s * sh, shY + 0.022 * s, -0.018 * s], ra: 0.045 * s * gm * b.neckThick, rb: 0.034 * s * gm, o: { bone: 'chest', k: 0.05 * s, bone2: 'shoulder_l', blend: [0.5, 1] } });
-  parts.push({ tag: 'neck', t: 'cone', a: [0, neckY - 0.03 * s, -0.018 * s], b: [0, j.head[1] + 0.035 * s, -0.004 * s], ra: 0.058 * s * b.neckThick * gm, rb: 0.049 * s * b.neckThick * gm, o: { bone: 'neck', bone2: 'head', blend: [0.6, 1.0], k: 0.05 * s } });
+  // neck: rises into the skull base behind the jaw (keeps a clean jawline in profile)
+  parts.push({ tag: 'neck', t: 'cone', a: [0, neckY - 0.03 * s, -0.018 * s], b: [0, j.head[1] + 0.03 * s, -0.016 * s], ra: 0.058 * s * b.neckThick * gm, rb: 0.048 * s * b.neckThick * gm, o: { bone: 'neck', bone2: 'head', blend: [0.6, 1.0], k: 0.038 * s } });
 
   // ── arm (left; mirrored) ──
   const fl = P.hand.l;

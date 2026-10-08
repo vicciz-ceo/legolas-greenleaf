@@ -136,3 +136,84 @@ export function scaleBand(opts: { cy: number; rx: number; rz: number; y0: number
   const m = mergeAll(list);
   return m;
 }
+
+/** a torus ring around `dir` at `p` (clasps, rings on braids and limbs) */
+export function ring(p: V3, dir: V3, r: number, tubeR: number, seg = 8): THREE.BufferGeometry {
+  const g = new THREE.TorusGeometry(r, tubeR, 5, seg);
+  const d = new THREE.Vector3(dir[0], dir[1], dir[2]).normalize();
+  const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), d);
+  g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(p[0], p[1], p[2]), q, new THREE.Vector3(1, 1, 1)));
+  return g;
+}
+
+/** a rounded box (plates, pouches, buckles) placed at `p` with Euler rotation */
+export function box(w: number, h: number, d: number, p: V3, rot: V3 = [0, 0, 0]): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(w, h, d);
+  g.applyMatrix4(mat4(p, rot));
+  return g;
+}
+
+/**
+ * A section of an elliptical shell round the torso (cuirass, scrap plates, bands). Angles in
+ * radians about the vertical axis (0 = front, + = character's left). Edges can be jagged; the
+ * plate is bent so it follows the ribcage and is dented by `dent`.
+ */
+export function torsoShell(o: {
+  cx?: number;
+  cz?: number;
+  rx: number;
+  rz: number;
+  y0: number;
+  y1: number;
+  a0: number;
+  a1: number;
+  nA?: number;
+  nY?: number;
+  /** jagged edge amplitude (m) */
+  jag?: number;
+  dent?: number;
+  seed?: number;
+  /** radial shape: taper the radius toward the top (shoulders) and bottom (waist) */
+  taperTop?: number;
+  taperBottom?: number;
+}): THREE.BufferGeometry {
+  const nA = o.nA ?? 8;
+  const nY = o.nY ?? 3;
+  const pos: number[] = [];
+  const idx: number[] = [];
+  let sd = (o.seed ?? 1) * 9301 + 49297;
+  const rnd = () => {
+    sd = (sd * 9301 + 49297) % 233280;
+    return sd / 233280;
+  };
+  const noiseA = Array.from({ length: nA + 1 }, () => rnd());
+  const noiseB = Array.from({ length: nA + 1 }, () => rnd());
+  for (let j = 0; j <= nY; j++) {
+    const fy = j / nY;
+    for (let i = 0; i <= nA; i++) {
+      const fa = i / nA;
+      const a = o.a0 + (o.a1 - o.a0) * fa;
+      let y = o.y0 + (o.y1 - o.y0) * fy;
+      if (o.jag) {
+        if (j === 0) y += (noiseA[i] - 0.3) * o.jag;
+        if (j === nY) y -= (noiseB[i] - 0.3) * o.jag;
+      }
+      const tp = 1 + (o.taperTop ?? 0) * (fy > 0.5 ? (fy - 0.5) * 2 : 0) - (o.taperBottom ?? 0) * (fy < 0.5 ? (0.5 - fy) * 2 : 0);
+      const dent = o.dent ? Math.sin(fa * 9 + fy * 5 + (o.seed ?? 1)) * o.dent * 0.5 + (rnd() - 0.5) * o.dent * 0.4 : 0;
+      const rx = (o.rx + dent) * tp;
+      const rz = (o.rz + dent) * tp;
+      pos.push((o.cx ?? 0) + Math.sin(a) * rx, y, (o.cz ?? 0) + Math.cos(a) * rz);
+    }
+  }
+  for (let j = 0; j < nY; j++)
+    for (let i = 0; i < nA; i++) {
+      const a = j * (nA + 1) + i;
+      const b = a + nA + 1;
+      idx.push(a, b, a + 1, a + 1, b, b + 1);
+    }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
