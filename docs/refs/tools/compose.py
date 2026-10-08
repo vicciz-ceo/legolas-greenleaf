@@ -470,6 +470,10 @@ def check(cid):
         x0,y0,x1,y1=rec['background_probe']
         require(np.max(np.abs(np.asarray(im.convert('RGB')).astype(int)[y0:y1,x0:x1]-np.array(BG))) <= rec['decoded_background_tolerance'],f'{sheet}: safe background patch changed')
         objects=rec.get('views',rec.get('tiles',[]))
+        cfg=data.get('composition',{})
+        expected_names=cfg.get('views',list(VIEWS)) if sheet=='turnaround' else ['front','three_quarter','side'] if sheet=='face' else [t['name'] for t in cfg['detail_tiles']]
+        actual_names=[v.get('view',v.get('name')) for v in objects]
+        require(len(actual_names)==len(expected_names) and set(actual_names)==set(expected_names), f'{sheet}: missing or duplicated object geometry')
         for index, left in enumerate(objects):
             for right in objects[index+1:]:
                 a,b=left['sheet_bbox_px'],right['sheet_bbox_px']
@@ -484,7 +488,9 @@ def check(cid):
             b=item['sheet_bbox_px']
             require(0<=b[0]<b[2]<=size[0] and 0<=b[1]<b[3]<=size[1],f'{sheet}: object outside canvas')
             require(not item.get('mirrored',False),'Mirrored view forbidden')
-        rebuilt = reconstruct(cid, sheet)
+        rebuilt,actual_geometry = reconstruct(cid, sheet, metadata=True)
+        for key in ('views','tiles','ruler','px_per_m','baseline_y_px'):
+            if key in actual_geometry:require(rec.get(key)==actual_geometry[key], f'{sheet}: recorded {key} differs from actual composition')
         require(hashlib.sha256(rebuilt.tobytes()).hexdigest() == rec['pre_jpeg_sha256'], f'{sheet}: pre-JPEG canvas or geometry changed')
         require(np.all(np.asarray(rebuilt)[y0:y1,x0:x1] == np.array(BG)), f'{sheet}: wrong pre-JPEG background')
     turn=measured['turnaround']
@@ -552,7 +558,7 @@ def stored_bytes(folder):
     return sum(p.stat().st_size for p in Path(folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc')
 
 
-def reconstruct(cid, sheet):
+def reconstruct(cid, sheet, metadata=False):
     # Re-render from retained sources and geometry to check the exact unencoded
     # canvas, without retaining a duplicate lossless sheet or mutating any file.
     captured=[]
@@ -563,12 +569,12 @@ def reconstruct(cid, sheet):
     try:
         globals()['save_sheet']=capture
         globals()['write_spec']=lambda path,data: None
-        globals()[{'turnaround':'turnaround','face':'face','details':'grid'}[sheet]](cid)
+        result=globals()[{'turnaround':'turnaround','face':'face','details':'grid'}[sheet]](cid)
     finally:
         globals()['save_sheet']=oldsave
         globals()['write_spec']=oldwrite
     require(len(captured)==1,'Composition failed to produce one canvas')
-    return captured[0]
+    return (captured[0],result) if metadata else captured[0]
 
 
 def check_all():
@@ -585,7 +591,7 @@ def check_all():
             result=check(cid)
         except (ValueError,KeyError,OSError,StopIteration) as error:
             statuses=[d['status'] for d in entry.get('deliverables',{}).values()]
-            result={'id':cid,'status':'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING','reason':str(error)}
+            result={'id':cid,'status':'FAIL' if statuses and all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING','reason':str(error)}
         results.append(result)
     library=stored_bytes(ROOT)
     require(library<=LIB_BUDGET,f'Library exceeds 70 MB: {library}')

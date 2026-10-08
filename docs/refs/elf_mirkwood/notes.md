@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+Reviewed four body views and three portraits individually. Own RIGHT glaive remains fixed through rotation. Minor leaf engraving, belt and cloak fold drift is tolerated; portraits deliberately crop shoulders. A-pose angles remain within 20–40 degrees where projected. Skin and hair tiles are crops of separately generated portrait sources; costume and glaive are independent detail generations. Fine hair and crest segmentation reviewed; material samples are rendered and lit, not albedo.

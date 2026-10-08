@@ -171,31 +171,31 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/three_quarter | accepted | 1 | Three-quarter front angle; original gear on correct side, no text. |
 | views/side | accepted | 1 | Exact right profile, right-hand glaive, natural projected A-pose. |
 | views/back | accepted | 1 | Correct rear angle and hand sides, consistent cloak and helmet. |
-| face_views/front | pending | 1 | Generated; awaiting review. |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/front | accepted | 1 | Original face and complete leaf crest. |
+| face_views/three_quarter | accepted | 1 | Same face and helm in three-quarter view. |
+| face_views/side | accepted | 1 | Exact profile with pointed ear and dark hair. |
+| details/cloth_leather | accepted | 1 | Matching green cloth, brown leather and bronze leaf edge. |
+| details/weapon_metal | accepted | 1 | Same complete leaf-bladed glaive, no added weapons. |
+| details/skin | accepted | 1 | Cropped from individually generated frontal portrait/detail source. |
+| details/hair | accepted | 1 | Cropped from separately generated exact-profile detail source. |
+| turnaround | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| spec | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| notes | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| check | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| face | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| details | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
+| observed | accepted | 0 | Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set. |
 
 ## elf_galadhrim
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
+| views/front | accepted | 1 | Original face; complete gold armour/red cloak; own LEFT bow low, relaxed A-pose; five fingers and readable silhouette. |
+| views/three_quarter | accepted | 1 | Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass. |
+| views/side | accepted | 1 | Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass. |
+| views/back | accepted | 1 | True back view; bow own LEFT image left, quiver own RIGHT; full boots/tips and gold/red silhouette pass. |
+| face_views/front | accepted | 1 | Straight frontal original elf face, full crown and pointed ears; gold/red costume matches. |
+| face_views/three_quarter | accepted | 1 | Original identity preserved; correct three-quarter portrait, ears and crown clear. |
 | face_views/side | pending | 0 |  |
 | details/cloth_leather | pending | 0 |  |
 | details/weapon_metal | pending | 0 |  |

@@ -1122,7 +1122,7 @@
           "path": "/workspace/generated_images/exec-4e35ef4b-fc54-4c5d-977d-bf97a92a2f5d.png"
         },
         "face_views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -1131,60 +1131,121 @@
               "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
             }
           ],
-          "reason": "Generated; awaiting review.",
+          "reason": "Original face and complete leaf crest.",
           "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same face and helm in three-quarter view.",
+              "path": "/workspace/generated_images/exec-37863d33-f9fa-423f-8fa8-bb3240b7c52c.png"
+            }
+          ],
+          "reason": "Same face and helm in three-quarter view.",
+          "path": "/workspace/generated_images/exec-37863d33-f9fa-423f-8fa8-bb3240b7c52c.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact profile with pointed ear and dark hair.",
+              "path": "/workspace/generated_images/exec-45e7fc1b-faf7-4217-9ade-4e5868ea4068.png"
+            }
+          ],
+          "reason": "Exact profile with pointed ear and dark hair.",
+          "path": "/workspace/generated_images/exec-45e7fc1b-faf7-4217-9ade-4e5868ea4068.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Matching green cloth, brown leather and bronze leaf edge.",
+              "path": "/workspace/generated_images/exec-da0c6fa0-441a-42d9-a425-565d258f24ec.png"
+            }
+          ],
+          "reason": "Matching green cloth, brown leather and bronze leaf edge.",
+          "path": "/workspace/generated_images/exec-da0c6fa0-441a-42d9-a425-565d258f24ec.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same complete leaf-bladed glaive, no added weapons.",
+              "path": "/workspace/generated_images/exec-227e6afd-232f-4eea-a41d-07a0282f9b57.png"
+            }
+          ],
+          "reason": "Same complete leaf-bladed glaive, no added weapons.",
+          "path": "/workspace/generated_images/exec-227e6afd-232f-4eea-a41d-07a0282f9b57.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Cropped from individually generated frontal portrait/detail source.",
+              "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
+            }
+          ],
+          "reason": "Cropped from individually generated frontal portrait/detail source.",
+          "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Cropped from separately generated exact-profile detail source.",
+              "path": "/workspace/generated_images/exec-45e7fc1b-faf7-4217-9ade-4e5868ea4068.png"
+            }
+          ],
+          "reason": "Cropped from separately generated exact-profile detail source.",
+          "path": "/workspace/generated_images/exec-45e7fc1b-faf7-4217-9ade-4e5868ea4068.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; compose.py verifies schema, scale, source hashes, exact pre-JPEG background, labels/baseline/ruler and 1,770,558-byte set."
         }
       }
     },
@@ -1193,32 +1254,95 @@
       "design_extent_m": 1.85,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original face; complete gold armour/red cloak; own LEFT bow low, relaxed A-pose; five fingers and readable silhouette.",
+              "path": "/workspace/generated_images/exec-1b863be9-1139-4d3e-b70a-f8f879b119b6.png"
+            }
+          ],
+          "reason": "Original face; complete gold armour/red cloak; own LEFT bow low, relaxed A-pose; five fingers and readable silhouette.",
+          "path": "/workspace/generated_images/exec-1b863be9-1139-4d3e-b70a-f8f879b119b6.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass.",
+              "path": "/workspace/generated_images/exec-4c9fab7a-7840-451f-91bf-80afd702afba.png"
+            }
+          ],
+          "reason": "Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass.",
+          "path": "/workspace/generated_images/exec-4c9fab7a-7840-451f-91bf-80afd702afba.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass.",
+              "path": "/workspace/generated_images/exec-d93e25df-d1ec-4adc-8530-5404ade563ed.png"
+            }
+          ],
+          "reason": "Correct view, blond hair/gold armour/red cloak consistent; bow remains own LEFT hand low; anatomy and framing pass.",
+          "path": "/workspace/generated_images/exec-d93e25df-d1ec-4adc-8530-5404ade563ed.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True back view; bow own LEFT image left, quiver own RIGHT; full boots/tips and gold/red silhouette pass.",
+              "path": "/workspace/generated_images/exec-8401c2d2-d9e5-49db-bd30-0e5778b4f391.png"
+            }
+          ],
+          "reason": "True back view; bow own LEFT image left, quiver own RIGHT; full boots/tips and gold/red silhouette pass.",
+          "path": "/workspace/generated_images/exec-8401c2d2-d9e5-49db-bd30-0e5778b4f391.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Straight frontal original elf face, full crown and pointed ears; gold/red costume matches.",
+              "path": "/workspace/generated_images/exec-bc078d6c-0c41-4fc1-987f-599c0e26f779.png"
+            }
+          ],
+          "reason": "Straight frontal original elf face, full crown and pointed ears; gold/red costume matches.",
+          "path": "/workspace/generated_images/exec-bc078d6c-0c41-4fc1-987f-599c0e26f779.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original identity preserved; correct three-quarter portrait, ears and crown clear.",
+              "path": "/workspace/generated_images/exec-3edc6e13-0265-45ea-8ea1-5c3156214967.png"
+            }
+          ],
+          "reason": "Original identity preserved; correct three-quarter portrait, ears and crown clear.",
+          "path": "/workspace/generated_images/exec-3edc6e13-0265-45ea-8ea1-5c3156214967.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact profile, consistent original face and blond hair, complete crown and ear.",
+              "path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png"
+            }
+          ],
+          "reason": "Exact profile, consistent original face and blond hair, complete crown and ear.",
+          "path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png"
         },
         "details/cloth_leather": {
           "status": "pending",

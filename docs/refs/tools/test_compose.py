@@ -80,11 +80,11 @@ class ComposeTests(unittest.TestCase):
         base=json.loads((self.folder/'spec.json').read_text())
         data=copy.deepcopy(base);data['measured']['turnaround']['views'][0]['baseline_y_px']=939
         self.store(data)
-        with self.assertRaisesRegex(ValueError,'share baseline'):
+        with self.assertRaisesRegex(ValueError,'share baseline|recorded views'):
             c.check('fixture')
         data=copy.deepcopy(base);data['measured']['turnaround']['ruler']['ticks'][1]['y_px']+=1
         self.store(data)
-        with self.assertRaisesRegex(ValueError,'calibration'):
+        with self.assertRaisesRegex(ValueError,'calibration|recorded ruler'):
             c.check('fixture')
         self.store(base)
         (self.folder/'oversized.bin').write_bytes(bytes(c.CHAR_BUDGET))

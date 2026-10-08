@@ -119,5 +119,561 @@
         "source": "details/hair.png"
       }
     ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "elf_mirkwood_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
+      "size_bytes": 113910,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "31ff75dfb92428ec800755a1aec580a25d236b008e0cdba79acda86744ad9ea8",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 220.81218274111674,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.9700000000000002,
+      "height_fill_fraction": 0.4248046875,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "ba163053d5329d0d6d0510010f01dad529da5fd019a5d1a7185db29322a5ff4a",
+          "source_bbox_px": [
+            4,
+            4,
+            415,
+            564
+          ],
+          "sheet_bbox_px": [
+            159,
+            505,
+            478,
+            940
+          ],
+          "silhouette_height_px": 435,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7767857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "439ab2a9f2c186483674fc91525ffd9b4a281712958187cfb2a77833ba45fb91",
+          "source_bbox_px": [
+            4,
+            4,
+            343,
+            564
+          ],
+          "sheet_bbox_px": [
+            530,
+            505,
+            793,
+            940
+          ],
+          "silhouette_height_px": 435,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7767857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "f20b8b7f1aea3f486b39c1eefb0b2dc656353c05a7140a413c8cb1ad8befbbad",
+          "source_bbox_px": [
+            4,
+            4,
+            199,
+            564
+          ],
+          "sheet_bbox_px": [
+            929,
+            505,
+            1080,
+            940
+          ],
+          "silhouette_height_px": 435,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7767857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "6308c37d64553dd17d51e3d595a2899a19ae6e883a20702537a7d6d84f36a68b",
+          "source_bbox_px": [
+            4,
+            4,
+            385,
+            564
+          ],
+          "sheet_bbox_px": [
+            1199,
+            505,
+            1495,
+            940
+          ],
+          "silhouette_height_px": 435,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7767857142857143,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 505,
+        "endpoint_m": 1.9700000000000002,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 885
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 830
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 774
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 719
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 664
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 609
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 554
+          }
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "elf_mirkwood_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "dfedde91b054d6e567f22f87e021d8bd2f20eac321c45ce9c73fb8117909e0c6",
+      "size_bytes": 229808,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "e9548f2b192e3a372649723cf2b8ef803b0512a4d99b169da2993aab9cce2c28",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "bd50938f0a5553fdee465924bbc6f557b1ae5681b46c3f8950aee9f75ca9c2e9",
+          "source_bbox_px": [
+            4,
+            4,
+            225,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            254,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "ef25a1cd4ee9d87399c392a13c24aea75808a32e334bc838efb47cdb75562c51",
+          "source_bbox_px": [
+            4,
+            4,
+            225,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            254,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "3a313ed2160ce765a1b2635608e960c28d8b64ef716f13f00631daac073ad84d",
+          "source_bbox_px": [
+            4,
+            4,
+            182,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            93,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "elf_mirkwood_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+      "size_bytes": 134476,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "5387f45d8a455317dcc6e8c29a6c168daf5a0b4e4fa8ed2546de4463a7d5fe00",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "b48101a06cbf9dc1fc6f72144338c361479fb103e66b75f4449f8aa5cff7a00e",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "d731354c6505cf82672f4246cc7423d784c4545dd3b8ef275193c1485c37e6f2",
+          "sheet_bbox_px": [
+            626,
+            12,
+            910,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "8d36fdbd22e6b8688e85132326038943ca876eae63e1568119b8cbcef1e7e72e",
+          "sheet_bbox_px": [
+            16,
+            524,
+            495,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "bc4a1cddd84314912deb99bbb5bd44ae832b3c3b5134b24924968cf831dafe77",
+          "sheet_bbox_px": [
+            645,
+            524,
+            890,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        160,
+        610,
+        220,
+        700
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        750,
+        650,
+        810,
+        740
+      ]
+    },
+    {
+      "name": "tunic",
+      "sheet": "details",
+      "rect_px": [
+        195,
+        145,
+        225,
+        240
+      ]
+    },
+    {
+      "name": "cloak",
+      "sheet": "details",
+      "rect_px": [
+        122,
+        100,
+        145,
+        230
+      ]
+    },
+    {
+      "name": "bracers",
+      "sheet": "details",
+      "rect_px": [
+        135,
+        275,
+        180,
+        350
+      ]
+    },
+    {
+      "name": "belt",
+      "sheet": "details",
+      "rect_px": [
+        250,
+        235,
+        315,
+        290
+      ]
+    },
+    {
+      "name": "metal_armour",
+      "sheet": "details",
+      "rect_px": [
+        305,
+        60,
+        365,
+        110
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        278,
+        910,
+        292,
+        924
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          160,
+          610,
+          220,
+          700
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          203,
+          165,
+          151
+        ],
+        "srgb_hex": "#cba597",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          750,
+          650,
+          810,
+          740
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          44,
+          31,
+          24
+        ],
+        "srgb_hex": "#2c1f18",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "tunic": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          195,
+          145,
+          225,
+          240
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          83,
+          78,
+          63
+        ],
+        "srgb_hex": "#534e3f",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "cloak": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          122,
+          100,
+          145,
+          230
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          48,
+          52,
+          40
+        ],
+        "srgb_hex": "#303428",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "bracers": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          135,
+          275,
+          180,
+          350
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          42,
+          38,
+          26
+        ],
+        "srgb_hex": "#2a261a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "belt": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          250,
+          235,
+          315,
+          290
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          45,
+          34,
+          24
+        ],
+        "srgb_hex": "#2d2218",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal_armour": {
+        "sheet": "elf_mirkwood_details.jpg",
+        "sheet_sha256": "c0366b9a7ae7f88893ea17a30b5c2a9c8e41b15ee0c2959cf3547c1addb0831f",
+        "rect_px": [
+          305,
+          60,
+          365,
+          110
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          109,
+          81,
+          50
+        ],
+        "srgb_hex": "#6d5132",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "elf_mirkwood_turnaround.jpg",
+        "sheet_sha256": "451fa76d989f573ed60fde0280b4724cec35d2d952847c91a49d5e2e374ecf9a",
+        "rect_px": [
+          278,
+          910,
+          292,
+          924
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          66,
+          53,
+          44
+        ],
+        "srgb_hex": "#42352c",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
   }
 }
