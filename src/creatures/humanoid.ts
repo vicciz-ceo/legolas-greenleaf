@@ -306,7 +306,7 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
 
   let flashT = 0;
   const FLASH_TIME = 0.1;
-  const FLASH_GAIN = 0.3;
+  const FLASH_GAIN = 0.08;
   const flashColor = new THREE.Color();
   const emissiveBase = bodyMat.emissive ? bodyMat.emissive.clone() : new THREE.Color();
 

@@ -132,6 +132,8 @@ Use a **web worker** for meshing if a single build exceeds ~100 ms. Otherwise bu
 - **Aim assist** (gamepad/touch; optional on KB+M): slow the reticle over targets plus a slight magnetism, applied to arrow direction within 4°.
 - **Camera**: smoothed third-person over the right shoulder, collision pull-in, shake, scripted shots with blending.
 
+> **Tuning decisions (integration review):** Focus-volley kills refill +3 (other kills +12) so Focus can't pay for itself forever; enemy archers spread 1.1° + 0.018°/m and hit harder (orc archer 12 dmg); Triple Shot = full-damage centre arrow + two 0.6× side arrows at ±0.05 rad; Gimli engages 8 m further and chapters with Gimli enable `rivalry.autoGimli`; aim assist leads moving targets (≤1 s) and ignores occluded candidates.
+
 ## 8. Chapters (owner: chapter authors)
 
 One file `src/game/chapters/cN_<id>.ts` exporting `chapter: ChapterDef`, plus helper files in `src/game/chapters/<id>/` and creatures in `src/creatures/<name>.ts` (+ `.lab.ts`). Use the `LevelAPI` exclusively for game interaction; never reach into `game.ts`. Study `c0_arena.ts` first, then the handbook `docs/CHAPTER_AUTHORING.md` (LevelAPI cheat sheet, every world builder, custom creatures, movers, bosses, budgets, testing). Each chapter needs:
