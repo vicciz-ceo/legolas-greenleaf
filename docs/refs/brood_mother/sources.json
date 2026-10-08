@@ -1,0 +1,165 @@
+{
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-39ebf69d-f420-4e21-b131-3ad845507340.png",
+    "original_sha256": "da63bc0b6bddfa1b7b9a9d022f2755ed2e47c583eaf9b62e3afecce52713be82",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "010027cfe5cabff1f14165bac334e3c7314739e73fffe04e53f5942eb23e33d7"
+  },
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-50ff48da-a912-4b8e-8e42-c35d1fe53161.png",
+    "original_sha256": "71db52c5d3f3613ad5f83bce8946e9f39f71507f7937a99ad19fc1fa9374e646",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "45385e91667bbedc45ffccf61cb4ad4804a1330038308c71ef417f16d431bd13"
+  },
+  "views/top": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1169d84e-2947-49c6-9384-ceb0bf99b845.png",
+    "original_sha256": "7720bdb4ee4c2527db61c9b846e93eeb1dc059a9ae9d7eb7223c377039a25e3b",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/top.png",
+    "cutout_sha256": "336cacf368f1493ef8056829640c1a51ee13cffbfee11a762d1f809488e24aaa"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-cc807240-79e7-45b7-926e-a6189d940f21.png",
+    "original_sha256": "1f859a9178bdf4b5f7e425f79a6b244d53b3ab1c5b03424c8dcbb62d88a60c05",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "852061e025a97f8d3dac10d47c55c0285d89cf6b936d1c239f4230eb989b269e"
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25f70f48-f0aa-4364-ad94-a5b52531cffa.png",
+    "original_sha256": "2fc63b8792caf5f9323c0469e4dfe8ecf290f68179d3e67d033b50c358ab67f4",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "6e79f8c15b4ed6ec63d075bb6961c6318dd5e42103f1ad8b3d34b9c5e4ff16a2"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-b836df1d-c21c-4a01-9f3a-96e2ffafe217.png",
+    "original_sha256": "9182c825744179685675074533ff4c1dea5dff07e1c5db38f9719b53f9c728d9",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "ca780047f4ab7402db4b7c08943dbdbab849a8fbb69a4d5c5a4a6d2a3d195ed7"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-cc1a42c2-0e64-4665-865f-83121a4b1913.png",
+    "original_sha256": "c627f222d5bbb94f93814bd6f8014b7e77909919a8e09a7fc0856d66181fd9b2",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "e35f59220db462be8b7531fa7ca5f4c01a763046e2d939eb4d5e427d59cb12f9"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9acffdec-d910-48b9-8749-f227ac2e17d2.png",
+    "original_sha256": "9de2b2ccbe5a09384b964c4ba843500ca9febef04bdd511f6104264d155c61b8",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1536,
+      1024
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "487201ff149f5dae5a19d28607e379fce5912e450e20eeec35ff33b57b73c632"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-b6af011f-1d26-4e09-bd29-e7f9dedd0ee1.png",
+    "original_sha256": "691b2657b6c50ee6650cbf3f6cccb528695130578b7a89b308d00f7c96804c80",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1536,
+      969
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "9aa9cd19c91dbe56aa9eae40a32263e79769b25078d694cb5654600b8bd8609c"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9acffdec-d910-48b9-8749-f227ac2e17d2.png",
+    "original_sha256": "9de2b2ccbe5a09384b964c4ba843500ca9febef04bdd511f6104264d155c61b8",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      940,
+      430,
+      1180,
+      650
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "8dd75c260f39cb820e759899eb2e13091402ffd1345f23bc5e18c80750f6c190"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9acffdec-d910-48b9-8749-f227ac2e17d2.png",
+    "original_sha256": "9de2b2ccbe5a09384b964c4ba843500ca9febef04bdd511f6104264d155c61b8",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      980,
+      790,
+      1280,
+      990
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "3ff217a5ff0362718cd5f596fa596b9905564ad39cb24b9cb883aecc3c2cab8c"
+  }
+}

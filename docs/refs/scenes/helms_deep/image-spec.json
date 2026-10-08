@@ -1,0 +1,178 @@
+{
+  "image_size_px": [
+    1536,
+    1024
+  ],
+  "establishing": {
+    "height_m": 8,
+    "vertical_fov_deg": 55,
+    "scale_figure_height_m": 1.85,
+    "composition": "hero location with checkpoint landmarks"
+  },
+  "gameplay_view": {
+    "height_m": 1.6,
+    "behind_player_m": 3.2,
+    "shoulder_offset_m": 1.2,
+    "vertical_fov_deg": 70,
+    "horizontal_fov_deg": 92.81,
+    "player_height_m": 1.85,
+    "player_screen_center_percent": [
+      30,
+      77
+    ],
+    "expected_player_height_percent": 42.34,
+    "note": "Background is uncalibrated look art. Code projects the schematic 1.85 m player through the exact camera; character look is owned by the parallel sheets.",
+    "pitch_deg": 3,
+    "size_px": [
+      1536,
+      1024
+    ]
+  },
+  "beats": {
+    "grid": [
+      2,
+      3
+    ],
+    "order": "row-major",
+    "captions": [
+      "Volley and six ladder assaults",
+      "Stop three culvert torch runners",
+      "Final runner: culvert blast breach",
+      "Shield surf 60 m stairs",
+      "Flooded breach; hold causeway 150 s",
+      "Dawn charge; rivalry tally"
+    ],
+    "frames_per_checkpoint": "Beat subdivisions preserve chapter order; four-beat chapters split action into six panels."
+  },
+  "readability": {
+    "primary_path_width_m": 4,
+    "target_silhouette_contrast_min": 0.18,
+    "target_test": "Compare relative luminance of enemy torso and immediate background; evaluate at 10–35 m.",
+    "no_baked_ui": true
+  },
+  "palette": {
+    "swatch_count": 9,
+    "values": {
+      "sky_top": "#02040a",
+      "horizon": "#1c2738",
+      "fog": "#131c29",
+      "sun": "#9baecb",
+      "shadow_fill": "#24344f",
+      "dominant_ground": "#333e47",
+      "dominant_structure": "#64717b",
+      "accent": "#c0cfdd",
+      "fire_emissive": "#ffad55"
+    }
+  },
+  "extras": {
+    "ladder_assault": {
+      "wall_height_m": 20,
+      "walk_width_m": 6,
+      "ladder_count": 6,
+      "ladder_length_m": 22,
+      "socket_spacing_m": 12
+    },
+    "culvert_breach": {
+      "culvert_m": [
+        3,
+        2.4
+      ],
+      "breach_width_m": 18,
+      "fireball_radius_m": 7,
+      "debris_m": [
+        0.5,
+        1.2
+      ]
+    },
+    "shield_stair": {
+      "run_m": 60,
+      "width_m": 6,
+      "rise_m": 20,
+      "riser_m": 0.18018018018018017,
+      "tread_m": 0.5405405405405406,
+      "risers": 111
+    }
+  },
+  "source": "design_target",
+  "scale_cues": "Script-drawn calibration figures. Generated people are uncalibrated narrative illustration, never evidence of dimensions.",
+  "observed_composition": {
+    "establishing": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "ladder_assault": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "culvert_breach": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "shield_stair": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "gameplay_view": {
+      "source": "measured_script",
+      "method": "pinhole projection of a 1.85 m vertical subject; background remains an uncalibrated look reference",
+      "head_px": [
+        494.5389268368307,
+        493.2719446357383
+      ],
+      "foot_px": [
+        486.030583909303,
+        926.7963531338851
+      ],
+      "projected_height_px": 433.5244084981468,
+      "camera": {
+        "height_m": 1.6,
+        "behind_player_m": 3.2,
+        "shoulder_offset_m": 1.2,
+        "vertical_fov_deg": 70,
+        "pitch_deg": 3,
+        "size_px": [
+          1536,
+          1024
+        ]
+      }
+    },
+    "beats": {
+      "source": "measured_script",
+      "columns": 2,
+      "rows": 3,
+      "frame_rect_px": [
+        752,
+        282
+      ],
+      "caption_font": "DejaVu Sans 17 px",
+      "inputs": [
+        "scenes/helms_deep/frames/beat_00_look.jpg",
+        "scenes/helms_deep/frames/beat_01_look.jpg",
+        "scenes/helms_deep/frames/beat_02_look.jpg",
+        "scenes/helms_deep/frames/beat_03_look.jpg",
+        "scenes/helms_deep/frames/beat_04_look.jpg",
+        "scenes/helms_deep/frames/beat_05_look.jpg"
+      ]
+    }
+  }
+}

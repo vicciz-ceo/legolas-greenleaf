@@ -1,0 +1,170 @@
+You are producing visual REFERENCE SHEETS for "Greenleaf", a 3D Legolas fan game (private repo vicciz-ceo/legolas-greenleaf).
+Every character in the game is modelled procedurally in TypeScript (signed-distance-field sculpting plus auto-skinning). Other agents tune those coded characters against your references, so they must be precise, consistent and measurable, not just pretty.
+
+## Ground rules
+- Work on a NEW branch `refs/character-sheets` created from `origin/build/foundation`. Add files ONLY under `docs/refs/`. Do not touch `src/`, `lab/`, `scripts/` or any existing file. Other agents are actively editing those.
+- These images are development references. They are never imported by the game; the game itself stays "everything built in code".
+- Original designs only. Follow Tolkien's descriptions and the general costume language of the Hobbit/LOTR film era, but do NOT reproduce any actor's likeness (Orlando Bloom, Viggo Mortensen, John Rhys-Davies, Evangeline Lilly, Lee Pace, etc.) or copy specific film frames or stills. Faces must be original people who fit the description.
+- Before starting, read `GOAL.md`, `ARCHITECTURE.md` (§4 visual standard; the scale list) and `docs/CHAPTERS.md` for context.
+
+## Deliverables per character: folder `docs/refs/<id>/`
+1. `<id>_turnaround.png` (1536×1024): FOUR full-body views side by side at IDENTICAL scale: front, 3/4 front, right side profile, back.
+   - Relaxed A-pose (arms ~30° from the body), feet shoulder-width apart, neutral expression.
+   - Orthographic-feeling camera (no wide-angle distortion), eye level at mid-height.
+   - A thin vertical height ruler on the left marked in 0.25 m steps with the total height labelled.
+2. `<id>_face.png` (1536×1024): head and shoulders in front, 3/4 and exact profile. Show eye shape and lids, brow, nose bridge, lips, ears (pointed for elves), hairline and the hair silhouette.
+3. `<id>_details.png` (1024×1024): a 2×2 or 3×3 grid of material close-ups: fabric weave, leather with stitching and edge wear, metal (scratches, rust, engraving), skin, hair strands, plus the signature weapon. Each tile carries a short label.
+4. `spec.json`: machine-readable measurements and materials (schema below). Every number must match the images.
+5. `notes.md`: 5–10 bullet "modelling notes": the silhouette features that make the character instantly readable, the proportions that matter most, and common mistakes to avoid.
+
+## Image style (same for every sheet)
+Photoreal concept-art render, as if from a film costume department's character bible:
+- neutral mid-grey seamless background (#7f7f7f)
+- soft, even studio key light from the upper front-left plus a gentle rim light, with no dramatic shadows and no colour cast
+- crisp focus, true-to-life materials and colours
+- no text other than the labels and ruler, no logos, no watermarks, no props other than the character's own gear
+
+The same person and outfit must be consistent across all views and sheets. Regenerate whenever the views disagree, hands have the wrong number of fingers, or gear changes between views.
+
+Base prompt template, used for every view (fill the brackets):
+"Character reference turnaround sheet, photoreal concept art, [VIEW LIST], same character in every view, identical scale, relaxed A-pose, neutral expression, neutral grey seamless background, soft even studio lighting, orthographic camera, height ruler on the left in 0.25 m steps. Character: [DESCRIPTION]. Height [H] m. Original face, not resembling any real actor."
+
+## spec.json schema
+{
+  "id": "legolas",
+  "display_name": "Legolas",
+  "height_m": 1.85,
+  "proportions": {
+    "head_height_m": 0.23, "shoulder_width_m": 0.44, "hip_width_m": 0.34,
+    "arm_length_m": 0.78, "leg_length_m": 0.98, "hand_length_m": 0.19,
+    "neck_length_m": 0.11, "bulk_0to1": 0.25, "hunch_0to1": 0.0
+  },
+  "face": { "shape": "...", "eyes": { "iris_hex": "#5d8bb5", "shape": "almond", "size_note": "..." },
+            "brow": "...", "nose": "...", "lips": "...", "ears": "pointed, ~4 cm above the skull line", "skin_base_hex": "#e9c9b1",
+            "skin_variation": "faint redness on cheeks, nose and ears" },
+  "hair": { "root_hex": "...", "tip_hex": "...", "length_m": 0.55, "style": "...", "braids": "..." },
+  "outfit_layers": [ { "name": "tunic", "material": "wool twill", "color_hex": "#5f6b55", "roughness": 0.85, "sheen": 0.3, "notes": "..." } ],
+  "armor": [ { "name": "...", "material": "...", "color_hex": "...", "roughness": 0.4, "metalness": 1.0 } ],
+  "weapons": [ { "kind": "elven_bow", "length_m": 1.6, "notes": "..." } ],
+  "silhouette_keywords": ["tall", "slender", "long straight hair", "bow over shoulder", "quiver on back"],
+  "avoid": ["gaunt hollow cheeks", "white (not platinum) hair", "toy-like proportions"]
+}
+Colours are sRGB hex. Roughness and metalness are PBR estimates from 0 to 1. All lengths are in metres.
+
+## Roster, in priority order (true heights)
+Heroes and allies:
+- legolas (1.85 m): ageless, handsome Sindarin elf prince. Smooth skin, high cheekbones (NOT hollow), straight refined nose, almond blue eyes. Long straight platinum-blond hair (warm pale gold, darker roots) with two small temple braids, falling behind pointed ears. Fellowship-era outfit: muted green-grey tunic, brown leather jerkin with stitching, leather bracers, belt, leggings and tall soft boots. Galadhrim longbow (recurve, ~1.6 m), quiver of white-fletched arrows on the back, two white-handled elven knives sheathed on the back.
+- gimli (1.37 m): very stocky, broad dwarf. Wild red-brown hair and a long forked braided beard with bronze clasps. Mail hauberk over leather with crossed straps, a pointed iron helm with a bronze rim and cheek plates, layered pauldrons, a dwarf axe plus throwing axes at the belt.
+- aragorn (1.88 m): rugged ranger. Shoulder-length wavy dark-brown hair, short beard and stubble, weathered dark shirt and green-grey long coat over a leather jerkin, bracers, pouches, a sword.
+- tauriel (1.78 m): Silvan elf captain. Long straight auburn-red hair with temple braids; layered green and brown Mirkwood guard outfit with a laced leather vest and cowl; a bow and two curved knives at the hips.
+- thranduil (1.90 m): Elvenking. Long platinum-silver hair, a crown of dark twigs with autumn leaves and berries, a silver brocade robe under a floor-length wine-red coat, regal and cold.
+- elf_mirkwood and elf_galadhrim (1.85 m): Mirkwood guard (gold-bronze leaf-patterned cuirass, green or amber cloak, leaf-crested helm, glaive or bow) and Galadhrim of Lothlórien (ornate fluted golden armour, deep red cloak, longbow).
+- boromir (1.85 m, Gondor captain): no helm, shoulder-length brown hair and beard, fur-collared cloak, the Horn of Gondor.
+- gondor (1.82 m): black surcoat with the white tree, mail, the tall winged Minas Tirith helm, shield.
+- rohirrim (1.80 m): mail shirt, green or brown tunic, round painted wooden shield with a sun or horse motif, round steel helm with a horse-hair crest.
+- laketown_man (1.75 m): fisherfolk and town guards in padded jackets and simple tunics.
+- dwarf_company (1.30–1.40 m): four distinct dwarves (a bald tattooed warrior, a floppy-hat dwarf, a white-bearded elder, a huge red beard). Upper body matters most: they appear waist-deep in barrels.
+
+Enemies and bosses:
+- orc (1.70 m): hunched, wiry, mottled grey-green to brown skin, scarred, uneven fangs, matted hair, rag armour and crude rusty plates, cleaver or scimitar. Show 4 variants on one extra sheet: `orc_variants.png`.
+- goblin (1.48 m): Moria goblin. Pale grey, large glinting eyes, bat-like ears, lean, deep crouch, crude blades and spears.
+- gundabad (2.10 m): huge pale bluish-grey orc, heavy scrap plates, spiked pauldrons, brutal weapon.
+- uruk (2.00 m): muscular, dark brown-black skin, long black hair, black armour with a white hand on helm and shield, falchion.
+- berserker (2.10 m): bare torso painted with white handprints, spiked face-covering helmet, huge two-handed sword.
+- lurtz (2.10 m): no upper armour, a white hand painted across his face, scars, bow, sword and shield.
+- bolg (2.60 m): pale white-grey skin with dark scars, metal plates and braces BOLTED into his skull and jaw, heavy rusted armour with spikes, mace. Menacing boss.
+- easterling (1.80 m): gold, bronze and black scale armour, a masked helmet with a golden faceplate, spear and shield.
+- haradrim (1.80 m): red and black robes and wraps, painted face, gold jewellery, scimitar or spear.
+- cave_troll (4.50 m): grey-green warty hide, ONE massive barrel chest with a hanging belly, huge shoulders, small head with a heavy brow, tusks, an ankle shackle with chain, club.
+- war_troll (4.50 m): soot-dark hide, pointed iron helm, plate harness, spiked pauldrons, warhammer.
+
+Creatures: turnaround = front, side, top-down, 3/4. Include a 1.85 m human silhouette for scale.
+- mirkwood_spider (leg span 2.5–3 m, body ~1.2 m tall): black-brown chitin with coarse hair, bulbous patterned abdomen, eight glossy eyes, mandibles. Plus `brood_mother` (6 m leg span, scarred, pale markings).
+- mumak (~14 m at the shoulder): war oliphaunt with four huge tusks, wrinkled grey-brown hide, long trunk, war paint, red and gold banners, a wooden war howdah strapped on with ropes and girths, a rope ladder on the flank. Also show `mumak_howdah.png` as a close-up of the howdah, girths and rope ladder.
+- gundabad_bat (6–8 m wingspan): leathery translucent wings, rat-like head, clawed feet. Show the wings spread and folded.
+- great_eagle (~10 m wingspan) and fell_beast (~12 m): far-distance silhouettes only. One sheet each, flight poses.
+
+Weapons sheet: `docs/refs/weapons/weapons.png` (1536×1024, true-scale lineup with a ruler): Galadhrim bow, elven knives, Gimli's axe, Uruk falchion, orc cleaver and scimitar, Bolg's mace, cave troll club, war hammer, pike, Rohan shield, Gondor shield, Uruk white-hand shield, torch.
+
+## Quality check (do this for EVERY sheet before moving on)
+- All views show the same character at the same scale. Height matches the ruler and `spec.json`.
+- Anatomy is correct (hands with 5 fingers, natural joints). There is no stray text.
+- The silhouette is instantly recognisable; check this by viewing the image shrunk to 64 px.
+- Colours in the image match the hex values in `spec.json`. Sample them, and correct the json if needed.
+If any check fails, regenerate. Do not keep a flawed sheet.
+
+## Optional: compare against the current coded models
+If you can run Node and headless Chromium:
+1. Run `npm ci`, then `node scripts/snap.mjs "/lab/?subject=<id>&view=quad&anim=idle&t=1" --out docs/refs/<id>/current_coded.png` (lab subject ids match the kind names; the trolls are `troll_cave` and `troll_war`).
+2. Add a "Gaps vs coded model" section to `notes.md`: the top 5 concrete differences, ordered by visual impact (for example "cheeks too hollow", "hair 15% too short", "jerkin should end at mid-thigh").
+Note: `scripts/snap.mjs` writes into `shots/` by default and that folder is gitignored. Only commit files under `docs/refs/`.
+
+## Finish
+- Write `docs/refs/README.md`: a table of every character with thumbnails (relative image links), height, and links to its spec.json and notes.md.
+- Commit in logical chunks (one per character group) and push branch `refs/character-sheets`.
+- Open a pull request into `build/foundation` titled "Character reference sheets", listing what was produced and anything skipped.
+
+
+Continue draft PR #1 on branch `reference/character-sheets` (GitHub forbids the `refs/` prefix; keep using `reference/`). Your previous pass was right to reject every candidate: the brief asked the image model for things it cannot do reliably (calibrated scale, rulers, exact background pixels, exact canvas size, consistent multi-view sheets). This revision moves ALL geometry, measurement, text and canvas work into code. The image model's only job is the LOOK. The quality bar for what the model must get right is unchanged.
+
+## 1. Build the tooling first: `docs/refs/tools/compose.py` (Pillow + numpy; rembg optional)
+Subcommands:
+- `segment <in> <out>`: remove the background into an RGBA cutout. Use rembg if it is installed; otherwise use a colour-distance threshold from the corner median plus a morphological cleanup.
+- `turnaround <id>`: read docs/refs/<id>/views/{front,three_quarter,side,back}.png cutouts and docs/refs/<id>/spec.json.
+  - Scale every view so its silhouette height in pixels equals `overall_height_m × px_per_m`. Choose px_per_m so the tallest view fills 85% of 1024 px.
+  - Put all feet on one baseline and composite onto an exact #7f7f7f 1536×1024 canvas.
+  - DRAW the height ruler (0.25 m ticks, labelled) and view labels with PIL.
+  - Write <id>_turnaround.jpg and record px_per_m and the view bounding boxes in spec.json under "measured".
+- `face <id>`: compose the face views (front, 3/4, profile) onto an exact 1536×1024 #7f7f7f sheet with drawn labels. No scale requirement.
+- `grid <id>`: compose individually generated detail tiles into an exact 1024×1024 2×2 or 3×3 grid with drawn labels.
+- `sample <id>`: median sRGB over named rectangles (skin, hair, each garment, each metal) and write them to spec.json under "observed", with the rectangles' coordinates. Mark them "rendered and lit, not albedo".
+- `preview64 <id>`: 64 px-high silhouette previews (temporary, not committed).
+- `check <id>`: assert every by-construction property: canvas sizes, background value, ruler endpoints matching px_per_m, a shared baseline, and file size budgets. Exit non-zero on failure.
+Never mirror an image to make another view (it flips handedness).
+
+## 2. Generation rules (one view per generation)
+- Generate the FRONT view first. Generate 3/4, side and back by editing or conditioning on the accepted front image ("same character, same outfit and gear, rotated to …").
+- No text, rulers, labels, numbers, logos or watermarks in any generated image.
+- Use a plain light-grey studio backdrop with soft, even lighting; the script replaces it afterwards.
+- Relaxed A-pose. NOTHING may protrude above the top of the head (hold the bow and spears low), so the silhouette top is the head or headgear.
+- Up to 4 attempts per view. If one character still fails, record why in QUALITY_REPORT.md and MOVE ON; do not let one character block the roster.
+
+## 3. Quality gate (redefined)
+MUST pass, judged by eye; reject if not:
+- matches the character description; an original face (no actor likeness)
+- correct anatomy (five fingers where visible, no fused or extra limbs); correct view angle
+- the same gear in every view, on the same body side per the attachment table below
+- no generated text; silhouette readable at 64 px
+BY CONSTRUCTION, asserted by `compose.py check` and never judged by eye: canvas sizes, background colour, scale, ruler, labels, baseline.
+TOLERATED (note it in notes.md; do not reject): small costume drift between views (buckle shape, stitch pattern, strap count), A-pose angle anywhere from 20 to 40°, mild lighting differences.
+
+Attachment sides, from the character's own left and right:
+| Character | Attachments |
+|---|---|
+| Legolas | bow in LEFT hand; quiver on the back with fletchings above the RIGHT shoulder; two white-handled knives sheathed on the back beside the quiver, grips up |
+| Gimli | axe in RIGHT hand; throwing axes at the belt |
+| Aragorn | sword sheathed at LEFT hip |
+| Tauriel | bow in LEFT hand; curved knives at both hips |
+| Lurtz | bow in LEFT hand; sword in RIGHT hand; shield on the back |
+| Uruk, Gondor, Rohirrim | weapon in RIGHT hand; shield on LEFT arm |
+| Bolg | mace in RIGHT hand |
+| Trolls | club or hammer in RIGHT hand |
+
+## 4. spec.json: design targets plus measured plus observed
+- "design": every value from the original schema (height_m, proportions, face, hair, outfit_layers, armor, weapons, palette hex, silhouette_keywords, avoid). Source them from the original brief and the ARCHITECTURE.md scale list, and mark them "source": "design_target". These are intent, not measurements.
+- Add design.overall_height_m, which includes hair, ears and headgear (e.g. Gimli's helmet point). The script scales by this value.
+- "measured": written only by compose.py.
+- "observed": written only by compose.py sample.
+
+## 5. Files and budgets
+Per character, under docs/refs/<id>/:
+- views/front.png, views/three_quarter.png, views/side.png, views/back.png (cutout sources, ≤1024 px tall)
+- face views
+- detail tiles
+- <id>_turnaround.jpg, <id>_face.jpg and <id>_details.jpg (JPEG quality 88)
+- spec.json and notes.md
+Budget: ≤ 2.5 MB per character and ≤ 70 MB for the whole library; check it with compose.py.
+
+## 6. Order and checkpoints
+Batch 1: legolas, gimli, aragorn, tauriel, bolg, cave_troll. Push and update PR #1 with thumbnails in docs/refs/README.md and the check output. Then continue with the rest of the roster from the original brief, including the creatures. For creatures, generate the side view first and scale by body length, height or wingspan measured from the cutout. compose.py draws the 1.85 m human comparison silhouette itself; never generate it. After that come the weapons lineup, the orc variants and the dwarf company.
+Update QUALITY_REPORT.md at each push: what passed, what failed and why, and the attempt counts.

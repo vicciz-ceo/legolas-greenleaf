@@ -1,0 +1,774 @@
+{
+  "id": "legolas",
+  "design": {
+    "id": "legolas",
+    "source": "design_target",
+    "display_name": "Legolas",
+    "height_m": 1.85,
+    "overall_height_m": 1.85,
+    "proportions": {
+      "head_height_m": 0.23,
+      "shoulder_width_m": 0.44,
+      "hip_width_m": 0.34,
+      "arm_length_m": 0.78,
+      "leg_length_m": 0.98,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.11,
+      "bulk_0to1": 0.25,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "oval with softly squared chin and high full cheekbones",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "pointed with visible cartilage; tips remain below crown",
+      "skin_base_hex": "#e9c9b1",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#9f8866",
+      "tip_hex": "#e1d4af",
+      "length_m": 0.55,
+      "style": "long straight warm platinum blond behind pointed ears",
+      "braids": "two small temple braids joining behind head"
+    },
+    "outfit_layers": [
+      {
+        "name": "tunic",
+        "material": "wool twill",
+        "color_hex": "#5f6b55",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "muted green-grey, mid-thigh hem"
+      },
+      {
+        "name": "jerkin",
+        "material": "stitched brown leather",
+        "color_hex": "#69513b",
+        "roughness": 0.68,
+        "sheen": 0.1,
+        "notes": "fitted sleeveless; small leaf seams"
+      },
+      {
+        "name": "bracers_belt_boots",
+        "material": "dark brown leather",
+        "color_hex": "#49392c",
+        "roughness": 0.7,
+        "sheen": 0.08,
+        "notes": "leather lacing, fine edge wear; tall soft boots"
+      },
+      {
+        "name": "leggings",
+        "material": "dense woven wool",
+        "color_hex": "#484a3d",
+        "roughness": 0.9,
+        "sheen": 0.1,
+        "notes": "olive charcoal, fitted"
+      }
+    ],
+    "armor": [
+      {
+        "name": "buckles",
+        "material": "bronze",
+        "color_hex": "#997b4a",
+        "roughness": 0.4,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "elven_bow",
+        "length_m": 1.6,
+        "notes": "Galadhrim recurve, LEFT hand, held low"
+      },
+      {
+        "kind": "elven_knives",
+        "length_m": 0.42,
+        "notes": "two white-handled knives sheathed on back beside quiver, grips up"
+      }
+    ],
+    "attachments": {
+      "left_hand": "elven_bow",
+      "right_hand": "empty",
+      "back_right": "white-fletched quiver with two white-handled sheathed knives beside it; grips up"
+    },
+    "silhouette_keywords": [
+      "tall",
+      "slender",
+      "long pale golden hair",
+      "bow in left hand",
+      "quiver at right back"
+    ],
+    "avoid": [
+      "gaunt hollow cheeks",
+      "pure white hair",
+      "actor likeness",
+      "gear above crown",
+      "toy proportions"
+    ],
+    "design_sources": [
+      "user original brief and schema",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "proportion_note": "Design intent from original schema; no anatomical measurements inferred from generated images."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "WOOL / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "BOW / KNIVES / BRONZE",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / BLUE EYE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "PLATINUM HAIR / BRAID",
+        "source": "details/hair.png"
+      }
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; all existing portrait attempt history retained."
+    }
+  },
+  "sampling": [
+    {
+      "name": "tunic",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        15,
+        30,
+        85,
+        110
+      ]
+    },
+    {
+      "name": "jerkin",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        150,
+        10,
+        180,
+        30
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        65,
+        112,
+        195,
+        195
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        105,
+        75,
+        210,
+        195
+      ]
+    },
+    {
+      "name": "bracers_belt_boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        221,
+        785,
+        239,
+        830
+      ],
+      "reason": "Exposed interior of front-view image-left boot shaft: representative dark brown worn leather, wholly within the boot and away from skin/background."
+    },
+    {
+      "name": "leggings",
+      "sheet": "turnaround",
+      "rect_px": [
+        229,
+        686,
+        250,
+        720
+      ],
+      "reason": "Exposed front-view image-left upper thigh below tunic hem and above boot: dark fitted woven wool, wholly inside leggings."
+    },
+    {
+      "name": "buckles",
+      "sheet": "turnaround",
+      "rect_px": [
+        290,
+        529,
+        296,
+        531
+      ],
+      "reason": "Small actual bronze lower rim of front-view waist buckle. Tight 6x2-pixel rectangle deliberately avoids the open buckle center, belt leather and surrounding garment."
+    }
+  ],
+  "measured": {
+    "turnaround": {
+      "path": "legolas_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "f22679f105c262fdaf0668ddf388dc9dc1e3d840a2384c5e585977c02ab4e5d5",
+      "size_bytes": 176669,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "61c2c2b964e63db37d86119aa5413e31bd5bb57f07ac254509e216067515a4f9",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 368.10810810810807,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.85,
+      "height_fill_fraction": 0.6650390625,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "0f70ffa852cedd7ab277039687d6662cacc4b0e2eb5fe927b38390fc82c1379a",
+          "source_bbox_px": [
+            4,
+            4,
+            264,
+            564
+          ],
+          "sheet_bbox_px": [
+            160,
+            259,
+            476,
+            940
+          ],
+          "silhouette_height_px": 681,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.2160714285714285,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            316,
+            681
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "8c374be152f6fba331a63d128a7e73e9bc74fdcdbfd1e51a3fc6a9e718394efa",
+          "source_bbox_px": [
+            4,
+            4,
+            202,
+            444
+          ],
+          "sheet_bbox_px": [
+            508,
+            259,
+            814,
+            940
+          ],
+          "silhouette_height_px": 681,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.5477272727272726,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            306,
+            681
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "ac148ac066f42a46938c0856db032701566008cb90b465be23129d3852abcd68",
+          "source_bbox_px": [
+            4,
+            4,
+            180,
+            444
+          ],
+          "sheet_bbox_px": [
+            868,
+            259,
+            1140,
+            940
+          ],
+          "silhouette_height_px": 681,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.5477272727272726,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            272,
+            681
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "e2eac3b9f7bc9390407771058f4cf2d533d7f9ac0ed5b3b64d746566ec47a00d",
+          "source_bbox_px": [
+            4,
+            4,
+            210,
+            444
+          ],
+          "sheet_bbox_px": [
+            1188,
+            259,
+            1507,
+            940
+          ],
+          "silhouette_height_px": 681,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.5477272727272726,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            681
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 259,
+        "endpoint_m": 1.85,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 848
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 756
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 664
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 572
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 480
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 388
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 296
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            842,
+            93,
+            854
+          ],
+          [
+            57,
+            750,
+            93,
+            762
+          ],
+          [
+            57,
+            658,
+            93,
+            670
+          ],
+          [
+            57,
+            566,
+            93,
+            578
+          ],
+          [
+            57,
+            474,
+            93,
+            486
+          ],
+          [
+            57,
+            382,
+            93,
+            394
+          ],
+          [
+            57,
+            290,
+            93,
+            302
+          ],
+          [
+            117,
+            240,
+            180,
+            253
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "legolas_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "2751d321ac4ac2858e8f52227cca7ae448f911ddeb0fb43551d1f1142674d30b",
+      "size_bytes": 187651,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "44cffebb6366b654cb1156f58b671d40c82fa01ef87e760b997405a1ad827e8a",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "a1fd29d0465607ab02e244aac5efd616f55bab9fd8a211f58f36d0bba5ec2e8d",
+          "source_bbox_px": [
+            4,
+            4,
+            279,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            385,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "74a738b6b9c399ff9549b1e6f0ec960d6ebfca53dd86aed20162e143926a011e",
+          "source_bbox_px": [
+            4,
+            4,
+            286,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            502,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "a5a3853ab5c2e222392a681297aae65275e9de940185a3eb69d4fc2c5ad62620",
+          "source_bbox_px": [
+            4,
+            4,
+            191,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            290,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "legolas_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "67615565ed06b9d33412cc2e67dd31a515bcd8d9d841d22bfbdf05de64b36d68",
+      "size_bytes": 178558,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "389a1444be22883278b981ba4b1a749b8a0ce14d39472042eee44ee552e6b64e",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "WOOL / STITCHED LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "844de096fb2269a48eff1a0814a16962659bce20997a59fde2f544d2bf3ff15a",
+          "sheet_bbox_px": [
+            34,
+            12,
+            478,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "BOW / KNIVES / BRONZE",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "850e4ce2a3bf9be7891b3831ffc1c036d4ee2747fa1940de760278ab2679653f",
+          "sheet_bbox_px": [
+            722,
+            12,
+            814,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / BLUE EYE",
+          "source": "details/skin.png",
+          "source_sha256": "daf41267137cd200ecb5b4289f597c1f25bdb3ab2de9da2a62c23bd347d15c3a",
+          "sheet_bbox_px": [
+            48,
+            524,
+            464,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "PLATINUM HAIR / BRAID",
+          "source": "details/hair.png",
+          "source_sha256": "02685f8da1a07a9d281358f9480309a0fa71cb908b4991e33a3a1c6fc2336a78",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "tunic": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "844de096fb2269a48eff1a0814a16962659bce20997a59fde2f544d2bf3ff15a",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          15,
+          30,
+          85,
+          110
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          87,
+          85,
+          70
+        ],
+        "srgb_hex": "#575546",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "jerkin": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "844de096fb2269a48eff1a0814a16962659bce20997a59fde2f544d2bf3ff15a",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          150,
+          10,
+          180,
+          30
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          99,
+          73,
+          58
+        ],
+        "srgb_hex": "#63493a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "daf41267137cd200ecb5b4289f597c1f25bdb3ab2de9da2a62c23bd347d15c3a",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          65,
+          112,
+          195,
+          195
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          200,
+          153,
+          132
+        ],
+        "srgb_hex": "#c89984",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "02685f8da1a07a9d281358f9480309a0fa71cb908b4991e33a3a1c6fc2336a78",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          105,
+          75,
+          210,
+          195
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          209,
+          186,
+          158
+        ],
+        "srgb_hex": "#d1ba9e",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "bracers_belt_boots": {
+        "sheet": "legolas_turnaround.jpg",
+        "sheet_sha256": "f22679f105c262fdaf0668ddf388dc9dc1e3d840a2384c5e585977c02ab4e5d5",
+        "source_image": "legolas_turnaround.jpg",
+        "rect_px": [
+          221,
+          785,
+          239,
+          830
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          67,
+          50,
+          40
+        ],
+        "srgb_hex": "#433228",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leggings": {
+        "sheet": "legolas_turnaround.jpg",
+        "sheet_sha256": "f22679f105c262fdaf0668ddf388dc9dc1e3d840a2384c5e585977c02ab4e5d5",
+        "source_image": "legolas_turnaround.jpg",
+        "rect_px": [
+          229,
+          686,
+          250,
+          720
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          75,
+          64,
+          54
+        ],
+        "srgb_hex": "#4b4036",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "buckles": {
+        "sheet": "legolas_turnaround.jpg",
+        "sheet_sha256": "f22679f105c262fdaf0668ddf388dc9dc1e3d840a2384c5e585977c02ab4e5d5",
+        "source_image": "legolas_turnaround.jpg",
+        "rect_px": [
+          290,
+          529,
+          296,
+          531
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          152,
+          125,
+          84
+        ],
+        "srgb_hex": "#987d54",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

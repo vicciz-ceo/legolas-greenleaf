@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "integrated_foundation_sha": "64550af78704ea3879501c58545dd8d63161d61a",
+  "character_head_before_integration": "e934ba97606f37b6cd0fa07e86ec4cb023a095c2",
+  "resolution": "Preserve character compositor and move identical scene helpers to scene_composition.py; scene consumers import the separate module. Keep existing 70MB and 120MB budgets with complete explicit file accounting.",
+  "regression_tests": 25,
+  "scene_validation_checks": 1107,
+  "scene_validation_errors": [],
+  "character_entries": "36/36 PASS",
+  "game_build": "npm run build PASS (TypeScript and Vite)",
+  "scene_helper_bytes_unchanged": true
+}

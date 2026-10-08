@@ -1,0 +1,4076 @@
+{
+  "source": "measured_script",
+  "review_status_authority": "Manual visual review; hashes, dimensions and byte counts measured by script",
+  "images": [
+    {
+      "image": "key-art/poster.jpg",
+      "size_px": [
+        1024,
+        1536
+      ],
+      "bytes": 563513,
+      "sha256": "c8594e565ba8a9dfb9f9b053dde9f9c8373614bd9d0415f6afe6681c74dcb3d1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "key-art/readme_banner.jpg",
+      "size_px": [
+        1536,
+        512
+      ],
+      "bytes": 257631,
+      "sha256": "1515328d61a37ffd1009d14bd4b1efddb14bfc2f877d1db6bef1e3ac6a20577a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/ash.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 504492,
+      "sha256": "79d32ff333cbe63317818ce13225b7854c8686e31a423f8a8134d828f4439c1c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 419877,
+      "sha256": "3f21595ece86942c121b1e25fcd878610a3de942f3c80e3aad2145e698eaab61",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/birch_bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 350589,
+      "sha256": "a896f3eaf252b98f827a0cd26e682af960898625ce878e87941d60096ceffa6a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/bone.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 299323,
+      "sha256": "341ddd0ecc48f337cb2bfb3e8e16d55df38842fe8248167fa80c6574df32a403",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/chitin.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 364224,
+      "sha256": "19652163bff1300e8ac2628b0b3c46d36bf13bd0f6e5570c7675b4c5ca640e33",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/cliff.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 419170,
+      "sha256": "8f8f9ec436f35a910a567e9033d41cf17c0980d0695a0233cc9f1b1f228451fd",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/cloth_linen.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 406260,
+      "sha256": "0665459a7a9442a6e38b6f4228a4345b59c70930c8c737aed75b59c188bdaafc",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/cloth_wool.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 337007,
+      "sha256": "f2d9f1a5f24c5c14e4f593bcbb8184232d41749fccf4e56dfede9209ea086dae",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/cobble.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 385402,
+      "sha256": "90083e18eede6785508826a4d87a82b836566e5f449659dfa3ffa4f5e55ff707",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/dirt.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 464925,
+      "sha256": "2c9f3c9c44697ce710232c5918b351b1d654cec7047a688265b0f9fbe4914f65",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/dwarven_stone.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 425374,
+      "sha256": "79d05879241fd96c03f23dbae2eddb54ed4ded19dd13a7a6ee1be4c3aa80333b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/forest_floor.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 451852,
+      "sha256": "b1cd0838fb3fab18ed49643796a3d272f9102ab051d4c315e05756589072fe6f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/gold.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 317094,
+      "sha256": "00c8f7a81fa3e6b94d95e5099c39c4eafac39eee808cc16aa713228cf06747b4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/grass.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 502418,
+      "sha256": "0d9d1267fd54248992952d82ccd0cbf663f126ac646a4e7f91ed9129e68d6507",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/hide.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 358304,
+      "sha256": "3040512d2167327385cdff0beff253e97f7b28248ed91155533785ccd5081b90",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/ice.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 327117,
+      "sha256": "cc42f8e9d61851e7a5b66295ac21c19694d6dfed4ecfeb4fa4b3a3330619e3c9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/leather.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 383308,
+      "sha256": "20b618da2181508c510c8cac2a1f34563b59537ec6a06e56774f038640321e4c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/leaves.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 329566,
+      "sha256": "d882bc4d14c873efcb1d88df5e7046b0233165288b5697c4875d319a3b1ccee8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/ash.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 552915,
+      "sha256": "a0140aea547317f49773acbfd38c83e698c9fc8672088f803b96c6119a0cece0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 467746,
+      "sha256": "3aa01422a1fe555606b50ebcdd4b750a5dc158f06538e2f82c9f92823c2d551c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/birch_bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 401069,
+      "sha256": "864a4f9e88dc06494683e4481551a82ccfa51023479db2d1ae28f81f1fef2614",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/bone.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 326804,
+      "sha256": "ec6de8c7a9c8ce694e728d68334265e80309ca1e059f25e8d6090810bda77496",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/chitin.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 407699,
+      "sha256": "24636a44d2f2b9668b3db27ba91f867968707364d4bcda09989f0bac646860fe",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/cliff.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 466595,
+      "sha256": "1bde496268b64249fcde0bc4cf7080cc173af1f4c1c29be41c5b5259398164a3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/cloth_linen.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 452354,
+      "sha256": "337848645d4c0f4f815553f7d9993d4bb775783a55a75f71112942e68a7a975a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/cloth_wool.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 377326,
+      "sha256": "e5c07959800061a0933c0c6611d755494d0718e63a934be3e13595cb82701a0b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/cobble.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 435064,
+      "sha256": "d750260e8a239378397f39f0d29b2be6fb2755d1959c08915136a3293fb38474",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/dirt.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 520665,
+      "sha256": "b73b3c3ae2a77c2dfa5bbecf3cffb721ddcb5873458441e37a098e0a6dc5ae54",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/dwarven_stone.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 463977,
+      "sha256": "173fba3501f333ec34e208d82ed720aa4c360dffc8fd8dcef6c7c011d8155da1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/forest_floor.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 501754,
+      "sha256": "5274d7385f7c03cef29bbc7f7284d6699d23349e1f1f0bfcacd6d8efe2497b1c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/gold.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 351816,
+      "sha256": "cbacb1a897afdc2c493b73c4eaeb79d8a497afc256b380df0b2ebddadb5d5476",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/grass.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 560014,
+      "sha256": "a36fb547a98487e41214db4ca0942af138acaba8dc12d8287cb526ac1cd067d3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/hide.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 403794,
+      "sha256": "339235e62287ac0d43ea3482c348ba086e6e5b82d2444236ccf559feba2a2a65",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/ice.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 371909,
+      "sha256": "4134d5d7a92cbb999d35e3b6f79e71eb9974e3201b6d35f897dce2c82f1c59b2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/leather.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 427571,
+      "sha256": "ae264ae09a7d544b6e9b63ca972b0be05800a1ad04a5f45da58addf20661c395",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/leaves.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 364662,
+      "sha256": "0c87011b6a97e9ab063cb5f933a8fc8672ff70851a20869943e746ecb7069c87",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/marble.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 222888,
+      "sha256": "156465a345d96b7a9d497f4a1ec6edb6e031e24e4d47bd0491d6658bf20245ed",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/metal_bright.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 233992,
+      "sha256": "4c729af61838a4a01346668d0b3eaa6016eefdbe121080f2558b2606c8a0913d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/metal_dark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 441414,
+      "sha256": "2f6cc94d2e34df4d5b0760ca9a2d4e0ec4d142133a338132ad9d02aa23b825d2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/mossy_bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 567473,
+      "sha256": "6dc2558155e6d1ae7f376de7e70d3f4d99041e7a9094badd4cb90d2a653dae45",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/mud.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 409922,
+      "sha256": "d4cf97bb32eed66d684d535fca510c5803d66d1d6b35eb1018999ffa11fca267",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/old_wood.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 440284,
+      "sha256": "e143e8945737ca72b0df1b420dbe8804307148901b97d1d8a96b528419bb91c3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/rock.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 513763,
+      "sha256": "b47e7285aeebb5236c9addcadad40d39c1714f8d8cb90f56a4a154cf5c0cc5e1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/sand.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 450598,
+      "sha256": "e1c352535c19eff3a771d83b4aca5ecac7396a31b7961c20f9856b53265f3eee",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/scales_rough.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 439479,
+      "sha256": "509ffecff0100ca942932d96f3f1223760ed02c2f8b6d422135f8053ed9bfa7f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/shingles.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 355344,
+      "sha256": "e330ebd18e89de9a608529c6dc49e7fb736da3c50b94d4720c37862afe7408db",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/skin_human.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 280646,
+      "sha256": "1f88be8eeec3414dd6eccc06f75aa63ed0dee2e66fef2c4f93a63863b6e4ba0d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/skin_orc.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 376141,
+      "sha256": "2eda14ee3698d7bd27c9f80862d8f62525f109c9ba114c396f3b14be55c5a5c0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/skin_troll.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 391222,
+      "sha256": "889ec602088f3b42946b32fc1f95f21454dd7b58a60e3c9fbbe708ec3c83d61a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/snow.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 261635,
+      "sha256": "37be3a13b07b81ec44e0e763c331a7d1efea11a565c4cc096fb7963dbeec2f7d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/stone_blocks.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 381508,
+      "sha256": "81f38f6fa5326948f309df04bf856f435cd5aa0210daaa011a8cb8a4d48b149f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/thatch.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 381804,
+      "sha256": "725995f15d55c55ae3fa2315aa513a1724832a4566dc8770df7e9c8669450e8c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/water_normal.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 316947,
+      "sha256": "a550a062421a94ca79eaa90b0894268342a01e6c7b172f11f21b68019f32bfdc",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/web.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 372789,
+      "sha256": "812a6f49aaffa3e185cb60e0b2ba18a3d20c5e894efe633f69fcaacb06f80620",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/looks/wood_planks.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 333293,
+      "sha256": "3fb9f8dea18435e49a7d39eb770993b9a68646202900b647b7588de5d8367633",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/marble.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 198529,
+      "sha256": "cccdc7fcd5ee239996e9ece000e283efbc3aa80b0ab81fe1e8bbaef98dd729cf",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/materials_overview.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1526564,
+      "sha256": "bbd7ec7b6b763fa6d608d48d986d17621fc768cd4fac8a78c9f0cc30eb5d0a0b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/metal_bright.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 210143,
+      "sha256": "6246790e0b88a420242daf2afe4c75c8518f5c158e6c335dd4e9cceefb63caad",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/metal_dark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 390533,
+      "sha256": "fc8f49c00d7380d22056ce547617dfc5c0d2b082165667652053e77f3aca45d0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/mossy_bark.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 506662,
+      "sha256": "3485c678fdc87454d8b9966e3bb57410a79382f879d0dee1f14243f7400dc21d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/mud.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 369094,
+      "sha256": "a1220e03797052d0674be7d7806e28f9a60f3d4f402e27788b2d0db0613ce28d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/old_wood.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 390126,
+      "sha256": "424c2375d2bbc47e20e9fb1859658842a69853c194f14cee22701191d9453bb7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/rock.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 460962,
+      "sha256": "981c3ae338a827ffdfa4c2cf4a3587a537ba53d3851adfd57ed543c894312aca",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/sand.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 399003,
+      "sha256": "3011fa20b0462f11fd32357aba43577518e12081f0f228e199817f79558b81f0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/scales_rough.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 391254,
+      "sha256": "f49755ebd0efe43f555f7d46c839c715e7b7d375140f81b43b283df224092bf2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/shingles.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 316416,
+      "sha256": "e8a0f279585cb399abf2cfcf91ef1868bdf3070551ac6629b9bf580ce76de705",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/skin_human.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 243667,
+      "sha256": "f717baf21f7f8bbf1415a62f17d312b43d8152c1599645d8cb83b9b8869dcd06",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/skin_orc.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 340338,
+      "sha256": "6db8c3a4f5acacd57dec04772f3566304eab14904f466a4fd9389645130d1d0c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/skin_troll.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 349883,
+      "sha256": "3240651e87b126870ae219b494a3c76d2db7871ee0b728b04b3766d486956101",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/snow.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 231307,
+      "sha256": "37add3a432e6799b1f006c48b07823ef8c8b68436e77a65ed80aafd6fa63e3fc",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/stone_blocks.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 338977,
+      "sha256": "ae6021f28ff6a79cb4c1222759476935bc4ae7acd1f46e13c802ce9456335a5e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/thatch.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 343209,
+      "sha256": "4c6e4c55f8bf26d599f4fc87750de17607553f12a0f6d0705cc99bedc6444065",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/water_normal.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 290048,
+      "sha256": "9d2b18d4f150c26f6a23735d56e86aa35bfe1306a203d5665b647e15353e253e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/web.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 341589,
+      "sha256": "6ed9ec170889c451c57ecb0e023c0296ccac1438a5ddd95ec57ecd43bb847e2b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "materials/wood_planks.jpg",
+      "size_px": [
+        1024,
+        1024
+      ],
+      "bytes": 301008,
+      "sha256": "f4afd76f1cc77f271b12097b941f2a1b54c38e930173a67199c31069eeb74109",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/banners.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 166783,
+      "sha256": "ecc3d474542848fec99cb936675a57805426279474813b1d9e6a82d237a74842",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/black_gate.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 178770,
+      "sha256": "9528ae1423889131a1b6b4b2d24486fd0199ae8003dee1532d02fed5ca765849",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/containers_lights.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 115775,
+      "sha256": "79f136dd601c9b17ddce430e8fe214a66e8cdf8a48e88c976a0206fa9af7da2a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/laketown_mirkwood.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 106890,
+      "sha256": "a52d4db1e447eb92b6c85f501bd3a6ee07242822dc1f8b27efc1c009aa61440f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/balin_tomb.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 125605,
+      "sha256": "80b934ad5bec35304fc3bec0877e3bf54ef181c3ad17e447bdc4fb889e1f074c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/barrel.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 193642,
+      "sha256": "59863092b93553429561e31809bf3b9777dc343c639bab7ac8e818ed36b3f1c8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/battering_ram.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 178479,
+      "sha256": "fe065fc5f25920a8c83871254578730fe273add6fe8b6b3045fdb65d8484b5fa",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/boat.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 143038,
+      "sha256": "1c92f19f5523e72da2540bd83f27807e26e28e0de1aeb3c0e9f09618d9516e56",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/brazier.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 117511,
+      "sha256": "8d07cf43a207be41ca3e6c4c96254cff26ef2334243c69eaae0cce250eb594fa",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/catapult.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 127186,
+      "sha256": "745ec19a1b1582098c36f39558a8bcff4d2aaeb2314930788fe780d880ef6de5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/cocooned_dwarf.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 116818,
+      "sha256": "f063b0aa3100126cb7a835fed0b86d2cc7ac0b49cd76017729f69ba3d0a1cf79",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/crate.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 185404,
+      "sha256": "6788bc6bcc8217dbdba2bc0b4f6f02a60796bb439ddbce91cb47d33103aa0fac",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/dwarf_hammer.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 117346,
+      "sha256": "1effaea7a0a997f0ded4bc2c557e76d0173d1fa737955b79dab9c1dbabba0959",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/fishing_net.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 130930,
+      "sha256": "69f32b93554b150789ac8b69c913e0e09e785abecb45eaca499a5e67a79e299b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/gate_leaf.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 129758,
+      "sha256": "e84420033f72bb4b039d8c13aea1d26fdf8ad464113d4ea09d30275196868c97",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/horse_rohan.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 74664,
+      "sha256": "5c3cae71a08394ec07bd5c27bb7f6c84a821011988e52c4969e4a72d29ed3f6b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/ladder.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 44006,
+      "sha256": "1c23072b563d2acea3afb1ed7ed035a73e70dccc68a918ef510be9e03458ecc3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/lantern.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 124573,
+      "sha256": "65f1672c3ee8b6500a77d47941100311fec1fb29d70ac12f6898f57aa54d0248",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/mirkwood_leaf.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 89356,
+      "sha256": "982b16e0e6b45206c7bc874edb8b0d9d718f9f0633885440a05be5af811a9433",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/red_eye.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 84128,
+      "sha256": "829a38a9d638f9fdc6e3d1d024d1674bff4e178132c54810ea4cd330f4f9d690",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/scattered_armour.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 119325,
+      "sha256": "45c3b1557de298c990a8d3abc518454bbee6e70c9b52af37f844b1fde2124975",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/siege_tower.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 155448,
+      "sha256": "920a8b257131cba035ccabcc2ee35dd6a12fafb914bb9646d5f2662d62ef6df2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/skeleton.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 68423,
+      "sha256": "7b239ea03c762755fb4199446536eba132bf6ddad126afd4cd1ef218769d0006",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/teeth_tower.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 187673,
+      "sha256": "5fcdab946ae46ac9c2be48571cd7539549951f1e1e3bff5d761a823be7597899",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/torch.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 44427,
+      "sha256": "0d2766e8fc5c5ecbb9134b062dcd4deb233e308ebe9573715d69fa25f75b2c52",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/walkway.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 129565,
+      "sha256": "10fba8d6f9e9a4039dcac15d14e111b95cc2280d0d8c5ecff287efbadff940f3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/web_sheet.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 86972,
+      "sha256": "dea4640d5f5551f984b2091ca6cb1013e4cde15e5d40cc125eb64d33ec77e4e8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/well.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 113595,
+      "sha256": "e0176080c42cbd885e8277ee30dff008bd1cb5daf05b25ac0eb6ba9ed887232c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/white_hand.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 68781,
+      "sha256": "250a1bbc15c96c6c8559b5d24852077b4e4c120ba057aa4836a90a9a784b7d9e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/looks/white_tree.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 71714,
+      "sha256": "f0e983a39dfc4c38cc300db8b23c234b777c434a881b0121da872a9c3fe39fa9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/moria_tomb_debris.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 135530,
+      "sha256": "7617c836b9b91ad4ae7d8165486ae5272edf98c8c887c85d02b56692d5ec6766",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "props/siege.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 110085,
+      "sha256": "95318353ffd39cc4046302bcc34f4dbfcaf12d2b4f18dab1e40a7dbbfd395998",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1609381,
+      "sha256": "46298032b66de7c82cfbb05f5af4ad2863e7964d45ec593372247c5f851629a0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 221148,
+      "sha256": "c542ec8f5dd977d664d39db065686ec84d1314d69839de7bbb037b1304ac4fbb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 89254,
+      "sha256": "d7c8536411ffd9b14cbd4c4802de40c402e18703db0d132e2c415360a8e965a3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 592615,
+      "sha256": "a7e0f587e1054f8d9aaf47e9f4f9522d7e9dfd1ced3453abd0ddad79b0d76f32",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 157409,
+      "sha256": "0f981cf813b0fdc63478f9371f10ec587832e667c45376997f1711a41bd8ce47",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 130909,
+      "sha256": "71b2199ccb0a671289c5dd5aa17d8f80e28cdec890ba84aa08aba0882083f2b0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 148618,
+      "sha256": "67eebadbe09b605c08233215e3cc00aa362d30ca47a9d9c7bd352f9260e5a643",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 144785,
+      "sha256": "7d2c2db28142cb1d59d2cdbdc9f58ad137304f8cc56495dc6d5af4180ffc0397",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 167719,
+      "sha256": "ce4fd49e8701f2cd29b9446de6ea24aa61db491453eb2517fa8a2ac44103fa03",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 157116,
+      "sha256": "856d38f3fc691c9783df9d11a7153a079357ccd206b7ed800192eff2b3d63efa",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 568625,
+      "sha256": "4f2e68b9beb7fc0d2d755de444a64219ca3d870162c4bdbfd7fa28ee404750c0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 556503,
+      "sha256": "cbadbbb2663aa322d38f0a3b5fb6e1b5ec7871b0069a63f5fd3a9dceeebdb534",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 64184,
+      "sha256": "2310e0611142195aa12bee0134e1a1d656124ed32191c39c501f5968eb978e27",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 598168,
+      "sha256": "71bfa525ba7af6644b5d5814cdd1b80ee51c004ae536619696dfc5089858790d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/looks/lurtz_clearing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 535614,
+      "sha256": "b4b6361a32e8fcc954f4b1ec49c05f649c633a82611264097f62799ed6c06098",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/lurtz_clearing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 528613,
+      "sha256": "7b76a0f660c62b02ef6842cd20b25d25fc1a517060e85faf9bc3df7079010535",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 49199,
+      "sha256": "d7ad1cb536eb5af7d4850677c637b8cdecf3cc1c4753707214e4d64fc6997cc2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/amon_hen/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 600240,
+      "sha256": "e6d1cc44d146e252cc1443c4ad76066de25bc724a1342bcbb98e22741b83156f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/barrel_rapids.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 431949,
+      "sha256": "54696aa0cf31c142cbe1925ab38f199daa8866e81424b6c1f3a81910171c2a94",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1675858,
+      "sha256": "d8c55c039d3b6d0f7c1d994b483822615bf247bbcb57896f41715700830d1b90",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 213400,
+      "sha256": "02bbd3c7e4600d653465a2ec9f06114b8f1c74bb6deb7ceac24a13b343bda916",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 87827,
+      "sha256": "7cf91d9fb66e0185545ec5b18734af156f739b54b30ded6c4373f2beda70af60",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 581011,
+      "sha256": "2f6a4f9772ff39ce6cfc9e50d3a85ac1b4bcddd707fdd1f87c2add8c235506a7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 160562,
+      "sha256": "197eea44fd190ddebca0a21a19a7721e189cfdba3324997c95a2ce30cca45c99",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 164539,
+      "sha256": "da42ea98a3c6f226b66331a0191aac2039900f0468d7664841c7e3013bc7f099",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 159193,
+      "sha256": "70379417c354eb90120684eaade16262d9dd72732881e7f1d54c68bf58b67d44",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 183419,
+      "sha256": "dd8a17cf47e928c02f8ccc3f1e10c421ad5a1e8fd2ae0a7389b00e7ca8c954a3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 151390,
+      "sha256": "d94bd94d9119266438c8ad211cd10209c7c5c271cd6305921bf0fe7f93e5189d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 174693,
+      "sha256": "ceeebd29e650e223d3d649d2da477bab0b0bf6602c4d61295a07ff7d48ab6530",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 581167,
+      "sha256": "bfc2cb9f7db3ae67645647829b2e92d4ebe73c5117f06c137de5ac72f4d10996",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 569769,
+      "sha256": "4e9742552bd49801472f8bbcab2b13af38f8ea631878a9998b82143e14a7e237",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 64525,
+      "sha256": "a43438da2d5dfe2ca26cc5ff2912647ee1f746557185e94aad1f9ef4b6178e3c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/looks/barrel_rapids.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 439006,
+      "sha256": "04e3154fb956f152c130db985f67beb710fb4307842b1e0a29a5bfe17167a01a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 591255,
+      "sha256": "57a806b38ab89d48694419e72d848e49db0a206c9b1f72b0a701f2f8df4da019",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 47976,
+      "sha256": "3c0cce82aaabeafd32fbc3c6001e0c1e9be641030d5340d8cee324acd43f6dc0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/barrels/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 593255,
+      "sha256": "5b9fb607edb08b73edb9cf585a12fa7bf7fb517e8311cf2d896bf8b61e5815c0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1382030,
+      "sha256": "3f125a5d1fc272ee6fbe0f963335c9423e5e23265305eb9af8b6b04b9a9dc818",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 200719,
+      "sha256": "1ede339493520b48dc8dd4d6f82e22d83b608a0b2f5c20c2feb9510b3358b2a4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 67431,
+      "sha256": "986e27a678f22d49c24377e1d1695b87d9f61a5942522fc0b4b57aa4b3387515",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/eagles_arrival.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 391943,
+      "sha256": "06c6d59d211b4890beaaa13e933075aac55000483a3b71753981772f54665d7b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 392112,
+      "sha256": "f19f2dcfbff2d7cf829da1bec9cd15474649da74ed1d683bfbaaabee938ed493",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 123524,
+      "sha256": "c3a5f5e2e3a3f84da0dc83d3bee8d816fff63899afbf6fce6e13cfbbd52c9b29",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 110972,
+      "sha256": "b3663eae2daebe3165f075f57c201d67fabca11e85302fc45765645322038e3f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 121575,
+      "sha256": "84c2a97fa05750013af0ce09113cc5e87a48a54b13800cd0ee94d276f0775e83",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 108624,
+      "sha256": "903c2b267d27eba1c630080d781cfe036c3732c9e5cbb38ee3cdef6a708a43ee",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 115275,
+      "sha256": "4d092cb5cd864e25503d613c7f75c2158e3e614acd2a5477752c1e27faa879a6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 108340,
+      "sha256": "59e71b8a6030a197b477e7a5110b0f26bdb0fceb65cb893568d30298a12e645f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 358732,
+      "sha256": "211ef3ff0cacff70e574812bd525877e4866fc4d29fc38cf825f646689ac6af6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 352765,
+      "sha256": "a269a02f1ee001cba9490677bc5a7a22d6044ca7bd408897f6718944e5e3661a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/hill_last_stand.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 483121,
+      "sha256": "0ed55be12724cbad9abdc45aa12ef780edc11f6c0320d3af97e54c38abe3faf1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 70997,
+      "sha256": "3a2d32673174676501aff34e40218175362e3c93e435554790670fa6f623ff44",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/looks/eagles_arrival.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 400928,
+      "sha256": "905daf2c2b31b4b188a6661d6f933796cf8fc6b0547f7f53cd7d67030a6afc13",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 402161,
+      "sha256": "cdfd6a7179406b3e20475636f4b296c16283df2cbd0472344ea9c9246fa69923",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/looks/hill_last_stand.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 492637,
+      "sha256": "f66cb36c665e331cf976105777386da05b4754a392597aa5e6fddc1564b03755",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 49399,
+      "sha256": "9e25b48161ba309e2902758f8589d2996de784daf242410492fc051c55cf1652",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/black_gate/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 409923,
+      "sha256": "e63f44f2e8f4693297d9071635e922fdabff37e4d2ae222c5726ccdb20ee9113",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/color_script.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 365645,
+      "sha256": "e38ae2917d10945b39200607faa313b3e9721220f7965c614f4c82ff734f1c74",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1445639,
+      "sha256": "788427bbf0dd1bee90dc2f6c9176b29f9c0540b88c6922ef12eece86549fe320",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/culvert_breach.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 416199,
+      "sha256": "37192446c087ba42397b96ac725fee6ea9c521c3f22cd8027f496d10e8df8c03",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 264771,
+      "sha256": "cd4051f9fef1a5b165a041acc6eb96cab2f91ce1953a40625032417fbd706a51",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 70552,
+      "sha256": "8b5b4936cd08d4234443a3c8b553730d2fb69f55da4f511ca37f2208502637ab",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 425080,
+      "sha256": "f5edbdb386b29e40d426c8989ce0cfd5bd99d6e3419fa84f27a3cc218191a941",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 121204,
+      "sha256": "153a6c431bf082f731f4ab4172d43710d5a98d86ac6ae670862da056072df16e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 117331,
+      "sha256": "fb44e36e2cddaca2cec3c68df16dca3ae3b74fdc48a96d4029577a2bf1ca3ec3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 113619,
+      "sha256": "5f458e5ad7195b5ccb1ad243affd77b0a3f722a555d80a47f7235cfc0a01f96c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 120773,
+      "sha256": "43822ec9bd4bbdea12f80b1d3c7cd049c89d5ec51da8a77e6f53a515127f818c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 134331,
+      "sha256": "ab4e2f770046e614ee527e302b7229c536035523c5584ef3bf9213718c72280b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 143547,
+      "sha256": "e5ae1ae224a3c0c561104839381f570eae84ec90ee35ede87001ee5c7e5126ff",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 431599,
+      "sha256": "27460daf745b9fef5deb38e893769e05e67a9750e9e0b4942dcedc3560af276c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 421923,
+      "sha256": "5a424ad07886517fed7dfc2de1cb941b075d60514cf9f51071deebe4e5945b9d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/ladder_assault.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 383509,
+      "sha256": "d453f57abcdd3c5e7bbc2866225a6fc67a4c63aa20788a40a66f896d29325c8e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 70574,
+      "sha256": "79e068240341180230e8788bc325bde18202d41043ea928a350d697f4364b2b0",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/looks/culvert_breach.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 423637,
+      "sha256": "0e9db1311bcaf18fc1dc4374a9ddec5897aaf87debfdc7c4ac2b9697a6aa073b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 431963,
+      "sha256": "2f925cdd1c80da6859b161423061f08c5ec608d45d579b272060ea4b3c4ed3eb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/looks/ladder_assault.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 392100,
+      "sha256": "e6fb59c403d681e12b1c2faa5625d3c9dc634e959362b20a31f0bd2536c62759",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/looks/shield_stair.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 437725,
+      "sha256": "2336571440b5f7814dd5cd8a594ba08d27c230755197915241f96ec6947afd10",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 48112,
+      "sha256": "26b73357691d529a81bda3087d0181c008f8d3ead088e8b82a8d592bd1c61753",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 439493,
+      "sha256": "0494e222c6e60fd9d0995c95d8690f4bf53c2a80a5922b903d6d8d8735d4ea70",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/helms_deep/shield_stair.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 429809,
+      "sha256": "d7545ede7e50fb2de532f44b01e84cc3a00e672a9d67a4bd58ef1117ca9063c8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1400271,
+      "sha256": "525ec9d73f0b6d9bae0a88fb21ebf31bf35238b6feddb849a1cdee4c1e126585",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 221131,
+      "sha256": "4452b665ad1f40370dcf783919c3b471db42ea923e9688e24ab04b08a9ee62c4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 34175,
+      "sha256": "510ed8aed37440ea7aece8f6076391ef001f7d176c9cc72074ca4c6f8ca3be19",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 399052,
+      "sha256": "486e748af86e8cc31ffd0f3be8121946d8f5db460d4ca7a2197a36bd0e0ac534",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 113858,
+      "sha256": "51ab6b0ed6ee658a1548b304b39ba2d5758b2ea0d751496c36d0e6d164b11b91",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 128623,
+      "sha256": "0b1cb7e971be5d94dac7406235f1d7c26e05779f8124aac57a36e7e42510dc42",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 108195,
+      "sha256": "e08720d50658efb600999aaf3adedce8ab131235d7f34bff50423dd1b883cea1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 125364,
+      "sha256": "a98420a875c76e96c740dc8be27c59b98f283bb7ce5de09a9434a5365e801e02",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 114654,
+      "sha256": "4f71ae101292a2f3042de5f0fa7667bb7f0eb1fe1b6683dffc044ec773950106",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 119617,
+      "sha256": "14de3792764363fd94219732e32e1545a28ada83739d501cc93eaae7278254c3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 363545,
+      "sha256": "03e09e9ab5ccb1b1259ccee2bcf899b47c1878d39ddd44dcc5c9a0f73fbcdf16",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 358298,
+      "sha256": "8c2ac8c304c61d0d50f25206221ec073de7eb908c0667f6e12e1155793f95cb8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 66584,
+      "sha256": "5ee7fbc0f9b29a4047cad0ff3127835b8ecef697e7183dcd0293b056b0229d58",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 404063,
+      "sha256": "b859853edb403797fa07ccc569c5e2486c98d104d4b7dde605ee50c97f1628a9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 49538,
+      "sha256": "b8fc5534f6ed284760923efa47510bb545932320aded491867a4cb438293be82",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/laketown/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 411512,
+      "sha256": "50ac16f349ba7c1693899c3e50c0a21debfe1de0b503586a05a124a01b801c48",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1571547,
+      "sha256": "f0900e187759b42d7580ecea2352f620e9a2373538f251ef8d9d6c95b970b1e3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 198062,
+      "sha256": "83b03c241bb7a0e2cba534541b7ab0d4e58ef674272687e8965f8e06c8eee1c1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 438498,
+      "sha256": "ae712d95728ccf02b520ae2e5e0ae49e70ea4468de140183a9f2ab2ab9cfa40f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 149310,
+      "sha256": "0df69b0cae4ee35a84e96d06b9100c7ed5441e4e894697992cbd7edec1f4a942",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 137470,
+      "sha256": "37941f0aeee851cd5cf35ac7276e65e35572f2705d7ec4e3618007e6ea41b45e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 152018,
+      "sha256": "3fbd4b9220625bac0b7ebc1657c9ec1b039b4649c5fbc85aff3a31355afbc4d4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 152063,
+      "sha256": "87ed70b9d467b51ecc5a5387bdf9364fc1e57a1e74c198fc4a1ce6aa4e3eda1f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 150209,
+      "sha256": "18c80103501530df3fd77fab72233165954faa7fa0c292dc5b87c83a09d93879",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 144846,
+      "sha256": "15aa3333c1acba6f36a75ed336c50ae5d33b3397fd5d106f42b8114599b11772",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 445187,
+      "sha256": "324f1bafdf874f7d3e2771445ac7f96e8bebc48054316195c6975afe236bfddb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 437403,
+      "sha256": "a7e6c26baaed352b7f76292bfb14a702054a6cc9008d3fc2ceb57e059c97c496",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 49505,
+      "sha256": "ab6da964fc2a95649f96341425933ba2f08a83b391c93ee4d7954e062e9f6c9c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 445125,
+      "sha256": "d4cb8a36198a52fe8f30f655496e45cd6bfd9a911cff353aa42e95ef3bf8b101",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 48816,
+      "sha256": "be1811f370bf00d6c3bb7e8d9f2204f2e59e2d06d9292861b9a06d51e86eaca3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/menu/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 450072,
+      "sha256": "2e6f09a4137bf77b9db34b8f372629b5dfaf41c064b031989705b8966d26e4d2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1539223,
+      "sha256": "70d8cbb79ea6e7dab424ae98ff031527576a828952304c5924f0cb514bf002c8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 150197,
+      "sha256": "ad02c9274e0eddaae569f940fc45f13e8b74956102b188a4d3f7653eb9811ce3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 77936,
+      "sha256": "f7a1c1b3ad560f34df3d506bdd30715c62e42363028b13363e40e0ac0954a7a7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 485870,
+      "sha256": "982a05adc8d696e2fddda87cd7061df11056594de096bcd3ce7e777f90ae394a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 153098,
+      "sha256": "ff11432628eaaf783f2dd4de4277e4aff6f25b023f00e0d6188e1df6e0035527",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 139163,
+      "sha256": "3ac11723f5d52f04a7de4e7393fee33d52d6008bead34669ff9671e801a391a6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 150412,
+      "sha256": "79bd08475797c452af18408dfcd2cd30a82bc6939b5ecf40ada8545d1b33f99c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 130573,
+      "sha256": "c4be8b36da20120250629f54e993b788a5ab7cc342fdebfc5c634ea5c75cbfb2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 134904,
+      "sha256": "71b6a07d6dd6feffb1d77c64c7d71ce51480accc365e639025340134e186b8e1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 117281,
+      "sha256": "be59691194874e85dc52864c3fd75d54702a61294b7dcd4f29ca865146ff3c46",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 487309,
+      "sha256": "672daf677e5847deb235f92f7d28dc7335c38d082ae490ae4495e5f5ebc1a3c5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 479544,
+      "sha256": "feef7456a14e7fbbcaae3d5b57a6736c4bd8264d96db5469edf8be59b3a3b1d3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 69042,
+      "sha256": "e8524a871fe182089939f3665e0381a4ae1138befaea264b2133691db5638199",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 490298,
+      "sha256": "751ffd07616bdcbef01606ab013588d02b31e58d139d805b0d628ab08b65ee87",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 49174,
+      "sha256": "504ceb3d744ec9cb5a7c5e22a1224cf8b8ef747cf93843462ee2d8ad1d746cec",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/mirkwood/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 495007,
+      "sha256": "9cb8c4ddbfb020ab721d769d02353f52b944318e76e4f646bb97dc87a8e453d6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1296930,
+      "sha256": "c928e1ddbf070b580f22b7935533917d51a9d571039def3ab1c690a15dfe9b71",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 110024,
+      "sha256": "141b96b0bafec73128fd73339029243bb78faa72373a188a3724942010c07734",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 104468,
+      "sha256": "bef4f34660faf86adbe72bd473601d821bba73c1a97c6a0c6c488c5eda0c272b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 345097,
+      "sha256": "aa95bee10286f77d07d73339e131231a552ed583d0b658dbc798d2b3c8a39097",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 104533,
+      "sha256": "89ef2c7009a0d4608918f5df371a30d3d5c3c76f109d76247610a5df730f9253",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 100082,
+      "sha256": "aff8c4c4fd84fb77de41c292b015356004bcf0a257876826b7fe2a6fbf0fd8ae",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 104280,
+      "sha256": "11ac38e53340b926c4f28348de58c78bd9aac0cb8d0454c370be8b1fa4c756ad",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 100212,
+      "sha256": "7478857a75306248cc4c6a9f4eea69a94b24bcaefb0e1f7cefc6cf0ea84ca30e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 99032,
+      "sha256": "872a44fed76fc32375ad2ad49ae8a85b115db06c6136d3c1b768b36e4aea0edb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 107033,
+      "sha256": "22517452240ff910628a336b23ec681d6403cf9163b7618a0cf226cdf49e3e69",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 389577,
+      "sha256": "a4b27fca44a5c46afe61001a900c85ca916f4d352bd157d5b234e15dcc11f494",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 385387,
+      "sha256": "1dce49e6c72ecb44c114e9b8e3068fd8bd6e0981ad5c24cece024243f8f1360a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 63259,
+      "sha256": "fa5e5e4d403a25d490553decae0b9cf6d7f2aeca3df7f58ccb2d35cbdbc58a9b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 349558,
+      "sha256": "45f4ebd851d20b7a5efcdd6d05a489fd3ef8c1f68da72d03619fffdbef32c504",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/looks/mazarbul_tomb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 416773,
+      "sha256": "895e48ebf62db37242ccfce115b9989a461dd82c9ef0305496b225c500dd12eb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/looks/troll_chain_climb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 300465,
+      "sha256": "66eb4f7aa7d268fa3b7bc693a243831a3c295d2d745390893ced4213460a2d48",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/mazarbul_tomb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 409578,
+      "sha256": "6b8aa22e366e80e0f321492dbfc665b34a53b43f23f7407db09a425fe3741dfe",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 46025,
+      "sha256": "897429b5b2ea0968f575fd35c19bb12fa578f504dbc8fa6c8e4fe5235e0177f2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 353840,
+      "sha256": "616feed16020c3c8650bd3568bdffe628de144d6018e3c124e2d1e7e8ba9a9f5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/moria/troll_chain_climb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 300706,
+      "sha256": "0a583a7bde609b0634f229d972989365c53afc301ac3308a23970aae1430f301",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1513579,
+      "sha256": "42a649e4258a03f96ae8dca2b7699254f9b3ebc4fd2eeeaf4d3f0d3fc803e095",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 242386,
+      "sha256": "c09f005a03188663b213a1dc9477eafbfdf9c8cae0302756814465c7725671f8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 67462,
+      "sha256": "820a3a1cc70347f599485ea6bf2f2bec2ce329238223c8e135e905963bef5e7b",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 438787,
+      "sha256": "5461db32cae75d85766237fabcd0e86afc56cbf460109463b1fed03c8cd9028e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 130553,
+      "sha256": "82813d70176467c639d69509809d0e838ed7db383966cdf1b9ec19b4ac166585",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 136400,
+      "sha256": "ebea63398863adc8801a4805323796bf41ff2516a4f373016b611594211ce8de",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 132316,
+      "sha256": "1f040f4f9ee96e558492707dea46eae3271c2c2601db510ec3235c8039f70a5f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 124592,
+      "sha256": "15dd98a708b452786f29fe2e8798f14dfa1e86ac5a29b6cbf2b1f9e92ecf20bd",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 132871,
+      "sha256": "fc9950c07424dd0c8912d033763266e263744f68a099d20616bc39bfbd6850ed",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 125705,
+      "sha256": "d00d13e2959e8b0bb4750079285b2276f3284be78e6f8c2806f1d446cb9da07e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 430648,
+      "sha256": "68e9220338fb2aebeac94af7507b12f8f376b2bbbe205f4d1ef078b2c3ed2010",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 422772,
+      "sha256": "9ca0e477d4553ad280db74a23341acb6810be4727e36b2be22d2e7c4d5aebdd2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 65244,
+      "sha256": "15bf9bf23032c4ad5fd98f80c8402b849d6cae33659a37628188f65752cc854e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 449050,
+      "sha256": "6166b3725273fd65b930dbb9c39d11e78dd22ef8023fd6cbbe9d37d3edd24d78",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/looks/mumak_climb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 470890,
+      "sha256": "a0050b3799ccc1ffaeca30877929c457aa0c14459b838696bdb11b7e0936293d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/mumak_climb.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 463747,
+      "sha256": "baba8aa3c3665f6754b7f0230630b1989107cf5fd07cfeda579ea07c0a96d281",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 47568,
+      "sha256": "7dd43536b59f8ceda69d4b56f5f105baef2a3472db7d2e2f5151dea5f8d703f5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/pelennor/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 454842,
+      "sha256": "e7cbcd359d6b0d139341424c1b6ebefb50e0d7390434d462678258321fe00a81",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/bat_flight.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 477611,
+      "sha256": "6e83981ad3fe4a63c816460aab7da96564e648ff989f7ead14395314b0e8f3df",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/beats.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 1577956,
+      "sha256": "0497fed4e895a98543d0306e75f776683a6f9356e96e23d7bcd46327de1454d6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/current_coded.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 191776,
+      "sha256": "ceea3a46cf786404487a36170ddb92a3cb4a1b826a46955526c71b42465d50eb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/current_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 58246,
+      "sha256": "081614c77c2fdacda992be0511440f198a203717f8c0a9e140a165bd75fb3858",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 478532,
+      "sha256": "36d06f7e26cff638b4ca2b836ad2bac416ecbb771df2115e2b38da898a780fb5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/falling_stones.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 407277,
+      "sha256": "a965bb0b1c4c4a0afa6527a41f6c70d37517846b6021f22223225af5ee0cd412",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_00_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 148278,
+      "sha256": "1d7175d91b77da6cd7fefc986f908e7067ae1093d98908a272271a07df65f0d9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_01_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 140038,
+      "sha256": "43c58704b2f0e0d8c9974286b21412de3df77e7cd8a7c1c6baf9224d18f39474",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_02_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 145680,
+      "sha256": "97f720657effa37152625f49cdd591c5e106e78fe32ade58d9bdcaca89fd25bf",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_03_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 142112,
+      "sha256": "46e89254d0d90ecc4a2b73a7837dde7e6510a0363d548fda92488c23b1f3fa7e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_04_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 149238,
+      "sha256": "cdb0c519518778f402085806ab613f15df86ea17f6c5cc6637eaddc285779ba1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/frames/beat_05_look.jpg",
+      "size_px": [
+        768,
+        512
+      ],
+      "bytes": 139494,
+      "sha256": "a5aa3cdb55640789cc1fe5ba8fa7f2ed85a8311af6b3d9b16d79146b02a4fdd9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/gameplay_look.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 428349,
+      "sha256": "f5615a531009591d9cecc27d0dd2e4b3107b1582aed32bebd915c24763955634",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/gameplay_view.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 424129,
+      "sha256": "41dd698a7108d7150dd362f3b47de82f153b3e0230b14bffb5102caf90b7c1a5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/layout.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 73969,
+      "sha256": "8547dab8e18396f1971dec67489f990bfedf777b94b204bbb883d0cc549c74b7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/looks/bat_flight.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 488736,
+      "sha256": "89f5d5a9a0e4acd3d0fe0d5c6838a65e19de8372b658717b3ae3bbc79b9f1ba5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/looks/establishing.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 485340,
+      "sha256": "e8a541831f696ebfe65a0d56e69894372c86287b290de59f193e8bc055fb9c11",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/looks/falling_stones.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 414002,
+      "sha256": "59f89deb9c03edda69d6e3d6252cc5c6cdf27a9fa453bcfec112609b376d8fae",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/looks/tower_duel.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 418529,
+      "sha256": "1507fb50ec5cbfd366df1d50aae3374c21b32658012b7182e655e75527c64ecd",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/palette.png",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 51208,
+      "sha256": "f06968e2702abf04e6f2a0d777c6dcb3e057e42cdde483de6c7e4cf82b2dab88",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/palette_regions.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 490003,
+      "sha256": "a65e43f7fd29792a73860fafebc044a0c0c36b71c533b47ca91473ba6b02701a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "scenes/ravenhill/tower_duel.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 411253,
+      "sha256": "4f26a45c98f6df33c4da0c15ceb114b3456b43608248cc6e178900763b1f5438",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/amon_hen.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 233990,
+      "sha256": "9f747bf8fffa65534fd727cbfbc77970b33572aae5bdf9b0a3707f91f319633c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/barrels.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 219939,
+      "sha256": "ba1511743ab0c8bec9aa2ef59b4e732c0d62cf37221ae16f26f417054e44ffa3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/black_gate.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 162463,
+      "sha256": "6c2743544d93cc53996ac42709ce0063f64b540272847ba5eef661b65f747a21",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/helms_deep.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 172331,
+      "sha256": "57df193f326a80fb9bb971cbc0f5bc833133ad92115885db3b6ce20b6bc524c6",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/laketown.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 149127,
+      "sha256": "ea1c6a2559e80ab227a33cfb05024280ebc8aac69a00f2e0db153e426588f06c",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/mirkwood.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 174802,
+      "sha256": "2ee8c877fc3e63a9da2152c10e1f7047e0d2ec40f3636230293f2be1bab1d598",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/moria.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 123837,
+      "sha256": "33f3c55af314e0304c2bef6f834bb9c6789ebb619cb210e0861ac0ecc754ed46",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/pelennor.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 176930,
+      "sha256": "11cd2240e6dad51b706c4a9087adafa394e2b8c875e23fd1cb9125a89871fdd5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_cards/ravenhill.jpg",
+      "size_px": [
+        1024,
+        512
+      ],
+      "bytes": 161149,
+      "sha256": "3e9ff0d883454f7f8eebd85a3c50fea95864bdac17515fc13e60008781dba31d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_complete.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 256545,
+      "sha256": "e436786bf3a49124c0d84eba59d9161b96c69717da2a70b77aa7e141602bbe64",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/chapter_select.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 404861,
+      "sha256": "af5d01057e8a1b97aace979e1f0d55a31c434543c5ebaa9846195fc9f60e1980",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/credits.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 269961,
+      "sha256": "00ba32e0406bf0d70fdc3c7367f4711bad6fe6d30a2040a1d31aa7b10c726b67",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/defeat.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 349382,
+      "sha256": "910d73679e087b0c7c42b7abb6b26e5c862d92cfaa4baa0ca4c3c8fe20accce2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/hud_desktop.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 422473,
+      "sha256": "fb8fcfa2263ace3d26e36c68d3a705ee8b78ea632fd8a023a649044d5eaa78ad",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/hud_touch.jpg",
+      "size_px": [
+        844,
+        390
+      ],
+      "bytes": 109043,
+      "sha256": "2bf12e417220b657c1b21d1a38500bd400aeec5866c0262d8d8c9b8df12199c2",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/icons/icons_preview.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 342523,
+      "sha256": "934c469d6c707488450d2aa0ad5e6b6fa28a1c7bba7a8275f741c4893926e4ba",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/loading.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 309261,
+      "sha256": "16c43479ac8a1838856c797cc4149b3d5c5022a6d906efb75362bb4e1037036d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/logo/logo_preview.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 34223,
+      "sha256": "0da06005411dc772308d5560da7b13c1f32987a48c3334f60dcabe6b41def77d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/pause.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 339900,
+      "sha256": "b2ef635540b11d80864b6ff3aa8975dfb1401b2d767719e8f6c638d47b63689f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/settings.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 267507,
+      "sha256": "d5de9bd2e90e830388dbb8cae762d3b133ea581deae5876c0a7964023e2f624e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/title.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 318502,
+      "sha256": "6d698cf1358fde601079e15b1a77e046627db60625bba2c0dbc0ecc033663628",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "ui/upgrades.jpg",
+      "size_px": [
+        1920,
+        1080
+      ],
+      "bytes": 286988,
+      "sha256": "2447e8b259800a95d4a40c6a1e547a79e29f330a821bf8ca3520fdb0caab3461",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/ash.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 119568,
+      "sha256": "729d0f6df7ea9a62bd0ada0891d8c16ee11a8e1be6397e1187eb482393262e66",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/barrel_splash.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 247672,
+      "sha256": "6a20d7d01078263692e8c9802ec70dcd682cd849dc9e9eff343533b3c617e168",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/blood_black.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 184025,
+      "sha256": "8db912c3c1cb9a74bc46904b4a2a342ff6ff5f925509d58af9894f821a8adeb5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/blood_dark.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 164796,
+      "sha256": "2967cb23793961fdbbe449e04b189aa23cff068883886f46be7b9af601201ae5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/blood_ichor.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 197223,
+      "sha256": "026f256a7ee18ce2db2c9d581dd980cc92eb6e24cf4bda625e4b8e435f240c43",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/blood_red.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 206598,
+      "sha256": "0f55efd0304634e190a90d56b532b1becc503887e5c750d133cda682d8a46375",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/brazier.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 202798,
+      "sha256": "03e1241165faa9c64ab441e79b294bbeb270fd9478aea30791dea561c9c449a4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/burning_house.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 214658,
+      "sha256": "cf98dd87457ed71dcc6c3e5533e2b30312526619638c31ff75cfdb028426b357",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/cinematic_letterbox.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 294139,
+      "sha256": "e04b4d7813a1644fda3cb263f7b60bb72d156dd50e1d0e33f254cd6ed808f1bd",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/culvert_explosion.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 237654,
+      "sha256": "8e622a5f9350004af7b6e944947b34c0579db5c5da176b9aba34d9cbac71ca81",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/damage_vignette.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 331810,
+      "sha256": "ddef50cbe25768f8cec75488be2a4a6d60295a80d6cfe1debf7df4596506bcd7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/dust_motes.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 134220,
+      "sha256": "dd75691a04b4fe6c11ecd518c3bdd23871d09f43202da5343cdfa25d4a9cbd04",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/embers.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 109652,
+      "sha256": "a4eccf82a5887861fc042f9a287e5f0e922512d0c2a02fb50a880c4c50774bd4",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/focus_screen.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 258955,
+      "sha256": "43c358051a0139e7d42c445a21b3bf2604cd834f73cfc8c8f99c8affcae1166a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/focus_volley.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 112860,
+      "sha256": "eb4bb64978a66635af553ad22f28b077aa89fcc35503f7ac4f308e11b700c0cf",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/impact_flesh.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 185994,
+      "sha256": "b388f194bb396812adbbc709ab15dc9538ac192f2f3ffde8b6c0b57bda05aeeb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/impact_ichor.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 169347,
+      "sha256": "c5a983c2b463766e735b944e089907552db93b3cab0130535abc6030930af57e",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/impact_metal.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 156322,
+      "sha256": "2858cdd85387ae3f498bbdd63d9df328534d33ba829218dc1344993b54b93816",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/impact_stone.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 160962,
+      "sha256": "e3fd50fa3994befba85a0201994a60a35b9363d79863e8b37256589798f679d3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/impact_wood.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 184472,
+      "sha256": "54474c8f5367e7c28bdcad095cfa27bbc9630d0c6556424b76ebcd2e99e6a9ad",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/ash.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 69412,
+      "sha256": "0878d47138ee3e76f6c26eb47a5ebe1baba04b37178efdc84dfd394942808aa9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/barrel_splash.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 234940,
+      "sha256": "65bd53ee116f12dbf747b7ceae496c9995dc4040eb0ddfa2d019797d1cd6e1e8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/blood_black.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 163040,
+      "sha256": "687fe2737e20f44b632b67096f88d25bada41db8aa82f37934188a94a2318644",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/blood_dark.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 143010,
+      "sha256": "d65e5033df5074d5974c61b647ef02ce2093bd7df45acb1cec3b80b3dc0624f1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/blood_ichor.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 183334,
+      "sha256": "85ccce6865a653a13f989cceae450af36cc6927c3bb3e1c3a27391d04c2b7115",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/blood_red.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 192518,
+      "sha256": "58755bd54c4442ae7297da7042532e7cb45d8ad0a51f2eff18c6190716354ebf",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/brazier.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 161505,
+      "sha256": "86b3984996851fd15703a5ac96cc38eb47a7d32b60dcc2bd35f33530b61662eb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/burning_house.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 171874,
+      "sha256": "fd633a09c5211bad5efac42ac9a81ce4e9e3da0a05c07fb3390fb22e57e30bbb",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/culvert_explosion.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 202174,
+      "sha256": "49764220cbbd346d62a2787630e0d41cee715ea0742d39180b4655280d38bcbc",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/dust_motes.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 91544,
+      "sha256": "783019fdee522524c035709666441c7b22b174c9a5a8532226c8325bd0ff83a9",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/embers.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 63723,
+      "sha256": "d1a2a1bf6ef078dd09ce856e90182acc54d67fd8a60b4d704f50d48003d9e5c8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/focus_volley.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 74218,
+      "sha256": "305e0c847eb845536094d739eed1af8f770a98a15e2d4d630937e6867028c555",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/impact_flesh.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 167639,
+      "sha256": "373fd9faaab9e5dc71ccfae6da7eed44e3fcaeee231112d9f692d70b5e78ff2a",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/impact_ichor.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 148993,
+      "sha256": "f39a3594029dfa7e8b9b1de3127badcfc4a8cdff46967dce51c30f25cca6bd89",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/impact_metal.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 129863,
+      "sha256": "7e23fd7a869c2226ee3e99675164d4bfc9f08f477cd9da2e2dbb190f933157e5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/impact_stone.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 133954,
+      "sha256": "aa386620799fe41e643b10fd83ebf499ec648cd5dd07b809a873e0a64c27a095",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/impact_wood.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 163458,
+      "sha256": "37318eb1d59af797c156cfd6f7dc0c574ba5b72ed5c6de51792302aa336a8a48",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/mirkwood_spores.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 99253,
+      "sha256": "cc46d0a32d6fb11cf97f8a029515fe7ae0186272ddb968557c24a92d5148e78f",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/normal_arrow.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 33937,
+      "sha256": "addb10e76fea40e2ec290913caf8be3db351435b6d1464afa71ea25f58547f37",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/rain.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 170517,
+      "sha256": "15e03c008c4afe3c7b12a4b9a54b9156defd2fba8b4a2490bae7d2f5d467d2de",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/rapids_foam.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 275569,
+      "sha256": "7712a9449f743331847b9a11a01aa8bcb8e33fe31122fbc3669f3514aae1dc61",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/smoke_column.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 77306,
+      "sha256": "fb7cdd953677acf58d457b8b10b86b9258a46fafd296756ac2642b8a7ed8239d",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/snow.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 180089,
+      "sha256": "4dabaa839d5e79f0abd96de853d40c6bb15f17c1b0cfa7a9f46e982431e1c012",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/storm_lightning.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 113424,
+      "sha256": "5cc9ef96a092f0d5c064f8a563079cd1bb2e46a11b342e6e0dc3ec58984f9a44",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/looks/torch.jpg",
+      "size_px": [
+        1024,
+        683
+      ],
+      "bytes": 63271,
+      "sha256": "9f0467e9ad33310a560c2c949b1993074a4fb88f1c8bc2c50f56305173ba4623",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/mirkwood_spores.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 145672,
+      "sha256": "ad4be5e4d06f1e6a5dce000864c89201bba418d5e829e3f127111b603d9fd8d3",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/normal_arrow.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 76827,
+      "sha256": "1dd0439f4295fb6b70f553cb7c517f2a04c21e663fcf68b1ca912578196f51a7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/rain.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 227399,
+      "sha256": "b55e3c43b89483a12049cc31bf40a9ebb062dbaf2dcb4cd131eb3dfd1c25a357",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/rapids_foam.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 299873,
+      "sha256": "f3b22ef66c8dda72d691b4a8caaa00677580111e8b8681dae49c0e30e4b7b5ad",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/smoke_column.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 121825,
+      "sha256": "6df08a0e9f6ad6ba44a684f9bf2da8c19ebf34731d741330941c252a779f5db7",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/snow.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 226611,
+      "sha256": "547f3fc331adcdb12e7a19e02129f6f80a8fa74192ed006d4d4048cb3e5779c8",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/storm_lightning.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 187401,
+      "sha256": "da43b5fd0a0ab5e4a07648a1dff36b0b8201b71476951ee8a6a24649374f31e1",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    },
+    {
+      "image": "vfx/torch.jpg",
+      "size_px": [
+        1536,
+        1024
+      ],
+      "bytes": 110296,
+      "sha256": "ab10b27dec1c53d0f3f65e374e54ab5a3d4ba9083b9d8078082c0327275069c5",
+      "visual_review": "accepted",
+      "review_method": "Contact sheets; full-size review of flagged anatomy, action, prop identity and generated-mark problems; code checks for diagram geometry."
+    }
+  ]
+}

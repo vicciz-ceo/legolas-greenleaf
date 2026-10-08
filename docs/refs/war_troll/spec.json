@@ -1,0 +1,1066 @@
+{
+  "id": "war_troll",
+  "design": {
+    "id": "war_troll",
+    "source": "design_target",
+    "display_name": "War Troll",
+    "height_m": 4.5,
+    "overall_height_m": 4.95,
+    "proportions": {
+      "head_height_m": 0.55,
+      "shoulder_width_m": 1.6,
+      "hip_width_m": 1.2,
+      "arm_length_m": 2.15,
+      "leg_length_m": 2.25,
+      "hand_length_m": 0.5,
+      "neck_length_m": 0.22,
+      "bulk_0to1": 0.95,
+      "hunch_0to1": 0.15
+    },
+    "face": {
+      "shape": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "Huge dark heavy brow",
+      "nose": "Broad squat coarse nose",
+      "lips": "Heavy tusked jaw, coarse neutral lips",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#45473c",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#34352b",
+      "tip_hex": "#34352b",
+      "length_m": 0,
+      "style": "No visible scalp hair; pointed helmet covers the crown. Original brief does not prescribe exposed hair.",
+      "braids": "as described, no additional ornamental braids",
+      "visibility": "Covered by helmet."
+    },
+    "outfit_layers": [
+      {
+        "name": "kilt",
+        "material": "opaque coarse leather",
+        "color_hex": "#4b392b",
+        "roughness": 0.8,
+        "sheen": 0.1,
+        "notes": "Solid knee-length coverage including rear view."
+      },
+      {
+        "name": "belt_straps",
+        "material": "worn dark leather",
+        "color_hex": "#46382c",
+        "roughness": 0.8,
+        "sheen": 0.1,
+        "notes": "Harness, belt and straps."
+      },
+      {
+        "name": "foot_wraps",
+        "material": "dark woven cloth wraps",
+        "color_hex": "#3b362a",
+        "roughness": 0.8,
+        "sheen": 0.1,
+        "notes": "Opaque feet wraps."
+      }
+    ],
+    "armor": [
+      {
+        "name": "helmet_iron",
+        "material": "battered iron",
+        "color_hex": "#57594e",
+        "roughness": 0.65,
+        "metalness": 1
+      },
+      {
+        "name": "harness_iron",
+        "material": "battered iron",
+        "color_hex": "#57594e",
+        "roughness": 0.65,
+        "metalness": 1
+      },
+      {
+        "name": "pauldron_iron",
+        "material": "battered iron",
+        "color_hex": "#57594e",
+        "roughness": 0.65,
+        "metalness": 1
+      },
+      {
+        "name": "bracer_iron",
+        "material": "battered iron",
+        "color_hex": "#57594e",
+        "roughness": 0.65,
+        "metalness": 1
+      },
+      {
+        "name": "shin_iron",
+        "material": "battered iron",
+        "color_hex": "#57594e",
+        "roughness": 0.65,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "warhammer",
+        "length_m": 1.6,
+        "notes": "Authored intent; original brief gives no prop length."
+      }
+    ],
+    "attachments": {
+      "right_hand": "warhammer",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly",
+      " pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt",
+      " warhammer own RIGHT hand, left empty",
+      " five fingers on each hand."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
+    "concealed_materials": {
+      "hair": "Pointed helmet covers scalp and no exposed hair appears in accepted design."
+    },
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#3b362a",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#4b392b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      },
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#57594e",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ]
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HELM / HAIR COVERED",
+        "source": "details/hair.png"
+      }
+    ],
+    "source_heights": {
+      "body": 480,
+      "face": 288
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        55,
+        40,
+        110,
+        70
+      ]
+    },
+    {
+      "name": "helmet_iron",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        60,
+        80,
+        85,
+        100
+      ]
+    },
+    {
+      "name": "harness_iron",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        94,
+        54,
+        108,
+        63
+      ]
+    },
+    {
+      "name": "pauldron_iron",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        40,
+        32,
+        50,
+        40
+      ]
+    },
+    {
+      "name": "bracer_iron",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        12,
+        94,
+        18,
+        99
+      ]
+    },
+    {
+      "name": "shin_iron",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        53,
+        210,
+        62,
+        220
+      ]
+    },
+    {
+      "name": "kilt",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        85,
+        136,
+        98,
+        160
+      ]
+    },
+    {
+      "name": "belt_straps",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        71,
+        87,
+        77,
+        91
+      ]
+    },
+    {
+      "name": "foot_wraps",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        33,
+        228,
+        40,
+        235
+      ]
+    },
+    {
+      "name": "hammer_iron",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        110,
+        70,
+        122,
+        85
+      ]
+    },
+    {
+      "name": "hammer_wrap",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        63,
+        151,
+        70,
+        159
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "face",
+      "not_visible": "Pointed helmet covers scalp and no exposed hair appears in accepted design."
+    }
+  ],
+  "measured": {
+    "turnaround": {
+      "path": "war_troll_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "435eac9808db377247d61db9f2d33439ff9334940fdb580f82dafd8d4117e30f",
+      "size_bytes": 162628,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "35f9f7cecf2eb6a4b03d9fe329b5a129057dda3f9aa90e47c41e14302a9a9436",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 78.38383838383838,
+      "baseline_y_px": 940,
+      "overall_height_m": 4.95,
+      "height_fill_fraction": 0.37890625,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "3e01860bba93e9d4fa96fc6c94c685c0aa9aa4c679e02a403af57e93c088dcc3",
+          "source_bbox_px": [
+            4,
+            4,
+            399,
+            484
+          ],
+          "sheet_bbox_px": [
+            159,
+            552,
+            478,
+            940
+          ],
+          "silhouette_height_px": 388,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8083333333333333,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            388
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "f775fd7bd593b0ff2ffec3193be039a269360d1b7cfb55bcd12e9f434c36bdc8",
+          "source_bbox_px": [
+            4,
+            4,
+            384,
+            484
+          ],
+          "sheet_bbox_px": [
+            508,
+            552,
+            815,
+            940
+          ],
+          "silhouette_height_px": 388,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8083333333333333,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            307,
+            388
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "8f88402f6d921c4446bea02e5ffe7f98ffbd6ead1a633f04bad6fc979e15e2f3",
+          "source_bbox_px": [
+            4,
+            4,
+            251,
+            484
+          ],
+          "sheet_bbox_px": [
+            904,
+            552,
+            1104,
+            940
+          ],
+          "silhouette_height_px": 388,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8083333333333333,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            200,
+            388
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "49d8c5e8b134d5c224392c5b63b6a23fe8326e63957d8fa656440cfb0b5a769f",
+          "source_bbox_px": [
+            4,
+            4,
+            390,
+            484
+          ],
+          "sheet_bbox_px": [
+            1191,
+            552,
+            1503,
+            940
+          ],
+          "silhouette_height_px": 388,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8083333333333333,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            312,
+            388
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 552,
+        "endpoint_m": 4.95,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 920
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 901
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 881
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 862
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 842
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 822
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 803
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 783
+          },
+          {
+            "value_m": 2.25,
+            "y_px": 764
+          },
+          {
+            "value_m": 2.5,
+            "y_px": 744
+          },
+          {
+            "value_m": 2.75,
+            "y_px": 724
+          },
+          {
+            "value_m": 3.0,
+            "y_px": 705
+          },
+          {
+            "value_m": 3.25,
+            "y_px": 685
+          },
+          {
+            "value_m": 3.5,
+            "y_px": 666
+          },
+          {
+            "value_m": 3.75,
+            "y_px": 646
+          },
+          {
+            "value_m": 4.0,
+            "y_px": 626
+          },
+          {
+            "value_m": 4.25,
+            "y_px": 607
+          },
+          {
+            "value_m": 4.5,
+            "y_px": 587
+          },
+          {
+            "value_m": 4.75,
+            "y_px": 568
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            914,
+            93,
+            926
+          ],
+          [
+            57,
+            895,
+            93,
+            907
+          ],
+          [
+            57,
+            875,
+            93,
+            887
+          ],
+          [
+            57,
+            856,
+            93,
+            868
+          ],
+          [
+            57,
+            836,
+            93,
+            848
+          ],
+          [
+            57,
+            816,
+            93,
+            828
+          ],
+          [
+            57,
+            797,
+            93,
+            809
+          ],
+          [
+            57,
+            777,
+            93,
+            789
+          ],
+          [
+            57,
+            758,
+            93,
+            770
+          ],
+          [
+            57,
+            738,
+            93,
+            750
+          ],
+          [
+            57,
+            718,
+            93,
+            730
+          ],
+          [
+            57,
+            699,
+            93,
+            711
+          ],
+          [
+            57,
+            679,
+            93,
+            691
+          ],
+          [
+            57,
+            660,
+            93,
+            672
+          ],
+          [
+            57,
+            640,
+            93,
+            652
+          ],
+          [
+            57,
+            620,
+            93,
+            632
+          ],
+          [
+            57,
+            601,
+            93,
+            613
+          ],
+          [
+            57,
+            581,
+            93,
+            593
+          ],
+          [
+            57,
+            562,
+            93,
+            574
+          ],
+          [
+            117,
+            533,
+            180,
+            546
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "war_troll_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "95bb521c06c871ba4796c82bdccc8af417f1c1c7cfa7f3c60df422dac7fb266f",
+      "size_bytes": 251980,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "e6e6dbc956e6d64998a4f3d0b08a4953e98d256f85798c6853914ec418ad1d14",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "6864933fdb72c5620850b7b1797e1f5a0617df416ef4c7c32f6de895d452dea3",
+          "source_bbox_px": [
+            4,
+            4,
+            247,
+            292
+          ],
+          "sheet_bbox_px": [
+            26,
+            375,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "ef5cfe77447fd99551feaeebdef9d2ef10db271eacccf4f04b1b34880a2ec361",
+          "source_bbox_px": [
+            4,
+            4,
+            246,
+            292
+          ],
+          "sheet_bbox_px": [
+            530,
+            373,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "79bc609f7941854a9a21a7ea67cd62e41ef56e6270eb9d6e41e4ebd99932f549",
+          "source_bbox_px": [
+            4,
+            4,
+            209,
+            292
+          ],
+          "sheet_bbox_px": [
+            1034,
+            274,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "war_troll_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4f11a53a14bc0e2c90cbecde00b5402756f82cc4422f35da981df7e58340ad27",
+      "size_bytes": 173403,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "7a035f26b605c62cbcb9e9c6a945ef1ba4ca066b00ac98511aecd1a85e10af60",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+          "sheet_bbox_px": [
+            90,
+            12,
+            421,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072",
+          "sheet_bbox_px": [
+            593,
+            12,
+            943,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "7ed7ffc834e6a90fc405e1ef417dd1ab8d1309e4345f1b8fdfd928d48ff93176",
+          "sheet_bbox_px": [
+            12,
+            608,
+            500,
+            884
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HELM / HAIR COVERED",
+          "source": "details/hair.png",
+          "source_sha256": "8b0c4a03862c8fe8f0a956ee9d65319924c2434c56ae70c3ef28115f1bebffdf",
+          "sheet_bbox_px": [
+            524,
+            558,
+            1012,
+            934
+          ]
+        }
+      ]
+    }
+  },
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "7ed7ffc834e6a90fc405e1ef417dd1ab8d1309e4345f1b8fdfd928d48ff93176",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          55,
+          40,
+          110,
+          70
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          74,
+          52,
+          36
+        ],
+        "srgb_hex": "#4a3424",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "helmet_iron": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "8b0c4a03862c8fe8f0a956ee9d65319924c2434c56ae70c3ef28115f1bebffdf",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          60,
+          80,
+          85,
+          100
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          81,
+          63,
+          53
+        ],
+        "srgb_hex": "#513f35",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "harness_iron": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          94,
+          54,
+          108,
+          63
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          151,
+          139,
+          132
+        ],
+        "srgb_hex": "#978b84",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "pauldron_iron": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          40,
+          32,
+          50,
+          40
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          95,
+          77,
+          66
+        ],
+        "srgb_hex": "#5f4d42",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "bracer_iron": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          12,
+          94,
+          18,
+          99
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          101,
+          93,
+          85
+        ],
+        "srgb_hex": "#655d55",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "shin_iron": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          53,
+          210,
+          62,
+          220
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          46,
+          36,
+          27
+        ],
+        "srgb_hex": "#2e241b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "kilt": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          85,
+          136,
+          98,
+          160
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          74,
+          53,
+          39
+        ],
+        "srgb_hex": "#4a3527",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "belt_straps": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          71,
+          87,
+          77,
+          91
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          64,
+          43,
+          30
+        ],
+        "srgb_hex": "#402b1e",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "foot_wraps": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          33,
+          228,
+          40,
+          235
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          63,
+          48,
+          40
+        ],
+        "srgb_hex": "#3f3028",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hammer_iron": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          110,
+          70,
+          122,
+          85
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          53,
+          40,
+          34
+        ],
+        "srgb_hex": "#352822",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hammer_wrap": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          63,
+          151,
+          70,
+          159
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          89,
+          79,
+          70
+        ],
+        "srgb_hex": "#594f46",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "war_troll_face.jpg",
+        "sheet_sha256": "95bb521c06c871ba4796c82bdccc8af417f1c1c7cfa7f3c60df422dac7fb266f",
+        "rect_px": null,
+        "rgb": null,
+        "srgb_hex": null,
+        "visibility": "not_visible",
+        "reason": "Pointed helmet covers scalp and no exposed hair appears in accepted design.",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

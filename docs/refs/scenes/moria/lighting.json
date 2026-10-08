@@ -1,0 +1,213 @@
+{
+  "name": "Moria",
+  "sky": {
+    "kind": "cave",
+    "color": "#05070b"
+  },
+  "sunColor": "#9db6d6",
+  "sunIntensity": 1.75,
+  "sunDirection": [
+    0.25,
+    0.92,
+    -0.2
+  ],
+  "hemiSky": "#2c3f5c",
+  "hemiGround": "#16110c",
+  "hemiIntensity": 0.42,
+  "envIntensity": 0.28,
+  "fog": {
+    "color": "#07090d",
+    "density": 0.012
+  },
+  "exposure": 1.65,
+  "bloom": 0.18,
+  "grade": {
+    "lift": [
+      0.004,
+      0.006,
+      0.012
+    ],
+    "gamma": [
+      0.99,
+      1,
+      1.02
+    ],
+    "gain": [
+      0.98,
+      1,
+      1.06
+    ],
+    "saturation": 0.88,
+    "vignette": 0.32
+  },
+  "weather": "dust",
+  "weatherIntensity": 0.6,
+  "ambience": "cave",
+  "palette": {
+    "sky_top": "#05070b",
+    "horizon": "#07090d",
+    "fog": "#07090d",
+    "sun": "#9db6d6",
+    "shadow_fill": "#2c3f5c",
+    "dominant_ground": "#303038",
+    "dominant_structure": "#777b7d",
+    "accent": "#cbd5df",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunIntensity",
+      "current": 1.5,
+      "recommended": 1.75,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.85,
+      "recommended": 0.42,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "envIntensity",
+      "current": 0.42,
+      "recommended": 0.28,
+      "reason": "Keep PBR reflections without making all occluded surfaces self-lit."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.021,
+      "recommended": 0.012,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "exposure",
+      "current": 1.9,
+      "recommended": 1.65,
+      "reason": "Protect shafts and marble highlights while retaining the dark setting."
+    },
+    {
+      "field": "bloom",
+      "current": 0.36,
+      "recommended": 0.18,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.62,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "horizon": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1c2b38",
+      "region_px": [
+        1121,
+        307,
+        1198,
+        410
+      ],
+      "pixel_count": 7931,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1a2530",
+      "region_px": [
+        435,
+        41,
+        452,
+        82
+      ],
+      "pixel_count": 697,
+      "image": "looks/establishing.jpg",
+      "label": "sun"
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#44352d",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#27272a",
+      "region_px": [
+        753,
+        778,
+        876,
+        840
+      ],
+      "pixel_count": 7626,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#96989e",
+      "region_px": [
+        430,
+        553,
+        522,
+        584
+      ],
+      "pixel_count": 2852,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#96989e",
+      "region_px": [
+        430,
+        553,
+        522,
+        584
+      ],
+      "pixel_count": 2852,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#b87233",
+      "region_px": [
+        1410,
+        399,
+        1424,
+        425
+      ],
+      "pixel_count": 364,
+      "image": "looks/establishing.jpg",
+      "label": "fire_emissive"
+    }
+  },
+  "environment_name": "moria"
+}

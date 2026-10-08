@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""Persistent review ledger and index; never auto-accepts imagery."""
+import json, hashlib, tempfile, os, fcntl
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+STATE=ROOT/'progress.json'
+ROSTER={
+'legolas':(1.85,'humanoid'),'gimli':(1.37,'humanoid'),'aragorn':(1.88,'humanoid'),'tauriel':(1.78,'humanoid'),'bolg':(2.6,'humanoid'),'cave_troll':(4.5,'humanoid'),
+ 'thranduil':(1.9,'humanoid'),'elf_mirkwood':(1.85,'humanoid'),'elf_galadhrim':(1.85,'humanoid'),'boromir':(1.85,'humanoid'),'gondor':(1.82,'humanoid'),'rohirrim':(1.8,'humanoid'),'laketown_man':(1.75,'humanoid'),
+ 'orc':(1.7,'humanoid'),'goblin':(1.48,'humanoid'),'gundabad':(2.1,'humanoid'),'uruk':(2.0,'humanoid'),'berserker':(2.1,'humanoid'),'lurtz':(2.1,'humanoid'),'easterling':(1.8,'humanoid'),'haradrim':(1.8,'humanoid'),'war_troll':(4.5,'humanoid'),
+ 'mirkwood_spider':(2.75,'creature'),'brood_mother':(6,'creature'),'mumak':(14,'creature'),'gundabad_bat':(7,'creature'),'great_eagle':(10,'silhouette'),'fell_beast':(12,'silhouette'),
+ 'dwarf_bald':(1.35,'humanoid'),'dwarf_hat':(1.30,'humanoid'),'dwarf_elder':(1.37,'humanoid'),'dwarf_redbeard':(1.40,'humanoid')}
+WEAPONS=['galadhrim_bow','elven_knives','gimli_axe','uruk_falchion','orc_cleaver','orc_scimitar','bolg_mace','cave_troll_club','war_hammer','pike','rohan_shield','gondor_shield','uruk_shield','torch']
+
+def save(data):
+ with tempfile.NamedTemporaryFile(mode='w',dir=STATE.parent,prefix='.progress-',suffix='.tmp',delete=False) as out:
+  out.write(json.dumps(data,indent=2)+'\n');name=out.name
+ os.replace(name,STATE)
+
+def initialize():
+ if STATE.exists():return
+ entries={}
+ for cid,(extent,kind) in ROSTER.items():
+  views=['front','three_quarter','side','back'] if kind=='humanoid' else ['side','front','top','three_quarter']
+  if cid=='gundabad_bat':views+=['folded']
+  deliverables={f'views/{v}':{'status':'pending','attempts':[]} for v in views}
+  if kind!='silhouette':
+   deliverables.update({f'face_views/{v}':{'status':'pending','attempts':[]} for v in ['front','three_quarter','side']})
+   deliverables.update({f'details/{v}':{'status':'pending','attempts':[]} for v in ['cloth_leather','weapon_metal','skin','hair']})
+  for v in ['turnaround','spec','notes','check']+([] if kind=='silhouette' else ['face','details','observed']):deliverables[v]={'status':'pending','attempts':[]}
+  entries[cid]={'kind':kind,'design_extent_m':extent,'deliverables':deliverables}
+ for group,names in {'weapons':WEAPONS,'orc_variants':['wiry','brown','scarred','matted'],'dwarf_company':['dwarf_bald','dwarf_hat','dwarf_elder','dwarf_redbeard'],'mumak_howdah':['howdah']}.items():
+  entries[group]={'kind':'supplement','deliverables':{name:{'status':'pending','attempts':[]} for name in names+['sheet','spec','notes','check']}}
+ data={'version':1,'branch':'reference/character-sheets','pr':'https://github.com/vicciz-ceo/legolas-greenleaf/pull/1','entries':entries,'blockers':{'missing_old_images':'Old full-resolution PNGs and accepted Legolas sheets are absent from this workspace and GitHub. Retain historical attempts; do not overwrite accepted designs.'}}
+ save(data)
+
+def record(cid,key,status,reason='',path=None,attempt=False):
+ lockpath=Path(tempfile.gettempdir())/('greenleaf-progress-'+hashlib.sha256(str(STATE).encode()).hexdigest()[:16]+'.lock')
+ with lockpath.open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX)
+  return _record(cid,key,status,reason,path,attempt)
+
+def _record(cid,key,status,reason='',path=None,attempt=False):
+ data=json.loads(STATE.read_text());item=data['entries'][cid]['deliverables'][key]
+ if attempt:
+  if len(item['attempts'])>=4:raise ValueError('Four-attempt cap reached')
+  item['attempts'].append({'number':len(item['attempts'])+1,'status':status,'reason':reason,'path':path})
+ elif status in ('accepted','rejected') and item['attempts'] and item['attempts'][-1]['status']=='pending':
+  last=item['attempts'][-1]
+  if path is None or last.get('path')==path:
+   last.update(status=status,reason=reason)
+ item.update(status=status,reason=reason)
+ if path:item['path']=path
+ save(data)
+
+def record_recovery(cid,key,status,reason='',path=None,attempt=False):
+ """Track newly authored replacements without changing historical attempts."""
+ lockpath=Path(tempfile.gettempdir())/('greenleaf-progress-'+hashlib.sha256(str(STATE).encode()).hexdigest()[:16]+'.lock')
+ with lockpath.open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX)
+  data=json.loads(STATE.read_text());item=data['entries'][cid]['deliverables'][key]
+  series=item.setdefault('recovery',{'kind':'newly_authored_replacement','max_attempts':4,'attempts':[]})
+  if attempt:
+   if len(series['attempts'])>=series['max_attempts']:raise ValueError('Four-attempt recovery cap reached')
+   series['attempts'].append({'number':len(series['attempts'])+1,'status':status,'reason':reason,'path':path})
+  elif status in ('accepted','rejected') and series['attempts'] and series['attempts'][-1]['status']=='pending':
+   last=series['attempts'][-1]
+   if path is None or last.get('path')==path:last.update(status=status,reason=reason)
+  item.update(status=status,reason=reason)
+  if path:item['path']=path
+  data['version']=2
+  save(data)
+
+def attempt_summary(item):
+ historical=str(len(item['attempts']))
+ recovery=item.get('recovery')
+ return historical if not recovery else historical+' historical + '+str(len(recovery['attempts']))+' recovery'
+
+def render():
+ data=json.loads(STATE.read_text());lines=['# Full character-library checklist','', 'Statuses are evidence-based. Accepted design notes do not certify a completed visual reference. Original attempts are preserved; newly authored replacements use the documented recovery series. Delivery acceptance requires retained reconstruction sources and visual review.','']
+ for cid,e in data['entries'].items():
+  lines+=['## '+cid,'']
+  if e.get('historical_multipanel_attempts'):lines += ['Legacy sheet-call history (separate from individual-view calls): '+json.dumps(e['historical_multipanel_attempts']['counts'])+'. See recovery/first-pass-QUALITY_REPORT.md.','']
+  lines+=['| Deliverable | Status | Attempts | Evidence / next action |','| --- | --- | --- | --- |']
+  for k,d in e['deliverables'].items():lines.append(f"| {k} | {d['status']} | {attempt_summary(d)} | {d.get('reason','')} |")
+  lines.append('')
+ (ROOT/'CHECKLIST.md').write_text('\n'.join(lines).rstrip()+'\n')
+
+
+def index_and_report(data):
+ from compose import stored_bytes
+ history=ROOT/'recovery'
+ for name in ('README','QUALITY_REPORT'):
+  target=history/('first-pass-'+name+'.md')
+  if not target.exists():target.write_text((ROOT/(name+'.md')).read_text())
+ lines=['# Greenleaf character reference library','', 'Development references only; the game imports none of these images. All source meshes, textures and sound remain procedural.','', 'Branch `reference/character-sheets`; [PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). The original briefs are retained in [recovery/original-brief.txt](recovery/original-brief.txt). [CHECKLIST.md](CHECKLIST.md) and [progress.json](progress.json) track every required deliverable and its attempt history.','', '| Character / group | Design height or span | Thumbnail | Spec | Notes | Delivery status |','| --- | --- | --- | --- | --- | --- |']
+ quality=['# Reference quality report','', 'Current resumed pass. Prior failed multi-view generations are preserved in [recovery/first-pass-QUALITY_REPORT.md](recovery/first-pass-QUALITY_REPORT.md); they are not accepted sources. Revised-view attempts retain their counts across sessions.','', 'Visual review checks identity, anatomy, angle, gear sides, text and silhouette. Automated checks reconstruct the exact pre-JPEG canvas, use tolerance 3 for decoded JPEG background, and verify sources, schema, geometry and storage budgets. Neither normalizing a cutout nor a generated number measures recovered 3D anatomy. Samples are rendered and lit, not albedo.','', '## Recovery and delivery blockers','',data.get('recovery_summary',data['blockers'].get('missing_old_images','No active delivery blockers.')),'', 'Historical generation and acceptance records are preserved. Newly authored replacements use a separate recovery series capped at four attempts per required view. See [RECOVERY_STATUS.md](RECOVERY_STATUS.md) for current source availability and correction requirements.','', '## Per-deliverable outcomes','', '| Character | Deliverable | Current status | Attempts | Specific evidence or defect |','| --- | --- | --- | --- | --- |']
+ for cid,e in data['entries'].items():
+  statuses=[d['status'] for d in e['deliverables'].values()]
+  status='accepted' if all(x=='accepted' for x in statuses) else 'blocked' if 'blocked' in statuses else 'rejected / pending' if 'rejected' in statuses else 'pending'
+  exists=(ROOT/cid/'spec.json').exists()
+  image_name=f"{cid}.jpg" if e.get("kind")=="supplement" else f"{cid}_turnaround.jpg"
+  thumb=f'<img src="{cid}/{image_name}" width="180" alt="{cid}">' if status=='accepted' and (ROOT/cid/image_name).exists() else '—'
+  spec=f'[spec]({cid}/spec.json)' if exists else '—'
+  notes=f'[notes]({cid}/notes.md)' if (ROOT/cid/'notes.md').exists() else '—'
+  lines.append(f"| {cid} | {e.get('design_extent_m','supplement')} | {thumb} | {spec} | {notes} | {status} |")
+  for key,d in e['deliverables'].items():
+   reason=d.get('reason','Not yet attempted').replace('|','/')
+   quality.append(f"| {cid} | {key} | {d['status']} | {attempt_summary(d)} | {reason} |")
+   for attempt in d['attempts']:
+    if attempt['status']=='rejected':quality.append(f"| {cid} | {key} attempt {attempt['number']} | rejected | — | {attempt['reason']} |")
+   for attempt in d.get('recovery',{}).get('attempts',[]):
+    quality.append(f"| {cid} | {key} recovery attempt {attempt['number']} | {attempt['status']} | — | {attempt['reason']} |")
+ lines+=['','## Composition and storage','',f'Retained character library size: **{stored_bytes(ROOT):,} bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.','', 'Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.','', 'The scene/graphics library has a separate 120,000,000-byte cap. [Combined inventory](reference-inventory.json) reports every retained file, both library totals and the combined size; shared inventory files count against both caps.', '', 'Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.']
+ quality+=['','## Validation','']
+ quality += ['- '+line for line in data.get('validation_summary', ['See retained validation records; rerun required before final delivery.'])]
+ quality += ['- Historical game build/smoke evidence is retained from the prior pass; this reference-only continuation does not change game files.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
+ lines+=['','## Verification','']+[f'- {item}' for item in data.get('validation_summary',[])]+['','Records: [whole-library checks](validation/whole-library.json), [source audit](validation/source-audit-final.json), [recovery history](validation/recovery-history.json), [regression tests](validation/tests.txt).']
+ (ROOT/'README.md').write_text('\n'.join(lines).rstrip()+'\n');(ROOT/'QUALITY_REPORT.md').write_text('\n'.join(quality)+'\n')
+
+if __name__=='__main__':
+ import argparse
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['init','render','record','generated','recovery-generated','recovery-record']);p.add_argument('args',nargs='*');a=p.parse_args()
+ if a.action=='init':initialize()
+ elif a.action=='record':record(*a.args)
+ elif a.action=='recovery-record':record_recovery(*a.args)
+ elif a.action=='recovery-generated':
+  cid,key,path=a.args
+  record_recovery(cid,key,'pending','Newly authored recovery image saved; awaiting visual review.',path,attempt=True)
+ elif a.action=='generated':
+  cid,key,path=a.args
+  record(cid,key,'pending','Generated and saved; awaiting individual visual review.',path,attempt=True)
+ render()
+ index_and_report(json.loads(STATE.read_text()))

@@ -1,0 +1,165 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2135ba09-c97d-43a3-8092-a7ae2664a9fd.png",
+    "original_sha256": "1274c22f910ab56451db73363bc36d25160471b55f8ccc6c017cbd51fcd198e3",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "3e01860bba93e9d4fa96fc6c94c685c0aa9aa4c679e02a403af57e93c088dcc3"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-99949cfd-7c4c-4244-bcea-e166e0bef461.png",
+    "original_sha256": "a657b5dfc23b1ce5fe1c9baa7b43ea4726694919b02b80e04d8340d8532fd1d6",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "f775fd7bd593b0ff2ffec3193be039a269360d1b7cfb55bcd12e9f434c36bdc8"
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2047eee7-6f0c-4900-b424-07313c9ceb4a.png",
+    "original_sha256": "3e731d39b5c3f184e7dccf388283348bb2e627cc939e4378ae36f88c6802bd9d",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "8f88402f6d921c4446bea02e5ffe7f98ffbd6ead1a633f04bad6fc979e15e2f3"
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-7cccbdda-d335-4839-a901-d16275c5c2b9.png",
+    "original_sha256": "bbd38d5c319c36d4c082e7c13d81b2b52f585b8c7846c92a79cefe8960e411c5",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "49d8c5e8b134d5c224392c5b63b6a23fe8326e63957d8fa656440cfb0b5a769f"
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png",
+    "original_sha256": "ecb03c20a6bcc230c24b82908bf5c67cfc820c40eb2bcc65193c7b5d916b3d5e",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "6864933fdb72c5620850b7b1797e1f5a0617df416ef4c7c32f6de895d452dea3"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-19d15ccd-c480-43eb-9295-8003b0094ad8.png",
+    "original_sha256": "b945108c064f53f21b1fa62bdbeed631c8c37758e216436726d04d5f35b50b1b",
+    "original_size_px": [
+      1144,
+      1375
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "ef5cfe77447fd99551feaeebdef9d2ef10db271eacccf4f04b1b34880a2ec361"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e3652341-e6f2-4b5a-9d64-3a9512823024.png",
+    "original_sha256": "329c39b254c2e5cfcbf3e92a56404714917d2613b07be1f9f51f74e875ff52c2",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "79bc609f7941854a9a21a7ea67cd62e41ef56e6270eb9d6e41e4ebd99932f549"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png",
+    "original_sha256": "ecb03c20a6bcc230c24b82908bf5c67cfc820c40eb2bcc65193c7b5d916b3d5e",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": [
+      435,
+      1070,
+      700,
+      1220
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "7ed7ffc834e6a90fc405e1ef417dd1ab8d1309e4345f1b8fdfd928d48ff93176"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a78ff0e4-23c2-41e0-89cb-7b6520ff7979.png",
+    "original_sha256": "ecb03c20a6bcc230c24b82908bf5c67cfc820c40eb2bcc65193c7b5d916b3d5e",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": [
+      390,
+      180,
+      650,
+      380
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "8b0c4a03862c8fe8f0a956ee9d65319924c2434c56ae70c3ef28115f1bebffdf"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-afdddab5-c3d4-4df2-9c54-fc5967571671.png",
+    "original_sha256": "eaddadb28db32d7508a2d7855257c9da662d2ccb504e674990e678729bc175d1",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      115,
+      0,
+      1071,
+      1281
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-02d68cc8-b71d-40fb-97eb-9122fbe541bf.png",
+    "original_sha256": "995c7548452110c9c0b2a57bea1cd191aaaee48822de09b445614dceb387a440",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      92,
+      27,
+      1103,
+      1310
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072"
+  }
+}

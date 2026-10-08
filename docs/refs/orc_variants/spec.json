@@ -1,0 +1,790 @@
+{
+  "id": "orc_variants",
+  "design": {
+    "source": "design_target",
+    "design_sources": [
+      "recovery/original-brief.txt: orc extra four variants"
+    ],
+    "variants": [
+      {
+        "id": "wiry",
+        "source": "design_target",
+        "display_name": "Wiry orc",
+        "height_m": 1.7,
+        "overall_height_m": 1.7,
+        "proportions": {
+          "head_height_m": 0.211,
+          "shoulder_width_m": 0.408,
+          "hip_width_m": 0.315,
+          "arm_length_m": 0.714,
+          "leg_length_m": 0.884,
+          "hand_length_m": 0.175,
+          "neck_length_m": 0.102,
+          "bulk_0to1": 0.25,
+          "hunch_0to1": 0.5
+        },
+        "face": {
+          "shape": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty.",
+          "eyes": {
+            "iris_hex": "#a8863a",
+            "shape": "narrow angular, heavy lids",
+            "size_note": "natural adult scale, defined upper and lower lids"
+          },
+          "brow": "deep scarred ridged brow with tangled black eyebrows",
+          "nose": "broad flattened rough bridge and flared nostrils",
+          "lips": "ragged natural lips exposing uneven small fangs",
+          "ears": "long pointed ragged ears",
+          "skin_base_hex": "#6b7156",
+          "skin_variation": "faint redness on cheeks, nose and ears"
+        },
+        "hair": {
+          "root_hex": "#302f25",
+          "tip_hex": "#302f25",
+          "length_m": 0.35,
+          "style": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty.",
+          "braids": "as described, no additional ornamental braids"
+        },
+        "outfit_layers": [
+          {
+            "name": "rag_tunic",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "rag_kilt",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "straps",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "bracers",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "foot_wraps",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          }
+        ],
+        "armor": [
+          {
+            "name": "metal",
+            "material": "metal fittings or armour as described",
+            "color_hex": "#71614b",
+            "roughness": 0.5,
+            "metalness": 1
+          }
+        ],
+        "weapons": [
+          {
+            "kind": "cleaver",
+            "length_m": 0.65,
+            "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+          }
+        ],
+        "attachments": {
+          "right_hand": "rusty cleaver",
+          "left_hand": "empty"
+        },
+        "silhouette_keywords": [
+          "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair",
+          " rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet",
+          " rusty cleaver in own RIGHT hand, left empty."
+        ],
+        "avoid": [
+          "actor likeness",
+          "incorrect limbs or digits",
+          "gear side swaps",
+          "generated text",
+          "cropped extremities"
+        ],
+        "design_sources": [
+          "recovery/original-brief.txt: original roster entry",
+          "ARCHITECTURE.md section 4: applicable scale list"
+        ],
+        "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+        "description": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty.",
+        "sample_aliases": {
+          "metal": [
+            "rusted_iron_plates",
+            "cleaver_rust"
+          ]
+        },
+        "variant_note": "Distinct front-only variant on the original extra sheet; intent within the original skin/build range, not a recovered historical identity."
+      },
+      {
+        "id": "brown",
+        "source": "design_target",
+        "display_name": "Brown orc",
+        "height_m": 1.75,
+        "overall_height_m": 1.75,
+        "proportions": {
+          "head_height_m": 0.211,
+          "shoulder_width_m": 0.408,
+          "hip_width_m": 0.315,
+          "arm_length_m": 0.714,
+          "leg_length_m": 0.884,
+          "hand_length_m": 0.175,
+          "neck_length_m": 0.102,
+          "bulk_0to1": 0.25,
+          "hunch_0to1": 0.5
+        },
+        "face": {
+          "shape": "Deep mottled brown skin, wider heavy brow, broad nose, chipped fang and short tangled dark hair",
+          "eyes": {
+            "iris_hex": "#a8863a",
+            "shape": "narrow angular, heavy lids",
+            "size_note": "natural adult scale, defined upper and lower lids"
+          },
+          "brow": "deep scarred ridged brow with tangled black eyebrows",
+          "nose": "broad flattened rough bridge and flared nostrils",
+          "lips": "ragged natural lips exposing uneven small fangs",
+          "ears": "long pointed ragged ears",
+          "skin_base_hex": "#735039",
+          "skin_variation": "faint redness on cheeks, nose and ears"
+        },
+        "hair": {
+          "root_hex": "#302f25",
+          "tip_hex": "#302f25",
+          "length_m": 0.35,
+          "style": "Deep mottled brown skin, wider heavy brow, broad nose, chipped fang and short tangled dark hair",
+          "braids": "as described, no additional ornamental braids"
+        },
+        "outfit_layers": [
+          {
+            "name": "rag_tunic",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "rag_kilt",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "straps",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "bracers",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "foot_wraps",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          }
+        ],
+        "armor": [
+          {
+            "name": "metal",
+            "material": "metal fittings or armour as described",
+            "color_hex": "#71614b",
+            "roughness": 0.5,
+            "metalness": 1
+          }
+        ],
+        "weapons": [
+          {
+            "kind": "cleaver",
+            "length_m": 0.65,
+            "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+          }
+        ],
+        "attachments": {
+          "right_hand": "rusty cleaver",
+          "left_hand": "empty"
+        },
+        "silhouette_keywords": [
+          "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair",
+          " rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet",
+          " rusty cleaver in own RIGHT hand, left empty."
+        ],
+        "avoid": [
+          "actor likeness",
+          "incorrect limbs or digits",
+          "gear side swaps",
+          "generated text",
+          "cropped extremities"
+        ],
+        "design_sources": [
+          "recovery/original-brief.txt: original roster entry",
+          "ARCHITECTURE.md section 4: applicable scale list"
+        ],
+        "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+        "description": "Deep mottled brown skin, wider heavy brow, broad nose, chipped fang and short tangled dark hair",
+        "sample_aliases": {
+          "metal": [
+            "rusted_iron_plates",
+            "cleaver_rust"
+          ]
+        },
+        "variant_note": "Distinct front-only variant on the original extra sheet; intent within the original skin/build range, not a recovered historical identity."
+      },
+      {
+        "id": "scarred",
+        "source": "design_target",
+        "display_name": "Scarred orc",
+        "height_m": 1.65,
+        "overall_height_m": 1.65,
+        "proportions": {
+          "head_height_m": 0.211,
+          "shoulder_width_m": 0.408,
+          "hip_width_m": 0.315,
+          "arm_length_m": 0.714,
+          "leg_length_m": 0.884,
+          "hand_length_m": 0.175,
+          "neck_length_m": 0.102,
+          "bulk_0to1": 0.25,
+          "hunch_0to1": 0.5
+        },
+        "face": {
+          "shape": "Pale mottled grey-green skin, prominent healed brow/cheek scar, crooked nose and sparse matted hair",
+          "eyes": {
+            "iris_hex": "#a8863a",
+            "shape": "narrow angular, heavy lids",
+            "size_note": "natural adult scale, defined upper and lower lids"
+          },
+          "brow": "deep scarred ridged brow with tangled black eyebrows",
+          "nose": "broad flattened rough bridge and flared nostrils",
+          "lips": "ragged natural lips exposing uneven small fangs",
+          "ears": "long pointed ragged ears",
+          "skin_base_hex": "#929277",
+          "skin_variation": "faint redness on cheeks, nose and ears"
+        },
+        "hair": {
+          "root_hex": "#302f25",
+          "tip_hex": "#302f25",
+          "length_m": 0.35,
+          "style": "Pale mottled grey-green skin, prominent healed brow/cheek scar, crooked nose and sparse matted hair",
+          "braids": "as described, no additional ornamental braids"
+        },
+        "outfit_layers": [
+          {
+            "name": "rag_tunic",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "rag_kilt",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "straps",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "bracers",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "foot_wraps",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          }
+        ],
+        "armor": [
+          {
+            "name": "metal",
+            "material": "metal fittings or armour as described",
+            "color_hex": "#71614b",
+            "roughness": 0.5,
+            "metalness": 1
+          }
+        ],
+        "weapons": [
+          {
+            "kind": "cleaver",
+            "length_m": 0.65,
+            "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+          }
+        ],
+        "attachments": {
+          "right_hand": "rusty cleaver",
+          "left_hand": "empty"
+        },
+        "silhouette_keywords": [
+          "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair",
+          " rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet",
+          " rusty cleaver in own RIGHT hand, left empty."
+        ],
+        "avoid": [
+          "actor likeness",
+          "incorrect limbs or digits",
+          "gear side swaps",
+          "generated text",
+          "cropped extremities"
+        ],
+        "design_sources": [
+          "recovery/original-brief.txt: original roster entry",
+          "ARCHITECTURE.md section 4: applicable scale list"
+        ],
+        "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+        "description": "Pale mottled grey-green skin, prominent healed brow/cheek scar, crooked nose and sparse matted hair",
+        "sample_aliases": {
+          "metal": [
+            "rusted_iron_plates",
+            "cleaver_rust"
+          ]
+        },
+        "variant_note": "Distinct front-only variant on the original extra sheet; intent within the original skin/build range, not a recovered historical identity."
+      },
+      {
+        "id": "matted",
+        "source": "design_target",
+        "display_name": "Matted orc",
+        "height_m": 1.8,
+        "overall_height_m": 1.8,
+        "proportions": {
+          "head_height_m": 0.211,
+          "shoulder_width_m": 0.408,
+          "hip_width_m": 0.315,
+          "arm_length_m": 0.714,
+          "leg_length_m": 0.884,
+          "hand_length_m": 0.175,
+          "neck_length_m": 0.102,
+          "bulk_0to1": 0.25,
+          "hunch_0to1": 0.5
+        },
+        "face": {
+          "shape": "Dark olive-grey skin, long narrow face, very long tangled black locks and uneven fangs",
+          "eyes": {
+            "iris_hex": "#a8863a",
+            "shape": "narrow angular, heavy lids",
+            "size_note": "natural adult scale, defined upper and lower lids"
+          },
+          "brow": "deep scarred ridged brow with tangled black eyebrows",
+          "nose": "broad flattened rough bridge and flared nostrils",
+          "lips": "ragged natural lips exposing uneven small fangs",
+          "ears": "long pointed ragged ears",
+          "skin_base_hex": "#565b43",
+          "skin_variation": "faint redness on cheeks, nose and ears"
+        },
+        "hair": {
+          "root_hex": "#302f25",
+          "tip_hex": "#302f25",
+          "length_m": 0.35,
+          "style": "Dark olive-grey skin, long narrow face, very long tangled black locks and uneven fangs",
+          "braids": "as described, no additional ornamental braids"
+        },
+        "outfit_layers": [
+          {
+            "name": "rag_tunic",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "rag_kilt",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          },
+          {
+            "name": "straps",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "bracers",
+            "material": "worn stitched leather",
+            "color_hex": "#55412c",
+            "roughness": 0.72,
+            "sheen": 0.08,
+            "notes": "Only where required by description"
+          },
+          {
+            "name": "foot_wraps",
+            "material": "woven cloth or brocade as described",
+            "color_hex": "#554333",
+            "roughness": 0.85,
+            "sheen": 0.3,
+            "notes": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+          }
+        ],
+        "armor": [
+          {
+            "name": "metal",
+            "material": "metal fittings or armour as described",
+            "color_hex": "#71614b",
+            "roughness": 0.5,
+            "metalness": 1
+          }
+        ],
+        "weapons": [
+          {
+            "kind": "cleaver",
+            "length_m": 0.65,
+            "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+          }
+        ],
+        "attachments": {
+          "right_hand": "rusty cleaver",
+          "left_hand": "empty"
+        },
+        "silhouette_keywords": [
+          "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair",
+          " rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet",
+          " rusty cleaver in own RIGHT hand, left empty."
+        ],
+        "avoid": [
+          "actor likeness",
+          "incorrect limbs or digits",
+          "gear side swaps",
+          "generated text",
+          "cropped extremities"
+        ],
+        "design_sources": [
+          "recovery/original-brief.txt: original roster entry",
+          "ARCHITECTURE.md section 4: applicable scale list"
+        ],
+        "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+        "description": "Dark olive-grey skin, long narrow face, very long tangled black locks and uneven fangs",
+        "sample_aliases": {
+          "metal": [
+            "rusted_iron_plates",
+            "cleaver_rust"
+          ]
+        },
+        "variant_note": "Distinct front-only variant on the original extra sheet; intent within the original skin/build range, not a recovered historical identity."
+      }
+    ]
+  },
+  "composition": {
+    "supplement": true,
+    "metric": true,
+    "columns": 4,
+    "rows": 1,
+    "canvas_px": [
+      1536,
+      1024
+    ],
+    "png_name": "orc_variants.png",
+    "items": [
+      {
+        "name": "wiry",
+        "label": "WIRY / GREY-GREEN",
+        "source": "views/wiry.png",
+        "extent_m": 1.7
+      },
+      {
+        "name": "brown",
+        "label": "BROWN / HEAVY BROW",
+        "source": "views/brown.png",
+        "extent_m": 1.75
+      },
+      {
+        "name": "scarred",
+        "label": "SCARRED / PALE MOTTLE",
+        "source": "views/scarred.png",
+        "extent_m": 1.65
+      },
+      {
+        "name": "matted",
+        "label": "MATTED / LONG HAIR",
+        "source": "views/matted.png",
+        "extent_m": 1.8
+      }
+    ]
+  },
+  "measured": {
+    "supplement": {
+      "path": "orc_variants.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "a311af7c94dfb96970d5cebcab36df185047ace9c7c75aa8fb81f81c2a3f9539",
+      "size_bytes": 158925,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "5aeb3bb912d738d3fb2e2f58d2ee8ad6e313397f8fa8b9766a7a27c205f28ff4",
+      "decoded_background_tolerance": 3,
+      "lossless_png": {
+        "path": "orc_variants.png",
+        "sha256": "83fd0a44a1c9420e2f1a28155081a5972052a17424ee3b4fc8cae80bbae66dfb"
+      },
+      "objects": [
+        {
+          "name": "wiry",
+          "source": "views/wiry.png",
+          "source_sha256": "c7f0c5c92fa98e22fdd58f77f711946fe1f9060fc993070db46b866716382cfa",
+          "source_bbox_px": [
+            2,
+            3,
+            219,
+            326
+          ],
+          "sheet_bbox_px": [
+            100,
+            452,
+            424,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1.7,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            324,
+            482
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "brown",
+          "source": "views/brown.png",
+          "source_sha256": "90a3bb82572ff2f3e2c7edc822452f9ca1c647215d43ab480baa6348f09ae1b1",
+          "source_bbox_px": [
+            4,
+            4,
+            211,
+            324
+          ],
+          "sheet_bbox_px": [
+            466,
+            438,
+            787,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1.75,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            321,
+            496
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "scarred",
+          "source": "views/scarred.png",
+          "source_sha256": "c148d387123cc99aeee3c9197913ce1d094bdd8574655da459c935fb09815293",
+          "source_bbox_px": [
+            4,
+            4,
+            208,
+            324
+          ],
+          "sheet_bbox_px": [
+            841,
+            466,
+            1139,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1.65,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            298,
+            468
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "matted",
+          "source": "views/matted.png",
+          "source_sha256": "8ce488a4b34245ca53dc25e089fd070aa2d3adb1c86d54ac4061a8565791980f",
+          "source_bbox_px": [
+            4,
+            4,
+            201,
+            324
+          ],
+          "sheet_bbox_px": [
+            1196,
+            423,
+            1511,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1.8,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            315,
+            511
+          ],
+          "scale_axis": "vertical"
+        }
+      ],
+      "px_per_m": 283.68663594470047,
+      "rulers": [
+        {
+          "axis": "vertical",
+          "x_px": 65,
+          "baseline_y_px": 934,
+          "top_y_px": 423,
+          "endpoint_m": 1.8,
+          "step_m": 0.25,
+          "ticks": [
+            {
+              "value_m": 0.0,
+              "y_px": 934
+            },
+            {
+              "value_m": 0.25,
+              "y_px": 863
+            },
+            {
+              "value_m": 0.5,
+              "y_px": 792
+            },
+            {
+              "value_m": 0.75,
+              "y_px": 721
+            },
+            {
+              "value_m": 1.0,
+              "y_px": 650
+            },
+            {
+              "value_m": 1.25,
+              "y_px": 579
+            },
+            {
+              "value_m": 1.5,
+              "y_px": 508
+            },
+            {
+              "value_m": 1.75,
+              "y_px": 438
+            }
+          ],
+          "label_bboxes_px": [
+            [
+              17,
+              928,
+              53,
+              940
+            ],
+            [
+              17,
+              857,
+              53,
+              869
+            ],
+            [
+              17,
+              786,
+              53,
+              798
+            ],
+            [
+              17,
+              715,
+              53,
+              727
+            ],
+            [
+              17,
+              644,
+              53,
+              656
+            ],
+            [
+              17,
+              573,
+              53,
+              585
+            ],
+            [
+              17,
+              502,
+              53,
+              514
+            ],
+            [
+              17,
+              432,
+              53,
+              444
+            ],
+            [
+              77,
+              404,
+              140,
+              417
+            ]
+          ]
+        }
+      ],
+      "scale_requirement": "projected vertical design span"
+    }
+  }
+}

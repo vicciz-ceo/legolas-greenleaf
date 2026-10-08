@@ -1,0 +1,62 @@
+# Greenleaf character reference library
+
+Development references only; the game imports none of these images. All source meshes, textures and sound remain procedural.
+
+Branch `reference/character-sheets`; [PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). The original briefs are retained in [recovery/original-brief.txt](recovery/original-brief.txt). [CHECKLIST.md](CHECKLIST.md) and [progress.json](progress.json) track every required deliverable and its attempt history.
+
+| Character / group | Design height or span | Thumbnail | Spec | Notes | Delivery status |
+| --- | --- | --- | --- | --- | --- |
+| legolas | 1.85 | <img src="legolas/legolas_turnaround.jpg" width="180" alt="legolas"> | [spec](legolas/spec.json) | [notes](legolas/notes.md) | accepted |
+| gimli | 1.37 | <img src="gimli/gimli_turnaround.jpg" width="180" alt="gimli"> | [spec](gimli/spec.json) | [notes](gimli/notes.md) | accepted |
+| aragorn | 1.88 | <img src="aragorn/aragorn_turnaround.jpg" width="180" alt="aragorn"> | [spec](aragorn/spec.json) | [notes](aragorn/notes.md) | accepted |
+| tauriel | 1.78 | <img src="tauriel/tauriel_turnaround.jpg" width="180" alt="tauriel"> | [spec](tauriel/spec.json) | [notes](tauriel/notes.md) | accepted |
+| bolg | 2.6 | <img src="bolg/bolg_turnaround.jpg" width="180" alt="bolg"> | [spec](bolg/spec.json) | [notes](bolg/notes.md) | accepted |
+| cave_troll | 4.5 | <img src="cave_troll/cave_troll_turnaround.jpg" width="180" alt="cave_troll"> | [spec](cave_troll/spec.json) | [notes](cave_troll/notes.md) | accepted |
+| thranduil | 1.9 | <img src="thranduil/thranduil_turnaround.jpg" width="180" alt="thranduil"> | [spec](thranduil/spec.json) | [notes](thranduil/notes.md) | accepted |
+| elf_mirkwood | 1.85 | <img src="elf_mirkwood/elf_mirkwood_turnaround.jpg" width="180" alt="elf_mirkwood"> | [spec](elf_mirkwood/spec.json) | [notes](elf_mirkwood/notes.md) | accepted |
+| elf_galadhrim | 1.85 | <img src="elf_galadhrim/elf_galadhrim_turnaround.jpg" width="180" alt="elf_galadhrim"> | [spec](elf_galadhrim/spec.json) | [notes](elf_galadhrim/notes.md) | accepted |
+| boromir | 1.85 | <img src="boromir/boromir_turnaround.jpg" width="180" alt="boromir"> | [spec](boromir/spec.json) | [notes](boromir/notes.md) | accepted |
+| gondor | 1.82 | <img src="gondor/gondor_turnaround.jpg" width="180" alt="gondor"> | [spec](gondor/spec.json) | [notes](gondor/notes.md) | accepted |
+| rohirrim | 1.8 | <img src="rohirrim/rohirrim_turnaround.jpg" width="180" alt="rohirrim"> | [spec](rohirrim/spec.json) | [notes](rohirrim/notes.md) | accepted |
+| laketown_man | 1.75 | <img src="laketown_man/laketown_man_turnaround.jpg" width="180" alt="laketown_man"> | [spec](laketown_man/spec.json) | [notes](laketown_man/notes.md) | accepted |
+| orc | 1.7 | <img src="orc/orc_turnaround.jpg" width="180" alt="orc"> | [spec](orc/spec.json) | [notes](orc/notes.md) | accepted |
+| goblin | 1.48 | <img src="goblin/goblin_turnaround.jpg" width="180" alt="goblin"> | [spec](goblin/spec.json) | [notes](goblin/notes.md) | accepted |
+| gundabad | 2.1 | <img src="gundabad/gundabad_turnaround.jpg" width="180" alt="gundabad"> | [spec](gundabad/spec.json) | [notes](gundabad/notes.md) | accepted |
+| uruk | 2.0 | <img src="uruk/uruk_turnaround.jpg" width="180" alt="uruk"> | [spec](uruk/spec.json) | [notes](uruk/notes.md) | accepted |
+| berserker | 2.1 | <img src="berserker/berserker_turnaround.jpg" width="180" alt="berserker"> | [spec](berserker/spec.json) | [notes](berserker/notes.md) | accepted |
+| lurtz | 2.1 | <img src="lurtz/lurtz_turnaround.jpg" width="180" alt="lurtz"> | [spec](lurtz/spec.json) | [notes](lurtz/notes.md) | accepted |
+| easterling | 1.8 | <img src="easterling/easterling_turnaround.jpg" width="180" alt="easterling"> | [spec](easterling/spec.json) | [notes](easterling/notes.md) | accepted |
+| haradrim | 1.8 | <img src="haradrim/haradrim_turnaround.jpg" width="180" alt="haradrim"> | [spec](haradrim/spec.json) | [notes](haradrim/notes.md) | accepted |
+| war_troll | 4.5 | <img src="war_troll/war_troll_turnaround.jpg" width="180" alt="war_troll"> | [spec](war_troll/spec.json) | [notes](war_troll/notes.md) | accepted |
+| mirkwood_spider | 2.75 | <img src="mirkwood_spider/mirkwood_spider_turnaround.jpg" width="180" alt="mirkwood_spider"> | [spec](mirkwood_spider/spec.json) | [notes](mirkwood_spider/notes.md) | accepted |
+| brood_mother | 6 | <img src="brood_mother/brood_mother_turnaround.jpg" width="180" alt="brood_mother"> | [spec](brood_mother/spec.json) | [notes](brood_mother/notes.md) | accepted |
+| mumak | 14 | <img src="mumak/mumak_turnaround.jpg" width="180" alt="mumak"> | [spec](mumak/spec.json) | [notes](mumak/notes.md) | accepted |
+| gundabad_bat | 7 | <img src="gundabad_bat/gundabad_bat_turnaround.jpg" width="180" alt="gundabad_bat"> | [spec](gundabad_bat/spec.json) | [notes](gundabad_bat/notes.md) | accepted |
+| great_eagle | 10 | <img src="great_eagle/great_eagle_turnaround.jpg" width="180" alt="great_eagle"> | [spec](great_eagle/spec.json) | [notes](great_eagle/notes.md) | accepted |
+| fell_beast | 12 | <img src="fell_beast/fell_beast_turnaround.jpg" width="180" alt="fell_beast"> | [spec](fell_beast/spec.json) | [notes](fell_beast/notes.md) | accepted |
+| dwarf_bald | 1.35 | <img src="dwarf_bald/dwarf_bald_turnaround.jpg" width="180" alt="dwarf_bald"> | [spec](dwarf_bald/spec.json) | [notes](dwarf_bald/notes.md) | accepted |
+| dwarf_hat | 1.3 | <img src="dwarf_hat/dwarf_hat_turnaround.jpg" width="180" alt="dwarf_hat"> | [spec](dwarf_hat/spec.json) | [notes](dwarf_hat/notes.md) | accepted |
+| dwarf_elder | 1.37 | <img src="dwarf_elder/dwarf_elder_turnaround.jpg" width="180" alt="dwarf_elder"> | [spec](dwarf_elder/spec.json) | [notes](dwarf_elder/notes.md) | accepted |
+| dwarf_redbeard | 1.4 | <img src="dwarf_redbeard/dwarf_redbeard_turnaround.jpg" width="180" alt="dwarf_redbeard"> | [spec](dwarf_redbeard/spec.json) | [notes](dwarf_redbeard/notes.md) | accepted |
+| weapons | supplement | <img src="weapons/weapons.jpg" width="180" alt="weapons"> | [spec](weapons/spec.json) | [notes](weapons/notes.md) | accepted |
+| orc_variants | supplement | <img src="orc_variants/orc_variants.jpg" width="180" alt="orc_variants"> | [spec](orc_variants/spec.json) | [notes](orc_variants/notes.md) | accepted |
+| dwarf_company | supplement | <img src="dwarf_company/dwarf_company.jpg" width="180" alt="dwarf_company"> | [spec](dwarf_company/spec.json) | [notes](dwarf_company/notes.md) | accepted |
+| mumak_howdah | supplement | <img src="mumak_howdah/mumak_howdah.jpg" width="180" alt="mumak_howdah"> | [spec](mumak_howdah/spec.json) | [notes](mumak_howdah/notes.md) | accepted |
+
+## Composition and storage
+
+Retained character library size: **69,617,976 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+
+Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
+
+The scene/graphics library has a separate 120,000,000-byte cap. [Combined inventory](reference-inventory.json) reports every retained file, both library totals and the combined size; shared inventory files count against both caps.
+
+Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.
+
+## Verification
+
+- 25 regression tests pass, including complete file accounting for both integrated libraries, construction, alpha intake, original concurrency/caps and recovery history.
+- All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.
+- All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view.
+
+Records: [whole-library checks](validation/whole-library.json), [source audit](validation/source-audit-final.json), [recovery history](validation/recovery-history.json), [regression tests](validation/tests.txt).

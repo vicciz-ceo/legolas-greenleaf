@@ -1,0 +1,406 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0d86b34a-b20d-40dd-afd5-fb663d291e20.png",
+    "original_sha256": "a18fa8189ba43e3308fba542db2e24f29968db4b9c2d752338488aaea5546c00",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+    "generation": "image_gen__imagegen; fresh text prompt; call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [],
+    "provenance": "New normal authored source set, not historical recovery. Prompt grounded in spec.json, notes.md and recovery/original-brief.txt; no existing images supplied.",
+    "by_eye_review": {
+      "status": "accepted",
+      "original_identity": true,
+      "front_angle": true,
+      "five_visible_digits_each_hand": true,
+      "both_hands_empty": true,
+      "complete_framing": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "Soft floppy wool hat, round ruddy original face, chestnut curly beard, ochre tunic and brown quilted vest all readable. No definite defects. Padded vest seam and buckle design are authored costume detail."
+    }
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-257498be-0e13-4a06-ab2a-fafede59d485.png",
+    "original_sha256": "ce798f418a2db7efe2dd43196028792386125485169adcc981cae3c8efe989c8",
+    "original_size_px": [
+      1312,
+      1199
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+    "generation": "image_gen__imagegen; identity-conditioned front portrait; call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on the accepted retained local front.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "front_angle": true,
+      "complete_hat_face_beard_and_shoulders": true,
+      "costume_consistent": true,
+      "no_text": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "Complete floppy hat, face and beard retained; same rounded nose, brows, brown eyes, chestnut curls, padded vest and ochre tunic. Lower chest and upper arms end at standard portrait framing. Minor facial lighting detail drift allowed."
+    }
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-748eb4f2-83c5-47be-94f4-aa9c634bdbb0.png",
+    "original_sha256": "3e79ac904f9467b06c4457435a04038d92235ab29207885701aef27f23df6458",
+    "original_size_px": [
+      1002,
+      1570
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "5a94812a177df1d9cd62e22d0c7c692dcfd689d6fe7af1b7f42144a5bf5e625a",
+    "generation": "image_gen__imagegen; identity-conditioned three-quarter front rotation; call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local front; output preserved with existing alpha.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "three_quarter_front_toward_image_right": true,
+      "five_visible_digits_each_hand": true,
+      "both_hands_empty": true,
+      "complete_framing": true,
+      "costume_consistent": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "Original floppy hat, rounded ruddy face, curly chestnut beard and stocky body preserved; ochre tunic, brown padded vest and boots consistent. Both hands reviewed at original resolution, with thumb plus four fingers; fingers naturally partially overlap on far hand. Minor quilt seam and buckle drift allowed."
+    }
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-4e331b01-8637-43f7-9d05-ef1243155775.png",
+    "original_sha256": "c43436fa4b656d2e9619024d18433521af5614f89f5b122e02ea9f000dee2dc7",
+    "original_size_px": [
+      1002,
+      1570
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "8fb552f41c9142c49834a30f8104b56fa354a777d374e9275ff652bfe89e4344",
+    "generation": "image_gen__imagegen; identity-conditioned exact right profile rotation; call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local front; output preserved with existing alpha; never mirrored.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "exact_right_profile_nose_image_right": true,
+      "five_digits_where_visible": true,
+      "both_hands_empty": true,
+      "complete_framing": true,
+      "costume_consistent": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "One-eye nose-right lateral profile. Near hand shows thumb plus four fingers; far hand naturally partly occluded by body. Relaxed A-pose projects arms largely into depth. Same original face, curly chestnut beard, floppy wool hat, ochre tunic, padded dark vest, belt and thick boots. Minor wool fold, quilt stitch and buckle drift allowed."
+    }
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-f6d8cc40-f335-4146-a9bf-e83be4c043f3.png",
+    "original_sha256": "03b9ba70f0a293e42ed2ecb1020ee3113449d65063d2dba91546ef4a58235666",
+    "original_size_px": [
+      1002,
+      1570
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "c2b4dc363b70ccbee688bc9d1dda9bd25ec2705e061bcbfd2d08b0382b92c674",
+    "generation": "image_gen__imagegen; accepted-front-conditioned exact rear rotation; call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local front; output preserved with existing alpha; never mirrored.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "exact_straight_rear_no_face": true,
+      "five_digits_where_visible": true,
+      "both_hands_empty": true,
+      "complete_framing": true,
+      "costume_consistent": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "Exact straight rear with loose curly chestnut nape hair, no visible face or beard. Complete floppy hat, empty natural hands and boot soles. Thumb plus four partially overlapping curled fingers reviewed on each hand. Matching ochre tunic, brown padded vest, belt and boots; minor quilt seam and hat fold drift allowed."
+    }
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-01e750ff-d73b-4bb9-a9a3-5db7a1da33ee.png",
+    "original_sha256": "70a122b6d4a59143b61352e31b97de5fcadc716bfbf15eef40df4b36e5429806",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "6adf299470a4f2dadf4a4b9cfb081ce419ecd1f317cf6af1fb50e0332109c5e4",
+    "generation": "image_gen__imagegen; accepted-front-portrait-conditioned three-quarter rotation; call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local front portrait after inspecting accepted body front and face front; output preserved with existing alpha; never mirrored.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "three_quarter_nose_image_right": true,
+      "complete_hat_face_beard_and_shoulders": true,
+      "costume_consistent": true,
+      "no_text": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "Three-quarter front portrait with nose directed image right, same rounded ruddy original face, bulbous nose, chestnut brows/curls/beard and brown eyes. Full hat, visible rounded ear, entire beard and both shoulder contours have side margins. Upper chest and upper arms end intentionally at lower portrait boundary. Reviewed alpha composited on grey: no backdrop halo; existing alpha retained. Minor tunic toggle and light drift allowed."
+    }
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-89b47eb5-6e1f-477b-8d06-84868bcf8328.png",
+    "original_sha256": "bb788275aeefffc554feeea3c6421fe7339e0d6d8793a233206b29070c0c9db4",
+    "original_size_px": [
+      1315,
+      1197
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "752d07913310ebbe6a182862d462182fab930e21dba521102fbeffd515ab9dca",
+    "generation": "image_gen__imagegen; accepted-front-portrait-conditioned exact right profile; call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local front portrait; existing alpha preserved; never mirrored.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_identity": true,
+      "exact_right_profile_nose_image_right": true,
+      "complete_hat_ear_beard_and_shoulder_outline": true,
+      "costume_consistent": true,
+      "no_text": true,
+      "segmentation_edges_retained": true,
+      "silhouette_64px": true,
+      "notes": "One-eye lateral nose-right portrait; complete floppy wool hat, rounded ear, signature curly chestnut beard tip and shoulder silhouette retained. Lower torso ends at intentional upper-body portrait framing. Alpha composited on grey and 64px review passed. Minor wool fold, stitch and lighting drift allowed."
+    }
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d72cf353-4bf6-4538-b22c-1beebb89f196.png",
+    "original_sha256": "e61bbf12aba62436d9249db56dc7347d56e5dd041448cf273b199560b4d7a186",
+    "original_size_px": [
+      1002,
+      1570
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "8bf3c9a152fd963ad74a4c6f0486965bae9dafdce1a1dad6dc1ddbf45011414e",
+    "generation": "image_gen__imagegen; accepted-body-front-conditioned individual cloth/leather macro; call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source set, not historical recovery. Conditioned only on accepted retained local body front; original full-resolution opaque RGB saved, no background removal required.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_costume_materials": true,
+      "one_individual_material_macro_view": true,
+      "ochre_coarse_tunic_weave": true,
+      "dark_brown_padded_quilted_leather_with_stitching_and_wear": true,
+      "no_added_gear": true,
+      "no_text": true,
+      "opaque_material_fills_frame": true,
+      "notes": "One contiguous sleeve/vest junction macro. Coarse warm ochre weave and worn dark-brown rectangular quilting match accepted body front. No face, hat, hands, additional gear, labels or empty background. Small quilt stitch and light drift allowed; fully opaque RGB used ordinary intake without rembg."
+    },
+    "sampling_suggestions": [
+      {
+        "name": "cloth",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          12,
+          35,
+          48,
+          115
+        ],
+        "author_reviewed": true,
+        "opaque_fraction": 1.0,
+        "note": "Ochre woven cloth patch; rendered and lit, not albedo."
+      },
+      {
+        "name": "leather",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          119,
+          105,
+          152,
+          145
+        ],
+        "author_reviewed": true,
+        "opaque_fraction": 1.0,
+        "note": "Brown padded leather surface away from quilting seam; rendered and lit, not albedo."
+      }
+    ]
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-839493d0-a149-476d-a35d-34c7b30d69dc.png",
+    "original_sha256": "aca3d38244acc4755eba0525d82db6ce8fcf3db506ac62a18c74c946c9d3f755",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "553c8784a2f0bd756f7c53617d85446d81b0430a5646f6b165564b7fc3bdf14e",
+    "generation": "image_gen__imagegen; accepted-front-conditioned buckle macro; worker call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/views/front.png",
+        "sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+        "key": "views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored detail source, not historical recovery. Conditioned only on accepted local body front. Opaque full-material macro retained by ordinary 256px detail intake.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_existing_belt_buckle": true,
+      "no_invented_weapon_or_armour": true,
+      "single_material_macro": true,
+      "no_text": true,
+      "opaque_frame": true,
+      "notes": "Plain rounded rectangular worn brass buckle and same brown leather belt over ochre tunic; minor buckle and stitch drift tolerated. Surface scratches, patina and leather grain readable."
+    }
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-243581d0-742c-48b5-a8fb-5b4a72315ce3.png",
+    "original_sha256": "557683acb194b9d3d672693eb4ffe19366713e083124d66f5fa8949c26b1443c",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "347b4cdfbdb1bf29988f6eac005e3cbe4da053025da87080e2ef182415f12f9a",
+    "generation": "image_gen__imagegen; accepted-face-front-conditioned skin macro; worker call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored detail source, not historical recovery. Conditioned only on accepted local face front. Opaque facial-material macro retained by ordinary 256px detail intake.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_face": true,
+      "visible_eye_nose_cheek_and_skin_pores": true,
+      "single_material_macro": true,
+      "clear_skin_sample_area": true,
+      "no_awkward_head_edge": true,
+      "no_text": true,
+      "opaque_frame": true,
+      "notes": "Coherent original-face skin macro with same brown eye, thick chestnut brow, ruddy full cheek and rounded nose. Natural pores and age lines readable; no head silhouette or beard tips clipped. Minor warm facial illumination drift tolerated."
+    }
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-daedbc3f-6906-4028-ac92-f56cd1f04ceb.png",
+    "original_sha256": "edde7d0e94ffcdd075ac4c90e29024f21a2e0aacaf9fb49280a90c7a2ad032fb",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "4b7ece1911f45bd519f4a19e442fb9590fde5a7d0a3eb7d7295b131cc0c59c81",
+    "generation": "image_gen__imagegen; accepted-front-portrait-conditioned material macro; worker call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source, not historical recovery. One individual beard/hair macro conditioned only on accepted retained local front portrait. Fully opaque material-filled output; ordinary detail intake at 256 px without rembg.",
+    "by_eye_review": {
+      "status": "accepted",
+      "matches_accepted_chestnut_curly_beard": true,
+      "crisp_realistic_strands": true,
+      "fully_opaque_material_filled_tile": true,
+      "no_new_ornaments_tattoos_gear_or_text": true,
+      "notes": "Dense chestnut beard fibers and rounded curls match accepted portrait. Mild brighter strand highlights from macro illumination permitted; no design change."
+    }
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "name": "Amon Hen",
+  "sky": {
+    "kind": "physical",
+    "elevation": 12,
+    "azimuth": 250,
+    "turbidity": 6,
+    "rayleigh": 1.7,
+    "mieCoefficient": 0.011,
+    "mieDirectionalG": 0.86,
+    "clouds": 0.32
+  },
+  "sunColor": "#ffc684",
+  "sunIntensity": 3.4,
+  "hemiSky": "#9db8d9",
+  "hemiGround": "#5a4f2c",
+  "hemiIntensity": 0.5,
+  "envIntensity": 1,
+  "fog": {
+    "color": "#dcb78c",
+    "density": 0.0075
+  },
+  "exposure": 0.95,
+  "bloom": 0.2,
+  "grade": {
+    "lift": [
+      0.012,
+      0.006,
+      0
+    ],
+    "gamma": [
+      1,
+      1,
+      0.97
+    ],
+    "gain": [
+      1.05,
+      1,
+      0.92
+    ],
+    "saturation": 1.04,
+    "vignette": 0.32
+  },
+  "weather": "dust",
+  "weatherIntensity": 0.55,
+  "ambience": "forest",
+  "palette": {
+    "sky_top": "#8298ae",
+    "horizon": "#dcb78c",
+    "fog": "#dcb78c",
+    "sun": "#ffc684",
+    "shadow_fill": "#9db8d9",
+    "dominant_ground": "#7b6040",
+    "dominant_structure": "#989588",
+    "accent": "#d3ad62",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunIntensity",
+      "current": 4,
+      "recommended": 3.4,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.62,
+      "recommended": 0.5,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0115,
+      "recommended": 0.0075,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.38,
+      "recommended": 0.2,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.saturation",
+      "current": 1.12,
+      "recommended": 1.04,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.42,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#e5e0da",
+      "region_px": [
+        691,
+        20,
+        799,
+        82
+      ],
+      "pixel_count": 6696,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#2f271a",
+      "region_px": [
+        1260,
+        410,
+        1321,
+        471
+      ],
+      "pixel_count": 3721,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#d0a987",
+      "region_px": [
+        252,
+        353,
+        278,
+        376
+      ],
+      "pixel_count": 598,
+      "image": "looks/establishing.jpg",
+      "label": "sun"
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#523f2d",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1e170d",
+      "region_px": [
+        691,
+        850,
+        891,
+        952
+      ],
+      "pixel_count": 20400,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#7b6c5f",
+      "region_px": [
+        799,
+        174,
+        876,
+        236
+      ],
+      "pixel_count": 4774,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#393023",
+      "region_px": [
+        584,
+        584,
+        691,
+        645
+      ],
+      "pixel_count": 6527,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "amon_hen"
+}

@@ -1,0 +1,218 @@
+{
+  "name": "Black Gate",
+  "sky": {
+    "kind": "gradient",
+    "top": "#0a0403",
+    "horizon": "#49190d",
+    "bottom": "#120907",
+    "stars": 0,
+    "clouds": 0.95,
+    "cloudColor": "#4a1d0f"
+  },
+  "sunColor": "#dca081",
+  "sunIntensity": 1.5,
+  "sunDirection": [
+    0.2,
+    0.2,
+    0.96
+  ],
+  "hemiSky": "#73635e",
+  "hemiGround": "#1f120c",
+  "hemiIntensity": 0.8,
+  "envIntensity": 0.75,
+  "fog": {
+    "color": "#331510",
+    "density": 0.0075
+  },
+  "exposure": 1.15,
+  "bloom": 0.22,
+  "grade": {
+    "lift": [
+      0.012,
+      0.002,
+      0
+    ],
+    "gamma": [
+      1,
+      0.99,
+      0.96
+    ],
+    "gain": [
+      1.07,
+      0.96,
+      0.86
+    ],
+    "saturation": 0.95,
+    "vignette": 0.32
+  },
+  "weather": "ash",
+  "weatherIntensity": 0.85,
+  "ambience": "wind",
+  "palette": {
+    "sky_top": "#0a0403",
+    "horizon": "#49190d",
+    "fog": "#331510",
+    "sun": "#dca081",
+    "shadow_fill": "#73635e",
+    "dominant_ground": "#302b28",
+    "dominant_structure": "#24252a",
+    "accent": "#af623c",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunColor",
+      "current": "#ff7a3d",
+      "recommended": "#dca081",
+      "reason": "Neutralise excessive orange/blue cast so fire, hide and wet stone keep distinguishable hues."
+    },
+    {
+      "field": "sunIntensity",
+      "current": 1.8,
+      "recommended": 1.5,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiSky",
+      "current": "#5a2f24",
+      "recommended": "#73635e",
+      "reason": "Add neutral ash fill so Mordor troops do not merge into the red horizon."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.65,
+      "recommended": 0.8,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0125,
+      "recommended": 0.0075,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.46,
+      "recommended": 0.22,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.56,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#452019",
+      "region_px": [
+        922,
+        20,
+        1152,
+        102
+      ],
+      "pixel_count": 18860,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#8b3723",
+      "region_px": [
+        952,
+        205,
+        1167,
+        287
+      ],
+      "pixel_count": 17630,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#3e2e29",
+      "region_px": [
+        722,
+        522,
+        829,
+        573
+      ],
+      "pixel_count": 5457,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#412f2c",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#2f2d2f",
+      "region_px": [
+        691,
+        850,
+        891,
+        952
+      ],
+      "pixel_count": 20400,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#332521",
+      "region_px": [
+        292,
+        297,
+        445,
+        420
+      ],
+      "pixel_count": 18819,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#392e2c",
+      "region_px": [
+        584,
+        584,
+        691,
+        645
+      ],
+      "pixel_count": 6527,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "black_gate"
+}

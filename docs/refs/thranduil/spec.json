@@ -1,0 +1,713 @@
+{
+  "id": "thranduil",
+  "design": {
+    "id": "thranduil",
+    "source": "design_target",
+    "display_name": "Thranduil",
+    "height_m": 1.9,
+    "overall_height_m": 2.08,
+    "proportions": {
+      "head_height_m": 0.236,
+      "shoulder_width_m": 0.456,
+      "hip_width_m": 0.351,
+      "arm_length_m": 0.798,
+      "leg_length_m": 0.988,
+      "hand_length_m": 0.196,
+      "neck_length_m": 0.114,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Elvenking: long platinum-silver hair; dark twig crown with autumn leaves and berries; silver brocade robe under a floor-length wine-red embroidered coat; regal cold original elf face.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "pointed elf ears",
+      "skin_base_hex": "#e7c7b7",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#bdbcb4",
+      "tip_hex": "#e1e0d8",
+      "length_m": 0.65,
+      "style": "long straight platinum-silver hair",
+      "braids": "none; back hair may gather under crown"
+    },
+    "outfit_layers": [
+      {
+        "name": "coat",
+        "material": "embroidered wine-red velvet",
+        "color_hex": "#6c192e",
+        "roughness": 0.78,
+        "sheen": 0.45,
+        "notes": "Floor length, embroidery drift tolerated"
+      },
+      {
+        "name": "robe",
+        "material": "silver floral brocade",
+        "color_hex": "#c2beb4",
+        "roughness": 0.75,
+        "sheen": 0.3,
+        "notes": "Under long coat"
+      },
+      {
+        "name": "boots",
+        "material": "worn brown leather",
+        "color_hex": "#665447",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Visible below robe hem"
+      }
+    ],
+    "armor": [],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Elvenking: long platinum-silver hair",
+      " dark twig crown with autumn leaves and berries",
+      " silver brocade robe under a floor-length wine-red embroidered coat",
+      " regal cold original elf face."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Elvenking: long platinum-silver hair; dark twig crown with autumn leaves and berries; silver brocade robe under a floor-length wine-red embroidered coat; regal cold original elf face."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "VELVET / SILVER BROCADE",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "TWIG CROWN / LEAVES",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / GREY EYE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "SILVER HAIR STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "thranduil_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "8b5b540046dd1bb77af6ad6f749442900d917f53dc802f05526335f77bfc92cd",
+      "size_bytes": 218029,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "510ab4c28e67f9078cc865d8eb37b311718250bfbaa340b3a84090410656e38d",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 279.8076923076923,
+      "baseline_y_px": 940,
+      "overall_height_m": 2.08,
+      "height_fill_fraction": 0.568359375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "b14eefedcd744fa33dda7142d454c247bdfccb80ab19d2b556dc3f54377170e5",
+          "source_bbox_px": [
+            4,
+            4,
+            311,
+            564
+          ],
+          "sheet_bbox_px": [
+            159,
+            358,
+            478,
+            940
+          ],
+          "silhouette_height_px": 582,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0392857142857144,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            582
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "cda1f2ed193a41a008eea8d72bcdb9b06efe87f1a9461ae1362848a7337ea9d4",
+          "source_bbox_px": [
+            4,
+            4,
+            300,
+            564
+          ],
+          "sheet_bbox_px": [
+            507,
+            358,
+            815,
+            940
+          ],
+          "silhouette_height_px": 582,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0392857142857144,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            308,
+            582
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "761e6a21b84a8754ee14cfbadef41d3e068a6c8f87d6a1f9356e469c2fa5ba8d",
+          "source_bbox_px": [
+            4,
+            4,
+            228,
+            564
+          ],
+          "sheet_bbox_px": [
+            888,
+            358,
+            1121,
+            940
+          ],
+          "silhouette_height_px": 582,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0392857142857144,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            233,
+            582
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "eb984f8715bc7ad41da0021c9c3bff238de54693650b7213d5c9f98d39ed70a7",
+          "source_bbox_px": [
+            4,
+            4,
+            306,
+            564
+          ],
+          "sheet_bbox_px": [
+            1190,
+            358,
+            1504,
+            940
+          ],
+          "silhouette_height_px": 582,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0392857142857144,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            314,
+            582
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 358,
+        "endpoint_m": 2.08,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 870
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 800
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 730
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 660
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 590
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 520
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 450
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 380
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            864,
+            93,
+            876
+          ],
+          [
+            57,
+            794,
+            93,
+            806
+          ],
+          [
+            57,
+            724,
+            93,
+            736
+          ],
+          [
+            57,
+            654,
+            93,
+            666
+          ],
+          [
+            57,
+            584,
+            93,
+            596
+          ],
+          [
+            57,
+            514,
+            93,
+            526
+          ],
+          [
+            57,
+            444,
+            93,
+            456
+          ],
+          [
+            57,
+            374,
+            93,
+            386
+          ],
+          [
+            117,
+            339,
+            180,
+            352
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "thranduil_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "2b499da14eb6f2a277b3756c808270910579718fcd3aaff28cc88627273d080b",
+      "size_bytes": 244489,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "96724d1cfa30c91b11f903da1dc69ec7c56bb718c0ca3e25642661fd43e77aee",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "489545c3d0a7c27a4c0b1e4627634a8da6d87f2d58514f26dc2e5a3917888305",
+          "source_bbox_px": [
+            4,
+            5,
+            243,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            306,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "2da823ff4cd5f57789b5429f950ad592b9ae3895ec56a0f3f38e690ec1d8be0f",
+          "source_bbox_px": [
+            4,
+            4,
+            230,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            269,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "c85e6037ed91e7ea5b78f7e07bad259b8eff24dd23a46ba40f89d85180d590e9",
+          "source_bbox_px": [
+            4,
+            4,
+            194,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            145,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "thranduil_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+      "size_bytes": 193803,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "1f245d1d0633816f1a5de04bd55d29158cae3c1f1286552117a95222b62eac8c",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "VELVET / SILVER BROCADE",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "c18d82ca9766347d10afad2d77d1d09c0e27de683e1743e9fbe29ecad39073aa",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "TWIG CROWN / LEAVES",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "cdb25272784da1f3c824c1321f0c9e72c66052a3d323cc20dff3d7d2386a0121",
+          "sheet_bbox_px": [
+            524,
+            31,
+            1012,
+            436
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / GREY EYE",
+          "source": "details/skin.png",
+          "source_sha256": "f7c304a119389b421a7471af81be16e3312fefc2cc36dff8752df9ea200606f3",
+          "sheet_bbox_px": [
+            64,
+            524,
+            447,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "SILVER HAIR STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "45429b7b2ac8fe05e1794aa15cea9ab7d0ec029c2c7cfcb3d8ce94190833919d",
+          "sheet_bbox_px": [
+            620,
+            524,
+            916,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        310,
+        620,
+        365,
+        685
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        760,
+        650,
+        870,
+        840
+      ]
+    },
+    {
+      "name": "coat",
+      "sheet": "details",
+      "rect_px": [
+        120,
+        130,
+        165,
+        230
+      ]
+    },
+    {
+      "name": "robe",
+      "sheet": "details",
+      "rect_px": [
+        225,
+        150,
+        285,
+        280
+      ]
+    },
+    {
+      "name": "crown_wood",
+      "sheet": "details",
+      "rect_px": [
+        780,
+        405,
+        800,
+        415
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        275,
+        905,
+        285,
+        922
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "thranduil_details.jpg",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
+        "rect_px": [
+          310,
+          620,
+          365,
+          685
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          232,
+          188,
+          174
+        ],
+        "srgb_hex": "#e8bcae",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "thranduil_details.jpg",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
+        "rect_px": [
+          760,
+          650,
+          870,
+          840
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          217,
+          204,
+          197
+        ],
+        "srgb_hex": "#d9ccc5",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "coat": {
+        "sheet": "thranduil_details.jpg",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
+        "rect_px": [
+          120,
+          130,
+          165,
+          230
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          101,
+          67,
+          59
+        ],
+        "srgb_hex": "#65433b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "robe": {
+        "sheet": "thranduil_details.jpg",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
+        "rect_px": [
+          225,
+          150,
+          285,
+          280
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          153,
+          138,
+          129
+        ],
+        "srgb_hex": "#998a81",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "crown_wood": {
+        "sheet": "thranduil_details.jpg",
+        "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
+        "rect_px": [
+          780,
+          405,
+          800,
+          415
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          56,
+          34,
+          25
+        ],
+        "srgb_hex": "#382219",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "thranduil_turnaround.jpg",
+        "sheet_sha256": "8b5b540046dd1bb77af6ad6f749442900d917f53dc802f05526335f77bfc92cd",
+        "source_image": "thranduil_turnaround.jpg",
+        "rect_px": [
+          275,
+          905,
+          285,
+          922
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          88,
+          74,
+          68
+        ],
+        "srgb_hex": "#584a44",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

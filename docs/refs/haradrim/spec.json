@@ -1,0 +1,1007 @@
+{
+  "id": "haradrim",
+  "design": {
+    "id": "haradrim",
+    "source": "design_target",
+    "display_name": "Haradrim",
+    "height_m": 1.8,
+    "overall_height_m": 1.93,
+    "proportions": {
+      "head_height_m": 0.223,
+      "shoulder_width_m": 0.432,
+      "hip_width_m": 0.333,
+      "arm_length_m": 0.756,
+      "leg_length_m": 0.936,
+      "hand_length_m": 0.185,
+      "neck_length_m": 0.108,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Original adult warm-brown weathered human face, broad nose and short black beard, white geometric strokes across brow/cheeks; no actor likeness.",
+      "eyes": {
+        "iris_hex": "#392b1e",
+        "shape": "dark naturally proportioned human eyes",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "Thick dark naturally arched brows",
+      "nose": "Broad weathered human nose",
+      "lips": "Natural full lips, neutral closed mouth",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#8a5e43",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#2a231b",
+      "tip_hex": "#2a231b",
+      "length_m": 0.15,
+      "style": "Black scalp hair concealed by red turban; short black beard remains visible.",
+      "braids": "as described, no additional ornamental braids",
+      "visibility": "Scalp covered; visible beard supplies hair texture/pixel observations."
+    },
+    "outfit_layers": [
+      {
+        "name": "headwrap",
+        "material": "red woven turban",
+        "color_hex": "#852d2a",
+        "roughness": 0.88,
+        "sheen": 0.12,
+        "notes": "Covers scalp hair."
+      },
+      {
+        "name": "cowl",
+        "material": "red woven neck wraps",
+        "color_hex": "#852d2a",
+        "roughness": 0.88,
+        "sheen": 0.12,
+        "notes": "Layered around neck/shoulders."
+      },
+      {
+        "name": "red_coat",
+        "material": "woven red split-front coat with black embroidery",
+        "color_hex": "#8d302a",
+        "roughness": 0.86,
+        "sheen": 0.12,
+        "notes": "Long opaque coat."
+      },
+      {
+        "name": "black_tunic",
+        "material": "black woven tunic",
+        "color_hex": "#292725",
+        "roughness": 0.9,
+        "sheen": 0.12,
+        "notes": "Under red coat."
+      },
+      {
+        "name": "black_trousers",
+        "material": "black woven trousers",
+        "color_hex": "#292725",
+        "roughness": 0.9,
+        "sheen": 0.12,
+        "notes": "Visible through coat split."
+      },
+      {
+        "name": "leather_belt",
+        "material": "rough dark leather",
+        "color_hex": "#584331",
+        "roughness": 0.8,
+        "sheen": 0.12,
+        "notes": "Waist belt and ties."
+      },
+      {
+        "name": "boots",
+        "material": "dark worn leather",
+        "color_hex": "#332a23",
+        "roughness": 0.85,
+        "sheen": 0.12,
+        "notes": "Soft boots."
+      },
+      {
+        "name": "gold_jewellery",
+        "material": "gold alloy necklace, matched ear hoops and cuffs",
+        "color_hex": "#b58d3d",
+        "roughness": 0.45,
+        "sheen": 0.12,
+        "notes": "Some pieces hidden by cowl/viewpoint.",
+        "metalness": 1
+      }
+    ],
+    "armor": [
+      {
+        "name": "belt_iron_fittings",
+        "material": "iron belt hardware",
+        "color_hex": "#777568",
+        "roughness": 0.6,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "scimitar",
+        "length_m": 0.9,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "scimitar",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair",
+      " red and black robes and wraps, gold jewellery, brown leather sandals",
+      " scimitar own RIGHT hand, left empty."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty.",
+    "concealed_materials": {
+      "scalp_hair": "Red turban fully covers scalp hair; only beard is visible."
+    },
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#86292c",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#5b3c27",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / NECK",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BEARD",
+        "source": "details/hair.png"
+      }
+    ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "haradrim_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4c6be926282cbd016220e140526724a1ebaaa7e8f316e824058d1a0612bafbbe",
+      "size_bytes": 159269,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "c501f7aacb4c1a4936123b4011593202f399d45e3fffb2551ca8f1eda78d50b0",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 270.46632124352334,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.93,
+      "height_fill_fraction": 0.509765625,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "8310ef41f794c2200d0f566bb4aac60141cef53369ada6a3f6b83e9584d1987f",
+          "source_bbox_px": [
+            4,
+            4,
+            346,
+            564
+          ],
+          "sheet_bbox_px": [
+            159,
+            418,
+            478,
+            940
+          ],
+          "silhouette_height_px": 522,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9321428571428572,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            522
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "d7ab1ae6f781ef4d4fc020ac4fb29f3e0fd87e61ecd04504f93ea1c1d3b45fbc",
+          "source_bbox_px": [
+            5,
+            4,
+            309,
+            564
+          ],
+          "sheet_bbox_px": [
+            520,
+            418,
+            803,
+            940
+          ],
+          "silhouette_height_px": 522,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9321428571428572,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            283,
+            522
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "99873a00ae2ec436e35f6d1f65e2754e88b7776d52e410a90e11ff259998b422",
+          "source_bbox_px": [
+            4,
+            4,
+            199,
+            564
+          ],
+          "sheet_bbox_px": [
+            913,
+            418,
+            1095,
+            940
+          ],
+          "silhouette_height_px": 522,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9321428571428572,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            182,
+            522
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "3c359796448a464d645cfaeaa14d4eb225a18610cfa0bf58b74f92822209163b",
+          "source_bbox_px": [
+            4,
+            4,
+            337,
+            564
+          ],
+          "sheet_bbox_px": [
+            1192,
+            418,
+            1502,
+            940
+          ],
+          "silhouette_height_px": 522,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9321428571428572,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            310,
+            522
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 418,
+        "endpoint_m": 1.93,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 872
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 805
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 737
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 670
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 602
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 534
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 467
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            866,
+            93,
+            878
+          ],
+          [
+            57,
+            799,
+            93,
+            811
+          ],
+          [
+            57,
+            731,
+            93,
+            743
+          ],
+          [
+            57,
+            664,
+            93,
+            676
+          ],
+          [
+            57,
+            596,
+            93,
+            608
+          ],
+          [
+            57,
+            528,
+            93,
+            540
+          ],
+          [
+            57,
+            461,
+            93,
+            473
+          ],
+          [
+            117,
+            399,
+            180,
+            412
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "haradrim_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "95a519257b14e747bdcf05d13a52bc30e63c261d111d574fb359537a0c59649d",
+      "size_bytes": 262570,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "abccbc7eedc832dc43e83744087650fd2926ba44cf759b8c5f1157efc6f35aa0",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "ef3ee7a072a293b6b71df5fec0cc57ea88c1b4c16619ca525feafd91bfd65e93",
+          "source_bbox_px": [
+            4,
+            4,
+            219,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            235,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "c5203ff5ab418218f05e8b1ed04885173cf42a1cab97bdb60de431ad1c5e7e41",
+          "source_bbox_px": [
+            4,
+            4,
+            219,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            235,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "77bf431b5472b35db3c5ae27b302e9536d050fab930475435aa850dfa683c7d1",
+          "source_bbox_px": [
+            4,
+            4,
+            214,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            219,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "haradrim_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "e311199ea867d20c13896daa80ca2b2c7e0d866b6f585dd0bbaf9c1de369c5e0",
+      "size_bytes": 119145,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "24c23e4b7d4755ee9cd2c962b634df8d9e5bc14e2016dd469b58fd2a97839069",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+          "sheet_bbox_px": [
+            134,
+            12,
+            377,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "61ad50113c897be3275a0296c411371bbbb6d7ec9583fb0da4f4ee1d3e5d7010",
+          "sheet_bbox_px": [
+            735,
+            12,
+            801,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / NECK",
+          "source": "details/skin.png",
+          "source_sha256": "835a9d1e4aa47f9e06b9da651677b65f1c38ac3e51ec2a7a1e2db91e9c13879d",
+          "sheet_bbox_px": [
+            25,
+            524,
+            487,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / BEARD",
+          "source": "details/hair.png",
+          "source_sha256": "10bb2244a03fd573de9b7bfc02eb3edb47b23bf94806c358b4bb374e5ca27d14",
+          "sheet_bbox_px": [
+            552,
+            524,
+            983,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        24,
+        30,
+        50,
+        60
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        65,
+        105,
+        92,
+        125
+      ]
+    },
+    {
+      "name": "cowl",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        47,
+        11,
+        53,
+        17
+      ]
+    },
+    {
+      "name": "red_coat",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        38,
+        122,
+        45,
+        136
+      ]
+    },
+    {
+      "name": "black_tunic",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        62,
+        40,
+        75,
+        49
+      ]
+    },
+    {
+      "name": "black_trousers",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        48,
+        172,
+        60,
+        185
+      ]
+    },
+    {
+      "name": "leather_belt",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        53,
+        69,
+        59,
+        74
+      ]
+    },
+    {
+      "name": "boots",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        41,
+        235,
+        47,
+        242
+      ]
+    },
+    {
+      "name": "gold_jewellery",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        70,
+        21,
+        73,
+        25
+      ]
+    },
+    {
+      "name": "belt_iron_fittings",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        71,
+        69,
+        75,
+        73
+      ]
+    },
+    {
+      "name": "scimitar_steel",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        16,
+        114,
+        20,
+        125
+      ]
+    },
+    {
+      "name": "guard_brass",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        24,
+        33,
+        28,
+        35
+      ]
+    },
+    {
+      "name": "headwrap",
+      "source_image": "face_views/front.png",
+      "rect_px": [
+        105,
+        25,
+        120,
+        36
+      ]
+    },
+    {
+      "name": "scalp_hair",
+      "sheet": "face",
+      "not_visible": "Red turban fully covers scalp hair; only beard is visible."
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "835a9d1e4aa47f9e06b9da651677b65f1c38ac3e51ec2a7a1e2db91e9c13879d",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          24,
+          30,
+          50,
+          60
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          117,
+          70,
+          47
+        ],
+        "srgb_hex": "#75462f",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "10bb2244a03fd573de9b7bfc02eb3edb47b23bf94806c358b4bb374e5ca27d14",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          65,
+          105,
+          92,
+          125
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          52,
+          45,
+          42
+        ],
+        "srgb_hex": "#342d2a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "cowl": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          47,
+          11,
+          53,
+          17
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          99,
+          32,
+          32
+        ],
+        "srgb_hex": "#632020",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "red_coat": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          38,
+          122,
+          45,
+          136
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          100,
+          37,
+          36
+        ],
+        "srgb_hex": "#642524",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "black_tunic": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          62,
+          40,
+          75,
+          49
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          46,
+          43,
+          44
+        ],
+        "srgb_hex": "#2e2b2c",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "black_trousers": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          48,
+          172,
+          60,
+          185
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          35,
+          35,
+          37
+        ],
+        "srgb_hex": "#232325",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather_belt": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          53,
+          69,
+          59,
+          74
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          44,
+          23,
+          19
+        ],
+        "srgb_hex": "#2c1713",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          41,
+          235,
+          47,
+          242
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          52,
+          45,
+          42
+        ],
+        "srgb_hex": "#342d2a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "gold_jewellery": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          70,
+          21,
+          73,
+          25
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          222,
+          195,
+          156
+        ],
+        "srgb_hex": "#dec39c",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "belt_iron_fittings": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          71,
+          69,
+          75,
+          73
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          137,
+          107,
+          77
+        ],
+        "srgb_hex": "#896b4d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "scimitar_steel": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "61ad50113c897be3275a0296c411371bbbb6d7ec9583fb0da4f4ee1d3e5d7010",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          16,
+          114,
+          20,
+          125
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          146,
+          137,
+          133
+        ],
+        "srgb_hex": "#928985",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "guard_brass": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "61ad50113c897be3275a0296c411371bbbb6d7ec9583fb0da4f4ee1d3e5d7010",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          24,
+          33,
+          28,
+          35
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          136,
+          107,
+          75
+        ],
+        "srgb_hex": "#886b4b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "headwrap": {
+        "sheet": "face_views/front.png",
+        "sheet_sha256": "ef3ee7a072a293b6b71df5fec0cc57ea88c1b4c16619ca525feafd91bfd65e93",
+        "source_image": "face_views/front.png",
+        "rect_px": [
+          105,
+          25,
+          120,
+          36
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          117,
+          43,
+          42
+        ],
+        "srgb_hex": "#752b2a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "scalp_hair": {
+        "sheet": "haradrim_face.jpg",
+        "sheet_sha256": "95a519257b14e747bdcf05d13a52bc30e63c261d111d574fb359537a0c59649d",
+        "rect_px": null,
+        "rgb": null,
+        "srgb_hex": null,
+        "visibility": "not_visible",
+        "reason": "Red turban fully covers scalp hair; only beard is visible.",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

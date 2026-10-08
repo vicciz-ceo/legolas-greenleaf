@@ -1,0 +1,484 @@
+{
+  "status": "PASS",
+  "initial_head": "5107b510cf78c4bf6d5cfb91112f984642666321",
+  "historical_attempt_records_preserved": 284,
+  "separate_recovery_max_attempts": 4,
+  "series": [
+    {
+      "character": "legolas",
+      "key": "views/front",
+      "original_attempts": 2,
+      "original_attempts_sha256": "1509716e980f9b50dbac0c9be9d1863418429af31081ad486fe1ca42507fcf70",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "bb17a1d8f9afe3f43b86ad7467d6592e03303e536c4c270398c9dafb98a2954a",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "legolas",
+      "key": "views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "75569af4cb7257246f1da10e6f205621af9e16f418f7d390c851e8f6b95f2e44",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "views/back",
+      "original_attempts": 1,
+      "original_attempts_sha256": "c1ab964e05e6ef1f0f9f5a7634f34ffe7fb595459e12e78960af45e9b598ccc7",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/front",
+      "original_attempts": 1,
+      "original_attempts_sha256": "d857c497cf5f68f3aebc29a887430e4d8639a94e62b834f703dcd04ba93cd719",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "50ed8fd37129c88a02c9b049c7a691dd3865c7070cdd31d43a2aab29b243b059",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "legolas",
+      "key": "face_views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "ce0700b43156080d1965f3f8b92c43d8dc5143368d4b5455fdc9ec80640afa71",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "legolas",
+      "key": "details/cloth_leather",
+      "original_attempts": 1,
+      "original_attempts_sha256": "26f4369dafde635dd803c56e4503989440b777c46af9efe0560b35353311907f",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "details/weapon_metal",
+      "original_attempts": 1,
+      "original_attempts_sha256": "c60c53d6b9011702d9f62d72e63d1355dab6ece177c2ce29d8e870d26c742d49",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "details/skin",
+      "original_attempts": 1,
+      "original_attempts_sha256": "544e808df210b5216ecace5f7491f4ea10b45dcd4c261fdee5a99dfe369fbea3",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "legolas",
+      "key": "details/hair",
+      "original_attempts": 1,
+      "original_attempts_sha256": "414766db0b79f2b29ea6b2a3a3b82fb81af81ea360fffe2ccfff3d8ec09d403f",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "views/front",
+      "original_attempts": 2,
+      "original_attempts_sha256": "f15ae96819949855ba72418e1adc39623e7114afaaf6aca89b6cdc1ad93d84d9",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "5a91e15ad5411f36674561a760481860f7836d932317f85285aaf810ddc21a0a",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "b852e6d431a96d9d1212c25697b3a79e9a19b14475b0a93690ee940449ccda74",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "views/back",
+      "original_attempts": 2,
+      "original_attempts_sha256": "ae190dd9309a65f016d9713d533af39a00e9c0f5d11e1825b82f2dd538682335",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/front",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "face_views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "details/cloth_leather",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "details/weapon_metal",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "details/skin",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "gimli",
+      "key": "details/hair",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "views/front",
+      "original_attempts": 2,
+      "original_attempts_sha256": "bbe8bf7033abb5b67cc8a18e39405c13471fd1a1af561dc8f311dbdea3461f09",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "aragorn",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "6c26f95f49db5de9b98fdc9498da84ab1f9b6a49cf982704764474f05154fcaf",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "48c1ed4646590606b4ca25a68f88fb7eb660e77b7571d1606014f45087c5cb29",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "views/back",
+      "original_attempts": 1,
+      "original_attempts_sha256": "8329a85c078fa40bcb77c37bdf8cc219151d772bd8231af0839649de13af2e21",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/front",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "aragorn",
+      "key": "face_views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "aragorn",
+      "key": "details/cloth_leather",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "details/weapon_metal",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "details/skin",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "aragorn",
+      "key": "details/hair",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "views/front",
+      "original_attempts": 2,
+      "original_attempts_sha256": "25428b9511af2a2842bc6bcc3933e6aa7bb5c60c4c3da4d86213f98a08aed29b",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "55152a8493d2aeb35e05524a4b23f1b040932fda96896b78643c04a428dc95c9",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "55a31c760a8ebf9a834782e195eda36c855f14d7b864d0969cf403abaca27e18",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "views/back",
+      "original_attempts": 1,
+      "original_attempts_sha256": "955d474c25aa5047ca904508a9b41870883a52e1c770f9eb9ffe60a97611e1f8",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/front",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "tauriel",
+      "key": "face_views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "tauriel",
+      "key": "details/cloth_leather",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "details/weapon_metal",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "details/skin",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "tauriel",
+      "key": "details/hair",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "views/front",
+      "original_attempts": 2,
+      "original_attempts_sha256": "349aa3e74f251577a947ac9798b7cfb469fdba338b4bb728eb1df3187d5cf403",
+      "recovery_attempts": 2
+    },
+    {
+      "character": "bolg",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "86951955ecfd589ad11c0df790753d0517066dc81d3225e014f630033aa74492",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "views/side",
+      "original_attempts": 1,
+      "original_attempts_sha256": "7bd0ed83e65f378e3ca9c3e29ee81b53f068ca2885ac5c8163a6f11be4beae10",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "views/back",
+      "original_attempts": 1,
+      "original_attempts_sha256": "4d72b12e71bb3cd398521828b85fd8e66a32a71c4c94b045b7f7ca1025f1d90d",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/front",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "bolg",
+      "key": "face_views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "bolg",
+      "key": "details/cloth_leather",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "details/weapon_metal",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "details/skin",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "bolg",
+      "key": "details/hair",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/front",
+      "original_attempts": 4,
+      "original_attempts_sha256": "21b352bbfee580807c7c5c39836828263b1fffbf46ec32e3f089f59e17bf4d09",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "views/back",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/front",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/three_quarter",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "cave_troll",
+      "key": "face_views/side",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 0
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/cloth_leather",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/weapon_metal",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/skin",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "cave_troll",
+      "key": "details/hair",
+      "original_attempts": 0,
+      "original_attempts_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/front",
+      "original_attempts": 1,
+      "original_attempts_sha256": "a35a6e0d6ff35d9eabf17dbbc05eae0b1954a524e26f9e672349e9a0141a4686",
+      "recovery_attempts": 1
+    },
+    {
+      "character": "dwarf_bald",
+      "key": "views/three_quarter",
+      "original_attempts": 1,
+      "original_attempts_sha256": "3fb2d511bff5ae2b6634e0ccc9ff41b88475ac616fbd40be16eb55565a30a7aa",
+      "recovery_attempts": 1
+    }
+  ]
+}

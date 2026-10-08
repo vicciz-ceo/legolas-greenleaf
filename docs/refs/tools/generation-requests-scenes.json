@@ -1,0 +1,1288 @@
+[
+  {
+    "path": "scenes/mirkwood/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Ambush: drop into the clearing. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Waves: silk descents and trunk crawls. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Free four dwarves; Tauriel arrives. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Brood Mother emerges from hollow. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Shoot three canopy anchors at 50%. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. Individual cinematic storyboard frame, depicting this story action: Guard surrounds the freed dwarves. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/mirkwood/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Black depths of Mirkwood, colossal gnarled 3\u20136 m oak trunks, roots, webs, four cocooned dwarves, green-gold canopy shafts, drifting spores, dark web hollow. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/mirkwood/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Gate walkway: protect the lever. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Bank run at 8 m/s. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Leap onto dwarf barrels. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Three lanes through rocks and low logs. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Drop captain log bridge by its supports. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. Individual cinematic storyboard frame, depicting this story action: Calm pool; shingle bank outro. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/barrels/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Bright overcast Forest River gorge, stone water-gate with lever, mossy boulders, beech and oak, log bridges, white-water rapids and final calm shingle pool. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/barrels/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: Moonlit rooftop raiders. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: Walkways and roofs with Tauriel. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: Three waves at Bard\u2019s house. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: Bolg duel and breaking planks. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: 35% HP: rooftop chase. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. Individual cinematic storyboard frame, depicting this story action: Bolg escapes north on horseback. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Town is intact; no dragon or city fire. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/laketown/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Intact wooden stilt houses on black lake at blue moonlit night, plank walkways, canals, steep shingled roofs, warm lanterns and braziers, nets, boats, water mist, two-storey Bard house with open front room. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/laketown/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Frozen river and slab troll. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Grab bat claws at launch ledge. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Cliff ascent: bats and ledge archers. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Upper tower: first Bolg duel. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Collapse: upward falling-stone jumps. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. Individual cinematic storyboard frame, depicting this story action: Final Bolg knife finisher. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/ravenhill/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Snowy crag under pale winter overcast, ruined dwarven watchtower, frozen waterfall and ice river, broken bridges, Erebor mountain and valley battle smoke, falling snow. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/ravenhill/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: Door breaks: goblins enter chamber. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: Ledge archers and close waves. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: Cave Troll sweeps and pillar slam. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: Stun: chain climb, two head arrows. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: Open-mouth finisher. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. Individual cinematic storyboard frame, depicting this story action: 120 s flight; distant fire roar. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. The Balrog is never visible; only distant warm fire glow in the exit beat. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/moria/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Square Chamber of Mazarbul, 32 m stone hall with geometric dwarven carving, white Balin tomb in a single high-window shaft, corner well, skeletons and armour, barricaded door, dust, later Dwarrowdelf monumental pillared hall and distant fire glow; no visible Balrog. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/moria/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Running fights among trunks. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Archers in golden haze. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Ruins defence: pikes and shields. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Horn: reach Boromir. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Stream clearing: Lurtz bow then melee. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. Individual cinematic storyboard frame, depicting this story action: Aragorn and Legolas finish; grief. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/amon_hen/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wooded hill in golden afternoon haze, tall trunks, fallen leaves, mossy Numenorean ruins, broken summit stairs, Seat of Seeing, toppled statues, stream at foot and Lurtz clearing. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/amon_hen/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Volley and six ladder assaults. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Stop three culvert torch runners. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Final runner: culvert blast breach. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Shield surf 60 m stairs. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Flooded breach; hold causeway 150 s. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. Individual cinematic storyboard frame, depicting this story action: Dawn charge; rivalry tally. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. Stormy blue-black NIGHT except the final dawn cavalry/tally frame. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/helms_deep/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Stormy night, curved crenellated Deeping Wall, six ladder points, wall walk, Hornburg causeway, culvert, 60 m broad stair run, thousands of Uruks and torches, flooded breach; final dawn cavalry charge. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. Before the breach at stormy blue-black night; sky fully clouded, rain and occasional distant lightning, NO dawn sun. ",
+    "spec": "scenes/helms_deep/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Field melee among Rohirrim. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Shoot two girths; climb flank rope. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Howdah crew: knives. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Cut two ropes; howdah slides. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Neck run: three arrows; trunk slide. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. Individual cinematic storyboard frame, depicting this story action: Second mumak at range; field won. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/pelennor/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Morning vast grass plain churned to mud, smoke columns, wrecked siege equipment and banners, distant white Minas Tirith on hill with fires, Haradrim/orc crowds, mumak herds. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. ",
+    "spec": "scenes/pelennor/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: Gates open; armies encircle. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: Orc and Easterling shield waves. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: Troll pins Gimli: 30 s rescue. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: 120 s encircled hill survival. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: Eagles arrive above fell beasts. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. Individual cinematic storyboard frame, depicting this story action: Horizon flash, towers crack, tally. All people are narrative figures in original costumes, shown at a distance; no close-up injury, blood, wounds or graphic violence. Full scene composition, no grid or multiple panels. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/black_gate/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Red-brown ash sky, colossal black iron gates and Towers of the Teeth, slag plain, TWO rocky hills of Army of West, surrounding Mordor hosts, Mount Doom glow, distant fell-beast silhouettes; eagles arrive then horizon flash and cracked towers. ENVIRONMENT ONLY, low eye-level view along the playable path. The entire foreground and lower-left third are EMPTY ground/walkway ready for an external character overlay. Distant story enemies may appear, but no foreground player, elf, person, silhouette or scale cue. Wide camera feeling without fisheye distortion. Before the climax: no eagles, no horizon victory flash. Dark red-brown ash sky with neutral grey foreground, two defensive rocky hills. ",
+    "spec": "scenes/black_gate/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_00_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Quiet dawn. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_01_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Mist drifting over river. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_02_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Soft leaf motion. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_03_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Slow river current. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_04_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Distant forest silhouettes. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/frames/beat_05_look.jpg",
+    "kind": "beat_frame",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty forest river at golden dawn, slow calm atmosphere, no people, no enemies. Hold calm vista. No visible fortress or city. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "scenes/menu/gameplay_look.jpg",
+    "kind": "gameplay_background",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Quiet misty Forest River and Mirkwood vista at dawn, low ground-level approach along bank. No people, no fortresses or cities. Lower-left foreground empty. ",
+    "spec": "scenes/menu/image-spec.json",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/normal_arrow.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. A physical 0.75 m wooden arrow flies left-to-right, subtle directional motion blur, 0.015 m shaft; no glowing trail. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#normal_arrow",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/focus_volley.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Three physical arrows with thin cool teal Focus trails, curved trajectories converge on three rune-like target diamonds; retain visible wooden shafts. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#focus_volley",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/impact_flesh.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Small non-graphic arrow contact puff: dark red droplets on neutral leather test surface, no body parts or wounds. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#impact_flesh",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/impact_ichor.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Small yellow-green spider ichor contact droplets on chitin test plate, non-graphic. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#impact_ichor",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/impact_stone.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Arrow strikes grey stone slab; dry dust puff and 1\u20133 cm grit, no explosive fire. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#impact_stone",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/impact_wood.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Arrow strikes old wooden plank; directional splinters 2\u20138 cm and fine sawdust, gravity-driven arc. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#impact_wood",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/impact_metal.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Arrow glances off dark iron plate; short bright metal sparks, no huge fireball. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#impact_metal",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/blood_red.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Non-graphic red blood spray abstract droplets and flat irregular ground decal 0.4\u20130.8 m; no figures or wounds. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#blood_red",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/blood_dark.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Non-graphic dark orc blood abstract droplets and flat wet ground decal 0.4\u20130.8 m, deep brown-red; no body. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#blood_dark",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/blood_black.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Non-graphic black blood abstract spray droplets and irregular ground decal 0.4\u20130.8 m, readable through subtle grey wet glints; no body. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#blood_black",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/blood_ichor.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Non-graphic yellow-green ichor abstract spray droplets and flat irregular sticky ground decal 0.4\u20130.8 m; no body. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#blood_ichor",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/torch.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Warm 0.45 m torch flame with turbulent orange tongues, small blue base and fine embers; flame stays attached to torch tip. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#torch",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/brazier.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Iron brazier 0.9 m diameter with 0.8 m warm flame envelope and dull glowing coals, no neon smoke. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#brazier",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/burning_house.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Standalone VFX study of an original 9 m wide timber Lake-town house with 2\u20134 m flames licking roof, amber window glow and dark smoke. This is an effect prototype, not the chapter setting. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#burning_house",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/smoke_column.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Grey-brown smoke column from unseen distant battle fire, 3 m source width expanding to 8 m at 30 m height, soft turbulent curls and no opaque black cylinder. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#smoke_column",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/culvert_explosion.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Helm Deep culvert explosion: first hot ignition then 7 m-radius fireball, radial dust shockwave, grey stone chunks 0.5\u20131.2 m, dense 10 m smoke plume after 3 s. Reference test on neutral ground, no crowds. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#culvert_explosion",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/rain.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Natural rain streaks 0.12\u20130.4 m long, diagonal wind, droplets splash on a dark stone test ground; restrained opacity and no thick white rods. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#rain",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/storm_lightning.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Heavy rain and one branching distant lightning bolt, cool sky flash lights neutral stone floor for 80\u2013180 ms; no continuous electric arcs. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#storm_lightning",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/snow.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Fine falling snowflakes 3\u201314 mm with soft drift, varying depth; test frame not a blizzard of giant discs. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#snow",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/embers.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Sparse orange fire embers rise and fade, tiny 3\u201312 mm flecks and occasional curved streak; no individual point lights. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#embers",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/ash.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Fine dull grey volcanic ash flakes drift and fall, 5\u201320 mm, non-emissive with subtle warm environmental rim. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#ash",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/mirkwood_spores.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Sparse pale green-gold forest spores 4\u201318 mm, softly lit by a narrow canopy shaft, organic drifting rather than glowing magical orbs. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#mirkwood_spores",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/dust_motes.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Tiny neutral dust motes 1\u201312 mm visible only in cool light shaft; no fog wall, no sparkling glitter. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#dust_motes",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/barrel_splash.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. One 1 m barrel hits river water: 1\u20132 m outward splash crown, droplets arc down and ripple decays; clean natural foam, no milk. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#barrel_splash",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/rapids_foam.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. River rapids foam: broken lace-like white patches and bubbles around 1\u20133 m rocks, downstream motion 7\u201311 m/s, foam patches 0.12\u20130.35 m. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#rapids_foam",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/focus_screen.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Three-person forest combat image comparison: normal, partial Focus and full Focus. Full state desaturates to 35%, cool teal tint 20%, radial edge blur leaving central 35% sharp. Same camera throughout, no HUD text. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#focus_screen",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/damage_vignette.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Same neutral forest gameplay image: restrained dark-red directional edge vignette flashes and fades over 0.45 seconds. Centre 60% remains unaffected and readable; no graphic injury. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#damage_vignette",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "vfx/looks/cinematic_letterbox.jpg",
+    "kind": "vfx_hero",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Same cinematic forest vista with pure black top and bottom letterbox bars increasing smoothly from zero to 12% image height each. Centre remains unwarped; no text inside scene. ONE large hero visual only on flat dark neutral #171b20 background, no sequence, no inset panels, no human scale figure. All scale and timeline frames are composed later by code. Non-graphic abstract effect study.",
+    "spec": "vfx/vfx.json#cinematic_letterbox",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/barrel.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original barrel prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic wood_planks, metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#barrel",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/crate.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original crate prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic wood_planks with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#crate",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/torch.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original torch prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood, metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#torch",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/brazier.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original brazier prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#brazier",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/lantern.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original lantern prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic metal_dark, metal_bright with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#lantern",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/white_hand.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original white hand prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_wool with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of white hand, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#white_hand",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/red_eye.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original red eye prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_wool with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of red eye, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#red_eye",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/white_tree.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original white tree prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_linen with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of white tree, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#white_tree",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/horse_rohan.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original horse rohan prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_wool with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of horse rohan, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#horse_rohan",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/dwarf_hammer.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original dwarf hammer prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_wool with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of dwarf hammer, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#dwarf_hammer",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/mirkwood_leaf.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original mirkwood leaf prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_linen with worn detailed surfaces. No people, stand-ins, measuring tools or typography. A hanging banner on a plain pole, original generic heraldic interpretation of mirkwood leaf, no official film emblem artwork. ",
+    "transparent": true,
+    "spec": "props/props.json#mirkwood_leaf",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/ladder.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original ladder prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#ladder",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/siege_tower.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original siege tower prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood, metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#siege_tower",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/catapult.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original catapult prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood, leather with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#catapult",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/battering_ram.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original battering ram prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood, metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#battering_ram",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/balin_tomb.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original balin tomb prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic marble with worn detailed surfaces. No people, stand-ins, measuring tools or typography. Plain white tomb with simple geometric decoration, absolutely NO inscription or writing. ",
+    "transparent": true,
+    "spec": "props/props.json#balin_tomb",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/well.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original well prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic dwarven_stone with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#well",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/skeleton.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original skeleton prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic bone with worn detailed surfaces. No people, stand-ins, measuring tools or typography. Non-graphic aged bones, anatomically plausible skeleton lying flat, correct natural bone count. ",
+    "transparent": true,
+    "spec": "props/props.json#skeleton",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/scattered_armour.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original scattered armour prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic metal_dark, leather with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#scattered_armour",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/boat.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original boat prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#boat",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/fishing_net.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original fishing net prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic cloth_linen with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#fishing_net",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/walkway.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original walkway prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic old_wood with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#walkway",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/web_sheet.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original web sheet prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic web with worn detailed surfaces. No people, stand-ins, measuring tools or typography. Fine translucent fibrous silk; cocoon is entirely wrapped with no visible face. ",
+    "transparent": true,
+    "spec": "props/props.json#web_sheet",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/cocooned_dwarf.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original cocooned dwarf prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic web, cloth_wool with worn detailed surfaces. No people, stand-ins, measuring tools or typography. Fine translucent fibrous silk; cocoon is entirely wrapped with no visible face. ",
+    "transparent": true,
+    "spec": "props/props.json#cocooned_dwarf",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/gate_leaf.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original gate leaf prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#gate_leaf",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "props/looks/teeth_tower.jpg",
+    "kind": "prop_views",
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Two full unobstructed views of an original teeth tower prop: FRONT view on left, THREE-QUARTER view on right. Both complete from top to bottom, generous gap between views. Isolated on transparent background. Realistic rock, metal_dark with worn detailed surfaces. No people, stand-ins, measuring tools or typography. ",
+    "transparent": true,
+    "spec": "props/props.json#teeth_tower",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  {
+    "path": "key-art/poster.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Vertical dramatic composite journey poster WITHOUT text. Original Legolas, a 1.85 m athletic male elf with long pale-blond half-tied hair, angular original face not resembling an actor, pointed ears, sage tunic, brown leather bracers, drawing a graceful ORIGINAL 1.65 m recurve bow. Natural archery anatomy: left hand grips riser, right fingers draw single nocked arrow string to cheek, arrow aligned to bow, one pair of arms and five fingers per hand. Mirkwood roots and canopy at upper left, original stormy curved Deeping Wall midground, massive four-tusk 14m war mumak and wooden howdah far below right, smoke and dawn gold/cold teal arc. Bow and hands clearly visible. Main figure occupies middle 70%, generous dramatic composition, no logos, no title typography. No logos, watermarks or stray text. No film frames, Weta designs or actor likeness.",
+    "spec": "key-art/key-art-spec.json",
+    "kind": "key_art"
+  },
+  {
+    "path": "key-art/readme_banner.png",
+    "size": [
+      1536,
+      512
+    ],
+    "prompt": "Original photoreal cinematic concept art at film-production quality, natural light and atmospheric perspective, believable materials, coherent perspective and natural anatomy. Tolkien world with original architecture and costumes, no copied film frames, Weta designs or actor likeness. NO text, letters, labels, numbers, rulers, scale bars, logos, watermarks, or calibration silhouettes. Artwork only: code supplies all diagrams, captions and scale cues. Wide panoramic 3:1 repository banner WITHOUT text. Original cinematic journey montage: dark layered Mirkwood river vista left, anonymous blond 1.85m Legolas elf from back carrying original bow at centre-left, distant original Deeping Wall under storm at centre, four-tusk mumak 14m high in hazy dawn field at right. Original costumes, no actors or film-frame copies. Keep the left 35% darker and quiet for possible repository title, safe zone 5% around edges. No logos, watermarks or stray text. No film frames, Weta designs or actor likeness.",
+    "spec": "key-art/key-art-spec.json",
+    "kind": "key_art"
+  }
+]

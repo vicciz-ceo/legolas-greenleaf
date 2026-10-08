@@ -1,0 +1,217 @@
+{
+  "name": "Forest River",
+  "sky": {
+    "kind": "physical",
+    "elevation": 34,
+    "azimuth": 205,
+    "turbidity": 8,
+    "rayleigh": 2.2,
+    "mieCoefficient": 0.012,
+    "mieDirectionalG": 0.7,
+    "clouds": 1
+  },
+  "sunColor": "#fff1da",
+  "sunIntensity": 2.2,
+  "hemiSky": "#d5e6f2",
+  "hemiGround": "#4f6234",
+  "hemiIntensity": 0.6,
+  "envIntensity": 0.85,
+  "fog": {
+    "color": "#bdd0d0",
+    "density": 0.0075
+  },
+  "exposure": 0.95,
+  "bloom": 0.12,
+  "grade": {
+    "lift": [
+      0,
+      0.004,
+      0.004
+    ],
+    "gamma": [
+      1,
+      1.02,
+      1
+    ],
+    "gain": [
+      1,
+      1.03,
+      0.98
+    ],
+    "saturation": 1.04,
+    "vignette": 0.32
+  },
+  "weather": "none",
+  "weatherIntensity": 0,
+  "ambience": "river",
+  "palette": {
+    "sky_top": "#8298ae",
+    "horizon": "#bdd0d0",
+    "fog": "#bdd0d0",
+    "sun": "#fff1da",
+    "shadow_fill": "#d5e6f2",
+    "dominant_ground": "#68745b",
+    "dominant_structure": "#777c75",
+    "accent": "#dde9df",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunIntensity",
+      "current": 2.6,
+      "recommended": 2.2,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.95,
+      "recommended": 0.6,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "envIntensity",
+      "current": 1,
+      "recommended": 0.85,
+      "reason": "Keep PBR reflections without making all occluded surfaces self-lit."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0125,
+      "recommended": 0.0075,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.16,
+      "recommended": 0.12,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.saturation",
+      "current": 1.12,
+      "recommended": 1.04,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.38,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "weather",
+      "current": "dust",
+      "recommended": "none",
+      "reason": "River foam and mist should provide the atmosphere; dust is not the correct surface weather."
+    },
+    {
+      "field": "weatherIntensity",
+      "current": 0.25,
+      "recommended": 0,
+      "reason": "Reduce distractors across reticles and preserve night silhouettes."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#c1cad7",
+      "region_px": [
+        1029,
+        26,
+        1137,
+        82
+      ],
+      "pixel_count": 6048,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#27221a",
+      "region_px": [
+        1198,
+        276,
+        1275,
+        328
+      ],
+      "pixel_count": 4004,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#2a2509",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#434132",
+      "region_px": [
+        77,
+        563,
+        154,
+        645
+      ],
+      "pixel_count": 6314,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#6f603b",
+      "region_px": [
+        645,
+        164,
+        707,
+        225
+      ],
+      "pixel_count": 3782,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#534942",
+      "region_px": [
+        645,
+        788,
+        737,
+        840
+      ],
+      "pixel_count": 4784,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "forest_river"
+}

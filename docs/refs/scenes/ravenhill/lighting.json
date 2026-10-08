@@ -1,0 +1,212 @@
+{
+  "name": "Ravenhill",
+  "sky": {
+    "kind": "gradient",
+    "top": "#7e8c9d",
+    "horizon": "#c6d0d9",
+    "bottom": "#98a3ad",
+    "stars": 0,
+    "clouds": 0.92,
+    "cloudColor": "#b4bfca"
+  },
+  "sunColor": "#dbe7f7",
+  "sunIntensity": 1.55,
+  "sunDirection": [
+    -0.45,
+    0.55,
+    0.5
+  ],
+  "hemiSky": "#c3d3e6",
+  "hemiGround": "#8d99a4",
+  "hemiIntensity": 0.7,
+  "envIntensity": 1.05,
+  "fog": {
+    "color": "#bac7d2",
+    "density": 0.009
+  },
+  "exposure": 1,
+  "bloom": 0.12,
+  "grade": {
+    "lift": [
+      0.004,
+      0.008,
+      0.014
+    ],
+    "gamma": [
+      1,
+      1,
+      1.02
+    ],
+    "gain": [
+      0.97,
+      1,
+      1.06
+    ],
+    "saturation": 0.78,
+    "vignette": 0.32
+  },
+  "weather": "snow",
+  "weatherIntensity": 0.7,
+  "ambience": "snow_wind",
+  "palette": {
+    "sky_top": "#7e8c9d",
+    "horizon": "#c6d0d9",
+    "fog": "#bac7d2",
+    "sun": "#dbe7f7",
+    "shadow_fill": "#c3d3e6",
+    "dominant_ground": "#85929a",
+    "dominant_structure": "#727f89",
+    "accent": "#98bad1",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunIntensity",
+      "current": 1.9,
+      "recommended": 1.55,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 1,
+      "recommended": 0.7,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0145,
+      "recommended": 0.009,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.2,
+      "recommended": 0.12,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.42,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "weatherIntensity",
+      "current": 0.85,
+      "recommended": 0.7,
+      "reason": "Reduce distractors across reticles and preserve night silhouettes."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#acb3c5",
+      "region_px": [
+        922,
+        20,
+        1152,
+        102
+      ],
+      "pixel_count": 18860,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#96a2b8",
+      "region_px": [
+        952,
+        205,
+        1167,
+        287
+      ],
+      "pixel_count": 17630,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#8490a6",
+      "region_px": [
+        1106,
+        430,
+        1229,
+        502
+      ],
+      "pixel_count": 8856,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#9da3b5",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#7b8aa0",
+      "region_px": [
+        691,
+        850,
+        891,
+        952
+      ],
+      "pixel_count": 20400,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#63656a",
+      "region_px": [
+        522,
+        246,
+        568,
+        328
+      ],
+      "pixel_count": 3772,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#708297",
+      "region_px": [
+        691,
+        625,
+        768,
+        696
+      ],
+      "pixel_count": 5467,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "ravenhill_winter"
+}
