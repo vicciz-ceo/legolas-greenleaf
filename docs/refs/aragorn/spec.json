@@ -1,0 +1,123 @@
+{
+  "id": "aragorn",
+  "design": {
+    "id": "aragorn",
+    "source": "design_target",
+    "display_name": "Aragorn",
+    "height_m": 1.88,
+    "overall_height_m": 1.88,
+    "proportions": {
+      "head_height_m": 0.233,
+      "shoulder_width_m": 0.451,
+      "hip_width_m": 0.348,
+      "arm_length_m": 0.79,
+      "leg_length_m": 0.978,
+      "hand_length_m": 0.194,
+      "neck_length_m": 0.113,
+      "bulk_0to1": 0.45,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "weathered long oval face with full cheeks, short beard and stubble",
+      "eyes": {
+        "iris_hex": "#778077",
+        "shape": "natural deep-set",
+        "size_note": "natural adult scale; small relative to skull in monsters"
+      },
+      "brow": "defined organic brow appropriate to described face",
+      "nose": "weathered long oval face with full cheeks, short beard and stubble",
+      "lips": "neutral closed lips or relaxed tusked mouth",
+      "ears": "ordinary rounded human ears",
+      "skin_base_hex": "#b98e73",
+      "skin_variation": "subtle redness, pores, age or scars as described"
+    },
+    "hair": {
+      "root_hex": "#30261f",
+      "tip_hex": "#49372b",
+      "length_m": 0.35,
+      "style": "shoulder-length wavy dark brown hair",
+      "braids": "none"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "wool or coarse woven fabric",
+        "color_hex": "#565b4b",
+        "roughness": 0.85,
+        "sheen": 0.25,
+        "notes": "dark shirt, long green-grey coat over leather jerkin, bracers, belt pouches and tall worn boots"
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#513c2d",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "straps, stitching and edge wear"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "iron and bronze fittings as described",
+        "color_hex": "#888a86",
+        "roughness": 0.45,
+        "metalness": 1,
+        "notes": "none beyond leather; small steel belt fittings"
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "ranger_sword",
+        "length_m": 1.15,
+        "notes": "design length; placement follows attachment table"
+      }
+    ],
+    "attachments": {
+      "right_hand": "empty",
+      "left_hand": "empty",
+      "left_hip": "sheathed sword"
+    },
+    "silhouette_keywords": [
+      "rugged ranger",
+      "shoulder-length wavy hair",
+      "long coat",
+      "left-hip sword"
+    ],
+    "avoid": [
+      "royal polished armour",
+      "clean modern clothes",
+      "actor likeness"
+    ],
+    "design_sources": [
+      "user original brief and attachment table",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "WEAPON / WORN METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BRAID / BRISTLES",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

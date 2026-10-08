@@ -1,0 +1,114 @@
+{
+  "id": "laketown_man",
+  "design": {
+    "id": "laketown_man",
+    "source": "design_target",
+    "display_name": "Laketown Man",
+    "height_m": 1.75,
+    "overall_height_m": 1.75,
+    "proportions": {
+      "head_height_m": 0.217,
+      "shoulder_width_m": 0.42,
+      "hip_width_m": 0.324,
+      "arm_length_m": 0.735,
+      "leg_length_m": 0.91,
+      "hand_length_m": 0.18,
+      "neck_length_m": 0.105,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#b98f73",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#61452f",
+      "tip_hex": "#61452f",
+      "length_m": 0.35,
+      "style": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#566473",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#5c4431",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#6b665c",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots",
+      " both hands empty",
+      " no armour."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

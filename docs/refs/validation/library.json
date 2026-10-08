@@ -1,0 +1,189 @@
+{
+  "status": "PARTIAL",
+  "library_bytes": 2733459,
+  "library_budget_bytes": 70000000,
+  "entries": [
+    {
+      "id": "legolas",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "gimli",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "aragorn",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "tauriel",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "bolg",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "cave_troll",
+      "status": "BLOCKED",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "thranduil",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2301296,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 2733459,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 279.8076923076923,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "elf_mirkwood",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "elf_galadhrim",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "boromir",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "gondor",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "rohirrim",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "laketown_man",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "orc",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "goblin",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "gundabad",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "uruk",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "berserker",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "lurtz",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "easterling",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "haradrim",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "war_troll",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "mirkwood_spider",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "brood_mother",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "mumak",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "gundabad_bat",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "great_eagle",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "fell_beast",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "dwarf_bald",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "dwarf_hat",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "dwarf_elder",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "dwarf_redbeard",
+      "status": "PENDING",
+      "reason": "'turnaround'"
+    },
+    {
+      "id": "weapons",
+      "status": "PENDING"
+    },
+    {
+      "id": "orc_variants",
+      "status": "PENDING"
+    },
+    {
+      "id": "dwarf_company",
+      "status": "PENDING"
+    },
+    {
+      "id": "mumak_howdah",
+      "status": "PENDING"
+    }
+  ]
+}

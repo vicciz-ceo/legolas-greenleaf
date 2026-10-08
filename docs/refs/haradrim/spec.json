@@ -1,0 +1,123 @@
+{
+  "id": "haradrim",
+  "design": {
+    "id": "haradrim",
+    "source": "design_target",
+    "display_name": "Haradrim",
+    "height_m": 1.8,
+    "overall_height_m": 1.8,
+    "proportions": {
+      "head_height_m": 0.223,
+      "shoulder_width_m": 0.432,
+      "hip_width_m": 0.333,
+      "arm_length_m": 0.756,
+      "leg_length_m": 0.936,
+      "hand_length_m": 0.185,
+      "neck_length_m": 0.108,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#a17253",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#2a231b",
+      "tip_hex": "#2a231b",
+      "length_m": 0.35,
+      "style": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#86292c",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#5b3c27",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#b39145",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "scimitar",
+        "length_m": 0.9,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "scimitar",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair",
+      " red and black robes and wraps, gold jewellery, brown leather sandals",
+      " scimitar own RIGHT hand, left empty."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Haradrim human warrior: original warm brown face with red-black paint, black wrapped hair; red and black robes and wraps, gold jewellery, brown leather sandals; scimitar own RIGHT hand, left empty."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

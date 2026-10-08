@@ -1,0 +1,13 @@
+test_creature_ruler_and_human (test_compose.ComposeTests.test_creature_ruler_and_human) ... ok
+test_detects_stale_source_and_height_change (test_compose.ComposeTests.test_detects_stale_source_and_height_change) ... ok
+test_detects_wrong_baseline_tick_and_budget (test_compose.ComposeTests.test_detects_wrong_baseline_tick_and_budget) ... ok
+test_missing_schema_and_overlap_fail (test_compose.ComposeTests.test_missing_schema_and_overlap_fail) ... ok
+test_pre_encoding_hash_and_library_path (test_compose.ComposeTests.test_pre_encoding_hash_and_library_path) ... ok
+test_real_composition_and_observed_median (test_compose.ComposeTests.test_real_composition_and_observed_median) ... ok
+test_strict_layout_rejects_wide_subject (test_compose.ComposeTests.test_strict_layout_rejects_wide_subject) ... ok
+test_threshold_fallback_with_transparent_hole (test_compose.ComposeTests.test_threshold_fallback_with_transparent_hole) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.884s
+
+OK

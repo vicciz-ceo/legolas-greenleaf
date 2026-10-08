@@ -1,0 +1,3167 @@
+{
+  "version": 1,
+  "branch": "reference/character-sheets",
+  "pr": "https://github.com/vicciz-ceo/legolas-greenleaf/pull/1",
+  "entries": {
+    "legolas": {
+      "kind": "humanoid",
+      "design_extent_m": 1.85,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-715e20d1-ab15-4719-bb0e-282512df62d8.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-f671b85e-6474-4ec8-9a75-63da7a88e804.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-f671b85e-6474-4ec8-9a75-63da7a88e804.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-5252bb88-e3f7-4104-958a-b8e1539d9fcd.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-5252bb88-e3f7-4104-958a-b8e1539d9fcd.png"
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-e4346686-7e4d-4742-9540-0123d29b8477.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-e4346686-7e4d-4742-9540-0123d29b8477.png"
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-fba1651b-a5fe-4f26-9ffb-ef83a7983f22.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-fba1651b-a5fe-4f26-9ffb-ef83a7983f22.png"
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-a65a24d5-35df-4f75-8de8-65c5ed7a0f60.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-a65a24d5-35df-4f75-8de8-65c5ed7a0f60.png"
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png"
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png"
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png"
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png"
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png"
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png"
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "gimli": {
+      "kind": "humanoid",
+      "design_extent_m": 1.37,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-666cedfd-8de0-44f8-b2d8-47e260286899.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-52269527-8d2d-47d4-a859-13ee47198851.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-52269527-8d2d-47d4-a859-13ee47198851.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-e0b52e4f-07b2-4304-bdb0-dacffe4c2f25.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-e0b52e4f-07b2-4304-bdb0-dacffe4c2f25.png"
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-33e094c7-78aa-40b8-8710-f3aaef482616.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-33e094c7-78aa-40b8-8710-f3aaef482616.png"
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-729ae1d2-dc5d-41f1-a83d-d0541eb80f2b.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png"
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "aragorn": {
+      "kind": "humanoid",
+      "design_extent_m": 1.88,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-642d31a4-17c0-4443-8b9a-14505bd79fbb.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png"
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png"
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-16130d87-e797-44fd-9bd1-33ed4739c747.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-16130d87-e797-44fd-9bd1-33ed4739c747.png"
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "tauriel": {
+      "kind": "humanoid",
+      "design_extent_m": 1.78,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-667d628f-d31c-46d2-9874-c6d2c04c6616.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png"
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png"
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png"
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "bolg": {
+      "kind": "humanoid",
+      "design_extent_m": 2.6,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-bc8887ff-f4cc-4ff5-a033-5553352e6443.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-e91f97d2-aa52-48c5-8b26-45ecddd77f01.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-e91f97d2-aa52-48c5-8b26-45ecddd77f01.png"
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-7b26b518-fe92-4647-aa03-18492a96e9c9.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-7b26b518-fe92-4647-aa03-18492a96e9c9.png"
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-ddcdc838-f236-4947-a562-f42e8e7f16b3.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-ddcdc838-f236-4947-a562-f42e8e7f16b3.png"
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "cave_troll": {
+      "kind": "humanoid",
+      "design_extent_m": 4.5,
+      "deliverables": {
+        "views/front": {
+          "status": "blocked",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-0aa7fd27-4fb4-4f53-a255-6af7e2f558c5.png"
+            },
+            {
+              "number": 2,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-97d1c772-97d1-489e-9bd9-f060a757d839.png"
+            },
+            {
+              "number": 3,
+              "status": "blocked",
+              "reason": "Recorded failed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": null
+            },
+            {
+              "number": 4,
+              "status": "blocked",
+              "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+              "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png"
+            }
+          ],
+          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
+          "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png"
+        },
+        "views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "views/back": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/front": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/three_quarter": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face_views/side": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/cloth_leather": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/weapon_metal": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/skin": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details/hair": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "turnaround": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "spec": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "notes": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "check": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "face": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "details": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        },
+        "observed": {
+          "status": "blocked",
+          "attempts": [],
+          "reason": "Requires missing accepted source views or original Legolas sheet files."
+        }
+      }
+    },
+    "thranduil": {
+      "kind": "humanoid",
+      "design_extent_m": 1.9,
+      "deliverables": {
+        "views/front": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arms below 20 degrees; corrected in attempt 2.",
+              "path": "/workspace/generated_images/exec-c6e89d05-3c98-4f3c-93a4-ae55edcff2ec.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Original face/crown, correct A-pose, no gear/text, complete silhouette.",
+              "path": "/workspace/generated_images/exec-499d52f1-b544-43ad-8a41-7ac4f80c4aa7.png"
+            }
+          ],
+          "reason": "Original face/crown, correct A-pose, no gear/text, complete silhouette.",
+          "path": "/workspace/generated_images/exec-499d52f1-b544-43ad-8a41-7ac4f80c4aa7.png"
+        },
+        "views/three_quarter": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct angle; same crown, coat and robe; mild embroidery drift tolerated.",
+              "path": "/workspace/generated_images/exec-52ab824c-bc93-4283-9f25-70d493f4ba45.png"
+            }
+          ],
+          "reason": "Correct angle; same crown, coat and robe; mild embroidery drift tolerated.",
+          "path": "/workspace/generated_images/exec-52ab824c-bc93-4283-9f25-70d493f4ba45.png"
+        },
+        "views/side": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated; awaiting visual review.",
+              "path": "/workspace/generated_images/exec-c4ba71ac-435b-4f9b-87f7-583500ae3319.png"
+            }
+          ],
+          "reason": "Exact profile, consistent crown/outfit, natural visible hand and no text.",
+          "path": "/workspace/generated_images/exec-c4ba71ac-435b-4f9b-87f7-583500ae3319.png"
+        },
+        "views/back": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Back of head with long hair, consistent crown/coat, correct pose.",
+              "path": "/workspace/generated_images/exec-816e9ecb-d5ff-4dba-935c-a881cd0238df.png"
+            }
+          ],
+          "reason": "Back of head with long hair, consistent crown/coat, correct pose.",
+          "path": "/workspace/generated_images/exec-816e9ecb-d5ff-4dba-935c-a881cd0238df.png"
+        },
+        "face_views/front": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Twig crown tip clipped at top edge.",
+              "path": "/workspace/generated_images/exec-d154d85f-cdb6-4161-a349-b4f3de0559db.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Wider framing keeps crown complete; same original face and costume.",
+              "path": "/workspace/generated_images/exec-8ab45d47-19c3-4dd9-aac9-b8a2113457b5.png"
+            }
+          ],
+          "reason": "Wider framing keeps crown complete; same original face and costume.",
+          "path": "/workspace/generated_images/exec-8ab45d47-19c3-4dd9-aac9-b8a2113457b5.png"
+        },
+        "face_views/three_quarter": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct 45-degree head rotation and consistent original identity.",
+              "path": "/workspace/generated_images/exec-3c80aacb-de10-483f-a644-fd1940b8c4b1.png"
+            }
+          ],
+          "reason": "Correct 45-degree head rotation and consistent original identity.",
+          "path": "/workspace/generated_images/exec-3c80aacb-de10-483f-a644-fd1940b8c4b1.png"
+        },
+        "face_views/side": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated; awaiting visual review.",
+              "path": "/workspace/generated_images/exec-98748a67-e1b8-47e6-9239-4751060cd8be.png"
+            }
+          ],
+          "reason": "Exact profile with matching face, crown and ear; no clipping.",
+          "path": "/workspace/generated_images/exec-98748a67-e1b8-47e6-9239-4751060cd8be.png"
+        },
+        "details/cloth_leather": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Added ornate belt not present in body views.",
+              "path": "/workspace/generated_images/exec-8408e765-dd42-4bf1-b805-7209c5867a10.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Belt removed; matching coat and brocade, fine weave.",
+              "path": "/workspace/generated_images/exec-1c59455e-a31d-438d-a24a-fa5cb8d7da3a.png"
+            }
+          ],
+          "reason": "Belt removed; matching coat and brocade, fine weave.",
+          "path": "/workspace/generated_images/exec-1c59455e-a31d-438d-a24a-fa5cb8d7da3a.png"
+        },
+        "details/weapon_metal": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete original twig crown; wood/berries/leaves, no invented metal.",
+              "path": "/workspace/generated_images/exec-16bbd7a2-8513-4177-b437-0fd9d91490de.png"
+            }
+          ],
+          "reason": "Complete original twig crown; wood/berries/leaves, no invented metal.",
+          "path": "/workspace/generated_images/exec-16bbd7a2-8513-4177-b437-0fd9d91490de.png"
+        },
+        "details/skin": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Individual frontal portrait/detail source, cropped to skin and eye.",
+              "path": "/workspace/generated_images/exec-8ab45d47-19c3-4dd9-aac9-b8a2113457b5.png"
+            }
+          ],
+          "reason": "Individual frontal portrait/detail source, cropped to skin and eye.",
+          "path": "/workspace/generated_images/exec-8ab45d47-19c3-4dd9-aac9-b8a2113457b5.png"
+        },
+        "details/hair": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Individual profile detail source, cropped to silver hair strands.",
+              "path": "/workspace/generated_images/exec-98748a67-e1b8-47e6-9239-4751060cd8be.png"
+            }
+          ],
+          "reason": "Individual profile detail source, cropped to silver hair strands.",
+          "path": "/workspace/generated_images/exec-98748a67-e1b8-47e6-9239-4751060cd8be.png"
+        },
+        "turnaround": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "spec": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "notes": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "check": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "face": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "details": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        },
+        "observed": {
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Visual review passed; all three compositions and observed samples checked. Full set under 2.5 MB."
+        }
+      }
+    },
+    "elf_mirkwood": {
+      "kind": "humanoid",
+      "design_extent_m": 1.85,
+      "deliverables": {
+        "views/front": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arms too close to torso.",
+              "path": "/workspace/generated_images/exec-e07d826c-e10b-4bcc-b64e-14a2b3504021.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Correct pose after edit; glaive in right hand, left empty with five fingers.",
+              "path": "/workspace/generated_images/exec-840cdb39-051c-4712-bf45-b4c7b9ef18d8.png"
+            }
+          ],
+          "reason": "Correct pose after edit; glaive in right hand, left empty with five fingers.",
+          "path": "/workspace/generated_images/exec-840cdb39-051c-4712-bf45-b4c7b9ef18d8.png"
+        },
+        "views/three_quarter": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated; awaiting review.",
+              "path": "/workspace/generated_images/exec-2b8affc7-2275-4848-9c9c-a09c5e646b8f.png"
+            }
+          ],
+          "reason": "Three-quarter front angle; original gear on correct side, no text.",
+          "path": "/workspace/generated_images/exec-2b8affc7-2275-4848-9c9c-a09c5e646b8f.png"
+        },
+        "views/side": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact right profile, right-hand glaive, natural projected A-pose.",
+              "path": "/workspace/generated_images/exec-fe4e93af-7c6f-41f7-9d7c-2701bb846f0f.png"
+            }
+          ],
+          "reason": "Exact right profile, right-hand glaive, natural projected A-pose.",
+          "path": "/workspace/generated_images/exec-fe4e93af-7c6f-41f7-9d7c-2701bb846f0f.png"
+        },
+        "views/back": {
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct rear angle and hand sides, consistent cloak and helmet.",
+              "path": "/workspace/generated_images/exec-4e35ef4b-fc54-4c5d-977d-bf97a92a2f5d.png"
+            }
+          ],
+          "reason": "Correct rear angle and hand sides, consistent cloak and helmet.",
+          "path": "/workspace/generated_images/exec-4e35ef4b-fc54-4c5d-977d-bf97a92a2f5d.png"
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated; awaiting review.",
+              "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
+            }
+          ],
+          "reason": "Generated; awaiting review.",
+          "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "elf_galadhrim": {
+      "kind": "humanoid",
+      "design_extent_m": 1.85,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "boromir": {
+      "kind": "humanoid",
+      "design_extent_m": 1.85,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "gondor": {
+      "kind": "humanoid",
+      "design_extent_m": 1.82,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "rohirrim": {
+      "kind": "humanoid",
+      "design_extent_m": 1.8,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "laketown_man": {
+      "kind": "humanoid",
+      "design_extent_m": 1.75,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "orc": {
+      "kind": "humanoid",
+      "design_extent_m": 1.7,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "goblin": {
+      "kind": "humanoid",
+      "design_extent_m": 1.48,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "gundabad": {
+      "kind": "humanoid",
+      "design_extent_m": 2.1,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "uruk": {
+      "kind": "humanoid",
+      "design_extent_m": 2.0,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "berserker": {
+      "kind": "humanoid",
+      "design_extent_m": 2.1,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "lurtz": {
+      "kind": "humanoid",
+      "design_extent_m": 2.1,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "easterling": {
+      "kind": "humanoid",
+      "design_extent_m": 1.8,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "haradrim": {
+      "kind": "humanoid",
+      "design_extent_m": 1.8,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "war_troll": {
+      "kind": "humanoid",
+      "design_extent_m": 4.5,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "mirkwood_spider": {
+      "kind": "creature",
+      "design_extent_m": 2.75,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "brood_mother": {
+      "kind": "creature",
+      "design_extent_m": 6,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "mumak": {
+      "kind": "creature",
+      "design_extent_m": 14,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "gundabad_bat": {
+      "kind": "creature",
+      "design_extent_m": 7,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/folded": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "great_eagle": {
+      "kind": "silhouette",
+      "design_extent_m": 10,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "fell_beast": {
+      "kind": "silhouette",
+      "design_extent_m": 12,
+      "deliverables": {
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/top": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "dwarf_bald": {
+      "kind": "humanoid",
+      "design_extent_m": 1.35,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "dwarf_hat": {
+      "kind": "humanoid",
+      "design_extent_m": 1.3,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "dwarf_elder": {
+      "kind": "humanoid",
+      "design_extent_m": 1.37,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "dwarf_redbeard": {
+      "kind": "humanoid",
+      "design_extent_m": 1.4,
+      "deliverables": {
+        "views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "views/back": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/front": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/three_quarter": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face_views/side": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/cloth_leather": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/weapon_metal": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/skin": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details/hair": {
+          "status": "pending",
+          "attempts": []
+        },
+        "turnaround": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        },
+        "face": {
+          "status": "pending",
+          "attempts": []
+        },
+        "details": {
+          "status": "pending",
+          "attempts": []
+        },
+        "observed": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "weapons": {
+      "kind": "supplement",
+      "deliverables": {
+        "galadhrim_bow": {
+          "status": "pending",
+          "attempts": []
+        },
+        "elven_knives": {
+          "status": "pending",
+          "attempts": []
+        },
+        "gimli_axe": {
+          "status": "pending",
+          "attempts": []
+        },
+        "uruk_falchion": {
+          "status": "pending",
+          "attempts": []
+        },
+        "orc_cleaver": {
+          "status": "pending",
+          "attempts": []
+        },
+        "orc_scimitar": {
+          "status": "pending",
+          "attempts": []
+        },
+        "bolg_mace": {
+          "status": "pending",
+          "attempts": []
+        },
+        "cave_troll_club": {
+          "status": "pending",
+          "attempts": []
+        },
+        "war_hammer": {
+          "status": "pending",
+          "attempts": []
+        },
+        "pike": {
+          "status": "pending",
+          "attempts": []
+        },
+        "rohan_shield": {
+          "status": "pending",
+          "attempts": []
+        },
+        "gondor_shield": {
+          "status": "pending",
+          "attempts": []
+        },
+        "uruk_shield": {
+          "status": "pending",
+          "attempts": []
+        },
+        "torch": {
+          "status": "pending",
+          "attempts": []
+        },
+        "sheet": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "orc_variants": {
+      "kind": "supplement",
+      "deliverables": {
+        "wiry": {
+          "status": "pending",
+          "attempts": []
+        },
+        "brown": {
+          "status": "pending",
+          "attempts": []
+        },
+        "scarred": {
+          "status": "pending",
+          "attempts": []
+        },
+        "matted": {
+          "status": "pending",
+          "attempts": []
+        },
+        "sheet": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "dwarf_company": {
+      "kind": "supplement",
+      "deliverables": {
+        "dwarf_bald": {
+          "status": "pending",
+          "attempts": []
+        },
+        "dwarf_hat": {
+          "status": "pending",
+          "attempts": []
+        },
+        "dwarf_elder": {
+          "status": "pending",
+          "attempts": []
+        },
+        "dwarf_redbeard": {
+          "status": "pending",
+          "attempts": []
+        },
+        "sheet": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    },
+    "mumak_howdah": {
+      "kind": "supplement",
+      "deliverables": {
+        "howdah": {
+          "status": "pending",
+          "attempts": []
+        },
+        "sheet": {
+          "status": "pending",
+          "attempts": []
+        },
+        "spec": {
+          "status": "pending",
+          "attempts": []
+        },
+        "notes": {
+          "status": "pending",
+          "attempts": []
+        },
+        "check": {
+          "status": "pending",
+          "attempts": []
+        }
+      }
+    }
+  },
+  "blockers": {
+    "missing_old_images": "Old full-resolution PNGs and accepted Legolas sheets are absent from this workspace and GitHub. Retain historical attempts; do not overwrite accepted designs."
+  }
+}

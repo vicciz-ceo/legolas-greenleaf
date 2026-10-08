@@ -1,0 +1,115 @@
+{
+  "id": "dwarf_hat",
+  "design": {
+    "id": "dwarf_hat",
+    "source": "design_target",
+    "display_name": "Dwarf Hat",
+    "height_m": 1.3,
+    "overall_height_m": 1.3,
+    "proportions": {
+      "head_height_m": 0.161,
+      "shoulder_width_m": 0.312,
+      "hip_width_m": 0.24,
+      "arm_length_m": 0.546,
+      "leg_length_m": 0.676,
+      "hand_length_m": 0.134,
+      "neck_length_m": 0.078,
+      "bulk_0to1": 0.85,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard; coarse ochre tunic, dark brown padded vest, belt, thick boots; both hands empty; distinctive floppy hat readable above barrel rim.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#777064",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#5a4c38",
+      "tip_hex": "#5a4c38",
+      "length_m": 0.35,
+      "style": "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard; coarse ochre tunic, dark brown padded vest, belt, thick boots; both hands empty; distinctive floppy hat readable above barrel rim.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#5b4b37",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard; coarse ochre tunic, dark brown padded vest, belt, thick boots; both hands empty; distinctive floppy hat readable above barrel rim."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#594232",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#80735e",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard",
+      " coarse ochre tunic, dark brown padded vest, belt, thick boots",
+      " both hands empty",
+      " distinctive floppy hat readable above barrel rim."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard; coarse ochre tunic, dark brown padded vest, belt, thick boots; both hands empty; distinctive floppy hat readable above barrel rim."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

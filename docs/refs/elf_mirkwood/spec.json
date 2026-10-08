@@ -1,0 +1,123 @@
+{
+  "id": "elf_mirkwood",
+  "design": {
+    "id": "elf_mirkwood",
+    "source": "design_target",
+    "display_name": "Elf Mirkwood",
+    "height_m": 1.85,
+    "overall_height_m": 1.9700000000000002,
+    "proportions": {
+      "head_height_m": 0.229,
+      "shoulder_width_m": 0.444,
+      "hip_width_m": 0.342,
+      "arm_length_m": 0.777,
+      "leg_length_m": 0.962,
+      "hand_length_m": 0.191,
+      "neck_length_m": 0.111,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "pointed elf ears",
+      "skin_base_hex": "#e0baa0",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#493728",
+      "tip_hex": "#493728",
+      "length_m": 0.35,
+      "style": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#4c6137",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#62462e",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#a07e39",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "glaive",
+        "length_m": 2.2,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "glaive",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Mirkwood male elf guard: original face, pointed ears, dark brown long hair",
+      " gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots",
+      " elegant glaive held low in own RIGHT hand, own left hand empty."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Mirkwood male elf guard: original face, pointed ears, dark brown long hair; gold-bronze leaf-pattern cuirass, green cloak, leaf-crested helmet, green tunic, brown boots; elegant glaive held low in own RIGHT hand, own left hand empty."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

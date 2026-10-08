@@ -1,0 +1,123 @@
+{
+  "id": "goblin",
+  "design": {
+    "id": "goblin",
+    "source": "design_target",
+    "display_name": "Goblin",
+    "height_m": 1.48,
+    "overall_height_m": 1.48,
+    "proportions": {
+      "head_height_m": 0.184,
+      "shoulder_width_m": 0.355,
+      "hip_width_m": 0.274,
+      "arm_length_m": 0.622,
+      "leg_length_m": 0.77,
+      "hand_length_m": 0.152,
+      "neck_length_m": 0.089,
+      "bulk_0to1": 0.5,
+      "hunch_0to1": 0.15
+    },
+    "face": {
+      "shape": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#9a9e92",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#393a30",
+      "tip_hex": "#393a30",
+      "length_m": 0.35,
+      "style": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#554b3a",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#594a34",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#665d4c",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "crude_blade",
+        "length_m": 0.6,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "crude_blade",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch",
+      " sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates",
+      " crude blade in own RIGHT hand, left empty."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Moria goblin: pale grey skin, large glinting amber eyes, bat-like pointed ears, lean long limbs, deep crouch; sparse dark hair, coarse brown wrap covers torso and lower body, rusty plates; crude blade in own RIGHT hand, left empty."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

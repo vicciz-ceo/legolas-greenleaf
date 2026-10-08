@@ -1,0 +1,126 @@
+{
+  "id": "cave_troll",
+  "design": {
+    "id": "cave_troll",
+    "source": "design_target",
+    "display_name": "Cave Troll",
+    "height_m": 4.5,
+    "overall_height_m": 4.5,
+    "proportions": {
+      "head_height_m": 0.427,
+      "shoulder_width_m": 1.8,
+      "hip_width_m": 1.4,
+      "arm_length_m": 2.3,
+      "leg_length_m": 2.0,
+      "hand_length_m": 0.65,
+      "neck_length_m": 0.2,
+      "bulk_0to1": 1,
+      "hunch_0to1": 0.12
+    },
+    "face": {
+      "shape": "small head with heavy brow, broad nose, tiny deep-set eyes and tusks",
+      "eyes": {
+        "iris_hex": "#6a6445",
+        "shape": "natural deep-set",
+        "size_note": "natural adult scale; small relative to skull in monsters"
+      },
+      "brow": "defined organic brow appropriate to described face",
+      "nose": "small head with heavy brow, broad nose, tiny deep-set eyes and tusks",
+      "lips": "neutral closed lips or relaxed tusked mouth",
+      "ears": "small thick hide ears",
+      "skin_base_hex": "#717866",
+      "skin_variation": "subtle redness, pores, age or scars as described"
+    },
+    "hair": {
+      "root_hex": "#4e5144",
+      "tip_hex": "#666956",
+      "length_m": 0.06,
+      "style": "sparse coarse bristles on scalp and shoulders",
+      "braids": "none"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "wool or coarse woven fabric",
+        "color_hex": "#605044",
+        "roughness": 0.85,
+        "sheen": 0.25,
+        "notes": "primitive ragged loinwrap and broad leather waist belt; bare warty hide and feet"
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#503c2a",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "straps, stitching and edge wear"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "iron and bronze fittings as described",
+        "color_hex": "#665b4d",
+        "roughness": 0.65,
+        "metalness": 1,
+        "notes": "one rusted right ankle shackle with short chain; no torso armour"
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "cave_troll_club",
+        "length_m": 2.5,
+        "notes": "design length; placement follows attachment table"
+      }
+    ],
+    "attachments": {
+      "right_hand": "wooden club",
+      "left_hand": "empty",
+      "right_ankle": "iron shackle with short chain"
+    },
+    "silhouette_keywords": [
+      "one barrel chest",
+      "hanging belly",
+      "huge shoulders",
+      "small head",
+      "long heavy arms"
+    ],
+    "avoid": [
+      "two stacked chests",
+      "human six-pack",
+      "slender torso",
+      "helmet",
+      "four-finger hands"
+    ],
+    "design_sources": [
+      "user original brief and attachment table",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "WEAPON / WORN METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BRAID / BRISTLES",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

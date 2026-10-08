@@ -1,0 +1,124 @@
+{
+  "id": "gimli",
+  "design": {
+    "id": "gimli",
+    "source": "design_target",
+    "display_name": "Gimli",
+    "height_m": 1.37,
+    "overall_height_m": 1.53,
+    "proportions": {
+      "head_height_m": 0.247,
+      "shoulder_width_m": 0.64,
+      "hip_width_m": 0.46,
+      "arm_length_m": 0.6,
+      "leg_length_m": 0.6,
+      "hand_length_m": 0.21,
+      "neck_length_m": 0.075,
+      "bulk_0to1": 0.95,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "broad full cheeks, wide jaw, bulbous nose",
+      "eyes": {
+        "iris_hex": "#756346",
+        "shape": "natural deep-set",
+        "size_note": "natural adult scale; small relative to skull in monsters"
+      },
+      "brow": "defined organic brow appropriate to described face",
+      "nose": "broad full cheeks, wide jaw, bulbous nose",
+      "lips": "neutral closed lips or relaxed tusked mouth",
+      "ears": "rounded dwarf ears beneath cheek plates",
+      "skin_base_hex": "#bd896c",
+      "skin_variation": "subtle redness, pores, age or scars as described"
+    },
+    "hair": {
+      "root_hex": "#62351f",
+      "tip_hex": "#875033",
+      "length_m": 0.55,
+      "style": "wild red-brown hair and two forked beard braids with bronze clasps",
+      "braids": "two forked beard braids with bronze clasps"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "wool or coarse woven fabric",
+        "color_hex": "#4d382b",
+        "roughness": 0.85,
+        "sheen": 0.25,
+        "notes": "mail hauberk over quilted leather, crossed straps, bracers, charcoal leggings and short thick boots"
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#513a28",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "straps, stitching and edge wear"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "iron and bronze fittings as described",
+        "color_hex": "#60605a",
+        "roughness": 0.45,
+        "metalness": 1,
+        "notes": "pointed iron helm with bronze rim and cheek plates; layered pauldrons"
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "dwarf_axe",
+        "length_m": 0.9,
+        "notes": "design length; placement follows attachment table"
+      }
+    ],
+    "attachments": {
+      "right_hand": "battle axe",
+      "left_hand": "empty",
+      "belt": "two throwing axes, one each side"
+    },
+    "silhouette_keywords": [
+      "very stocky",
+      "broad shoulders",
+      "forked red-brown beard",
+      "pointed helm"
+    ],
+    "avoid": [
+      "long human legs",
+      "narrow chest",
+      "beard without fork",
+      "actor likeness"
+    ],
+    "design_sources": [
+      "user original brief and attachment table",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "WEAPON / WORN METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BRAID / BRISTLES",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

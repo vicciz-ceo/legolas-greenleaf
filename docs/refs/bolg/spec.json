@@ -1,0 +1,124 @@
+{
+  "id": "bolg",
+  "design": {
+    "id": "bolg",
+    "source": "design_target",
+    "display_name": "Bolg",
+    "height_m": 2.6,
+    "overall_height_m": 2.6,
+    "proportions": {
+      "head_height_m": 0.322,
+      "shoulder_width_m": 0.9,
+      "hip_width_m": 0.6,
+      "arm_length_m": 1.092,
+      "leg_length_m": 1.352,
+      "hand_length_m": 0.268,
+      "neck_length_m": 0.156,
+      "bulk_0to1": 0.88,
+      "hunch_0to1": 0.08
+    },
+    "face": {
+      "shape": "heavy brow, small eyes, flattened nose, uneven fangs and dark old scars",
+      "eyes": {
+        "iris_hex": "#705529",
+        "shape": "natural deep-set",
+        "size_note": "natural adult scale; small relative to skull in monsters"
+      },
+      "brow": "defined organic brow appropriate to described face",
+      "nose": "heavy brow, small eyes, flattened nose, uneven fangs and dark old scars",
+      "lips": "neutral closed lips or relaxed tusked mouth",
+      "ears": "thick pointed damaged orc ears",
+      "skin_base_hex": "#c4c1b6",
+      "skin_variation": "subtle redness, pores, age or scars as described"
+    },
+    "hair": {
+      "root_hex": "#332d28",
+      "tip_hex": "#51453b",
+      "length_m": 0,
+      "style": "bald scarred scalp with flush bolted plates and jaw braces",
+      "braids": "none"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "wool or coarse woven fabric",
+        "color_hex": "#3c332b",
+        "roughness": 0.85,
+        "sheen": 0.25,
+        "notes": "ragged dark kilt, coarse leather straps, worn foot wraps"
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#4f3827",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "straps, stitching and edge wear"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "iron and bronze fittings as described",
+        "color_hex": "#635647",
+        "roughness": 0.65,
+        "metalness": 1,
+        "notes": "heavy rusted iron spiked pauldrons, bracers and shin plates; skull and jaw plates bolted into skin"
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "bolg_mace",
+        "length_m": 1.35,
+        "notes": "design length; placement follows attachment table"
+      }
+    ],
+    "attachments": {
+      "right_hand": "mace",
+      "left_hand": "empty",
+      "skull_and_jaw": "bolted iron plates and braces"
+    },
+    "silhouette_keywords": [
+      "huge pale orc",
+      "bolted skull and jaw",
+      "rusted spikes",
+      "right-hand mace"
+    ],
+    "avoid": [
+      "ordinary removable helmet",
+      "smooth unscarred skin",
+      "dwarf proportions",
+      "actor likeness"
+    ],
+    "design_sources": [
+      "user original brief and attachment table",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "WEAPON / WORN METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BRAID / BRISTLES",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Save an already reviewed source cutout and its original-path provenance."""
+import argparse,json
+from pathlib import Path
+from PIL import Image
+import compose,progress
+
+def intake(cid,key,path,crop=None):
+ folder=compose.ROOT/cid
+ relative=key+'.png'
+ original=Path(path)
+ image=Image.open(original)
+ if crop:
+  image=image.crop(crop)
+  temp=Path('/tmp/greenleaf-intake-crop.png');image.save(temp);inp=temp
+ else:inp=original
+ if key.startswith(('views/','face_views/')):
+  result=compose.segment(inp,folder/relative,max_height=560 if key.startswith('views/') else 320,backend='rembg')
+ else:
+  image=image.convert('RGB');image.thumbnail((256,256),Image.Resampling.LANCZOS)
+  (folder/relative).parent.mkdir(parents=True,exist_ok=True);image.save(folder/relative,optimize=True)
+  result={'output':relative,'size_px':list(image.size)}
+ p=folder/'sources.json';data=json.loads(p.read_text()) if p.exists() else {}
+ data[key]={'original_full_resolution_path':str(original),'original_sha256':compose.digest(original),'original_size_px':list(Image.open(original).size),'crop_px':list(crop) if crop else None,'saved_cutout':relative,'cutout_sha256':compose.digest(folder/relative)}
+ p.write_text(json.dumps(data,indent=2)+'\n')
+ return result
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('cid');p.add_argument('key');p.add_argument('path');p.add_argument('--crop',nargs=4,type=int);a=p.parse_args()
+ print(json.dumps(intake(a.cid,a.key,a.path,a.crop)))

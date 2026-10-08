@@ -1,0 +1,228 @@
+{
+  "id": "legolas",
+  "design": {
+    "id": "legolas",
+    "source": "design_target",
+    "display_name": "Legolas",
+    "height_m": 1.85,
+    "overall_height_m": 1.85,
+    "proportions": {
+      "head_height_m": 0.23,
+      "shoulder_width_m": 0.44,
+      "hip_width_m": 0.34,
+      "arm_length_m": 0.78,
+      "leg_length_m": 0.98,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.11,
+      "bulk_0to1": 0.25,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "oval with softly squared chin and high full cheekbones",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "pointed with visible cartilage; tips remain below crown",
+      "skin_base_hex": "#e9c9b1",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#9f8866",
+      "tip_hex": "#e1d4af",
+      "length_m": 0.55,
+      "style": "long straight warm platinum blond behind pointed ears",
+      "braids": "two small temple braids joining behind head"
+    },
+    "outfit_layers": [
+      {
+        "name": "tunic",
+        "material": "wool twill",
+        "color_hex": "#5f6b55",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "muted green-grey, mid-thigh hem"
+      },
+      {
+        "name": "jerkin",
+        "material": "stitched brown leather",
+        "color_hex": "#69513b",
+        "roughness": 0.68,
+        "sheen": 0.1,
+        "notes": "fitted sleeveless; small leaf seams"
+      },
+      {
+        "name": "bracers_belt_boots",
+        "material": "dark brown leather",
+        "color_hex": "#49392c",
+        "roughness": 0.7,
+        "sheen": 0.08,
+        "notes": "leather lacing, fine edge wear; tall soft boots"
+      },
+      {
+        "name": "leggings",
+        "material": "dense woven wool",
+        "color_hex": "#484a3d",
+        "roughness": 0.9,
+        "sheen": 0.1,
+        "notes": "olive charcoal, fitted"
+      }
+    ],
+    "armor": [
+      {
+        "name": "buckles",
+        "material": "bronze",
+        "color_hex": "#997b4a",
+        "roughness": 0.4,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "elven_bow",
+        "length_m": 1.6,
+        "notes": "Galadhrim recurve, LEFT hand, held low"
+      },
+      {
+        "kind": "elven_knives",
+        "length_m": 0.42,
+        "notes": "two white-handled knives sheathed on back beside quiver, grips up"
+      }
+    ],
+    "attachments": {
+      "left_hand": "elven_bow",
+      "right_hand": "empty",
+      "back_right": "white-fletched quiver with two white-handled sheathed knives beside it; grips up"
+    },
+    "silhouette_keywords": [
+      "tall",
+      "slender",
+      "long pale golden hair",
+      "bow in left hand",
+      "quiver at right back"
+    ],
+    "avoid": [
+      "gaunt hollow cheeks",
+      "pure white hair",
+      "actor likeness",
+      "gear above crown",
+      "toy proportions"
+    ],
+    "design_sources": [
+      "user original brief and schema",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "proportion_note": "Design intent from original schema; no anatomical measurements inferred from generated images."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "WOOL / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "BOW / KNIVES / BRONZE",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / BLUE EYE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "PLATINUM HAIR / BRAID",
+        "source": "details/hair.png"
+      }
+    ]
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        180,
+        815,
+        310,
+        900
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        640,
+        650,
+        790,
+        755
+      ]
+    },
+    {
+      "name": "tunic",
+      "sheet": "details",
+      "rect_px": [
+        60,
+        170,
+        220,
+        265
+      ]
+    },
+    {
+      "name": "jerkin",
+      "sheet": "details",
+      "rect_px": [
+        330,
+        140,
+        450,
+        210
+      ]
+    },
+    {
+      "name": "bracers",
+      "sheet": "turnaround",
+      "rect_px": [
+        188,
+        619,
+        202,
+        633
+      ]
+    },
+    {
+      "name": "belt",
+      "sheet": "turnaround",
+      "rect_px": [
+        297,
+        596,
+        325,
+        603
+      ]
+    },
+    {
+      "name": "leggings",
+      "sheet": "turnaround",
+      "rect_px": [
+        265,
+        751,
+        285,
+        775
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        253,
+        860,
+        266,
+        886
+      ]
+    }
+  ]
+}

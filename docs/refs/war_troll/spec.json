@@ -1,0 +1,124 @@
+{
+  "id": "war_troll",
+  "design": {
+    "id": "war_troll",
+    "source": "design_target",
+    "display_name": "War Troll",
+    "height_m": 4.5,
+    "overall_height_m": 4.5,
+    "proportions": {
+      "head_height_m": 0.558,
+      "shoulder_width_m": 1.08,
+      "hip_width_m": 0.833,
+      "arm_length_m": 1.89,
+      "leg_length_m": 2.34,
+      "hand_length_m": 0.463,
+      "neck_length_m": 0.27,
+      "bulk_0to1": 0.85,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#45473c",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#34352b",
+      "tip_hex": "#34352b",
+      "length_m": 0.35,
+      "style": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#3b362a",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#4b392b",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#57594e",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "warhammer",
+        "length_m": 2.7,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "warhammer",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly",
+      " pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt",
+      " warhammer own RIGHT hand, left empty",
+      " five fingers on each hand."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Armoured War Troll: soot-dark warty hide, small tusked heavy-brow head, massive organic shoulders and arms, ONE barrel chest and belly; pointed iron helmet, heavy plate harness, spiked pauldrons, opaque knee-length leather kilt; warhammer own RIGHT hand, left empty; five fingers on each hand."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": "great_eagle",
+  "design": {
+    "id": "great_eagle",
+    "source": "design_target",
+    "display_name": "Great Eagle",
+    "height_m": 10,
+    "overall_height_m": 10,
+    "proportions": {
+      "head_height_m": 0,
+      "shoulder_width_m": 0,
+      "hip_width_m": 0,
+      "arm_length_m": 0,
+      "leg_length_m": 0,
+      "hand_length_m": 0,
+      "neck_length_m": 0,
+      "bulk_0to1": 0,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Great eagle in FLIGHT: original golden-brown raptor, two feathered spread wings, single head with curved beak, feathered tail, two tucked taloned feet; far-distance readable natural silhouette, 10 m wingspan, no rider or gear.",
+      "eyes": {
+        "iris_hex": "#5d8bb5",
+        "shape": "almond",
+        "size_note": "natural adult scale, defined upper and lower lids"
+      },
+      "brow": "lightly arched pale gold brows",
+      "nose": "straight refined bridge and narrow tip",
+      "lips": "neutral closed, natural narrow upper lip",
+      "ears": "as described; original natural anatomy",
+      "skin_base_hex": "#777064",
+      "skin_variation": "faint redness on cheeks, nose and ears"
+    },
+    "hair": {
+      "root_hex": "#5a4c38",
+      "tip_hex": "#5a4c38",
+      "length_m": 0.04,
+      "style": "Great eagle in FLIGHT: original golden-brown raptor, two feathered spread wings, single head with curved beak, feathered tail, two tucked taloned feet; far-distance readable natural silhouette, 10 m wingspan, no rider or gear.",
+      "braids": "as described, no additional ornamental braids"
+    },
+    "outfit_layers": [],
+    "armor": [],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Great eagle in FLIGHT: original golden-brown raptor, two feathered spread wings, single head with curved beak, feathered tail, two tucked taloned feet",
+      " far-distance readable natural silhouette, 10 m wingspan, no rider or gear."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Original creature scale target; humanoid-schema proportions are not applicable and are zero. Projected extents and palettes are authored design targets, not recovered 3D measurements.",
+    "description": "Great eagle in FLIGHT: original golden-brown raptor, two feathered spread wings, single head with curved beak, feathered tail, two tucked taloned feet; far-distance readable natural silhouette, 10 m wingspan, no rider or gear."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ],
+    "creature": true,
+    "silhouette_only": true,
+    "views": [
+      "front",
+      "side",
+      "top",
+      "three_quarter"
+    ],
+    "reference_view": "side",
+    "scale_axis": "width",
+    "scale_extent_m": 10,
+    "projected_extents_m": {
+      "front": 10,
+      "side": 10,
+      "top": 10,
+      "three_quarter": 10
+    },
+    "measurement_note": "Span endpoint pair selected on accepted reference; perpendicular projections require authored projected extent before composing."
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "id": "tauriel",
+  "design": {
+    "id": "tauriel",
+    "source": "design_target",
+    "display_name": "Tauriel",
+    "height_m": 1.78,
+    "overall_height_m": 1.78,
+    "proportions": {
+      "head_height_m": 0.221,
+      "shoulder_width_m": 0.427,
+      "hip_width_m": 0.329,
+      "arm_length_m": 0.748,
+      "leg_length_m": 0.926,
+      "hand_length_m": 0.183,
+      "neck_length_m": 0.107,
+      "bulk_0to1": 0.28,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "long oval original female elf face, high full cheeks, fine brows",
+      "eyes": {
+        "iris_hex": "#738277",
+        "shape": "almond",
+        "size_note": "natural adult scale; small relative to skull in monsters"
+      },
+      "brow": "defined organic brow appropriate to described face",
+      "nose": "long oval original female elf face, high full cheeks, fine brows",
+      "lips": "neutral closed lips or relaxed tusked mouth",
+      "ears": "pointed elf ears, tips below crown",
+      "skin_base_hex": "#e0bfa5",
+      "skin_variation": "subtle redness, pores, age or scars as described"
+    },
+    "hair": {
+      "root_hex": "#703820",
+      "tip_hex": "#a35730",
+      "length_m": 0.65,
+      "style": "long straight auburn-red hair, two temple braids",
+      "braids": "temple braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "wool or coarse woven fabric",
+        "color_hex": "#45553a",
+        "roughness": 0.85,
+        "sheen": 0.25,
+        "notes": "layered green wool tunic and cowl, laced brown leather vest, bracers, green leggings and tall soft boots"
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#624630",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "straps, stitching and edge wear"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "iron and bronze fittings as described",
+        "color_hex": "#9a8762",
+        "roughness": 0.45,
+        "metalness": 1,
+        "notes": "leather guard outfit, small bronze fittings"
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "mirkwood_bow",
+        "length_m": 1.45,
+        "notes": "design length; placement follows attachment table"
+      }
+    ],
+    "attachments": {
+      "left_hand": "bow",
+      "right_hand": "empty",
+      "left_hip": "curved sheathed knife",
+      "right_hip": "curved sheathed knife",
+      "back": "low quiver"
+    },
+    "silhouette_keywords": [
+      "slender elf captain",
+      "auburn hair",
+      "green cowl",
+      "laced vest",
+      "paired hip knives"
+    ],
+    "avoid": [
+      "white hair",
+      "back-mounted knives",
+      "actor likeness"
+    ],
+    "design_sources": [
+      "user original brief and attachment table",
+      "ARCHITECTURE.md section 4 scale list"
+    ],
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / STITCHED LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "WEAPON / WORN METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / BRAID / BRISTLES",
+        "source": "details/hair.png"
+      }
+    ]
+  }
+}
