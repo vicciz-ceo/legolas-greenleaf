@@ -218,28 +218,28 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/side | accepted | 1 | Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally. |
 | views/back | accepted | 1 | Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass. |
 | face_views/front | accepted | 1 | Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar. |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/three_quarter | accepted | 1 | Original identity preserved, three-quarter direction and natural skin/hair pass. |
+| face_views/side | accepted | 1 | Exact profile preserves original face and brown hair/beard. |
+| details/cloth_leather | accepted | 1 | Mail, embroidered dark tunic, brown bracer/belt and fur collar match accepted body. |
+| details/weapon_metal | accepted | 1 | Complete curved ivory Horn of Gondor, metal fittings and suspension strap. |
+| details/skin | accepted | 1 | Skin crop from independent front portrait. |
+| details/hair | accepted | 1 | Hair crop from independent profile portrait. |
+| turnaround | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| spec | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| notes | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| check | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| face | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| details | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| observed | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
 
 ## gondor
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
+| views/front | accepted | 1 | Winged helm/white tree mail correct; own RIGHT sword low and shield own LEFT forearm; original face and A-pose pass. |
+| views/three_quarter | accepted | 1 | Three-quarter torso consistent, sword own RIGHT far and shield own LEFT near camera; unclipped. |
+| views/side | accepted | 2 | Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge. |
+| views/back | accepted | 1 | True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |

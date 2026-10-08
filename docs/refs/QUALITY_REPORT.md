@@ -188,23 +188,24 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | boromir | views/side | accepted | 1 | Exact side profile own RIGHT near camera; horn own RIGHT visible and sword own LEFT occluded naturally. |
 | boromir | views/back | accepted | 1 | Loose back hair, cloak rear and own-side attachments preserved; A-pose and framing pass. |
 | boromir | face_views/front | accepted | 1 | Original broad face, brown eyes and brown hair/beard; clear full hair crown and fur collar. |
-| boromir | face_views/three_quarter | pending | 0 | Not yet attempted |
-| boromir | face_views/side | pending | 0 | Not yet attempted |
-| boromir | details/cloth_leather | pending | 0 | Not yet attempted |
-| boromir | details/weapon_metal | pending | 0 | Not yet attempted |
-| boromir | details/skin | pending | 0 | Not yet attempted |
-| boromir | details/hair | pending | 0 | Not yet attempted |
-| boromir | turnaround | pending | 0 | Not yet attempted |
-| boromir | spec | pending | 0 | Not yet attempted |
-| boromir | notes | pending | 0 | Not yet attempted |
-| boromir | check | pending | 0 | Not yet attempted |
-| boromir | face | pending | 0 | Not yet attempted |
-| boromir | details | pending | 0 | Not yet attempted |
-| boromir | observed | pending | 0 | Not yet attempted |
-| gondor | views/front | pending | 0 | Not yet attempted |
-| gondor | views/three_quarter | pending | 0 | Not yet attempted |
-| gondor | views/side | pending | 0 | Not yet attempted |
-| gondor | views/back | pending | 0 | Not yet attempted |
+| boromir | face_views/three_quarter | accepted | 1 | Original identity preserved, three-quarter direction and natural skin/hair pass. |
+| boromir | face_views/side | accepted | 1 | Exact profile preserves original face and brown hair/beard. |
+| boromir | details/cloth_leather | accepted | 1 | Mail, embroidered dark tunic, brown bracer/belt and fur collar match accepted body. |
+| boromir | details/weapon_metal | accepted | 1 | Complete curved ivory Horn of Gondor, metal fittings and suspension strap. |
+| boromir | details/skin | accepted | 1 | Skin crop from independent front portrait. |
+| boromir | details/hair | accepted | 1 | Hair crop from independent profile portrait. |
+| boromir | turnaround | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | spec | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | notes | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | check | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | face | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | details | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| boromir | observed | accepted | 0 | All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB. |
+| gondor | views/front | accepted | 1 | Winged helm/white tree mail correct; own RIGHT sword low and shield own LEFT forearm; original face and A-pose pass. |
+| gondor | views/three_quarter | accepted | 1 | Three-quarter torso consistent, sword own RIGHT far and shield own LEFT near camera; unclipped. |
+| gondor | views/side | accepted | 2 | Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge. |
+| gondor | views/side attempt 1 | rejected | — | Torso remained oblique and showed too much frontal tree; exact side body alignment required. |
+| gondor | views/back | accepted | 1 | True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete. |
 | gondor | face_views/front | pending | 0 | Not yet attempted |
 | gondor | face_views/three_quarter | pending | 0 | Not yet attempted |
 | gondor | face_views/side | pending | 0 | Not yet attempted |

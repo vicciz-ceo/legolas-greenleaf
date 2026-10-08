@@ -20,12 +20,12 @@
     "face": {
       "shape": "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet; fur-collared dark cloak over blue-grey tunic, leather belt and boots; carved pale Horn of Gondor at own RIGHT hip; sheathed sword own LEFT hip; both hands empty.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
+        "iris_hex": "#765640",
         "shape": "almond",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
+      "brow": "strong natural dark brown brows",
+      "nose": "broad straight bridge, natural rugged tip",
       "lips": "neutral closed, natural narrow upper lip",
       "ears": "as described; original natural anatomy",
       "skin_base_hex": "#bf9379",
@@ -67,21 +67,15 @@
     ],
     "weapons": [
       {
-        "kind": "sword",
+        "kind": "sheathed_sword",
         "length_m": 1.1,
-        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
-      },
-      {
-        "kind": "horn",
-        "length_m": 0.45,
-        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+        "notes": "Authored length; own LEFT hip, naturally occluded in rear."
       }
     ],
     "attachments": {
-      "right_hand": "empty",
-      "left_hand": "empty",
-      "left_hip": "sword",
-      "right_hip": "horn"
+      "right_hip": "Horn of Gondor",
+      "left_hip": "sheathed sword",
+      "hands": "empty"
     },
     "silhouette_keywords": [
       "Gondor captain: original rugged face, shoulder-length brown hair and beard, NO helmet",
@@ -128,5 +122,648 @@
         "source": "details/hair.png"
       }
     ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "boromir_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "781c8e96acbfe0211c93e5f5396adbaf5ec265e65514c6b1aeee1c7a9db2026b",
+      "size_bytes": 143824,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "b4a7738bdd99e7d382b8c94c024eb4c387bdcae80cf1887bb3b2ca0059474a29",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 242.70270270270268,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.85,
+      "height_fill_fraction": 0.4384765625,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "4de8fd2f93976df49c4e4e3db5045500e85da0d3ced1b5819eea60903733eb57",
+          "source_bbox_px": [
+            4,
+            4,
+            402,
+            564
+          ],
+          "sheet_bbox_px": [
+            159,
+            491,
+            478,
+            940
+          ],
+          "silhouette_height_px": 449,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8017857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "0968b185718d849aa2f3eb55cc0ca08ed7fa03a87a5ba3b312dc4b8f660f1fe0",
+          "source_bbox_px": [
+            4,
+            4,
+            342,
+            564
+          ],
+          "sheet_bbox_px": [
+            526,
+            491,
+            797,
+            940
+          ],
+          "silhouette_height_px": 449,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8017857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "4754d45c854698e038244e25146f884a10ca7f55552f861712d6ae05df2e4b22",
+          "source_bbox_px": [
+            4,
+            4,
+            235,
+            564
+          ],
+          "sheet_bbox_px": [
+            912,
+            491,
+            1097,
+            940
+          ],
+          "silhouette_height_px": 449,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8017857142857143,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "7eb0d2712c4cc28e7d2af7325eccbd1d8fc732894266272377309807ffc4b25b",
+          "source_bbox_px": [
+            4,
+            4,
+            400,
+            564
+          ],
+          "sheet_bbox_px": [
+            1188,
+            491,
+            1506,
+            940
+          ],
+          "silhouette_height_px": 449,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.8017857142857143,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 491,
+        "endpoint_m": 1.85,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 879
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 819
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 758
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 697
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 637
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 576
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 515
+          }
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "boromir_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "e640f8557121f90f051bdc47f3620835ecd0f7783b7ae45e935c39cc84d122ea",
+      "size_bytes": 264203,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "170cf9b614ee0bf98416d5182cf202f39361aa30211b1038a031cd8665301d16",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "652a6c1f69e89da450dc67f4c0496c8dd233c2f6a4c94bbc25d37dab1b4c7a55",
+          "source_bbox_px": [
+            4,
+            4,
+            228,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            263,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "637e32beb918a3ac13b9c81eaf82a35476edfb31cfd3a1d82599d34494a159bd",
+          "source_bbox_px": [
+            4,
+            4,
+            225,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            254,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "85d774c76ab23009d350871f64e6f2e48a8b1a27d16be51430804158f41ed70f",
+          "source_bbox_px": [
+            4,
+            4,
+            209,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            202,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "boromir_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+      "size_bytes": 187358,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "ab2060cf7a961293459540a8928ecf7839065c382eb28c635edd69ef6cc42300",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "5a4234dd8d0cc4c3210191d88475e6dd1050b5707c11d952af629bdb57ec391b",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "5f7fe23d7569868339dc9bb6c2cbd1dfc9c04ecb3bdc5b9910a144f616d98327",
+          "sheet_bbox_px": [
+            617,
+            12,
+            918,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "c7a0bdd75c6299d8bbea65d7a33ca359c4a91565bc03816ec1ffe0453809db84",
+          "sheet_bbox_px": [
+            22,
+            524,
+            489,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "32d04f60fee6d314fcb31ca422b513716506d42230e2fb3ed3fbe2504b353121",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        300,
+        540,
+        400,
+        600
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        700,
+        620,
+        880,
+        840
+      ]
+    },
+    {
+      "name": "tunic",
+      "sheet": "details",
+      "rect_px": [
+        180,
+        110,
+        220,
+        190
+      ]
+    },
+    {
+      "name": "cloak",
+      "sheet": "details",
+      "rect_px": [
+        360,
+        180,
+        385,
+        230
+      ]
+    },
+    {
+      "name": "fur_collar",
+      "sheet": "details",
+      "rect_px": [
+        280,
+        25,
+        360,
+        65
+      ]
+    },
+    {
+      "name": "leather_bracers",
+      "sheet": "details",
+      "rect_px": [
+        320,
+        235,
+        365,
+        295
+      ]
+    },
+    {
+      "name": "leather_belt",
+      "sheet": "details",
+      "rect_px": [
+        215,
+        245,
+        250,
+        275
+      ]
+    },
+    {
+      "name": "steel_mail",
+      "sheet": "details",
+      "rect_px": [
+        320,
+        150,
+        360,
+        190
+      ]
+    },
+    {
+      "name": "horn_bronze_fittings",
+      "sheet": "details",
+      "rect_px": [
+        650,
+        35,
+        705,
+        70
+      ]
+    },
+    {
+      "name": "trousers",
+      "sheet": "turnaround",
+      "rect_px": [
+        280,
+        755,
+        294,
+        788
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        262,
+        897,
+        274,
+        919
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          300,
+          540,
+          400,
+          600
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          177,
+          121,
+          109
+        ],
+        "srgb_hex": "#b1796d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          700,
+          620,
+          880,
+          840
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          47,
+          27,
+          18
+        ],
+        "srgb_hex": "#2f1b12",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "tunic": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          180,
+          110,
+          220,
+          190
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          56,
+          53,
+          55
+        ],
+        "srgb_hex": "#383537",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "cloak": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          360,
+          180,
+          385,
+          230
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          66,
+          55,
+          50
+        ],
+        "srgb_hex": "#423732",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "fur_collar": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          280,
+          25,
+          360,
+          65
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          94,
+          70,
+          57
+        ],
+        "srgb_hex": "#5e4639",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather_bracers": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          320,
+          235,
+          365,
+          295
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          86,
+          71,
+          68
+        ],
+        "srgb_hex": "#564744",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather_belt": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          215,
+          245,
+          250,
+          275
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          75,
+          56,
+          50
+        ],
+        "srgb_hex": "#4b3832",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "steel_mail": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          320,
+          150,
+          360,
+          190
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          60,
+          56,
+          59
+        ],
+        "srgb_hex": "#3c383b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "horn_bronze_fittings": {
+        "sheet": "boromir_details.jpg",
+        "sheet_sha256": "4bd3295be2e691ce8879a192ef22b4cf025bc7bb353235b7ac2b9acf86ad8123",
+        "rect_px": [
+          650,
+          35,
+          705,
+          70
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          103,
+          91,
+          83
+        ],
+        "srgb_hex": "#675b53",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "trousers": {
+        "sheet": "boromir_turnaround.jpg",
+        "sheet_sha256": "781c8e96acbfe0211c93e5f5396adbaf5ec265e65514c6b1aeee1c7a9db2026b",
+        "rect_px": [
+          280,
+          755,
+          294,
+          788
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          45,
+          43,
+          47
+        ],
+        "srgb_hex": "#2d2b2f",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "boromir_turnaround.jpg",
+        "sheet_sha256": "781c8e96acbfe0211c93e5f5396adbaf5ec265e65514c6b1aeee1c7a9db2026b",
+        "rect_px": [
+          262,
+          897,
+          274,
+          919
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          77,
+          62,
+          55
+        ],
+        "srgb_hex": "#4d3e37",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
   }
 }

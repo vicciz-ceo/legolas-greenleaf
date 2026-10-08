@@ -1521,56 +1521,117 @@
           "path": "/workspace/generated_images/exec-d3a456ca-417e-4ac5-a2de-5daeeb88f34b.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original identity preserved, three-quarter direction and natural skin/hair pass.",
+              "path": "/workspace/generated_images/exec-043c1749-9cb4-4bd3-a490-793b6049fd11.png"
+            }
+          ],
+          "reason": "Original identity preserved, three-quarter direction and natural skin/hair pass.",
+          "path": "/workspace/generated_images/exec-043c1749-9cb4-4bd3-a490-793b6049fd11.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact profile preserves original face and brown hair/beard.",
+              "path": "/workspace/generated_images/exec-009dfa51-8687-4a8d-9a25-e08414d78fc3.png"
+            }
+          ],
+          "reason": "Exact profile preserves original face and brown hair/beard.",
+          "path": "/workspace/generated_images/exec-009dfa51-8687-4a8d-9a25-e08414d78fc3.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Mail, embroidered dark tunic, brown bracer/belt and fur collar match accepted body.",
+              "path": "/workspace/generated_images/exec-f033a981-e7f1-4b68-85fc-c6784f0c5ce3.png"
+            }
+          ],
+          "reason": "Mail, embroidered dark tunic, brown bracer/belt and fur collar match accepted body.",
+          "path": "/workspace/generated_images/exec-f033a981-e7f1-4b68-85fc-c6784f0c5ce3.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete curved ivory Horn of Gondor, metal fittings and suspension strap.",
+              "path": "/workspace/generated_images/exec-1450123f-f2af-4fcb-80cf-9623a1234a09.png"
+            }
+          ],
+          "reason": "Complete curved ivory Horn of Gondor, metal fittings and suspension strap.",
+          "path": "/workspace/generated_images/exec-1450123f-f2af-4fcb-80cf-9623a1234a09.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Skin crop from independent front portrait.",
+              "path": "/workspace/generated_images/exec-d3a456ca-417e-4ac5-a2de-5daeeb88f34b.png"
+            }
+          ],
+          "reason": "Skin crop from independent front portrait.",
+          "path": "/workspace/generated_images/exec-d3a456ca-417e-4ac5-a2de-5daeeb88f34b.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Hair crop from independent profile portrait.",
+              "path": "/workspace/generated_images/exec-009dfa51-8687-4a8d-9a25-e08414d78fc3.png"
+            }
+          ],
+          "reason": "Hair crop from independent profile portrait.",
+          "path": "/workspace/generated_images/exec-009dfa51-8687-4a8d-9a25-e08414d78fc3.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All assembled sheets visually reviewed; automated scale/schema/hash/budget checks pass, approximately 2.33 MB."
         }
       }
     },
@@ -1579,20 +1640,62 @@
       "design_extent_m": 1.82,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Winged helm/white tree mail correct; own RIGHT sword low and shield own LEFT forearm; original face and A-pose pass.",
+              "path": "/workspace/generated_images/exec-eeb6ef9f-6328-4c0c-91b8-81952d5f8bfa.png"
+            }
+          ],
+          "reason": "Winged helm/white tree mail correct; own RIGHT sword low and shield own LEFT forearm; original face and A-pose pass.",
+          "path": "/workspace/generated_images/exec-eeb6ef9f-6328-4c0c-91b8-81952d5f8bfa.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Three-quarter torso consistent, sword own RIGHT far and shield own LEFT near camera; unclipped.",
+              "path": "/workspace/generated_images/exec-9760f3e3-8331-46f6-8ecf-7a3a88b1dbbf.png"
+            }
+          ],
+          "reason": "Three-quarter torso consistent, sword own RIGHT far and shield own LEFT near camera; unclipped.",
+          "path": "/workspace/generated_images/exec-9760f3e3-8331-46f6-8ecf-7a3a88b1dbbf.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Torso remained oblique and showed too much frontal tree; exact side body alignment required.",
+              "path": "/workspace/generated_images/exec-5b0d3070-8090-4c6c-8b72-9a5e6bba3957.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge.",
+              "path": "/workspace/generated_images/exec-c1f4a6e6-1d09-4d9c-8c66-a3c1991154c0.png"
+            }
+          ],
+          "reason": "Second side is exact profile: near right arm occludes front chest; right sword near, left shield far edge.",
+          "path": "/workspace/generated_images/exec-c1f4a6e6-1d09-4d9c-8c66-a3c1991154c0.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete.",
+              "path": "/workspace/generated_images/exec-4c9078fc-8d9d-469a-9fe6-1285f75245fe.png"
+            }
+          ],
+          "reason": "True rear; sword own RIGHT image right, left shield back/straps visible image left; helm boots and tips complete.",
+          "path": "/workspace/generated_images/exec-4c9078fc-8d9d-469a-9fe6-1285f75245fe.png"
         },
         "face_views/front": {
           "status": "pending",
