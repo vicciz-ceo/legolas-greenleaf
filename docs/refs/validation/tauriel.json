@@ -1,0 +1,11 @@
+{
+  "id": "tauriel",
+  "status": "PASS",
+  "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+  "character_bytes": 1918100,
+  "character_budget_bytes": 2500000,
+  "library_bytes": 68451913,
+  "library_budget_bytes": 70000000,
+  "px_per_m": 402.24719101123594,
+  "visual_review": "Separate by-eye gate; not certified by this command."
+}

@@ -9,3 +9,5 @@
 - Avoid: ordinary removable helmet, smooth unscarred skin, dwarf proportions, actor likeness.
 - Design dimensions and PBR values are intent. The compositor records image normalization; observed colours are rendered and lit, not albedo.
 - Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
+
+- Three portraits reuse author-reviewed native head-and-shoulders crops from their corresponding accepted body originals, without mirroring or new generation. The scalp is bald: its detail tile shows bolted scalp plates, and observed hair colour is explicitly null.

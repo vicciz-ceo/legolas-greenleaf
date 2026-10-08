@@ -27,5 +27,219 @@
       "silhouette_64px": "readable huge pale bald spiked orc with low right-hand mace",
       "tolerated_drift": []
     }
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d6c39d9f-7586-4619-ba67-76af78e6d58c.png",
+    "original_sha256": "d73f8ebffe073d7221ca903ddbcd4bde5264385d4f719eb7798cea0671dc2d78",
+    "original_size_px": [
+      1055,
+      1491
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "4eff838b6804b12cae610e714af4bff2d117692d9d05dd55e22613dc1a244974",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/bolg/views/front.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; original recovery attempt1 independently re-reviewed and accepted without new generation after erroneous abdominal-plate rejection was corrected against actual full-resolution front.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "original_face": true,
+      "anatomy": "Natural right mace grip; empty left hand has thumb plus four naturally curled fingers, no definite digit or joint defect. Two arms, two legs.",
+      "attachment_sides": "Own right mace arm nearer camera/image left; left hand empty.",
+      "view_angle": "Front three-quarter with anatomical right side nearer, nose image right.",
+      "framing": "All crown, spikes, hands, mace and both soles inside frame. Spikes below crown and mace above soles.",
+      "silhouette_64px": "Inspected 64px actual alpha-composited preview: pale bald spiked orc, right mace, ragged kilt and two legs readable.",
+      "gear_inventory": "Matches actual accepted front, including broad central riveted abdominal plate below harness ring; previous no-plate claim was erroneous.",
+      "segmentation_edges": "Original red RGB edge pixels have alpha1\u20134/255; visually absent on proper grey alpha composite. Retained existing_alpha cutout reviewed.",
+      "tolerated_drift": [
+        "Minor buckle/strap rendering differences."
+      ]
+    },
+    "review_of_prior_attempt": 1,
+    "independent_rereview_receipt": "/workspace/greenleaf-receipts/bolg_rotation_repairs.json"
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-82bfb52d-5bee-4399-90bb-be0e1845ac42.png",
+    "original_sha256": "fde013ba6a74878a01d61c557a77d3835ac0ea2b21ced14281d93ee13f81363e",
+    "original_size_px": [
+      1055,
+      1491
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "90f4e69d2a3ba7b6f3f657baf67462329383e502bdf189c46415b72d2d3a77e5",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/bolg/views/front.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; original recovery attempt1 independently re-reviewed and accepted without new generation after erroneous abdominal-plate rejection was corrected against actual full-resolution front. Apparent crown red fringe was negligible-alpha viewer artefact; actual alpha composites reviewed.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "original_face": true,
+      "anatomy": "Near right hand has natural curled mace grip with normal finger overlap; far empty left hand naturally curled and partially occluded. Two arms/two legs; no definite extra or fused digits.",
+      "attachment_sides": "Near anatomical right hand holds mace; far left hand empty; no mirroring.",
+      "view_angle": "Right-side profile with near right ear/eye visible and nose image right.",
+      "framing": "Complete crown, spikes, hands, mace and both feet. Mace above soles and shoulder spikes below crown.",
+      "silhouette_64px": "Inspected 64px grey alpha-composited preview: profile bald spiked orc, right-hand mace and ragged kilt readable.",
+      "gear_inventory": "Accepted front has matching central riveted abdominal plate and harness ring; original rejection incorrectly stated it absent. Bolted skull/jaw and heavy rusted shoulder/bracer/shin armour preserved.",
+      "segmentation_edges": "Original red crown/edge RGB pixels have alpha1\u20135/255; not visible on proper full-resolution grey alpha composite or reviewed retained440px composite. Existing_alpha segmentation preserved actual crown contour.",
+      "tolerated_drift": [
+        "Minor strap/buckle detail changes."
+      ]
+    },
+    "review_of_prior_attempt": 1,
+    "independent_rereview_receipt": "/workspace/greenleaf-receipts/bolg_rotation_repairs.json"
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e5a888b5-5114-49ba-b61d-c343985f0732.png",
+    "original_sha256": "f8b4cc1893fe9a8ab34e1d8778a598f77d53b0c53579d50f2da5471e022c9460",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "cdf07d6f28deffd285db36bc9ae48a6b638e7813fd897b40326366e407c62ac0",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png",
+      "/workspace/greenleaf-refs/docs/refs/bolg/views/side.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; generated rear using inspected accepted full-resolution front and accepted right profile, preserving original armour inventory including front abdominal plate.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "original_face": true,
+      "anatomy": "Two arms and two legs; empty left hand thumb plus four naturally curved fingers, right mace grip normal thumb and four wrapping fingers. Hand crops inspected.",
+      "attachment_sides": "Own RIGHT/image RIGHT mace in exact rear view; own LEFT/image LEFT empty.",
+      "view_angle": "Exact rear: back of skull, square back and backs of legs, no facial features visible.",
+      "framing": "All crown, spikes, hands, mace and soles fully framed. All spikes below crown and mace above soles.",
+      "silhouette_64px": "Actual grey alpha-composited 64px preview inspected: broad pale bald spiked orc, ragged kilt, right-side low mace and separated legs readable.",
+      "gear_inventory": "Matches accepted full-resolution front and right profile: bolted skull/jaw side fittings, rusted shoulder/bracer/shin plates, leather supports/belt, ragged dark kilt and open-toed wrapped sandals. Front abdominal plate remains on front, no new rear cuirass.",
+      "segmentation_edges": "Native alpha composite and retained existing_alpha source reviewed; crown, spikes, fingers, weapon and soles preserved.",
+      "tolerated_drift": [
+        "Minor buckle, strap and belt fitting rendering variations."
+      ]
+    }
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png",
+    "original_sha256": "b948ee2d29ac911413b7295255b413677715d9e9f5523b13ed460845d92693f9",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      242,
+      105,
+      824,
+      493
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "4adfc292e5e20aab56c7199d1de29bb1fcc03466565c853921ed1bcb3c0ae2bf",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/front",
+    "reused_source_sha256": "b053259884c5a5da91462a3dd4044e2f8521f6af93912bfe4bd069b27d90c8b6",
+    "imagegen_calls": 0,
+    "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Exact frontal face; complete scarred bald crown, bolted skull plates, both ears, heavy brow and eyes, flattened nose, tusked mouth and entire jaw brace. Upper shoulders and rusted pauldrons included. Native facial detail is adequate for the configured 256px face source; no appearance edits or enlargement needed. Proper grey alpha composite reviewed; negligible-alpha background RGB is not a visual defect.",
+    "reviewed_crop_receipt_sha256": "72fb46a9057655250ed53040be99d6d881b764fd90d494068d007715a35917ad"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d6c39d9f-7586-4619-ba67-76af78e6d58c.png",
+    "original_sha256": "d73f8ebffe073d7221ca903ddbcd4bde5264385d4f719eb7798cea0671dc2d78",
+    "original_size_px": [
+      1055,
+      1491
+    ],
+    "crop_px": [
+      235,
+      0,
+      831,
+      437
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "3a83942d3b7fb2443ebe13b83b60d695de76015647e3fec003a617f507246400",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/three_quarter",
+    "reused_source_sha256": "4eff838b6804b12cae610e714af4bff2d117692d9d05dd55e22613dc1a244974",
+    "imagegen_calls": 0,
+    "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Front three-quarter view with anatomical right side nearer and nose image right. Complete scarred bald crown, near ear, flush bolted skull plate and whole jaw brace retained; far ear is naturally occluded by the rotation. Heavy brow, near eye and lid, flattened nose, tusked mouth and scars are resolved natively. Full shoulder width and spiked pauldrons retained. Native detail is adequate for the configured 256px face source without enlargement. Correct grey alpha composite shows no vivid red crown/face fringe; red RGB ghost pixels at alpha1-4/255 are viewer artifacts.",
+    "reviewed_crop_receipt_sha256": "df4e79d2807f23745acdb33e9836ec46a4e6b433d1ad17d899ccca4dd7d15d58"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-82bfb52d-5bee-4399-90bb-be0e1845ac42.png",
+    "original_sha256": "fde013ba6a74878a01d61c557a77d3835ac0ea2b21ced14281d93ee13f81363e",
+    "original_size_px": [
+      1055,
+      1491
+    ],
+    "crop_px": [
+      255,
+      0,
+      688,
+      437
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "93d47f6b0670314a551d9923391c28828b10b438afa2a50a7422b89ac2b934b7",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "90f4e69d2a3ba7b6f3f657baf67462329383e502bdf189c46415b72d2d3a77e5",
+    "imagegen_calls": 0,
+    "by_eye_review": "Native head-and-shoulders crop from the accepted full original. Right-side profile, nose image right, one near eye and near right ear visible; far eye/ear naturally occluded. Complete scarred bald scalp contour, flush bolted skull plate, ear, nose/lip/tusk outline, chin and whole jaw brace retained with the near spiked shoulder pauldron. Native eye, scar, bolt and mouth detail is adequate for the configured 256px face source without enlargement. Grey alpha composite confirms the vivid red raw-viewer crown fringe is negligible alpha1-5/255 RGB ghosting, not an actual visible grey-composite defect.",
+    "reviewed_crop_receipt_sha256": "c88988610dfca907af887e98461b27b65d3c4c725357058813f7e22a4cd20653"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a5d02e5e-7e1e-4789-b95a-d4254e586e99.png",
+    "original_sha256": "b227beaede0fd77b1dccda3619948c505021d3f67343a89c8b18eb92e7bcbc60",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      12,
+      0,
+      1020,
+      1536
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "33e97753f45ae4fb2a410044b875bbbff9987dfc31140572b0d2ddd7e15ff06b",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png"
+    ],
+    "provenance": "Newly authored replacement for lost assets; individual continuous material macro conditioned on inspected accepted full-resolution front. Existing transparent alpha preserved during detail intake without rembg.",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "appearance": "One continuous macro of the accepted ragged charcoal-dark coarse woven kilt next to worn brown leather strap with simple stitched seam. Distinct woven threads, fraying, leather grain and worn edges match actual costume.",
+      "view_type": "Single material macro, no montage or labels; no added equipment, skin or metal.",
+      "segmentation_edges": "Original proper native-alpha grey composite and 168x256 retained composite reviewed. Existing alpha preserved without rembg; intact frayed garment edges visible.",
+      "material_sampling": "Separate cloth and leather interior sampling rectangles verified entirely alpha>242/255.",
+      "tolerated_drift": [
+        "Stitch scale/pattern naturally amplified for macro inspection."
+      ]
+    }
   }
 }

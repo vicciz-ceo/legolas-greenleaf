@@ -36,5 +36,168 @@
     "provenance": "newly_authored_recovery; conditioned on accepted local recovery front; no mirroring",
     "classification": "newly_authored_recovery",
     "by_eye_review": "Same original creature and opaque knee-length cloth kilt, correct three-quarter nose image right, nearer own right hand complete club and right ankle shackle; empty hand thumb plus four fingertips visible; all hands feet and club fully framed."
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2491c748-3a03-4ffb-b06b-231259a10cb4.png",
+    "original_sha256": "4dd29343099dc8d496397370f83758513523afa75afe692fdb6b5aca41865e77",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "b7c37a443e0c6185cfea1d94f7fd27904f99bfba41cb711afaab54d47c198321",
+    "generation": "image_gen single exact right profile edit conditioned on accepted front original",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; conditioned on accepted local recovery front; no mirroring",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Exact nose image-right profile; same small head, barrel chest and hanging belly, warty hide, knee-length opaque kilt; complete near anatomical right hand natural club grip, entire club and feet within frame, right ankle shackle/chain. Natural hand occlusion; no definite digit anomaly; no text."
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-55847054-baeb-4d16-9da5-cf729504fc2e.png",
+    "original_sha256": "0a6d640aa57f9013e27fb82069927b973ac1eedee4b375c315f3e30d374ca575",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "94ba4f9ae3e0bb6a0c8c49cf5a78c57a0beb82cc2f4e58301349aa70c71878b7",
+    "generation": "image_gen single exact rear edit conditioned on accepted front original",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; conditioned on accepted local recovery front; no mirroring",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Exact square-on rear, back of head and heels; same small head, broad barrel torso and long heavy arms, warty hide and opaque knee-length kilt; anatomical right/image-right full club and ankle shackle/chain. Empty left hand natural thumb and curled fingers; no definite digit anomaly. Whole body, hands, feet, chain and club inside frame, no text; silhouette readable at 64px."
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png",
+    "original_sha256": "1e1928bc90d9f974da38f720933909d06a97dd50610c54652e33cfc41fd4dff0",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      530,
+      16,
+      1065,
+      350
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "387541fbde049b185aca8b004bd35c4187e7d67a21fa2213507603ab551678ce",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/front",
+    "reused_source_sha256": "9aa6dad9621e6995ebe544c7d236a070643f201cc727a0b2a38b249c5cf58928",
+    "imagegen_calls": 0,
+    "by_eye_review": "Reviewed the full original and unscaled native crop by eye. Exact front preserves the complete small head, both thick ears, paired tusks, full crown bristles, and both broad shoulders with their sparse bristles. At native resolution both small deep-set eyes and lids, heavy brow folds, broad nose and nostrils, relaxed lips, chin and warty hide remain distinct. Lower edge deliberately crosses upper chest and upper arms, yielding head-and-shoulders framing without changing the tiny-head proportion. Original SHA-256 matches sources.json.",
+    "reviewed_crop_receipt_sha256": "5640f35de5bf1ea45e9f094a9049445dff25170e23554278736c56f408f30927"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5aac9196-6498-47e6-bce6-bf23fcf7fd06.png",
+    "original_sha256": "6d67aec1140af3d100635c57cea1d0ed6f3d44c8324bf53312699b4c01dc41f4",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      535,
+      16,
+      1000,
+      356
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "c4ac1dc45fc1b3e6ca5ffdbc81e676dac575824e38ab93eae77daf00471a6971",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/three_quarter",
+    "reused_source_sha256": "fb1e8fd7bf801fe335a7332023e6ea82fe8be2327c727f005a63379a9eb5eb9e",
+    "imagegen_calls": 0,
+    "by_eye_review": "Reviewed the full original and unscaled native crop by eye. Clear three-quarter angle with nose directed image right; complete small head, visible thick ear, both tusks, crown bristles, near shoulder and naturally receding far shoulder fit inside the crop. Heavy brow, near deep-set eye and lid, partly occluded far eye, nose bridge and nostril, mouth contour, chin and warty skin resolve at native size. The sparse scalp/shoulder bristles and tiny-head proportion are preserved. Lower edge crosses upper chest and upper arms. Original SHA-256 matches sources.json; no resynthesis, enlargement, mirroring or appearance alteration.",
+    "reviewed_crop_receipt_sha256": "db1774ba672f779f3467f5986214cfa253912650a9b2a6561c1a5d88454f60c5"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2491c748-3a03-4ffb-b06b-231259a10cb4.png",
+    "original_sha256": "4dd29343099dc8d496397370f83758513523afa75afe692fdb6b5aca41865e77",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      140,
+      32,
+      665,
+      520
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "81a5643ea921c918292f435afaf64f54fd310bae4969bada54f9210a423812ea",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "b7c37a443e0c6185cfea1d94f7fd27904f99bfba41cb711afaab54d47c198321",
+    "imagegen_calls": 0,
+    "by_eye_review": "Reviewed the full accepted original and unscaled native crop by eye. Right profile with nose image right preserves the complete small head contour, thick near ear, near tusk and relaxed mouth, scalp bristles and the full visible shoulder hump; the far side is naturally occluded. Native pixels clearly describe the brow overhang, deep-set eye/lid, projecting broad nose, nostril, lips, chin, ear folds and warty hide. Lower edge intentionally crosses upper chest and upper arm. Original SHA-256 matches sources.json. No native-detail insufficiency or crop clipping found; no appearance alteration or enlargement.",
+    "reviewed_crop_receipt_sha256": "0ef4c4796feaa32636263b525e02f13a5119e1890b886fb69ce2bad873dc74f0"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-66a39160-0aa4-46ab-95c3-a909ce92324f.png",
+    "original_sha256": "2935cc4469b4dbad65fd1e78538fefd4c65104e99308053cb7788798595253a3",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      1,
+      0,
+      1254,
+      1239
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "0bd331a640c8f2008a3aa9978fae1abb3e6db2cb4df0d8a7355e93a44eeb90cd",
+    "generation": "image_gen single continuous clothing macro conditioned on accepted full-resolution front",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; same accepted opaque brown woven kilt and broad worn leather belt; existing_alpha preserved without rembg",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Continuous dark brown coarse woven opaque cloth below worn cracked brown leather belt with sewn edge; accepted material match, no body exposure, no lettering, no armour or invented gear. Minor stitch pattern drift allowed."
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2997fa7d-9d0e-46d7-9c59-c8d3092518ef.png",
+    "original_sha256": "bee4ddbb3dd6c97e850e7fdb032def0166e1b35233adde5e1381c21ef30d1a5e",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      61,
+      0,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "2c0bd73f4a9bdceeb7cee841e9bd51353e1f6c7a24ce0653bf99f85813a6eeeb",
+    "generation": "image_gen single continuous right-ankle shackle macro conditioned on accepted full-resolution front and right side",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png",
+      "/workspace/generated_images/exec-2491c748-3a03-4ffb-b06b-231259a10cb4.png"
+    ],
+    "provenance": "newly_authored_recovery; actual anatomical right ankle rusty iron shackle and short chain; existing_alpha preserved without rembg",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Single continuous macro shows corroded flat iron ankle cuff with short complete oval-link chain over accepted warty earthy grey-green ankle hide. Correct reference material and right ankle; no torso armour or new weapon, no letters, no definite anatomy defect. Normal macro crop bounds truncate lower shin/foot, complete chain retained. Minor cuff rivet drift tolerated."
   }
 }

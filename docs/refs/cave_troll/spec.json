@@ -45,7 +45,7 @@
         "color_hex": "#605044",
         "roughness": 0.85,
         "sheen": 0.25,
-        "notes": "primitive ragged loinwrap and broad leather waist belt; bare warty hide and feet"
+        "notes": "Primitive opaque knee-length ragged woven kilt and broad leather waist belt; bare warty hide and feet. Full lower-body coverage retained in every view."
       },
       {
         "name": "leather",
@@ -125,6 +125,406 @@
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/front": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/front; no new rotation/generation, no mirroring; all existing portrait attempt history retained.",
+      "face_views/three_quarter": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/three_quarter; no new rotation/generation, no mirroring; all existing portrait attempt history retained.",
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; all existing portrait attempt history retained."
     }
-  }
+  },
+  "measured": {
+    "turnaround": {
+      "path": "cave_troll_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "7a9824c4209626a8411819d898388c8e2d73974e183885ba6eea9981c397a209",
+      "size_bytes": 129497,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "17c0d7466004665ae5bff6153871374839145c2914ee2ab8fc86291cad4c9f5e",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 71.55555555555556,
+      "baseline_y_px": 940,
+      "overall_height_m": 4.5,
+      "height_fill_fraction": 0.314453125,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "9aa6dad9621e6995ebe544c7d236a070643f201cc727a0b2a38b249c5cf58928",
+          "source_bbox_px": [
+            4,
+            4,
+            440,
+            444
+          ],
+          "sheet_bbox_px": [
+            159,
+            618,
+            478,
+            940
+          ],
+          "silhouette_height_px": 322,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7318181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            322
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "fb1e8fd7bf801fe335a7332023e6ea82fe8be2327c727f005a63379a9eb5eb9e",
+          "source_bbox_px": [
+            4,
+            4,
+            348,
+            444
+          ],
+          "sheet_bbox_px": [
+            535,
+            618,
+            787,
+            940
+          ],
+          "silhouette_height_px": 322,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7318181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            252,
+            322
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "b7c37a443e0c6185cfea1d94f7fd27904f99bfba41cb711afaab54d47c198321",
+          "source_bbox_px": [
+            4,
+            5,
+            257,
+            444
+          ],
+          "sheet_bbox_px": [
+            911,
+            618,
+            1097,
+            940
+          ],
+          "silhouette_height_px": 322,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7334851936218679,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            186,
+            322
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "94ba4f9ae3e0bb6a0c8c49cf5a78c57a0beb82cc2f4e58301349aa70c71878b7",
+          "source_bbox_px": [
+            4,
+            5,
+            424,
+            444
+          ],
+          "sheet_bbox_px": [
+            1193,
+            618,
+            1501,
+            940
+          ],
+          "silhouette_height_px": 322,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.7334851936218679,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            308,
+            322
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 618,
+        "endpoint_m": 4.5,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 922
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 904
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 886
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 868
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 851
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 833
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 815
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 797
+          },
+          {
+            "value_m": 2.25,
+            "y_px": 779
+          },
+          {
+            "value_m": 2.5,
+            "y_px": 761
+          },
+          {
+            "value_m": 2.75,
+            "y_px": 743
+          },
+          {
+            "value_m": 3.0,
+            "y_px": 725
+          },
+          {
+            "value_m": 3.25,
+            "y_px": 707
+          },
+          {
+            "value_m": 3.5,
+            "y_px": 690
+          },
+          {
+            "value_m": 3.75,
+            "y_px": 672
+          },
+          {
+            "value_m": 4.0,
+            "y_px": 654
+          },
+          {
+            "value_m": 4.25,
+            "y_px": 636
+          },
+          {
+            "value_m": 4.5,
+            "y_px": 618
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            862,
+            93,
+            874
+          ],
+          [
+            57,
+            791,
+            93,
+            803
+          ],
+          [
+            57,
+            719,
+            93,
+            731
+          ],
+          [
+            57,
+            648,
+            93,
+            660
+          ],
+          [
+            117,
+            599,
+            180,
+            612
+          ]
+        ],
+        "label_stride_ticks": 4
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "cave_troll_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "15efcbf02d3956d2d8a21dcc2938927492a201a580d7284b5d953ec018a0b2df",
+      "size_bytes": 163902,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "3ffec67db8a8b1c783a08ae0220945e59ec6d895dded6ed047112d4c3fce2155",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "387541fbde049b185aca8b004bd35c4187e7d67a21fa2213507603ab551678ce",
+          "source_bbox_px": [
+            4,
+            4,
+            433,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            646,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "c4ac1dc45fc1b3e6ca5ffdbc81e676dac575824e38ab93eae77daf00471a6971",
+          "source_bbox_px": [
+            4,
+            4,
+            378,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            605,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "81a5643ea921c918292f435afaf64f54fd310bae4969bada54f9210a423812ea",
+          "source_bbox_px": [
+            4,
+            5,
+            280,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            495,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    }
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        82,
+        143,
+        130,
+        181
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        103,
+        26,
+        148,
+        66
+      ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        95,
+        86,
+        143,
+        119
+      ]
+    },
+    {
+      "name": "club_wood",
+      "source_image": "views/front.png",
+      "rect_px": [
+        82,
+        300,
+        93,
+        310
+      ]
+    }
+  ]
 }

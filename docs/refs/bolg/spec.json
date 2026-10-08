@@ -94,7 +94,10 @@
       "user original brief and attachment table",
       "ARCHITECTURE.md section 4 scale list"
     ],
-    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements."
+    "authoring_note": "Unspecified numeric proportions, gear lengths and palette values are authored design targets, not source quotations or recovered measurements.",
+    "concealed_materials": {
+      "hair": "The prescribed scarred scalp is bald with flush bolted plates and jaw braces; no hair is visible. The fourth detail tile documents that bald scalp rather than inventing hair."
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -116,13 +119,396 @@
       },
       {
         "name": "hair",
-        "label": "HAIR / BRAID / BRISTLES",
+        "label": "BALD SCALP / BOLTED PLATES",
         "source": "details/hair.png"
       }
     ],
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/front": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/front; no new rotation/generation, no mirroring; all existing portrait attempt history retained.",
+      "face_views/three_quarter": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/three_quarter; no new rotation/generation, no mirroring; all existing portrait attempt history retained.",
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; all existing portrait attempt history retained."
     }
-  }
+  },
+  "measured": {
+    "turnaround": {
+      "path": "bolg_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "1e6ff2722de11ec2a138b6d39b6cf1812403ca0251ad48be637b67bf6920d03c",
+      "size_bytes": 191865,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "4b36436111e131a914ecbebcb4be961bfa9350b282cdfed8e1d0ab383ad13558",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 174.6153846153846,
+      "baseline_y_px": 940,
+      "overall_height_m": 2.6,
+      "height_fill_fraction": 0.443359375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "b053259884c5a5da91462a3dd4044e2f8521f6af93912bfe4bd069b27d90c8b6",
+          "source_bbox_px": [
+            4,
+            4,
+            313,
+            444
+          ],
+          "sheet_bbox_px": [
+            159,
+            486,
+            478,
+            940
+          ],
+          "silhouette_height_px": 454,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0318181818181817,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            454
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "4eff838b6804b12cae610e714af4bff2d117692d9d05dd55e22613dc1a244974",
+          "source_bbox_px": [
+            4,
+            4,
+            265,
+            444
+          ],
+          "sheet_bbox_px": [
+            527,
+            486,
+            796,
+            940
+          ],
+          "silhouette_height_px": 454,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0318181818181817,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            269,
+            454
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "90f4e69d2a3ba7b6f3f657baf67462329383e502bdf189c46415b72d2d3a77e5",
+          "source_bbox_px": [
+            4,
+            4,
+            165,
+            444
+          ],
+          "sheet_bbox_px": [
+            921,
+            486,
+            1087,
+            940
+          ],
+          "silhouette_height_px": 454,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0318181818181817,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            166,
+            454
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "cdf07d6f28deffd285db36bc9ae48a6b638e7813fd897b40326366e407c62ac0",
+          "source_bbox_px": [
+            4,
+            4,
+            294,
+            444
+          ],
+          "sheet_bbox_px": [
+            1198,
+            486,
+            1497,
+            940
+          ],
+          "silhouette_height_px": 454,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.0318181818181817,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            299,
+            454
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 486,
+        "endpoint_m": 2.6,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 896
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 853
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 809
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 765
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 722
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 678
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 634
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 591
+          },
+          {
+            "value_m": 2.25,
+            "y_px": 547
+          },
+          {
+            "value_m": 2.5,
+            "y_px": 503
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            890,
+            93,
+            902
+          ],
+          [
+            57,
+            847,
+            93,
+            859
+          ],
+          [
+            57,
+            803,
+            93,
+            815
+          ],
+          [
+            57,
+            759,
+            93,
+            771
+          ],
+          [
+            57,
+            716,
+            93,
+            728
+          ],
+          [
+            57,
+            672,
+            93,
+            684
+          ],
+          [
+            57,
+            628,
+            93,
+            640
+          ],
+          [
+            57,
+            585,
+            93,
+            597
+          ],
+          [
+            57,
+            541,
+            93,
+            553
+          ],
+          [
+            57,
+            497,
+            93,
+            509
+          ],
+          [
+            117,
+            467,
+            180,
+            480
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "bolg_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "f627daa40266f45e97137b7952fbca2779184c2c2d62344a57b858ed5606ab9e",
+      "size_bytes": 178611,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "f5c3a46a146560a2b1e503006a95c757a0b67aabdda1690dc97ab65fe76b2d5a",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "4adfc292e5e20aab56c7199d1de29bb1fcc03466565c853921ed1bcb3c0ae2bf",
+          "source_bbox_px": [
+            4,
+            4,
+            393,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            617,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "3a83942d3b7fb2443ebe13b83b60d695de76015647e3fec003a617f507246400",
+          "source_bbox_px": [
+            4,
+            4,
+            342,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            572,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "93d47f6b0670314a551d9923391c28828b10b438afa2a50a7422b89ac2b934b7",
+          "source_bbox_px": [
+            4,
+            4,
+            238,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            417,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    }
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        60,
+        75,
+        85,
+        110
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        140,
+        70,
+        152,
+        110
+      ]
+    }
+  ]
 }

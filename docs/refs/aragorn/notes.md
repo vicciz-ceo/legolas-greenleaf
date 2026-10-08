@@ -9,3 +9,5 @@
 - Avoid: royal polished armour, clean modern clothes, actor likeness.
 - Design dimensions and PBR values are intent. The compositor records image normalization; observed colours are rendered and lit, not albedo.
 - Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
+
+- Front, three-quarter and side portraits reuse author-reviewed head-and-shoulders crops from corresponding accepted single-view full-resolution body originals; native detail and angles passed review. No mirroring or new generation calls; prior attempt history is preserved.

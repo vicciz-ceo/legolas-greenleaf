@@ -148,5 +148,115 @@
     "imagegen_calls": 0,
     "by_eye_review": "Full-resolution original reviewed by eye at native resolution. Exact right facial profile with nose image RIGHT, one visible eye and no far-eye leakage; native near-eye lids/lashes, brow, nose bridge and tip, closed lips, pointed ear and auburn hair/braid strands are sufficiently resolved. Half-open full-original crop includes complete crown, visible pointed near ear, visible near temple braid through its end, shoulder/cowl outline and every existing visible low-quiver fletching. Far ear and far temple detail remain naturally occluded; no invented visibility. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
     "reviewed_crop_receipt_sha256": "8daf71dfafab3f5f9e25546633c6b959aa4ba494d631f9d4c335d4b0afd42b23"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9ce53566-d86d-4590-82c2-78b86f8bd195.png",
+    "original_sha256": "94b809477941204c2ff4bc3c0791ff5cdd9754730d7db611f79f73b5430a5215",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      0,
+      256,
+      1024,
+      1280
+    ],
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1024,
+      1024
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "7ca1b274338d2c7e63b5d530650f2dcb7f75ab7fa651aab7b99550abb1e48f5c",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; one accepted-front-conditioned continuous cloth/leather seam macro",
+    "references": [
+      "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png"
+    ],
+    "by_eye_review": "Accepted by eye: one continuous macro of the accepted dark muted green woven coat, brown stitched leather vest edge with subdued leaf trim, and worn brown waist belt. Wool weave, leather pores/creases, seam thickness and stitch holes resolve photorealistically. No text, collage, body anatomy or invented prop; existing native alpha retained without rembg. Square intake crop preserves the material join and clear seam edges; 256px tile reviewed. Minor stitch and leaf edging drift tolerated."
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-fcd51cf0-f93b-440e-9ae8-90b302c564d6.png",
+    "original_sha256": "03e4fa6a057626038721a87ba4f135e6f4a4dbd7e65d678ac53e4097cdcaacce",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      0,
+      384,
+      1024,
+      1408
+    ],
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1024,
+      1024
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "fb8cd45fb5c09f44de4efbbf14bcab44be020ca67c710be364f98698e30c7401",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; one accepted-front-conditioned macro of existing sheathed hip knife bronze collar and leather grip",
+    "references": [
+      "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png"
+    ],
+    "by_eye_review": "Accepted by eye: one continuous photoreal macro of the existing sheathed hip knife: brown ribbed grip, worn golden-bronze guard/collar, brown stitched sheath and belt suspension against the matching dark-green coat. Fine scratches, pitting, subdued highlights and patina in metal recesses are resolved; bronze and leather edges remain physical and clear. No exposed/new blade, extra prop, text or collage. Square intake crop focuses the complete collar/sheath mouth and continuing grip rather than a full weapon; existing native alpha retained without rembg and 256px tile reviewed. Minor leaf engraving and stitch drift tolerated."
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8a01024f-e179-412d-aaa6-e5b15fb2e9fc.png",
+    "original_sha256": "64945058edbc87e55114ae80e9fad403966ef8054d3160ce32f29fa78ac89c46",
+    "original_size_px": [
+      1208,
+      1302
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1208,
+      1302
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "7d1e5584914f06b1100f49833316e0f84a19822beb4313b0726f5abf60285c06",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; one accepted-front-face-conditioned cheek and pointed-ear skin macro",
+    "references": [
+      "/workspace/greenleaf-refs/docs/refs/tauriel/face_views/front.png"
+    ],
+    "by_eye_review": "Accepted by eye: continuous cheek/pointed-ear skin macro matched to the accepted original female elf face, warm light peach skin, fine pores and vellus hairs, natural ear folds and existing dark auburn hair edge. No eye/mouth portrait, actor likeness, text, collage, jewelry or added accessory. Skin remains organic under soft neutral studio light. Native transparent alpha preserved without rembg; complete pointed ear tip retained. Retained 238\u00d7256 tile reviewed for recognizable skin texture and clean ear edge."
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a0c20e0a-b207-4282-9d61-d94c5cf98e22.png",
+    "original_sha256": "35cb756a552b6d3eeed7f2db1bc0f13045b2e0a87380a252b1aa6ac180659411",
+    "original_size_px": [
+      1208,
+      1302
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1208,
+      1302
+    ],
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "6d9697b4163e7ea46508562c62a7c089eb87ce36ab64cc31d9f8d61936d73c97",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; one accepted-front-face-conditioned auburn temple braid and pointed-ear placement macro",
+    "references": [
+      "/workspace/greenleaf-refs/docs/refs/tauriel/face_views/front.png"
+    ],
+    "by_eye_review": "Accepted by eye: one continuous photoreal macro of the existing narrow auburn temple braid beside the pointed ear and long straight surrounding hair. Interwoven strand direction, fine individual fibers, subdued warm copper highlights and deep reddish-brown roots match the accepted front; no golden/blonde colour, new hair gear, jewelry, text or collage. Native transparent alpha preserved without rembg. Fine flyaway hair edges and believable braid overlap reviewed; framing intentionally intersects the continuing braid. Retained 238\u00d7256 tile reviewed; braid topology, auburn tone and fine hair edge remain clear."
   }
 }

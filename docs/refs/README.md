@@ -9,7 +9,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | legolas | 1.85 | <img src="legolas/legolas_turnaround.jpg" width="180" alt="legolas"> | [spec](legolas/spec.json) | [notes](legolas/notes.md) | accepted |
 | gimli | 1.37 | <img src="gimli/gimli_turnaround.jpg" width="180" alt="gimli"> | [spec](gimli/spec.json) | [notes](gimli/notes.md) | accepted |
 | aragorn | 1.88 | — | [spec](aragorn/spec.json) | [notes](aragorn/notes.md) | pending |
-| tauriel | 1.78 | — | [spec](tauriel/spec.json) | [notes](tauriel/notes.md) | pending |
+| tauriel | 1.78 | <img src="tauriel/tauriel_turnaround.jpg" width="180" alt="tauriel"> | [spec](tauriel/spec.json) | [notes](tauriel/notes.md) | accepted |
 | bolg | 2.6 | — | [spec](bolg/spec.json) | [notes](bolg/notes.md) | pending |
 | cave_troll | 4.5 | — | [spec](cave_troll/spec.json) | [notes](cave_troll/notes.md) | pending |
 | thranduil | 1.9 | <img src="thranduil/thranduil_turnaround.jpg" width="180" alt="thranduil"> | [spec](thranduil/spec.json) | [notes](thranduil/notes.md) | accepted |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **62,941,393 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **68,459,569 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 
