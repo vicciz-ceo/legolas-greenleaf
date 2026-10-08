@@ -7,42 +7,42 @@
     "height_m": 1.35,
     "overall_height_m": 1.35,
     "proportions": {
-      "head_height_m": 0.167,
-      "shoulder_width_m": 0.324,
-      "hip_width_m": 0.25,
-      "arm_length_m": 0.567,
-      "leg_length_m": 0.702,
-      "hand_length_m": 0.139,
-      "neck_length_m": 0.081,
+      "head_height_m": 0.24,
+      "shoulder_width_m": 0.56,
+      "hip_width_m": 0.43,
+      "arm_length_m": 0.55,
+      "leg_length_m": 0.6,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.07,
       "bulk_0to1": 0.85,
       "hunch_0to1": 0
     },
     "face": {
-      "shape": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable.",
+      "shape": "Broad square tattooed bald scalp, heavy dark brows, broad bulbous nose, dark braided beard",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
-        "size_note": "natural adult scale, defined upper and lower lids"
+        "iris_hex": "#684f36",
+        "shape": "Natural deep-set dwarf eyes",
+        "size_note": "Original adult face, no actor likeness"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
-      "skin_base_hex": "#777064",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "brow": "Thick natural dwarf brows",
+      "nose": "Broad bulbous dwarf nose",
+      "lips": "Natural lips partly covered by moustache",
+      "ears": "Rounded dwarf ears",
+      "skin_base_hex": "#bc947c",
+      "skin_variation": "Natural ruddy pores/age lines, tattoos on bald warrior"
     },
     "hair": {
-      "root_hex": "#5a4c38",
-      "tip_hex": "#5a4c38",
+      "root_hex": "#34251e",
+      "tip_hex": "#34251e",
       "length_m": 0.35,
-      "style": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable.",
-      "braids": "as described, no additional ornamental braids"
+      "style": "Broad square tattooed bald scalp, heavy dark brows, broad bulbous nose, dark braided beard",
+      "braids": "Short dark beard braids"
     },
     "outfit_layers": [
       {
         "name": "cloth",
         "material": "woven cloth or brocade as described",
-        "color_hex": "#5b4b37",
+        "color_hex": "#624533",
         "roughness": 0.85,
         "sheen": 0.3,
         "notes": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable."
@@ -60,7 +60,7 @@
       {
         "name": "metal",
         "material": "metal fittings or armour as described",
-        "color_hex": "#80735e",
+        "color_hex": "#66615a",
         "roughness": 0.5,
         "metalness": 1
       }
@@ -119,6 +119,10 @@
         "label": "HAIR / STRANDS",
         "source": "details/hair.png"
       }
-    ]
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    }
   }
 }

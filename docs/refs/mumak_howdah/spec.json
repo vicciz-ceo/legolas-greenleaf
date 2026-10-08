@@ -72,6 +72,12 @@
           ],
           "mirrored": false,
           "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            984,
+            707
+          ],
           "scale_axis": null
         }
       ],

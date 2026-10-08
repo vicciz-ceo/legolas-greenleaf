@@ -640,8 +640,8 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
+| views/front | accepted | 1 | Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text. |
+| views/three_quarter | accepted | 1 | Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text. |
 | views/side | pending | 0 |  |
 | views/back | pending | 0 |  |
 | face_views/front | pending | 0 |  |
@@ -741,28 +741,28 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 | bolg_mace | accepted | 0 | Reviewed complete rusted spiked mace, reused Gundabad prop as authored Bolg lineup design; does not claim recovery of missing historical Bolg gear. No new attempts. |
 | cave_troll_club | accepted | 1 | Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output. |
 | war_hammer | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
-| pike | pending | 1 | Generated and saved; awaiting individual visual review. |
+| pike | accepted | 1 | Full straight shaft, narrow spearhead and butt, vertical, no clipping/text; first attempt. |
 | rohan_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
 | gondor_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
 | uruk_shield | accepted | 0 | Reused accepted complete isolated white-hand Uruk shield; no new attempts. |
-| torch | pending | 0 |  |
-| sheet | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
+| torch | accepted | 1 | Complete upright unlit cloth-wrapped wood/iron torch; no flame/text; first attempt. |
+| sheet | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| spec | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| notes | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| check | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
 
 ## orc_variants
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| wiry | pending | 0 |  |
-| brown | pending | 0 |  |
-| scarred | pending | 0 |  |
-| matted | pending | 0 |  |
-| sheet | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
+| wiry | accepted | 0 | Reused accepted canonical wiry frontal orc; own-right cleaver, left empty; 64px silhouette already reviewed; zero new attempts. |
+| brown | accepted | 1 | Distinct brown-skinned heavy-brow face, correct frontal A-pose and own-right cleaver. Enlarged left-hand crop shows thumb plus four natural fingers; no text. |
+| scarred | accepted | 1 | Distinct pale mottled face with prominent healed brow/cheek scar; face/empty-hand crops inspected, five digits; correct own-right cleaver/front A-pose, no text. |
+| matted | accepted | 1 | Distinct gaunt narrow face, long tangled hair and dark olive-grey skin; empty-hand crop verifies five fingers; correct own-right cleaver/front A-pose; no text. |
+| sheet | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| spec | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| notes | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| check | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
 
 ## dwarf_company
 

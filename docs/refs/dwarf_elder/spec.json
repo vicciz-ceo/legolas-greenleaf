@@ -5,44 +5,44 @@
     "source": "design_target",
     "display_name": "Dwarf Elder",
     "height_m": 1.37,
-    "overall_height_m": 1.37,
+    "overall_height_m": 1.39,
     "proportions": {
-      "head_height_m": 0.17,
-      "shoulder_width_m": 0.329,
-      "hip_width_m": 0.253,
-      "arm_length_m": 0.575,
-      "leg_length_m": 0.712,
-      "hand_length_m": 0.141,
-      "neck_length_m": 0.082,
+      "head_height_m": 0.24,
+      "shoulder_width_m": 0.56,
+      "hip_width_m": 0.43,
+      "arm_length_m": 0.55,
+      "leg_length_m": 0.6,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.07,
       "bulk_0to1": 0.85,
       "hunch_0to1": 0
     },
     "face": {
-      "shape": "Original elderly stocky dwarf: long white beard, bushy white brows, thinning white hair, wrinkled broad face; dark blue wool tunic and brown leather vest, belt and thick boots; both hands empty; flowing white beard clearly readable.",
+      "shape": "Wrinkled wide face, white brows, bulbous nose, long white beard and thinning white hair",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
-        "size_note": "natural adult scale, defined upper and lower lids"
+        "iris_hex": "#684f36",
+        "shape": "Natural deep-set dwarf eyes",
+        "size_note": "Original adult face, no actor likeness"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
-      "skin_base_hex": "#777064",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "brow": "Thick natural dwarf brows",
+      "nose": "Broad bulbous dwarf nose",
+      "lips": "Natural lips partly covered by moustache",
+      "ears": "Rounded dwarf ears",
+      "skin_base_hex": "#bd9d89",
+      "skin_variation": "Natural ruddy pores/age lines, tattoos on bald warrior"
     },
     "hair": {
-      "root_hex": "#5a4c38",
-      "tip_hex": "#5a4c38",
+      "root_hex": "#cfc9bc",
+      "tip_hex": "#cfc9bc",
       "length_m": 0.35,
-      "style": "Original elderly stocky dwarf: long white beard, bushy white brows, thinning white hair, wrinkled broad face; dark blue wool tunic and brown leather vest, belt and thick boots; both hands empty; flowing white beard clearly readable.",
-      "braids": "as described, no additional ornamental braids"
+      "style": "Wrinkled wide face, white brows, bulbous nose, long white beard and thinning white hair",
+      "braids": "None"
     },
     "outfit_layers": [
       {
         "name": "cloth",
         "material": "woven cloth or brocade as described",
-        "color_hex": "#5b4b37",
+        "color_hex": "#394354",
         "roughness": 0.85,
         "sheen": 0.3,
         "notes": "Original elderly stocky dwarf: long white beard, bushy white brows, thinning white hair, wrinkled broad face; dark blue wool tunic and brown leather vest, belt and thick boots; both hands empty; flowing white beard clearly readable."
@@ -60,7 +60,7 @@
       {
         "name": "metal",
         "material": "metal fittings or armour as described",
-        "color_hex": "#80735e",
+        "color_hex": "#66615a",
         "roughness": 0.5,
         "metalness": 1
       }
@@ -110,6 +110,10 @@
         "label": "HAIR / STRANDS",
         "source": "details/hair.png"
       }
-    ]
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    }
   }
 }

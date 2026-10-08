@@ -532,8 +532,8 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | fell_beast | spec | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
 | fell_beast | notes | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
 | fell_beast | check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
-| dwarf_bald | views/front | pending | 0 | Not yet attempted |
-| dwarf_bald | views/three_quarter | pending | 0 | Not yet attempted |
+| dwarf_bald | views/front | accepted | 1 | Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text. |
+| dwarf_bald | views/three_quarter | accepted | 1 | Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text. |
 | dwarf_bald | views/side | pending | 0 | Not yet attempted |
 | dwarf_bald | views/back | pending | 0 | Not yet attempted |
 | dwarf_bald | face_views/front | pending | 0 | Not yet attempted |
@@ -613,23 +613,23 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | weapons | bolg_mace | accepted | 0 | Reviewed complete rusted spiked mace, reused Gundabad prop as authored Bolg lineup design; does not claim recovery of missing historical Bolg gear. No new attempts. |
 | weapons | cave_troll_club | accepted | 1 | Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output. |
 | weapons | war_hammer | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
-| weapons | pike | pending | 1 | Generated and saved; awaiting individual visual review. |
+| weapons | pike | accepted | 1 | Full straight shaft, narrow spearhead and butt, vertical, no clipping/text; first attempt. |
 | weapons | rohan_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
 | weapons | gondor_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
 | weapons | uruk_shield | accepted | 0 | Reused accepted complete isolated white-hand Uruk shield; no new attempts. |
-| weapons | torch | pending | 0 | Not yet attempted |
-| weapons | sheet | pending | 0 | Not yet attempted |
-| weapons | spec | pending | 0 | Not yet attempted |
-| weapons | notes | pending | 0 | Not yet attempted |
-| weapons | check | pending | 0 | Not yet attempted |
-| orc_variants | wiry | pending | 0 | Not yet attempted |
-| orc_variants | brown | pending | 0 | Not yet attempted |
-| orc_variants | scarred | pending | 0 | Not yet attempted |
-| orc_variants | matted | pending | 0 | Not yet attempted |
-| orc_variants | sheet | pending | 0 | Not yet attempted |
-| orc_variants | spec | pending | 0 | Not yet attempted |
-| orc_variants | notes | pending | 0 | Not yet attempted |
-| orc_variants | check | pending | 0 | Not yet attempted |
+| weapons | torch | accepted | 1 | Complete upright unlit cloth-wrapped wood/iron torch; no flame/text; first attempt. |
+| weapons | sheet | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| weapons | spec | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| weapons | notes | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| weapons | check | accepted | 0 | All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536×1024 PNG and quality88 JPEG; check PASS under 2.5MB. |
+| orc_variants | wiry | accepted | 0 | Reused accepted canonical wiry frontal orc; own-right cleaver, left empty; 64px silhouette already reviewed; zero new attempts. |
+| orc_variants | brown | accepted | 1 | Distinct brown-skinned heavy-brow face, correct frontal A-pose and own-right cleaver. Enlarged left-hand crop shows thumb plus four natural fingers; no text. |
+| orc_variants | scarred | accepted | 1 | Distinct pale mottled face with prominent healed brow/cheek scar; face/empty-hand crops inspected, five digits; correct own-right cleaver/front A-pose, no text. |
+| orc_variants | matted | accepted | 1 | Distinct gaunt narrow face, long tangled hair and dark olive-grey skin; empty-hand crop verifies five fingers; correct own-right cleaver/front A-pose; no text. |
+| orc_variants | sheet | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| orc_variants | spec | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| orc_variants | notes | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
+| orc_variants | check | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
 | dwarf_company | dwarf_bald | pending | 0 | Not yet attempted |
 | dwarf_company | dwarf_hat | pending | 0 | Not yet attempted |
 | dwarf_company | dwarf_elder | pending | 0 | Not yet attempted |

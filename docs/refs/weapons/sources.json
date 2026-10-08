@@ -117,5 +117,71 @@
     "cutout_sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64",
     "reused_accepted_source": "docs/refs/gundabad/details/weapon_metal.png",
     "mirrored": false
+  },
+  "elven_knives": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8bbb9a25-1cf5-4b75-aae5-4624ebce8501.png",
+    "original_sha256": "ced6543dd454e611cbd87fce06a79ff0dec04f07525af1a766e78811f6ee70b0",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/elven_knives.png",
+    "cutout_sha256": "ddb8713bd5681413932205fa527dad60c4207becdfe08ba5ad0c246dc4ade59c",
+    "mirrored": false
+  },
+  "gimli_axe": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-58345c4e-9548-44ce-9164-9c178ff791ed.png",
+    "original_sha256": "71ba38241c846de31eb23c08566e2a6aacf7ee3f7cd5216218a789b03eda3f36",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/gimli_axe.png",
+    "cutout_sha256": "0b1b8b5ddbb36e2d9075bfe671a217c7e50a76b6956bb34f72bd00d7156207b5",
+    "mirrored": false
+  },
+  "orc_scimitar": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-640e32ef-3db6-44f8-b0dd-cdff25ab72ef.png",
+    "original_sha256": "94bdfea2b9e624b1778ffbf420aff423355d4e160999a35857724b183feaf32a",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/orc_scimitar.png",
+    "cutout_sha256": "75d9efeb54bf44c0c18f6e0af16a21ae19a91ada1ab5ef5d74642d5c25b42bf8",
+    "mirrored": false
+  },
+  "cave_troll_club": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e2bd8a8c-fdc2-43b4-9eda-a6ea54fe8bb4.png",
+    "original_sha256": "3231138264728f834906eed77452611e33ed5de6ddc4368de3d9ffccc591feed",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/cave_troll_club.png",
+    "cutout_sha256": "82a15511c943f1249cb08fbadb261be700855240fb5993ebd29165291c3149d1",
+    "mirrored": false
+  },
+  "pike": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-cd8ca679-5d59-4fba-b7fd-aab9e851072f.png",
+    "original_sha256": "ac855284fbb29b9636156a1b5fcc9a9c696326ced5c4cffa258fb165d720210b",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/pike.png",
+    "cutout_sha256": "46483b9949f1904fd5b06f2fe619c451d3f294e036f66c2a477c80cbc976309c",
+    "mirrored": false
+  },
+  "torch": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-7c3d814e-c7df-40c5-a360-7eb240d2c824.png",
+    "original_sha256": "29d9321b765bc8c967542a3c87f4a24529c6d45b031e9bec19c06100bf10d3c9",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/torch.png",
+    "cutout_sha256": "f2bb676779083d1edb4eb59944c9fa5b2e122ef7b8e844678213415cce136571",
+    "mirrored": false
   }
 }

@@ -4756,12 +4756,30 @@
       "design_extent_m": 1.35,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text.",
+              "path": "/workspace/generated_images/exec-baadf223-7adf-43cb-bb23-95f3dd47c812.png"
+            }
+          ],
+          "reason": "Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text.",
+          "path": "/workspace/generated_images/exec-baadf223-7adf-43cb-bb23-95f3dd47c812.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text.",
+              "path": "/workspace/generated_images/exec-1e3255e6-7dc6-4009-bd8d-00337f8ed77b.png"
+            }
+          ],
+          "reason": "Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text.",
+          "path": "/workspace/generated_images/exec-1e3255e6-7dc6-4009-bd8d-00337f8ed77b.png"
         },
         "views/side": {
           "status": "pending",
@@ -5172,24 +5190,37 @@
           "reason": "Reused accepted complete isolated white-hand Uruk shield; no new attempts."
         },
         "torch": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete upright unlit cloth-wrapped wood/iron torch; no flame/text; first attempt.",
+              "path": "/workspace/generated_images/exec-7c3d814e-c7df-40c5-a360-7eb240d2c824.png"
+            }
+          ],
+          "reason": "Complete upright unlit cloth-wrapped wood/iron torch; no flame/text; first attempt.",
+          "path": "/workspace/generated_images/exec-7c3d814e-c7df-40c5-a360-7eb240d2c824.png"
         },
         "sheet": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536\u00d71024 PNG and quality88 JPEG; check PASS under 2.5MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536\u00d71024 PNG and quality88 JPEG; check PASS under 2.5MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536\u00d71024 PNG and quality88 JPEG; check PASS under 2.5MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All 14 required props reviewed; complete code-drawn true-scale lineup/rulers, required 1536\u00d71024 PNG and quality88 JPEG; check PASS under 2.5MB."
         }
       }
     },
@@ -5197,36 +5228,68 @@
       "kind": "supplement",
       "deliverables": {
         "wiry": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused accepted canonical wiry frontal orc; own-right cleaver, left empty; 64px silhouette already reviewed; zero new attempts."
         },
         "brown": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Distinct brown-skinned heavy-brow face, correct frontal A-pose and own-right cleaver. Enlarged left-hand crop shows thumb plus four natural fingers; no text.",
+              "path": "/workspace/generated_images/exec-75e8823c-4dba-42c9-ad21-6bdc5c305b6d.png"
+            }
+          ],
+          "reason": "Distinct brown-skinned heavy-brow face, correct frontal A-pose and own-right cleaver. Enlarged left-hand crop shows thumb plus four natural fingers; no text.",
+          "path": "/workspace/generated_images/exec-75e8823c-4dba-42c9-ad21-6bdc5c305b6d.png"
         },
         "scarred": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Distinct pale mottled face with prominent healed brow/cheek scar; face/empty-hand crops inspected, five digits; correct own-right cleaver/front A-pose, no text.",
+              "path": "/workspace/generated_images/exec-196a0ab6-f012-40e4-b0b9-1fa94002c955.png"
+            }
+          ],
+          "reason": "Distinct pale mottled face with prominent healed brow/cheek scar; face/empty-hand crops inspected, five digits; correct own-right cleaver/front A-pose, no text.",
+          "path": "/workspace/generated_images/exec-196a0ab6-f012-40e4-b0b9-1fa94002c955.png"
         },
         "matted": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Distinct gaunt narrow face, long tangled hair and dark olive-grey skin; empty-hand crop verifies five fingers; correct own-right cleaver/front A-pose; no text.",
+              "path": "/workspace/generated_images/exec-1af61209-77b8-4a2f-9cf4-103e6eab5e5d.png"
+            }
+          ],
+          "reason": "Distinct gaunt narrow face, long tangled hair and dark olive-grey skin; empty-hand crop verifies five fingers; correct own-right cleaver/front A-pose; no text.",
+          "path": "/workspace/generated_images/exec-1af61209-77b8-4a2f-9cf4-103e6eab5e5d.png"
         },
         "sheet": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB."
         }
       }
     },
