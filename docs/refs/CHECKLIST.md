@@ -286,27 +286,27 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/three_quarter | accepted | 1 | Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass. |
 | views/side | accepted | 1 | Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved. |
 | views/back | accepted | 1 | True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/front | accepted | 1 | Original weathered front face, brown cap/hair/beard and blue/beige costume match. |
+| face_views/three_quarter | accepted | 1 | Original middle-aged face and cap maintained; correct three-quarter portrait no head clipping. |
+| face_views/side | accepted | 1 | Exact profile preserves original cap/hair/beard and facial proportions. |
+| details/cloth_leather | accepted | 1 | Blue quilted jacket beige wool tunic brown belt/pouch; consistent simple unarmoured costume. |
+| details/weapon_metal | accepted | 1 | Simple brown leather pouch with small metal fastening, appropriate unarmed gear exception. |
+| details/skin | accepted | 1 | Skin crop from independently generated front portrait. |
+| details/hair | accepted | 1 | Brown hair crop from independently generated profile portrait. |
+| turnaround | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| spec | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| notes | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| check | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| face | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| details | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| observed | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
 
 ## orc
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
+| views/front | accepted | 2 | Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent. |
+| views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
 | views/side | pending | 0 |  |
 | views/back | pending | 0 |  |
 | face_views/front | pending | 0 |  |

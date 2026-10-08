@@ -20,11 +20,11 @@
     "face": {
       "shape": "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots; both hands empty; no armour.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
+        "iris_hex": "#647467",
         "shape": "almond",
         "size_note": "natural adult scale, defined upper and lower lids"
       },
-      "brow": "lightly arched pale gold brows",
+      "brow": "natural dark brown brows",
       "nose": "straight refined bridge and narrow tip",
       "lips": "neutral closed, natural narrow upper lip",
       "ears": "as described; original natural anatomy",
@@ -56,17 +56,12 @@
         "notes": "Only where required by description"
       }
     ],
-    "armor": [
-      {
-        "name": "metal",
-        "material": "metal fittings or armour as described",
-        "color_hex": "#6b665c",
-        "roughness": 0.5,
-        "metalness": 1
-      }
-    ],
+    "armor": [],
     "weapons": [],
-    "attachments": {},
+    "attachments": {
+      "left_hip": "belt pouch",
+      "hands": "empty"
+    },
     "silhouette_keywords": [
       "Lake-town human town guard and fisher: original middle-aged bearded face, brown wool cap, padded dull blue jacket over simple beige tunic, belt pouch, dark trousers, brown worn boots",
       " both hands empty",
@@ -110,5 +105,619 @@
         "source": "details/hair.png"
       }
     ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "laketown_man_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+      "size_bytes": 124315,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "edcba56686afafb2400838eafba71f0d6b008a900cbfd86c7dcfe07d68323320",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 299.42857142857144,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.75,
+      "height_fill_fraction": 0.51171875,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "d4a3debc9e2753dd34122bec1833ff58a88a3ec1158391ac49a72e26ace915ee",
+          "source_bbox_px": [
+            4,
+            4,
+            345,
+            564
+          ],
+          "sheet_bbox_px": [
+            159,
+            416,
+            478,
+            940
+          ],
+          "silhouette_height_px": 524,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9357142857142857,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "5d9c9c8958d72cc46dda77e98e010771cc118f3d113e9d4975c479b346013441",
+          "source_bbox_px": [
+            4,
+            4,
+            271,
+            564
+          ],
+          "sheet_bbox_px": [
+            536,
+            416,
+            786,
+            940
+          ],
+          "silhouette_height_px": 524,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9357142857142857,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "42c1b8515787a426860fc6f71351cc8d026e3e16cb3058c25ac77ce31afc4325",
+          "source_bbox_px": [
+            4,
+            4,
+            148,
+            564
+          ],
+          "sheet_bbox_px": [
+            937,
+            416,
+            1072,
+            940
+          ],
+          "silhouette_height_px": 524,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9357142857142857,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "a0c82656b86f394152da72a629f44e8061d82cdc7cae6975e32b6bcd00e9fbf1",
+          "source_bbox_px": [
+            4,
+            4,
+            340,
+            564
+          ],
+          "sheet_bbox_px": [
+            1190,
+            416,
+            1504,
+            940
+          ],
+          "silhouette_height_px": 524,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9357142857142857,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 416,
+        "endpoint_m": 1.75,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 865
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 790
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 715
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 641
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 566
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 491
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 416
+          }
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "laketown_man_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "e531f76fec8bc8e317291c63097b21bfe0dbe280d945466f19bc14d007f4209e",
+      "size_bytes": 205458,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "41788b561e4c0c0a0967bd4a92381c12a92f70c73c7dcb61eec1738059856609",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "dda1f276541d86c3110646e0f2dda20e0d43bf5dec847c5899c67aef8d1fc3cc",
+          "source_bbox_px": [
+            4,
+            4,
+            230,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            269,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "8c9adce818d8c320ce5389bb5eb5e899a66a6b04392d6b0a8b1a21e5306e2265",
+          "source_bbox_px": [
+            4,
+            4,
+            224,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            251,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "f46e58455ae5fa9dfe37d6b005289f6564c1db5e445fc21a08361c56b9d9e378",
+          "source_bbox_px": [
+            4,
+            4,
+            213,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            216,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "laketown_man_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+      "size_bytes": 181370,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "94bfe43dbf58bc94b079f1adc4b1e304fa8616a7a8e2af7e169cef3b1545c761",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "f18505da745f45820a062a631a03319b12338ef89a87f7242edee6f8608a9bfd",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "7adb3370e67481ff926783416c2431205f387f65d5c83c3b8a4eec7cbc5a9738",
+          "sheet_bbox_px": [
+            565,
+            12,
+            971,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "5991a672a796b69610ef336d2950fff62967b486eaeecaca617d30f674feeb18",
+          "sheet_bbox_px": [
+            15,
+            524,
+            497,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "ad63e5692b38a50949aa966c81bf1ec60ba1432cb992623d78180046bd6b02a9",
+          "sheet_bbox_px": [
+            586,
+            524,
+            949,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        310,
+        525,
+        385,
+        585
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        680,
+        600,
+        780,
+        720
+      ]
+    },
+    {
+      "name": "jacket",
+      "sheet": "details",
+      "rect_px": [
+        125,
+        85,
+        160,
+        170
+      ]
+    },
+    {
+      "name": "tunic",
+      "sheet": "details",
+      "rect_px": [
+        220,
+        120,
+        260,
+        200
+      ]
+    },
+    {
+      "name": "belt",
+      "sheet": "details",
+      "rect_px": [
+        220,
+        235,
+        245,
+        255
+      ]
+    },
+    {
+      "name": "pouch",
+      "sheet": "details",
+      "rect_px": [
+        315,
+        270,
+        350,
+        315
+      ]
+    },
+    {
+      "name": "pouch_fastening_metal",
+      "sheet": "details",
+      "rect_px": [
+        866,
+        231,
+        874,
+        239
+      ]
+    },
+    {
+      "name": "cap",
+      "sheet": "turnaround",
+      "rect_px": [
+        300,
+        438,
+        330,
+        455
+      ]
+    },
+    {
+      "name": "trousers",
+      "sheet": "turnaround",
+      "rect_px": [
+        265,
+        800,
+        285,
+        840
+      ]
+    },
+    {
+      "name": "boots",
+      "sheet": "turnaround",
+      "rect_px": [
+        262,
+        895,
+        275,
+        923
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          310,
+          525,
+          385,
+          585
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          180,
+          120,
+          112
+        ],
+        "srgb_hex": "#b47870",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          680,
+          600,
+          780,
+          720
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          44,
+          30,
+          21
+        ],
+        "srgb_hex": "#2c1e15",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "jacket": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          125,
+          85,
+          160,
+          170
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          59,
+          62,
+          69
+        ],
+        "srgb_hex": "#3b3e45",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "tunic": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          220,
+          120,
+          260,
+          200
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          195,
+          171,
+          146
+        ],
+        "srgb_hex": "#c3ab92",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "belt": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          220,
+          235,
+          245,
+          255
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          103,
+          74,
+          51
+        ],
+        "srgb_hex": "#674a33",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "pouch": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          315,
+          270,
+          350,
+          315
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          59,
+          47,
+          40
+        ],
+        "srgb_hex": "#3b2f28",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "pouch_fastening_metal": {
+        "sheet": "laketown_man_details.jpg",
+        "sheet_sha256": "3406b9fc1940bf0595be31d4b91469dea7a9843ec6a8a5f616b98dccad9ac683",
+        "rect_px": [
+          866,
+          231,
+          874,
+          239
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          89,
+          72,
+          63
+        ],
+        "srgb_hex": "#59483f",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "cap": {
+        "sheet": "laketown_man_turnaround.jpg",
+        "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "rect_px": [
+          300,
+          438,
+          330,
+          455
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          162,
+          123,
+          112
+        ],
+        "srgb_hex": "#a27b70",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "trousers": {
+        "sheet": "laketown_man_turnaround.jpg",
+        "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "rect_px": [
+          265,
+          800,
+          285,
+          840
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          56,
+          46,
+          40
+        ],
+        "srgb_hex": "#382e28",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "boots": {
+        "sheet": "laketown_man_turnaround.jpg",
+        "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "rect_px": [
+          262,
+          895,
+          275,
+          923
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          72,
+          62,
+          52
+        ],
+        "srgb_hex": "#483e34",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
   }
 }

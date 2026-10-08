@@ -85,7 +85,8 @@
     ],
     "crop_px": null,
     "saved_cutout": "details/weapon_metal.png",
-    "cutout_sha256": "22d95cfd844dae8dae157bd7c7f6b843fc91f99a1470f188979bda98886dae6a"
+    "cutout_sha256": "fcd331cd31b0c7761e748c8b86c7d1688a120d31885cefc1275562cd7de93c20",
+    "segmentation": "corner median distance threshold 38; inspected fine string preservation"
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-440b0fd8-dc96-47f4-bf17-a5c45fb915f1.png",

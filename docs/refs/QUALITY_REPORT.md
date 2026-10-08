@@ -243,22 +243,23 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | laketown_man | views/three_quarter | accepted | 1 | Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass. |
 | laketown_man | views/side | accepted | 1 | Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved. |
 | laketown_man | views/back | accepted | 1 | True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass. |
-| laketown_man | face_views/front | pending | 0 | Not yet attempted |
-| laketown_man | face_views/three_quarter | pending | 0 | Not yet attempted |
-| laketown_man | face_views/side | pending | 0 | Not yet attempted |
-| laketown_man | details/cloth_leather | pending | 0 | Not yet attempted |
-| laketown_man | details/weapon_metal | pending | 0 | Not yet attempted |
-| laketown_man | details/skin | pending | 0 | Not yet attempted |
-| laketown_man | details/hair | pending | 0 | Not yet attempted |
-| laketown_man | turnaround | pending | 0 | Not yet attempted |
-| laketown_man | spec | pending | 0 | Not yet attempted |
-| laketown_man | notes | pending | 0 | Not yet attempted |
-| laketown_man | check | pending | 0 | Not yet attempted |
-| laketown_man | face | pending | 0 | Not yet attempted |
-| laketown_man | details | pending | 0 | Not yet attempted |
-| laketown_man | observed | pending | 0 | Not yet attempted |
-| orc | views/front | pending | 0 | Not yet attempted |
-| orc | views/three_quarter | pending | 0 | Not yet attempted |
+| laketown_man | face_views/front | accepted | 1 | Original weathered front face, brown cap/hair/beard and blue/beige costume match. |
+| laketown_man | face_views/three_quarter | accepted | 1 | Original middle-aged face and cap maintained; correct three-quarter portrait no head clipping. |
+| laketown_man | face_views/side | accepted | 1 | Exact profile preserves original cap/hair/beard and facial proportions. |
+| laketown_man | details/cloth_leather | accepted | 1 | Blue quilted jacket beige wool tunic brown belt/pouch; consistent simple unarmoured costume. |
+| laketown_man | details/weapon_metal | accepted | 1 | Simple brown leather pouch with small metal fastening, appropriate unarmed gear exception. |
+| laketown_man | details/skin | accepted | 1 | Skin crop from independently generated front portrait. |
+| laketown_man | details/hair | accepted | 1 | Brown hair crop from independently generated profile portrait. |
+| laketown_man | turnaround | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | spec | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | notes | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | check | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | face | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | details | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| laketown_man | observed | accepted | 0 | Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB. |
+| orc | views/front | accepted | 2 | Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent. |
+| orc | views/front attempt 1 | rejected | — | Arms below 20-degree A-pose requirement; first front otherwise has correct wiry hunch and own-right cleaver. |
+| orc | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
 | orc | views/side | pending | 0 | Not yet attempted |
 | orc | views/back | pending | 0 | Not yet attempted |
 | orc | face_views/front | pending | 0 | Not yet attempted |

@@ -10,3 +10,5 @@
 - Maintain natural joints and all required limb and digit counts.
 
 All four body views, three portraits and detail sources reviewed individually. Bow stays in own LEFT hand; quiver fixed on back own RIGHT. Minor gold engraving, hair braiding and cloak fold drift tolerated. Left body profile and right face profile are labelled separately by code. First costume detail rejected for changing leather bracer to gold; replacement accepted. Skin/hair detail tiles crop independent portrait generations. Material samples are rendered and lit, not albedo.
+
+Bow detail cutout refined using visually reviewed corner-distance fallback; unlike the rembg mask, it preserves the complete fine bowstring. No new appearance generation or attempt reset.

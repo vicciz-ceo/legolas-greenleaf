@@ -185,17 +185,21 @@ def ruler(draw, ppm, baseline, height, x=105):
     ytop = baseline - round(height * ppm)
     draw.line((x, ytop, x, baseline), fill=(225, 225, 225), width=1)
     ticks = []
+    stride = max(1,math.ceil(18/(.25*ppm)))
+    if stride>1:stride = 4*math.ceil(stride/4)
     for i in range(math.floor(height / .25 + 1e-8) + 1):
         value = i * .25
         y = baseline - round(value * ppm)
         draw.line((x - 8, y, x + 8, y), fill=(225, 225, 225), width=1)
-        text(draw, (x - 12, y), f'{value:.2f}', 16, 'rm')
+        if i%stride==0:text(draw, (x - 12, y), f'{value:.2f}', 16, 'rm')
         ticks.append({'value_m': value, 'y_px': y})
     # Put endpoint label on the right to avoid overlap with a near-quarter tick.
     draw.line((x - 8, ytop, x + 8, ytop), fill=(225, 225, 225), width=1)
     text(draw, (x + 12, ytop - 12), f'{height:.2f} m', 18, 'lm')
-    return {'axis': 'vertical', 'x_px': x, 'baseline_y_px': baseline, 'top_y_px': ytop,
-            'endpoint_m': height, 'step_m': .25, 'ticks': ticks}
+    result = {'axis': 'vertical', 'x_px': x, 'baseline_y_px': baseline, 'top_y_px': ytop,
+              'endpoint_m': height, 'step_m': .25, 'ticks': ticks}
+    if stride>1:result['label_stride_ticks']=stride
+    return result
 
 
 def human(draw, x, baseline, ppm):
@@ -376,8 +380,8 @@ def creature(cid):
             value = i*.25
             x = x0 + round(value*effective_ppm)
             draw.line((x,ruler_y-4,x,ruler_y+4),fill=(225,225,225))
-            if i % 4 == 0:
-                text(draw,(x,ruler_y+17),f'{value:g}',12)
+            if i % 4 == 0 or abs(value-extent)<1e-7:
+                text(draw,(x,ruler_y+17),f'{value:g} m' if abs(value-extent)<1e-7 else f'{value:g}',12)
             ticks.append({'value_m':value,'x_px':x})
         calibration = {'axis':'horizontal','start_x_px':x0,'end_x_px':x1,'y_px':ruler_y,
                        'endpoint_m':extent,'px_per_m':effective_ppm,'step_m':.25,'ticks':ticks}
@@ -478,6 +482,7 @@ def preview64(cid):
     outdir = Path(tempfile.gettempdir())/'greenleaf-reference-previews'/cid
     outdir.mkdir(parents=True,exist_ok=True)
     paths=[]
+    thumbnails=[]
     for view in data['measured']['turnaround']['views']:
         _,im = source(folder,view['source'])
         im,_ = tight(im)
@@ -488,7 +493,16 @@ def preview64(cid):
         path=outdir/f"{view['view']}.png"
         preview.save(path)
         paths.append(str(path))
-    return {'temporary_directory':str(outdir),'previews':paths}
+        thumbnails.append((view['view'],preview))
+    strip=Image.new('RGB',(sum(max(70,im.width+12) for _,im in thumbnails),82),BG)
+    draw=ImageDraw.Draw(strip);x=0
+    for name,im in thumbnails:
+        width=max(70,im.width+12)
+        strip.paste(im,(x+(width-im.width)//2,0))
+        text(draw,(x+width//2,74),name.replace('three_quarter','3/4'),9)
+        x+=width
+    strip_path=outdir/'review.png';strip.save(strip_path)
+    return {'temporary_directory':str(outdir),'previews':paths,'review_strip':str(strip_path)}
 
 
 def check(cid):

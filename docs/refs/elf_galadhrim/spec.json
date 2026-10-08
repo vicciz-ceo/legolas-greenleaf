@@ -373,8 +373,8 @@
       ],
       "jpeg_quality": 88,
       "jpeg_subsampling": 0,
-      "sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
-      "size_bytes": 138051,
+      "sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
+      "size_bytes": 137995,
       "background_rgb": [
         127,
         127,
@@ -386,7 +386,7 @@
         16,
         16
       ],
-      "pre_jpeg_sha256": "d536763a5f6490677dc703118e0629f492c00a8df874627ba5cc2f8d11809d70",
+      "pre_jpeg_sha256": "4fd6973eff258b4fd8bf9a9e1ae47e3faf5db970a2f692bee6ee09a90dc90ddc",
       "decoded_background_tolerance": 3,
       "tiles": [
         {
@@ -405,11 +405,11 @@
           "name": "weapon_metal",
           "label": "GEAR / METAL",
           "source": "details/weapon_metal.png",
-          "source_sha256": "22d95cfd844dae8dae157bd7c7f6b843fc91f99a1470f188979bda98886dae6a",
+          "source_sha256": "fcd331cd31b0c7761e748c8b86c7d1688a120d31885cefc1275562cd7de93c20",
           "sheet_bbox_px": [
-            648,
+            647,
             12,
-            888,
+            889,
             456
           ]
         },
@@ -528,7 +528,7 @@
     "samples": {
       "skin": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           170,
           610,
@@ -547,7 +547,7 @@
       },
       "hair": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           750,
           620,
@@ -566,7 +566,7 @@
       },
       "tunic": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           205,
           400,
@@ -585,7 +585,7 @@
       },
       "cloak": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           155,
           200,
@@ -604,7 +604,7 @@
       },
       "bracers": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           183,
           230,
@@ -623,7 +623,7 @@
       },
       "belt": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           290,
           147,
@@ -642,7 +642,7 @@
       },
       "gold_armour": {
         "sheet": "elf_galadhrim_details.jpg",
-        "sheet_sha256": "2de77a22af31452dffb4160ab16d78a7e1619af66dcfec3470c48bf9bafad6c4",
+        "sheet_sha256": "c983988b07a54270de9161f3b2ebbc8d2448cfcbd3ee8d9d36b93e6302aeb7d0",
         "rect_px": [
           295,
           20,

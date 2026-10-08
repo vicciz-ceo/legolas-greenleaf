@@ -37,6 +37,10 @@ def record(cid,key,status,reason='',path=None,attempt=False):
  if attempt:
   if len(item['attempts'])>=4:raise ValueError('Four-attempt cap reached')
   item['attempts'].append({'number':len(item['attempts'])+1,'status':status,'reason':reason,'path':path})
+ elif status in ('accepted','rejected') and item['attempts'] and item['attempts'][-1]['status']=='pending':
+  last=item['attempts'][-1]
+  if path is None or last.get('path')==path:
+   last.update(status=status,reason=reason)
  item.update(status=status,reason=reason)
  if path:item['path']=path
  save(data)
@@ -78,7 +82,11 @@ def index_and_report(data):
 
 if __name__=='__main__':
  import argparse
- p=argparse.ArgumentParser();p.add_argument('action',choices=['init','render','record']);p.add_argument('args',nargs='*');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['init','render','record','generated']);p.add_argument('args',nargs='*');a=p.parse_args()
  if a.action=='init':initialize()
  elif a.action=='record':record(*a.args)
+ elif a.action=='generated':
+  cid,key,path=a.args
+  record(cid,key,'pending','Generated and saved; awaiting individual visual review.',path,attempt=True)
  render()
+ index_and_report(json.loads(STATE.read_text()))

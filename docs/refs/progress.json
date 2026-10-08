@@ -898,8 +898,8 @@
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated; awaiting visual review.",
+              "status": "accepted",
+              "reason": "Exact profile, consistent crown/outfit, natural visible hand and no text.",
               "path": "/workspace/generated_images/exec-c4ba71ac-435b-4f9b-87f7-583500ae3319.png"
             }
           ],
@@ -956,8 +956,8 @@
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated; awaiting visual review.",
+              "status": "accepted",
+              "reason": "Exact profile with matching face, crown and ear; no clipping.",
               "path": "/workspace/generated_images/exec-98748a67-e1b8-47e6-9239-4751060cd8be.png"
             }
           ],
@@ -1087,8 +1087,8 @@
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated; awaiting review.",
+              "status": "accepted",
+              "reason": "Three-quarter front angle; original gear on correct side, no text.",
               "path": "/workspace/generated_images/exec-2b8affc7-2275-4848-9c9c-a09c5e646b8f.png"
             }
           ],
@@ -1126,8 +1126,8 @@
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated; awaiting review.",
+              "status": "accepted",
+              "reason": "Original face and complete leaf crest.",
               "path": "/workspace/generated_images/exec-fd6674b3-4a08-4f32-8759-93967e7753ed.png"
             }
           ],
@@ -1905,8 +1905,8 @@
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Awaiting individual preview review.",
+              "status": "accepted",
+              "reason": "Correct three-quarter portrait, original face and helmet match accepted front.",
               "path": "/workspace/generated_images/exec-a631e395-35fc-45fd-af12-0a8b54217c52.png"
             }
           ],
@@ -2072,60 +2072,130 @@
           "path": "/workspace/generated_images/exec-ea6b94a8-294a-4d71-b61a-085ff30d3a79.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original weathered front face, brown cap/hair/beard and blue/beige costume match.",
+              "path": "/workspace/generated_images/exec-4b9793ef-deeb-4c20-bd01-e42e37022e54.png"
+            }
+          ],
+          "reason": "Original weathered front face, brown cap/hair/beard and blue/beige costume match.",
+          "path": "/workspace/generated_images/exec-4b9793ef-deeb-4c20-bd01-e42e37022e54.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original middle-aged face and cap maintained; correct three-quarter portrait no head clipping.",
+              "path": "/workspace/generated_images/exec-070e1647-be48-4518-94f4-71ebd26fdbf9.png"
+            }
+          ],
+          "reason": "Original middle-aged face and cap maintained; correct three-quarter portrait no head clipping.",
+          "path": "/workspace/generated_images/exec-070e1647-be48-4518-94f4-71ebd26fdbf9.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact profile preserves original cap/hair/beard and facial proportions.",
+              "path": "/workspace/generated_images/exec-959afba3-51a7-4777-b326-cf1cf166c4dc.png"
+            }
+          ],
+          "reason": "Exact profile preserves original cap/hair/beard and facial proportions.",
+          "path": "/workspace/generated_images/exec-959afba3-51a7-4777-b326-cf1cf166c4dc.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Blue quilted jacket beige wool tunic brown belt/pouch; consistent simple unarmoured costume.",
+              "path": "/workspace/generated_images/exec-e0f62912-b9e1-49df-ab02-bc3075e25802.png"
+            }
+          ],
+          "reason": "Blue quilted jacket beige wool tunic brown belt/pouch; consistent simple unarmoured costume.",
+          "path": "/workspace/generated_images/exec-e0f62912-b9e1-49df-ab02-bc3075e25802.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Simple brown leather pouch with small metal fastening, appropriate unarmed gear exception.",
+              "path": "/workspace/generated_images/exec-700026e6-4347-42a3-9add-021b71383342.png"
+            }
+          ],
+          "reason": "Simple brown leather pouch with small metal fastening, appropriate unarmed gear exception.",
+          "path": "/workspace/generated_images/exec-700026e6-4347-42a3-9add-021b71383342.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Skin crop from independently generated front portrait.",
+              "path": "/workspace/generated_images/exec-4b9793ef-deeb-4c20-bd01-e42e37022e54.png"
+            }
+          ],
+          "reason": "Skin crop from independently generated front portrait.",
+          "path": "/workspace/generated_images/exec-4b9793ef-deeb-4c20-bd01-e42e37022e54.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Brown hair crop from independently generated profile portrait.",
+              "path": "/workspace/generated_images/exec-959afba3-51a7-4777-b326-cf1cf166c4dc.png"
+            }
+          ],
+          "reason": "Brown hair crop from independently generated profile portrait.",
+          "path": "/workspace/generated_images/exec-959afba3-51a7-4777-b326-cf1cf166c4dc.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Appearance review and deterministic geometry/source/schema/budget checks pass; approximately 1.88 MB."
         }
       }
     },
@@ -2134,12 +2204,43 @@
       "design_extent_m": 1.7,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arms below 20-degree A-pose requirement; first front otherwise has correct wiry hunch and own-right cleaver.",
+              "path": "/workspace/generated_images/exec-85467677-6ff4-4c13-8e32-d7a246d25cb1.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent.",
+              "path": "/workspace/generated_images/exec-473c3dc6-b3d9-482e-ac3b-12f1f1a5dceb.png",
+              "review_updates": [
+                {
+                  "previous_status": "rejected",
+                  "previous_reason": "Arm pose fixed, but cleaver intersects left image border; complete blade and margin required.",
+                  "resolution": "High-resolution blade crop and pixel edge audit confirmed the blade is complete; narrow source margin is handled by code composition."
+                }
+              ]
+            }
+          ],
+          "reason": "Pose and full blade pass; edge audit confirmed no clipping. Original scars/fangs/wiry hunch and own-right cleaver consistent.",
+          "path": "/workspace/generated_images/exec-473c3dc6-b3d9-482e-ac3b-12f1f1a5dceb.png"
         },
         "views/three_quarter": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-fc456455-6d3b-4fef-a261-f3faff742167.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-fc456455-6d3b-4fef-a261-f3faff742167.png"
         },
         "views/side": {
           "status": "pending",

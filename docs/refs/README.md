@@ -18,7 +18,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | boromir | 1.85 | <img src="boromir/boromir_turnaround.jpg" width="180" alt="boromir"> | [spec](boromir/spec.json) | [notes](boromir/notes.md) | accepted |
 | gondor | 1.82 | <img src="gondor/gondor_turnaround.jpg" width="180" alt="gondor"> | [spec](gondor/spec.json) | [notes](gondor/notes.md) | accepted |
 | rohirrim | 1.8 | <img src="rohirrim/rohirrim_turnaround.jpg" width="180" alt="rohirrim"> | [spec](rohirrim/spec.json) | [notes](rohirrim/notes.md) | accepted |
-| laketown_man | 1.75 | — | [spec](laketown_man/spec.json) | [notes](laketown_man/notes.md) | pending |
+| laketown_man | 1.75 | <img src="laketown_man/laketown_man_turnaround.jpg" width="180" alt="laketown_man"> | [spec](laketown_man/spec.json) | [notes](laketown_man/notes.md) | accepted |
 | orc | 1.7 | — | [spec](orc/spec.json) | [notes](orc/notes.md) | pending |
 | goblin | 1.48 | — | [spec](goblin/spec.json) | [notes](goblin/notes.md) | pending |
 | gundabad | 2.1 | — | [spec](gundabad/spec.json) | [notes](gundabad/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **13,251,189 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **15,141,735 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 
