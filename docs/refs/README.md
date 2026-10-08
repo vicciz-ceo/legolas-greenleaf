@@ -45,8 +45,16 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **69,545,737 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **69,565,718 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 
 Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.
+
+## Verification
+
+- 24 regression tests pass, covering construction, intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.
+- All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.
+- All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view.
+
+Records: [whole-library checks](validation/whole-library.json), [source audit](validation/source-audit-final.json), [recovery history](validation/recovery-history.json), [regression tests](validation/tests.txt).

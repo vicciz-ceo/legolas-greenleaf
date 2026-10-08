@@ -13,10 +13,10 @@ test_pre_encoding_hash_and_library_path (test_compose.ComposeTests.test_pre_enco
 test_projection_rules_derive_from_measured_reference (test_compose.ComposeTests.test_projection_rules_derive_from_measured_reference) ... ok
 test_real_composition_and_observed_median (test_compose.ComposeTests.test_real_composition_and_observed_median) ... ok
 test_resampled_alpha_bounds_define_calibrated_height (test_compose.ComposeTests.test_resampled_alpha_bounds_define_calibrated_height) ... ok
-test_source_sampling_and_missing_material_failure (test_compose.ComposeTests.test_source_sampling_and_missing_material_failure) ... /workspace/greenleaf-refs/docs/refs/tools/compose.py:585: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp89220v78/fixture/views/front.png'>
+test_source_sampling_and_missing_material_failure (test_compose.ComposeTests.test_source_sampling_and_missing_material_failure) ... /workspace/greenleaf-refs/docs/refs/tools/compose.py:585: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp9zevant7/fixture/views/front.png'>
   if retained and Image.open(path).mode == 'RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/workspace/greenleaf-refs/docs/refs/tools/compose.py:737: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp89220v78/fixture/views/front.png'>
+/workspace/greenleaf-refs/docs/refs/tools/compose.py:737: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp9zevant7/fixture/views/front.png'>
   if s['coordinate_space'].startswith('retained source pixels') and Image.open(path).mode=='RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
 ok
@@ -30,6 +30,6 @@ test_preserves_exhausted_history_and_caps_recovery (test_progress.RecoveryTests.
 test_review_updates_only_matching_pending_replacement (test_progress.RecoveryTests.test_review_updates_only_matching_pending_replacement) ... ok
 
 ----------------------------------------------------------------------
-Ran 24 tests in 5.480s
+Ran 24 tests in 5.473s
 
 OK

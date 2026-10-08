@@ -107,7 +107,12 @@
       "retained_silhouette_height_px": 200,
       "generation_calls": 0
     },
-    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset",
+    "retained_resolution_review": {
+      "status": "accepted",
+      "scope": "Final composed portrait at optimized retained resolution",
+      "receipt_sha256": "485933457c6f4915bafbb7827aa677335d6f0b1b6e0a2b6e555861d6fd418f4e"
+    }
   },
   "face_views/three_quarter": {
     "original_full_resolution_path": "/workspace/generated_images/exec-5aac9196-6498-47e6-bce6-bf23fcf7fd06.png",
@@ -139,7 +144,12 @@
       "retained_silhouette_height_px": 200,
       "generation_calls": 0
     },
-    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset",
+    "retained_resolution_review": {
+      "status": "accepted",
+      "scope": "Final composed portrait at optimized retained resolution",
+      "receipt_sha256": "485933457c6f4915bafbb7827aa677335d6f0b1b6e0a2b6e555861d6fd418f4e"
+    }
   },
   "face_views/side": {
     "original_full_resolution_path": "/workspace/generated_images/exec-2491c748-3a03-4ffb-b06b-231259a10cb4.png",
@@ -171,7 +181,12 @@
       "retained_silhouette_height_px": 200,
       "generation_calls": 0
     },
-    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset",
+    "retained_resolution_review": {
+      "status": "accepted",
+      "scope": "Final composed portrait at optimized retained resolution",
+      "receipt_sha256": "485933457c6f4915bafbb7827aa677335d6f0b1b6e0a2b6e555861d6fd418f4e"
+    }
   },
   "details/cloth_leather": {
     "original_full_resolution_path": "/workspace/generated_images/exec-66a39160-0aa4-46ab-95c3-a909ce92324f.png",

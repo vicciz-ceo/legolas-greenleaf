@@ -7268,9 +7268,7 @@
       }
     }
   },
-  "blockers": {
-    "missing_old_images": "Historical originals were not found in the bounded search. Newly authored replacements are authorised in a separate four-attempt recovery series; historical design and attempt records are preserved."
-  },
+  "blockers": {},
   "recovery_series": {
     "kind": "newly_authored_replacement",
     "max_attempts_per_view": 4,
@@ -7287,8 +7285,9 @@
     "reason": "One bounded accessible-workspace, archives, saved-manifest and Git-history search found no original image bytes."
   },
   "validation_summary": [
-    "24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
-    "36 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
-    "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
-  ]
+    "24 regression tests pass, covering construction, intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
+    "All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.",
+    "All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view."
+  ],
+  "recovery_summary": "Historical originals were unavailable after one bounded search. Newly authored replacements for all six historical sets and the two lost bald-dwarf views are now retained and accepted; they are not recovered originals. No active delivery blockers."
 }

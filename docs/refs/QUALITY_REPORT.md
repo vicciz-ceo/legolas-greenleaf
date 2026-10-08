@@ -4,9 +4,9 @@ Current resumed pass. Prior failed multi-view generations are preserved in [reco
 
 Visual review checks identity, anatomy, angle, gear sides, text and silhouette. Automated checks reconstruct the exact pre-JPEG canvas, use tolerance 3 for decoded JPEG background, and verify sources, schema, geometry and storage budgets. Neither normalizing a cutout nor a generated number measures recovered 3D anatomy. Samples are rendered and lit, not albedo.
 
-## Missing original files
+## Recovery and delivery blockers
 
-Historical originals were not found in the bounded search. Newly authored replacements are authorised in a separate four-attempt recovery series; historical design and attempt records are preserved.
+Historical originals were unavailable after one bounded search. Newly authored replacements for all six historical sets and the two lost bald-dwarf views are now retained and accepted; they are not recovered originals. No active delivery blockers.
 
 Historical generation and acceptance records are preserved. Newly authored replacements use a separate recovery series capped at four attempts per required view. See [RECOVERY_STATUS.md](RECOVERY_STATUS.md) for current source availability and correction requirements.
 
@@ -715,8 +715,8 @@ Historical generation and acceptance records are preserved. Newly authored repla
 
 ## Validation
 
-- 24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.
-- 36 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.
-- All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available.
+- 24 regression tests pass, covering construction, intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.
+- All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.
+- All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view.
 - Historical game build/smoke evidence is retained from the prior pass; this reference-only continuation does not change game files.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

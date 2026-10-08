@@ -1,6 +1,6 @@
 # Full character-library checklist
 
-Statuses are evidence-based. Accepted design notes do not certify a completed visual reference. Historical accepted files that are missing here are blocked for delivery, not rejected.
+Statuses are evidence-based. Accepted design notes do not certify a completed visual reference. Original attempts are preserved; newly authored replacements use the documented recovery series. Delivery acceptance requires retained reconstruction sources and visual review.
 
 ## legolas
 
