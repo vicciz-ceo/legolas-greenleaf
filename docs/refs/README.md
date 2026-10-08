@@ -21,7 +21,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | laketown_man | 1.75 | <img src="laketown_man/laketown_man_turnaround.jpg" width="180" alt="laketown_man"> | [spec](laketown_man/spec.json) | [notes](laketown_man/notes.md) | accepted |
 | orc | 1.7 | <img src="orc/orc_turnaround.jpg" width="180" alt="orc"> | [spec](orc/spec.json) | [notes](orc/notes.md) | accepted |
 | goblin | 1.48 | <img src="goblin/goblin_turnaround.jpg" width="180" alt="goblin"> | [spec](goblin/spec.json) | [notes](goblin/notes.md) | accepted |
-| gundabad | 2.1 | — | [spec](gundabad/spec.json) | [notes](gundabad/notes.md) | pending |
+| gundabad | 2.1 | <img src="gundabad/gundabad_turnaround.jpg" width="180" alt="gundabad"> | [spec](gundabad/spec.json) | [notes](gundabad/notes.md) | accepted |
 | uruk | 2.0 | — | [spec](uruk/spec.json) | [notes](uruk/notes.md) | pending |
 | berserker | 2.1 | — | [spec](berserker/spec.json) | [notes](berserker/notes.md) | pending |
 | lurtz | 2.1 | — | [spec](lurtz/spec.json) | [notes](lurtz/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **20,210,481 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **22,621,590 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

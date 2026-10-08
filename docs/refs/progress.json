@@ -2625,81 +2625,159 @@
           "path": "/workspace/generated_images/exec-32ea9dd0-26b9-41ac-bb32-577f4629427f.png"
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "Correct oblique body/face, same pale broad orc and scrap plates; complete own-right low mace and empty left hand.",
               "path": "/workspace/generated_images/exec-26ff87ee-f737-44c1-8c18-74aa17b837d7.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "Correct oblique body/face, same pale broad orc and scrap plates; complete own-right low mace and empty left hand.",
           "path": "/workspace/generated_images/exec-26ff87ee-f737-44c1-8c18-74aa17b837d7.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile. Close crop confirms near own-right hand still grips complete same mace, naturally overlaps thigh; far hand empty. No attachment swap.",
+              "path": "/workspace/generated_images/exec-9c6acccc-8cb5-47df-974d-346cf436d0fe.png"
+            }
+          ],
+          "reason": "Exact side profile. Close crop confirms near own-right hand still grips complete same mace, naturally overlaps thigh; far hand empty. No attachment swap.",
+          "path": "/workspace/generated_images/exec-9c6acccc-8cb5-47df-974d-346cf436d0fe.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear, loose back hair, matching scrap armor/kilt, own-right mace image right and empty left hand. All extremities complete.",
+              "path": "/workspace/generated_images/exec-d9a629eb-5254-46de-b731-b47f6ee569d5.png"
+            }
+          ],
+          "reason": "True rear, loose back hair, matching scrap armor/kilt, own-right mace image right and empty left hand. All extremities complete.",
+          "path": "/workspace/generated_images/exec-d9a629eb-5254-46de-b731-b47f6ee569d5.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original pale blue-grey broad fanged scarred face matches body front; full crown/ears and shoulder scraps within frame.",
+              "path": "/workspace/generated_images/exec-15a1724e-f506-45ad-a874-8f015b59ef78.png"
+            }
+          ],
+          "reason": "Original pale blue-grey broad fanged scarred face matches body front; full crown/ears and shoulder scraps within frame.",
+          "path": "/workspace/generated_images/exec-15a1724e-f506-45ad-a874-8f015b59ef78.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Portrait remains too close to frontal; needs clear approximately45 degree three-quarter head rotation.",
+              "path": "/workspace/generated_images/exec-59d89490-202b-4fd4-9d74-950ac9e6adf7.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second portrait gives clear foreshortened far cheek/eye and obscures far ear; same scarred pale face, fangs and hair.",
+              "path": "/workspace/generated_images/exec-b3ba5528-6da6-4a86-8e13-1dc54b4c336a.png"
+            }
+          ],
+          "reason": "Second portrait gives clear foreshortened far cheek/eye and obscures far ear; same scarred pale face, fangs and hair.",
+          "path": "/workspace/generated_images/exec-b3ba5528-6da6-4a86-8e13-1dc54b4c336a.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Single-eye exact facial profile, original fangs/scars, complete ear and loose hair; consistent shoulder scraps.",
+              "path": "/workspace/generated_images/exec-533b9264-8231-4b0e-876e-4bd1e28476a4.png"
+            }
+          ],
+          "reason": "Single-eye exact facial profile, original fangs/scars, complete ear and loose hair; consistent shoulder scraps.",
+          "path": "/workspace/generated_images/exec-533b9264-8231-4b0e-876e-4bd1e28476a4.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same diagonal scrap chest plates, spiked pauldrons, brown coarse kilt and leather ties; small buckle/strap count drift tolerated.",
+              "path": "/workspace/generated_images/exec-01c787e5-7ded-4149-bc6f-ddef1677808f.png"
+            }
+          ],
+          "reason": "Same diagonal scrap chest plates, spiked pauldrons, brown coarse kilt and leather ties; small buckle/strap count drift tolerated.",
+          "path": "/workspace/generated_images/exec-01c787e5-7ded-4149-bc6f-ddef1677808f.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same block-headed angular spiked mace with wrapped handle, complete isolated object and no redesign.",
+              "path": "/workspace/generated_images/exec-78909e31-c8e8-4fd2-b054-896c06768e79.png"
+            }
+          ],
+          "reason": "Same block-headed angular spiked mace with wrapped handle, complete isolated object and no redesign.",
+          "path": "/workspace/generated_images/exec-78909e31-c8e8-4fd2-b054-896c06768e79.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed material crop from accepted independently generated portrait; same original skin/hair."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed material crop from accepted independently generated portrait; same original skin/hair."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass."
         }
       }
     },
@@ -2708,20 +2786,62 @@
       "design_extent_m": 2.0,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Square front muscular dark Uruk, long black hair, helm and shield white-hand emblems (helmet confirmed close crop), right falchion/left shield, complete relaxed A-pose.",
+              "path": "/workspace/generated_images/exec-6e27670d-8d01-4e00-8a37-d1a22de4a771.png"
+            }
+          ],
+          "reason": "Square front muscular dark Uruk, long black hair, helm and shield white-hand emblems (helmet confirmed close crop), right falchion/left shield, complete relaxed A-pose.",
+          "path": "/workspace/generated_images/exec-6e27670d-8d01-4e00-8a37-d1a22de4a771.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Body rotation is too shallow and face remains near frontal; needs clear45degree head/torso rotation with far shield foreshortened.",
+              "path": "/workspace/generated_images/exec-87e6be00-9733-4772-8112-44c7298aae0d.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second candidate rotates head clearly to right with foreshortened far face, oblique torso and far left-arm shield; same right-hand falchion and gear.",
+              "path": "/workspace/generated_images/exec-b7000007-9fbf-419c-ae1e-aabf37e0f12a.png"
+            }
+          ],
+          "reason": "Second candidate rotates head clearly to right with foreshortened far face, oblique torso and far left-arm shield; same right-hand falchion and gear.",
+          "path": "/workspace/generated_images/exec-b7000007-9fbf-419c-ae1e-aabf37e0f12a.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile and near-right low falchion; left shield naturally far/behind, same dark armor/hair/helm. All feet and weapon tip complete.",
+              "path": "/workspace/generated_images/exec-7ab11c37-76c9-4318-a53e-4abb637f5ad7.png"
+            }
+          ],
+          "reason": "Exact side profile and near-right low falchion; left shield naturally far/behind, same dark armor/hair/helm. All feet and weapon tip complete.",
+          "path": "/workspace/generated_images/exec-7ab11c37-76c9-4318-a53e-4abb637f5ad7.png"
         },
         "views/back": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-9673ebfc-ed3e-4bee-8b27-f1e3cb9c7135.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-9673ebfc-ed3e-4bee-8b27-f1e3cb9c7135.png"
         },
         "face_views/front": {
           "status": "pending",

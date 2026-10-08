@@ -600,10 +600,10 @@
       "name": "steel_mail",
       "sheet": "details",
       "rect_px": [
-        320,
-        150,
-        360,
-        190
+        355,
+        195,
+        370,
+        210
       ]
     },
     {
@@ -778,18 +778,18 @@
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
         "rect_px": [
-          320,
-          150,
-          360,
-          190
+          355,
+          195,
+          370,
+          210
         ],
         "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
         "rgb": [
-          60,
-          56,
-          59
+          97,
+          83,
+          77
         ],
-        "srgb_hex": "#3c383b",
+        "srgb_hex": "#61534d",
         "statistic": "per-channel median sRGB",
         "interpretation": "rendered and lit, not albedo"
       },

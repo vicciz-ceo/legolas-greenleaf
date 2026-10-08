@@ -298,27 +298,29 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | goblin | observed | accepted | 0 | Individual sheet/64 px review and compose.py check passed; all sources within budget. |
 | gundabad | views/front | accepted | 2 | Repaired A-pose separates both hands from hips; close crop confirms thumb and four fingers. Pale broad orc, own-right complete mace and opaque kilt match design. |
 | gundabad | views/front attempt 1 | rejected | — | Arms remain near vertical, below required 20–40 degree A-pose; otherwise complete broad orc/gear. Repair before rotations. |
-| gundabad | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
-| gundabad | views/side | pending | 0 | Not yet attempted |
-| gundabad | views/back | pending | 0 | Not yet attempted |
-| gundabad | face_views/front | pending | 0 | Not yet attempted |
-| gundabad | face_views/three_quarter | pending | 0 | Not yet attempted |
-| gundabad | face_views/side | pending | 0 | Not yet attempted |
-| gundabad | details/cloth_leather | pending | 0 | Not yet attempted |
-| gundabad | details/weapon_metal | pending | 0 | Not yet attempted |
-| gundabad | details/skin | pending | 0 | Not yet attempted |
-| gundabad | details/hair | pending | 0 | Not yet attempted |
-| gundabad | turnaround | pending | 0 | Not yet attempted |
-| gundabad | spec | pending | 0 | Not yet attempted |
-| gundabad | notes | pending | 0 | Not yet attempted |
-| gundabad | check | pending | 0 | Not yet attempted |
-| gundabad | face | pending | 0 | Not yet attempted |
-| gundabad | details | pending | 0 | Not yet attempted |
-| gundabad | observed | pending | 0 | Not yet attempted |
-| uruk | views/front | pending | 0 | Not yet attempted |
-| uruk | views/three_quarter | pending | 0 | Not yet attempted |
-| uruk | views/side | pending | 0 | Not yet attempted |
-| uruk | views/back | pending | 0 | Not yet attempted |
+| gundabad | views/three_quarter | accepted | 1 | Correct oblique body/face, same pale broad orc and scrap plates; complete own-right low mace and empty left hand. |
+| gundabad | views/side | accepted | 1 | Exact side profile. Close crop confirms near own-right hand still grips complete same mace, naturally overlaps thigh; far hand empty. No attachment swap. |
+| gundabad | views/back | accepted | 1 | True rear, loose back hair, matching scrap armor/kilt, own-right mace image right and empty left hand. All extremities complete. |
+| gundabad | face_views/front | accepted | 1 | Original pale blue-grey broad fanged scarred face matches body front; full crown/ears and shoulder scraps within frame. |
+| gundabad | face_views/three_quarter | accepted | 2 | Second portrait gives clear foreshortened far cheek/eye and obscures far ear; same scarred pale face, fangs and hair. |
+| gundabad | face_views/three_quarter attempt 1 | rejected | — | Portrait remains too close to frontal; needs clear approximately45 degree three-quarter head rotation. |
+| gundabad | face_views/side | accepted | 1 | Single-eye exact facial profile, original fangs/scars, complete ear and loose hair; consistent shoulder scraps. |
+| gundabad | details/cloth_leather | accepted | 1 | Same diagonal scrap chest plates, spiked pauldrons, brown coarse kilt and leather ties; small buckle/strap count drift tolerated. |
+| gundabad | details/weapon_metal | accepted | 1 | Same block-headed angular spiked mace with wrapped handle, complete isolated object and no redesign. |
+| gundabad | details/skin | accepted | 0 | Reviewed material crop from accepted independently generated portrait; same original skin/hair. |
+| gundabad | details/hair | accepted | 0 | Reviewed material crop from accepted independently generated portrait; same original skin/hair. |
+| gundabad | turnaround | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | spec | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | notes | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | check | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | face | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | details | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| gundabad | observed | accepted | 0 | Individual sheets, material crops and64px silhouette reviewed; deterministic checks and file budgets pass. |
+| uruk | views/front | accepted | 1 | Square front muscular dark Uruk, long black hair, helm and shield white-hand emblems (helmet confirmed close crop), right falchion/left shield, complete relaxed A-pose. |
+| uruk | views/three_quarter | accepted | 2 | Second candidate rotates head clearly to right with foreshortened far face, oblique torso and far left-arm shield; same right-hand falchion and gear. |
+| uruk | views/three_quarter attempt 1 | rejected | — | Body rotation is too shallow and face remains near frontal; needs clear45degree head/torso rotation with far shield foreshortened. |
+| uruk | views/side | accepted | 1 | Exact side profile and near-right low falchion; left shield naturally far/behind, same dark armor/hair/helm. All feet and weapon tip complete. |
+| uruk | views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
 | uruk | face_views/front | pending | 0 | Not yet attempted |
 | uruk | face_views/three_quarter | pending | 0 | Not yet attempted |
 | uruk | face_views/side | pending | 0 | Not yet attempted |
