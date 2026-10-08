@@ -205,6 +205,10 @@ export interface AudioSys {
   musicVolume: number;
   sfxVolume: number;
   update(dtReal: number): void;
+  /** room reverb: amount 0..1 (0 = dry), decay 0.3–9 s. Default (0.4, 1.7); caves ≈ (0.9, 5.5) */
+  setReverb?(amount: number, decaySec?: number): void;
+  /** 0..1 — more drums/horns and slightly faster tempo for the current mood (default 0.5) */
+  setMusicIntensity?(v: number): void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -296,6 +300,8 @@ export interface Hud {
   setProgress(label: string | null, frac?: number): void;
   setFps(fps: number | null): void;
   update(dtReal: number): void;
+  /** honour Settings.subtitles */
+  setSubtitlesEnabled?(v: boolean): void;
 }
 
 export interface ChapterResult {
