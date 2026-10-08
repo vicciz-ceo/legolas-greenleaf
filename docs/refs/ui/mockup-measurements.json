@@ -1,0 +1,1742 @@
+{
+  "source": "measured_script",
+  "script": "tools/render_ui.mjs",
+  "screens": [
+    {
+      "source": "measured_script",
+      "screen": "chapter_complete",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "chapter_complete_480_130",
+          "rect_px": [
+            480,
+            130,
+            960,
+            820
+          ],
+          "rect_percent": [
+            25,
+            12.037037037037036,
+            50,
+            75.92592592592592
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "chapter_select",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "chapter_select_180_260",
+          "rect_px": [
+            180,
+            260,
+            500,
+            204
+          ],
+          "rect_percent": [
+            9.375,
+            24.074074074074073,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_712_260",
+          "rect_px": [
+            712,
+            260,
+            500,
+            204
+          ],
+          "rect_percent": [
+            37.083333333333336,
+            24.074074074074073,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_1244_260",
+          "rect_px": [
+            1244,
+            260,
+            500,
+            204
+          ],
+          "rect_percent": [
+            64.79166666666667,
+            24.074074074074073,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_180_488",
+          "rect_px": [
+            180,
+            488,
+            500,
+            204
+          ],
+          "rect_percent": [
+            9.375,
+            45.18518518518518,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_712_488",
+          "rect_px": [
+            712,
+            488,
+            500,
+            204
+          ],
+          "rect_percent": [
+            37.083333333333336,
+            45.18518518518518,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_1244_488",
+          "rect_px": [
+            1244,
+            488,
+            500,
+            204
+          ],
+          "rect_percent": [
+            64.79166666666667,
+            45.18518518518518,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_180_716",
+          "rect_px": [
+            180,
+            716,
+            500,
+            204
+          ],
+          "rect_percent": [
+            9.375,
+            66.2962962962963,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_712_716",
+          "rect_px": [
+            712,
+            716,
+            500,
+            204
+          ],
+          "rect_percent": [
+            37.083333333333336,
+            66.2962962962963,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "chapter_select_1244_716",
+          "rect_px": [
+            1244,
+            716,
+            500,
+            204
+          ],
+          "rect_percent": [
+            64.79166666666667,
+            66.2962962962963,
+            26.041666666666668,
+            18.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "credits",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "credits_480_160",
+          "rect_px": [
+            480,
+            160,
+            960,
+            760
+          ],
+          "rect_percent": [
+            25,
+            14.814814814814813,
+            50,
+            70.37037037037037
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "defeat",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "defeat_480_260",
+          "rect_px": [
+            480,
+            260,
+            960,
+            550
+          ],
+          "rect_percent": [
+            25,
+            24.074074074074073,
+            50,
+            50.92592592592593
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "hud_desktop",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "health",
+          "rect_px": [
+            76,
+            60,
+            320,
+            24
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            5.555555555555555,
+            16.666666666666664,
+            2.2222222222222223
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_desktop_44_57",
+          "rect_px": [
+            44,
+            57,
+            28,
+            28
+          ],
+          "rect_percent": [
+            2.2916666666666665,
+            5.277777777777778,
+            1.4583333333333333,
+            2.5925925925925926
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "focus_meter",
+          "rect_px": [
+            76,
+            96,
+            220,
+            10
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            8.88888888888889,
+            11.458333333333332,
+            0.9259259259259258
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_desktop_76_118",
+          "rect_px": [
+            76,
+            118,
+            320,
+            20
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            10.925925925925926,
+            16.666666666666664,
+            1.8518518518518516
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "objective",
+          "rect_px": [
+            76,
+            158,
+            460,
+            80
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            14.629629629629628,
+            23.958333333333336,
+            7.4074074074074066
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "rivalry",
+          "rect_px": [
+            1460,
+            60,
+            380,
+            104
+          ],
+          "rect_percent": [
+            76.04166666666666,
+            5.555555555555555,
+            19.791666666666664,
+            9.62962962962963
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "charge_ring",
+          "rect_px": [
+            936,
+            516,
+            48,
+            48
+          ],
+          "rect_percent": [
+            48.75,
+            47.77777777777778,
+            2.5,
+            4.444444444444445
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "damage_arcs",
+          "rect_px": [
+            860,
+            435,
+            200,
+            200
+          ],
+          "rect_percent": [
+            44.79166666666667,
+            40.27777777777778,
+            10.416666666666668,
+            18.51851851851852
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "focus_mark_1",
+          "rect_px": [
+            1113.7867431640625,
+            413.78680419921875,
+            42.426513671875,
+            42.4263916015625
+          ],
+          "rect_percent": [
+            58.009726206461586,
+            38.313592981409144,
+            2.2097142537434897,
+            3.9283695927372686
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "focus_mark_2",
+          "rect_px": [
+            1323.7867431640625,
+            493.78680419921875,
+            42.426513671875,
+            42.4263916015625
+          ],
+          "rect_percent": [
+            68.9472262064616,
+            45.72100038881655,
+            2.2097142537434897,
+            3.9283695927372686
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "context_prompt",
+          "rect_px": [
+            810,
+            716,
+            300,
+            52
+          ],
+          "rect_percent": [
+            42.1875,
+            66.2962962962963,
+            15.625,
+            4.814814814814815
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "subtitles",
+          "rect_px": [
+            520,
+            824,
+            880,
+            96
+          ],
+          "rect_percent": [
+            27.083333333333332,
+            76.29629629629629,
+            45.83333333333333,
+            8.88888888888889
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "boss_name",
+          "rect_px": [
+            570,
+            938,
+            780,
+            28
+          ],
+          "rect_percent": [
+            29.6875,
+            86.85185185185185,
+            40.625,
+            2.5925925925925926
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 18
+        },
+        {
+          "element": "boss_bar",
+          "rect_px": [
+            570,
+            972,
+            780,
+            16
+          ],
+          "rect_percent": [
+            29.6875,
+            90,
+            40.625,
+            1.4814814814814816
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "arrow_selector",
+          "rect_px": [
+            76,
+            944,
+            344,
+            64
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            87.4074074074074,
+            17.916666666666668,
+            5.9259259259259265
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_desktop_76_1018",
+          "rect_px": [
+            76,
+            1018,
+            400,
+            24
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            94.25925925925925,
+            20.833333333333336,
+            2.2222222222222223
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 18
+        },
+        {
+          "element": "charge_examples",
+          "rect_px": [
+            76,
+            760,
+            320,
+            108
+          ],
+          "rect_percent": [
+            3.958333333333333,
+            70.37037037037037,
+            16.666666666666664,
+            10
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_desktop_1500_886",
+          "rect_px": [
+            1500,
+            886,
+            320,
+            104
+          ],
+          "rect_percent": [
+            78.125,
+            82.03703703703704,
+            16.666666666666664,
+            9.62962962962963
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "hud_touch",
+      "viewport_px": [
+        844,
+        390
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "hud_touch_26_26",
+          "rect_px": [
+            26,
+            26,
+            240,
+            10
+          ],
+          "rect_percent": [
+            3.080568720379147,
+            6.666666666666667,
+            28.436018957345972,
+            2.564102564102564
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_touch_26_42",
+          "rect_px": [
+            26,
+            42,
+            170,
+            6
+          ],
+          "rect_percent": [
+            3.080568720379147,
+            10.76923076923077,
+            20.14218009478673,
+            1.5384615384615385
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_touch_26_63",
+          "rect_px": [
+            26,
+            63,
+            330,
+            38
+          ],
+          "rect_percent": [
+            3.080568720379147,
+            16.153846153846153,
+            39.09952606635071,
+            9.743589743589745
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "hud_touch_408_184",
+          "rect_px": [
+            408,
+            184,
+            28,
+            28
+          ],
+          "rect_percent": [
+            48.34123222748815,
+            47.179487179487175,
+            3.3175355450236967,
+            7.179487179487179
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "touch_movement_stick",
+          "rect_px": [
+            52,
+            224,
+            112,
+            112
+          ],
+          "rect_percent": [
+            6.161137440758294,
+            57.43589743589743,
+            13.270142180094787,
+            28.717948717948715
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_look_area",
+          "rect_px": [
+            240,
+            80,
+            340,
+            155
+          ],
+          "rect_percent": [
+            28.436018957345972,
+            20.51282051282051,
+            40.28436018957346,
+            39.743589743589745
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "touch_DRAW",
+          "rect_px": [
+            744,
+            176,
+            74,
+            74
+          ],
+          "rect_percent": [
+            88.15165876777252,
+            45.12820512820513,
+            8.767772511848342,
+            18.974358974358974
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_AIM",
+          "rect_px": [
+            678,
+            184,
+            56,
+            56
+          ],
+          "rect_percent": [
+            80.33175355450237,
+            47.179487179487175,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_KNIVES",
+          "rect_px": [
+            612,
+            184,
+            56,
+            56
+          ],
+          "rect_percent": [
+            72.51184834123224,
+            47.179487179487175,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_JUMP",
+          "rect_px": [
+            754,
+            258,
+            56,
+            56
+          ],
+          "rect_percent": [
+            89.33649289099526,
+            66.15384615384615,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_DASH",
+          "rect_px": [
+            688,
+            258,
+            56,
+            56
+          ],
+          "rect_percent": [
+            81.51658767772511,
+            66.15384615384615,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_FOCUS",
+          "rect_px": [
+            622,
+            258,
+            56,
+            56
+          ],
+          "rect_percent": [
+            73.69668246445498,
+            66.15384615384615,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_INTERACT",
+          "rect_px": [
+            486,
+            258,
+            124,
+            56
+          ],
+          "rect_percent": [
+            57.58293838862559,
+            66.15384615384615,
+            14.691943127962084,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_ARROW",
+          "rect_px": [
+            688,
+            320,
+            56,
+            56
+          ],
+          "rect_percent": [
+            81.51658767772511,
+            82.05128205128204,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        },
+        {
+          "element": "touch_PAUSE",
+          "rect_px": [
+            758,
+            26,
+            56,
+            56
+          ],
+          "rect_percent": [
+            89.81042654028435,
+            6.666666666666667,
+            6.6350710900473935,
+            14.358974358974358
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 12
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "icons_preview",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "icons_preview_80_280",
+          "rect_px": [
+            80,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            4.166666666666666,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_308_280",
+          "rect_px": [
+            308,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            16.041666666666668,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_536_280",
+          "rect_px": [
+            536,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            27.916666666666668,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_764_280",
+          "rect_px": [
+            764,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            39.791666666666664,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_992_280",
+          "rect_px": [
+            992,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            51.66666666666667,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1220_280",
+          "rect_px": [
+            1220,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            63.541666666666664,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1448_280",
+          "rect_px": [
+            1448,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            75.41666666666667,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1676_280",
+          "rect_px": [
+            1676,
+            280,
+            210,
+            120
+          ],
+          "rect_percent": [
+            87.29166666666667,
+            25.925925925925924,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_80_428",
+          "rect_px": [
+            80,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            4.166666666666666,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_308_428",
+          "rect_px": [
+            308,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            16.041666666666668,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_536_428",
+          "rect_px": [
+            536,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            27.916666666666668,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_764_428",
+          "rect_px": [
+            764,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            39.791666666666664,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_992_428",
+          "rect_px": [
+            992,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            51.66666666666667,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1220_428",
+          "rect_px": [
+            1220,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            63.541666666666664,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1448_428",
+          "rect_px": [
+            1448,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            75.41666666666667,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1676_428",
+          "rect_px": [
+            1676,
+            428,
+            210,
+            120
+          ],
+          "rect_percent": [
+            87.29166666666667,
+            39.62962962962963,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_80_576",
+          "rect_px": [
+            80,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            4.166666666666666,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_308_576",
+          "rect_px": [
+            308,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            16.041666666666668,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_536_576",
+          "rect_px": [
+            536,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            27.916666666666668,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_764_576",
+          "rect_px": [
+            764,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            39.791666666666664,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_992_576",
+          "rect_px": [
+            992,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            51.66666666666667,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1220_576",
+          "rect_px": [
+            1220,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            63.541666666666664,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1448_576",
+          "rect_px": [
+            1448,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            75.41666666666667,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1676_576",
+          "rect_px": [
+            1676,
+            576,
+            210,
+            120
+          ],
+          "rect_percent": [
+            87.29166666666667,
+            53.333333333333336,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_80_724",
+          "rect_px": [
+            80,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            4.166666666666666,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_308_724",
+          "rect_px": [
+            308,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            16.041666666666668,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_536_724",
+          "rect_px": [
+            536,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            27.916666666666668,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_764_724",
+          "rect_px": [
+            764,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            39.791666666666664,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_992_724",
+          "rect_px": [
+            992,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            51.66666666666667,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1220_724",
+          "rect_px": [
+            1220,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            63.541666666666664,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1448_724",
+          "rect_px": [
+            1448,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            75.41666666666667,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_1676_724",
+          "rect_px": [
+            1676,
+            724,
+            210,
+            120
+          ],
+          "rect_percent": [
+            87.29166666666667,
+            67.03703703703704,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "icons_preview_80_872",
+          "rect_px": [
+            80,
+            872,
+            210,
+            120
+          ],
+          "rect_percent": [
+            4.166666666666666,
+            80.74074074074075,
+            10.9375,
+            11.11111111111111
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "loading",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "loading_280_680",
+          "rect_px": [
+            280,
+            680,
+            1360,
+            270
+          ],
+          "rect_percent": [
+            14.583333333333334,
+            62.96296296296296,
+            70.83333333333334,
+            25
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "logo_preview",
+      "viewport_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": []
+    },
+    {
+      "source": "measured_script",
+      "screen": "pause",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "modal_panel",
+          "rect_px": [
+            480,
+            190,
+            960,
+            700
+          ],
+          "rect_percent": [
+            25,
+            17.59259259259259,
+            50,
+            64.81481481481481
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "settings",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "modal_panel",
+          "rect_px": [
+            480,
+            190,
+            960,
+            700
+          ],
+          "rect_percent": [
+            25,
+            17.59259259259259,
+            50,
+            64.81481481481481
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "title",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "title_logo",
+          "rect_px": [
+            180,
+            210,
+            920,
+            176
+          ],
+          "rect_percent": [
+            9.375,
+            19.444444444444446,
+            47.91666666666667,
+            16.296296296296298
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "title_menu",
+          "rect_px": [
+            240,
+            460,
+            440,
+            350
+          ],
+          "rect_percent": [
+            12.5,
+            42.592592592592595,
+            22.916666666666664,
+            32.407407407407405
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "title_244_880",
+          "rect_px": [
+            244,
+            880,
+            600,
+            50
+          ],
+          "rect_percent": [
+            12.708333333333332,
+            81.48148148148148,
+            31.25,
+            4.62962962962963
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 24
+        }
+      ]
+    },
+    {
+      "source": "measured_script",
+      "screen": "upgrades",
+      "viewport_px": [
+        1920,
+        1080
+      ],
+      "jpeg_quality": 88,
+      "errors": [],
+      "elements": [
+        {
+          "element": "upgrades_1430_135",
+          "rect_px": [
+            1430,
+            135,
+            300,
+            50
+          ],
+          "rect_percent": [
+            74.47916666666666,
+            12.5,
+            15.625,
+            4.62962962962963
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 24
+        },
+        {
+          "element": "upgrades_180_285",
+          "rect_px": [
+            180,
+            285,
+            365,
+            265
+          ],
+          "rect_percent": [
+            9.375,
+            26.38888888888889,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_575_285",
+          "rect_px": [
+            575,
+            285,
+            365,
+            265
+          ],
+          "rect_percent": [
+            29.947916666666668,
+            26.38888888888889,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_970_285",
+          "rect_px": [
+            970,
+            285,
+            365,
+            265
+          ],
+          "rect_percent": [
+            50.520833333333336,
+            26.38888888888889,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_1365_285",
+          "rect_px": [
+            1365,
+            285,
+            365,
+            265
+          ],
+          "rect_percent": [
+            71.09375,
+            26.38888888888889,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_180_585",
+          "rect_px": [
+            180,
+            585,
+            365,
+            265
+          ],
+          "rect_percent": [
+            9.375,
+            54.166666666666664,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_575_585",
+          "rect_px": [
+            575,
+            585,
+            365,
+            265
+          ],
+          "rect_percent": [
+            29.947916666666668,
+            54.166666666666664,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_970_585",
+          "rect_px": [
+            970,
+            585,
+            365,
+            265
+          ],
+          "rect_percent": [
+            50.520833333333336,
+            54.166666666666664,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        },
+        {
+          "element": "upgrades_1365_585",
+          "rect_px": [
+            1365,
+            585,
+            365,
+            265
+          ],
+          "rect_percent": [
+            71.09375,
+            54.166666666666664,
+            19.010416666666664,
+            24.537037037037038
+          ],
+          "font_family": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+          "font_px": 16
+        }
+      ]
+    }
+  ]
+}
