@@ -3012,69 +3012,114 @@
           "path": "/workspace/generated_images/exec-3f639139-ac19-4c12-8c1f-9bbc12f7ac9e.png"
         },
         "face_views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "Same full face-covering spiked helmet, no invented exposed face, loose black hair and dark bare handprinted torso; complete crown/spikes.",
               "path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "Same full face-covering spiked helmet, no invented exposed face, loose black hair and dark bare handprinted torso; complete crown/spikes.",
           "path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique full face-covering helmet/torso; same spikes, dark hair and handprinted bare chest, no exposed face.",
+              "path": "/workspace/generated_images/exec-7fa6777b-5e88-401a-8be5-a61a87b440fc.png"
+            }
+          ],
+          "reason": "Clear oblique full face-covering helmet/torso; same spikes, dark hair and handprinted bare chest, no exposed face.",
+          "path": "/workspace/generated_images/exec-7fa6777b-5e88-401a-8be5-a61a87b440fc.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Side-on full face-covering iron helmet with complete spikes, same loose black hair/bare handprinted shoulder; no exposed invented face.",
+              "path": "/workspace/generated_images/exec-da8638cb-ec09-49a8-94e5-eaa82c5a3803.png"
+            }
+          ],
+          "reason": "Side-on full face-covering iron helmet with complete spikes, same loose black hair/bare handprinted shoulder; no exposed invented face.",
+          "path": "/workspace/generated_images/exec-da8638cb-ec09-49a8-94e5-eaa82c5a3803.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same opaque black kilt, leather belt and wrapped feet, no new armor; small buckle-shape variation tolerated.",
+              "path": "/workspace/generated_images/exec-d4f3ae59-41da-4d1c-ab53-810c5587cd3a.png"
+            }
+          ],
+          "reason": "Same opaque black kilt, leather belt and wrapped feet, no new armor; small buckle-shape variation tolerated.",
+          "path": "/workspace/generated_images/exec-d4f3ae59-41da-4d1c-ab53-810c5587cd3a.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same broad straight worn iron two-handed sword, angular crossguard/wrapped grip, complete isolated tip and pommel.",
+              "path": "/workspace/generated_images/exec-04274a8a-5a79-4d67-af05-939bd516b7e0.png"
+            }
+          ],
+          "reason": "Same broad straight worn iron two-handed sword, angular crossguard/wrapped grip, complete isolated tip and pommel.",
+          "path": "/workspace/generated_images/exec-04274a8a-5a79-4d67-af05-939bd516b7e0.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed material crop from accepted independent helmet portrait; skin uses exposed chest, not concealed face."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed material crop from accepted independent helmet portrait; skin uses exposed chest, not concealed face."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass."
         }
       }
     },
@@ -3083,20 +3128,62 @@
       "design_extent_m": 2.1,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original broad painted face, bare scarred torso, complete low bow own-left/right sword and back shield edges; natural relaxed A-pose and limbs.",
+              "path": "/workspace/generated_images/exec-a1990bd4-d3c6-44fd-93a6-1db939f26431.png"
+            }
+          ],
+          "reason": "Original broad painted face, bare scarred torso, complete low bow own-left/right sword and back shield edges; natural relaxed A-pose and limbs.",
+          "path": "/workspace/generated_images/exec-a1990bd4-d3c6-44fd-93a6-1db939f26431.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Body is oblique but face remains near frontal instead of rotating with head/torso; repair three-quarter angle.",
+              "path": "/workspace/generated_images/exec-166f1776-0354-48a6-9d6d-ef26f8693b49.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second candidate turns head with oblique body, nose projects right and far face compressed; correct own-left bow/right sword/back shield retained.",
+              "path": "/workspace/generated_images/exec-88444360-de00-4096-9230-10404e671780.png"
+            }
+          ],
+          "reason": "Second candidate turns head with oblique body, nose projects right and far face compressed; correct own-left bow/right sword/back shield retained.",
+          "path": "/workspace/generated_images/exec-88444360-de00-4096-9230-10404e671780.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side profile; close silhouette retains own-right near sword, own-left far bow and shield on back, with complete low tips and bare torso.",
+              "path": "/workspace/generated_images/exec-1eead795-51cb-4c80-8451-0ee61c0a2811.png"
+            }
+          ],
+          "reason": "Exact side profile; close silhouette retains own-right near sword, own-left far bow and shield on back, with complete low tips and bare torso.",
+          "path": "/workspace/generated_images/exec-1eead795-51cb-4c80-8451-0ee61c0a2811.png"
         },
         "views/back": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-d3bd9bb9-6743-4df9-9796-5fef835ffbba.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-d3bd9bb9-6743-4df9-9796-5fef835ffbba.png"
         },
         "face_views/front": {
           "status": "pending",

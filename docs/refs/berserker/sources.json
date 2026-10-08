@@ -22,5 +22,123 @@
     "detail_background_removed": false,
     "saved_cutout": "views/three_quarter.png",
     "cutout_sha256": "03e40fa0173d7ad31e1be5a54d0f5b20faaf2d619be701edf2013cea610d77e2"
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-fead87b5-d270-4c75-a619-571bcd93c201.png",
+    "original_sha256": "8a3ce524852bdd3274c7c653be60bf62ffc5c1b56f9654593fcd2b39d041f752",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "7b19f109c13027e819c3da339a1d4728509de36b04689fe037b1d3d440db8077"
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-3f639139-ac19-4c12-8c1f-9bbc12f7ac9e.png",
+    "original_sha256": "9896f71b762ef6085262f11423df1da0f4472e0635acf671def9b9d44fa3f59b",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "16b1ae8dadbef52512f473a540c2a229842abbb6e3055ce49f6c8ef0df44a288"
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png",
+    "original_sha256": "fc6ea371cfb888535836975d5d6deaa8e710269db88c8a1f22f633eeb43a47b1",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "9d9b77f15f69a4e5f1d261b0e6334ee425cc124c50a0ca15075431f2c651e371"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-7fa6777b-5e88-401a-8be5-a61a87b440fc.png",
+    "original_sha256": "0eedb02853be443d4564291ec97f48513b8b1c6bbe36bd7d5df9c6fd1c7f3797",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "9498de48d5a883c1ee48792fecbed52d87c887198e62ca370a0236e0a7c8d753"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-da8638cb-ec09-49a8-94e5-eaa82c5a3803.png",
+    "original_sha256": "03ef1893a3699f7fa143a0396be318ba88b903ea18ee02a8a7d2378e8401ab69",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "793011ddc74198ed8e3fc556b8e5fa13f906b473497f73ec896b4973d8a0e6d7"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d4f3ae59-41da-4d1c-ab53-810c5587cd3a.png",
+    "original_sha256": "bd22fb21ee5a456947328a7beff3a28bca841eb53dff1d733289789e48245708",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "2d19f02bcd57c5e2b831ca90e056c78e680351e7d63c91df3fc4afb751e5de82"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-04274a8a-5a79-4d67-af05-939bd516b7e0.png",
+    "original_sha256": "7b49d2402e003d1905724ba94102e9d7cd329bf8fbbf0d9579fdf099ae3b6b98",
+    "original_size_px": [
+      922,
+      1706
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "c04b094191ca1f56abce4b026bedeb9fc028d8158786708a720b923037601ff1"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png",
+    "original_sha256": "fc6ea371cfb888535836975d5d6deaa8e710269db88c8a1f22f633eeb43a47b1",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": [
+      540,
+      790,
+      700,
+      1090
+    ],
+    "detail_background_removed": true,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "bb19e96754b13d009fdb78c14a635fb2ba0f2ed8df3ec4058016aa556e3f9cee"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png",
+    "original_sha256": "fc6ea371cfb888535836975d5d6deaa8e710269db88c8a1f22f633eeb43a47b1",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": [
+      430,
+      510,
+      490,
+      690
+    ],
+    "detail_background_removed": true,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "33a181f977f997266e1e30cd46f3b290abb9b51652ae0082d921ff7186d81f0c"
   }
 }

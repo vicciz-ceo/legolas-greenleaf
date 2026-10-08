@@ -23,7 +23,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | goblin | 1.48 | <img src="goblin/goblin_turnaround.jpg" width="180" alt="goblin"> | [spec](goblin/spec.json) | [notes](goblin/notes.md) | accepted |
 | gundabad | 2.1 | <img src="gundabad/gundabad_turnaround.jpg" width="180" alt="gundabad"> | [spec](gundabad/spec.json) | [notes](gundabad/notes.md) | accepted |
 | uruk | 2.0 | <img src="uruk/uruk_turnaround.jpg" width="180" alt="uruk"> | [spec](uruk/spec.json) | [notes](uruk/notes.md) | accepted |
-| berserker | 2.1 | — | [spec](berserker/spec.json) | [notes](berserker/notes.md) | pending |
+| berserker | 2.1 | <img src="berserker/berserker_turnaround.jpg" width="180" alt="berserker"> | [spec](berserker/spec.json) | [notes](berserker/notes.md) | accepted |
 | lurtz | 2.1 | — | [spec](lurtz/spec.json) | [notes](lurtz/notes.md) | pending |
 | easterling | 1.8 | — | [spec](easterling/spec.json) | [notes](easterling/notes.md) | pending |
 | haradrim | 1.8 | — | [spec](haradrim/spec.json) | [notes](haradrim/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **24,978,710 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **26,514,501 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

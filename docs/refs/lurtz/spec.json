@@ -14,11 +14,11 @@
       "leg_length_m": 1.092,
       "hand_length_m": 0.216,
       "neck_length_m": 0.126,
-      "bulk_0to1": 0.5,
+      "bulk_0to1": 0.8,
       "hunch_0to1": 0
     },
     "face": {
-      "shape": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK.",
+      "shape": "Original broad menacing fanged face with white hand paint across brow/nose/cheeks, scarred dark brown-black skin; no actor likeness.",
       "eyes": {
         "iris_hex": "#5d8bb5",
         "shape": "almond",
@@ -34,7 +34,7 @@
     "hair": {
       "root_hex": "#24211b",
       "tip_hex": "#24211b",
-      "length_m": 0.35,
+      "length_m": 0.48,
       "style": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK.",
       "braids": "as described, no additional ornamental braids"
     },

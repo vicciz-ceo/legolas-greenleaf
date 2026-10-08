@@ -405,29 +405,29 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/three_quarter | accepted | 1 | Oblique full body/helmet, same bare handprinted torso and black kilt, right low sword, complete silhouette and natural left hand. |
 | views/side | accepted | 1 | Exact side helmet/body, own-right near sword complete and low, white-hand shoulder bare torso, consistent black kilt/wraps, natural limbs. |
 | views/back | accepted | 1 | True back with loose black back hair, same spiked helmet/kilt/bare back; own-right low sword image right, complete tips/feet, natural hands. |
-| face_views/front | pending | 1 | Generated and saved; awaiting individual visual review. |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/front | accepted | 1 | Same full face-covering spiked helmet, no invented exposed face, loose black hair and dark bare handprinted torso; complete crown/spikes. |
+| face_views/three_quarter | accepted | 1 | Clear oblique full face-covering helmet/torso; same spikes, dark hair and handprinted bare chest, no exposed face. |
+| face_views/side | accepted | 1 | Side-on full face-covering iron helmet with complete spikes, same loose black hair/bare handprinted shoulder; no exposed invented face. |
+| details/cloth_leather | accepted | 1 | Same opaque black kilt, leather belt and wrapped feet, no new armor; small buckle-shape variation tolerated. |
+| details/weapon_metal | accepted | 1 | Same broad straight worn iron two-handed sword, angular crossguard/wrapped grip, complete isolated tip and pommel. |
+| details/skin | accepted | 0 | Reviewed material crop from accepted independent helmet portrait; skin uses exposed chest, not concealed face. |
+| details/hair | accepted | 0 | Reviewed material crop from accepted independent helmet portrait; skin uses exposed chest, not concealed face. |
+| turnaround | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| spec | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| notes | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| check | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| face | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| details | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
+| observed | accepted | 0 | Individual sheets/material crops and64px silhouettes reviewed; automated checks and budgets pass. |
 
 ## lurtz
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
+| views/front | accepted | 1 | Original broad painted face, bare scarred torso, complete low bow own-left/right sword and back shield edges; natural relaxed A-pose and limbs. |
+| views/three_quarter | accepted | 2 | Second candidate turns head with oblique body, nose projects right and far face compressed; correct own-left bow/right sword/back shield retained. |
+| views/side | accepted | 1 | Exact side profile; close silhouette retains own-right near sword, own-left far bow and shield on back, with complete low tips and bare torso. |
+| views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
