@@ -51,7 +51,8 @@ const STYLES: Record<HairStyle, StyleCfg> = {
 };
 
 /** scalp hair cap sculpted into the body (hair surface, coloured) */
-export function sculptHairCap(s: Sculpt, P: Proportions, hair: HairDef) {
+export function sculptHairCap(s: Sculpt, P: Proportions, hair: HairDef, hooded = false) {
+  void hooded;
   const cfg = STYLES[hair.style];
   if (cfg.cap <= 0) return;
   const u = P.headH;

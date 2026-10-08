@@ -1,0 +1,586 @@
+/**
+ * Shared helpers for the Uruk-hai / Bolg / troll kinds (group `uruks_bosses`):
+ *  - seed buckets (the kit's ≤4 geometry buckets) and tiny deterministic variation helpers
+ *  - rigid-gear geometry builders: curved plates with thickness (`shellPatch`), straps, spikes,
+ *    chain links, elliptical bands, lathes
+ *  - the white hand of Saruman (distance field, flat emblem, painted decal)
+ *  - surface decals that are projected onto the finished sculpt (hand prints, scars)
+ */
+import * as THREE from 'three';
+import { hashSeed } from '../../../../core/rng';
+import { makeEvaluator, type Sculpt, type V3 } from '../../../kit/sdf';
+import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
+import type { KindContext } from '../../types';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// seed buckets
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** the kit's geometry bucket for a spec seed (bucket 0 = canonical look). Mirrors build.ts. */
+export function bucketOf(seed: number | undefined): number {
+  if (!seed) return 0;
+  return hashSeed('bucket', seed) % 4;
+}
+
+/** the smallest seed (≥ 0) that falls into the given bucket; handy for labs and chapter authors */
+export function seedForBucket(bucket: number): number {
+  if (bucket <= 0) return 0;
+  for (let s = 1; s < 10000; s++) if (bucketOf(s) === bucket) return s;
+  return 0;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// gear plumbing
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface GearOpts {
+  bone: string;
+  color: number;
+  mat?: SurfaceName | SurfaceSpec;
+  matrix?: THREE.Matrix4;
+  small?: boolean;
+  colorFn?: (p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => void;
+  ao?: number;
+}
+export type GearFn = (geo: THREE.BufferGeometry, o: GearOpts) => void;
+
+/** `ctx.gear` with the extra paint options the kit's gear sink accepts at runtime (colorFn, ao) */
+export function gearOf(ctx: KindContext): GearFn {
+  const log = typeof location !== 'undefined' && location.search.includes('gearlog');
+  return (geo, o) => {
+    if (log) {
+      const w = window as unknown as { __gearLog?: string[] };
+      (w.__gearLog ??= []).push(`${o.bone}:${Math.round((geo.index ? geo.index.count : geo.attributes.position.count) / 3)}`);
+    }
+    ctx.gear(geo, o);
+  };
+}
+
+export const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
+export const v3 = (p: V3) => new THREE.Vector3(p[0], p[1], p[2]);
+export const tup = (v: THREE.Vector3): V3 => [v.x, v.y, v.z];
+const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
+export const smooth = (a: number, b: number, x: number) => {
+  const t = clamp01((x - a) / (b - a || 1e-9));
+  return t * t * (3 - 2 * t);
+};
+export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+/** matrix: local +Y along `dir`, local +Z toward `fwd` (as far as perpendicular), origin at `pos` */
+export function placeAlong(pos: V3 | THREE.Vector3, dir: THREE.Vector3, fwd: THREE.Vector3 = V(0, 0, 1), scale = 1): THREE.Matrix4 {
+  const p = pos instanceof THREE.Vector3 ? pos : v3(pos);
+  const y = dir.clone().normalize();
+  const z = fwd.clone().addScaledVector(y, -fwd.dot(y));
+  if (z.lengthSq() < 1e-6) z.set(1, 0, 0).addScaledVector(y, -y.x);
+  z.normalize();
+  const x = new THREE.Vector3().crossVectors(y, z);
+  return new THREE.Matrix4().makeBasis(x.multiplyScalar(scale), y.multiplyScalar(scale), z.multiplyScalar(scale)).setPosition(p);
+}
+
+/** orientation whose local +Z is `n`, local +Y as close to `up` as possible */
+export function frameAt(pos: V3 | THREE.Vector3, n: THREE.Vector3, up: THREE.Vector3 = V(0, 1, 0)): THREE.Matrix4 {
+  const p = pos instanceof THREE.Vector3 ? pos : v3(pos);
+  const z = n.clone().normalize();
+  const y = up.clone().addScaledVector(z, -up.dot(z));
+  if (y.lengthSq() < 1e-6) y.set(0, 0, 1).addScaledVector(z, -z.z);
+  y.normalize();
+  const x = new THREE.Vector3().crossVectors(y, z);
+  return new THREE.Matrix4().makeBasis(x, y, z).setPosition(p);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// plates with thickness
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SurfPoint {
+  p: THREE.Vector3;
+  n: THREE.Vector3;
+}
+/** parametric mid-surface: u, v in 0..1 → point and outward normal */
+export type SurfFn = (u: number, v: number, o: SurfPoint) => void;
+
+class Builder {
+  pos: number[] = [];
+  nor: number[] = [];
+  idx: number[] = [];
+  vert(p: THREE.Vector3, n: THREE.Vector3): number {
+    this.pos.push(p.x, p.y, p.z);
+    this.nor.push(n.x, n.y, n.z);
+    return this.pos.length / 3 - 1;
+  }
+  /** quad a,b,c,d (CCW seen from the side `n` points to; flips if needed) */
+  quad(a: number, b: number, c: number, d: number, n: THREE.Vector3) {
+    const pa = V(this.pos[a * 3], this.pos[a * 3 + 1], this.pos[a * 3 + 2]);
+    const pb = V(this.pos[b * 3], this.pos[b * 3 + 1], this.pos[b * 3 + 2]);
+    const pc = V(this.pos[c * 3], this.pos[c * 3 + 1], this.pos[c * 3 + 2]);
+    const f = pb.sub(pa).cross(pc.sub(pa));
+    if (f.dot(n) >= 0) this.idx.push(a, b, c, a, c, d);
+    else this.idx.push(a, c, b, a, d, c);
+  }
+  tri(a: number, b: number, c: number, n: THREE.Vector3) {
+    const pa = V(this.pos[a * 3], this.pos[a * 3 + 1], this.pos[a * 3 + 2]);
+    const pb = V(this.pos[b * 3], this.pos[b * 3 + 1], this.pos[b * 3 + 2]);
+    const pc = V(this.pos[c * 3], this.pos[c * 3 + 1], this.pos[c * 3 + 2]);
+    const f = pb.sub(pa).cross(pc.sub(pa));
+    if (f.dot(n) >= 0) this.idx.push(a, b, c);
+    else this.idx.push(a, c, b);
+  }
+  geometry(): THREE.BufferGeometry {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(this.pos, 3));
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(this.nor, 3));
+    g.setIndex(this.idx);
+    return g;
+  }
+}
+
+export interface ShellOpts {
+  /** build the four rim walls (default true) */
+  edges?: boolean;
+  /** u wraps around (no rim walls at u = 0 / 1) */
+  closedU?: boolean;
+  /** thickness multiplier across the patch: (u, v) → 0..1 (e.g. thin rims) */
+  thickFn?: (u: number, v: number) => number;
+  /** put the whole thickness on the outer (+n) side of the mid-surface */
+  outerOnly?: boolean;
+  /** skip the inner skin (domes seen only from outside) */
+  noInner?: boolean;
+  /** skip rim walls on some sides */
+  skip?: ('u0' | 'u1' | 'v0' | 'v1')[];
+}
+
+/** A curved plate: outer + inner skin and rim walls. Great for pauldrons, helmet lames, cuirass plates. */
+export function shellPatch(f: SurfFn, nu: number, nv: number, thick: number, opt: ShellOpts = {}): THREE.BufferGeometry {
+  const b = new Builder();
+  const W = nu + 1;
+  const P: THREE.Vector3[] = [];
+  const N: THREE.Vector3[] = [];
+  const o: SurfPoint = { p: V(), n: V() };
+  for (let j = 0; j <= nv; j++)
+    for (let i = 0; i <= nu; i++) {
+      f(i / nu, j / nv, o);
+      P.push(o.p.clone());
+      N.push(o.n.clone().normalize());
+    }
+  const t = (i: number, j: number) => (opt.thickFn ? opt.thickFn(i / nu, j / nv) : 1) * thick;
+  const outer: number[] = [];
+  const inner: number[] = [];
+  const tmp = V();
+  for (let j = 0; j <= nv; j++)
+    for (let i = 0; i <= nu; i++) {
+      const k = j * W + i;
+      const tt = t(i, j);
+      const hi = opt.outerOnly ? tt : tt / 2;
+      const lo = opt.outerOnly ? 0 : tt / 2;
+      outer.push(b.vert(tmp.copy(P[k]).addScaledVector(N[k], hi), N[k]));
+      inner.push(b.vert(tmp.copy(P[k]).addScaledVector(N[k], -lo), tmp.clone().copy(N[k]).negate()));
+    }
+  for (let j = 0; j < nv; j++)
+    for (let i = 0; i < nu; i++) {
+      const a = j * W + i;
+      const n = N[a].clone().add(N[a + 1]).add(N[a + W]).add(N[a + W + 1]);
+      b.quad(outer[a], outer[a + 1], outer[a + W + 1], outer[a + W], n);
+      if (!opt.noInner) b.quad(inner[a], inner[a + 1], inner[a + W + 1], inner[a + W], n.clone().negate());
+    }
+  if (opt.edges !== false) {
+    const wall = (ks: number[], outward: (k: number, k2: number) => THREE.Vector3) => {
+      for (let m = 0; m + 1 < ks.length; m++) {
+        const k = ks[m];
+        const k2 = ks[m + 1];
+        const en = outward(k, k2);
+        const a = b.vert(V(b.pos[outer[k] * 3], b.pos[outer[k] * 3 + 1], b.pos[outer[k] * 3 + 2]), en);
+        const c = b.vert(V(b.pos[outer[k2] * 3], b.pos[outer[k2] * 3 + 1], b.pos[outer[k2] * 3 + 2]), en);
+        const d = b.vert(V(b.pos[inner[k2] * 3], b.pos[inner[k2] * 3 + 1], b.pos[inner[k2] * 3 + 2]), en);
+        const e = b.vert(V(b.pos[inner[k] * 3], b.pos[inner[k] * 3 + 1], b.pos[inner[k] * 3 + 2]), en);
+        b.quad(a, c, d, e, en);
+      }
+    };
+    const col = (i: number) => Array.from({ length: nv + 1 }, (_, j) => j * W + i);
+    const row = (j: number) => Array.from({ length: nu + 1 }, (_, i) => j * W + i);
+    const outDir = (from: number, to: number, away: number) => {
+      // wall normal: perpendicular to the wall direction, in the surface, pointing away from the interior
+      const along = P[to].clone().sub(P[from]).normalize();
+      const nrm = N[from].clone();
+      const side = new THREE.Vector3().crossVectors(along, nrm).normalize();
+      const interior = P[away].clone().sub(P[from]);
+      if (side.dot(interior) > 0) side.negate();
+      return side;
+    };
+    const sk = opt.skip ?? [];
+    if (!opt.closedU) {
+      if (!sk.includes('u0')) wall(col(0), (k, k2) => outDir(k, k2, k + 1));
+      if (!sk.includes('u1')) wall(col(nu), (k, k2) => outDir(k, k2, k - 1));
+    }
+    if (!sk.includes('v0')) wall(row(0), (k, k2) => outDir(k, k2, k + W));
+    if (!sk.includes('v1')) wall(row(nv), (k, k2) => outDir(k, k2, k - W));
+  }
+  return b.geometry();
+}
+
+/**
+ * Surface on an ellipsoid (centre c, radii r): azimuth az0..az1 (0 = +Z, + toward +X), elevation
+ * from el0 to el1 (0 = equator, π/2 = top); elevation limits may depend on the azimuth.
+ */
+export function ellipsoidFn(
+  c: V3 | THREE.Vector3,
+  r: V3,
+  az: [number, number],
+  el: [number | ((a: number) => number), number | ((a: number) => number)],
+  opt: { rot?: THREE.Quaternion; radial?: (az: number, el: number) => number } = {},
+): SurfFn {
+  const cc = c instanceof THREE.Vector3 ? c : v3(c);
+  const d = V();
+  return (u, v, o) => {
+    const a = az[0] + (az[1] - az[0]) * u;
+    const e0 = typeof el[0] === 'function' ? el[0](a) : el[0];
+    const e1 = typeof el[1] === 'function' ? el[1](a) : el[1];
+    const e = e0 + (e1 - e0) * v;
+    d.set(Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));
+    const k = opt.radial ? opt.radial(a, e) : 1;
+    o.p.set(d.x * r[0] * k, d.y * r[1] * k, d.z * r[2] * k);
+    o.n.set(d.x / r[0], d.y / r[1], d.z / r[2]).normalize();
+    if (opt.rot) {
+      o.p.applyQuaternion(opt.rot);
+      o.n.applyQuaternion(opt.rot);
+    }
+    o.p.add(cc);
+  };
+}
+
+/** a strip along a polyline: width across (side = tangent × normal), with thickness */
+export function ribbon(pts: THREE.Vector3[], nrm: THREE.Vector3[], width: number | ((t: number) => number), thick: number, sub = 1, opt: ShellOpts = {}): THREE.BufferGeometry {
+  const n = pts.length - 1;
+  const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+  const tmpA = V();
+  return shellPatch(
+    (u, v, o) => {
+      curve.getPointAt(u, o.p);
+      curve.getTangentAt(u, tmpA);
+      const f = u * n;
+      const i = Math.min(n - 1, Math.floor(f));
+      o.n.copy(nrm[i]).lerp(nrm[i + 1], f - i).normalize();
+      const side = tmpA.clone().cross(o.n).normalize();
+      const w = typeof width === 'number' ? width : width(u);
+      o.p.addScaledVector(side, (v - 0.5) * w);
+    },
+    Math.max(4, n * 4),
+    sub,
+    thick,
+    opt,
+  );
+}
+
+/** tapered spike pointing along +Y from the origin */
+export function spike(r: number, h: number, seg = 6, bend = 0): THREE.BufferGeometry {
+  const g = new THREE.ConeGeometry(r, h, seg, bend ? 3 : 1, false);
+  g.translate(0, h / 2, 0);
+  if (bend) {
+    const p = g.attributes.position as THREE.BufferAttribute;
+    for (let i = 0; i < p.count; i++) {
+      const t = p.getY(i) / h;
+      p.setX(i, p.getX(i) + bend * t * t * h);
+    }
+    g.computeVertexNormals();
+  }
+  return g;
+}
+
+/** low-poly rivet / stud dome pointing +Z */
+export function rivet(r: number, seg = 5): THREE.BufferGeometry {
+  return new THREE.SphereGeometry(r, seg, 2, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(Math.PI / 2);
+}
+
+/** open elliptical band around the Y axis: radii at the top and bottom, flared, with thickness */
+export function ellipticalBand(rxTop: number, rzTop: number, rxBot: number, rzBot: number, h: number, thick: number, seg = 20, a0 = 0, a1 = Math.PI * 2, zShift = 0): THREE.BufferGeometry {
+  const closed = Math.abs(a1 - a0 - Math.PI * 2) < 1e-6;
+  return shellPatch(
+    (u, v, o) => {
+      const a = a0 + (a1 - a0) * u;
+      const rx = lerp(rxBot, rxTop, v);
+      const rz = lerp(rzBot, rzTop, v);
+      o.p.set(Math.sin(a) * rx, (v - 0.5) * h, Math.cos(a) * rz + zShift);
+      o.n.set(Math.sin(a) / rx, (rxBot - rxTop) / h * 0.0 + 0.0, Math.cos(a) / rz).normalize();
+    },
+    seg,
+    1,
+    thick,
+    { closedU: closed, noInner: true },
+  );
+}
+
+export function lathe(profile: [number, number][], seg = 12, phi0 = 0, phiLen = Math.PI * 2): THREE.BufferGeometry {
+  return new THREE.LatheGeometry(
+    profile.map(([r, y]) => new THREE.Vector2(Math.max(1e-4, r), y)),
+    seg,
+    phi0,
+    phiLen,
+  );
+}
+
+/** a chain of links along a polyline (alternating orientation) */
+export function chainLinks(path: THREE.Vector3[], linkLen: number, tubeR: number, up: THREE.Vector3 = V(0, 0, 1)): THREE.BufferGeometry[] {
+  const out: THREE.BufferGeometry[] = [];
+  const curve = new THREE.CatmullRomCurve3(path, false, 'centripetal');
+  const total = curve.getLength();
+  const n = Math.max(2, Math.floor(total / (linkLen * 0.8)));
+  for (let i = 0; i < n; i++) {
+    const t = (i + 0.5) / n;
+    const pos = curve.getPointAt(t);
+    const dir = curve.getTangentAt(t);
+    const g = new THREE.TorusGeometry(linkLen * 0.38, tubeR, 4, 8).scale(1.0, 1.35, 1.0);
+    // link plane contains the chain direction; alternate 90° about the chain axis
+    const m = placeAlong(pos, dir, i % 2 ? up : up.clone().cross(dir).normalize());
+    g.applyMatrix4(new THREE.Matrix4().makeRotationX(Math.PI / 2).premultiply(m));
+    out.push(g);
+  }
+  return out;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// the white hand of Saruman
+// ─────────────────────────────────────────────────────────────────────────────
+
+function sdSeg(px: number, py: number, ax: number, ay: number, bx: number, by: number): number {
+  const pax = px - ax, pay = py - ay, bax = bx - ax, bay = by - ay;
+  const h = clamp01((pax * bax + pay * bay) / (bax * bax + bay * bay || 1e-9));
+  return Math.hypot(pax - bax * h, pay - bay * h);
+}
+const FINGERS: [number, number, number, number, number][] = [
+  // base x, base y, tip x, tip y, radius
+  [-0.205, 0.04, -0.285, 0.43, 0.052],
+  [-0.075, 0.07, -0.095, 0.5, 0.054],
+  [0.07, 0.07, 0.1, 0.47, 0.053],
+  [0.195, 0.03, 0.29, 0.34, 0.046],
+];
+
+/** signed distance (unit hand height ≈ 1, wrist at y = -0.5, fingertips up to y ≈ +0.53; negative inside) */
+export function whiteHandSd(x: number, y: number): number {
+  // palm: rounded box
+  const qx = Math.abs(x) - 0.215, qy = Math.abs(y + 0.1) - 0.14;
+  let d = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - 0.06;
+  for (const [bx, by, tx, ty, r] of FINGERS) d = Math.min(d, sdSeg(x, y, bx, by, tx, ty) - r);
+  // thumb (on the viewer's left) and wrist
+  d = Math.min(d, sdSeg(x, y, -0.22, -0.2, -0.47, -0.02) - 0.058);
+  d = Math.min(d, sdSeg(x, y, 0, -0.3, 0, -0.52) - 0.15);
+  return d;
+}
+/** coverage 0..1 of the hand at (x, y) in unit-hand coordinates, with a soft edge of `soft` */
+export function whiteHandMask(x: number, y: number, soft = 0.02): number {
+  return 1 - smooth(-soft, soft, whiteHandSd(x, y));
+}
+
+/** outline points (CCW) of the hand, traced by marching radially from the palm centre */
+export function whiteHandOutline(n = 120): THREE.Vector2[] {
+  const pts: THREE.Vector2[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    const dx = Math.cos(a), dy = Math.sin(a);
+    // fingers make the shape star-shaped around the palm centre (0, -0.1) except between fingers: march outward until outside
+    let r = 0;
+    for (let k = 0; k < 200; k++) {
+      const rr = k * 0.005;
+      if (whiteHandSd(dx * rr, -0.1 + dy * rr) > 0) break;
+      r = rr;
+    }
+    pts.push(new THREE.Vector2(dx * r, -0.1 + dy * r));
+  }
+  return pts;
+}
+
+/** a flat extruded white-hand emblem (width ~1 unit × scale). Faces +Z, centred on its palm. */
+export function whiteHandEmblem(scale: number, depth: number): THREE.BufferGeometry {
+  const shape = new THREE.Shape(whiteHandOutline(140));
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: depth * 0.25, bevelSize: 0.012, bevelSegments: 1, curveSegments: 1, steps: 1 });
+  g.translate(0, 0.1, 0);
+  g.scale(scale, scale, 1);
+  return g;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// surface projection & decals
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface Projector {
+  /** snap a point onto the sculpt surface (Newton on the SDF); returns the surface normal */
+  project(p: THREE.Vector3, nOut: THREE.Vector3, iters?: number): boolean;
+  /** signed distance (negative inside) */
+  dist(x: number, y: number, z: number): number;
+}
+
+/** SDF snapshot of everything sculpted so far. Build it at the END of your extras. */
+export function makeProjector(s: Sculpt, box: { min: V3; max: V3 }): Projector | null {
+  try {
+    const prog = s.compile();
+    const ev = makeEvaluator(prog);
+    const tmp: number[] = [];
+    prog.cull(box.min[0], box.min[1], box.min[2], box.max[0], box.max[1], box.max[2], tmp);
+    const list = Int32Array.from(tmp);
+    const dist = (x: number, y: number, z: number) => ev.dist(x, y, z, list, 0, list.length);
+    const e = 0.0025;
+    return {
+      dist,
+      project(p, nOut, iters = 5) {
+        for (let i = 0; i < iters; i++) {
+          const d = dist(p.x, p.y, p.z);
+          nOut.set(dist(p.x + e, p.y, p.z) - dist(p.x - e, p.y, p.z), dist(p.x, p.y + e, p.z) - dist(p.x, p.y - e, p.z), dist(p.x, p.y, p.z + e) - dist(p.x, p.y, p.z - e));
+          if (nOut.lengthSq() < 1e-12) return false;
+          nOut.normalize();
+          p.addScaledVector(nOut, -d);
+        }
+        const d = dist(p.x, p.y, p.z);
+        return Math.abs(d) < 0.01;
+      },
+    };
+  } catch (err) {
+    console.warn('[uruks_bosses] projector unavailable', err);
+    return null;
+  }
+}
+
+export interface DecalOpts {
+  proj: Projector;
+  /** frame: local +Z outward, +Y up on the decal; origin on / near the surface */
+  frame: THREE.Matrix4;
+  w: number;
+  h: number;
+  cell: number;
+  /** coverage in local metres (x right in the frame, y up) → 0..1 */
+  mask: (x: number, y: number) => number;
+  lift?: number;
+  /** colour of the painted area and of the skin it fades into */
+  paint: number;
+  skin: number;
+  /** extra colour variation (streaks / smudges): (x, y) → -1..1 */
+  streak?: (x: number, y: number) => number;
+}
+
+/** a thin sheet of quads hugging the sculpt wherever mask > 0, coloured paint → skin by the mask */
+export function surfaceDecal(o: DecalOpts): { geo: THREE.BufferGeometry; colorFn: NonNullable<GearOpts['colorFn']> } | null {
+  const nx = Math.ceil(o.w / o.cell);
+  const ny = Math.ceil(o.h / o.cell);
+  const lift = o.lift ?? 0.0025;
+  const P: (THREE.Vector3 | null)[] = [];
+  const Nn: THREE.Vector3[] = [];
+  const M: number[] = [];
+  const key = (p: THREE.Vector3) => `${Math.round(p.x * 1e4)},${Math.round(p.y * 1e4)},${Math.round(p.z * 1e4)}`;
+  const maskByPos = new Map<string, number>();
+  const streakByPos = new Map<string, number>();
+  const tmp = V();
+  for (let j = 0; j <= ny; j++)
+    for (let i = 0; i <= nx; i++) {
+      const x = -o.w / 2 + i * o.cell;
+      const y = -o.h / 2 + j * o.cell;
+      M.push(o.mask(x, y));
+      P.push(tmp.set(x, y, 0).applyMatrix4(o.frame).clone());
+      Nn.push(V());
+    }
+  const b = new Builder();
+  const id: number[] = new Array(P.length).fill(-1);
+  const W = nx + 1;
+  const getV = (k: number): number => {
+    if (id[k] >= 0) return id[k];
+    const p = P[k]!;
+    const n = Nn[k];
+    if (!o.proj.project(p, n)) {
+      id[k] = -2;
+      return -2;
+    }
+    p.addScaledVector(n, lift);
+    id[k] = b.vert(p, n);
+    const kk = key(p);
+    maskByPos.set(kk, M[k]);
+    if (o.streak) {
+      const x = -o.w / 2 + (k % W) * o.cell;
+      const y = -o.h / 2 + Math.floor(k / W) * o.cell;
+      streakByPos.set(kk, o.streak(x, y));
+    }
+    return id[k];
+  };
+  let any = false;
+  for (let j = 0; j < ny; j++)
+    for (let i = 0; i < nx; i++) {
+      const a = j * W + i;
+      if (M[a] < 0.02 && M[a + 1] < 0.02 && M[a + W] < 0.02 && M[a + W + 1] < 0.02) continue;
+      const va = getV(a), vb = getV(a + 1), vc = getV(a + W + 1), vd = getV(a + W);
+      if (va < 0 || vb < 0 || vc < 0 || vd < 0) continue;
+      const n = Nn[a].clone().add(Nn[a + 1]).add(Nn[a + W]).add(Nn[a + W + 1]);
+      b.quad(va, vb, vc, vd, n);
+      any = true;
+    }
+  if (!any) return null;
+  const cPaint = new THREE.Color().setHex(o.paint, THREE.SRGBColorSpace);
+  const cSkin = new THREE.Color().setHex(o.skin, THREE.SRGBColorSpace);
+  const cTmp = new THREE.Color();
+  const colorFn: NonNullable<GearOpts['colorFn']> = (p, _n, c) => {
+    const kk = key(p);
+    const m = maskByPos.get(kk) ?? 0;
+    const st = streakByPos.get(kk) ?? 0;
+    const t = smooth(0.15, 0.7, m);
+    cTmp.copy(cPaint).multiplyScalar(1 + 0.12 * st);
+    c.copy(cSkin).lerp(cTmp, t);
+  };
+  return { geo: b.geometry(), colorFn };
+}
+
+/** a thin raised scar line (tube) hugging the sculpt along a polyline of rough surface points */
+export function scarTube(proj: Projector, pts: V3[], radius: number, lift = 0.0005, segsPerPoint = 6): THREE.BufferGeometry | null {
+  const curve = new THREE.CatmullRomCurve3(pts.map(v3), false, 'centripetal');
+  const n = Math.max(4, pts.length * segsPerPoint);
+  const path: THREE.Vector3[] = [];
+  const nrm: THREE.Vector3[] = [];
+  const nn = V();
+  for (let i = 0; i <= n; i++) {
+    const p = curve.getPointAt(i / n);
+    if (!proj.project(p, nn)) continue;
+    p.addScaledVector(nn, lift);
+    path.push(p);
+    nrm.push(nn.clone());
+  }
+  if (path.length < 3) return null;
+  const c2 = new THREE.CatmullRomCurve3(path, false, 'catmullrom');
+  const tube = new THREE.TubeGeometry(c2, path.length * 2, radius, 5, false);
+  return tube;
+}
+
+/** analytic projector for an ellipsoid (helmets, domes): snaps points onto the outer surface */
+export function ellipsoidProjector(c: V3 | THREE.Vector3, r: V3, rot?: THREE.Quaternion): Projector {
+  const cc = c instanceof THREE.Vector3 ? c : v3(c);
+  const inv = rot ? rot.clone().invert() : null;
+  const q = V();
+  return {
+    dist(x, y, z) {
+      q.set(x, y, z).sub(cc);
+      if (inv) q.applyQuaternion(inv);
+      const k = Math.hypot(q.x / r[0], q.y / r[1], q.z / r[2]);
+      return (k - 1) * Math.min(r[0], r[1], r[2]);
+    },
+    project(p, nOut) {
+      q.copy(p).sub(cc);
+      if (inv) q.applyQuaternion(inv);
+      const k = Math.hypot(q.x / r[0], q.y / r[1], q.z / r[2]) || 1;
+      q.divideScalar(k);
+      nOut.set(q.x / (r[0] * r[0]), q.y / (r[1] * r[1]), q.z / (r[2] * r[2])).normalize();
+      p.copy(q);
+      if (rot) {
+        p.applyQuaternion(rot);
+        nOut.applyQuaternion(rot);
+      }
+      p.add(cc);
+      return true;
+    },
+  };
+}
+
+/** measure the body at height y: half widths along x and z (front, back) by marching out of the axis */
+export function ringRadii(proj: Projector, y: number, cx = 0, cz = 0): { rx: number; zf: number; zb: number } {
+  const march = (dx: number, dz: number) => {
+    let lo = 0, hi = 0.6;
+    for (let i = 0; i < 18; i++) {
+      const m = (lo + hi) / 2;
+      if (proj.dist(cx + dx * m, y, cz + dz * m) < 0) lo = m;
+      else hi = m;
+    }
+    return (lo + hi) / 2;
+  };
+  return { rx: (march(1, 0) + march(-1, 0)) / 2, zf: march(0, 1), zb: march(0, -1) };
+}

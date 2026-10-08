@@ -7,7 +7,8 @@ import * as THREE from 'three';
 import type { HumanoidKind, HumanoidSpec } from '../../core/types';
 import { Rng, hashSeed } from '../../core/rng';
 import { Sculpt } from '../kit/sdf';
-import { meshSculpt } from '../kit/cache';
+import { meshSculpt, meshSculptAsync, hasMesh } from '../kit/cache';
+import type { MeshOpts, MeshRegion } from '../kit/mesher';
 import { meshDataToGeometry, mergeKitGeometries, paintGeometry, triCount } from '../kit/geometry';
 import { createCreatureMaterial } from '../kit/material';
 import { createHairMaterial } from '../kit/hair';
@@ -17,7 +18,7 @@ import { resolveKind } from './registry';
 import { computeProportions, buildRig, type Proportions } from './proportions';
 import { anatomyParts, emitParts } from './anatomy';
 import { sculptHead, type HeadInfo } from './face';
-import { sculptOutfit } from './outfit';
+import { sculptOutfit, type OutfitResult } from './outfit';
 import { skirtGeometry, cloakGeometry } from './cloth';
 import { sculptHairCap, buildHair } from './hairstyles';
 import { makeGearSink, armorGear, buckleGear, type GearPiece } from './gear';
@@ -93,15 +94,48 @@ function needsHairChain(def: ResolvedKind) {
   return !!h && ['long_straight', 'long_wavy', 'shoulder', 'mane', 'wild', 'stringy', 'tied_back'].includes(h.style);
 }
 
-export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
+/** humanoid asset cache key: (kind, seed bucket, quantised armour, helmet) */
+export function humanoidKey(spec: HumanoidSpec): string {
+  const bucket = seedBucket(spec.seed);
+  const armor = Math.round((spec.armor ?? 0.5) * 4) / 4;
+  const helmet = spec.helmet !== false;
+  return `${spec.kind}|${bucket}|${armor}|${helmet ? 1 : 0}`;
+}
+
+/** everything sculpted on the main thread before meshing (meshing may run in workers) */
+interface Prepared {
+  key: string;
+  spec: HumanoidSpec;
+  def: ResolvedKind;
+  vdef: ResolvedKind;
+  bucket: number;
+  P: Proportions;
+  rig: RigDef;
+  sc: Sculpt;
+  head: HeadInfo;
+  out: OutfitResult;
+  gear: GearPiece[];
+  objects: ExtraObject[];
+  helmet: boolean;
+  hooded: boolean;
+  armor: number;
+  opts0: MeshOpts;
+  opts1: MeshOpts;
+  ms: number;
+}
+
+const prepCache = new Map<string, Prepared>();
+
+/** phase 1: resolve the kind, compute proportions/rig and sculpt body, face, outfit, armour and gear */
+function prepareHumanoid(spec: HumanoidSpec): Prepared {
+  const key = humanoidKey(spec);
+  const hitP = prepCache.get(key);
+  if (hitP) return hitP;
+  const t0 = performance.now();
   const def = resolveKind(spec.kind);
   const bucket = seedBucket(spec.seed);
   const armor = Math.round((spec.armor ?? 0.5) * 4) / 4;
   const helmet = spec.helmet !== false;
-  const key = `${spec.kind}|${bucket}|${armor}|${helmet ? 1 : 0}`;
-  const hit = cache.get(key);
-  if (hit) return hit;
-  const t0 = performance.now();
   const rng = new Rng(hashSeed(spec.kind, bucket, 'humanoid'));
   // seed-bucket variation (bucket 0 is the canonical look)
   const vary = (amt: number) => (bucket === 0 ? 0 : (rng.float() * 2 - 1) * amt);
@@ -147,7 +181,7 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
   const sink = makeGearSink(rig, gear);
   const arm = armorGear(sink, P, vdef, def.armor.filter((a) => armor >= (a.minArmor ?? 0) && (a.chance === undefined || rng.float() < a.chance)), rng, helmet);
   const hooded = !!out.hood || arm.helmet;
-  if (def.hair && !out.hood) sculptHairCap(sc, P, def.hair);
+  if (def.hair && !out.hood) sculptHairCap(sc, P, def.hair, hooded);
   if (out.beltY !== undefined) buckleGear(sink, P, out.beltY, 0xb0a080);
   const objects: ExtraObject[] = [];
   const ctx: KindContext = {
@@ -165,35 +199,44 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
   };
   for (const fn of def.extras) fn(ctx);
 
-  // ── mesh (LOD0 now; LOD1/LOD2 deferred) ──
+  // ── mesh options (LOD0 + LOD1) ──
   // heroes (with a face region) get finer defaults; crowds/enemies are coarser (≤ ~12k tris)
   const faceRes = def.detail.faceRes < 0 ? 0 : def.detail.faceRes;
   const hero = faceRes > 0;
   const res = def.detail.res || (hero ? 0.024 : 0.03) * s;
   const headRes = def.detail.headRes || (hero ? 0.0085 : 0.0115) * s * Math.sqrt(def.build.headSize);
   const longHair = !!def.hair && !hooded && ['long_straight', 'long_wavy', 'shoulder', 'mane', 'wild', 'tied_back'].includes(def.hair.style);
-  const u = P.headH;
   // the back of a long-haired head is covered by hair: keep it at body resolution
   const headMin: [number, number, number] = [head.headBox.min[0], P.h(0, -0.68, 0)[1], longHair ? P.h(0, 0, -0.2)[2] : head.headBox.min[2]];
   const headMax: [number, number, number] = [head.headBox.max[0], head.headBox.max[1], head.headBox.max[2]];
-  const regions = [
-    { min: headMin, max: headMax, res: headRes, band: res * 1.5 },
-    ...(faceRes > 0 ? [{ min: P.h(-0.27, -0.6, 0.14), max: P.h(0.27, 0.06, 0.56), res: faceRes, band: headRes * 3 }] : []),
+  const regions: MeshRegion[] = [
+    { min: headMin, max: headMax, res: headRes, band: res * 1.5, aoScale: 0.6 },
+    ...(faceRes > 0 ? [{ min: P.h(-0.27, -0.6, 0.14), max: P.h(0.27, 0.06, 0.56), res: faceRes, band: headRes * 3, aoScale: 0.3 }] : []),
     ...(hero ? (['l', 'r'] as const) : []).map((sd) => {
       const w = P.j[`hand_${sd}`];
       const r = (P.palm + P.finger) * 1.15;
       const x0 = sd === 'l' ? w[0] - 0.03 * s : w[0] - r;
       const x1 = sd === 'l' ? w[0] + r : w[0] + 0.03 * s;
-      return { min: [x0, w[1] - r, w[2] - 0.06 * s] as [number, number, number], max: [x1, w[1] + 0.03 * s, w[2] + 0.07 * s] as [number, number, number], res: Math.max(headRes * 1.2, 0.0105 * s), band: res * 1.5 };
+      return { min: [x0, w[1] - r, w[2] - 0.06 * s] as [number, number, number], max: [x1, w[1] + 0.03 * s, w[2] + 0.07 * s] as [number, number, number], res: Math.max(headRes * 0.9, 0.0075 * s), band: res * 1.5, aoScale: 0.5 };
     }),
   ];
-  void u;
   const ao = DEBUG.has('noao') ? (false as const) : { dist: 0.07 * s, strength: 1 };
-  const m0 = DEBUG.has('uniform')
-    ? meshSculpt(sc, { res: headRes, ao })
-    : meshSculpt(sc, { res, regions: DEBUG.has('noregions') ? [] : regions, ao });
+  const refine = DEBUG.has('norefine') ? undefined : { levels: hero ? 2 : 1, threshold: 0.07, minEdge: 0.0065 * s };
+  const opts0: MeshOpts = DEBUG.has('uniform') ? { res: headRes, ao } : { res, regions: DEBUG.has('noregions') ? [] : regions, ao, refine };
+  const opts1: MeshOpts = { res: res * 1.5, regions: [{ min: headMin, max: headMax, res: headRes * 1.9, band: res * 2.2, aoScale: 0.7 }], ao: ao ? { dist: ao.dist, strength: 1 } : false, smooth: 2 };
+  const prep: Prepared = { key, spec, def, vdef, bucket, P, rig, sc, head, out, gear, objects, helmet: arm.helmet, hooded, armor, opts0, opts1, ms: performance.now() - t0 };
+  prepCache.set(key, prep);
+  return prep;
+}
+
+/** phase 2: mesh (cache hit when preloaded by the worker pool), merge gear/cloth, hair, eyes, materials */
+function assembleHumanoid(prep: Prepared): HumanoidAssets {
+  const t0 = performance.now();
+  const { key, spec, def, vdef, bucket, P, rig, sc, head, out, gear, objects, hooded } = prep;
+  const skin = vdef.skin;
+  const m0 = meshSculpt(sc, prep.opts0);
   (globalThis as { __kitDebug?: Record<string, unknown> }).__kitDebug ??= {};
-  (globalThis as { __kitDebug?: Record<string, unknown> }).__kitDebug![key] = { lod0Passes: m0.passTris, gear: gear.length, gearTris: gear.reduce((a, g) => a + triCount(g.geo), 0), meshMs: m0.ms };
+  (globalThis as { __kitDebug?: Record<string, unknown> }).__kitDebug![key] = { lod0Passes: m0.passTris, lod0Tris: m0.triCount, gear: gear.length, gearTris: gear.reduce((a, g) => a + triCount(g.geo), 0), meshMs: m0.ms };
   const cloth: THREE.BufferGeometry[] = [];
   if (out.skirt) cloth.push(skirtGeometry(P, rig, { ...out.skirt, seed: bucket }));
   if (out.cloak) cloth.push(cloakGeometry(P, rig, { ...out.cloak, seed: bucket }));
@@ -205,7 +248,7 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
   body0.userData.shared = true;
   /** LOD1/LOD2: coarser sculpt + same gear (LOD2 drops small gear and hair). Built later. */
   const buildLowLods = () => {
-    const m1 = meshSculpt(sc, { res: res * 1.5, regions: [{ min: headMin, max: headMax, res: headRes * 1.9, band: res * 2.2 }], ao: ao ? { dist: ao.dist, strength: 1 } : false, smooth: 2 });
+    const m1 = meshSculpt(sc, prep.opts1);
     const g1 = meshDataToGeometry(m1);
     const body1 = mergeKitGeometries([g1, ...cloth, ...bigGear, ...smallGear]);
     const body2 = mergeKitGeometries([g1, ...cloth, ...bigGear]);
@@ -215,13 +258,14 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
     body2.userData.shared = true;
     const hair1 = buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 1, hooded);
     if (hair1.geo) hair1.geo.userData.shared = true;
+    prepCache.delete(key);
     return { body1, body2, hair1: hair1.geo };
   };
 
   const hair0 = buildHair(P, rig, def.hair, def.beard, new Rng(hashSeed(spec.kind, bucket, 'hair')), 0, hooded);
   if (hair0.geo) hair0.geo.userData.shared = true;
 
-  // ── eyes: two spheres rigid to the head ──
+  // ── eyes: eyeballs + lashes rigid to the head ──
   const eyeGeo = eyesGeometry(rig, head);
   eyeGeo.userData.shared = true;
 
@@ -233,10 +277,7 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
     detailStrength: DEBUG.has('nodetail') ? 0 : 1,
   });
   const hairCol = def.hair?.color ?? def.beard?.color ?? 0x302010;
-  const hcl = new THREE.Color().setHex(hairCol, THREE.SRGBColorSpace);
-  const hairLum = hcl.r * 0.3 + hcl.g * 0.59 + hcl.b * 0.11;
-  const hairMat = createHairMaterial({ roughness: 0.6, anisotropy: 0.5 + 0.7 * Math.min(1, hairLum * 2), sheen: 0.25, sheenColor: hairCol });
-  hairMat.specularIntensity = 0.12 + 0.25 * Math.min(1, hairLum * 1.5);
+  const hairMat = hairMaterialFor(hairCol);
   const eyeMat = eyeMaterial(def.eyes.color, def.eyes.glow, def.eyes.sclera);
 
   const lod0: LodAssets = { body: body0, hair: hair0.geo, tris: triCount(body0) + (hair0.geo ? triCount(hair0.geo) : 0) + triCount(eyeGeo) };
@@ -255,8 +296,8 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
     hairMat,
     eyeMat,
     objects,
-    helmet: arm.helmet,
-    buildMs: performance.now() - t0,
+    helmet: prep.helmet,
+    buildMs: prep.ms + performance.now() - t0,
   };
   const finishLods = () => {
     if (assets.lodVersion > 0) return;
@@ -268,9 +309,64 @@ export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
     assets.lowLodMs = performance.now() - t1;
   };
   assets.ensureLods = finishLods;
-  scheduleLowLod(finishLods);
+  // preloaded (LOD1 mesh already in the cache): finish now; otherwise defer off the current frame
+  if (hasMesh(sc, prep.opts1)) finishLods();
+  else scheduleLowLod(finishLods);
   cache.set(key, assets);
   return assets;
+}
+
+export function getHumanoidAssets(spec: HumanoidSpec): HumanoidAssets {
+  const hit = cache.get(humanoidKey(spec));
+  if (hit) return hit;
+  return assembleHumanoid(prepareHumanoid(spec));
+}
+
+/**
+ * Build the shared assets of several humanoid specs in parallel: sculpting runs on the main
+ * thread (one spec per macrotask), the LOD0 + LOD1 meshing of every spec runs in the kit worker
+ * pool at the same time, then geometry is assembled (cache hits). Already-built specs are skipped.
+ */
+export async function prebuildHumanoids(specs: HumanoidSpec[], onProgress?: (frac: number) => void): Promise<void> {
+  const seen = new Set<string>();
+  const todo: HumanoidSpec[] = [];
+  for (const sp of specs) {
+    const k = humanoidKey(sp);
+    if (seen.has(k) || cache.has(k)) continue;
+    seen.add(k);
+    todo.push(sp);
+  }
+  if (!todo.length) {
+    onProgress?.(1);
+    return;
+  }
+  const yieldTask = () => new Promise<void>((r) => setTimeout(r, 0));
+  const total = todo.length * 4;
+  let done = 0;
+  const tick = () => onProgress?.(Math.min(1, ++done / total));
+  const preps: Prepared[] = [];
+  const jobs: Promise<unknown>[] = [];
+  for (const sp of todo) {
+    await yieldTask();
+    const prep = prepareHumanoid(sp);
+    preps.push(prep);
+    tick();
+    jobs.push(meshSculptAsync(prep.sc, prep.opts0).then(tick), meshSculptAsync(prep.sc, prep.opts1).then(tick));
+  }
+  await Promise.all(jobs);
+  for (const prep of preps) {
+    await yieldTask();
+    if (!cache.has(prep.key)) assembleHumanoid(prep).ensureLods?.();
+    tick();
+  }
+}
+
+function hairMaterialFor(hairCol: number): THREE.MeshPhysicalMaterial {
+  const hcl = new THREE.Color().setHex(hairCol, THREE.SRGBColorSpace);
+  const hairLum = hcl.r * 0.3 + hcl.g * 0.59 + hcl.b * 0.11;
+  const hairMat = createHairMaterial({ roughness: 0.6, anisotropy: 0.5 + 0.7 * Math.min(1, hairLum * 2), sheen: 0.25, sheenColor: hairCol });
+  hairMat.specularIntensity = 0.12 + 0.25 * Math.min(1, hairLum * 1.5);
+  return hairMat;
 }
 
 function eyesGeometry(rig: RigDef, head: HeadInfo): THREE.BufferGeometry {

@@ -18,10 +18,10 @@ import * as THREE from 'three';
 import type { AnimInput, Humanoid, HumanoidBone, HumanoidKind, HumanoidSpec, SocketName, WeaponKind } from '../core/types';
 import { makeSkinnedMesh } from './kit/rig';
 import { cloneCreatureMaterial } from './kit/material';
-import { getHumanoidAssets, type HumanoidAssets } from './humanoid/build';
+import { getHumanoidAssets, prebuildHumanoids, type HumanoidAssets } from './humanoid/build';
 import { HumanoidAnimator } from './humanoid/animator';
 import { createWeapon, disposeWeapon } from './weapons';
-import { gaitFrequency as kitGaitFrequency } from './kit/anim';
+import { gaitFrequency as kitGaitFrequency, fastBones } from './kit/anim';
 import { resolveKind, ALL_KINDS } from './humanoid/registry';
 
 export type { KindDef, KindContext } from './humanoid/types';
@@ -54,6 +54,8 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
   const def = A.def;
   const P = A.P;
   const inst = A.rig.instantiate();
+  // bones are driven by quaternions only: skip three's quaternion → Euler sync on every write
+  fastBones(inst.bones);
   const scale = spec.scale ?? 1;
 
   const root = new THREE.Group();
@@ -292,6 +294,7 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     setLod(level: 0 | 1 | 2) {
       if (level === lod) return;
       lod = level;
+      anim.setLod(level);
       applyLod();
     },
 
@@ -320,17 +323,20 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
 }
 
 /**
- * Optional warm-up: builds the shared assets for the given kinds (seed bucket 0, default armour)
- * one per macrotask so the main thread stays responsive during level load.
+ * Warm-up for loading screens: builds the shared assets (LOD0-2) for the given kinds × seeds.
+ * Sculpting runs on the main thread one kind per macrotask; the meshing of every kind runs in
+ * parallel in the kit's worker pool (`kit/workers.ts`), so N kinds cost about N / cores mesh
+ * times. Kinds already built are skipped; `createHumanoid` afterwards is a cache hit.
+ * Falls back to main-thread meshing when workers are unavailable.
  */
-export async function preloadHumanoids(kinds: HumanoidKind[], opts: { seeds?: number[]; armor?: number; helmet?: boolean } = {}): Promise<void> {
+export async function preloadHumanoids(
+  kinds: HumanoidKind[],
+  opts: { seeds?: number[]; armor?: number; helmet?: boolean; onProgress?: (frac: number) => void } = {},
+): Promise<void> {
   const seeds = opts.seeds ?? [0];
-  for (const kind of kinds) {
-    for (const seed of seeds) {
-      await new Promise<void>((r) => setTimeout(r, 0));
-      getHumanoidAssets({ kind, seed, armor: opts.armor, helmet: opts.helmet });
-    }
-  }
+  const specs: HumanoidSpec[] = [];
+  for (const kind of kinds) for (const seed of seeds) specs.push({ kind, seed, armor: opts.armor, helmet: opts.helmet });
+  await prebuildHumanoids(specs, opts.onProgress);
 }
 
 /** every kind (for tools) */

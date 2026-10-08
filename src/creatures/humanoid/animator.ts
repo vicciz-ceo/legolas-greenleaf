@@ -6,7 +6,7 @@
  * → hit flinch → death (overrides) → look-at → springs (hair, skirt, cloak, quiver, beard).
  */
 import * as THREE from 'three';
-import { PoseSolver, solveTwoBone, frameRotation, lookAt, SpringChain, gaitFrequency } from '../kit/anim';
+import { PoseSolver, solveTwoBone, fastTwoBone, frameRotation, lookAt, SpringChain, gaitFrequency } from '../kit/anim';
 import type { RigDef } from '../kit/rig';
 import type { AnimInput, SpecialPose } from '../../core/types';
 import type { Proportions } from './proportions';
@@ -68,6 +68,14 @@ export class HumanoidAnimator {
   gripR = false;
   /** last computed values for consumers */
   drawPull = 0;
+  /**
+   * Level of detail of the animation: 0 = full (IK with hand/foot frames, look-at, springs,
+   * per-frame fingers); 1 = cheap swing-only limb solve, weapon hand frames, no springs/look-at,
+   * fingers only when the grip changes; 2 = as 1 without hand frames and skirt follow.
+   * Bow aiming always uses the full solve.
+   */
+  lod: 0 | 1 | 2 = 0;
+  private fingerGrip = { l: -1, r: -1 };
 
   constructor(rig: RigDef, P: Proportions, style: AnimStyle, bones: THREE.Bone[], root: THREE.Object3D) {
     this.ps = new PoseSolver(rig);
@@ -89,6 +97,18 @@ export class HumanoidAnimator {
       style,
     };
     this.restL = { l: P.hand.l.L.clone(), r: P.hand.r.L.clone() };
+    const n = rig.count;
+    this.keepCheap = new Uint8Array(n);
+    this.fingerBone = new Uint8Array(n);
+    for (const nm of ['fing1', 'fing2', 'thumb1', 'thumb2']) for (const sd of ['l', 'r']) this.keepCheap[this.idx[`${nm}_${sd}`]] = this.fingerBone[this.idx[`${nm}_${sd}`]] = 1;
+    // constant in the cheap path: toes and every spring chain bone
+    for (const nm of rig.boneNames) if (/^(toe_|hair\d|cloak\d|beard\d|quiver)/.test(nm) || (/^skirt_/.test(nm) && false)) this.keepCheap[this.idx[nm]] = 1;
+    this.trunk = ['root', 'hips', 'spine', 'chest', 'neck', 'head', 'shoulder_l', 'shoulder_r', 'upperarm_l', 'upperarm_r', 'thigh_l', 'thigh_r'].map((nm) => this.idx[nm]);
+    for (const sd of ['l', 'r'] as const) {
+      const th = P.j[`thigh_${sd}`], kn = P.j[`shin_${sd}`], an = P.j[`foot_${sd}`];
+      this.restLeg[sd].a.set(kn[0] - th[0], kn[1] - th[1], kn[2] - th[2]).normalize();
+      this.restLeg[sd].b.set(an[0] - kn[0], an[1] - kn[1], an[2] - kn[2]).normalize();
+    }
     this.gripOff = { l: this.gripOffset('l'), r: this.gripOffset('r') };
     const ps = this.ps;
     const s = P.s;
@@ -246,7 +266,131 @@ export class HumanoidAnimator {
     if (this.gripL) base[F.gl] = Math.max(base[F.gl], 0.95 * (1 - Math.min(1, dead * 2)));
     if (this.gripR) base[F.gr] = Math.max(base[F.gr], 0.95 * (1 - Math.min(1, dead * 2)));
 
-    this.solve(base, dead > 0 ? 0 : aimW, draw, pitch, dead > 0 ? null : inp.lookAt ?? null, dt);
+    const aimS = dead > 0 ? 0 : aimW;
+    if (this.lod > 0 && aimS <= 0.001) this.solveCheap(base, dt);
+    else this.solve(base, aimS, draw, pitch, dead > 0 ? null : inp.lookAt ?? null, dt);
+  }
+
+  /** distant LODs: no springs, no look-at, swing-only limb solve, fingers only on grip change */
+  private solveCheap(p: Pose, dt: number) {
+    const ps = this.ps;
+    const I = this.idx;
+    const B = this.B;
+    const P = this.P;
+    const s = B.s;
+    void dt;
+    // keep finger locals (set on grip change) — reset everything else
+    const keep = this.keepCheap;
+    for (let i = 0; i < ps.n; i++) {
+      if (keep[i]) continue;
+      ps.local[i].identity();
+      ps.offset[i].set(0, 0, 0);
+    }
+    ps.offset[I.hips].set(p[F.px], p[F.py], p[F.pz]);
+    ps.local[I.hips].setFromEuler(_e.set(p[F.pp], p[F.pyaw], p[F.pr], 'YXZ'));
+    ps.local[I.spine].setFromEuler(_e.set(p[F.sp], p[F.sy], p[F.sr], 'YXZ'));
+    ps.local[I.chest].setFromEuler(_e.set(p[F.cp], p[F.cy], p[F.cr], 'YXZ'));
+    ps.local[I.neck].setFromEuler(_e.set(p[F.np], p[F.ny], p[F.nr], 'YXZ'));
+    ps.local[I.head].setFromEuler(_e.set(p[F.hp], p[F.hy], p[F.hr], 'YXZ'));
+    ps.local[I.jaw].setFromAxisAngle(_v1.set(1, 0, 0), p[F.jaw] * 0.45);
+    ps.local[I.shoulder_l].setFromAxisAngle(_v1.set(0, 0, 1), p[F.cll] * 0.6);
+    ps.local[I.shoulder_r].setFromAxisAngle(_v1.set(0, 0, 1), -p[F.clr] * 0.6);
+    // FK of the trunk only (limb roots); limbs are solved below
+    for (const i of this.trunk) ps.fkBone(i);
+    // legs
+    for (const sd of ['l', 'r'] as const) {
+      const xi = sd === 'l' ? F.flx : F.frx;
+      const rest = P.j[`foot_${sd}`];
+      const tgt = _v1.set(rest[0] + p[xi], rest[1] + p[xi + 1], rest[2] + p[xi + 2]);
+      const sx = sd === 'l' ? 1 : -1;
+      const yaw = p[xi + 4];
+      const thigh = ps.modelP[I[`thigh_${sd}`]];
+      const kb = sd === 'l' ? p[F.kl] : p[F.kr];
+      const pole = _v2.set(Math.sin(yaw) + sx * kb, 0, Math.cos(yaw)).normalize().multiplyScalar(0.6 * s).add(_v3.copy(thigh).lerp(tgt, 0.5));
+      _q1.setFromEuler(_e.set(p[xi + 3], yaw, 0, 'YXZ'));
+      fastTwoBone(ps, I[`thigh_${sd}`], I[`shin_${sd}`], I[`foot_${sd}`], tgt, pole, this.restLeg[sd].a, this.restLeg[sd].b, _q1);
+    }
+    // arms
+    const chestQ = ps.modelQ[I.chest];
+    const R = B.reach;
+    for (const sd of ['l', 'r'] as const) {
+      const sh = ps.modelP[I[`upperarm_${sd}`]];
+      const hx = sd === 'l' ? F.hlx : F.hrx;
+      const ex = sd === 'l' ? F.elx : F.erx;
+      const pw = sd === 'l' ? F.plw : F.prw;
+      const tgt = _v1.set(p[hx], p[hx + 1], p[hx + 2]).multiplyScalar(R).applyQuaternion(chestQ).add(sh);
+      if (p[pw] > 0) tgt.lerp(_v2.set(p[pw + 1], p[pw + 2], p[pw + 3]), Math.min(1, p[pw]));
+      const pole = _v2.set(p[ex], p[ex + 1], p[ex + 2]).normalize().applyQuaternion(chestQ).multiplyScalar(0.5 * s).add(sh);
+      let end: THREE.Quaternion | null = null;
+      if (this.lod === 1 && (sd === 'l' ? this.gripL : this.gripR)) {
+        const dx = sd === 'l' ? F.hldx : F.hrdx;
+        const tx = sd === 'l' ? F.hltx : F.hrtx;
+        const dir = _v3.set(p[dx], p[dx + 1], p[dx + 2]).normalize().applyQuaternion(chestQ);
+        const thumb = _v4.set(p[tx], p[tx + 1], p[tx + 2]).normalize().applyQuaternion(chestQ);
+        end = frameRotation(this.restL[sd], this.restT, dir, thumb, _q2);
+      }
+      fastTwoBone(ps, I[`upperarm_${sd}`], I[`forearm_${sd}`], I[`hand_${sd}`], tgt, pole, this.restL[sd], this.restL[sd], end);
+    }
+    // fingers: only when the grip changed noticeably (locals persist between frames)
+    let fingersDirty = false;
+    for (const sd of ['l', 'r'] as const) {
+      const g = sd === 'l' ? p[F.gl] : p[F.gr];
+      if (Math.abs(g - this.fingerGrip[sd]) < 0.08) continue;
+      this.fingerGrip[sd] = g;
+      fingersDirty = true;
+      const f = P.hand[sd];
+      const axis = sd === 'l' ? _v1.copy(f.T).multiplyScalar(-1) : _v1.copy(f.T);
+      ps.local[I[`fing1_${sd}`]].setFromAxisAngle(axis, g * 1.45);
+      ps.local[I[`fing2_${sd}`]].setFromAxisAngle(axis, g * 1.55);
+      ps.local[I[`thumb1_${sd}`]].setFromAxisAngle(_v2.copy(f.L), (sd === 'l' ? 1 : -1) * g * 0.5);
+      ps.local[I[`thumb2_${sd}`]].setFromAxisAngle(axis, g * 0.7);
+    }
+    // skirt panels follow the thighs (LOD1)
+    if (I.skirt_f !== undefined && this.lod === 1) {
+      const fl = this.thighFlex('l');
+      const fr = this.thighFlex('r');
+      ps.local[I.skirt_f].setFromAxisAngle(_v1.set(1, 0, 0), -Math.max(0, fl, fr) * 0.85);
+      ps.local[I.skirt_b].setFromAxisAngle(_v1.set(1, 0, 0), -Math.min(0, fl, fr) * 0.85);
+    }
+    // write the animated bones; static ones (fingers, toes, spring chains) keep their matrices
+    const bones = this.bones;
+    for (let i = 0; i < ps.n; i++) {
+      if (keep[i] && !fingersDirty) continue;
+      const b = bones[i];
+      b.quaternion.copy(ps.local[i]);
+      b.position.copy(ps.restLocal[i]).add(ps.offset[i]);
+      if (keep[i]) b.updateMatrix();
+    }
+    if (this.bowHook) this.bowHook(0, null, false);
+  }
+
+  /** bones whose locals persist in the cheap path (fingers, toes, spring chains) */
+  private keepCheap: Uint8Array = new Uint8Array(0);
+  private fingerBone: Uint8Array = new Uint8Array(0);
+  /** trunk bones FK'd in the cheap path (root → shoulders/upper arms, thighs) */
+  private trunk: number[] = [];
+  private restLeg = { l: { a: new THREE.Vector3(), b: new THREE.Vector3() }, r: { a: new THREE.Vector3(), b: new THREE.Vector3() } };
+
+  /** switch animation LOD; the full path re-initialises springs when coming back to LOD0 */
+  setLod(level: 0 | 1 | 2) {
+    if (level === this.lod) return;
+    if (level === 0) for (const sp of this.springs) sp.reset();
+    this.fingerGrip.l = this.fingerGrip.r = -1;
+    const ps = this.ps;
+    for (let i = 0; i < ps.n; i++) {
+      if (!this.keepCheap[i]) continue;
+      const b = this.bones[i];
+      b.matrixAutoUpdate = level === 0;
+      if (level > 0 && !this.fingerBone[i]) {
+        // spring chains / toes rest at identity in the cheap path
+        ps.local[i].identity();
+        ps.offset[i].set(0, 0, 0);
+        b.quaternion.identity();
+        b.position.copy(ps.restLocal[i]);
+        b.updateMatrix();
+      }
+    }
+    this.lod = level;
   }
 
   private solve(p: Pose, aimW: number, draw: number, pitch: number, look: THREE.Vector3 | null, dt: number) {

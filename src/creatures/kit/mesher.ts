@@ -23,6 +23,18 @@ export interface MeshRegion {
   res: number;
   /** overlap band (m), default 3 × the coarse cell size */
   band?: number;
+  /** multiplier on the AO reach for vertices of this region (faces: ~0.35, so features do not smear dark) */
+  aoScale?: number;
+}
+
+/** boundary refinement: split triangle edges that cross a colour/material boundary (crisp seams) */
+export interface RefineOpts {
+  /** refinement passes (each halves the blur width of a seam), default 1 */
+  levels?: number;
+  /** attribute difference that marks an edge (sqrt-colour L1 + 0.5 × surface L1), default 0.07 */
+  threshold?: number;
+  /** never split edges shorter than this (m), default 0.006 */
+  minEdge?: number;
 }
 
 export interface MeshOpts {
@@ -37,6 +49,8 @@ export interface MeshOpts {
   project?: number;
   /** restrict meshing to this box */
   clip?: { min: V3; max: V3 };
+  /** split edges across material boundaries so seams (hems, belts, hairlines, lips) stay crisp */
+  refine?: RefineOpts;
 }
 
 export interface MeshData {
@@ -110,7 +124,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
   const sb = opts.clip ? [...opts.clip.min, ...opts.clip.max] : prog.solidBounds;
 
   // level 0: coarse mesh, clipped out of every region interior; deeper regions nest naturally
-  const levels: { res: number; clipMin: V3; clipMax: V3; excl: MeshRegion[]; insetBoxes: MeshRegion[] }[] = [];
+  const levels: { res: number; clipMin: V3; clipMax: V3; excl: MeshRegion[]; insetBoxes: MeshRegion[]; aoScale?: number }[] = [];
   levels.push({ res: opts.res, clipMin: [sb[0], sb[1], sb[2]], clipMax: [sb[3], sb[4], sb[5]], excl: regions, insetBoxes: regions });
   regions.forEach((r, i) => {
     // regions nested inside this one with a finer resolution
@@ -121,6 +135,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
       clipMax: [Math.min(r.max[0], sb[3]), Math.min(r.max[1], sb[4]), Math.min(r.max[2], sb[5])],
       excl: inner,
       insetBoxes: inner,
+      aoScale: r.aoScale,
     });
   });
 
@@ -154,25 +169,25 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
     nv += p.res.pos.length / 3;
     nt += p.res.tri.length / 3;
   }
-  const position = new Float32Array(nv * 3);
-  const normal = new Float32Array(nv * 3);
-  const color = new Float32Array(nv * 3);
-  const surf = new Float32Array(nv * 4);
-  const pat0 = new Float32Array(nv * 4);
-  const pat1 = new Float32Array(nv * 4);
-  const ao = new Float32Array(nv);
-  const index = new Uint32Array(nt * 3);
+  let position = new Float32Array(nv * 3);
+  let normal = new Float32Array(nv * 3);
+  let color = new Float32Array(nv * 3);
+  let surf = new Float32Array(nv * 4);
+  let pat0 = new Float32Array(nv * 4);
+  let pat1 = new Float32Array(nv * 4);
+  let index = new Uint32Array(nt * 3);
   const K = 6;
   let wIdx = new Int32Array(nv * K).fill(-1);
   let wVal = new Float32Array(nv * K);
-  const vlist = new Int32Array(nv);
+  let vlist = new Int32Array(nv);
+  let vpass = new Uint8Array(nv);
   const attr = new Float64Array(ATTR_COUNT);
   const bw = new Float64Array(Math.max(1, nb));
   const codeArr = store.arr;
 
   let vo = 0;
   let to = 0;
-  for (const p of passes) {
+  passes.forEach((p, pi) => {
     const r = p.res;
     const n = r.pos.length / 3;
     for (let i = 0; i < n; i++) {
@@ -183,21 +198,18 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
       normal[(vo + i) * 3 + 1] = r.nrm[i * 3 + 1];
       normal[(vo + i) * 3 + 2] = r.nrm[i * 3 + 2];
       vlist[vo + i] = r.vlist[i];
+      vpass[vo + i] = pi;
     }
     for (let i = 0; i < r.tri.length; i++) index[to + i] = r.tri[i] + vo;
     vo += n;
     to += r.tri.length;
-  }
+  });
 
   // ── per-vertex attributes, normals, skin weights ─────────────────────────
-  const E = 0.0006;
-  for (let v = 0; v < nv; v++) {
+  const evalAttrs = (v: number) => {
     const x = position[v * 3], y = position[v * 3 + 1], z = position[v * 3 + 2];
     const li = vlist[v];
-    const s = listStart[li], e = listEnd[li];
-    void E;
-    // normals come from the last Newton step's SDF gradient (stored per pass)
-    ev.full(x, y, z, codeArr, s, e, attr, bw);
+    ev.full(x, y, z, codeArr, listStart[li], listEnd[li], attr, bw);
     color[v * 3] = attr[0]; color[v * 3 + 1] = attr[1]; color[v * 3 + 2] = attr[2];
     surf[v * 4] = attr[3]; surf[v * 4 + 1] = attr[4]; surf[v * 4 + 2] = attr[5]; surf[v * 4 + 3] = attr[6];
     for (let j = 0; j < 4; j++) {
@@ -205,7 +217,128 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
       pat1[v * 4 + j] = attr[11 + j];
     }
     topK(bw, nb, wIdx, wVal, v * K, K);
+  };
+  for (let v = 0; v < nv; v++) evalAttrs(v);
+
+  // ── crisp material seams: split edges that cross a colour/material boundary ──
+  const rf = opts.refine;
+  let refined = 0;
+  if (rf && (rf.levels ?? 1) > 0) {
+    const thr = rf.threshold ?? 0.07;
+    const minEdge2 = (rf.minEdge ?? 0.006) ** 2;
+    const diffAt = (a: number, b: number) => {
+      let d = 0;
+      for (let j = 0; j < 3; j++) d += Math.abs(Math.sqrt(color[a * 3 + j]) - Math.sqrt(color[b * 3 + j]));
+      let m = 0;
+      for (let j = 0; j < 4; j++) m += Math.abs(surf[a * 4 + j] - surf[b * 4 + j]);
+      for (let j = 0; j < 4; j++) m += 0.25 * (Math.abs(pat0[a * 4 + j] - pat0[b * 4 + j]) + Math.abs(pat1[a * 4 + j] - pat1[b * 4 + j]));
+      return d + 0.5 * m;
+    };
+    for (let level = 0; level < (rf.levels ?? 1); level++) {
+      const nt0 = index.length / 3;
+      const mid = new Map<number, number>();
+      const mids: number[] = []; // pairs a, b of the new vertices (in order)
+      const KEY = 4194304; // 2^22 vertices max per mesh
+      for (let t = 0; t < nt0; t++) {
+        for (let e = 0; e < 3; e++) {
+          const a = index[t * 3 + e], b = index[t * 3 + ((e + 1) % 3)];
+          const key = a < b ? a * KEY + b : b * KEY + a;
+          if (mid.has(key)) continue;
+          let split = -1;
+          const dx = position[a * 3] - position[b * 3], dy = position[a * 3 + 1] - position[b * 3 + 1], dz = position[a * 3 + 2] - position[b * 3 + 2];
+          if (dx * dx + dy * dy + dz * dz > minEdge2 && vpass[a] === vpass[b] && diffAt(a, b) > thr) {
+            split = nv + mids.length / 2;
+            mids.push(a, b);
+          }
+          mid.set(key, split);
+        }
+      }
+      const add = mids.length / 2;
+      if (add === 0) break;
+      const nv2 = nv + add;
+      const grow = <T extends Float32Array | Int32Array | Uint8Array>(arr: T, per: number, fill?: number): T => {
+        const out = new (arr.constructor as { new (n: number): T })(nv2 * per);
+        out.set(arr);
+        if (fill !== undefined) out.fill(fill as never, nv * per);
+        return out;
+      };
+      position = grow(position, 3);
+      normal = grow(normal, 3);
+      color = grow(color, 3);
+      surf = grow(surf, 4);
+      pat0 = grow(pat0, 4);
+      pat1 = grow(pat1, 4);
+      wIdx = grow(wIdx, K, -1);
+      wVal = grow(wVal, K);
+      vlist = grow(vlist, 1);
+      vpass = grow(vpass, 1);
+      for (let q = 0; q < add; q++) {
+        const a = mids[q * 2], b = mids[q * 2 + 1];
+        const v = nv + q;
+        let px = (position[a * 3] + position[b * 3]) / 2;
+        let py = (position[a * 3 + 1] + position[b * 3 + 1]) / 2;
+        let pz = (position[a * 3 + 2] + position[b * 3 + 2]) / 2;
+        const el = Math.hypot(position[a * 3] - position[b * 3], position[a * 3 + 1] - position[b * 3 + 1], position[a * 3 + 2] - position[b * 3 + 2]);
+        const li = vlist[a];
+        const s0 = listStart[li], e0 = listEnd[li];
+        const inset = passes[vpass[a]].insetOf;
+        // Newton projection onto the (inset) surface along the SDF gradient
+        let gx = normal[a * 3] + normal[b * 3], gy = normal[a * 3 + 1] + normal[b * 3 + 1], gz = normal[a * 3 + 2] + normal[b * 3 + 2];
+        for (let it = 0; it < 3; it++) {
+          const E = Math.max(1e-4, el * 0.15);
+          const f = (x: number, y: number, z: number) => ev.dist(x, y, z, codeArr, s0, e0) + inset(x, y, z);
+          const d1 = f(px + E, py - E, pz - E), d2 = f(px - E, py - E, pz + E), d3 = f(px - E, py + E, pz - E), d4 = f(px + E, py + E, pz + E);
+          const d0 = (d1 + d2 + d3 + d4) * 0.25;
+          let hx = d1 - d2 - d3 + d4, hy = -d1 - d2 + d3 + d4, hz = -d1 + d2 - d3 + d4;
+          const g2 = hx * hx + hy * hy + hz * hz;
+          if (g2 < 1e-16) break;
+          const sc = 1 / Math.sqrt(g2);
+          hx *= sc; hy *= sc; hz *= sc;
+          gx = hx; gy = hy; gz = hz;
+          const st = Math.max(-el * 0.5, Math.min(el * 0.5, d0));
+          px -= hx * st; py -= hy * st; pz -= hz * st;
+        }
+        const gl = Math.hypot(gx, gy, gz) || 1;
+        position[v * 3] = px; position[v * 3 + 1] = py; position[v * 3 + 2] = pz;
+        normal[v * 3] = gx / gl; normal[v * 3 + 1] = gy / gl; normal[v * 3 + 2] = gz / gl;
+        vlist[v] = li;
+        vpass[v] = vpass[a];
+        evalAttrs(v);
+      }
+      // conforming split of every triangle touching a split edge
+      const out: number[] = [];
+      for (let t = 0; t < nt0; t++) {
+        const a = index[t * 3], b = index[t * 3 + 1], c = index[t * 3 + 2];
+        const kAB = a < b ? a * KEY + b : b * KEY + a;
+        const kBC = b < c ? b * KEY + c : c * KEY + b;
+        const kCA = c < a ? c * KEY + a : a * KEY + c;
+        const mab = mid.get(kAB)!, mbc = mid.get(kBC)!, mca = mid.get(kCA)!;
+        const n = (mab >= 0 ? 1 : 0) + (mbc >= 0 ? 1 : 0) + (mca >= 0 ? 1 : 0);
+        if (n === 0) out.push(a, b, c);
+        else if (n === 3) out.push(a, mab, mca, b, mbc, mab, c, mca, mbc, mab, mbc, mca);
+        else if (n === 1) {
+          if (mab >= 0) out.push(a, mab, c, mab, b, c);
+          else if (mbc >= 0) out.push(b, mbc, a, mbc, c, a);
+          else out.push(c, mca, b, mca, a, b);
+        } else {
+          // two split edges: rotate so they are (x→y) and (y→z) around the shared corner y
+          let x = a, y = b, z = c, m1 = mab, m2 = mbc;
+          if (mab < 0) { x = b; y = c; z = a; m1 = mbc; m2 = mca; }
+          else if (mbc < 0) { x = c; y = a; z = b; m1 = mca; m2 = mab; }
+          out.push(m1, y, m2);
+          // quad x, m1, m2, z: split along the shorter diagonal
+          const d1 = (position[x * 3] - position[m2 * 3]) ** 2 + (position[x * 3 + 1] - position[m2 * 3 + 1]) ** 2 + (position[x * 3 + 2] - position[m2 * 3 + 2]) ** 2;
+          const d2 = (position[m1 * 3] - position[z * 3]) ** 2 + (position[m1 * 3 + 1] - position[z * 3 + 1]) ** 2 + (position[m1 * 3 + 2] - position[z * 3 + 2]) ** 2;
+          if (d1 <= d2) out.push(x, m1, m2, x, m2, z);
+          else out.push(x, m1, z, m1, m2, z);
+        }
+      }
+      index = Uint32Array.from(out);
+      refined += add;
+      nv = nv2;
+    }
   }
+  const ao = new Float32Array(nv);
 
   const tAttr = performance.now();
   // ── ambient occlusion from the SDF ───────────────────────────────────────
@@ -216,7 +349,9 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
     const wide = new Map<number, [number, number]>();
     const wideData: number[] = [];
     const wl: number[] = [];
-    const reach = aoDist * 1.2;
+    // per-pass AO reach (detail regions such as faces use a shorter reach: no dark smears)
+    const passAo = levels.map((L) => aoDist * (L.aoScale ?? 1));
+    const reach = Math.max(...passAo) * 1.2;
     for (let v = 0; v < nv; v++) {
       const key = vlist[v];
       if (wide.has(key)) continue;
@@ -233,13 +368,14 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
       const [s, e] = wide.get(vlist[v])!;
       let occ = 0;
       let sca = 1;
+      const ad = passAo[vpass[v]];
       for (let i = 1; i <= 2; i++) {
-        const hh = aoDist * (i === 1 ? 0.35 : 1);
+        const hh = ad * (i === 1 ? 0.35 : 1);
         const d = ev.dist(x + nx * hh, y + ny * hh, z + nz * hh, wideArr, s, e);
         occ += Math.max(0, hh - d) * sca;
         sca *= 0.6;
       }
-      ao[v] = Math.max(0.45, Math.min(1, 1 - (aoStr * 1.25 * occ) / aoDist));
+      ao[v] = Math.max(0.45, Math.min(1, 1 - (aoStr * 1.25 * occ) / ad));
     }
   } else ao.fill(1);
 
@@ -314,7 +450,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
   }
 
   const tEnd = performance.now();
-  if ((globalThis as { __kitProfile?: boolean }).__kitProfile) console.log(`[kit] mesh passes ${(tPass - t0).toFixed(1)} attr ${(tAttr - tPass).toFixed(1)} ao ${(tAO - tAttr).toFixed(1)} weights ${(tEnd - tAO).toFixed(1)} ms`);
+  if ((globalThis as { __kitProfile?: boolean }).__kitProfile) console.log(`[kit] mesh passes ${(tPass - t0).toFixed(1)} attr+refine(${refined}v) ${(tAttr - tPass).toFixed(1)} ao ${(tAO - tAttr).toFixed(1)} weights ${(tEnd - tAO).toFixed(1)} ms`);
   return {
     position,
     normal,
@@ -327,7 +463,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
     skinWeight,
     index,
     vertexCount: nv,
-    triCount: nt,
+    triCount: index.length / 3,
     passTris: passes.map((p) => p.res.tri.length / 3),
     ms: performance.now() - t0,
   };

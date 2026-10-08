@@ -4,7 +4,10 @@
  */
 import * as THREE from 'three';
 import type { AnimInput, HumanoidKind, LabInstance, LabSubject, SpecialPose, WeaponKind } from '../core/types';
-import { createHumanoid, type HumanoidExt } from './humanoid';
+import { createHumanoid, preloadHumanoids, type HumanoidExt } from './humanoid';
+import { clearHumanoidCache } from './humanoid/build';
+import { clearKitCache, kitCacheStats } from './kit/cache';
+import { meshWorkerCount } from './kit/workers';
 import { ALL_KINDS, resolveKind } from './humanoid/registry';
 
 export const LEGOLAS_ANIMS = [
@@ -127,8 +130,13 @@ function humanoidSubject(name: string, kind: HumanoidKind, category: LabSubject[
   return {
     name,
     category,
-    create(): LabInstance {
+    async create(): Promise<LabInstance> {
+      // LOD0 + LOD1 meshing run in parallel in the kit worker pool
+      await preloadHumanoids([kind], { seeds: [seed] });
       const h = createHumanoid({ kind, seed });
+      // &lod=1|2 previews the reduced geometry + cheap animation path
+      const lodQ = Number(new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('lod') ?? 0);
+      if (lodQ === 1 || lodQ === 2) h.setLod(lodQ);
       const def = resolveKind(kind);
       const defaults = { r: (def.weapons.right ?? 'none') as WeaponKind, l: (def.weapons.left ?? 'none') as WeaponKind };
       const holder = new THREE.Group();
@@ -158,11 +166,12 @@ export const subjects: LabSubject[] = [
   {
     name: 'humanoid_lineup',
     category: 'hero',
-    create(): LabInstance {
+    async create(): Promise<LabInstance> {
       const g = new THREE.Group();
       const hs: { h: HumanoidExt; d: { r: WeaponKind; l: WeaponKind } }[] = [];
       let x = 0;
       const t0 = performance.now();
+      await preloadHumanoids(ALL_KINDS);
       ALL_KINDS.forEach((k) => {
         const h = createHumanoid({ kind: k });
         const def = resolveKind(k);
@@ -187,3 +196,71 @@ export const subjects: LabSubject[] = [
     },
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Benchmarks (browser): node scripts/snap.mjs "/lab/?subject=humanoid_orc&view=single" --eval "__kitBench.build()"
+// ─────────────────────────────────────────────────────────────────────────────
+
+const BENCH_KINDS: HumanoidKind[] = ['legolas', 'orc', 'uruk', 'gimli', 'troll', 'goblin'];
+
+async function benchBuild(kinds: HumanoidKind[] = BENCH_KINDS) {
+  const res: Record<string, unknown> = { workers: meshWorkerCount(), kinds };
+  // sequential synchronous builds (cold caches)
+  clearHumanoidCache();
+  clearKitCache();
+  let t0 = performance.now();
+  for (const k of kinds) createHumanoid({ kind: k }).assets.ensureLods?.();
+  res.syncMs = Math.round(performance.now() - t0);
+  // parallel preload through the worker pool (cold caches)
+  clearHumanoidCache();
+  clearKitCache();
+  t0 = performance.now();
+  await preloadHumanoids(kinds);
+  res.preloadMs = Math.round(performance.now() - t0);
+  t0 = performance.now();
+  for (const k of kinds) createHumanoid({ kind: k });
+  res.createAfterPreloadMs = Math.round(performance.now() - t0);
+  res.cache = kitCacheStats();
+  return JSON.stringify(res);
+}
+
+function benchAnim(n = 40, steps = 300, kind: HumanoidKind = 'orc') {
+  const scene = new THREE.Scene();
+  const hs: HumanoidExt[] = [];
+  for (let i = 0; i < n; i++) {
+    const h = createHumanoid({ kind, seed: i });
+    h.assets.ensureLods?.();
+    h.root.position.set((i % 8) * 2, 0, Math.floor(i / 8) * 2);
+    scene.add(h.root);
+    hs.push(h);
+  }
+  const inputs: AnimInput[] = hs.map(() => ({ speed: 0, grounded: true, moveDir: { x: 0, z: 1 }, attack: null, lookAt: new THREE.Vector3(0, 1.6, 0) }));
+  const out: Record<string, number> = {};
+  let t = 0;
+  const dt = 1 / 60;
+  const step = (withMatrices: boolean) => {
+    t += dt;
+    for (let i = 0; i < hs.length; i++) {
+      const inp = inputs[i];
+      const c = (t + i * 0.37) % 6;
+      inp.speed = c < 2 ? 0 : c < 4 ? 3.5 : 5.5;
+      inp.attack = c > 5 ? { kind: 'slash', t: c - 5 } : null;
+      hs[i].animate(dt, inp);
+    }
+    if (withMatrices) scene.updateMatrixWorld();
+  };
+  for (const lod of [0, 1, 2] as const) {
+    for (const h of hs) h.setLod(lod);
+    for (let i = 0; i < 60; i++) step(true);
+    let t0 = performance.now();
+    for (let i = 0; i < steps; i++) step(false);
+    out[`lod${lod}_animate`] = +((performance.now() - t0) / steps).toFixed(3);
+    t0 = performance.now();
+    for (let i = 0; i < steps; i++) step(true);
+    out[`lod${lod}_animate+matrices`] = +((performance.now() - t0) / steps).toFixed(3);
+  }
+  hs.forEach((h) => h.dispose());
+  return JSON.stringify({ n, kind, msPerStep: out });
+}
+
+if (typeof window !== 'undefined') (window as unknown as { __kitBench: unknown }).__kitBench = { build: benchBuild, anim: benchAnim };

@@ -386,11 +386,57 @@ export class Sculpt {
   }
 }
 
+/** plain, structured-cloneable form of an SdfProgram (worker transfer) */
+export interface SdfProgramData {
+  n: number;
+  PF: Float64Array;
+  PA: Float32Array;
+  PB: Float64Array;
+  bounds: Float64Array;
+  code: Int32Array;
+  groupOp: Int32Array;
+  groupK: Float64Array;
+  groupSkinK: Float64Array;
+  groupBounds: Float64Array;
+  groupEnd: Int32Array;
+  maxNoise: number;
+  boneCount: number;
+  hasPaint: boolean;
+  solidBounds: [number, number, number, number, number, number];
+}
+
 /**
  * Compiled SDF. Primitive parameters live in typed arrays; groups are encoded as
  * instructions (>=0 prim index, -1 BEGIN, -(2+g) END of group g).
  */
 export class SdfProgram {
+  /** plain data copy for postMessage (the mesher runs in a worker pool) */
+  toData(): SdfProgramData {
+    return {
+      n: this.n,
+      PF: this.PF,
+      PA: this.PA,
+      PB: this.PB,
+      bounds: this.bounds,
+      code: this.code,
+      groupOp: this.groupOp,
+      groupK: this.groupK,
+      groupSkinK: this.groupSkinK,
+      groupBounds: this.groupBounds,
+      groupEnd: this.groupEnd,
+      maxNoise: this.maxNoise,
+      boneCount: this.boneCount,
+      hasPaint: this.hasPaint,
+      solidBounds: this.solidBounds,
+    };
+  }
+  /** rebuild a program from `toData()` output (inside a worker) */
+  static fromData(d: SdfProgramData): SdfProgram {
+    const p = Object.create(SdfProgram.prototype) as SdfProgram;
+    Object.assign(p, d);
+    return p;
+  }
+
   readonly n: number;
   readonly PF: Float64Array; // geometry & op params
   readonly PA: Float32Array; // attributes

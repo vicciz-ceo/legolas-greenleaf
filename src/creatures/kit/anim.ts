@@ -44,6 +44,8 @@ export class PoseSolver {
   readonly modelP: THREE.Vector3[];
   readonly names: string[];
   private idx = new Map<string, number>();
+  /** descendants of each bone in topological order (fkFrom without a full scan) */
+  private desc: Int32Array[];
 
   constructor(rig: RigDef) {
     const n = rig.count;
@@ -69,6 +71,15 @@ export class PoseSolver {
       this.modelP.push(h.clone());
       this.idx.set(d.name, i);
     }
+    const kids: number[][] = Array.from({ length: n }, () => []);
+    for (let j = 1; j < n; j++) {
+      let p = this.parent[j];
+      while (p >= 0) {
+        kids[p].push(j);
+        p = this.parent[p];
+      }
+    }
+    this.desc = kids.map((k) => Int32Array.from(k));
   }
   i(name: string): number {
     const v = this.idx.get(name);
@@ -115,11 +126,8 @@ export class PoseSolver {
   /** recompute FK for a bone and all its descendants */
   fkFrom(i: number) {
     this.fkBone(i);
-    for (let j = i + 1; j < this.n; j++) {
-      let p = this.parent[j];
-      while (p > i) p = this.parent[p];
-      if (p === i) this.fkBone(j);
-    }
+    const d = this.desc[i];
+    for (let k = 0; k < d.length; k++) this.fkBone(d[k]);
   }
   /** set a bone's MODEL rotation (parents must be up to date) */
   setModelRotation(i: number, q: THREE.Quaternion) {
@@ -132,14 +140,24 @@ export class PoseSolver {
   pointOn(i: number, dx: number, dy: number, dz: number, out: THREE.Vector3): THREE.Vector3 {
     return out.set(dx, dy, dz).applyQuaternion(this.modelQ[i]).add(this.modelP[i]);
   }
-  /** write the pose to three.js bones (same order as the rig) */
-  apply(bones: THREE.Bone[]) {
-    for (let i = 0; i < this.n; i++) {
+  /** write the pose to three.js bones (same order as the rig). See `fastBones` for speed. */
+  apply(bones: THREE.Bone[], from = 0) {
+    for (let i = from; i < this.n; i++) {
       const b = bones[i];
       b.quaternion.copy(this.local[i]);
       b.position.copy(this.restLocal[i]).add(this.offset[i]);
     }
   }
+}
+
+const NOOP = () => {};
+/**
+ * Detach the Euler sync of procedurally animated bones: three.js recomputes `bone.rotation` from
+ * the quaternion on every write (an expensive matrix → Euler conversion). Animated rigs only use
+ * quaternions, so after this `bone.rotation` is NOT kept in sync (read `bone.quaternion`).
+ */
+export function fastBones(bones: THREE.Bone[]) {
+  for (const b of bones) b.quaternion._onChange(NOOP);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -289,6 +307,41 @@ export function solveTwoBone(ps: PoseSolver, a: number, b: number, c: number, ta
   }
 }
 
+const _fq1 = new THREE.Quaternion();
+/**
+ * Cheap two-bone solve for distant LODs: same elbow/knee placement as `solveTwoBone`, but each
+ * bone gets the minimal (swing-only) rotation from its rest direction — no frame/basis build, no
+ * stretch, no descendant FK. Only the bones a, b and c are updated (local + model). `endRotation`
+ * (model) orients the end bone; null leaves it following the lower bone.
+ */
+export function fastTwoBone(ps: PoseSolver, a: number, b: number, c: number, target: THREE.Vector3, pole: THREE.Vector3, restDirA: THREE.Vector3, restDirB: THREE.Vector3, endRotation: THREE.Quaternion | null) {
+  const A = ps.modelP[a];
+  const l1 = ps.restLocal[b].length();
+  const l2 = ps.restLocal[c].length();
+  _D.subVectors(target, A);
+  let dist = _D.length();
+  if (dist < 1e-6) return;
+  _D.multiplyScalar(1 / dist);
+  dist = Math.min(Math.max(dist, Math.abs(l1 - l2) + 1e-4), (l1 + l2) * 0.9995);
+  _P.subVectors(pole, A);
+  _P.addScaledVector(_D, -_P.dot(_D));
+  const pl = _P.length();
+  if (pl < 1e-6) return;
+  _P.multiplyScalar(1 / pl);
+  const cosA = Math.min(1, Math.max(-1, (l1 * l1 + dist * dist - l2 * l2) / (2 * l1 * dist)));
+  const sinA = Math.sqrt(1 - cosA * cosA);
+  _dirA.copy(_D).multiplyScalar(cosA).addScaledVector(_P, sinA); // unit
+  _E.copy(A).addScaledVector(_dirA, l1);
+  _dirB.copy(A).addScaledVector(_D, dist).sub(_E).normalize();
+  _fq1.setFromUnitVectors(restDirA, _dirA);
+  ps.setModelRotation(a, _fq1);
+  ps.fkBone(b);
+  _fq1.setFromUnitVectors(restDirB, _dirB);
+  ps.setModelRotation(b, _fq1);
+  ps.fkBone(c);
+  if (endRotation) ps.setModelRotation(c, endRotation);
+}
+
 /**
  * Look-at over a chain (e.g. [spine, chest, neck, head]) with weights (summing to ~1).
  * forward = rest facing of the last bone (model, usually +Z). Angles are clamped.
@@ -366,6 +419,8 @@ export class SpringChain {
   private prev: THREE.Vector3[] = [];
   private init = false;
   private acc = 0;
+  private lens: number[];
+  private colOff: THREE.Vector3[];
   readonly opts: Required<Omit<SpringOpts, 'colliders'>> & { colliders: SpringCollider[] };
 
   constructor(ps: PoseSolver, bones: number[], lastTail: V3, o: SpringOpts = {}) {
@@ -378,6 +433,8 @@ export class SpringChain {
       this.prev.push(new THREE.Vector3());
     }
     this.opts = { stiffness: o.stiffness ?? 0.08, drag: o.drag ?? 0.12, gravity: o.gravity ?? 6, colliders: o.colliders ?? [] };
+    this.lens = this.tails.map((t) => t.length());
+    this.colOff = this.opts.colliders.map((c) => new THREE.Vector3(c.offset[0], c.offset[1], c.offset[2]));
   }
   reset() {
     this.init = false;
@@ -414,8 +471,10 @@ export class SpringChain {
         c.y += vy + (target.y - c.y) * this.opts.stiffness + down.y * this.opts.gravity * step * step;
         c.z += vz + (target.z - c.z) * this.opts.stiffness + down.z * this.opts.gravity * step * step;
         // colliders (world)
-        for (const col of this.opts.colliders) {
-          const cp = _vc.set(...col.offset).applyQuaternion(ps.modelQ[col.bone]).add(ps.modelP[col.bone]).applyMatrix4(rootMatrix);
+        const cols = this.opts.colliders;
+        for (let ci = 0; ci < cols.length; ci++) {
+          const col = cols[ci];
+          const cp = _vc.copy(this.colOff[ci]).applyQuaternion(ps.modelQ[col.bone]).add(ps.modelP[col.bone]).applyMatrix4(rootMatrix);
           const dx = c.x - cp.x, dy = c.y - cp.y, dz = c.z - cp.z;
           const d = Math.hypot(dx, dy, dz);
           if (d < col.radius && d > 1e-6) {
@@ -424,7 +483,7 @@ export class SpringChain {
           }
         }
         // keep length
-        const len = this.tails[k].length();
+        const len = this.lens[k];
         const hx = c.x - head.x, hy = c.y - head.y, hz = c.z - head.z;
         const hl = Math.hypot(hx, hy, hz) || 1;
         c.set(head.x + (hx / hl) * len, head.y + (hy / hl) * len, head.z + (hz / hl) * len);
