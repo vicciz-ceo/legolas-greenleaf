@@ -1,0 +1,46 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8c4d2e13-749f-4ef4-b691-f86c77cec289.png",
+    "original_sha256": "aba410c55b6d44ce55c2fa58b93abb50d27a936bda478acf36bd2a5859c99579",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "ca8ca87e3b9ba89bcc301b5b2df7c0a41aa118215e0c973bb30624ebe0f2153b",
+    "recovery_classification": "newly_authored_recovery",
+    "historic_original_bytes_available": false,
+    "generator": "image_gen.imagegen",
+    "generation_attempt": 1,
+    "generation_reference_paths": [],
+    "generation_background": "transparent",
+    "segmentation_method": "existing_alpha",
+    "original_bbox_px": [
+      18,
+      11,
+      1004,
+      1506
+    ],
+    "retained_size_px": [
+      298,
+      448
+    ],
+    "by_eye_review": "accepted: original front design, anatomy, gear sides, full framing, retained alpha edges and 64px silhouette reviewed"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-f9841b66-eb16-4d32-8851-ec21dc46696a.png",
+    "original_sha256": "f6031955692eb4e762a82b4f608c3aa0a90c334b2b003b84641905a3ccc23550",
+    "original_size_px": [
+      1023,
+      1537
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "57fcdd736a77dfeef60740ff5106b3d6180b42fce15df608f7e69c0c9749537b"
+  }
+}

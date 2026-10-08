@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "branch": "reference/character-sheets",
   "pr": "https://github.com/vicciz-ceo/legolas-greenleaf/pull/1",
   "entries": {
@@ -8,7 +8,7 @@
       "design_extent_m": 1.85,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -23,11 +23,16 @@
               "path": "/workspace/generated_images/exec-f671b85e-6474-4ec8-9a75-63da7a88e804.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-f671b85e-6474-4ec8-9a75-63da7a88e804.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-f671b85e-6474-4ec8-9a75-63da7a88e804.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -36,11 +41,16 @@
               "path": "/workspace/generated_images/exec-5252bb88-e3f7-4104-958a-b8e1539d9fcd.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-5252bb88-e3f7-4104-958a-b8e1539d9fcd.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-5252bb88-e3f7-4104-958a-b8e1539d9fcd.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -49,11 +59,16 @@
               "path": "/workspace/generated_images/exec-e4346686-7e4d-4742-9540-0123d29b8477.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-e4346686-7e4d-4742-9540-0123d29b8477.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-e4346686-7e4d-4742-9540-0123d29b8477.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -62,11 +77,16 @@
               "path": "/workspace/generated_images/exec-fba1651b-a5fe-4f26-9ffb-ef83a7983f22.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-fba1651b-a5fe-4f26-9ffb-ef83a7983f22.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-fba1651b-a5fe-4f26-9ffb-ef83a7983f22.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -75,11 +95,16 @@
               "path": "/workspace/generated_images/exec-a65a24d5-35df-4f75-8de8-65c5ed7a0f60.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-a65a24d5-35df-4f75-8de8-65c5ed7a0f60.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-a65a24d5-35df-4f75-8de8-65c5ed7a0f60.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -88,11 +113,16 @@
               "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -101,11 +131,16 @@
               "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -114,11 +149,16 @@
               "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -127,11 +167,16 @@
               "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -140,11 +185,16 @@
               "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -153,43 +203,48 @@
               "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       },
       "historical_multipanel_attempts": {
@@ -208,7 +263,7 @@
       "design_extent_m": 1.37,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -223,11 +278,16 @@
               "path": "/workspace/generated_images/exec-52269527-8d2d-47d4-a859-13ee47198851.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-52269527-8d2d-47d4-a859-13ee47198851.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-52269527-8d2d-47d4-a859-13ee47198851.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -236,11 +296,16 @@
               "path": "/workspace/generated_images/exec-e0b52e4f-07b2-4304-bdb0-dacffe4c2f25.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-e0b52e4f-07b2-4304-bdb0-dacffe4c2f25.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-e0b52e4f-07b2-4304-bdb0-dacffe4c2f25.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -249,11 +314,16 @@
               "path": "/workspace/generated_images/exec-33e094c7-78aa-40b8-8710-f3aaef482616.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-33e094c7-78aa-40b8-8710-f3aaef482616.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-33e094c7-78aa-40b8-8710-f3aaef482616.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -268,78 +338,118 @@
               "path": "/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       },
       "historical_multipanel_attempts": {
@@ -356,7 +466,7 @@
       "design_extent_m": 1.88,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -371,11 +481,16 @@
               "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -384,11 +499,16 @@
               "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -397,11 +517,16 @@
               "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -410,78 +535,118 @@
               "path": "/workspace/generated_images/exec-16130d87-e797-44fd-9bd1-33ed4739c747.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-16130d87-e797-44fd-9bd1-33ed4739c747.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-16130d87-e797-44fd-9bd1-33ed4739c747.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       }
     },
@@ -490,7 +655,7 @@
       "design_extent_m": 1.78,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -505,11 +670,16 @@
               "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -518,11 +688,16 @@
               "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -531,11 +706,16 @@
               "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -544,78 +724,118 @@
               "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       }
     },
@@ -624,7 +844,7 @@
       "design_extent_m": 2.6,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -639,11 +859,16 @@
               "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -652,11 +877,16 @@
               "path": "/workspace/generated_images/exec-e91f97d2-aa52-48c5-8b26-45ecddd77f01.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-e91f97d2-aa52-48c5-8b26-45ecddd77f01.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-e91f97d2-aa52-48c5-8b26-45ecddd77f01.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -665,11 +895,16 @@
               "path": "/workspace/generated_images/exec-7b26b518-fe92-4647-aa03-18492a96e9c9.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-7b26b518-fe92-4647-aa03-18492a96e9c9.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-7b26b518-fe92-4647-aa03-18492a96e9c9.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -678,78 +913,118 @@
               "path": "/workspace/generated_images/exec-ddcdc838-f236-4947-a562-f42e8e7f16b3.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-ddcdc838-f236-4947-a562-f42e8e7f16b3.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-ddcdc838-f236-4947-a562-f42e8e7f16b3.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       }
     },
@@ -758,7 +1033,7 @@
       "design_extent_m": 4.5,
       "deliverables": {
         "views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -785,93 +1060,148 @@
               "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png"
             }
           ],
-          "reason": "Recorded completed; original file unavailable. Visual acceptance cannot be repeated.",
-          "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/back": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/front": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/three_quarter": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "face_views/side": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/cloth_leather": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/weapon_metal": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/skin": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "details/hair": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "turnaround": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "spec": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "notes": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "check": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "face": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "details": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         },
         "observed": {
-          "status": "blocked",
+          "status": "pending",
           "attempts": [],
-          "reason": "Requires missing accepted source views or original Legolas sheet files."
+          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
         }
       }
     },
@@ -4765,11 +5095,23 @@
               "path": "/workspace/generated_images/exec-baadf223-7adf-43cb-bb23-95f3dd47c812.png"
             }
           ],
-          "reason": "Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text.",
-          "path": "/workspace/generated_images/exec-baadf223-7adf-43cb-bb23-95f3dd47c812.png"
+          "reason": "Newly authored recovery front: original tattooed wide face, short dark beard braids, correct own-right axe/belt axes, complete framing, natural hands, retained alpha and 64px silhouette reviewed; no defects.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/views/front.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Newly authored recovery front: original tattooed wide face, short dark beard braids, correct own-right axe/belt axes, complete framing, natural hands, retained alpha and 64px silhouette reviewed; no defects.",
+                "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/views/front.png"
+              }
+            ]
+          }
         },
         "views/three_quarter": {
-          "status": "accepted",
+          "status": "pending",
           "attempts": [
             {
               "number": 1,
@@ -4778,8 +5120,13 @@
               "path": "/workspace/generated_images/exec-1e3255e6-7dc6-4009-bd8d-00337f8ed77b.png"
             }
           ],
-          "reason": "Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text.",
-          "path": "/workspace/generated_images/exec-1e3255e6-7dc6-4009-bd8d-00337f8ed77b.png"
+          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "path": "/workspace/generated_images/exec-1e3255e6-7dc6-4009-bd8d-00337f8ed77b.png",
+          "recovery": {
+            "kind": "newly_authored_replacement",
+            "max_attempts": 4,
+            "attempts": []
+          }
         },
         "views/side": {
           "status": "pending",
@@ -5362,6 +5709,26 @@
     }
   },
   "blockers": {
-    "missing_old_images": "Old full-resolution PNGs and accepted Legolas sheets are absent from this workspace and GitHub. Retain historical attempts; do not overwrite accepted designs."
-  }
+    "missing_old_images": "Historical originals were not found in the bounded search. Newly authored replacements are authorised in a separate four-attempt recovery series; historical design and attempt records are preserved."
+  },
+  "recovery_series": {
+    "kind": "newly_authored_replacement",
+    "max_attempts_per_view": 4,
+    "historical_attempts_preserved": true,
+    "ids": [
+      "legolas",
+      "gimli",
+      "aragorn",
+      "tauriel",
+      "bolg",
+      "cave_troll",
+      "dwarf_bald"
+    ],
+    "reason": "One bounded accessible-workspace, archives, saved-manifest and Git-history search found no original image bytes."
+  },
+  "validation_summary": [
+    "22 regression tests pass, including original concurrency/cap tests and two recovery-history tests.",
+    "25 existing entries pass construction checks; ten full sets and dwarf comparison still require completion.",
+    "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
+  ]
 }

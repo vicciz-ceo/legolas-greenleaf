@@ -53,13 +53,36 @@ def _record(cid,key,status,reason='',path=None,attempt=False):
  if path:item['path']=path
  save(data)
 
+def record_recovery(cid,key,status,reason='',path=None,attempt=False):
+ """Track newly authored replacements without changing historical attempts."""
+ lockpath=Path(tempfile.gettempdir())/('greenleaf-progress-'+hashlib.sha256(str(STATE).encode()).hexdigest()[:16]+'.lock')
+ with lockpath.open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX)
+  data=json.loads(STATE.read_text());item=data['entries'][cid]['deliverables'][key]
+  series=item.setdefault('recovery',{'kind':'newly_authored_replacement','max_attempts':4,'attempts':[]})
+  if attempt:
+   if len(series['attempts'])>=series['max_attempts']:raise ValueError('Four-attempt recovery cap reached')
+   series['attempts'].append({'number':len(series['attempts'])+1,'status':status,'reason':reason,'path':path})
+  elif status in ('accepted','rejected') and series['attempts'] and series['attempts'][-1]['status']=='pending':
+   last=series['attempts'][-1]
+   if path is None or last.get('path')==path:last.update(status=status,reason=reason)
+  item.update(status=status,reason=reason)
+  if path:item['path']=path
+  data['version']=2
+  save(data)
+
+def attempt_summary(item):
+ historical=str(len(item['attempts']))
+ recovery=item.get('recovery')
+ return historical if not recovery else historical+' historical + '+str(len(recovery['attempts']))+' recovery'
+
 def render():
  data=json.loads(STATE.read_text());lines=['# Full character-library checklist','', 'Statuses are evidence-based. Accepted design notes do not certify a completed visual reference. Historical accepted files that are missing here are blocked for delivery, not rejected.','']
  for cid,e in data['entries'].items():
   lines+=['## '+cid,'']
   if e.get('historical_multipanel_attempts'):lines += ['Legacy sheet-call history (separate from individual-view calls): '+json.dumps(e['historical_multipanel_attempts']['counts'])+'. See recovery/first-pass-QUALITY_REPORT.md.','']
   lines+=['| Deliverable | Status | Attempts | Evidence / next action |','| --- | --- | --- | --- |']
-  for k,d in e['deliverables'].items():lines.append(f"| {k} | {d['status']} | {len(d['attempts'])} | {d.get('reason','')} |")
+  for k,d in e['deliverables'].items():lines.append(f"| {k} | {d['status']} | {attempt_summary(d)} | {d.get('reason','')} |")
   lines.append('')
  (ROOT/'CHECKLIST.md').write_text('\n'.join(lines).rstrip()+'\n')
 
@@ -71,7 +94,7 @@ def index_and_report(data):
   target=history/('first-pass-'+name+'.md')
   if not target.exists():target.write_text((ROOT/(name+'.md')).read_text())
  lines=['# Greenleaf character reference library','', 'Development references only; the game imports none of these images. All source meshes, textures and sound remain procedural.','', 'Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). The original briefs are retained in [recovery/original-brief.txt](recovery/original-brief.txt). [CHECKLIST.md](CHECKLIST.md) and [progress.json](progress.json) track every required deliverable and its attempt history.','', '| Character / group | Design height or span | Thumbnail | Spec | Notes | Delivery status |','| --- | --- | --- | --- | --- | --- |']
- quality=['# Reference quality report','', 'Current resumed pass. Prior failed multi-view generations are preserved in [recovery/first-pass-QUALITY_REPORT.md](recovery/first-pass-QUALITY_REPORT.md); they are not accepted sources. Revised-view attempts retain their counts across sessions.','', 'Visual review checks identity, anatomy, angle, gear sides, text and silhouette. Automated checks reconstruct the exact pre-JPEG canvas, use tolerance 3 for decoded JPEG background, and verify sources, schema, geometry and storage budgets. Neither normalizing a cutout nor a generated number measures recovered 3D anatomy. Samples are rendered and lit, not albedo.','', '## Missing original files','',data['blockers'].get('missing_old_images','None'),'', 'Gimli loose-back-hair correction and the opaque-kilt troll framing correction both completed in the failed chat, but their files are absent here and lack a subsequent recorded review. See [RECOVERY_STATUS.md](RECOVERY_STATUS.md).','', '## Per-deliverable outcomes','', '| Character | Deliverable | Current status | Attempts | Specific evidence or defect |','| --- | --- | --- | --- | --- |']
+ quality=['# Reference quality report','', 'Current resumed pass. Prior failed multi-view generations are preserved in [recovery/first-pass-QUALITY_REPORT.md](recovery/first-pass-QUALITY_REPORT.md); they are not accepted sources. Revised-view attempts retain their counts across sessions.','', 'Visual review checks identity, anatomy, angle, gear sides, text and silhouette. Automated checks reconstruct the exact pre-JPEG canvas, use tolerance 3 for decoded JPEG background, and verify sources, schema, geometry and storage budgets. Neither normalizing a cutout nor a generated number measures recovered 3D anatomy. Samples are rendered and lit, not albedo.','', '## Missing original files','',data['blockers'].get('missing_old_images','None'),'', 'Historical generation and acceptance records are preserved. Newly authored replacements use a separate recovery series capped at four attempts per required view. See [RECOVERY_STATUS.md](RECOVERY_STATUS.md) for current source availability and correction requirements.','', '## Per-deliverable outcomes','', '| Character | Deliverable | Current status | Attempts | Specific evidence or defect |','| --- | --- | --- | --- | --- |']
  for cid,e in data['entries'].items():
   statuses=[d['status'] for d in e['deliverables'].values()]
   status='accepted' if all(x=='accepted' for x in statuses) else 'blocked' if 'blocked' in statuses else 'rejected / pending' if 'rejected' in statuses else 'pending'
@@ -83,18 +106,26 @@ def index_and_report(data):
   lines.append(f"| {cid} | {e.get('design_extent_m','supplement')} | {thumb} | {spec} | {notes} | {status} |")
   for key,d in e['deliverables'].items():
    reason=d.get('reason','Not yet attempted').replace('|','/')
-   quality.append(f"| {cid} | {key} | {d['status']} | {len(d['attempts'])} | {reason} |")
+   quality.append(f"| {cid} | {key} | {d['status']} | {attempt_summary(d)} | {reason} |")
    for attempt in d['attempts']:
     if attempt['status']=='rejected':quality.append(f"| {cid} | {key} attempt {attempt['number']} | rejected | — | {attempt['reason']} |")
+   for attempt in d.get('recovery',{}).get('attempts',[]):
+    quality.append(f"| {cid} | {key} recovery attempt {attempt['number']} | {attempt['status']} | — | {attempt['reason']} |")
  lines+=['','## Composition and storage','',f'Retained library size: **{stored_bytes(ROOT):,} bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.','', 'Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.','', 'Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.']
- quality+=['','## Validation','', '- Twenty compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).','- Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
+ quality+=['','## Validation','']
+ quality += ['- '+line for line in data.get('validation_summary', ['See retained validation records; rerun required before final delivery.'])]
+ quality += ['- Historical game build/smoke evidence is retained from the prior pass; this reference-only continuation does not change game files.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
  (ROOT/'README.md').write_text('\n'.join(lines).rstrip()+'\n');(ROOT/'QUALITY_REPORT.md').write_text('\n'.join(quality)+'\n')
 
 if __name__=='__main__':
  import argparse
- p=argparse.ArgumentParser();p.add_argument('action',choices=['init','render','record','generated']);p.add_argument('args',nargs='*');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['init','render','record','generated','recovery-generated','recovery-record']);p.add_argument('args',nargs='*');a=p.parse_args()
  if a.action=='init':initialize()
  elif a.action=='record':record(*a.args)
+ elif a.action=='recovery-record':record_recovery(*a.args)
+ elif a.action=='recovery-generated':
+  cid,key,path=a.args
+  record_recovery(cid,key,'pending','Newly authored recovery image saved; awaiting visual review.',path,attempt=True)
  elif a.action=='generated':
   cid,key,path=a.args
   record(cid,key,'pending','Generated and saved; awaiting individual visual review.',path,attempt=True)

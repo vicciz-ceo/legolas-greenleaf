@@ -1,62 +1,30 @@
-# Character-sheet recovery — 2026-10-08
+# Character-sheet recovery — current continuation, 2026-10-08
 
-Source: **Create Greenleaf character sheets**, chat `01a11a67-ad85-74c3-a837-4e2921fbf042`, failed continuation turn `01a11a85-22a1-70a6-b5bc-e76a42b2af20`.
+Latest fetched draft head at recovery start: `5107b510cf78c4bf6d5cfb91112f984642666321`, branch `reference/character-sheets`, base `build/foundation`, [draft PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). Worktree: `/workspace/greenleaf-refs`; the original checkout is preserved.
 
-The continuation failed during image-history compaction. Its completed image-generation calls remain recorded. The failure did not cancel those earlier completed calls. This audit distinguishes recorded generation completion, recorded visual acceptance, and files actually available in this new workspace.
+The previous version described the earlier `47ceb55` recovery. Its branch inventory and six-test result are historical. Current delivery state is recorded in progress.json, CHECKLIST.md, QUALITY_REPORT.md and validation/.
 
-## What finished in the old session
+## Durable inventory verified
 
-- The revised compositor and six synthetic tests were completed. The last test run passed all six tests.
-- Legolas's turnaround, face and material sheets were composed and reported as visually accepted. The final construction check passed at **2,317,607 bytes**, with **295.1351351351351 pixels/metre**. Preserve that accepted set rather than starting it over.
-- All six Batch 1 design specs and modelling notes were authored. Five characters besides Legolas still needed final sheet composition and validation.
-- The revised pass made **37 image-generation calls: 36 completed, one failed**. These are separate from the earlier 13 rejected candidates described in the existing README and quality report.
+- 22 accepted character sets are retained, including all creature/flight sets, and preserved without reopening their images.
+- All 14 weapon sources, including accepted pike and torch, match provenance hashes. Both weapons.png and weapons.jpg are retained.
+- All four orc sources and the required orc_variants.png comparison are retained with matching hashes.
+- The separate mûmak howdah supplement is retained.
+- Initial reconstruction checks passed for these 25 entries. Initial 20 regression tests passed; current tests include separate recovery-series coverage.
+- Bald dwarf has two historical accepted view records, but neither original nor optimized source was retained in the fetched Git tree.
 
-## The two requested corrections
+## Bounded lost-file search
 
-| Correction | Recorded call result | Saved output in the old workspace | Next action |
-| --- | --- | --- | --- |
-| Gimli rear view: remove misplaced beard braids and clasps; show loose wavy red-brown back hair | Completed | `/workspace/generated_images/exec-56a6abc4-7e96-49b5-ad75-d20bed1d9e8a.png` | Inspect a small preview against the accepted front and side; generation completion alone does not prove visual correctness |
-| Cave Troll front: wider framing, full hands/club/feet, opaque knee-length cloth kilt | Completed | `/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png` | Inspect framing, five fingers and coverage; if accepted, condition the other views on this corrected outfit |
+One search covered accessible worktrees, workspace generated-image directories, image/archive files, the saved manifest paths and Git history for Legolas, Gimli, Aragorn, Tauriel, Bolg, cave troll and bald dwarf. No historical image bytes were available. Git history retained specifications and notes only. No old chats or image history were retrieved. validation/source-audit.json records the initial inventory of 246 verified retained sources.
 
-The earlier troll framing call `exec-9ace492e-a014-40cb-9171-0e57f3bacd3d` failed. The opaque-kilt replacement succeeded. Neither corrected output has a subsequent recorded visual review or composition step. Neither image is available in the current workspace, so this recovery has not inspected their pixels.
+Lost files are eligible for newly authored replacements, not a permanent blocker. Progress schema version 2 preserves every original attempt and acceptance record, and identifies replacement calls in a separate recovery series capped at four attempts per required view. Provenance must distinguish newly authored assets from recovered originals. Tool failures and exhausted visual attempts must be reported honestly.
 
-The session continued after those corrections: Tauriel's back view and Bolg's three-quarter, side and back views all completed. Bolg's back (`exec-ddcdc838-f236-4947-a562-f42e8e7f16b3`) is the last recorded generated output.
+Gimli rear must show loose wavy red-brown back hair without misplaced beard braids. Cave troll must have complete hands, club and feet with opaque lower-body coverage. All other design and attachment rules remain in the revised brief.
 
-## Remaining work, in order
+## Execution and storage
 
-| Character/group | Latest recorded state | Remaining work |
-| --- | --- | --- |
-| Legolas | Complete, reviewed and checked in old workspace | Restore accepted files and rerun construction check; preserve original full-resolution sources |
-| Gimli | Front, three-quarter, side and corrected back generated | Review corrected back; segment and compose body views; generate face views/detail tiles; sample, check and record quality |
-| Aragorn | Four body views generated | Review/segment/compose; generate face views/detail tiles; sample and check |
-| Tauriel | Four body views generated | Review/segment/compose; generate face views/detail tiles; sample and check |
-| Bolg | Four body views generated | Review/segment/compose; generate face views/detail tiles; sample and check |
-| Cave Troll | Corrected front generated; rotations not yet generated | Review corrected front; align design notes with accepted kilt; generate the other body views, face views and detail tiles; compose/sample/check |
-| Other heroes/allies | No revised-pass images recorded | Thranduil, Mirkwood guard, Galadhrim guard, Boromir, Gondor soldier, Rohirrim, Lake-town man |
-| Other enemies | No revised-pass images recorded | Orc, goblin, Gundabad orc, Uruk, berserker, Lurtz, Easterling, Haradrim, War Troll |
-| Creatures | No accepted revised-pass images recorded | Mirkwood spider, Brood Mother, mûmak plus howdah, Gundabad bat (spread/folded), eagle and fell-beast flight silhouettes |
-| Additional sheets | Not generated in revised pass | True-scale weapons lineup, four orc variants, four distinct company dwarves |
-| PR checkpoint | Not reached | Complete Batch 1; update README thumbnails and QUALITY_REPORT with attempt counts/check output; push `reference/character-sheets` and update draft PR #1 into `build/foundation` |
+The text-only supervisor owns progress, composition, validation and Git. Short-lived image workers use fresh contexts and at most two generation/edit calls each, saving originals, optimized sources, provenance and text receipts before handoff. Receipts live outside the library at /workspace/greenleaf-receipts/.
 
-## Files recovered here
+Initial retained size: 46,905,585 bytes. Reserve approximately 20,000,000 bytes for ten full sets (target 2,000,000 each), 1,000,000 for reused-source dwarf comparison, and remaining headroom for documentation/validation. Hard caps remain 2,500,000 per set and 70,000,000 overall. Retain all reconstruction sources and count all retained files.
 
-The existing draft branch was recovered into `/workspace/greenleaf-character-refs` without modifying the scaffold checkout. Original README and quality report are retained as historical first-pass reports; their statements that the whole roster is unfinished predate the successful revised Legolas set.
-
-Recovered from the recorded file-writing commands and successive patches:
-
-- `tools/compose.py`, `tools/test_compose.py`, `tools/README.md`, `tools/.gitignore`;
-- `spec.json` and `notes.md` for Legolas, Gimli, Aragorn, Tauriel, Bolg and Cave Troll;
-- Legolas's final recorded sampling rectangles;
-- `recovery/original-brief.txt` and `recovery/generated-image-manifest.json`, including the exact generation prompts and original saved paths.
-
-Recovered specs contain **design targets only**. Legolas's old measured/observed values cannot be fully recovered from the available outputs and must be restored from the original `spec.json` or recomputed from the original images. No measured or observed result was invented. No character is certified as a complete reference set in this new workspace.
-
-Validation here: all six recovered compositor tests passed; recovered Python source compiles; all six specs parse as JSON. No image-generation calls were made during recovery. No image previews were loaded. No recovery changes have been committed or pushed.
-
-## Missing files required for continuation
-
-The old workspace directories `/workspace/greenleaf-character-refs/docs/refs` and `/workspace/generated_images` were not carried into this chat. GitHub branch `reference/character-sheets` still points to `47ceb55` and contains only the earlier two report files. The old session's final `git status` lists the revised character and tooling directories as untracked, and there is no later commit or push in its history.
-
-The chat-reading tool provides generation status, prompts and saved paths; it does not provide the PNG/JPEG bytes or access to the old filesystem. Restore the old folders (or a backup/archive) before reviewing the corrections or replacing accepted work. If restoring over this recovery, preserve the originals and their measured/observed metadata; treat the newly recovered specs as fallback drafts.
-
-After restoration, keep generated originals at full resolution outside the budgeted reference library. Create and inspect **one small preview at a time**. Store attempt decisions and paths in text immediately after each review; do not load full-resolution images or broad contact sheets into the chat. Keep per-view attempt counts across sessions, with at most four attempts per view.
+Continue through character checkpoints and the same draft PR. Exact remaining deliverables and review/tool blockers are in the ledger; this document does not certify incomplete sets.

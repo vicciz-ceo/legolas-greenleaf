@@ -8,24 +8,24 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/back | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/front | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| details/cloth_leather | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| details/weapon_metal | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| details/skin | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| details/hair | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## gimli
 
@@ -33,116 +33,116 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/back | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/front | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/cloth_leather | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/weapon_metal | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/skin | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/hair | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## aragorn
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/back | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/front | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/cloth_leather | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/weapon_metal | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/skin | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/hair | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## tauriel
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/back | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/front | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/cloth_leather | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/weapon_metal | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/skin | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/hair | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## bolg
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 2 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/side | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/back | blocked | 1 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| face_views/front | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/cloth_leather | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/weapon_metal | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/skin | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/hair | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## cave_troll
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | blocked | 4 | Recorded completed; original file unavailable. Visual acceptance cannot be repeated. |
-| views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| views/back | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/front | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/three_quarter | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face_views/side | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/cloth_leather | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/weapon_metal | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/skin | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details/hair | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| turnaround | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| spec | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| notes | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| check | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| face | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| details | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
-| observed | blocked | 0 | Requires missing accepted source views or original Legolas sheet files. |
+| views/front | pending | 4 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| views/back | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/skin | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| details/hair | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| turnaround | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| spec | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| notes | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| check | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
+| observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 
 ## thranduil
 
@@ -640,8 +640,8 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | accepted | 1 | Original wide tattooed bald face and short dark beard braids; complete stocky body/own-right axe/belt axes; scalp and empty-hand crops inspected (four curled fingers plus thumb); no text. |
-| views/three_quarter | accepted | 1 | Clear oblique torso/face with unchanged scalp tattoos, beard/outfit; axe remains own-right near side, belt axes retained, no text. |
+| views/front | accepted | 1 historical + 1 recovery | Newly authored recovery front: original tattooed wide face, short dark beard braids, correct own-right axe/belt axes, complete framing, natural hands, retained alpha and 64px silhouette reviewed; no defects. |
+| views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
 | views/side | pending | 0 |  |
 | views/back | pending | 0 |  |
 | face_views/front | pending | 0 |  |
