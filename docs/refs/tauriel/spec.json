@@ -125,6 +125,11 @@
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/front": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/front; no new rotation/generation, no mirroring; historical rejected portrait calls retained.",
+      "face_views/three_quarter": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/three_quarter; no new rotation/generation, no mirroring; historical rejected portrait calls retained.",
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; historical rejected portrait calls retained."
     }
   }
 }

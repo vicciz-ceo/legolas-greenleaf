@@ -1,0 +1,40 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png",
+    "original_sha256": "1e1928bc90d9f974da38f720933909d06a97dd50610c54652e33cfc41fd4dff0",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "9aa6dad9621e6995ebe544c7d236a070643f201cc727a0b2a38b249c5cf58928",
+    "generation": "image_gen single exact front, fresh context",
+    "references": [],
+    "provenance": "newly_authored_recovery; original identity root; historical front attempts retained separately by supervisor",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Original grey-green warty troll; one barrel chest with hanging belly; exact front; right/image-left complete club and ankle shackle; left empty hand thumb plus four curled fingers visible; complete feet, knee-length opaque cloth kilt, no clipping or text."
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5aac9196-6498-47e6-bce6-bf23fcf7fd06.png",
+    "original_sha256": "6d67aec1140af3d100635c57cea1d0ed6f3d44c8324bf53312699b4c01dc41f4",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "fb1e8fd7bf801fe335a7332023e6ea82fe8be2327c727f005a63379a9eb5eb9e",
+    "generation": "image_gen three-quarter edit conditioned on accepted front original",
+    "references": [
+      "/workspace/generated_images/exec-9a147c44-5432-452c-a81e-9ab9bdb5ea04.png"
+    ],
+    "provenance": "newly_authored_recovery; conditioned on accepted local recovery front; no mirroring",
+    "classification": "newly_authored_recovery",
+    "by_eye_review": "Same original creature and opaque knee-length cloth kilt, correct three-quarter nose image right, nearer own right hand complete club and right ankle shackle; empty hand thumb plus four fingertips visible; all hands feet and club fully framed."
+  }
+}

@@ -37,5 +37,140 @@
       "segmentation": "Existing alpha preserved; optimized retained cutout reviewed; fine hair and sword edges retained"
     },
     "minor_drift": "Repair preserves identity and costume with slight palm pose and belt buckle drift."
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c175949c-9360-4016-8369-5ac3ed58de44.png",
+    "original_sha256": "9ba1c1d80a76b8d3e5e5810b9b2b528c64399f41c66c3e837f4eeaff469ce656",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "a75e04ced14b2792090ff529976ac22a9b3e732df8e228a6c4554897f56ae7df",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_rotations",
+      "local_attempt": 1,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged long-oval face, full cheeks, short beard and wavy shoulder-length dark-brown hair",
+      "anatomy": "Empty natural hands; far hand clearly five digits, near thumb plus curled finger overlap, no definite fused/extra digits; natural complete limbs",
+      "view": "Three-quarter front facing image right, anatomical right side nearer camera; relaxed A-pose within 20-40 degrees",
+      "attachments": "Sword remains sheathed anatomical left/far hip; both hands empty; scabbard above soles",
+      "framing": "Full crown, hands, coat, sword and both boots framed with clear alpha margins",
+      "silhouette64": "Hair, long coat and sword silhouette readable at 64px",
+      "segmentation": "existing_alpha intake preserved edges; retained cutout reviewed"
+    },
+    "minor_drift": "Small buckle, seam and strap detail drift tolerated; same major costume inventory and material families."
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d69e43eb-ae32-4ae7-864f-071c89a14260.png",
+    "original_sha256": "6477b7a6f493c12a9888e461ec9c724eff702535f3be3dd0bbfc4770271d8624",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "5ccc4a0b2473a5f838202999e211273f569f07aef8fc3deea8d1a97a4c6b9934",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_rotations",
+      "local_attempt": 2,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged long-oval ranger face, full cheeks, short beard and shoulder-length wavy dark-brown hair",
+      "anatomy": "Near empty hand clearly has thumb and four fingers; far hand naturally occluded; natural complete limbs and boots",
+      "view": "Exact right-side profile, nose image right, one eye visible; arms project with relaxed anatomical A-pose, feet overlap in side elevation",
+      "attachments": "Sword sheathed at anatomical left/far hip with hilt partly visible beyond frontal body edge; right/near side has pouch and empty hand; scabbard below skull and above soles",
+      "framing": "Complete crown, hair, coat, hand, gear and both boots; opaque silhouette starts 10px below original top, no definite clipping",
+      "silhouette64": "Right-facing profile, wavy hair and long coat clearly readable at 64px",
+      "segmentation": "existing_alpha intake preserved crown, hand and sword edges; optimized retained source reviewed"
+    },
+    "minor_drift": "Small strap, buckle and seam drift tolerated; crown upper margin narrow but intact; same major outfit and gear."
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e6ae4b5c-244e-4cef-8ad3-6bb0a549ad3c.png",
+    "original_sha256": "375bb7a01a8c1084c2768e9643feb7c2dc58d72737ed10447e545a4a4fffd29a",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "9ea6549dc135e3d483984270c00239054bfb98fe8f2f767d146cd25450aa9655",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_back_cloth",
+      "local_attempt": 1,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged ranger identity inferred from shoulder-length wavy dark-brown hair and costume; face naturally concealed in exact rear view",
+      "anatomy": "Thumb and four fingers on each empty relaxed hand, with natural curl and occlusion; complete natural limbs",
+      "view": "Exact rear full body, no face visible; relaxed A-pose within 20-40 degrees",
+      "attachments": "Sword fully sheathed anatomical left hip, image left in rear view; both hands empty; scabbard above soles",
+      "framing": "Full crown, hands, coat, scabbard and both boot soles; opaque contour begins 10px below original top and is intact",
+      "silhouette64": "Hair, long coat, boots and left-hip sword readable at 64px",
+      "segmentation": "Existing alpha preserved without rembg; original and optimized retained edges reviewed"
+    },
+    "minor_drift": "Small seam placement, strap detail and buckle drift tolerated; same garment materials and major inventory."
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1cfa8a0a-930a-400c-8465-363272ea2cea.png",
+    "original_sha256": "e45f44546fb955afe36d3a3d6a6e94164bcc1c484d57e2b2ff0bbd70e1dc45a4",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      910,
+      1728
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "5b73ec1ed480c92f14507238514f0ecd666636501f70edfac5be07fda74bb4ec"
   }
 }

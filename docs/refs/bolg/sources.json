@@ -1,0 +1,31 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-382e9763-6fd1-4e67-a145-6507fb5934a3.png",
+    "original_sha256": "b948ee2d29ac911413b7295255b413677715d9e9f5523b13ed460845d92693f9",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "b053259884c5a5da91462a3dd4044e2f8521f6af93912bfe4bd069b27d90c8b6",
+    "generation": "image_gen.imagegen",
+    "reference_image_paths": [
+      "/workspace/generated_images/exec-e75dcebb-d677-4f22-9bf1-0e95a6ae8bcd.png"
+    ],
+    "provenance": "newly authored replacement for lost assets; first frontal attempt repaired for hand clarity and full framing",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": {
+      "accepted": true,
+      "original_face": true,
+      "anatomy": "One body; two arms/two legs; empty left hand has thumb and four distinct fingers; natural right mace grip.",
+      "attachment_sides": "Mace own RIGHT/image LEFT, left empty.",
+      "framing": "All complete contours in frame; crown and feet clear; mace/spikes below crown and mace above soles.",
+      "silhouette_64px": "readable huge pale bald spiked orc with low right-hand mace",
+      "tolerated_drift": []
+    }
+  }
+}

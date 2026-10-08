@@ -525,13 +525,15 @@ def grid(cid):
     require(len(tiles) in (4,9), 'detail_tiles must contain four or nine individually generated tiles')
     n = math.isqrt(len(tiles))
     cell = 1024//n
+    margin = data['composition'].get('detail_margin_px', 12)
+    require(isinstance(margin, int) and 12 <= margin <= 64, 'Invalid detail inset')
     canvas = Image.new('RGB',GRID_SIZE,BG)
     draw = ImageDraw.Draw(canvas)
     boxes = []
     for i,tile in enumerate(tiles):
         path,im = source(folder,tile['source'])
-        x,y = (i%n)*cell+12,(i//n)*cell+12
-        w,h = cell-24,cell-68
+        x,y = (i%n)*cell+margin,(i//n)*cell+margin
+        w,h = cell-2*margin,cell-2*margin-44
         # Preserve the whole individual image; letterbox rather than crop away a weapon.
         tile_background = Image.new('RGBA', im.size, (*BG, 255))
         tile_background.alpha_composite(im)

@@ -36,5 +36,117 @@
       "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png"
     ],
     "by_eye_review": "Accepted: same original identity/costume, front-three-quarter toward image RIGHT with empty right hand near and left bow hand far; paired knives remain sheathed at both hips; complete head/feet/bow; native alpha edges and 64px silhouette reviewed. Minor embroidery/buckle perspective and seam drift tolerated."
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25564c41-6599-4338-a1ba-0490eeec75fc.png",
+    "original_sha256": "57a9f1f5ebab6ebac550492e642348648c5b1bfb382f79d0d97b8da29397a211",
+    "original_size_px": [
+      846,
+      1858
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "00a97e12ec1d1e73b5848441c7d9ae553edd622249f6c172f8560d211558c24b",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; accepted front-conditioned exact right profile nose image RIGHT, original identity/costume and anatomical attachment sides",
+    "references": [
+      "/workspace/greenleaf-refs/docs/refs/tauriel/views/front.png"
+    ],
+    "by_eye_review": "Accepted by eye: same original auburn elf captain, nose image RIGHT exact right facial profile, near anatomical right hand empty and far anatomical LEFT holds low bow; natural five-digit empty hand and grip, paired hip knives fully sheathed, existing low quiver and brown-feathered arrows below crown, full head/boots/bow framing, existing transparent alpha retained and 64px silhouette readable. Minor embroidery and belt buckle/perspective drift tolerated."
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-b66d896d-4230-4edc-93bc-2304e73918a0.png",
+    "original_sha256": "7c57b1a5c1a60aa8a8d9db2b637af87492f25cc1476087a31e856594f0ff49e8",
+    "original_size_px": [
+      846,
+      1858
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "b8568a3202b7a2c610549b1f197fc6cba591234d4bf8b3f4e047be785ae47c37",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; accepted front-conditioned exact rear rotation, same original identity/costume/attachment sides; no mirroring",
+    "references": [
+      "/workspace/greenleaf-refs/docs/refs/tauriel/views/front.png"
+    ],
+    "by_eye_review": "Accepted by eye: exact rear with no face visible, same long straight auburn temple-braided hair and green/brown outfit; bow remains in anatomical LEFT/image LEFT hand, empty RIGHT/image RIGHT hand has natural digits with ordinary overlap, natural bow grip occlusion; both curved knives fully sheathed on their hip sides; low back quiver and brown-feathered arrows below crown. Full head/boot soles/gear inside frame, retained native transparent alpha edges and 64px silhouette reviewed. Minor rear embroidery, strap and boot seam drift tolerated."
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png",
+    "original_sha256": "d9da8e8bc63a8ff9848ddd549ca81f7f6acc268d284a98a5c07e33c20faa162e",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      296,
+      0,
+      726,
+      442
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "5e0f2ef7c5d6e1f6dcfdcad3173fcd2a6a6f4cbfce2b331927f631b2071f55f8",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/front",
+    "reused_source_sha256": "ab07ea2e4da064a6e2bb017923af5cc838a127a8537f4014c8170335966dd68e",
+    "imagegen_calls": 0,
+    "by_eye_review": "Full-resolution original reviewed by eye at native resolution. True frontal face with both eyes, almond lids, brows, nose bridge, closed lips and fine auburn strands sufficiently resolved. Half-open full-original crop includes the complete crown, both pointed ears, both visible temple braids and their ends, full shoulder/cowl outline and all visible low-quiver fletchings; lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
+    "reviewed_crop_receipt_sha256": "c70de3718695b7f146cb54d226abc9afdb3c99cafb380c087d50f54145734d45"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-db30900f-d76c-45ce-9949-15bccd4d830d.png",
+    "original_sha256": "3d50ecacbbe0cf2cada1beb9b90fd79812a44d6ccfb8beac1ea7a598c86313f2",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      300,
+      16,
+      692,
+      430
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "900d0ee7f33b0ba16c87b28c6b5ba394018bca4427e2a491c0ecd5a1ecffafd1",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/three_quarter",
+    "reused_source_sha256": "694ec658cf8bc2218510f08ef2470a4a71b2ddb0268be2bfc5c07a7cc5e4908c",
+    "imagegen_calls": 0,
+    "by_eye_review": "Full-resolution original reviewed by eye at native resolution. Face corresponds to a front three-quarter approximately 45-degree turn toward image RIGHT, with both eyes visible and the far side foreshortened; native lids, brows, nose, closed lips and auburn hair/braid detail are adequate. Half-open full-original crop includes complete crown, visible pointed near ear, both visible temple braids and their ends, shoulder/cowl outline and all visible low-quiver fletchings; far ear is naturally occluded by the angle/hair. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
+    "reviewed_crop_receipt_sha256": "6a00c293f9364c5c986e478770f4f09708e0762584a7506ebb56897ff4a82e38"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25564c41-6599-4338-a1ba-0490eeec75fc.png",
+    "original_sha256": "57a9f1f5ebab6ebac550492e642348648c5b1bfb382f79d0d97b8da29397a211",
+    "original_size_px": [
+      846,
+      1858
+    ],
+    "crop_px": [
+      90,
+      0,
+      542,
+      536
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "91e234c50200db97b30df9cbf9c51ef6c220efa1699c549069dae19f4de127cb",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "00a97e12ec1d1e73b5848441c7d9ae553edd622249f6c172f8560d211558c24b",
+    "imagegen_calls": 0,
+    "by_eye_review": "Full-resolution original reviewed by eye at native resolution. Exact right facial profile with nose image RIGHT, one visible eye and no far-eye leakage; native near-eye lids/lashes, brow, nose bridge and tip, closed lips, pointed ear and auburn hair/braid strands are sufficiently resolved. Half-open full-original crop includes complete crown, visible pointed near ear, visible near temple braid through its end, shoulder/cowl outline and every existing visible low-quiver fletching. Far ear and far temple detail remain naturally occluded; no invented visibility. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required.",
+    "reviewed_crop_receipt_sha256": "8daf71dfafab3f5f9e25546633c6b959aa4ba494d631f9d4c335d4b0afd42b23"
   }
 }

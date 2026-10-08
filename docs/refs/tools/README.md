@@ -57,3 +57,5 @@ Additional creature poses: configure composition.pose_targets with an explicit p
 Creature extent_rules may select reference_overall_height or reference_overall_width for a non-reference view. compose.py derives that extent from the actual reference alpha bounds and landmark span, normalized to the brief target. This is an explicit 2D projection assumption, not inferred 3D anatomy; the main reference ruler still measures the original dimension.
 
 Additional creature resting poses use dedicated 768×512 panels at the main sheet scale; this is a documented roster-specific canvas exception. Creature span checks measure the resampled alpha mask itself and preserve thin extrema if raster reduction would erase them.
+
+For a wide opaque detail tile, `composition.detail_margin_px` can increase the inset from its default 12 pixels to preserve the safe background patch. The dwarf elder uses 24 pixels; other accepted layouts retain the default.

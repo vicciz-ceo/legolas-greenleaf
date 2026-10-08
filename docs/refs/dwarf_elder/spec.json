@@ -114,6 +114,545 @@
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "detail_margin_px": 24
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        15,
+        50,
+        95,
+        170
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        180,
+        45,
+        240,
+        175
+      ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        45,
+        65,
+        65,
+        150
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        85,
+        110,
+        155,
+        165
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        48,
+        48,
+        208,
+        208
+      ]
+    }
+  ],
+  "measured": {
+    "turnaround": {
+      "path": "dwarf_elder_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "e6dd53d4674ad6dc9bbef0f8cccc90c4b941db24ec9489d59c9c6e39b15e3aa7",
+      "size_bytes": 138045,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "87892fefa2b52feb6564eca9d554f5c957f198d8a81f034670454e69dc11c724",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 361.8705035971223,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.39,
+      "height_fill_fraction": 0.4912109375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "570ea6513dc30d821d918a37d273cf0247e72bf82d8790e14924835a967e9e70",
+          "source_bbox_px": [
+            4,
+            4,
+            276,
+            444
+          ],
+          "sheet_bbox_px": [
+            163,
+            437,
+            474,
+            940
+          ],
+          "silhouette_height_px": 503,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.143181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            311,
+            503
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "78a38ff0ebe0a78b87ef8d7263fb4db28ee74ec144ab2168788f2c85e1bd1ca7",
+          "source_bbox_px": [
+            4,
+            4,
+            243,
+            444
+          ],
+          "sheet_bbox_px": [
+            525,
+            437,
+            798,
+            940
+          ],
+          "silhouette_height_px": 503,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.143181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            273,
+            503
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "e19878232d31c439cac6946b93bf82cc96ba67d22e0d4a26163d77dc597239e3",
+          "source_bbox_px": [
+            4,
+            4,
+            144,
+            444
+          ],
+          "sheet_bbox_px": [
+            924,
+            437,
+            1084,
+            940
+          ],
+          "silhouette_height_px": 503,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.143181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            160,
+            503
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "2c3c7111449399f28ea9a568126b782c5794f41af27de9dbb8dca7d4bf876374",
+          "source_bbox_px": [
+            4,
+            4,
+            283,
+            444
+          ],
+          "sheet_bbox_px": [
+            1188,
+            437,
+            1507,
+            940
+          ],
+          "silhouette_height_px": 503,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.143181818181818,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            503
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 437,
+        "endpoint_m": 1.39,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 850
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 759
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 669
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 578
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 488
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            844,
+            93,
+            856
+          ],
+          [
+            57,
+            753,
+            93,
+            765
+          ],
+          [
+            57,
+            663,
+            93,
+            675
+          ],
+          [
+            57,
+            572,
+            93,
+            584
+          ],
+          [
+            57,
+            482,
+            93,
+            494
+          ],
+          [
+            117,
+            418,
+            180,
+            431
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "dwarf_elder_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "f9bec439e8aba1d6960aa62716bad2cecd673d05bb59512a970849f59cb3e725",
+      "size_bytes": 162085,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "ca2da3c207aae1aed0854d93da6cd3035a2b860209976af5ed8c1d86cd5cc731",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "748b46b3773bab21f7a3bcc665f2ceaaa052db6f70d65e63913c917687d71d4e",
+          "source_bbox_px": [
+            4,
+            4,
+            291,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            510,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "ea68d26c5beb775f6d5fcf29a8cd216e7a38f41ea57badac16a2d0b680c2c1a2",
+          "source_bbox_px": [
+            4,
+            4,
+            251,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            443,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "6f63e371d93648d8fd3a11313320ae4816184f1bb3cbbc2c989cea60bb2826e8",
+          "source_bbox_px": [
+            4,
+            4,
+            149,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            108,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "dwarf_elder_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "9df19753f2e3389d8a97796a986cf6df5d84fe97ca0e8d6c5462bd37775bbabf",
+      "size_bytes": 252758,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "002ea397e21a1fe3ac20f7eb5fad51942f7fbc6f993ec7db0a1a5e52bddd6749",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "0dad637d4544f5cbc5407bdfc3d6d743eabf309857a0a627888ef53be5e4b2ee",
+          "sheet_bbox_px": [
+            24,
+            26,
+            488,
+            441
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "a170bc9feeed57311ad991af2acb247e7f1f3034bedc073bc0902918bdff1685",
+          "sheet_bbox_px": [
+            540,
+            24,
+            996,
+            444
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "58ab018e0299f73c1388e8d2515c5f31ab4f76284e26af9ef27dfc39c8f520df",
+          "sheet_bbox_px": [
+            46,
+            536,
+            466,
+            956
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "f4eaefceecdbaa4ae9b45964226338f4fa1e57045b80c8a825648d9e1dea8a20",
+          "sheet_bbox_px": [
+            558,
+            536,
+            978,
+            956
+          ]
+        }
+      ]
+    }
+  },
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "cloth": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "0dad637d4544f5cbc5407bdfc3d6d743eabf309857a0a627888ef53be5e4b2ee",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          15,
+          50,
+          95,
+          170
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          36,
+          44,
+          66
+        ],
+        "srgb_hex": "#242c42",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "0dad637d4544f5cbc5407bdfc3d6d743eabf309857a0a627888ef53be5e4b2ee",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          180,
+          45,
+          240,
+          175
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          108,
+          75,
+          60
+        ],
+        "srgb_hex": "#6c4b3c",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "a170bc9feeed57311ad991af2acb247e7f1f3034bedc073bc0902918bdff1685",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          45,
+          65,
+          65,
+          150
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          140,
+          114,
+          85
+        ],
+        "srgb_hex": "#8c7255",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "58ab018e0299f73c1388e8d2515c5f31ab4f76284e26af9ef27dfc39c8f520df",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          85,
+          110,
+          155,
+          165
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          190,
+          115,
+          99
+        ],
+        "srgb_hex": "#be7363",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "f4eaefceecdbaa4ae9b45964226338f4fa1e57045b80c8a825648d9e1dea8a20",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          48,
+          48,
+          208,
+          208
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          207,
+          199,
+          195
+        ],
+        "srgb_hex": "#cfc7c3",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
     }
   }
 }

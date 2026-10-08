@@ -295,7 +295,7 @@
           }
         },
         "details/skin": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -304,16 +304,25 @@
               "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-92380685-18aa-46a9-a3a3-83be0cd990d0.png",
+          "reason": "Accepted single continuous same-elf eye-and-full-cheek macro: natural almond blue iris, defined lids and pale-gold brow; warm pale smooth full cheek with fine pores and faint redness. Broad lower cheek provides pure skin sampling. No actor likeness, new accessories, text or backdrop. Slight lighting drift allowed. Existing alpha retained without rembg; all visible skin edges checked.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/skin.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted single continuous same-elf eye-and-full-cheek macro: natural almond blue iris, defined lids and pale-gold brow; warm pale smooth full cheek with fine pores and faint redness. Broad lower cheek provides pure skin sampling. No actor likeness, new accessories, text or backdrop. Slight lighting drift allowed. Existing alpha retained without rembg; all visible skin edges checked.",
+                "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/skin.png",
+                "receipt_fingerprint": "cffa94fcacc01e59c56c63e9830548f256042d689b4f15f27348e2581a246f81",
+                "receipt": "/workspace/greenleaf-receipts/legolas_skin_hair.json"
+              }
+            ]
           }
         },
         "details/hair": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -322,48 +331,57 @@
               "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-b3cf4bea-9504-4119-9004-9feb63ad7e0f.png",
+          "reason": "Accepted single continuous hair macro: same warm platinum pale-gold hair with darker warm roots, fine long straight loose strands and exactly one slim visible near-temple braid, opposite temple outside crop. No extra braids, ornaments, face, gear or text. Edge-to-edge material with broad loose-strand sampling area. Slight allowed braid-width and lighting drift. Existing alpha retained without rembg; retained tile reviewed.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/hair.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted single continuous hair macro: same warm platinum pale-gold hair with darker warm roots, fine long straight loose strands and exactly one slim visible near-temple braid, opposite temple outside crop. No extra braids, ornaments, face, gear or text. Edge-to-edge material with broad loose-strand sampling area. Slight allowed braid-width and lighting drift. Existing alpha retained without rembg; retained tile reviewed.",
+                "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/hair.png",
+                "receipt_fingerprint": "a5784c735e3a5819ecec5199204ca6ed82331771a9e43ff80beb119c60933014",
+                "receipt": "/workspace/greenleaf-receipts/legolas_skin_hair.json"
+              }
+            ]
           }
         },
         "turnaround": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run. Construction, sampling, provenance and budget checks PASS."
         }
       },
       "historical_multipanel_attempts": {
@@ -375,6 +393,26 @@
         "status": "rejected",
         "source": "recovery/first-pass-QUALITY_REPORT.md",
         "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Author-reviewed final composed sheets and 64px silhouette preview show no definite visual defect. Three additional exposed-material sampling rectangles are selected; final construction and sampling coverage have not yet been run.",
+        "receipt_sha256": "7374223f182471c8ad7896751f9bd496edfa7203aae4feb6bcd1d7e399ecc9bc",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/legolas/legolas_turnaround.jpg",
+            "sha256": "f22679f105c262fdaf0668ddf388dc9dc1e3d840a2384c5e585977c02ab4e5d5"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/legolas/legolas_face.jpg",
+            "sha256": "2751d321ac4ac2858e8f52227cca7ae448f911ddeb0fb43551d1f1142674d30b"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/legolas/legolas_details.jpg",
+            "sha256": "67615565ed06b9d33412cc2e67dd31a515bcd8d9d841d22bfbdf05de64b36d68"
+          }
+        ],
+        "defects": []
       }
     },
     "gimli": {
@@ -612,69 +650,99 @@
           "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Matching fully framed axe metal macro retained after visual review.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Matching fully framed axe metal macro retained after visual review.",
+                "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/weapon_metal.png",
+                "receipt_fingerprint": "3400a2572e714ee2b82f22f512f01731a9e4dafefff1088842a42cbc4e50f27a",
+                "receipt": "/workspace/greenleaf-receipts/gimli_metal_skin.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Original dwarf facial skin material macro retained after visual review.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Original dwarf facial skin material macro retained after visual review.",
+                "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/skin.png",
+                "receipt_fingerprint": "8f05920eea6eef30fc91fd78fb7739ad69326414e69283bf667b90c5d5efa57d",
+                "receipt": "/workspace/greenleaf-receipts/gimli_metal_skin.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Single opaque close-up matches accepted red-brown beard material, braid crossing and existing bronze clasp; no new ornaments or rear braids.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Single opaque close-up matches accepted red-brown beard material, braid crossing and existing bronze clasp; no new ornaments or rear braids.",
+                "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/hair.png",
+                "receipt_fingerprint": "d0f1c5713f4237d87f203a94884fc2d0a2e2288a94acf7f1ccff7875217e7fb1",
+                "receipt": "/workspace/greenleaf-receipts/gimli_hair.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Awaiting retained and visually accepted recovery sources, then composition and validation."
+          "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details. Construction, sampling, provenance and budget checks PASS."
         }
       },
       "historical_multipanel_attempts": {
@@ -684,6 +752,26 @@
         "status": "rejected",
         "source": "recovery/first-pass-QUALITY_REPORT.md",
         "note": "Before the individual-view workflow; these are full generated sheet calls, not fabricated individual-view attempts. Original sheet counts remain preserved."
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "By-eye final review passes: consistent original stocky dwarf identity, correct anatomical gear sides, loose rear hair, accepted exact-right-profile portrait crop, complete framing and coherent material details.",
+        "receipt_sha256": "490448a8607ac05e67b797f17f91e9e9bf0ccea47b9b764d7acda1da71aea643",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/gimli/gimli_turnaround.jpg",
+            "sha256": "20eaf4f112a8190e6b741181d7cd1c17b3a36de3c3015361488879fc669acf85"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/gimli/gimli_face.jpg",
+            "sha256": "1309130e861d79ea8c987bfd59162246069b9ad98b85253f5d16f99d4caa50da"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/gimli/gimli_details.jpg",
+            "sha256": "eae16aca4e0ca2b9d8b9a73453c609d5a2b6e7f143d50c383c7bb01ebcf84d2b"
+          }
+        ],
+        "defects": []
       }
     },
     "aragorn": {
@@ -691,7 +779,7 @@
       "design_extent_m": 1.88,
       "deliverables": {
         "views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -706,16 +794,33 @@
               "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-902102c6-5a38-43f7-8437-92ae16802ade.png",
+          "reason": "Accepted front repair: original identity, correct relaxed A-pose and frontal angle, five natural visible digits each, correct sheathed left-hip sword, both hands empty, complete transparent framing and readable 64px silhouette. Existing-alpha optimized cutout reviewed.",
+          "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "rejected",
+                "reason": "Front has correct original ranger design and left-hip sword, but framing leaves insufficient substantial head/sole margins. Fingers curl together rather than showing five clearly separated digits.",
+                "path": "/workspace/generated_images/exec-5065e170-f054-480c-b78d-21344b97e4eb.png",
+                "receipt_fingerprint": "c58522c4c54e18f9e795d689616c1ed5443a0c36e552242e96c14c7b03d964e9",
+                "receipt": "/workspace/greenleaf-receipts/aragorn_front.json"
+              },
+              {
+                "number": 2,
+                "status": "accepted",
+                "reason": "Accepted front repair: original identity, correct relaxed A-pose and frontal angle, five natural visible digits each, correct sheathed left-hip sword, both hands empty, complete transparent framing and readable 64px silhouette. Existing-alpha optimized cutout reviewed.",
+                "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png",
+                "receipt_fingerprint": "e4db807b4eed10f8634f3fda2c9c1386f2ae756660e2ef0a5407ec23a7608d0e",
+                "receipt": "/workspace/greenleaf-receipts/aragorn_front.json"
+              }
+            ]
           }
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -724,16 +829,25 @@
               "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-f00e6de0-d495-4a5b-a213-a20dbb40d1a5.png",
+          "reason": "Conditioned same-character three-quarter front with correct gear sides, natural hands, full framing and readable silhouette.",
+          "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/three_quarter.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Conditioned same-character three-quarter front with correct gear sides, natural hands, full framing and readable silhouette.",
+                "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/three_quarter.png",
+                "receipt_fingerprint": "6200144be31d5c841d24870a78dd7a8632d7c078f48dd459a105cf388e586b0e",
+                "receipt": "/workspace/greenleaf-receipts/aragorn_rotations.json"
+              }
+            ]
           }
         },
         "views/side": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -742,12 +856,21 @@
               "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-12b1f3ef-4279-4464-b5d7-fe15c42e798c.png",
+          "reason": "Same-character exact right profile with natural five-digit near hand, sheathed sword on far anatomical left hip, complete crown/boots and readable silhouette.",
+          "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/side.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Same-character exact right profile with natural five-digit near hand, sheathed sword on far anatomical left hip, complete crown/boots and readable silhouette.",
+                "path": "/workspace/greenleaf-refs/docs/refs/aragorn/views/side.png",
+                "receipt_fingerprint": "a1951a18fdd129863f5bc95a546d0a46c965265e5dad9e4de25265c4ae827a72",
+                "receipt": "/workspace/greenleaf-receipts/aragorn_rotations.json"
+              }
+            ]
           }
         },
         "views/back": {
@@ -880,7 +1003,7 @@
       "design_extent_m": 1.78,
       "deliverables": {
         "views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -895,16 +1018,25 @@
               "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-3e76d5b8-1bc8-4ed7-a33d-1b302f092209.png",
+          "reason": "Original Silvan elf captain in full frontal A-pose; correct gear sides and paired sheathed hip knives; complete hands/feet/bow; alpha preserved by existing_alpha intake; readable 64px silhouette. Hair shows two front temple braids and otherwise straight fall.",
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/front.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Original Silvan elf captain in full frontal A-pose; correct gear sides and paired sheathed hip knives; complete hands/feet/bow; alpha preserved by existing_alpha intake; readable 64px silhouette. Hair shows two front temple braids and otherwise straight fall.",
+                "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/front.png",
+                "receipt_fingerprint": "2bd2cf704cad0d30f3c805f70588862ca2f06b77aee5085e6bf1a13f0acd8ef1",
+                "receipt": "/workspace/greenleaf-receipts/tauriel_front.json"
+              }
+            ]
           }
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -913,16 +1045,25 @@
               "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-891ef5af-76f9-4541-9e94-d8c93f0cb477.png",
+          "reason": "Same original Silvan elf captain rotated toward image RIGHT, own anatomical right side near; bow remains in far anatomical LEFT hand, empty RIGHT hand near; both knives sheathed at hips; natural five-digit grip and naturally occluded relaxed empty hand; transparent alpha retained, complete framing, readable 64px silhouette. Minor embroidery/seam drift tolerated.",
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/three_quarter.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Same original Silvan elf captain rotated toward image RIGHT, own anatomical right side near; bow remains in far anatomical LEFT hand, empty RIGHT hand near; both knives sheathed at hips; natural five-digit grip and naturally occluded relaxed empty hand; transparent alpha retained, complete framing, readable 64px silhouette. Minor embroidery/seam drift tolerated.",
+                "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/three_quarter.png",
+                "receipt_fingerprint": "d5b727b6586c1dc13011cd1ab8a0122b9e9adc83698615c017cdb9e1de9d1e58",
+                "receipt": "/workspace/greenleaf-receipts/tauriel_front.json"
+              }
+            ]
           }
         },
         "views/side": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -931,16 +1072,25 @@
               "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-a38eb439-4efe-443d-9996-4730310f6245.png",
+          "reason": "Accepted by eye: same original auburn elf captain, nose image RIGHT exact right facial profile, near anatomical right hand empty and far anatomical LEFT holds low bow; natural five-digit empty hand and grip, paired hip knives fully sheathed, existing low quiver and brown-feathered arrows below crown, full head/boots/bow framing, existing transparent alpha retained and 64px silhouette readable. Minor embroidery and belt buckle/perspective drift tolerated.",
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/side.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted by eye: same original auburn elf captain, nose image RIGHT exact right facial profile, near anatomical right hand empty and far anatomical LEFT holds low bow; natural five-digit empty hand and grip, paired hip knives fully sheathed, existing low quiver and brown-feathered arrows below crown, full head/boots/bow framing, existing transparent alpha retained and 64px silhouette readable. Minor embroidery and belt buckle/perspective drift tolerated.",
+                "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/side.png",
+                "receipt_fingerprint": "d73fd77e7f9fb8e2fc570d17afe72f76ccdcdf738a4a0a4ba5b7d497fb91c563",
+                "receipt": "/workspace/greenleaf-receipts/tauriel_body_finish.json"
+              }
+            ]
           }
         },
         "views/back": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -949,42 +1099,96 @@
               "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-8431f218-4480-4c4d-93ce-4b318c9736ae.png",
+          "reason": "Accepted by eye: exact rear with no face visible, same long straight auburn temple-braided hair and green/brown outfit; bow remains in anatomical LEFT/image LEFT hand, empty RIGHT/image RIGHT hand has natural digits with ordinary overlap, natural bow grip occlusion; both curved knives fully sheathed on their hip sides; low back quiver and brown-feathered arrows below crown. Full head/boot soles/gear inside frame, retained native transparent alpha edges and 64px silhouette reviewed. Minor rear embroidery, strap and boot seam drift tolerated.",
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/back.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted by eye: exact rear with no face visible, same long straight auburn temple-braided hair and green/brown outfit; bow remains in anatomical LEFT/image LEFT hand, empty RIGHT/image RIGHT hand has natural digits with ordinary overlap, natural bow grip occlusion; both curved knives fully sheathed on their hip sides; low back quiver and brown-feathered arrows below crown. Full head/boot soles/gear inside frame, retained native transparent alpha edges and 64px silhouette reviewed. Minor rear embroidery, strap and boot seam drift tolerated.",
+                "path": "/workspace/greenleaf-refs/docs/refs/tauriel/views/back.png",
+                "receipt_fingerprint": "36e93f45786179fd96be79bf81ff01dc54d9001a9290ea6eb83934acc9da57e0",
+                "receipt": "/workspace/greenleaf-receipts/tauriel_body_finish.json"
+              }
+            ]
           }
         },
         "face_views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Full-resolution original reviewed by eye at native resolution. True frontal face with both eyes, almond lids, brows, nose bridge, closed lips and fine auburn strands sufficiently resolved. Half-open full-original crop includes the complete crown, both pointed ears, both visible temple braids and their ends, full shoulder/cowl outline and all visible low-quiver fletchings; lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
             "attempts": []
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/face_views/front.png",
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/front",
+            "original_sha256": "d9da8e8bc63a8ff9848ddd549ca81f7f6acc268d284a98a5c07e33c20faa162e",
+            "crop_px": [
+              296,
+              0,
+              726,
+              442
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "c70de3718695b7f146cb54d226abc9afdb3c99cafb380c087d50f54145734d45"
           }
         },
         "face_views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Full-resolution original reviewed by eye at native resolution. Face corresponds to a front three-quarter approximately 45-degree turn toward image RIGHT, with both eyes visible and the far side foreshortened; native lids, brows, nose, closed lips and auburn hair/braid detail are adequate. Half-open full-original crop includes complete crown, visible pointed near ear, both visible temple braids and their ends, shoulder/cowl outline and all visible low-quiver fletchings; far ear is naturally occluded by the angle/hair. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
             "attempts": []
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/face_views/three_quarter.png",
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/three_quarter",
+            "original_sha256": "3d50ecacbbe0cf2cada1beb9b90fd79812a44d6ccfb8beac1ea7a598c86313f2",
+            "crop_px": [
+              300,
+              16,
+              692,
+              430
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "6a00c293f9364c5c986e478770f4f09708e0762584a7506ebb56897ff4a82e38"
           }
         },
         "face_views/side": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Full-resolution original reviewed by eye at native resolution. Exact right facial profile with nose image RIGHT, one visible eye and no far-eye leakage; native near-eye lids/lashes, brow, nose bridge and tip, closed lips, pointed ear and auburn hair/braid strands are sufficiently resolved. Half-open full-original crop includes complete crown, visible pointed near ear, visible near temple braid through its end, shoulder/cowl outline and every existing visible low-quiver fletching. Far ear and far temple detail remain naturally occluded; no invented visibility. Lower edge intentionally intersects upper chest and continuing long hair. No rotation, mirroring or appearance edit required. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
             "attempts": []
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/tauriel/face_views/side.png",
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/side",
+            "original_sha256": "57a9f1f5ebab6ebac550492e642348648c5b1bfb382f79d0d97b8da29397a211",
+            "crop_px": [
+              90,
+              0,
+              542,
+              536
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "8daf71dfafab3f5f9e25546633c6b959aa4ba494d631f9d4c335d4b0afd42b23"
           }
         },
         "details/cloth_leather": {
@@ -1069,7 +1273,7 @@
       "design_extent_m": 2.6,
       "deliverables": {
         "views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -1084,12 +1288,29 @@
               "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-466ce154-3537-46bf-ac9f-7ad6d7e20d87.png",
+          "reason": "Frontal repair retains original identity and correct sides; five natural empty-hand digits visible, complete body and mace safely framed; alpha cutout edges and 64px silhouette reviewed.",
+          "path": "/workspace/greenleaf-refs/docs/refs/bolg/views/front.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "rejected",
+                "reason": "Empty left hand has overlapping curled fingers rather than five clearly visible natural digits; crown and mace nearly meet image edges instead of generous margins.",
+                "path": "/workspace/generated_images/exec-e75dcebb-d677-4f22-9bf1-0e95a6ae8bcd.png",
+                "receipt_fingerprint": "d785df8d4320e31fa861239afee2286cd44996caddcf082173448d33c53f2d75",
+                "receipt": "/workspace/greenleaf-receipts/bolg_front.json"
+              },
+              {
+                "number": 2,
+                "status": "accepted",
+                "reason": "Frontal repair retains original identity and correct sides; five natural empty-hand digits visible, complete body and mace safely framed; alpha cutout edges and 64px silhouette reviewed.",
+                "path": "/workspace/greenleaf-refs/docs/refs/bolg/views/front.png",
+                "receipt_fingerprint": "51d9f56a5d90fd845edfb2d16ce0ba97a2ec75905c4c55c07ad6fcf0761ba0b2",
+                "receipt": "/workspace/greenleaf-receipts/bolg_front.json"
+              }
+            ]
           }
         },
         "views/three_quarter": {
@@ -1258,7 +1479,7 @@
       "design_extent_m": 4.5,
       "deliverables": {
         "views/front": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -1285,23 +1506,42 @@
               "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-3254d4c6-e0bd-4cda-914f-dd882267caf9.png",
+          "reason": "Original exact-front cave troll passes anatomy, silhouette, correct gear sides, full framing and opaque kilt coverage.",
+          "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/views/front.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Original exact-front cave troll passes anatomy, silhouette, correct gear sides, full framing and opaque kilt coverage.",
+                "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/views/front.png",
+                "receipt_fingerprint": "b2376719b69c6c28856d776ec8d0d38c8323b1d94f96f6eb4d09322aa7d1b002",
+                "receipt": "/workspace/greenleaf-receipts/cave_troll_front.json"
+              }
+            ]
           }
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Same original troll with correct nose image-right three-quarter rotation, natural hands, fixed own-right club and shackle, complete framing and opaque kilt.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Same original troll with correct nose image-right three-quarter rotation, natural hands, fixed own-right club and shackle, complete framing and opaque kilt.",
+                "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/views/three_quarter.png",
+                "receipt_fingerprint": "35d61ac71cad6752faf30acd864445f5c9a08a2b3394781818de8b32c8fee4ac",
+                "receipt": "/workspace/greenleaf-receipts/cave_troll_front.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/cave_troll/views/three_quarter.png"
         },
         "views/side": {
           "status": "pending",
@@ -5536,33 +5776,60 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Final by-eye review preserves the original wide-faced bald tattooed stocky dwarf with short dark beard braids, leather/mail crossed straps, belt axes and held axe on his anatomical right. All specified sheets and the small silhouette preview pass; no definite visual defects.",
+        "receipt_sha256": "8b265c286b749545101b5a5c20fce19fd11035e31e1e96c0f5a73b83e9d53723",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/dwarf_bald_turnaround.jpg",
+            "sha256": "f84ef6baf38339ba721af3b232187b5c79d62992ef804f17901dede182e42415"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/dwarf_bald_face.jpg",
+            "sha256": "c490631332ebde532f9c8fb8c079b20f3f9fec3200542f7871dd16816b9b20bc"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/dwarf_bald_details.jpg",
+            "sha256": "70e85c9bcb90bd8968104bef5e14a8a3f897ba7076b74cc6dc471b1d5c1907fc"
+          }
+        ],
+        "defects": []
       }
     },
     "dwarf_hat": {
@@ -5935,45 +6202,105 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted: one coherent enlarged simple rounded rectangular worn belt buckle and brown leather belt matching accepted front; muted tarnished brass/grey metal, rounded frame and pin, scratches/oxidation, leather grain/punched holes, no invented weapon/armour/body/text. Minor allowed buckle/light drift. Original alpha preserved without rembg; retained 256x236 tile reviewed.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/weapon_metal.png",
+              "receipt_fingerprint": "9f2789f62bb89403c6104a12e1a3161989ca37e0b6b745a3440185cfd5a2324c",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_elder_metal_skin.json"
+            }
+          ],
+          "reason": "Accepted: one coherent enlarged simple rounded rectangular worn belt buckle and brown leather belt matching accepted front; muted tarnished brass/grey metal, rounded frame and pin, scratches/oxidation, leather grain/punched holes, no invented weapon/armour/body/text. Minor allowed buckle/light drift. Original alpha preserved without rembg; retained 256x236 tile reviewed.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted: independently generated one-eye/cheek macro of same original elderly broad face, brown deep-set eye, white bushy eyebrow and white beard boundary; large exposed ruddy beige cheek with natural age lines, folds, pores and fine capillaries, no actor likeness/text/tattoos/new objects. Enough clearly visible uninterrupted cheek for sampling. Original supplied alpha 191..249 everywhere, retained existing alpha without rembg; reviewed 256x256 tile. Mild allowed lighting/ruddy variation.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/skin.png",
+              "receipt_fingerprint": "3f61e1720f27c0f5845da5ab06550b49ab88dbbce5c9d1a7d332c70496667e38",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_elder_metal_skin.json"
+            }
+          ],
+          "reason": "Accepted: independently generated one-eye/cheek macro of same original elderly broad face, brown deep-set eye, white bushy eyebrow and white beard boundary; large exposed ruddy beige cheek with natural age lines, folds, pores and fine capillaries, no actor likeness/text/tattoos/new objects. Enough clearly visible uninterrupted cheek for sampling. Original supplied alpha 191..249 everywhere, retained existing alpha without rembg; reviewed 256x256 tile. Mild allowed lighting/ruddy variation.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted: single coherent fully opaque edge-to-edge white flowing beard material macro, dense fine filaments and loose unbraided waves matching accepted elder beard; subtle silver/ivory lighting and grey strand shadows, no face/clothing/braids/ornaments/text. Original and retained 256x256 tile reviewed; minor allowed lighting/strand-arrangement drift.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/hair.png",
+              "receipt_fingerprint": "f39094ec24b267fdb0849c90f9fc6bb52889cfb90d175233b6412e149bcdbc98",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_elder_hair.json"
+            }
+          ],
+          "reason": "Accepted: single coherent fully opaque edge-to-edge white flowing beard material macro, dense fine filaments and loose unbraided waves matching accepted elder beard; subtle silver/ivory lighting and grey strand shadows, no face/clothing/braids/ornaments/text. Original and retained 256x256 tile reviewed; minor allowed lighting/strand-arrangement drift.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Final by-eye review passes: all four body angles and three portrait angles preserve the original elderly stocky dwarf, full flowing white beard, thinning white scalp hair, bushy white brows, broad aged face, navy wool and brown leather costume, and empty hands. No definite anatomy defect, signature clipping, or generated text observed.",
+        "receipt_sha256": "33fbd3611f9e45bd29ce801b8052969b99a1557f1462deac324c4edaacd77ac2",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/dwarf_elder_turnaround.jpg",
+            "sha256": "e6dd53d4674ad6dc9bbef0f8cccc90c4b941db24ec9489d59c9c6e39b15e3aa7"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/dwarf_elder_face.jpg",
+            "sha256": "f9bec439e8aba1d6960aa62716bad2cecd673d05bb59512a970849f59cb3e725"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/dwarf_elder_details.jpg",
+            "sha256": "9df19753f2e3389d8a97796a986cf6df5d84fe97ca0e8d6c5462bd37775bbabf"
+          }
+        ],
+        "defects": []
       }
     },
     "dwarf_redbeard": {
@@ -6513,8 +6840,8 @@
     "reason": "One bounded accessible-workspace, archives, saved-manifest and Git-history search found no original image bytes."
   },
   "validation_summary": [
-    "23 regression tests pass, including intake alpha handling, original concurrency/caps and separate recovery-history tests.",
-    "28 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
+    "24 regression tests pass, including intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.",
+    "32 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }

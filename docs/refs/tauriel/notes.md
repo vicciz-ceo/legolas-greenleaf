@@ -9,3 +9,9 @@
 - Avoid: white hair, back-mounted knives, actor likeness.
 - Design dimensions and PBR values are intent. The compositor records image normalization; observed colours are rendered and lit, not albedo.
 - Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
+
+- face_views/front: accepted single-view body original reused with an author-reviewed head-and-shoulders crop; no new angle or identity generated. Portrait call history is preserved.
+
+- face_views/three_quarter: accepted single-view body original reused with an author-reviewed head-and-shoulders crop; no new angle or identity generated. Portrait call history is preserved.
+
+- face_views/side: accepted single-view body original reused with an author-reviewed head-and-shoulders crop; no new angle or identity generated. Portrait call history is preserved.

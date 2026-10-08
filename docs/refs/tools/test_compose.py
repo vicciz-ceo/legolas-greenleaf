@@ -290,5 +290,14 @@ class ComposeTests(unittest.TestCase):
         self.ready()
         self.assertEqual(c.check_all()['status'],'PASS')
 
+    def test_detail_inset_keeps_safe_background_for_wide_opaque_tile(self):
+        Image.new('RGB', (256, 232), (20, 30, 55)).save(self.folder/'details/0.png')
+        with self.assertRaisesRegex(ValueError, 'Pre-JPEG background patch'):
+            c.grid('fixture')
+        self.data['composition']['detail_margin_px'] = 24
+        self.store(self.data)
+        self.ready()
+        self.assertEqual(c.check('fixture')['status'], 'PASS')
+
 if __name__=='__main__':
     unittest.main()

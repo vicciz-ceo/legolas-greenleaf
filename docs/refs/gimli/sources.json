@@ -354,5 +354,88 @@
       "edges": "Opaque RGB image retained by ordinary detail intake without segmentation.",
       "minor_drift": "Small engraving/collar ornament drift within tolerated material detail variation."
     }
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0c14742a-9ca4-44c0-be93-c7841bd8362f.png",
+    "original_sha256": "1329a5ec0c9a9fd5294e35fbc95a4d888711e62e464308f1cdfb2aef8a44178b",
+    "original_size_px": [
+      1383,
+      1137
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "20913afad4b477bfc86e5b582552ca2ef0fc4d828c3aac660d249587ce4e9ac3",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 2,
+      "kind": "conditioned_skin_macro",
+      "transparent_background": false,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/face_views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front portrait, spec.json, notes.md, revised original-brief.txt",
+      "front_portrait_sha256": "e57d0e5e66ed425abcb9db49de9c8fa0d16328727904ef617ffd5ec3ac2e090f"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original broad rugged dwarf identity, brown/hazel deep-set eye and natural lids, wide bulbous nose, full ruddy cheek and dense red-brown brow/beard. No actor likeness.",
+      "surface": "Natural wrinkles and crow feet, pores, varied redness and fine capillaries visible; skin-to-beard boundary and short hairs readable.",
+      "framing": "One continuous skin macro fills entire opaque frame, deliberately cropped face surface; no background, invented gear or accessories.",
+      "anatomy": "Natural one-eye nose cheek macro; no extra features.",
+      "text": "No text, labels or watermark.",
+      "edges": "Opaque RGB retained by ordinary detail intake, no segmentation.",
+      "minor_drift": "Macro amplifies skin microtexture relative to 256px accepted portrait; consistent tone and features."
+    }
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-39c4cf4e-d704-46bd-9934-ba4fed487717.png",
+    "original_sha256": "ab457d6761009277b02680356df5433ad9385e57b1660298544a94d4cde33e2f",
+    "original_size_px": [
+      1383,
+      1137
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "c77da197303d607539e88af3872124d41028ab69b33c1e9830ea184d56021fcd",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 1,
+      "kind": "conditioned_front_beard_material_macro",
+      "transparent_background": false,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/face_views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front portrait, spec.json, notes.md, revised original-brief.txt",
+      "front_portrait_sha256": "e57d0e5e66ed425abcb9db49de9c8fa0d16328727904ef617ffd5ec3ac2e090f"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "consistency": "Red-brown reddish chestnut fine beard fibers, chunky braid crossing and one existing bronze beard clasp match accepted front portrait. No invented back-head braids or new ornaments.",
+      "framing": "Single continuous opaque front-beard material macro fills frame with braid at right and loose coarse fibers at left. Partial existing bronze clasp lower right.",
+      "surface": "Fine natural frizzy coarse fibers and braid crossing clearly readable.",
+      "text": "No generated text labels watermark or collage.",
+      "edges": "RGB fully opaque material tile retained by ordinary intake, no background segmentation.",
+      "minor_drift": "Permitted fine strand arrangement and lighting drift; macro enlarges hair fiber texture. Small clasp engraving drift within existing bronze clasp appearance."
+    }
   }
 }
