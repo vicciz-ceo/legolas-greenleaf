@@ -10,7 +10,7 @@ import type { KindContext, KindDef } from '../../types';
 import { box, put, spike } from './armor';
 import { ctxBucket, devNum, recipeRng, shade } from './common';
 import { sculptStrap } from './garments';
-import { addHairdo } from './hair';
+import { addHairdo, withHair } from './hair';
 import { IRON, domeHelm } from './headgear';
 import { faceStroke } from './markings';
 import { bodyMarks, boneNecklace, crudePauldron, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
@@ -58,8 +58,8 @@ function strips(ctx: KindContext, color: number, rng: Rng) {
 
 function scrambler(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
-  skinTint(ctx, { color: 0xb2ada0, color2: 0x8c8878, noise: 0.55, torso: true, legs: true });
-  skinMottle(ctx, rng, [0x9a9588, 0xc2bdae, 0x7a766a], { n: 14, torso: true, strength: 0.45 });
+  skinTint(ctx, { color: 0x9a968a, color2: 0x78746a, noise: 0.55, torso: true, legs: true });
+  skinMottle(ctx, rng, [0x8a867a, 0xaaa699, 0x6a665c], { n: 14, torso: true, strength: 0.45 });
   eyeRings(ctx, 0x5a5448, 0.5);
   orcTeeth(ctx, rng, { n: 10, big: 0.8, color: 0xd8cca0 });
   bodyMarks(ctx, rng, { scars: 3 });
@@ -72,7 +72,7 @@ function scrambler(ctx: KindContext, rng: Rng) {
 function hooded(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
-  skinTint(ctx, { color: 0x9aa090, color2: 0x72786a, noise: 0.55, torso: true, legs: true });
+  skinTint(ctx, { color: 0x848a7c, color2: 0x626a5a, noise: 0.55, torso: true, legs: true });
   eyeRings(ctx, 0x4a5048, 0.5);
   orcTeeth(ctx, rng, { n: 9, big: 0.8, color: 0xd8cca0 });
   raggedHood(ctx, 0x3a3228, rng);
@@ -84,8 +84,8 @@ function hooded(ctx: KindContext, rng: Rng) {
 function potHelm(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  skinTint(ctx, { color: 0xb8b090, color2: 0x8e8a70, noise: 0.55, torso: true, legs: true });
-  skinMottle(ctx, rng, [0x9c9678, 0xc8c2a2], { n: 10, torso: true, strength: 0.4 });
+  skinTint(ctx, { color: 0xa09a7a, color2: 0x7a7660, noise: 0.55, torso: true, legs: true });
+  skinMottle(ctx, rng, [0x8c8668, 0xb0aa88], { n: 10, torso: true, strength: 0.4 });
   eyeRings(ctx, 0x5a5440, 0.55);
   orcTeeth(ctx, rng, { n: 9, big: 0.9, color: 0xd8cca0 });
   bodyMarks(ctx, rng, { scars: 4 });
@@ -100,7 +100,7 @@ function potHelm(ctx: KindContext, rng: Rng) {
 function shaman(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  skinTint(ctx, { color: 0x8c96a0, color2: 0x646e7a, noise: 0.5, torso: true, legs: true });
+  skinTint(ctx, { color: 0x7c8690, color2: 0x56606c, noise: 0.5, torso: true, legs: true });
   eyeRings(ctx, 0x3a4048, 0.55);
   orcTeeth(ctx, rng, { n: 10, big: 0.9, color: 0xd8d0a8 });
   // white face paint
@@ -123,13 +123,15 @@ function shaman(ctx: KindContext, rng: Rng) {
 }
 
 export function goblinExtras(ctx: KindContext) {
-  const rng = recipeRng(ctx, 'goblin');
-  switch (ctxBucket(ctx)) {
-    case 1: return hooded(ctx, rng);
-    case 2: return potHelm(ctx, rng);
-    case 3: return shaman(ctx, rng);
-    default: return scrambler(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const rng = recipeRng(ctx, 'goblin');
+    switch (ctxBucket(ctx)) {
+      case 1: return hooded(ctx, rng);
+      case 2: return potHelm(ctx, rng);
+      case 3: return shaman(ctx, rng);
+      default: return scrambler(ctx, rng);
+    }
+  });
 }
 
 export const goblinDef: KindDef = {
@@ -137,9 +139,9 @@ export const goblinDef: KindDef = {
   height: 1.48,
   build: { shoulders: 0.92, hips: 0.88, bulk: 0.88, belly: 0.12, chest: 0.92, armLength: 1.3, legLength: 0.9, headSize: 1.24, neck: 0.75, neckThick: 0.85, hunch: 0.72, handSize: 1.45, footSize: 1.25, muscle: 0.7 },
   face: FACE,
-  skin: { color: 0xb2ada0, color2: 0x8c8878, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x6a5a54, brows: 0x4a463e, surface: 'skin_orc', scatter: 0x9a8a70 },
+  skin: { color: 0x9a968a, color2: 0x78746a, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x6a5a54, brows: 0x4a463e, surface: 'skin_orc', scatter: 0x9a8a70 },
   eyes: { color: 0xe6dc7a, glow: 1.1, sclera: 0xd8d4b0 },
-  hair: { style: 'stringy', color: 0xb2ada0, density: 0 },
+  hair: { style: 'stringy', color: 0x9a968a, density: 0 },
   beard: null,
   outfit: [
     { type: 'loincloth', color: 0x3a3428, length: 0.55 },

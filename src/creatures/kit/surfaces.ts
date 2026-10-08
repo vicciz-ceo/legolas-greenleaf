@@ -38,7 +38,7 @@ export const SURFACES = {
   skin_orc: S(0.62, 0, 0, 0.55, { pores: 1.5, wrinkles: 0.7, leather: 0.2 }),
   /** troll hide: thick, deeply wrinkled */
   skin_troll: S(0.78, 0, 0, 0.3, { pores: 1.0, wrinkles: 1.3, leather: 0.5 }),
-  lips: S(0.4, 0, 0, 1, { pores: 0.35, wrinkles: 0.25 }),
+  lips: S(0.38, 0, 0.05, 1, { pores: 0.25, wrinkles: 0.05 }),
   /** finger/toe nails, claws, horns */
   nail: S(0.38, 0, 0, 0.1, { wrinkles: 0.25 }),
   horn: S(0.55, 0, 0, 0, { wrinkles: 0.8, scratches: 0.3 }),

@@ -369,3 +369,31 @@ export function lake(o: LakeOpts): WaterBody {
     levelAt: () => y,
   };
 }
+
+/**
+ * Wrap a terrain height function so a river channel is carved along `path`: the bed sits `depth`
+ * metres below the water level (the path's y or `level`), the banks ease out over `bank` metres.
+ * Use it for TerrainOpts.height and pass the same path/width to river().
+ */
+export function carveRiver(
+  height: HeightFn,
+  path: PathPoint[] | Path,
+  width: number | ((s: number) => number),
+  o: { depth?: number; bank?: number; level?: number | ((x: number, z: number) => number) } = {},
+): HeightFn {
+  const p = path instanceof Path ? path : new Path(path, { y: typeof o.level === 'number' ? o.level : 0 });
+  const wAt = typeof width === 'function' ? width : () => width;
+  const depth = o.depth ?? 1.8;
+  const bank = o.bank ?? 6;
+  return (x, z) => {
+    const n = p.nearest(x, z);
+    const h = height(x, z);
+    const w = wAt(n.s) * 0.5;
+    if (n.dist > w + bank) return h;
+    const level = typeof o.level === 'function' ? o.level(x, z) : n.y;
+    const bed = level - depth;
+    const t = smoothstep(w * 0.7, w + bank, n.dist);
+    // never raise the ground: only carve down toward the bed
+    return Math.min(h, bed + (h - bed) * t);
+  };
+}

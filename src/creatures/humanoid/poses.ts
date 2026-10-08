@@ -563,11 +563,16 @@ const ATTACKS: Record<AttackAnim, Key[]> = {
     { t: 0.8, cy: 0.1, rh: [0.15, -0.15, 0.85], rd: [0, 0, 1], rt: [0, 0.3, 1], cp: 0.15, flz: 0.2 },
     { t: 1 },
   ],
+  // knuckle (d) and thumb/blade (t) directions are authored perpendicular: the blade follows the
+  // thumb, and a thumb nearly parallel to the knuckles would be flipped by orthogonalisation
   overhead: [
     { t: 0 },
-    { t: 0.4, cp: -0.2, sp: -0.05, rh: [0.15, 0.85, -0.2], rd: [0, 0.5, -1], rt: [0, -0.4, -1], re: [0.6, 0.2, -0.6], lh: [0.0, 0.8, -0.15], ld: [0, 0.5, -1], lt: [0, -0.4, -1], le: [0.6, 0.2, -0.6], np: -0.1 },
-    { t: 0.58, cp: 0.4, sp: 0.15, rh: [0.05, -0.35, 0.8], rd: [0, -0.3, 1], rt: [0, 0.6, 0.8], re: [0.5, -1, 0], lh: [-0.05, -0.38, 0.78], ld: [0, -0.3, 1], lt: [0, 0.6, 0.8], le: [0.5, -1, 0], py: -0.08, flz: 0.15 },
-    { t: 0.8, cp: 0.35, sp: 0.1, rh: [0.05, -0.45, 0.65], rd: [0, -0.5, 0.8], rt: [0, 0.7, 0.6], lh: [-0.05, -0.47, 0.63], ld: [0, -0.5, 0.8], lt: [0, 0.7, 0.6], py: -0.06, flz: 0.15 },
+    // wind-up: fists above the head, wrists cocked, blade raised behind the head pointing back-down
+    { t: 0.4, cp: -0.22, sp: -0.06, rh: [0.1, 0.92, -0.22], rd: [0, 0.85, -0.5], rt: [0, -0.5, -0.85], re: [0.7, 0.3, -0.5], lh: [-0.02, 0.9, -0.2], ld: [0, 0.85, -0.5], lt: [0, -0.5, -0.85], le: [0.7, 0.3, -0.5], np: -0.1 },
+    // chop: blade sweeping forward over the top
+    { t: 0.58, cp: 0.4, sp: 0.15, rh: [0.05, -0.3, 0.82], rd: [0, -0.55, 0.84], rt: [0, 0.84, 0.55], re: [0.5, -1, 0], lh: [-0.05, -0.33, 0.8], ld: [0, -0.55, 0.84], lt: [0, 0.84, 0.55], le: [0.5, -1, 0], py: -0.08, flz: 0.15 },
+    // follow-through: blade level, pointing at the target
+    { t: 0.8, cp: 0.35, sp: 0.1, rh: [0.05, -0.45, 0.65], rd: [0, -0.9, 0.44], rt: [0, 0.44, 0.9], lh: [-0.05, -0.47, 0.63], ld: [0, -0.9, 0.44], lt: [0, 0.44, 0.9], py: -0.06, flz: 0.15 },
     { t: 1 },
   ],
   knife1: [
@@ -599,7 +604,7 @@ const ATTACKS: Record<AttackAnim, Key[]> = {
   ],
   slam: [
     { t: 0 },
-    { t: 0.45, cp: -0.25, rh: [0.3, 0.85, 0.0], lh: [0.3, 0.85, 0.0], rd: [0, 1, 0], ld: [0, 1, 0], re: [1, 0, -0.5], le: [1, 0, -0.5], py: 0.02 },
+    { t: 0.45, cp: -0.25, rh: [0.3, 0.85, 0.0], lh: [0.3, 0.85, 0.0], rd: [0, 1, 0], ld: [0, 1, 0], rt: [0, -0.1, -1], lt: [0, -0.1, -1], re: [1, 0, -0.5], le: [1, 0, -0.5], py: 0.02 },
     { t: 0.62, cp: 0.55, sp: 0.25, rh: [0.15, -0.55, 0.75], lh: [0.15, -0.55, 0.75], rd: [0, -1, 0.5], ld: [0, -1, 0.5], py: -0.14, flz: 0.18, frz: -0.05 },
     { t: 0.85, cp: 0.45, sp: 0.2, rh: [0.15, -0.6, 0.7], lh: [0.15, -0.6, 0.7], py: -0.12, flz: 0.18 },
     { t: 1 },

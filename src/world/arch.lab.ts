@@ -8,6 +8,11 @@ import { lake, setWaterTime } from './water';
 import { barrel, boat, crate, torch, brazier, ladder } from './props';
 import { Rng } from '../core/rng';
 import { chamberOfMazarbul, dwarvenHall, pillar } from './arch_moria';
+import { brokenBridge, frozenWaterfall, ruinedWatchtower } from './arch_ravenhill';
+import { blackGate } from './arch_blackgate';
+import { amonHenSummit, ruins, statue } from './arch_amonhen';
+import { minasTirith } from './arch_minas';
+import { bridge } from './arch_bridge';
 import { gate, helmsDeep, stairs, stoneWall, tower } from './arch_helms';
 
 function one(name: string, make: () => Built, height: number): LabSubject {
@@ -94,4 +99,30 @@ export const subjects: LabSubject[] = [
       return { object: g, height: 28 };
     },
   },
+  one('ruined_watchtower', () => ruinedWatchtower(), 28),
+  one('broken_bridge', () => brokenBridge(34, 6, { gap: [0.4, 0.62] }), 10),
+  one('frozen_waterfall', () => frozenWaterfall(), 24),
+  one('black_gate', () => blackGate({ scale: 0.5 }), 50),
+  one('statue', () => statue('standing'), 8),
+  one('statues', () => {
+    const a = statue('standing');
+    const b = statue('toppled', { seed: 2 });
+    const c = statue('headless', { seed: 3 });
+    b.object.position.x = 9;
+    c.object.position.x = 18;
+    a.object.add(b.object, c.object);
+    return { object: a.object, colliders: [...a.colliders] };
+  }, 8),
+  one('amon_hen_summit', () => amonHenSummit(), 12),
+  {
+    name: 'ruins',
+    category: 'environment',
+    create() {
+      const r = withDebug(ruins({ center: new THREE.Vector3(0, 0, 0), halfSize: [18, 18] }, 22, () => 0, { grandeur: 0.7 }));
+      return { object: r.object, height: 6 };
+    },
+  },
+  one('minas_tirith', () => minasTirith({ scale: 0.35 }), 220),
+  one('bridge_wood', () => bridge([[-14, 0, 0], [0, 0, 0], [14, 0, 6]], 3, { kind: 'wood' }), 4),
+  one('bridge_rope', () => bridge([[-16, 0, 0], [16, 0, 0]], 2, { kind: 'rope', sag: 2.0 }), 4),
 ];

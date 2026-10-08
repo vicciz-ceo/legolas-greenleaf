@@ -91,7 +91,7 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
   s.with({ ...sk, bone: 'head', bone2: 'jaw', blend: [0.25, 0.8] }, () => {
     s.mirrored(() => {
       const ear = h(0.265 * jw, -0.2, -0.045);
-      const gon = h(0.232 * jw, -0.39 * jl, 0.0);
+      const gon = h(0.222 * jw, -0.39 * jl, 0.0);
       const chinSide = h(0.08 * (0.7 + 0.3 * jw), -0.5 * jl, 0.265);
       s.cone(ear, gon, 0.055 * u, 0.052 * u * jw, { k: 0.09 * u, blendAxis: [ear, chinSide] });
       s.cone(gon, chinSide, 0.052 * u * jw, 0.05 * u, { k: 0.1 * u, blendAxis: [ear, chinSide] });
@@ -121,7 +121,7 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
     // shallow orbit above the eye (under the brow)
     s.mirrored(() => s.ellipsoid(h(ex, ey + 0.028, ez + 0.05), [0.082 * u, 0.042 * u, 0.045 * u], { op: 'subtract', k: 0.04 * u }));
     // lower lid / under-eye fullness (no dark hollow)
-    s.mirrored(() => s.ellipsoid(h(ex + 0.004, ey - 0.06, ez + 0.03), [0.068 * u, 0.03 * u, 0.042 * u], { k: 0.035 * u }));
+    s.mirrored(() => s.ellipsoid(h(ex + 0.004, ey - 0.062, ez + 0.022), [0.064 * u, 0.026 * u, 0.04 * u], { k: 0.035 * u }));
     // eyelid shell around the eyeball, with the almond opening cut through it
     s.mirrored(() => s.sphere(h(ex, ey + 0.002, ez), rs * u, { k: 0.026 * u }));
     s.mirrored(() =>
@@ -166,21 +166,18 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
     // labiomental groove (soft shadow under the lower lip)
     s.ellipsoid(h(0, my - 0.072, 0.362), [0.055 * u, 0.011 * u, 0.012 * u], { op: 'subtract', k: 0.022 * u });
   });
-  s.with({ bone: 'head', bone2: 'jaw', blend: [0.3, 0.7], blendAxis: [h(0, my + 0.01, 0), h(0, my - 0.02, 0)] }, () => {
-    // mouth line: a shallow, smooth groove (a thin slit aliases into 'teeth' at face resolution)
-    s.ellipsoid(h(0, my - 0.002, 0.428), [0.09 * u * lw, 0.0095 * u, 0.03 * u], { op: 'subtract', k: 0.009 * u });
-    s.mirrored(() => s.sphere(h(0.093 * lw, my - 0.002, 0.366), 0.008 * u, { op: 'subtract', k: 0.009 * u }));
-  });
-
+  // the mouth line is the crease where the two lip volumes meet (a carved slit thinner than a
+  // face cell aliases into "teeth"); the corners and the seam are darkened by paint below
   // ── colour ──
   // lips: upper and lower vermilion (soft edge), slightly darker upper lip
   const lipC = skin.lips;
-  s.mirrored(() => s.ellipsoid(h(0.03 * lw, my + 0.018, 0.392), [0.063 * u * lw, 0.019 * u * lf, 0.035 * u], { op: 'paint', k: 0.006 * u, color: mixHex(lipC, 0x000000, 0.06), mat: 'lips', bone: 'head', strength: 0.85, rot: [0, 0, -0.08] }));
-  s.ellipsoid(h(0, my - 0.024, 0.384), [0.074 * u * lw, 0.023 * u * lf, 0.035 * u], { op: 'paint', k: 0.007 * u, color: lipC, mat: 'lips', bone: 'jaw', strength: 0.85 });
-  // the mouth line itself: a soft dark seam between the lips
-  s.ellipsoid(h(0, my - 0.003, 0.4), [0.088 * u * lw, 0.005 * u, 0.04 * u], { op: 'paint', k: 0.008 * u, color: mixHex(lipC, 0x2a1210, 0.55), mat: 'lips', bone: 'head', strength: 0.75 });
+  s.mirrored(() => s.ellipsoid(h(0.03 * lw, my + 0.018, 0.392), [0.063 * u * lw, 0.019 * u * lf, 0.035 * u], { op: 'paint', k: 0.011 * u, color: mixHex(lipC, 0x000000, 0.06), mat: 'lips', bone: 'head', strength: 0.85, rot: [0, 0, -0.08] }));
+  s.ellipsoid(h(0, my - 0.024, 0.384), [0.072 * u * lw, 0.021 * u * lf, 0.035 * u], { op: 'paint', k: 0.012 * u, color: lipC, mat: 'lips', bone: 'jaw', strength: 0.85 });
+  // the mouth line itself: a soft dark seam between the lips, deeper at the corners
+  s.ellipsoid(h(0, my - 0.003, 0.4), [0.086 * u * lw, 0.004 * u, 0.04 * u], { op: 'paint', k: 0.02 * u, color: mixHex(lipC, 0x2a1210, 0.45), mat: 'lips', bone: 'head', strength: 0.55 });
+  s.mirrored(() => s.sphere(h(0.09 * lw, my - 0.003, 0.37), 0.008 * u, { op: 'paint', k: 0.01 * u, color: mixHex(skin.color, 0x3a2020, 0.35), mat: skin.surface, bone: 'head', strength: 0.6 }));
   // lid margins: slightly darker, pinker skin right around the opening (reads as the lash line)
-  s.mirrored(() => s.ellipsoid(lens(0, (hU - hL) / 2, ez + rs * 0.9), [w * 1.05 * u, ((hU + hL) / 2) * 1.35 * u, rs * 0.6 * u], { op: 'paint', k: 0.006 * u, color: mixHex(skin.color, mixHex(skin.lips, 0x3a2420, 0.35), 0.5), mat: skin.surface, bone: 'head', strength: 0.55, rot: [0, 0, tilt] }));
+  s.mirrored(() => s.ellipsoid(lens(0, (hU - hL) / 2, ez + rs * 0.9), [w * 1.0 * u, ((hU + hL) / 2) * 1.2 * u, rs * 0.6 * u], { op: 'paint', k: 0.014 * u, color: mixHex(skin.color, mixHex(skin.lips, 0x3a2420, 0.35), 0.5), mat: skin.surface, bone: 'head', strength: 0.55, rot: [0, 0, tilt] }));
   // warmth: faint redness on the cheeks, nose and (in sculptEars) the ears
   const blush = mixHex(skin.color, mixHex(skin.lips, 0xd06a5a, 0.5), 0.55);
   const warm = brute < 0.5 ? 1 - brute * 2 : 0;
@@ -190,7 +187,7 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
   }
   // brow base tint (the brow hairs themselves are cards)
   s.mirrored((side) =>
-    s.cone(h(ex - 0.07, ey + 0.092, 0.37), h(ex + 0.075, ey + 0.088 + tilt * 0.12 * side * side, 0.31), 0.011 * u, 0.007 * u, { op: 'paint', k: 0.008 * u, color: skin.brows, mat: skin.surface, bone: 'head', strength: 0.35 }),
+    s.cone(h(ex - 0.07, ey + 0.092, 0.37), h(ex + 0.075, ey + 0.088 + tilt * 0.12 * side * side, 0.31), 0.011 * u, 0.007 * u, { op: 'paint', k: 0.016 * u, color: skin.brows, mat: skin.surface, bone: 'head', strength: 0.18 }),
   );
   // tusks
   if (f.tusks > 0) {

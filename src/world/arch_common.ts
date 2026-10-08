@@ -92,7 +92,7 @@ export function wallPrism(a: THREE.Vector3, b: THREE.Vector3, height: number, th
   const dz = b.z - a.z;
   const l = Math.hypot(dx, dz);
   const g = new THREE.BoxGeometry(l + extend * 2, height + sink, thick);
-  bakeBoxUV(g, tile, Math.random() * 0, 0);
+  bakeBoxUV(g, tile, 0, 0);
   const pos = g.getAttribute('position') as THREE.BufferAttribute;
   for (let i = 0; i < pos.count; i++) {
     const t = (pos.getX(i) + (l + extend * 2) / 2 - extend) / Math.max(l, 1e-3);

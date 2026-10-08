@@ -661,10 +661,9 @@ function crossbow(seed: number): THREE.Object3D {
   k.add(new THREE.BoxGeometry(0.012, 0.05, 0.012).translate(0, 0.0, -0.02), { color: 0x5a5a58, mat: 'metal_dark' });
   root.add(k.mesh('crossbow_stock'));
   const bow = buildBow({ half: 0.32, brace: 0.06, recurve: 0.02, width: 0.035, thick: 0.02, wood: 0x2e2a26, gripColor: 0x2a2018, stringColor: 0x8a7a60, fletch: 0x3a3028, crude: true, seed });
-  // prod across the front: bow +Y → crossbow X, bow string (-Z) → toward the stock (-Y)
-  bow.rotation.set(0, 0, Math.PI / 2);
-  bow.rotation.order = 'ZXY';
-  bow.rotateX(-Math.PI / 2);
+  // prod across the front: bow limbs (±Y) → crossbow ±X (horizontal in a hand: the hand socket's
+  // X is T × L), bow arrow (+Z) → +Y (along the stock), bow string (−Z) → toward the stock (−Y)
+  bow.rotation.set(-Math.PI / 2, Math.PI / 2, 0, 'YXZ');
   bow.position.set(0, 0.46, 0.04);
   root.add(bow);
   root.userData.bow = bow.userData.bow;

@@ -55,11 +55,11 @@ interface Entry {
   lift: THREE.Group;
 }
 
-/** URL overrides for inspection: &helmet=0|1 &armor=0..1 &weapon=<kind> &offhand=<kind> */
+/** &loadout=1 applies loadoutFor(kind, seed) (what gameplay would see); overrides: &helmet=0|1 &armor=0..1 &weapon=<kind> &offhand=<kind> */
 function urlLoadout(lo: Loadout): Loadout {
   if (typeof location === 'undefined') return lo;
   const q = new URLSearchParams(location.search);
-  const out = { ...lo };
+  const out: Loadout = q.get('loadout') === '1' ? { ...lo } : {};
   if (q.has('helmet')) out.helmet = q.get('helmet') !== '0';
   if (q.has('armor')) out.armor = Number(q.get('armor'));
   if (q.has('weapon')) out.weapon = q.get('weapon') as WeaponKind;

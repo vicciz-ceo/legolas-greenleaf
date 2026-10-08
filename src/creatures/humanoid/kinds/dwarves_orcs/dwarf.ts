@@ -13,9 +13,9 @@ import type { KindContext, KindDef } from '../../types';
 import { box, put, ring, shell, spike, studs } from './armor';
 import { ctxBucket, devNum, mix, recipeRng, shade } from './common';
 import { sculptFurMantle, sculptScarf, sculptStrap, sculptTorsoGarment } from './garments';
-import { addBeard, addBrows, addHairdo, hairMaterial, sculptBeardMass, type BeardOpts } from './hair';
+import { addBeard, addBrows, addHairdo, hairMaterial, sculptBeardMass, type BeardOpts, withHair } from './hair';
 import { DOME_ROUND, STEEL, domeHelm, floppyHat } from './headgear';
-import { faceStroke, paintBlob, paintRing, scalpStroke } from './markings';
+import { faceStroke, inkScalp, paintBlob, paintRing } from './markings';
 
 const MAIL = 0x76756f;
 
@@ -94,19 +94,32 @@ function warrior(ctx: KindContext, rng: Rng) {
   // bald: paint the thin cap back to skin, then the swirling tattoos
   s.ellipsoid(P.h(0, 0.045, -0.055), [0.35 * u, 0.43 * u, 0.455 * u], { op: 'paint', color: 0xb98462, mat: 'skin_weathered', bone: 'head', k: 0.02 * u, strength: 1 });
   const ink = 0x1d2430;
-  scalpStroke(ctx, [[0, 0.5], [0.05, 0.85], [0, 1.2], [Math.PI, 1.3], [Math.PI, 0.85], [Math.PI, 0.4]], { color: ink, r: 0.011 });
+  const strokes: [number, number][][] = [];
+  const HALF = Math.PI / 2;
+  // centre line front → crown → back
+  strokes.push([[0, 0.55], [0, 0.95], [0, HALF], [Math.PI, HALF], [Math.PI, 0.95], [Math.PI, 0.5]]);
   for (const sd of [1, -1]) {
-    scalpStroke(ctx, [[sd * 0.5, 0.35], [sd * 0.95, 0.62], [sd * 1.45, 0.75], [sd * 2.0, 0.6], [sd * 2.5, 0.35]], { color: ink, r: 0.009, taper: 0.4 });
-    scalpStroke(ctx, [[sd * 0.9, 0.62], [sd * 1.0, 0.95], [sd * 1.3, 1.1]], { color: ink, r: 0.007 });
-    scalpStroke(ctx, [[sd * 0.4, 0.12], [sd * 0.9, 0.18], [sd * 1.5, 0.2], [sd * 2.1, 0.12]], { color: ink, r: 0.007 });
-    // a spiral at the temple
-    const sp: [number, number][] = [];
-    for (let i = 0; i < 9; i++) {
-      const a = i * 0.8;
-      sp.push([sd * (0.95 + Math.cos(a) * (0.22 - i * 0.02)), 0.12 + Math.sin(a) * (0.17 - i * 0.015)]);
+    // two arcs sweeping from the temple over the ear to the nape, joined by short rungs
+    const arcA: [number, number][] = [];
+    const arcB: [number, number][] = [];
+    for (let i = 0; i <= 12; i++) {
+      const f = i / 12;
+      const az = 0.5 + f * 2.4;
+      arcA.push([sd * az, 0.22 + 0.42 * Math.sin(f * Math.PI)]);
+      arcB.push([sd * (az + 0.05), 0.5 + 0.5 * Math.sin(f * Math.PI)]);
     }
-    scalpStroke(ctx, sp, { color: ink, r: 0.007 });
+    strokes.push(arcA, arcB);
+    for (let i = 1; i < 12; i += 2) strokes.push([arcA[i], arcB[i]]);
+    // a spiral behind the ear
+    const sp: [number, number][] = [];
+    for (let i = 0; i < 14; i++) {
+      const a2 = i * 0.62;
+      const r = 0.3 - i * 0.017;
+      sp.push([sd * (2.45 + Math.cos(a2) * r), 0.15 + Math.sin(a2) * r * 0.8]);
+    }
+    strokes.push(sp);
   }
+  inkScalp(ctx, strokes, { color: ink, width: 0.016 });
   faceCommon(ctx, { brow: grey, blush: 0.4, scars: 2 }, rng);
   // forearm tattoo bands
   for (const sd of ['l', 'r'] as const) {
@@ -149,7 +162,7 @@ function jester(ctx: KindContext, rng: Rng) {
   const u = P.headH;
   const ginger = 0x7e4a22;
   sculptHairCap(s, P, { style: 'short', color: ginger, tipColor: 0x9a6030, length: 1, density: 1 });
-  addHairdo(ctx, { color: ginger, tip: 0x9a6030, deep: 0x4a2a14, length: 0.22 * sc, count: 85, width: 0.034, wave: 0.6, wild: 0.4, comb: 0.5, front: 0.1, back: -0.45, gravity: 6 }, rng);
+  addHairdo(ctx, { color: ginger, tip: 0x9a6030, deep: 0x4a2a14, length: 0.22 * sc, count: 85, width: 0.034, wave: 0.6, wild: 0.4, comb: 0.5, front: 0.1, back: -0.45, gravity: 6, maxY: 0.08 }, rng);
   faceCommon(ctx, { brow: 0x5a3416, blush: 0.65 }, rng);
   // two thick side braids with beads, a short goatee and a long curled moustache
   const h = P.h;
@@ -167,7 +180,7 @@ function jester(ctx: KindContext, rng: Rng) {
   braidClasps(ctx, br.braidPaths, 0x9b7432);
   void h;
   void braids;
-  floppyHat(ctx, { color: 0x6b4e2e, color2: 0x8a6a40, crown: 0.7, brim: 0.62, droop: 0.2, lean: 0.4, point: 0.7, seed: 2 });
+  floppyHat(ctx, { color: 0x6b4e2e, color2: 0x8a6a40, crown: 0.7, brim: 0.62, droop: 0.16, lean: 0.4, point: 0.7, seed: 2, y: 0.16 });
   // ochre jerkin over the brown tunic, striped scarf, straps
   sculptTorsoGarment(ctx, { color: 0x8a7236, mat: 'wool', inflate: 0.018 * sc, hem: 0.05, sleeve: 0 });
   sculptScarf(ctx, { color: 0x9a3a2a, color2: 0x2a2a30, tail: 0.14 * sc });
@@ -185,7 +198,7 @@ function elder(ctx: KindContext, rng: Rng) {
   const sc = P.s;
   const white = 0xd8d2c4;
   sculptHairCap(s, P, { style: 'long_wavy', color: white, tipColor: 0xf0ece2, length: 1, density: 1 });
-  addHairdo(ctx, { color: white, tip: 0xf2eee4, deep: 0xa8a294, length: 0.5 * sc, count: 120, width: 0.04, wave: 0.7, wild: 0.2, comb: 1.0, front: 0.24, back: -0.4, gravity: 5, tail: 0 }, rng);
+  addHairdo(ctx, { color: white, tip: 0xf2eee4, deep: 0xa8a294, length: 0.5 * sc, count: 120, width: 0.04, wave: 0.7, wild: 0.2, comb: 1.0, front: 0.12, back: -0.4, gravity: 5, tail: 0 }, rng);
   faceCommon(ctx, { brow: 0xb8b2a4, blush: 0.5 }, rng);
   sculptBeardMass(ctx, { color: mix(white, 0x000000, 0.35), color2: 0x9a9488, length: 0.4 * sc, width: 1.05, fullness: 1.1 });
   const beard: BeardOpts = {
@@ -214,7 +227,7 @@ function redbeard(ctx: KindContext, rng: Rng) {
   const sc = P.s;
   const red = 0xa8401c;
   sculptHairCap(s, P, { style: 'wild', color: red, tipColor: 0xc8602c, length: 1, density: 1 });
-  addHairdo(ctx, { color: red, tip: 0xc8602c, deep: 0x6a2410, length: 0.45 * sc, count: 140, width: 0.044, wave: 1.0, wild: 0.6, comb: 0.7, front: 0.22, back: -0.4, gravity: 4 }, rng);
+  addHairdo(ctx, { color: red, tip: 0xc8602c, deep: 0x6a2410, length: 0.45 * sc, count: 140, width: 0.044, wave: 1.0, wild: 0.6, comb: 0.7, front: 0.12, back: -0.4, gravity: 4 }, rng);
   faceCommon(ctx, { brow: 0x7a2a12, blush: 0.75, scars: 1 }, rng);
   sculptBeardMass(ctx, { color: mix(red, 0x000000, 0.35), color2: red, length: 0.42 * sc, width: 1.2, fullness: 1.4 });
   const beard: BeardOpts = {
@@ -236,14 +249,16 @@ function redbeard(ctx: KindContext, rng: Rng) {
 }
 
 export function dwarfExtras(ctx: KindContext) {
-  const b = ctxBucket(ctx);
-  const rng = recipeRng(ctx, 'dwarf');
-  switch (b) {
-    case 1: return jester(ctx, rng);
-    case 2: return elder(ctx, rng);
-    case 3: return redbeard(ctx, rng);
-    default: return warrior(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const b = ctxBucket(ctx);
+    const rng = recipeRng(ctx, 'dwarf');
+    switch (b) {
+      case 1: return jester(ctx, rng);
+      case 2: return elder(ctx, rng);
+      case 3: return redbeard(ctx, rng);
+      default: return warrior(ctx, rng);
+    }
+  });
 }
 
 export const dwarfDef: KindDef = {
@@ -253,10 +268,10 @@ export const dwarfDef: KindDef = {
   face: {
     jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 1.9, cheekbones: 1.2,
     nose: { length: 1.15, width: 1.45, bridge: 1.1, hook: 0.2, tip: 1.35 },
-    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.82, eyeOpen: 0.55, eyeSpacing: 0.97, eyeTilt: -0.03, foreheadSlope: 0.1, asym: 0.15,
+    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.86, eyeOpen: 0.62, eyeSpacing: 0.97, eyeTilt: -0.03, foreheadSlope: 0.1, asym: 0.15,
   },
   skin: { color: 0xbd7a58, color2: 0x9c5240, blotch: 0.45, blemish: 0.2, scars: 1, wrinkles: 0.55, lips: 0xa85c52, surface: 'skin_weathered', scatter: 0xd0503a },
-  eyes: { color: 0x3a2a1c, sclera: 0xe2d6c8 },
+  eyes: { color: 0x3a2a1c, sclera: 0xbcaa96 },
   // chain bones only: the visible hair and beard are grown per seed bucket in extras (see hair.ts)
   hair: { style: 'stringy', color: 0xb98462, density: 0 },
   beard: { style: 'stubble', color: 0x5a3a24, length: 0.08 },

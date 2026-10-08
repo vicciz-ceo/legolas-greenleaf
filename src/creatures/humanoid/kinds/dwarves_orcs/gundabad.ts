@@ -10,7 +10,7 @@ import type { KindContext, KindDef } from '../../types';
 import { box, put, ring, spike, studs, torsoShell } from './armor';
 import { ctxBucket, devNum, mix, recipeRng } from './common';
 import { sculptBand, sculptFurMantle, sculptStrap, sculptTorsoGarment } from './garments';
-import { addHairdo } from './hair';
+import { addHairdo, withHair } from './hair';
 import { DOME_CONICAL, DOME_POINTED, DOME_ROUND, IRON, STEEL, domeHelm, hornPair } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
 import { ORC_FACE } from './orc';
@@ -136,13 +136,15 @@ function raider(ctx: KindContext, rng: Rng) {
 }
 
 export function gundabadExtras(ctx: KindContext) {
-  const rng = recipeRng(ctx, 'gundabad');
-  switch (ctxBucket(ctx)) {
-    case 1: return brute(ctx, rng);
-    case 2: return crested(ctx, rng);
-    case 3: return raider(ctx, rng);
-    default: return warlord(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const rng = recipeRng(ctx, 'gundabad');
+    switch (ctxBucket(ctx)) {
+      case 1: return brute(ctx, rng);
+      case 2: return crested(ctx, rng);
+      case 3: return raider(ctx, rng);
+      default: return warlord(ctx, rng);
+    }
+  });
 }
 
 export const gundabadDef: KindDef = {

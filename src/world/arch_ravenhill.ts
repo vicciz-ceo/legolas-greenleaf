@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { Rng, hashSeed, noise2 } from '../core/rng';
 import { mat, plain } from './mats';
-import { xf } from './geom';
+import { cliffGeometry, xf } from './geom';
 import { MeshKit, bakeFaceBoxUV } from './util';
 import type { Built, ColliderDesc } from './colliders';
 import { archRing, mergedColliderMesh, stoneMat, type V3 } from './arch_common';
@@ -277,9 +277,9 @@ export function frozenWaterfall(width = 14, height = 22, o: { seed?: number } = 
   const ice = mat('ice', { key: 'falls', rgb: [0.9, 0.97, 1.08] });
   const rockM = stoneMat('rough');
   const colliders: ColliderDesc[] = [];
-  // cliff behind
-  kit.box(rockM, [width + 14, height + 6, 6], [0, height / 2, -3.4], 0, { tile: 4 });
-  for (const s of [-1, 1]) kit.box(rockM, [7, height + 10, 9], [s * (width / 2 + 5.2), (height + 10) / 2, -0.5], 0, { tile: 4 });
+  // cliff behind and either side: craggy displaced masses
+  kit.add(rockM, cliffGeometry(width + 18, height + 8, 8, 5, { rough: 0.9, strata: 0.8, cell: 2.2, tile: 6 }), xf(0, height / 2, -5));
+  for (const s of [-1, 1]) kit.add(rockM, cliffGeometry(9, height + 14, 14, 9 + s, { rough: 0.9, strata: 0.8, cell: 2.2, taper: 0.1, tile: 6 }), xf(s * (width / 2 + 6.2), (height + 14) / 2, -1));
   // curtain
   const sx = 40;
   const sy = 64;

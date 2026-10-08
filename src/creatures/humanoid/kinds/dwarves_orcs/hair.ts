@@ -90,10 +90,33 @@ export function braidGeometry(points: V3[], radius: number, color: number, weigh
   return g;
 }
 
+const pendingHair = new WeakMap<object, { geos: THREE.BufferGeometry[]; color: number }>();
+
+/** collect a hair geometry; `flushHair` merges everything queued for this build into ONE skinned mesh (one draw call) */
+export function queueHair(ctx: KindContext, geo: THREE.BufferGeometry, color: number) {
+  let e = pendingHair.get(ctx);
+  if (!e) pendingHair.set(ctx, (e = { geos: [], color }));
+  e.geos.push(geo);
+}
+
+export function flushHair(ctx: KindContext) {
+  const e = pendingHair.get(ctx);
+  if (!e) return;
+  pendingHair.delete(ctx);
+  const merged = mergeHairGeos(e.geos);
+  if (merged) attachSkinned(ctx, merged, hairMaterial(e.color));
+}
+
+/** run a kind's extras and merge all the hair/beard geometry it queued into one skinned mesh */
+export function withHair(ctx: KindContext, fn: () => void) {
+  fn();
+  flushHair(ctx);
+}
+
 /** hair of the head via the kit's own styles (cap + cards + braids), as a skinned extra */
 export function addHeadHair(ctx: KindContext, hair: HairDef, rng: Rng, o: { hooded?: boolean; cap?: boolean } = {}) {
   const geo = buildHair(ctx.P, ctx.rig, hair, null, rng, 0, !!o.hooded).geo;
-  if (geo) attachSkinned(ctx, geo, hairMaterial(hair.color));
+  if (geo) queueHair(ctx, geo, hair.color);
   return geo;
 }
 
@@ -121,6 +144,8 @@ export interface HairdoOpts {
   tail?: number;
   /** keep hair off the face and shoulders with bigger colliders */
   faceClear?: number;
+  /** skip roots above this height (head units): hair that must stay under a hat */
+  maxY?: number;
   /** only a ridge along the centre line, standing up (mohawk) */
   mohawk?: boolean;
   /** half-width of the mohawk ridge (head units) */
@@ -198,6 +223,7 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     if (hy < back + slope * (hz + 0.45)) continue;
     if (Math.abs(hx) > 0.27 && hy < 0.03 && hz > -0.22) continue;
     if (o.mohawk && Math.abs(hx) > (o.ridge ?? 0.06)) continue;
+    if (o.maxY !== undefined && hy > o.maxY) continue;
     const nrm = new THREE.Vector3(dx / 0.34, dy / 0.41, dz / 0.435).normalize();
     const frontness = Math.max(0, Math.min(1, (hz + 0.1) / 0.5));
     // combed back; the front strands first lift over the forehead
@@ -240,7 +266,7 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
 
 export function addHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng) {
   const geo = makeHairdo(ctx, o, rng);
-  if (geo) attachSkinned(ctx, geo, hairMaterial(o.color));
+  if (geo) queueHair(ctx, geo, o.color);
   return geo;
 }
 
@@ -511,12 +537,12 @@ export function addBrows(ctx: KindContext, o: { color: number; length?: number; 
   });
   const iHead = rig.boneIndex('head');
   const geo = hairGeometry(strands, [], { color: o.color, weights: (_p, _a, out) => out.push([iHead, 1]) });
-  attachSkinned(ctx, geo, hairMaterial(o.color));
+  queueHair(ctx, geo, o.color);
 }
 
 export function addBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult {
   const r = makeBeard(ctx, o, rng);
-  if (r.geo) attachSkinned(ctx, r.geo, hairMaterial(o.color));
+  if (r.geo) queueHair(ctx, r.geo, o.color);
   return r;
 }
 

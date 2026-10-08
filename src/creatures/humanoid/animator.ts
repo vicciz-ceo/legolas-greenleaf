@@ -39,6 +39,8 @@ export interface BowHook {
 }
 
 export class HumanoidAnimator {
+  /** benchmarking: force the full solve at every LOD */
+  static forceFull = false;
   readonly ps: PoseSolver;
   readonly B: BodyMetrics;
   private P: Proportions;
@@ -63,6 +65,8 @@ export class HumanoidAnimator {
   bowHook: BowHook | null = null;
   /** true when the left hand holds a bow (aim uses the bow arm) */
   hasBow = false;
+  /** the right hand holds a crossbow: aiming shoulders it (two-hand hold) instead of drawing a bow */
+  hasCrossbow = false;
   /** hand holds something (closes the fist) */
   gripL = false;
   gripR = false;
@@ -220,16 +224,17 @@ export class HumanoidAnimator {
       }
     }
     // ── bow aim stance (torso) ─────────────────────────────────────────────
-    const aimW = this.hasBow || aim > 0 ? aim : 0;
+    const aimW = this.hasBow || this.hasCrossbow || aim > 0 ? aim : 0;
     const pitch = inp.aimPitch ?? 0;
     if (aimW > 0) {
       const still = 1 - this.moveW;
-      base[F.pyaw] += (-0.55 * aimW) * (0.4 + 0.6 * still);
+      const xb = this.hasCrossbow && !this.hasBow ? 0.45 : 1; // crossbows are shot square-on
+      base[F.pyaw] += (-0.55 * aimW * xb) * (0.4 + 0.6 * still);
       base[F.sy] += -0.25 * aimW;
-      base[F.cy] += -0.42 * aimW - (1 - (0.4 + 0.6 * still)) * 0.33 * aimW;
+      base[F.cy] += (-0.42 * aimW - (1 - (0.4 + 0.6 * still)) * 0.33 * aimW) * xb;
       base[F.cr] += pitch * 0.45 * aimW;
-      base[F.ny] += 0.5 * aimW;
-      base[F.hy] += 0.55 * aimW;
+      base[F.ny] += 0.5 * aimW * xb;
+      base[F.hy] += 0.55 * aimW * xb;
       base[F.hp] += -pitch * 0.35 * aimW;
       base[F.cp] += -0.04 * aimW;
       // stance when standing
@@ -267,7 +272,7 @@ export class HumanoidAnimator {
     if (this.gripR) base[F.gr] = Math.max(base[F.gr], 0.95 * (1 - Math.min(1, dead * 2)));
 
     const aimS = dead > 0 ? 0 : aimW;
-    if (this.lod > 0 && aimS <= 0.001) this.solveCheap(base, dt);
+    if (this.lod > 0 && aimS <= 0.001 && !HumanoidAnimator.forceFull) this.solveCheap(base, dt);
     else this.solve(base, aimS, draw, pitch, dead > 0 ? null : inp.lookAt ?? null, dt);
   }
 
@@ -463,7 +468,29 @@ export class HumanoidAnimator {
     // ── bow aim: exact bow arm along the aim line, draw hand on the string ──
     this.drawPull = 0;
     let nock: THREE.Vector3 | null = null;
-    if (aimW > 0.001) {
+    if (aimW > 0.001 && this.hasCrossbow && !this.hasBow) {
+      // crossbow: stock shouldered along the aim line, right hand on the grip, left hand under the fore-stock
+      const aimDir = _v3.set(0, Math.sin(pitch), Math.cos(pitch));
+      const shR = ps.modelP[I.upperarm_r];
+      const right = _right.crossVectors(aimDir, UP).normalize(); // character's right (−X)
+      const gripT = _grip.copy(shR).addScaledVector(aimDir, 0.28 * s).addScaledVector(UP, -0.01 * s).addScaledVector(right, -0.1 * s);
+      gripT.lerp(ps.modelP[I.hand_r], 1 - aimW);
+      const poleR = _poleR.copy(shR).addScaledVector(right, 0.5 * s).addScaledVector(UP, -0.4 * s);
+      // pistol grip: thumb (stock) along the aim line, knuckles down
+      frameRotation(this.restL.r, this.restT, _v4.set(0, -1, 0).addScaledVector(aimDir, 0.25), aimDir, _q2);
+      _q1.copy(ps.modelQ[I.hand_r]).slerp(_q2, aimW);
+      solveTwoBone(ps, I.upperarm_r, I.forearm_r, I.hand_r, gripT, poleR, { restDirA: this.restL.r, restDirB: this.restL.r, restUp: REST_UP_ARM, endRotation: _q1, maxStretch: 1.03 });
+      const shL = ps.modelP[I.upperarm_l];
+      const foreT = _wrist.copy(gripT).addScaledVector(aimDir, 0.26 * s).addScaledVector(UP, -0.045 * s).addScaledVector(right, 0.015 * s);
+      foreT.lerp(ps.modelP[I.hand_l], 1 - aimW);
+      const poleL = _v2.copy(shL).add(_v1.set(0.6, -1, -0.1).normalize().multiplyScalar(0.5 * s));
+      // supporting hand: palm up under the stock, knuckles across toward the right
+      frameRotation(this.restL.l, this.restT, _v1.copy(right).addScaledVector(aimDir, 0.5), aimDir, _q2);
+      _q1.copy(ps.modelQ[I.hand_l]).slerp(_q2, aimW);
+      solveTwoBone(ps, I.upperarm_l, I.forearm_l, I.hand_l, foreT, poleL, { restDirA: this.restL.l, restDirB: this.restL.l, restUp: REST_UP_ARM, endRotation: _q1, maxStretch: 1.03 });
+      p[F.gr] = Math.max(p[F.gr], aimW);
+      p[F.gl] = Math.max(p[F.gl], 0.6 * aimW);
+    } else if (aimW > 0.001) {
       const aimDir = _v3.set(0, Math.sin(pitch), Math.cos(pitch));
       const shL = ps.modelP[I.upperarm_l];
       const bowT = _v1.copy(shL).addScaledVector(aimDir, R * 0.93).addScaledVector(UP, -0.035 * s);

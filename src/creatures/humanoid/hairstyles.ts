@@ -172,7 +172,7 @@ export function buildHair(P: Proportions, rig: RigDef, hair: HairDef | null, bea
           dir: [want.x, want.y, want.z],
           length: cfg.length * s * (hair.length ?? 1) * rng.range(0.82, 1.08),
           lift: (0.003 + layer * 0.0045) * s,
-          width: cfg.width * s * (layer === 0 ? 1.35 : 1) * (hairline ? 0.7 : 1) * rng.range(0.85, 1.15),
+          width: cfg.width * s * (layer === 0 ? 1.35 : 1) * (hairline ? 0.42 : 1) * rng.range(0.85, 1.15),
           minY: endY,
           color: hc0.getHex(THREE.SRGBColorSpace),
         });
@@ -192,7 +192,7 @@ export function buildHair(P: Proportions, rig: RigDef, hair: HairDef | null, bea
       }
       // a clean hairline: one row of short-rooted strands right on the hairline, combed back
       if (long && lod === 0) {
-        const nH = Math.round(36 * (hair.density ?? 1));
+        const nH = Math.round(64 * (hair.density ?? 1));
         for (let i = 0; i < nH; i++) {
           const a = -1.25 + (2.5 * i) / (nH - 1); // azimuth from the front, radians
           const dz0 = Math.cos(a), dx0 = Math.sin(a);

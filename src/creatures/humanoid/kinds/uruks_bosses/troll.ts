@@ -156,7 +156,7 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
 }
 
 /** warty hide: low hemispheres scattered over the torso, shoulders and arms (rigid gear) */
-function warts(ctx: KindContext, gear: GearFn, proj: Projector, n: number, seed: number) {
+function warts(ctx: KindContext, gear: GearFn, proj: Projector, n: number, seed: number, color = TROLL_PAL.wart) {
   const { P } = ctx;
   const sc = P.s;
   const rng = new Rng(seed);
@@ -173,7 +173,7 @@ function warts(ctx: KindContext, gear: GearFn, proj: Projector, n: number, seed:
     const bone = y > j.chest[1] - 0.1 * sc ? 'chest' : 'spine';
     const g = geo.clone().scale(r, r * 0.8, r);
     const m = placeAlong(q.p.clone().addScaledVector(q.n, -r * 0.2), q.n.clone(), V(0, 0, 1));
-    gear(g, { bone, color: TROLL_PAL.wart, mat: HIDE, matrix: m, small: true, ao: 0.8 });
+    gear(g, { bone, color, mat: HIDE, matrix: m, small: true, ao: 0.8 });
   }
 }
 
@@ -272,6 +272,58 @@ function warTrollGear(ctx: KindContext, gear: GearFn, proj: Projector, bucket: n
   void g;
 }
 
+/** knuckles and claws so the mitten hands read as hands with fingers */
+function trollHands(ctx: KindContext, gear: GearFn) {
+  const { P } = ctx;
+  const sc = P.s;
+  const hs = P.build.handSize * sc;
+  for (const side of ['l', 'r'] as const) {
+    const f = P.hand[side];
+    for (let i = 0; i < 4; i++) {
+      const b = (i - 1.5) * 0.0215 * hs;
+      // knuckle on the back of the hand
+      const kp = V(...P.hp(side, P.palm * 0.98, b, -0.02 * hs));
+      const ks = 0.019 * hs;
+      gear(new THREE.SphereGeometry(ks, 5, 4).scale(1, 0.8, 1), { bone: `hand_${side}`, color: TROLL_PAL.skin2, mat: HIDE, matrix: new THREE.Matrix4().makeTranslation(kp.x, kp.y, kp.z), small: true });
+      // claw at the fingertip
+      const tp = V(...P.hp(side, P.palm + P.finger * 0.98, b, 0.0));
+      gear(spike(0.008 * hs, 0.04 * hs, 4, 0.3), { bone: `fing2_${side}`, color: 0x2c2a22, mat: surface('horn', { rough: 0.5 }), matrix: placeAlong(tp, f.L.clone(), f.N.clone().multiplyScalar(-1)), small: true });
+    }
+    const thp = V(...P.hp(side, P.palm * 0.5, f.T.length() * 0.06, 0));
+    void thp;
+  }
+}
+
+/** riveted iron vambrace around a troll forearm with two rings and spikes */
+function bracerGear(ctx: KindContext, gear: GearFn, side: 'l' | 'r') {
+  const { P } = ctx;
+  const sc = P.s;
+  const j = P.j;
+  const g = P.build.bulk;
+  const sx = side === 'l' ? 1 : -1;
+  const L = P.hand.l.L.clone();
+  L.x *= sx;
+  const a = V(...j[`forearm_${side}`]).addScaledVector(L, 0.3 * P.foreArm);
+  const b = V(...j[`hand_${side}`]).addScaledVector(L, -0.1 * sc);
+  const len = a.distanceTo(b);
+  const r0 = 0.1 * sc * g;
+  const r1 = 0.075 * sc * g;
+  const geo = new THREE.CylinderGeometry(r1, r0, len, 14, 1, true).translate(0, len / 2, 0);
+  const bone = `forearm_${side}`;
+  gear(geo, { bone, color: TROLL_PAL.iron, mat: IRON_RUSTY, matrix: placeAlong(a, b.clone().sub(a).multiplyScalar(-1), V(0, 0, 1)).multiply(new THREE.Matrix4().makeRotationX(Math.PI)), ao: 0.85 });
+  for (const t of [0.04, 0.96]) {
+    const c = a.clone().lerp(b, t);
+    const r = lerp(r0, r1, t) * 1.04;
+    gear(new THREE.TorusGeometry(r, 0.014 * sc, 5, 14), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(c, b.clone().sub(a), V(0, 0, 1)).multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2)), small: true });
+  }
+  for (let i = 0; i < 4; i++) {
+    const t = 0.25 + i * 0.2;
+    const c = a.clone().lerp(b, t);
+    const out = V(sx * 0.75, 0.2, 0.6).normalize();
+    gear(spike(0.016 * sc, 0.1 * sc, 5), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(c.addScaledVector(out, lerp(r0, r1, t) * 0.98), out, V(0, 1, 0)), small: true });
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // extras
 // ─────────────────────────────────────────────────────────────────────────────
@@ -289,9 +341,14 @@ function trollExtras(ctx: KindContext) {
   void emitParts;
   trollBody(ctx, variant);
   trollFace(ctx, variant);
+  if (variant === 'war') {
+    // soot-dark hide: tint the skin of the whole body (rigid gear is unaffected)
+    s.ellipsoid([0, P.H / 2, 0], [2.5 * sc, P.H * 0.7, 2.5 * sc], { op: 'paint', color: bucket === 3 ? 0x3a3832 : 0x45443c, color2: 0x24221e, colorNoise: 0.45, colorFreq: 2.5 / sc, mat: 'skin_troll', strength: 0.85, k: 0.2 * sc });
+  }
 
   const proj = makeProjector(s, box);
   if (!proj) return;
+  trollHands(ctx, gear);
   if (variant === 'cave') {
     warts(ctx, gear, proj, bucket === 1 ? 150 : 120, hashSeed('troll-warts', bucket));
     shackle(ctx, gear, 'r');
@@ -299,10 +356,13 @@ function trollExtras(ctx: KindContext) {
   } else {
     if (ctx.armor >= 0.25) warTrollGear(ctx, gear, proj, bucket);
     if (ctx.armor >= 0.5) {
-      pauldron(ctx, gear, 1, { lames: 4, spikes: 7, scale: 2.0, rusty: true, color: TROLL_PAL.iron });
-      pauldron(ctx, gear, -1, { lames: 4, spikes: 7, scale: 2.0, rusty: true, color: TROLL_PAL.iron });
+      pauldron(ctx, gear, 1, { lames: 4, spikes: 6, scale: 1.5, rusty: true, color: TROLL_PAL.iron, reach: 2.2, half: 80, ry: 1.0 });
+      pauldron(ctx, gear, -1, { lames: 4, spikes: 6, scale: 1.5, rusty: true, color: TROLL_PAL.iron, reach: 2.2, half: 80, ry: 1.0 });
     }
-    warts(ctx, gear, proj, 25, hashSeed('troll-warts', bucket));
+    if (ctx.armor >= 0.25) {
+      for (const side of ['l', 'r'] as const) bracerGear(ctx, gear, side);
+    }
+    warts(ctx, gear, proj, 25, hashSeed('troll-warts', bucket), 0x3c3a33);
   }
   void j;
   void snapPoint;
@@ -329,7 +389,7 @@ export const trollKind: KindDef = {
   sfx: { voice: 'troll', roar: 'troll_roar', grunt: 'troll_hit', footstep: 'troll_step', weight: 1 },
   anim: { hunch: 0.95, swagger: 0.7, aggression: 0.8, stance: 1.3, cadence: 0.9, armSwing: 1.2 },
   variation: { height: 0.03, bulk: 0.06, skin: 0.1 },
-  detail: { faceRes: 0, res: 0.085, headRes: 0.028, detailScale: 2.4 },
+  detail: { faceRes: 0, res: 0.092, headRes: 0.03, detailScale: 2.4 },
   extras: trollExtras,
 };
 

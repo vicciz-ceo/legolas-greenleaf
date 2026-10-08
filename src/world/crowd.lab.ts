@@ -39,4 +39,12 @@ export const subjects: LabSubject[] = [
       return { object: make('uruk', 600, [30, 20], 3.5, true), height: 10 };
     },
   },
+  {
+    name: 'crowd_thin',
+    category: 'environment',
+    create() {
+      const g = make('gondor', 120, [10, 6], 0, true, 0.5);
+      return { object: g, height: 4 };
+    },
+  },
 ];

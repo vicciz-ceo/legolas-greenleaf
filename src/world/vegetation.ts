@@ -209,7 +209,7 @@ export function forest(area: Area, count: number, kinds: KindSpec[], heightAt: H
   const wsum = specs.reduce((s, k) => s + k.weight, 0);
   const nVar = Math.max(1, Math.min(4, opts.variants ?? 3));
   const [smin, smax] = opts.scale ?? [0.85, 1.2];
-  const chunk = opts.chunk ?? 48;
+  const chunk = opts.chunk ?? 64;
   const near = opts.lodNear ?? 70;
   const far = opts.lodFar ?? 280;
   const spacing = opts.spacing ?? 0.8;
@@ -378,7 +378,7 @@ function grassClumpGeometry(blades: number, seedHeight: [number, number]): THREE
   if (cached) return cached;
   const rng = new Rng(4242 + blades);
   const buf = new Buf();
-  const segs = 3;
+  const segs = 2;
   for (let b = 0; b < blades; b++) {
     const a = rng.float() * Math.PI * 2;
     const rad = Math.sqrt(rng.float()) * 0.13;
@@ -436,7 +436,7 @@ function grassMaterial(o: GrassOpts): THREE.MeshStandardMaterial {
   const dry = o.dry ?? 0.1;
   tip.lerp(new THREE.Color(0xc2b070), dry);
   base.lerp(new THREE.Color(0x7a6a3a), dry * 0.6);
-  const fade = o.fade ?? [34, 62];
+  const fade = o.fade ?? [22, 46];
   m.name = 'grass';
   applyWind(m, { bend: 0.22, flutter: 0 });
   patchShader(m, `grass${key}`, (shader) => {
@@ -473,9 +473,9 @@ function grassMaterial(o: GrassOpts): THREE.MeshStandardMaterial {
 export function grassField(area: Area, density: number, heightAt: HeightFn, opts: GrassOpts = {}): THREE.Group {
   const rng = new Rng(hashSeed('grass', opts.seed ?? 1, density, area.center.x, area.center.z));
   const dens = Math.max(0.02, density * densityScale());
-  const geo = grassClumpGeometry(11, opts.height ?? [0.28, 0.58]);
+  const geo = grassClumpGeometry(7, opts.height ?? [0.28, 0.58]);
   const mat = grassMaterial(opts);
-  const fade = opts.fade ?? [34, 62];
+  const fade = opts.fade ?? [22, 46];
   const chunk = 16;
   const group = new THREE.Group();
   group.name = 'grass';
@@ -654,7 +654,7 @@ function mushroomGeometry(): THREE.BufferGeometry {
   if (mushGeo) return mushGeo;
   const rng = new Rng(5150);
   const parts: THREE.BufferGeometry[] = [];
-  const n = 5;
+  const n = 4;
   for (let i = 0; i < n; i++) {
     const a = rng.float() * Math.PI * 2;
     const r = i === 0 ? 0 : 0.05 + rng.float() * 0.1;
@@ -662,10 +662,10 @@ function mushroomGeometry(): THREE.BufferGeometry {
     const capR = 0.03 + rng.float() * 0.045 + (i === 0 ? 0.015 : 0);
     const lean: [number, number] = [(rng.float() - 0.5) * 0.4, (rng.float() - 0.5) * 0.4];
     // stem: slightly flared cylinder
-    const stem = new THREE.CylinderGeometry(capR * 0.28, capR * 0.4, h, 7, 2);
+    const stem = new THREE.CylinderGeometry(capR * 0.28, capR * 0.4, h, 5, 1, true);
     stem.translate(0, h / 2, 0);
     // cap: dome with a lip
-    const cap = new THREE.SphereGeometry(capR, 9, 5, 0, Math.PI * 2, 0, Math.PI * 0.5);
+    const cap = new THREE.SphereGeometry(capR, 7, 3, 0, Math.PI * 2, 0, Math.PI * 0.5);
     cap.scale(1, 0.55, 1);
     cap.translate(0, h, 0);
     for (const [g, cr, cg, cb] of [[stem, 0.72, 0.66, 0.56], [cap, 0.46, 0.32, 0.22]] as [THREE.BufferGeometry, number, number, number][]) {

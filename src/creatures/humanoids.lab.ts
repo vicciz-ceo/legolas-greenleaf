@@ -8,7 +8,9 @@ import { createHumanoid, preloadHumanoids, type HumanoidExt } from './humanoid';
 import { clearHumanoidCache, prebuildStats } from './humanoid/build';
 import { clearKitCache, kitCacheStats } from './kit/cache';
 import { meshWorkerCount } from './kit/workers';
-import { ALL_KINDS, resolveKind } from './humanoid/registry';
+import { HumanoidAnimator } from './humanoid/animator';
+import { ALL_KINDS, resolveKind, registerKind } from './humanoid/registry';
+import { kinds as placeholderKinds } from './humanoid/kinds/_placeholders';
 
 export const LEGOLAS_ANIMS = [
   'idle', 'rest', 'walk', 'run', 'sprint', 'strafe', 'back', 'jump', 'aim', 'draw', 'shoot', 'knife_combo', 'dash', 'hit', 'death',
@@ -162,6 +164,10 @@ function humanoidSubject(name: string, kind: HumanoidKind, category: LabSubject[
       // &weapons=none hides held weapons (centred head close-ups)
       const noW = new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('weapons') === 'none';
       const defaults = noW ? { r: 'none' as WeaponKind, l: 'none' as WeaponKind } : { r: (def.weapons.right ?? 'none') as WeaponKind, l: (def.weapons.left ?? 'none') as WeaponKind };
+      // &weapon=<kind> / &offhand=<kind> override the held items (e.g. weapon=crossbow)
+      const qs = new URLSearchParams(typeof location !== 'undefined' ? location.search : '');
+      if (qs.get('weapon')) defaults.r = qs.get('weapon') as WeaponKind;
+      if (qs.get('offhand')) defaults.l = qs.get('offhand') as WeaponKind;
       const holder = new THREE.Group();
       holder.add(h.root);
       if (noW) h.socket('back').visible = false;
@@ -188,6 +194,15 @@ const CATEGORY: Partial<Record<HumanoidKind, LabSubject['category']>> = {
 export const subjects: LabSubject[] = [
   humanoidSubject('legolas', 'legolas', 'hero', LEGOLAS_ANIMS),
   ...ALL_KINDS.filter((k) => k !== 'legolas').map((k) => humanoidSubject(`humanoid_${k}`, k, CATEGORY[k] ?? 'enemy', NPC_ANIMS)),
+  {
+    // the kit's fallback troll (the uruks_bosses dresser's troll replaces it in the game)
+    name: 'kit_placeholder_troll',
+    category: 'enemy',
+    async create(): Promise<LabInstance> {
+      registerKind('troll', placeholderKinds.troll!);
+      return humanoidSubject('kit_placeholder_troll', 'troll', 'enemy', NPC_ANIMS).create();
+    },
+  },
   {
     name: 'humanoid_lineup',
     category: 'hero',
@@ -289,16 +304,20 @@ function benchAnim(n = 40, steps = 300, kind: HumanoidKind = 'orc') {
     }
     if (withMatrices) scene.updateMatrixWorld();
   };
-  for (const lod of [0, 1, 2] as const) {
+  const runs: [0 | 1 | 2, boolean][] = [[0, false], [1, true], [2, true], [1, false], [2, false]];
+  for (const [lod, full] of runs) {
+    HumanoidAnimator.forceFull = full;
     for (const h of hs) h.setLod(lod);
     for (let i = 0; i < 60; i++) step(true);
     let t0 = performance.now();
     for (let i = 0; i < steps; i++) step(false);
-    out[`lod${lod}_animate`] = +((performance.now() - t0) / steps).toFixed(3);
+    const tag = `lod${lod}${full && lod > 0 ? '_fullpath' : ''}`;
+    out[`${tag}_animate`] = +((performance.now() - t0) / steps).toFixed(3);
     t0 = performance.now();
     for (let i = 0; i < steps; i++) step(true);
-    out[`lod${lod}_animate+matrices`] = +((performance.now() - t0) / steps).toFixed(3);
+    out[`${tag}_animate+matrices`] = +((performance.now() - t0) / steps).toFixed(3);
   }
+  HumanoidAnimator.forceFull = false;
   hs.forEach((h) => h.dispose());
   return JSON.stringify({ n, kind, msPerStep: out });
 }

@@ -10,7 +10,7 @@ import type { KindContext, KindDef } from '../../types';
 import { box, put, ring, spike, studs } from './armor';
 import { ctxBucket, devNum, devSkip, mix, recipeRng, shade } from './common';
 import { sculptStrap, sculptTorsoGarment } from './garments';
-import { addHairdo } from './hair';
+import { addHairdo, withHair } from './hair';
 import { DOME_POINTED, DOME_ROUND, IRON, STEEL, domeHelm } from './headgear';
 import { faceStroke, paintBlob } from './markings';
 import { bodyMarks, boneNecklace, crudePauldron, eyeRings, orcTeeth, scrapBreastplate, skinMottle, skinTint } from './orcparts';
@@ -156,13 +156,15 @@ function guard(ctx: KindContext, rng: Rng) {
 }
 
 export function orcExtras(ctx: KindContext) {
-  const rng = recipeRng(ctx, 'orc');
-  switch (ctxBucket(ctx)) {
-    case 1: return helmeted(ctx, rng);
-    case 2: return ravager(ctx, rng);
-    case 3: return guard(ctx, rng);
-    default: return scavenger(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const rng = recipeRng(ctx, 'orc');
+    switch (ctxBucket(ctx)) {
+      case 1: return helmeted(ctx, rng);
+      case 2: return ravager(ctx, rng);
+      case 3: return guard(ctx, rng);
+      default: return scavenger(ctx, rng);
+    }
+  });
 }
 
 export const orcDef: KindDef = {

@@ -82,7 +82,7 @@ class Fig {
   }
 
   /** tapered cylinder from A (radius r0) to B (radius r1) */
-  limb(a: [number, number, number], b: [number, number, number], r0: number, r1: number, color: number, anim: AnimSpec = RIGID, seg = 5, mask = 1, emit = 0): this {
+  limb(a: [number, number, number], b: [number, number, number], r0: number, r1: number, color: number, anim: AnimSpec = RIGID, seg = 5, mask = 1, emit = 0, openEnded = true): this {
     _a.set(a[0], a[1], a[2]);
     _b.set(b[0], b[1], b[2]);
     _v.subVectors(_b, _a);
@@ -90,12 +90,12 @@ class Fig {
     if (len < 1e-5) return this;
     _q.setFromUnitVectors(_up, _v.multiplyScalar(1 / len));
     _m.compose(_s.addVectors(_a, _b).multiplyScalar(0.5), _q, new THREE.Vector3(1, 1, 1));
-    this.push(new THREE.CylinderGeometry(r1, r0, len, seg, 1, false), _m.clone(), color, anim, mask, emit);
+    this.push(new THREE.CylinderGeometry(r1, r0, len, seg, 1, openEnded), _m.clone(), color, anim, mask, emit);
     return this;
   }
 
   /** ellipsoid */
-  ball(c: [number, number, number], rx: number, ry: number, rz: number, color: number, anim: AnimSpec = RIGID, mask = 1, emit = 0, ws = 6, hs = 4): this {
+  ball(c: [number, number, number], rx: number, ry: number, rz: number, color: number, anim: AnimSpec = RIGID, mask = 1, emit = 0, ws = 6, hs = 3): this {
     _m.compose(_v.set(c[0], c[1], c[2]), _q.identity(), _s.set(rx, ry, rz));
     this.push(new THREE.SphereGeometry(1, ws, hs), _m.clone(), color, anim, mask, emit);
     return this;
@@ -112,7 +112,7 @@ class Fig {
   disc(c: [number, number, number], r: number, thick: number, color: number, anim: AnimSpec = RIGID, rot: [number, number, number] = [0, 0, 0], mask = 1): this {
     _q.setFromEuler(new THREE.Euler(rot[0] + Math.PI / 2, rot[1], rot[2], 'YXZ'));
     _m.compose(_v.set(c[0], c[1], c[2]), _q, _s.set(1, 1, 1));
-    this.push(new THREE.CylinderGeometry(r, r, thick, 10, 1, false), _m.clone(), color, anim, mask, 0);
+    this.push(new THREE.CylinderGeometry(r, r, thick, 8, 1, false), _m.clone(), color, anim, mask, 0);
     return this;
   }
 
@@ -157,6 +157,8 @@ interface Biped {
   raised?: boolean;
   /** skip the left arm (shield bearers build their own) */
   leftHeld?: boolean;
+  /** drop small details (belt, shoulder pads) for big crowds */
+  lite?: boolean;
   /** no legs (rider) */
   seated?: boolean;
   /** hip height override, y of the seat */
@@ -208,9 +210,9 @@ function biped(f: Fig, o: Biped): Joints {
     f.limb([0, hipY + 0.12 * h, lean * 0.3], [0, shY - 0.0, lean], 0.108 * h * st, 0.132 * h * st, o.armor, RIGID, 6, mask);
   }
   // belt
-  f.limb([0, hipY - 0.01, 0], [0, hipY + 0.05, 0.0], 0.108 * h * st, 0.108 * h * st, o.boots, RIGID, 6, mask);
+  if (!o.lite) f.limb([0, hipY - 0.01, 0], [0, hipY + 0.05, 0.0], 0.108 * h * st, 0.108 * h * st, o.boots, RIGID, 6, mask);
   // shoulders
-  if ((o.pads ?? 0) > 0 && o.armor !== undefined) {
+  if ((o.pads ?? 0) > 0 && o.armor !== undefined && !o.lite) {
     for (const side of [-1, 1]) f.ball([side * shW * 0.95, shY, lean], 0.07 * h, 0.04 * h, 0.07 * h, o.armor, RIGID, mask);
   }
   // neck and head
@@ -247,8 +249,8 @@ const carryAn = (h: number): AnimSpec => ({ k: K_ARM, ph: 0, amp: 0.1 * (h / 1.8
 function spear(f: Fig, hand: Vec3, h: number, len: number, shaft: number, tip: number, an: AnimSpec, tilt = 0.08): void {
   const a: Vec3 = [hand[0], hand[1] - len * 0.28, hand[2] - tilt * 3];
   const b: Vec3 = [hand[0], hand[1] + len * 0.72, hand[2] + tilt * 4];
-  f.limb(a, b, 0.016, 0.014, shaft, an, 4);
-  f.cone(b, [b[0], b[1] + 0.3, b[2] + tilt * 0.8], 0.036, tip, an, 4);
+  f.limb(a, b, 0.022, 0.018, shaft, an, 4);
+  f.cone(b, [b[0], b[1] + 0.34, b[2] + tilt * 0.8], 0.045, tip, an, 4);
 }
 
 function sword(f: Fig, hand: Vec3, h: number, blade: number, hilt: number, an: AnimSpec, length = 0.72): void {
@@ -274,8 +276,8 @@ function torch(f: Fig, hand: Vec3, an: AnimSpec): void {
   const fa: AnimSpec = { k: K_FLAME, ph: 0, amp: 0.2, w: () => 1 };
   const base = hand[1] + 0.62;
   // flame (emissive): body + brighter core
-  f.limb([hand[0], base, hand[2] + 0.04], [hand[0], base + 0.5, hand[2] + 0.04], 0.12, 0.002, 0xff6a14, mergeAn(an, fa), 6, 0, 1.0);
-  f.limb([hand[0], base, hand[2] + 0.04], [hand[0], base + 0.3, hand[2] + 0.04], 0.07, 0.002, 0xffd070, mergeAn(an, fa), 5, 0, 1.4);
+  f.limb([hand[0], base, hand[2] + 0.04], [hand[0], base + 0.5, hand[2] + 0.04], 0.085, 0.002, 0xff6a14, mergeAn(an, fa), 6, 0, 1.0);
+  f.limb([hand[0], base, hand[2] + 0.04], [hand[0], base + 0.3, hand[2] + 0.04], 0.05, 0.002, 0xffd070, mergeAn(an, fa), 5, 0, 1.4);
 }
 /** flame vertices follow the pumping hand AND flicker: encode as K_FLAME (shader adds the pump) */
 function mergeAn(_a: AnimSpec, b: AnimSpec): AnimSpec {
@@ -520,12 +522,12 @@ function buildHorse(f: Fig, rng: Rng): void {
   void rng;
 }
 
-function buildFigure(kind: Kind, variant: Variant, seed: number): THREE.BufferGeometry {
+function buildFigure(kind: Kind, variant: Variant, seed: number, lite = false): THREE.BufferGeometry {
   const f = new Fig();
   const st = styleOf(kind);
   const rng = new Rng(seed);
   const raised = variant.weapon === 'spear' || variant.weapon === 'torch' || variant.weapon === 'banner' || variant.weapon === 'pike';
-  const bipedOpts: Biped = { ...st.b, raised, leftHeld: variant.shield };
+  const bipedOpts: Biped = { ...st.b, raised, leftHeld: variant.shield, lite };
   if (kind === 'rohirrim') {
     buildHorse(f, rng);
     bipedOpts.raised = variant.weapon === 'spear' || variant.weapon === 'banner';
@@ -677,7 +679,7 @@ const FRAG_EMIT = /* glsl */ `
 #include <emissivemap_fragment>
 {
   vec3 flame = vec3(1.0, 0.42, 0.1) * (1.6 + 1.0 * sin(vEmit * 40.0));
-  totalEmissiveRadiance += vColor.rgb * 0.0 + flame * clamp(vEmit, 0.0, 1.0) * 2.2 + vec3(1.0, 0.8, 0.45) * max(vEmit - 1.0, 0.0) * 2.0;
+  totalEmissiveRadiance += vColor.rgb * 0.0 + flame * clamp(vEmit, 0.0, 1.0) * 1.3 + vec3(1.0, 0.8, 0.45) * max(vEmit - 1.0, 0.0) * 1.2;
 }
 `;
 
@@ -787,10 +789,11 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
   variants.forEach((v, vi) => {
     const n = counts[vi];
     if (n <= 0) return;
-    const key = `${def.kind}:${v.weapon}:${v.shield ? 's' : ''}`;
+    const lite = total > 450;
+    const key = `${def.kind}:${v.weapon}:${v.shield ? 's' : ''}:${lite ? 'l' : 'f'}`;
     let geo = geoCache.get(key);
     if (!geo) {
-      geo = buildFigure(def.kind, v, hashSeed(key));
+      geo = buildFigure(def.kind, v, hashSeed(key), lite);
       geo.userData.shared = true;
       geoCache.set(key, geo);
     }

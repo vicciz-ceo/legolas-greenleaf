@@ -27,6 +27,24 @@ function bolgPlates(ctx: KindContext) {
   });
 }
 
+/**
+ * Troll torso: one massive barrel chest flowing into a hanging belly (the standard ribs + waist +
+ * belly ellipsoids read as stacked balls at this bulk). Skinned spine → chest.
+ */
+function trollTorso(ctx: KindContext) {
+  const { P, sculpt: s, def } = ctx;
+  const sc = P.s;
+  const b = P.build;
+  const j = P.j;
+  const skin = { color: def.skin.color, color2: def.skin.color2, colorNoise: def.skin.blotch, colorFreq: 14 / sc, mat: def.skin.surface };
+  const hipY = j.thigh_l[1];
+  const shY = j.upperarm_l[1];
+  // barrel: from the pelvis to the shoulders, widest at the lower ribs
+  s.ellipsoid([0, hipY + (shY - hipY) * 0.46, 0.02 * sc], [0.18 * sc * b.shoulders * Math.sqrt(b.bulk), (shY - hipY) * 0.47, 0.145 * sc * b.chest * Math.sqrt(b.bulk)], { ...skin, bone: 'spine', bone2: 'chest', blend: [0.35, 0.85], k: 0.1 * sc });
+  // hanging belly: low and forward, blended broadly into the barrel
+  s.ellipsoid([0, hipY + 0.17 * sc, 0.075 * sc * b.bulk], [0.17 * sc * Math.sqrt(b.bulk), 0.17 * sc, 0.13 * sc * b.bulk * (0.8 + 0.4 * b.belly)], { ...skin, bone: 'spine', bone2: 'hips', blend: [0.3, 0.9], blendAxis: [[0, hipY + 0.32 * sc, 0], [0, hipY, 0]], k: 0.16 * sc });
+}
+
 const ORC_FACE = {
   jaw: 1.2, jawLength: 1.05, chin: 0.8, brow: 1.6, cheekbones: 1.2,
   nose: { length: 0.8, width: 1.35, bridge: 0.6, hook: 0, tip: 1.1, flat: 0.7 },
@@ -421,7 +439,7 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
   troll: {
     label: 'Cave troll',
     height: 4.5,
-    build: { shoulders: 1.45, hips: 1.2, bulk: 1.55, belly: 0.75, chest: 1.3, armLength: 1.3, legLength: 0.8, headSize: 0.72, neck: 0.35, neckThick: 1.7, hunch: 0.55, handSize: 1.5, footSize: 1.3, muscle: 0.6 },
+    build: { shoulders: 1.45, hips: 1.2, bulk: 1.55, belly: 0.75, chest: 1.3, armLength: 1.3, legLength: 0.8, headSize: 0.8, neck: 0.6, neckThick: 1.6, hunch: 0.45, handSize: 1.5, footSize: 1.3, muscle: 0.6 },
     face: { ...ORC_FACE, brow: 2.0, jaw: 1.45, underbite: 0.7, tusks: 0.45, ears: 'small', earSize: 0.8, eyeSize: 0.75, nose: { length: 0.9, width: 1.7, bridge: 0.5, hook: 0, tip: 1.4, flat: 0.9 }, asym: 0.5 },
     skin: { color: 0x6c7660, color2: 0x4e5644, blotch: 0.6, blemish: 0.6, scars: 3, warts: 0.65, wrinkles: 1.0, lips: 0x4a4a3e, surface: 'skin_troll', scatter: 0x6a7a5a },
     eyes: { color: 0xb0a060, glow: 0.2 },
@@ -435,5 +453,6 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
     variation: { height: 0.04, bulk: 0.08, skin: 0.1 },
     detail: { faceRes: 0, detailScale: 2.4 },
     sfx: { voice: 'troll', roar: 'troll_roar', grunt: 'troll_hit', footstep: 'troll_step', weight: 1 },
+    extras: trollTorso,
   },
 };

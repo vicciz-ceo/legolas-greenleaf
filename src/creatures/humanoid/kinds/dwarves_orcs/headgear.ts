@@ -75,7 +75,7 @@ export function floppyHat(ctx: KindContext, o: HatOpts) {
         const floppy = 0.5 + 0.5 * Math.sin(ph * 2 + seed * 1.7) * Math.cos(ph * 1 + seed);
         y = y0 - droop * Math.pow(t, 1.7) * (0.55 + 0.9 * floppy) + 0.03 * Math.sin(t * 6 + ph * 3);
         // front brim turns up a little, back drops
-        y += 0.06 * Math.cos(ph) * t;
+        y += 0.2 * Math.max(0, Math.cos(ph)) * Math.pow(t, 0.8) - 0.04 * Math.max(0, -Math.cos(ph)) * t;
       }
       const x = Math.sin(ph) * r;
       const z = Math.cos(ph) * r * zScale + zOff + zl;
@@ -164,10 +164,10 @@ export function domeHelm(ctx: KindContext, o: DomeHelmOpts) {
   const zs = o.zScale ?? 1.28;
   const place = new THREE.Matrix4().makeTranslation(centre[0], centre[1], centre[2]).multiply(tilt).multiply(new THREE.Matrix4().makeScale(1, 1, zs));
   const prof = (o.profile ?? DOME_POINTED).map(([r, y]) => [r * u, y * u] as [number, number]);
-  put(ctx, lathe(prof, 28), { bone: 'head', color: o.color, mat, matrix: place, ao: 0.95 });
+  put(ctx, lathe(prof, 22), { bone: 'head', color: o.color, mat, matrix: place, ao: 0.95 });
   const bw = o.bandWidth ?? 1;
   if (o.band !== false) {
-    const band = lathe([[0.42 * u, -0.07 * u * bw], [0.44 * u, -0.05 * u * bw], [0.445 * u, 0.0], [0.425 * u, 0.055 * u * bw], [0.405 * u, 0.06 * u * bw], [0.4 * u, 0.0], [0.4 * u, -0.05 * u * bw]], 28);
+    const band = lathe([[0.42 * u, -0.07 * u * bw], [0.44 * u, -0.05 * u * bw], [0.445 * u, 0.0], [0.425 * u, 0.055 * u * bw], [0.405 * u, 0.06 * u * bw], [0.4 * u, 0.0], [0.4 * u, -0.05 * u * bw]], 22);
     put(ctx, band, { bone: 'head', color: trim, mat: o.trimMat ?? BRONZE, matrix: place });
   }
   if (o.ridge !== false) {
@@ -175,9 +175,9 @@ export function domeHelm(ctx: KindContext, o: DomeHelmOpts) {
     const pts: V3[] = [];
     for (let i = 0; i < up.length; i++) pts.push([0, up[i][1] + 0.006 * u, up[i][0] + 0.01 * u]);
     for (let i = up.length - 1; i >= 0; i--) pts.push([0, up[i][1] + 0.006 * u, -(up[i][0] + 0.01 * u)]);
-    put(ctx, tube(pts, 0.016 * u, { seg: 40, radial: 5 }), { bone: 'head', color: trim, mat: o.trimMat ?? BRONZE, matrix: place });
+    put(ctx, tube(pts, 0.016 * u, { seg: 26, radial: 4 }), { bone: 'head', color: trim, mat: o.trimMat ?? BRONZE, matrix: place });
   }
-  const nr = o.rivets ?? 26;
+  const nr = o.rivets ?? 18;
   if (nr > 0) {
     const rv: V3[] = [];
     for (let i = 0; i < nr; i++) {
@@ -192,10 +192,10 @@ export function domeHelm(ctx: KindContext, o: DomeHelmOpts) {
   if (o.finial === 'spike') put(ctx, new THREE.ConeGeometry(0.022 * u, 0.12 * u, 6).translate(0, top[1] + 0.05 * u, 0), { bone: 'head', color: trim, mat: o.trimMat ?? BRONZE, matrix: place, small: true });
   if (o.cheeks !== false) {
     for (const sx of [1, -1]) {
-      const plate = arcPlate(0.375 * u, 0.26 * u, 1.0, sx > 0 ? 0 : Math.PI, 10);
-      plate.translate(...P.h(0, -0.15 + (o.y ?? 0), -0.03));
+      const plate = arcPlate(0.375 * u, 0.2 * u, 0.85, sx > 0 ? 0 : Math.PI, 6);
+      plate.translate(...P.h(0, -0.12 + (o.y ?? 0), -0.03));
       put(ctx, plate, { bone: 'head', color: o.color, mat, small: true });
-      const tr = arcPlate(0.381 * u, 0.02 * u, 1.0, sx > 0 ? 0 : Math.PI, 10).translate(...P.h(0, -0.285 + (o.y ?? 0), -0.03));
+      const tr = arcPlate(0.381 * u, 0.02 * u, 0.85, sx > 0 ? 0 : Math.PI, 6).translate(...P.h(0, -0.225 + (o.y ?? 0), -0.03));
       put(ctx, tr, { bone: 'head', color: trim, mat: o.trimMat ?? BRONZE, small: true });
     }
   }
@@ -314,12 +314,12 @@ export function faceMask(ctx: KindContext, o: MaskOpts) {
       const x = -hw + (2 * hw * i) / 8;
       pts.push(h(x, y, surfZ(x, y) + 0.004));
     }
-    put(ctx, tube(pts, r * P.headH, { seg: 14, radial: 4 }), { bone: 'head', color: rim, mat, small: true });
+    put(ctx, tube(pts, r * P.headH, { seg: 10, radial: 3 }), { bone: 'head', color: rim, mat, small: true });
   };
   edge(slit[0], half * 0.95, 0.008);
   edge(slit[1], half * 0.9, 0.008);
   if (o.mouth !== false) {
-    for (const y of [-0.4, -0.45, -0.5]) edge(y, 0.1, 0.005);
+    for (const y of [-0.42, -0.5]) edge(y, 0.1, 0.005);
   }
 }
 

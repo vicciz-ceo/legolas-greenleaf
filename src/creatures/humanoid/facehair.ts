@@ -74,7 +74,7 @@ export function faceHairGeometry(P: Proportions, head: HeadInfo, probe: SdfProbe
     for (const sd of ['l', 'r'] as const) {
       const brow = head.brow[sd];
       const n = brow.length;
-      const count = Math.round((lod === 0 ? 70 : 24) * bw);
+      const count = Math.round((lod === 0 ? 56 : 22) * bw);
       for (let k = 0; k < count; k++) {
         const t = Math.pow(rnd(), 0.85); // denser toward the head of the brow
         const fi = t * (n - 1);
@@ -82,7 +82,7 @@ export function faceHairGeometry(P: Proportions, head: HeadInfo, probe: SdfProbe
         const ft = fi - i0;
         const a = brow[i0], b = brow[i0 + 1];
         // band height tapers from the head (≈ 1.1 cm) to the tail
-        const band = (0.05 - 0.032 * t) * u * bw;
+        const band = (0.04 - 0.026 * t) * u * bw;
         const off = (rnd() - 0.5) * band;
         const root: V3 = [a[0] + (b[0] - a[0]) * ft, a[1] + (b[1] - a[1]) * ft + off, a[2]];
         const ax = b[0] - a[0], ay = b[1] - a[1];
@@ -105,7 +105,7 @@ export function faceHairGeometry(P: Proportions, head: HeadInfo, probe: SdfProbe
           pts.push(new THREE.Vector3(pp[0] + nn[0] * lift, pp[1] + nn[1] * lift, pp[2] + nn[2] * lift));
           nrm.push(new THREE.Vector3(nn[0], nn[1], nn[2]));
         }
-        const wdt = (0.0013 + 0.0007 * (1 - t)) * s;
+        const wdt = (0.0011 + 0.0006 * (1 - t)) * s;
         cTmp.copy(cBase).multiplyScalar(0.8 + 0.4 * rnd());
         strands.push({ points: pts, normals: nrm, width: wdt, tipWidth: wdt * 0.4, color: cTmp.getHex(THREE.SRGBColorSpace), bone: headBone });
       }

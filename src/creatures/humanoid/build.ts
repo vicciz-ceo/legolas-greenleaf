@@ -231,7 +231,8 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
     }),
   ];
   const ao = DEBUG.has('noao') ? (false as const) : { dist: 0.07 * s, strength: 1 };
-  const refine = DEBUG.has('norefine') ? undefined : { levels: hero ? 2 : 1, threshold: 0.07, minEdge: 0.0065 * s };
+  // heroes: the face cells (≈ 5 mm) are refined too, so lips/brows/lid colour edges stay clean
+  const refine = DEBUG.has('norefine') ? undefined : { levels: hero ? 2 : 1, threshold: 0.07, minEdge: (hero ? 0.0038 : 0.0065) * s };
   const opts0: MeshOpts = DEBUG.has('uniform') ? { res: headRes, ao } : { res, regions: DEBUG.has('noregions') ? [] : regions, ao, refine };
   const opts1: MeshOpts = { res: res * 1.5, regions: [{ min: headMin, max: headMax, res: headRes * 1.9, band: res * 2.2, aoScale: 0.7 }], ao: ao ? { dist: ao.dist, strength: 1 } : false, smooth: 2 };
   const prep: Prepared = { key, spec, def, vdef, bucket, P, rig, sc, head, out, gear, objects, helmet: arm.helmet, hooded, armor, opts0, opts1, ms: performance.now() - t0 };

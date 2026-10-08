@@ -11,7 +11,7 @@ import type { KindContext, KindDef } from '../../types';
 import { mat4, mergeAll, put, shell, spike, studs } from './armor';
 import { DOME_POINTED, STEEL, domeHelm } from './headgear';
 import { devNum, mix, shade } from './common';
-import { addBeard, addBrows, addHairdo, sculptBeardMass } from './hair';
+import { addBeard, addBrows, addHairdo, sculptBeardMass, withHair } from './hair';
 import { sculptStrap, sculptTorsoGarment } from './garments';
 import { sculptHairCap } from '../../hairstyles';
 
@@ -21,8 +21,8 @@ export const GIMLI = {
   hairLight: 0xa86a33,
   beard: 0x8e4a24,
   beardTip: 0xb06a30,
-  skin: 0xbd7a58,
-  skin2: 0x9c5240,
+  skin: 0xa86a4c,
+  skin2: 0x8a4a38,
   lips: 0xa85c52,
   eyes: 0x3a2a1c,
   trousers: 0x4a3a2c,
@@ -52,15 +52,15 @@ function pauldrons(ctx: KindContext) {
   for (const side of ['l', 'r'] as const) {
     const sx = side === 'l' ? 1 : -1;
     const sh = P.j[`upperarm_${side}`];
-    for (let k = 0; k < 3; k++) {
+    for (let k = 0; k < 2; k++) {
       const R = (0.098 - k * 0.006) * s * 1.2 * g;
-      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: Math.PI * (0.4 - k * 0.03), w: 14, h: 6 });
+      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: Math.PI * (0.4 - k * 0.03), w: 12, h: 5 });
       const m = new THREE.Matrix4()
         .makeTranslation(sh[0] + sx * 0.02 * s, sh[1] + (0.035 - k * 0.032) * s, sh[2])
         .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.62 + k * 0.1)));
       put(ctx, geo, { bone: `upperarm_${side}`, color: k === 2 ? C.steelDark : C.steel, mat: STEEL, matrix: m });
       // bronze edge ring on each lamella
-      const ring = new THREE.TorusGeometry(R * 0.985, 0.0045 * s * 1.3, 4, 20).rotateX(Math.PI / 2).scale(1, 1, 1.02);
+      const ring = new THREE.TorusGeometry(R * 0.985, 0.0045 * s * 1.3, 3, 16).rotateX(Math.PI / 2).scale(1, 1, 1.02);
       const th = Math.PI * (0.43 - k * 0.04);
       ring.scale(Math.sin(th), 1, Math.sin(th)).translate(0, Math.cos(th) * R * 0.62, 0);
       put(ctx, ring, { bone: `upperarm_${side}`, color: C.bronze, mat: 'gold', matrix: m, small: true });
@@ -110,6 +110,10 @@ function beltGear(ctx: KindContext) {
 }
 
 export function gimliExtras(ctx: KindContext) {
+  withHair(ctx, () => gimliBody(ctx));
+}
+
+function gimliBody(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const C = GIMLI;
   const rng = new Rng(0x61a11);
@@ -128,7 +132,7 @@ export function gimliExtras(ctx: KindContext) {
   sculptTorsoGarment(ctx, { color: C.mail, mat: 'mail', inflate: 0.0145 * sc, hem: 0.0, sleeve: 0.8 });
   sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: 1 });
   sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: -1 });
-  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 100, width: 0.05, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5, segments: 5 }, new Rng(0x517));
+  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 130, width: 0.04, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5, segments: 5 }, new Rng(0x517));
   // ── beard: long, forked into a mass with two braids and a moustache ──
   if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.4 * sc, width: 1.06, fullness: 1.15 });
   if (!devNum('nobeard', 0)) addBeard(
@@ -138,13 +142,13 @@ export function gimliExtras(ctx: KindContext) {
       tip: C.beardTip,
       deep: mix(C.beard, 0x000000, 0.35),
       length: 0.4 * sc,
-      locks: 14,
-      perLock: 7,
+      locks: 15,
+      perLock: 9,
       segments: 6,
       spread: 1.05,
       cheeks: true,
       wave: 0.7,
-      width: 0.045,
+      width: 0.036,
       moustache: { length: 0.1 * sc, droop: 0.5, curl: 0.5 },
       braids: [
         { x: 0.05, length: 0.46 * sc, radius: 0.017 },
@@ -170,10 +174,10 @@ export const gimliDef: KindDef = {
   face: {
     jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 2.0, cheekbones: 1.2,
     nose: { length: 1.2, width: 1.5, bridge: 1.1, hook: 0.25, tip: 1.4 },
-    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.8, eyeOpen: 0.5, eyeSpacing: 0.96, eyeTilt: -0.04, foreheadSlope: 0.1,
+    lips: { width: 1.0, fullness: 0.85 }, ears: 'round', earSize: 1.0, eyeSize: 0.86, eyeOpen: 0.62, eyeSpacing: 0.96, eyeTilt: -0.04, foreheadSlope: 0.1,
   },
   skin: { color: GIMLI.skin, color2: GIMLI.skin2, blotch: 0.45, blemish: 0.2, scars: 1, wrinkles: 0.55, lips: GIMLI.lips, brows: GIMLI.hair, surface: 'skin_weathered', scatter: 0xd0503a },
-  eyes: { color: GIMLI.eyes, sclera: 0xe2d6c8 },
+  eyes: { color: GIMLI.eyes, sclera: 0xbcaa96 },
   // chain bones only: the visible hair and beard are grown in extras (see hair.ts)
   hair: { style: 'stringy', color: GIMLI.hair, density: 0 },
   beard: { style: 'stubble', color: GIMLI.beard, length: 0.08 },
@@ -189,7 +193,7 @@ export const gimliDef: KindDef = {
   palette: GIMLI,
   anim: { swagger: 0.5, aggression: 0.55, stance: 1.2, cadence: 1.05, armSwing: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { res: devNum('res', 0.032), headRes: devNum('headRes', 0.0095), faceRes: devNum('faceRes', 0), detailScale: 1.3 },
+  detail: { res: devNum('res', 0.034), headRes: devNum('headRes', 0.0105), faceRes: devNum('faceRes', 0), detailScale: 1.3 },
   sfx: { voice: 'dwarf', weight: 0.7 },
   extras: gimliExtras,
 };

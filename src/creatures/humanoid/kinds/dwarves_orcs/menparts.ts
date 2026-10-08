@@ -27,12 +27,12 @@ export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: nu
     for (let k = 0; k < layers; k++) {
       const R = (0.1 - k * 0.006) * s * g * (o.size ?? 1);
       const th = Math.PI * (0.4 - k * 0.03);
-      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: th, w: 14, h: 6 });
+      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: th, w: 10, h: 4 });
       const m = new THREE.Matrix4()
         .makeTranslation(sh[0] + sx * 0.018 * s, sh[1] + (0.032 - k * 0.032) * s, sh[2])
         .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.6 + k * 0.1)));
       put(ctx, geo, { bone: `upperarm_${side}`, color: o.color, mat: o.mat ?? 'gold', matrix: m });
-      const rg = new THREE.TorusGeometry(R * 0.99, 0.0045 * s * 1.3, 4, 20).rotateX(Math.PI / 2);
+      const rg = new THREE.TorusGeometry(R * 0.99, 0.0045 * s * 1.3, 3, 12).rotateX(Math.PI / 2);
       rg.scale(Math.sin(th), 1, Math.sin(th) * 1.05).translate(0, Math.cos(th) * R * 0.75, 0);
       put(ctx, rg, { bone: `upperarm_${side}`, color: trim, mat: o.trimMat ?? 'gold', matrix: m, small: true });
     }

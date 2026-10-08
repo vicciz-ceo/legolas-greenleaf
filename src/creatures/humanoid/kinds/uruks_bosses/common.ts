@@ -853,8 +853,11 @@ export function scarTube(proj: Projector, pts: SnapPoint[], radius: number, lift
   const path: THREE.Vector3[] = [];
   const nn = V();
   for (let i = 0; i <= n; i++) {
-    const p = curve.getPointAt(i / n);
+    const p0 = curve.getPointAt(i / n);
+    const p = p0.clone();
     if (!proj.project(p, nn)) continue;
+    // reject points that jumped to another part of the body
+    if (p.distanceTo(p0) > Math.max(0.03, radius * 8)) continue;
     path.push(p.addScaledVector(nn, lift));
   }
   if (path.length < 3) return null;

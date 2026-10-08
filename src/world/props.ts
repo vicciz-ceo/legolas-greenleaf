@@ -701,13 +701,13 @@ export function skeleton(pose: SkeletonPose = 'lying', seed = 1, scale = 0.82): 
     const dep = wid * 0.82;
     for (const sgn of [-1, 1]) {
       const pts: P3[] = [];
-      for (let k = 0; k <= 5; k++) {
-        const a = (k / 5) * Math.PI * 0.62;
+      for (let k = 0; k <= 4; k++) {
+        const a = (k / 4) * Math.PI * 0.62;
         const sx = Math.sin(a) * wid * sgn;
         const sf = (1 - Math.cos(a)) * dep * 0.9;
         pts.push([c[0] + side[0] * sx + fwd[0] * sf - sd[0] * k * 0.004, c[1] + side[1] * sx + fwd[1] * sf - sd[1] * k * 0.004, c[2] + side[2] * sx + fwd[2] * sf - sd[2] * k * 0.004]);
       }
-      for (let k = 0; k < 5; k++) seg(pts[k], pts[k + 1], 0.0075, 0.0075);
+      for (let k = 0; k < 4; k++) kit.add(bone, limbGeo(pts[k], pts[k + 1], 0.0075, 0.0075, 3, 0.3));
     }
   }
   // skull

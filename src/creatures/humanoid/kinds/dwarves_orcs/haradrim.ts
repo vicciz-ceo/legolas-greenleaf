@@ -10,7 +10,7 @@ import type { KindContext, KindDef } from '../../types';
 import { put, studs } from './armor';
 import { ctxBucket, devNum, recipeRng } from './common';
 import { sculptStrap, sculptTorsoGarment } from './garments';
-import { addHairdo } from './hair';
+import { addHairdo, withHair } from './hair';
 import { DOME_ROUND, domeHelm, sculptTurban, veil } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
 import { LAMELLAR, jewelry, layeredPauldrons, plume, studdedBand } from './menparts';
@@ -108,13 +108,15 @@ function wrapped(ctx: KindContext, rng: Rng) {
 }
 
 export function haradrimExtras(ctx: KindContext) {
-  const rng = recipeRng(ctx, 'haradrim');
-  switch (ctxBucket(ctx)) {
-    case 1: return braided(ctx, rng);
-    case 2: return helmed(ctx, rng);
-    case 3: return wrapped(ctx, rng);
-    default: return turbaned(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const rng = recipeRng(ctx, 'haradrim');
+    switch (ctxBucket(ctx)) {
+      case 1: return braided(ctx, rng);
+      case 2: return helmed(ctx, rng);
+      case 3: return wrapped(ctx, rng);
+      default: return turbaned(ctx, rng);
+    }
+  });
 }
 
 export const haradrimDef: KindDef = {

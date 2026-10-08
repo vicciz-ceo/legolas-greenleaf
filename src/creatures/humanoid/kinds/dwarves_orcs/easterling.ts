@@ -10,7 +10,7 @@ import type { KindContext, KindDef } from '../../types';
 import { put, studs } from './armor';
 import { ctxBucket, devNum, mix, recipeRng } from './common';
 import { sculptStrap, sculptTorsoGarment } from './garments';
-import { addHairdo } from './hair';
+import { addHairdo, withHair } from './hair';
 import { BRONZE, DOME_CONICAL, DOME_POINTED, DOME_ROUND, STEEL, domeHelm, faceMask, sculptTurban } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
 import { BLACK_SCALES, BRONZE_SCALES, GOLD_SCALES, jewelry, layeredPauldrons, plume, studdedBand } from './menparts';
@@ -45,7 +45,7 @@ function goldMask(ctx: KindContext, rng: Rng) {
   faceCommonMan(ctx, rng, { brow: 0x14100e });
   sculptTorsoGarment(ctx, { color: GOLD, mat: GOLD_SCALES, inflate: 0.014 * sc, hem: 0.0, sleeve: 0 });
   sculptStrap(ctx, { color: BLACK, mat: 'leather_worn', width: 0.03 * sc, inflate: 0.02 * sc, sign: 1 });
-  if (A >= 0.25) layeredPauldrons(ctx, { color: GOLD, trim: GOLD_DK, mat: GOLD_SCALES, layers: 3, size: 1.05, spike: 0.07 });
+  if (A >= 0.25) layeredPauldrons(ctx, { color: GOLD, trim: GOLD_DK, mat: GOLD_SCALES, layers: 2, size: 1.05, spike: 0.07 });
   studdedBand(ctx, { y: P.j.thigh_l[1] + 0.07 * sc, color: GOLD });
   jewelry(ctx, { neck: true, arms: 1 });
   if (ctx.helmet) {
@@ -62,7 +62,7 @@ function bronzePlumed(ctx: KindContext, rng: Rng) {
   faceCommonMan(ctx, rng, { brow: 0x14100e });
   sculptTorsoGarment(ctx, { color: BRONZE_C, mat: BRONZE_SCALES, inflate: 0.014 * sc, hem: 0.05, sleeve: 0.4 });
   sculptStrap(ctx, { color: BLACK, mat: 'leather_worn', width: 0.03 * sc, inflate: 0.022 * sc, sign: -1 });
-  if (A >= 0.25) layeredPauldrons(ctx, { color: BRONZE_C, trim: GOLD, mat: BRONZE_SCALES, layers: 3, size: 1.1 });
+  if (A >= 0.25) layeredPauldrons(ctx, { color: BRONZE_C, trim: GOLD, mat: BRONZE_SCALES, layers: 2, size: 1.1 });
   studdedBand(ctx, { y: P.j.thigh_l[1] + 0.07 * sc, color: GOLD });
   jewelry(ctx, { neck: false, arms: 2, ears: true });
   if (ctx.helmet) {
@@ -79,8 +79,7 @@ function painted(ctx: KindContext, rng: Rng) {
   // red and black war paint: bars across the eyes and cheeks
   for (const sd of [1, -1]) {
     faceStroke(ctx, [[sd * 0.3, -0.04], [sd * 0.12, -0.04]], { color: BLACK, r: 0.026, mat: 'skin', strength: 0.95 });
-    faceStroke(ctx, [[sd * 0.26, -0.18], [sd * 0.12, -0.22]], { color: RED, r: 0.02, mat: 'skin', strength: 0.9 });
-    faceStroke(ctx, [[sd * 0.2, -0.34], [sd * 0.1, -0.4]], { color: RED, r: 0.016, mat: 'skin', strength: 0.9 });
+    faceStroke(ctx, [[sd * 0.26, -0.18], [sd * 0.14, -0.2]], { color: RED, r: 0.02, mat: 'skin', strength: 0.9 });
   }
   faceStroke(ctx, [[0, 0.2], [0, -0.0]], { color: RED, r: 0.02, mat: 'skin', strength: 0.9 });
   scalpStroke(ctx, [[0, 0.5], [0, 1.1]], { color: RED, r: 0.012 });
@@ -97,7 +96,12 @@ function painted(ctx: KindContext, rng: Rng) {
   if (A >= 0.25) layeredPauldrons(ctx, { color: 0x6a4a2a, trim: GOLD, mat: 'leather_worn', trimMat: 'gold', layers: 2, size: 1.0, sides: ['l'] });
   jewelry(ctx, { neck: true, arms: 2, ears: true });
   studdedBand(ctx, { y: P.j.thigh_l[1] + 0.07 * sc, color: GOLD });
-  if (ctx.helmet) domeHelm(ctx, { color: BRONZE_C, trim: GOLD, mat: 'gold', trimMat: 'gold', profile: [[0.4, -0.04], [0.405, 0.03], [0.38, 0.14], [0.31, 0.26], [0.2, 0.34], [0.1, 0.38], [0.0, 0.4]], band: true, ridge: false, cheeks: false, rivets: 14, tilt: -0.04, y: 0.12 });
+  if (ctx.helmet) {
+    // a gold brow-band over the turban
+    const u = P.headH;
+    put(ctx, new THREE.TorusGeometry(0.4 * u, 0.026 * u, 4, 20).rotateX(Math.PI / 2 - 0.1).scale(1, 1, 1.15).translate(...P.h(0, 0.17, -0.05)), { bone: 'head', color: GOLD, mat: 'gold', small: true });
+    put(ctx, new THREE.ConeGeometry(0.045 * u, 0.14 * u, 5).translate(...P.h(0, 0.27, 0.36)), { bone: 'head', color: GOLD, mat: 'gold', small: true });
+  }
 }
 
 function elite(ctx: KindContext, rng: Rng) {
@@ -109,7 +113,7 @@ function elite(ctx: KindContext, rng: Rng) {
   sculptTorsoGarment(ctx, { color: 0x24201e, mat: BLACK_SCALES, inflate: 0.015 * sc, hem: 0.05, sleeve: 0.5 });
   sculptStrap(ctx, { color: GOLD, mat: 'gold', width: 0.02 * sc, inflate: 0.023 * sc, sign: 1 });
   sculptStrap(ctx, { color: GOLD, mat: 'gold', width: 0.02 * sc, inflate: 0.023 * sc, sign: -1 });
-  if (A >= 0.25) layeredPauldrons(ctx, { color: 0x24201e, trim: GOLD, mat: BLACK_SCALES, trimMat: 'gold', layers: 3, size: 1.15, spike: 0.09 });
+  if (A >= 0.25) layeredPauldrons(ctx, { color: 0x24201e, trim: GOLD, mat: BLACK_SCALES, trimMat: 'gold', layers: 2, size: 1.15, spike: 0.09 });
   studdedBand(ctx, { y: P.j.thigh_l[1] + 0.07 * sc, color: GOLD });
   jewelry(ctx, { neck: true, arms: 1 });
   if (ctx.helmet) {
@@ -120,13 +124,15 @@ function elite(ctx: KindContext, rng: Rng) {
 }
 
 export function easterlingExtras(ctx: KindContext) {
-  const rng = recipeRng(ctx, 'easterling');
-  switch (ctxBucket(ctx)) {
-    case 1: return bronzePlumed(ctx, rng);
-    case 2: return painted(ctx, rng);
-    case 3: return elite(ctx, rng);
-    default: return goldMask(ctx, rng);
-  }
+  withHair(ctx, () => {
+    const rng = recipeRng(ctx, 'easterling');
+    switch (ctxBucket(ctx)) {
+      case 1: return bronzePlumed(ctx, rng);
+      case 2: return painted(ctx, rng);
+      case 3: return elite(ctx, rng);
+      default: return goldMask(ctx, rng);
+    }
+  });
 }
 
 export const easterlingDef: KindDef = {

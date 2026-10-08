@@ -64,7 +64,7 @@ export function studs(points: V3[], r: number, flat = 0.7): THREE.BufferGeometry
   if (!points.length) return null;
   const list: THREE.BufferGeometry[] = [];
   for (const p of points) {
-    const g = new THREE.SphereGeometry(r, 5, 3).scale(1, flat, 1).translate(p[0], p[1], p[2]);
+    const g = new THREE.SphereGeometry(r, 4, 2).scale(1, flat, 1).translate(p[0], p[1], p[2]);
     list.push(g.toNonIndexed());
   }
   return mergeAll(list);
@@ -139,7 +139,7 @@ export function scaleBand(opts: { cy: number; rx: number; rz: number; y0: number
 
 /** a torus ring around `dir` at `p` (clasps, rings on braids and limbs) */
 export function ring(p: V3, dir: V3, r: number, tubeR: number, seg = 8): THREE.BufferGeometry {
-  const g = new THREE.TorusGeometry(r, tubeR, 5, seg);
+  const g = new THREE.TorusGeometry(r, tubeR, 4, seg);
   const d = new THREE.Vector3(dir[0], dir[1], dir[2]).normalize();
   const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), d);
   g.applyMatrix4(new THREE.Matrix4().compose(new THREE.Vector3(p[0], p[1], p[2]), q, new THREE.Vector3(1, 1, 1)));

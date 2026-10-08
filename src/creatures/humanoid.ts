@@ -28,6 +28,8 @@ export type { KindDef, KindContext } from './humanoid/types';
 export { registerKind, resolveKind, ALL_KINDS } from './humanoid/registry';
 
 const BOWS: WeaponKind[] = ['elven_bow', 'orc_bow', 'uruk_bow'];
+/** special poses that need both hands free: a bow in hand is stowed on the back meanwhile */
+const STOW_POSES = new Set<string>(['climb', 'hang', 'swing', 'barrel']);
 
 export interface HumanoidExt extends Humanoid {
   /** reset animation state (springs, landing…) and seek the internal clock / gait phase (cycles) */
@@ -175,6 +177,7 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     }
     for (const e of extras) if (e.stowFor) e.obj.visible = held[e.stowFor.hand].kind !== e.stowFor.weapon && lod < 2;
     anim.hasBow = BOWS.includes(held.hand_l.kind);
+    anim.hasCrossbow = held.hand_r.kind === 'crossbow' || held.hand_l.kind === 'crossbow';
     anim.gripL = held.hand_l.kind !== 'none';
     anim.gripR = held.hand_r.kind !== 'none';
   };
@@ -188,6 +191,7 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     }
     const cur = held[hand];
     if (cur.kind === w && cur.obj) return;
+    if (hand === 'hand_l' && poseStowed) poseStowed = false;
     if (cur.obj) {
       cur.obj.parent?.remove(cur.obj);
       disposeWeapon(cur.obj);
@@ -208,12 +212,33 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
 
   let castShadow = true;
   let lod: 0 | 1 | 2 = 0;
+  let poseStowed = false;
+  const setPoseStow = (v: boolean) => {
+    poseStowed = v;
+    const bow = held.hand_l.obj;
+    if (!bow) return;
+    if (v) {
+      sockets.back.add(bow);
+      bow.position.set(0, 0, 0);
+      bow.rotation.set(0, Math.PI / 2, 0);
+      const api = bow.userData.bow as { setDraw(v: number): void; setNock(p: THREE.Vector3 | null): void; showArrow(v: boolean): void } | undefined;
+      api?.setDraw(0);
+      api?.setNock(null);
+      api?.showArrow(false);
+    } else {
+      sockets.hand_l.add(bow);
+      bow.position.set(0, 0, 0);
+      bow.rotation.set(0, 0, 0);
+    }
+    anim.hasBow = !v && BOWS.includes(held.hand_l.kind);
+  };
   setWeapon('hand_r', defaults.right);
   setWeapon('hand_l', defaults.left);
 
   // bow string follows the draw hand
   const bowModel = new THREE.Matrix4();
   anim.bowHook = (pull, nockModel, arrowVisible) => {
+    if (poseStowed) return;
     const bow = held.hand_l.obj?.userData.bow as { setDraw(v: number): void; setNock(p: THREE.Vector3 | null): void; showArrow(v: boolean): void } | undefined;
     if (!bow) return;
     bow.setDraw(pull);
@@ -274,6 +299,9 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     },
     animate(dt: number, input: AnimInput) {
       if (lodVersion !== A.lodVersion) applyLod();
+      // climbing / hanging / swinging / barrel-hopping: stow the bow on the back, restore after
+      const wantStow = !!input.special && STOW_POSES.has(input.special) && BOWS.includes(held.hand_l.kind) && !!held.hand_l.obj;
+      if (wantStow !== poseStowed) setPoseStow(wantStow);
       anim.update(dt, input);
       if (flashT > 0) {
         flashT = Math.max(0, flashT - dt);

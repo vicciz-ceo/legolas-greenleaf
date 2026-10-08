@@ -132,3 +132,60 @@ export function transformGeo(g: THREE.BufferGeometry, m: THREE.Matrix4): THREE.B
   g.applyMatrix4(m);
   return g;
 }
+
+export interface CliffOpts {
+  /** displacement strength 0..1 (default 0.6) */
+  rough?: number;
+  /** how much the top narrows (0 = straight walls, 0.4 = pronounced taper) */
+  taper?: number;
+  /** horizontal strata strength */
+  strata?: number;
+  /** metres per grid cell (default 2.5) */
+  cell?: number;
+  tile?: number;
+}
+
+/** craggy block: a subdivided box displaced along its normals with ridged noise and strata. Centred on the origin. */
+export function cliffGeometry(w: number, h: number, d: number, seed = 1, o: CliffOpts = {}): THREE.BufferGeometry {
+  const cell = o.cell ?? 2.5;
+  const sx = Math.max(2, Math.round(w / cell));
+  const sy = Math.max(2, Math.round(h / cell));
+  const sz = Math.max(2, Math.round(d / cell));
+  let g: THREE.BufferGeometry = new THREE.BoxGeometry(w, h, d, sx, sy, sz);
+  g.deleteAttribute('normal');
+  g.deleteAttribute('uv');
+  g = mergeVertices(g, 1e-4);
+  g.computeVertexNormals();
+  const pos = g.getAttribute('position') as THREE.BufferAttribute;
+  const nor = g.getAttribute('normal') as THREE.BufferAttribute;
+  const rough = o.rough ?? 0.6;
+  const taper = o.taper ?? 0;
+  const strata = o.strata ?? 0.5;
+  const amp = Math.min(w, d) * 0.1 * rough + 0.5;
+  const ox = seed * 17.3;
+  for (let i = 0; i < pos.count; i++) {
+    let x = pos.getX(i);
+    let y = pos.getY(i);
+    let z = pos.getZ(i);
+    const nx = nor.getX(i);
+    const ny = nor.getY(i);
+    const nz = nor.getZ(i);
+    const big = fbm3(x * 0.045 + ox, y * 0.03, z * 0.045, 3, 5);
+    const ridge = 1 - Math.abs(fbm3(x * 0.11 + ox, y * 0.07, z * 0.11, 3, 8));
+    const fine = fbm3(x * 0.35, y * 0.3 + ox, z * 0.35, 2, 9);
+    const step = Math.sin(y * 0.55 + big * 3) * strata * 0.45;
+    const d0 = (big * 1.2 + (ridge - 0.65) * 1.1 + fine * 0.18 + step) * amp;
+    // keep the base and top edges roughly in place
+    x += nx * d0;
+    y += ny * d0 * 0.4;
+    z += nz * d0;
+    const t = (y + h / 2) / h;
+    const k = 1 - taper * Math.max(0, Math.min(1, t));
+    pos.setXYZ(i, x * k, y, z * k);
+  }
+  g.computeVertexNormals();
+  g = bakeFaceBoxUV(g, o.tile ?? 5, 0, 0);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
+  return g;
+}

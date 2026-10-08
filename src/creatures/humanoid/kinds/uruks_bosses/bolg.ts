@@ -13,6 +13,7 @@ import {
 } from './common';
 import { brawnBody } from './body';
 import { scaleHeldWeapon } from './common';
+import { ringRadii } from './common';
 import { URUK_PAL, forearms, cuirassSdf, cuirassGear, pauldron } from './uruk';
 import { emitParts } from '../../anatomy';
 
@@ -23,8 +24,8 @@ const BONE = surface('bone', { rough: 0.6 });
 const SCAR = 0x2d2828;
 
 export const BOLG_PAL = {
-  skin: 0x8d887f,
-  skin2: 0x56514b,
+  skin: 0x8f8a82,
+  skin2: 0x6a655e,
   lips: 0x5a4a48,
   scatter: 0x8a6a62,
   eyes: 0xa6b2bc,
@@ -115,22 +116,24 @@ function skullHardware(ctx: KindContext, gear: GearFn, proj: ReturnType<typeof m
       gear(ribbon(pa.p, pa.n, 0.04 * u, 0.012 * sc, 1, { outerOnly: true, noInner: true }, pa.p.length - 1), { bone: 'head', color: iron, mat: IRON_RUSTY });
       jawBolts.push({ p: pa.p[1].clone().addScaledVector(pa.n[1], 0.006 * sc), n: pa.n[1] }, { p: pa.p[Math.floor(pa.p.length * 0.6)].clone().addScaledVector(pa.n[Math.floor(pa.p.length * 0.6)], 0.006 * sc), n: pa.n[Math.floor(pa.p.length * 0.6)] });
     }
-    // lower jaw band (follows the jaw bone): jaw angle → chin → other jaw angle
-    const pj = densePath(
-      proj,
-      [HP(0.265, -0.38, 0.02, 'l'), HP(0.22, -0.48, 0.14, 'l'), HP(0.13, -0.6, 0.27, 'u'), HP(0.0, -0.64, 0.33, 'u'), HP(-0.13, -0.6, 0.27, 'u'), HP(-0.22, -0.48, 0.14, 'r'), HP(-0.265, -0.38, 0.02, 'r')],
-      0.012 * sc,
-      0.003 * sc,
-    );
-    if (pj.p.length > 4) {
-      gear(ribbon(pj.p, pj.n, 0.05 * u, 0.012 * sc, 1, { outerOnly: true, noInner: true }, pj.p.length - 1), { bone: 'jaw', color: iron, mat: IRON_RUSTY });
-      for (let i = 2; i < pj.p.length - 1; i += 4) jawBolts.push({ p: pj.p[i].clone().addScaledVector(pj.n[i], 0.006 * sc), n: pj.n[i] });
-    }
-    // chin plate over the front of the jaw
-    const pc = densePath(proj, [HP(-0.11, -0.52, 0.34, 'f'), HP(0, -0.55, 0.36, 'f'), HP(0.11, -0.52, 0.34, 'f')], 0.01 * sc, 0.004 * sc);
-    if (pc.p.length > 2) {
-      gear(ribbon(pc.p, pc.n, 0.09 * u, 0.012 * sc, 1, { outerOnly: true, noInner: true }, pc.p.length - 1), { bone: 'jaw', color: iron, mat: IRON_RUSTY });
-      jawBolts.push({ p: pc.p[0].clone().addScaledVector(pc.n[0], 0.006 * sc), n: pc.n[0] }, { p: pc.p[pc.p.length - 1].clone().addScaledVector(pc.n[pc.p.length - 1], 0.006 * sc), n: pc.n[pc.p.length - 1] });
+    // lower jaw plate over the chin and the jaw line (follows the jaw bone), bolted into the bone
+    {
+      const cc = H(0, -0.25, 0.02);
+      const R: [number, number, number] = [0.36 * u, 0.47 * u, 0.55 * u];
+      const plate = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-1.0, -0.47]), 14, 5, 0.014 * sc, { noInner: true, thickFn: (_u2, v) => 1 + 0.6 * (1 - smooth(0, 0.2, v)) });
+      gear(plate, { bone: 'jaw', color: iron, mat: IRON_RUSTY, ao: 0.9 });
+      for (const [a, e] of [[-0.6, -0.62], [0, -0.62], [0.6, -0.62], [-0.85, -0.85], [0.85, -0.85], [-0.3, -0.85], [0.3, -0.85]] as [number, number][]) {
+        const d = V(Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));
+        const p = V(d.x * R[0], d.y * R[1], d.z * R[2]).add(cc);
+        const nn = V(d.x / R[0], d.y / R[1], d.z / R[2]).normalize();
+        jawBolts.push({ p: p.addScaledVector(nn, 0.008 * sc), n: nn });
+      }
+      // two spikes jutting from the chin plate
+      for (const sx of [-1, 1]) {
+        const d = V(Math.cos(-0.75) * Math.sin(sx * 0.42), Math.sin(-0.75), Math.cos(-0.75) * Math.cos(sx * 0.42));
+        const p = V(d.x * R[0], d.y * R[1], d.z * R[2]).add(cc);
+        gear(spike(0.018 * u, 0.1 * u, 5), { bone: 'jaw', color: BOLG_PAL.iron, mat: IRON, matrix: placeAlong(p, V(sx * 0.2, -0.7, 0.7), V(0, 0, 1)), small: true });
+      }
     }
     bolts(gear, 'jaw', jawBolts, 0.011 * sc);
   }
@@ -163,12 +166,12 @@ function bolgExtras(ctx: KindContext) {
   const box = { min: [-1, 0, -0.8] as [number, number, number], max: [1, P.H + 0.4, 0.9] as [number, number, number] };
 
   brawnBody(ctx, { traps: 1.2, lats: 1.2, delts: 1.2, forearm: 1.15, thigh: 1.1, calf: 1.1, biceps: 1.15 });
-  const cuirass = armor >= 0.25 ? cuirassSdf(ctx, { cuirass: 'plate' }, parts, { rusty: true, color: BOLG_PAL.iron }) : null;
-  if (armor >= 0.25) forearms(ctx, parts, 'plate');
+  const cuirass = armor >= 0.25 ? cuirassSdf(ctx, { cuirass: 'plate' }, parts, { rusty: true, color: BOLG_PAL.iron, lats: 1.2 }) : null;
+  if (armor >= 0.25) forearms(ctx, parts, 'plate', 1.15);
 
   // heavy fur collar over the trapezius
   s.group('union', 0.006 * sc, () => {
-    emitParts(s, parts, ['trap', 'neck'], { color: BOLG_PAL.fur, mat: 'fur', inflate: 0.05 * sc, k: 0.06 * sc, noise: { amp: 0.018 * sc, freq: 16 / sc, type: 'fbm', octaves: 3 } });
+    emitParts(s, parts, ['trap', 'neck'], { color: BOLG_PAL.fur, mat: 'fur', inflate: 0.04 * sc, k: 0.05 * sc, noise: { amp: 0.015 * sc, freq: 16 / sc, type: 'fbm', octaves: 3 } });
     s.plane([0, 1, 0], j.neck[1] + 0.05 * sc, { op: 'intersect', k: 0.02 * sc });
     s.plane([0, -1, 0], -(j.neck[1] - 0.06 * sc), { op: 'intersect', k: 0.02 * sc });
   });
@@ -178,11 +181,12 @@ function bolgExtras(ctx: KindContext) {
 
   const proj = makeProjector(s, box);
   if (!proj) return;
+  if (typeof location !== 'undefined' && location.search.includes('gearlog')) ((window as unknown as { __gearLog?: string[] }).__gearLog ??= []).push('rings ' + [1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9].map((y) => { const r = ringRadii(proj, y); return y + ':' + r.rx.toFixed(3) + '/' + r.zf.toFixed(3); }).join(' '));
   if (cuirass) cuirassGear(ctx, gear, proj, { cuirass: 'plate' }, cuirass.botY);
   skullHardware(ctx, gear, proj);
 
   // a mace sized for a 2.6 m brute
-  scaleHeldWeapon(ctx, 'hand_r', ['mace'], [1.45, 1.4, 1.45]);
+  scaleHeldWeapon(ctx, 'hand_r', ['mace'], [1.7, 1.55, 1.7]);
 
   // spiked pauldron (left) and a smaller plate on the right
   if (armor >= 0.5) {
@@ -259,7 +263,7 @@ function bolgExtras(ctx: KindContext) {
     [[0.34 * sc, yS - 0.32 * sc, 0.0, 'l'], [0.37 * sc, yS - 0.4 * sc, 0.02 * sc, 'l']],
   ];
   for (const w of welts) {
-    const t = scarTube(proj, w, 0.0032 * sc, 0.0006);
+    const t = scarTube(proj, w, 0.0042 * sc, 0.0006);
     if (t) gear(t, { bone: 'upperarm_l', color: SCAR, mat: surface('skin_orc', { rough: 0.75, skin: 0.3 }), small: true });
   }
   void snapPath;
@@ -272,7 +276,7 @@ export const bolgKind: KindDef = {
   height: 2.6,
   build: { shoulders: 1.3, hips: 1.08, bulk: 1.25, chest: 1.15, belly: 0.05, armLength: 1.1, legLength: 0.98, headSize: 0.98, neck: 0.8, neckThick: 1.5, hunch: 0.15, handSize: 1.25, footSize: 1.2, muscle: 1.0 },
   face: BOLG_FACE,
-  skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.75, blemish: 0.6, scars: 5, warts: 0.12, wrinkles: 0.7, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_orc', scatter: BOLG_PAL.scatter },
+  skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.4, blemish: 0.6, scars: 5, warts: 0.12, wrinkles: 0.7, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_orc', scatter: BOLG_PAL.scatter },
   eyes: { color: BOLG_PAL.eyes, glow: 0.3, sclera: 0xbdb6a6 },
   hair: { style: 'bald', color: 0x1a1612 },
   outfit: [
@@ -287,6 +291,6 @@ export const bolgKind: KindDef = {
   sfx: { voice: 'orc', roar: 'orc_roar', weight: 0.9 },
   anim: { hunch: 0.15, swagger: 0.5, aggression: 1, stance: 1.2, armSwing: 1.0, cadence: 0.95 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { faceRes: 0, res: 0.05, headRes: 0.0135 },
+  detail: { faceRes: 0, res: 0.05, headRes: 0.0135, detailScale: 0.9 },
   extras: bolgExtras,
 };

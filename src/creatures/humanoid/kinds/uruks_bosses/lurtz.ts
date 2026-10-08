@@ -93,7 +93,7 @@ function lurtzExtras(ctx: KindContext) {
   const box = { min: [-0.8, 0, -0.6] as [number, number, number], max: [0.8, P.H + 0.3, 0.7] as [number, number, number] };
 
   brawnBody(ctx, { traps: 1.15, lats: 1.15, delts: 1.15, forearm: 1.1, thigh: 1.05, calf: 1.05, biceps: 1.1 });
-  forearms(ctx, parts, 'leather');
+  forearms(ctx, parts, 'leather', 1.1);
 
   const proj0 = makeProjector(s, box);
   if (proj0) {

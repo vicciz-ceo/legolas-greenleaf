@@ -239,7 +239,8 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
       let m = 0;
       for (let j = 0; j < 4; j++) m += Math.abs(surf[a * 4 + j] - surf[b * 4 + j]);
       for (let j = 0; j < 4; j++) m += 0.25 * (Math.abs(pat0[a * 4 + j] - pat0[b * 4 + j]) + Math.abs(pat1[a * 4 + j] - pat1[b * 4 + j]));
-      return d + 0.5 * m;
+      // colour changes within one material are mostly blotch noise: only strong ones count
+      return d * (m > 0.04 ? 1 : 0.3) + 0.5 * m;
     };
     const levels = rf.levels ?? 1;
     const attrDiff = (v: number, a: number) => {
@@ -303,7 +304,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
         if (crisp) {
           // bisection for the attribute switch along the edge
           let lo = 0, hi = 1;
-          for (let it = 0; it < 5; it++) {
+          for (let it = 0; it < 4; it++) {
             const tm = (lo + hi) / 2;
             ev.full(ax + (bx - ax) * tm, ay + (by - ay) * tm, az + (bz - az) * tm, codeArr, s0, e0, attr, bw);
             if (attrDiff(v, a) < attrDiff(v, b)) lo = tm;
