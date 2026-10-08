@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import type { Sculpt, V3 } from '../../../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { anatomyParts, emitParts, type PartTag } from '../../anatomy';
+import { torsoCentreFront } from './geo';
 import type { KindContext } from '../../types';
 
 const TORSO: PartTag[] = ['pelvis', 'waist', 'belly', 'ribs', 'chest', 'pecs', 'back', 'trap', 'glutes'];
@@ -59,6 +60,8 @@ export interface TorsoGarment {
   seams?: boolean;
   /** also cover thighs (coats, tabards) */
   thighs?: boolean;
+  /** a V-shaped opening down the front (open coats): half width at the neckline / at the bottom (m, scaled), bottom height */
+  frontOpen?: { top: number; bottom: number; y0?: number; y1?: number };
 }
 
 /** torso + shoulders + sleeves, as one smooth garment */
@@ -78,6 +81,24 @@ export function sculptTorso(ctx: KindContext, g: TorsoGarment) {
     s.group('union', 0.0, () => {
       emitParts(s, parts, [...TORSO, ...(g.neck === false ? [] : (['neck'] as PartTag[])), ...(g.shoulders ?? sleeve > 0 ? (['deltoid'] as PartTag[]) : []), ...(g.thighs ? (['thigh'] as PartTag[]) : [])], { ...o, inflate: g.inflate });
       slab(s, hemY, neckTop, 0.008 * sc, seams);
+      if (g.frontOpen) {
+        // a V-shaped slit: a round cone whose axis follows the front surface of the torso, so the
+        // opening has the width given at the neckline (top) and at the bottom end
+        const fo = g.frontOpen;
+        const y1 = fo.y1 ?? neckTop + 0.02 * sc;
+        const y0 = fo.y0 ?? hemY - 0.06 * sc;
+        const n = 8;
+        const pts: V3[] = [];
+        const radii: number[] = [];
+        for (let i = 0; i <= n; i++) {
+          const f = i / n;
+          const y = y1 + (y0 - y1) * f;
+          const z = torsoCentreFront(P, Math.min(y, P.j.chest[1] + 0.17 * sc)) + g.inflate * 0.6;
+          pts.push([0, y, z]);
+          radii.push(fo.top + (fo.bottom - fo.top) * f);
+        }
+        s.tube(pts, radii, { op: 'subtract', k: 0.006 * sc });
+      }
     });
     if (sleeve > 0) {
       s.mirrored(() =>

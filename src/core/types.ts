@@ -820,6 +820,16 @@ export interface Enemy extends Combatant {
   aiEnabled: boolean;
   /** force a target position to walk to (null = AI decides) */
   moveTarget: THREE.Vector3 | null;
+  /**
+   * Boss scripting: start a telegraphed attack now (wind-up defaults to the archetype's). Plays out
+   * even while aiEnabled is false. Returns false while dead or already attacking. Troll 'slam' and
+   * 'stomp' are area attacks; the others hit the target in a cone in front.
+   */
+  attack?(kind: AttackAnim, opts?: { windup?: number; target?: Combatant | null }): boolean;
+  /** hold a special pose ('roar', 'stagger', 'kneel', 'block'...) for `seconds` */
+  playPose?(pose: SpecialPose, seconds: number): void;
+  /** true while an attack winds up, strikes or recovers */
+  readonly attacking?: boolean;
 }
 
 export type AllyKind = 'gimli' | 'aragorn' | 'tauriel' | 'elf_archer' | 'rohirrim' | 'dwarf' | 'gondor' | 'man';
@@ -953,6 +963,11 @@ export interface LevelAPI {
   terrain(opts: TerrainOpts): { mesh: THREE.Mesh; heightAt: (x: number, z: number) => number };
   /** true once disposed (use to stop async scripts) */
   readonly disposed: boolean;
+  /**
+   * Pin the music mood (e.g. 'epic' for a charge, 'tension' before an ambush); null hands control
+   * back to the adaptive score (explore / tension / combat / boss). Cleared when the level ends.
+   */
+  music?(mood: MusicMood | null): void;
 }
 
 export interface TerrainOpts {

@@ -49,14 +49,16 @@ export function pauldrons(ctx: KindContext, o: { color: number; trim?: number; m
       const pos: V3 = [sh[0] + axis[0] * t * s * 1.0, sh[1] + axis[1] * t * s * 1.0 + 0.004 * s, sh[2]];
       const lm = lame(pos, axis, facing, rr, 0.085 * s * (o.size ?? 1), Math.PI * (1.15 - k * 0.04), 9, 0.04);
       put(ctx, lm, { bone, color: o.color, mat: o.mat ?? 'metal', ao: 0.95 });
-      // bright edge trim along the lower rim
-      const rim = new THREE.TorusGeometry(rr * 1.02, 0.0042 * s, 3, 12, Math.PI * (1.15 - k * 0.04)).rotateX(Math.PI / 2).rotateY(Math.PI / 2 + Math.PI * (1.15 - k * 0.04) / 2);
-      rim.applyMatrix4(along([pos[0] + axis[0] * 0.04 * s, pos[1] + axis[1] * 0.04 * s, pos[2]], axis, facing));
-      put(ctx, rim, { bone, color: trim, mat: o.trimMat ?? 'gold', small: true });
+      // bright edge trim along the lower rim of the outermost lame
+      if (k === n - 1) {
+        const rim = new THREE.TorusGeometry(rr * 1.02, 0.0042 * s, 3, 8, Math.PI * (1.15 - k * 0.04)).rotateX(Math.PI / 2).rotateY(Math.PI / 2 + Math.PI * (1.15 - k * 0.04) / 2);
+        rim.applyMatrix4(along([pos[0] + axis[0] * 0.04 * s, pos[1] + axis[1] * 0.04 * s, pos[2]], axis, facing));
+        put(ctx, rim, { bone, color: trim, mat: o.trimMat ?? 'gold', small: true });
+      }
     }
     if (o.cap !== false) {
       const R = 0.066 * s * g * (o.size ?? 1) + 0.012 * s;
-      const cap = shell(R, R * 0.8, R * 1.05, { th0: 0, th1: Math.PI * 0.48, w: 12, h: 5 });
+      const cap = shell(R, R * 0.8, R * 1.05, { th0: 0, th1: Math.PI * 0.48, w: 10, h: 4 });
       const m = new THREE.Matrix4().makeTranslation(sh[0] + sx * 0.008 * s, sh[1] + 0.02 * s, sh[2]).multiply(new THREE.Matrix4().makeRotationZ(-sx * 0.45));
       put(ctx, cap, { bone, color: o.color, mat: o.mat ?? 'metal', matrix: m });
     }
@@ -65,7 +67,7 @@ export function pauldrons(ctx: KindContext, o: { color: number; trim?: number; m
 }
 
 /** a vambrace (forearm) or greave (shin): two plates wrapped round the limb with a flared cuff and trim rings */
-export function limbGuards(ctx: KindContext, o: { kind: 'vambrace' | 'greave'; color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; length?: number; leafy?: boolean }) {
+export function limbGuards(ctx: KindContext, o: { kind: 'vambrace' | 'greave'; color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; length?: number; leafy?: boolean; /** extra radius (m, scaled) when worn over thick sleeves */ grow?: number }) {
   const { P } = ctx;
   const s = P.s;
   const g = P.build.bulk;
@@ -78,7 +80,7 @@ export function limbGuards(ctx: KindContext, o: { kind: 'vambrace' | 'greave'; c
     const len = Math.hypot(...dir);
     const bone = o.kind === 'vambrace' ? `forearm_${side}` : `shin_${side}`;
     const facing: V3 = o.kind === 'vambrace' ? [sx * 0.2, 0.2, 0.95] : [0, 0, 1];
-    const r0 = (o.kind === 'vambrace' ? 0.04 : 0.056) * s * g;
+    const r0 = (o.kind === 'vambrace' ? 0.04 : 0.056) * s * g + (o.grow ?? 0);
     const l = (o.length ?? 0.62) * len;
     const mid: V3 = [a[0] + dir[0] * 0.55, a[1] + dir[1] * 0.55, a[2] + dir[2] * 0.55];
     const up: V3 = [-dir[0], -dir[1], -dir[2]];
@@ -95,10 +97,10 @@ export function limbGuards(ctx: KindContext, o: { kind: 'vambrace' | 'greave'; c
     }
     lm.computeVertexNormals();
     put(ctx, lm, { bone, color: o.color, mat: o.mat ?? 'metal' });
-    for (const t of [0.12, 0.88]) {
+    for (const t of [0.12]) {
       const p: V3 = [a[0] + dir[0] * (0.55 + (t - 0.5) * (o.length ?? 0.62)), a[1] + dir[1] * (0.55 + (t - 0.5) * (o.length ?? 0.62)), a[2] + dir[2] * (0.55 + (t - 0.5) * (o.length ?? 0.62))];
       const rr = (r0 + 0.011 * s) * (0.84 + 0.2 * (1 - t));
-      put(ctx, ring(p, up, rr, 0.0036 * s, 12, 3), { bone, color: trim, mat: o.trimMat ?? 'gold', small: true });
+      put(ctx, ring(p, up, rr, 0.0036 * s, 9, 3), { bone, color: trim, mat: o.trimMat ?? 'gold', small: true });
     }
     if (o.leafy) {
       // leaf motif on the outer face
@@ -147,26 +149,26 @@ export function leafCuirass(ctx: KindContext, o: CuirassOpts) {
     y1,
     a0: -1.28,
     a1: 1.28,
-    off: 0.013 * s,
-    nA: 20,
-    nY: 7,
+    off: 0.024 * s,
+    nA: 16,
+    nY: 6,
     edge0: (f) => 0.05 * s * Math.pow(Math.abs(f - 0.5) * 2, 1.4) * -1 - 0.01 * s,
     edge1: (f) => -0.008 * s * Math.abs(f - 0.5) * 2,
     power: 2.6,
   });
   put(ctx, front, { bone: 'chest', color: o.color, mat });
-  if (o.back !== false) put(ctx, torsoShell(P, { y0, y1: y1 - 0.01 * s, a0: Math.PI - 1.15, a1: Math.PI + 1.15, off: 0.012 * s, nA: 12, nY: 5, power: 2.6 }), { bone: 'chest', color: shade(o.color, 0.92), mat, small: true });
+  if (o.back !== false) put(ctx, torsoShell(P, { y0, y1: y1 - 0.01 * s, a0: Math.PI - 1.15, a1: Math.PI + 1.15, off: 0.022 * s, nA: 8, nY: 4, power: 2.6 }), { bone: 'chest', color: shade(o.color, 0.92), mat, small: true });
   // overlapping leaves: rows hanging from a central spine, fanning outward (pattern of the Mirkwood guard)
-  const lf = leaf(0.07 * s, 0.021 * s, { droop: 0.2, cup: 0.3, rows: 4 });
+  const lf = leaf(0.07 * s, 0.021 * s, { droop: 0.2, cup: 0.3, rows: 3 });
   const mats: THREE.Matrix4[] = [];
-  const rows = 5;
+  const rows = 4;
   for (let r = 0; r < rows; r++) {
     const y = y1 - 0.045 * s - r * 0.052 * s;
     const n = r === 0 ? 3 : 5;
     for (let i = 0; i < n; i++) {
       const f = i / (n - 1) - 0.5;
       const a = f * 1.7;
-      const p = torsoPoint(P, a, y, 0.016 * s);
+      const p = torsoPoint(P, a, y, 0.027 * s);
       const nrm = torsoNormal2(P, a, y);
       // leaf points down and slightly outward
       mats.push(along(p, [f * 0.5, -1, 0.05], [nrm[0], 0.2, nrm[2]], 1));
@@ -177,28 +179,28 @@ export function leafCuirass(ctx: KindContext, o: CuirassOpts) {
   const ridge: V3[] = [];
   for (let i = 0; i <= 8; i++) {
     const y = y1 - 0.005 * s - ((y1 - y0) * i) / 8;
-    ridge.push(torsoPoint(P, 0, y, 0.016 * s));
+    ridge.push(torsoPoint(P, 0, y, 0.027 * s));
   }
-  put(ctx, tube(ridge, 0.0034 * s, { seg: 14, radial: 4 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
+  put(ctx, tube(ridge, 0.0034 * s, { seg: 8, radial: 3 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
   // hanging leaves over the hips (a fringe of lames)
-  const fringe = leaf(0.115 * s, 0.032 * s, { droop: 0.12, cup: 0.35, rows: 4 });
+  const fringe = leaf(0.115 * s, 0.032 * s, { droop: 0.12, cup: 0.35, rows: 3 });
   const fm: THREE.Matrix4[] = [];
-  const nF = 13;
+  const nF = 10;
   const yF = hipY + 0.095 * s;
   for (let i = 0; i < nF; i++) {
     const a = -Math.PI * 0.92 + (i / (nF - 1)) * Math.PI * 1.84 + Math.PI / nF * 0;
     // skip a gap at the very back (the cloak/quiver hang there)
-    const p = torsoPoint(P, a, yF, 0.026 * s);
+    const p = torsoPoint(P, a, yF, 0.034 * s);
     const nrm = torsoNormal2(P, a, yF);
     fm.push(along(p, [nrm[0] * 0.16, -1, nrm[2] * 0.16], [nrm[0], 0.1, nrm[2]], 1));
   }
   put(ctx, instances(fringe, fm), { bone: 'hips', color: o.color, mat });
   // belt line
   const bandPts: V3[] = [];
-  for (let i = 0; i <= 28; i++) bandPts.push(torsoPoint(P, -Math.PI + (i / 28) * Math.PI * 2, yF + 0.004 * s, 0.02 * s));
-  put(ctx, tube(bandPts, 0.0055 * s, { seg: 40, radial: 4, closed: true }), { bone: 'hips', color: o.trim, mat: tm, small: true });
+  for (let i = 0; i <= 28; i++) bandPts.push(torsoPoint(P, -Math.PI + (i / 28) * Math.PI * 2, yF + 0.004 * s, 0.03 * s));
+  put(ctx, tube(bandPts, 0.0055 * s, { seg: 20, radial: 3, closed: true }), { bone: 'hips', color: o.trim, mat: tm, small: true });
   // collar of leaves around the neck base
-  const col = leaf(0.06 * s, 0.022 * s, { droop: 0.55, cup: 0.4, rows: 3 });
+  const col = leaf(0.06 * s, 0.022 * s, { droop: 0.55, cup: 0.4, rows: 2 });
   const cm: THREE.Matrix4[] = [];
   const nC = 11;
   for (let i = 0; i < nC; i++) {
@@ -237,41 +239,41 @@ export function flutedCuirass(ctx: KindContext, o: CuirassOpts & { flutes?: numb
     y1,
     a0: -1.32,
     a1: 1.32,
-    off: 0.012 * s,
-    nA: 34,
-    nY: 8,
+    off: 0.024 * s,
+    nA: 24,
+    nY: 6,
     edge0: (f) => -0.045 * s * Math.pow(1 - Math.abs(f - 0.5) * 2, 1.5),
     power: 2.7,
     ripple: (a) => 0.0034 * s * Math.cos(a * flutes * 1.1),
   });
   put(ctx, front, { bone: 'chest', color: o.color, mat });
-  put(ctx, torsoShell(P, { y0, y1: y1 - 0.012 * s, a0: Math.PI - 1.2, a1: Math.PI + 1.2, off: 0.012 * s, nA: 16, nY: 5, power: 2.7 }), { bone: 'chest', color: shade(o.color, 0.94), mat, small: true });
+  put(ctx, torsoShell(P, { y0, y1: y1 - 0.012 * s, a0: Math.PI - 1.2, a1: Math.PI + 1.2, off: 0.022 * s, nA: 10, nY: 4, power: 2.7 }), { bone: 'chest', color: shade(o.color, 0.94), mat, small: true });
   // raised centre ridge and trim lines along the plate edge
   const ridge: V3[] = [];
-  for (let i = 0; i <= 10; i++) ridge.push(torsoPoint(P, 0, y1 - 0.01 * s - ((y1 - y0) * i) / 10, 0.019 * s));
-  put(ctx, tube(ridge, 0.0042 * s, { seg: 16, radial: 4 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
+  for (let i = 0; i <= 10; i++) ridge.push(torsoPoint(P, 0, y1 - 0.01 * s - ((y1 - y0) * i) / 10, 0.03 * s));
+  put(ctx, tube(ridge, 0.0042 * s, { seg: 10, radial: 3 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
   const edge: V3[] = [];
   for (let i = 0; i <= 22; i++) {
     const f = i / 22;
     const a = -1.3 + f * 2.6;
     const y = y0 - 0.0 - 0.045 * s * Math.pow(1 - Math.abs(f - 0.5) * 2, 1.5);
-    edge.push(torsoPoint(P, a, y + 0.002 * s, 0.017 * s));
+    edge.push(torsoPoint(P, a, y + 0.002 * s, 0.027 * s));
   }
-  put(ctx, tube(edge, 0.0034 * s, { seg: 30, radial: 4 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
+  put(ctx, tube(edge, 0.0034 * s, { seg: 18, radial: 3 }), { bone: 'chest', color: o.trim, mat: tm, small: true });
   // laminated waist: stacked bands (a "plate skirt")
-  for (let k = 0; k < 3; k++) {
-    const y = hipY + (0.15 - k * 0.048) * s;
-    const band = torsoShell(P, { y0: y - 0.035 * s, y1: y + 0.01 * s, a0: -Math.PI, a1: Math.PI, off: (0.016 + k * 0.007) * s, nA: 28, nY: 1, power: 2.4, flare: (f) => 1 + (1 - f) * 0.04 + k * 0.01 });
+  for (let k = 0; k < 2; k++) {
+    const y = hipY + (0.15 - k * 0.055) * s;
+    const band = torsoShell(P, { y0: y - 0.035 * s, y1: y + 0.01 * s, a0: -Math.PI, a1: Math.PI, off: (0.028 + k * 0.007) * s, nA: 20, nY: 1, power: 2.4, flare: (f) => 1 + (1 - f) * 0.04 + k * 0.01 });
     put(ctx, band, { bone: k === 0 ? 'spine' : 'hips', color: k % 2 ? o.color : shade(o.color, 0.96), mat, small: k > 0 });
     const lip: V3[] = [];
-    for (let i = 0; i <= 28; i++) lip.push(torsoPoint(P, -Math.PI + (i / 28) * Math.PI * 2, y - 0.034 * s, (0.017 + k * 0.007) * s));
-    put(ctx, tube(lip, 0.0028 * s, { seg: 32, radial: 3, closed: true }), { bone: k === 0 ? 'spine' : 'hips', color: o.trim, mat: tm, small: true });
+    for (let i = 0; i <= 28; i++) lip.push(torsoPoint(P, -Math.PI + (i / 28) * Math.PI * 2, y - 0.034 * s, (0.029 + k * 0.007) * s));
+    if (k === 1) put(ctx, tube(lip, 0.0028 * s, { seg: 20, radial: 3, closed: true }), { bone: 'hips', color: o.trim, mat: tm, small: true });
   }
   // flared collar (gorget)
   const R = (0.072 * P.build.neckThick * Math.sqrt(P.build.bulk) + 0.022) * s;
-  const gorget = lathe([[R, 0.05 * s], [R * 1.04, 0.025 * s], [R * 1.3, -0.012 * s], [R * 1.55, -0.03 * s]], 20).scale(1.12, 1, 1.0);
+  const gorget = lathe([[R, 0.05 * s], [R * 1.04, 0.025 * s], [R * 1.3, -0.012 * s], [R * 1.55, -0.03 * s]], 14).scale(1.12, 1, 1.0);
   put(ctx, gorget, { bone: 'chest', color: o.color, mat, matrix: new THREE.Matrix4().makeTranslation(0, j.neck[1] - 0.006 * s, -0.012 * s) });
-  put(ctx, ring([0, j.neck[1] - 0.04 * s, -0.012 * s], [0, 1, 0], R * 1.5, 0.0045 * s, 20, 3), { bone: 'chest', color: o.trim, mat: tm, small: true });
+  put(ctx, ring([0, j.neck[1] - 0.04 * s, -0.012 * s], [0, 1, 0], R * 1.5, 0.0045 * s, 14, 3), { bone: 'chest', color: o.trim, mat: tm, small: true });
 }
 
 /** a belt hardware buckle plate with a leaf motif */
@@ -366,9 +368,9 @@ export function helmDome(ctx: KindContext, o: DomeOpts) {
   const rx = DOME_BASE.rx + clear;
   const rz = DOME_BASE.rz + clear;
   const ry = (DOME_BASE.ry + clear) * tall;
-  const segs = o.segs ?? 24;
+  const segs = o.segs ?? 16;
   // build as a lathe-like grid so the rim can slope (high at the brow, low at the nape)
-  const rows = 9;
+  const rows = 6;
   const pos: number[] = [];
   const idx: number[] = [];
   const cy = DOME_BASE.cy;
@@ -422,7 +424,7 @@ export function helmDome(ctx: KindContext, o: DomeOpts) {
     const rr = Math.sin(Math.acos(cosRim));
     band.push(P.h(sa * rx * rr * 1.01, rimY - 0.003, DOME_BASE.cz + ca * rz * rr * 1.01));
   }
-  put(ctx, tube(band, 0.0075 * u, { seg: segs * 2, radial: 4, closed: true }), { bone: 'head', color: o.trim ?? o.color, mat: o.trimMat ?? o.mat ?? 'metal', small: true });
+  put(ctx, tube(band, 0.0075 * u, { seg: segs, radial: 3, closed: true }), { bone: 'head', color: o.trim ?? o.color, mat: o.trimMat ?? o.mat ?? 'metal', small: true });
   return { rx, rz, ry, rim, nape };
 }
 
@@ -477,3 +479,20 @@ export function rivetRing(ctx: KindContext, pts: V3[], r: number, color: number,
 }
 
 export { mat4, arcPlate, mix };
+
+/** low-profile shoulder plates: a flat rounded cap with a bright rim (epaulettes) */
+export function epaulettes(ctx: KindContext, o: { color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; size?: number; flat?: number; sides?: ('l' | 'r')[] }) {
+  const { P } = ctx;
+  const s = P.s;
+  const g = Math.sqrt(P.build.bulk);
+  for (const side of o.sides ?? (['l', 'r'] as const)) {
+    const sx = side === 'l' ? 1 : -1;
+    const sh = P.j[`upperarm_${side}`];
+    const R = (0.07 * (o.size ?? 1) * g + 0.01) * s;
+    const cap = shell(R, R * (o.flat ?? 0.42), R * 1.1, { th0: 0, th1: Math.PI * 0.5, w: 14, h: 4 });
+    const m = new THREE.Matrix4().makeTranslation(sh[0] + sx * 0.014 * s, sh[1] + 0.036 * s, sh[2]).multiply(new THREE.Matrix4().makeRotationZ(-sx * 0.38));
+    put(ctx, cap, { bone: `upperarm_${side}`, color: o.color, mat: o.mat ?? 'metal', matrix: m });
+    const rim = new THREE.TorusGeometry(1, 0.045, 3, 20).rotateX(Math.PI / 2).scale(R, R * 0.5, R * 1.1);
+    put(ctx, rim, { bone: `upperarm_${side}`, color: o.trim ?? o.color, mat: o.trimMat ?? 'gold', matrix: m, small: true });
+  }
+}

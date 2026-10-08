@@ -1,6 +1,6 @@
 # Chapter Design Brief
 
-Authoritative design for the 9 story chapters. Each chapter author owns `src/game/chapters/cN_<id>.ts`, an optional helper folder `src/game/chapters/<id>/`, and any new creature in `src/creatures/<name>.ts` + `<name>.lab.ts`. Use only the `LevelAPI` (`src/core/types.ts`) and the shared builders. Study `src/game/chapters/c0_arena.ts` (the reference chapter) first.
+Authoritative design for the 9 story chapters. Each chapter author owns `src/game/chapters/cN_<id>.ts`, an optional helper folder `src/game/chapters/<id>/`, and any new creature in `src/creatures/<name>.ts` + `<name>.lab.ts`. Use only the `LevelAPI` (`src/core/types.ts`) and the shared builders. Study `src/game/chapters/c0_arena.ts` (the reference chapter) first, then `docs/CHAPTER_AUTHORING.md` (the practical handbook).
 
 General rules:
 - **Real scale, real detail.** Build each setting as a believable film location with the world builders (`src/world/*`), terrain, props and crowds. The player should feel inside the movie scene.

@@ -4,8 +4,10 @@
  * Read this file top to bottom before writing a chapter. It shows, in the order a real chapter
  * needs them:
  *
- *   1. the ChapterDef (id, number, environment, checkpoints, par time, rivalry flag)
- *   2. building the level      terrain, props with colliders, lights come from the environment
+ *   1. the ChapterDef (id, number, environment, checkpoints, par time, rivalry flag, preload)
+ *   2. building the level      terrain + WORLD BUILDERS (forest, grass, ruins, boulders, banners,
+ *                              torches, crates) with their colliders; light comes from the
+ *                              environment preset, fire light from fx.fire
  *   3. the script              ONE async function that reads like a screenplay
  *                              intro cinematic -> wave -> checkpoint -> wave -> checkpoint ->
  *                              mini-boss with a boss bar -> set-piece -> complete()
@@ -34,13 +36,18 @@
  *   - Allocate vectors up front or per event, never per frame inside `update` / `onUpdate`.
  *
  * Scale reference: Legolas 1.85 m, Gimli 1.37 m, orcs 1.6-1.8 m, cave troll 4.5 m.
+ *
+ * The full handbook (LevelAPI cheat sheet, every world builder, custom creatures, movers, bosses,
+ * cinematics, budgets, testing) is docs/CHAPTER_AUTHORING.md.
  */
 import * as THREE from 'three';
 import type {
   ChapterDef, ChapterInstance, Enemy, LevelAPI, PlayerAPI, PlayerMover, Ally,
 } from '../../core/types';
-import { Rng } from '../../core/rng';
-import { makeMaterial, TILE_METERS, type TextureSetName } from '../../world/textures';
+import {
+  addColliders, banner, barrel, boulderField, crate, forest, grassField, ruins, torch, type Built,
+} from '../../world';
+import { createWeapon } from '../../creatures/weapons';
 import { clamp, dirFromYaw, lerp, smoothstep, yawOf } from '../../core/math';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -83,114 +90,112 @@ function heightAt(x: number, z: number): number {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Materials. The world module gives ready-made PBR materials (procedural albedo + normal +
-// roughness). Their textures are shared and cached, so call makeMaterial freely. Geometry should
-// carry WORLD-SCALE UVs (uv = metres / TILE_METERS[name]) so texel density is the same everywhere:
-// `boxUV` / `scaleUV` below bake that for the primitives this file builds. Prop builders from
-// world/props already do it for you.
+// 2. Building the level with the WORLD BUILDERS (src/world, one import point: '../../world').
+//
+//    Every builder returns `{ object, colliders }` (a `Built`). The recipe is always the same:
+//
+//        const b = boulderField(area, count, sizeRange, ground, opts);   // build
+//        level.root.add(b.object);                                        // show (auto-disposed)
+//        addColliders(physics, b.colliders, b.object);                    // collide (auto-cleared)
+//
+//    - Scatter builders (forest, boulderField, ruins) place things in WORLD coordinates with the
+//      object at the origin: never move their object. Single props (banner, torch, crate, barrel,
+//      rock...) are built at the origin: position/rotate the object first, THEN call addColliders
+//      with the object so the colliders follow it.
+//    - Everything is instanced and uses shared, cached PBR materials (procedural albedo, normal,
+//      roughness), so a few hundred trees or rocks cost a handful of draw calls.
+//    - Density-scaled builders (forest, grassField, ferns) thin themselves on Low/Medium quality.
+//    - Keep gameplay lanes clear with `exclude: (x, z) => boolean` instead of hand-placing.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** world-scale UVs for a BoxGeometry(w, h, d): faces are px, nx, py, ny, pz, nz, 4 vertices each */
-function boxUV(geo: THREE.BoxGeometry, w: number, h: number, d: number, name: TextureSetName): THREE.BoxGeometry {
-  const t = TILE_METERS[name];
-  const uv = geo.attributes.uv;
-  const dims: [number, number][] = [[d, h], [d, h], [w, d], [w, d], [w, h], [w, h]];
-  for (let f = 0; f < 6; f++) {
-    for (let i = 0; i < 4; i++) {
-      const k = f * 4 + i;
-      uv.setXY(k, (uv.getX(k) * dims[f][0]) / t, (uv.getY(k) * dims[f][1]) / t);
-    }
-  }
-  uv.needsUpdate = true;
-  return geo;
-}
-
-/** multiply every UV by (su, sv) tiles: for cylinders su = circumference / tile, sv = height / tile */
-function scaleUV(geo: THREE.BufferGeometry, su: number, sv: number): THREE.BufferGeometry {
-  const uv = geo.attributes.uv;
-  for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * su, uv.getY(i) * sv);
-  uv.needsUpdate = true;
-  return geo;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// 2. Building the level. Everything goes under level.root; colliders go to the shared physics.
-// ─────────────────────────────────────────────────────────────────────────────
+/** the open fighting ground: nothing tall may stand here (arrows need clear lines) */
+const inFightZone = (x: number, z: number): boolean => Math.hypot(x, z - 18) < 21;
+/** the slide lane down the hill must stay clear of trunks and rocks */
+const inSlideLane = (x: number, z: number): boolean => z > 58 && z < 178 && Math.abs(x) < 30;
+/** where waves walk in from, and the troll's straight run at the player */
+const inSpawnLane = (x: number, z: number): boolean =>
+  L.waveSpots.some((p) => Math.hypot(x - p.x, z - p.z) < 6) || (Math.abs(x - L.trollSpot.x) < 5 && z > 4 && z < L.trollSpot.z + 6);
 
 function buildLevel(level: LevelAPI): { shield: THREE.Object3D } {
-  const { physics } = level.ctx;
-  const rng = new Rng(2024);
+  const { physics, fx } = level.ctx;
 
   // Terrain: one call builds the mesh, registers the heightfield with physics (walkable ground,
   // arrow impacts, camera) and tells the FX where the ground is. The returned heightAt is what
-  // you use to place props.
-  const terrain = level.terrain({ size: 330, segments: 220, height: heightAt, style: 'plains', material: 'grass', center: [0, 60] });
+  // you use to place everything else.
+  // ~2 m cells are plenty for a gentle meadow (the terrain is drawn in the scene AND the GTAO pass:
+  // 160 x 160 segments = 51 k triangles per pass; 220 would be 97 k)
+  const terrain = level.terrain({ size: 330, segments: 160, height: heightAt, style: 'plains', material: 'grass', center: [0, 60], patchiness: 0.3 });
   const ground = terrain.heightAt;
 
-  // A prop that blocks movement and arrows: visible mesh + collider, built once, in one place.
-  const stone = makeMaterial('stone_blocks');
-  const wood = makeMaterial('wood_planks');
-  const addBox = (x: number, z: number, hx: number, hy: number, hz: number, yaw: number, m: THREE.Material, surface: 'stone' | 'wood') => {
-    const y = ground(x, z) + hy; // sit on the terrain
-    const tex: TextureSetName = surface === 'stone' ? 'stone_blocks' : 'wood_planks';
-    const mesh = new THREE.Mesh(boxUV(new THREE.BoxGeometry(hx * 2, hy * 2, hz * 2), hx * 2, hy * 2, hz * 2, tex), m);
-    mesh.position.set(x, y, z);
-    mesh.rotation.y = yaw;
-    mesh.castShadow = mesh.receiveShadow = true;
-    level.root.add(mesh);
-    physics.addBox(mesh.position, [hx, hy, hz], yaw, { material: surface });
+  // ── vegetation ─────────────────────────────────────────────────────────
+  // An instanced, wind-animated forest ringing the bowl. Trunk colliders come back in world space.
+  const woods = forest(
+    { center: new THREE.Vector3(0, 0, 70), halfSize: [150, 150] },
+    260,
+    [{ kind: 'beech', weight: 3 }, { kind: 'pine', weight: 2 }, 'birch'],
+    ground,
+    { seed: 4, exclude: (x, z) => Math.hypot(x, z - 24) < 52 || inSlideLane(x, z), lodNear: 60, lodFar: 260 },
+  );
+  level.root.add(woods.object);
+  addColliders(physics, woods.colliders);
+
+  // Grass blades around the fights (instanced chunks, wind, distance fade). No colliders: it is grass.
+  // Grass is the most expensive thing in a meadow: keep the area to where the camera looks, the
+  // density moderate (clumps per m², thinned again on Low/Medium) and the fade distance short.
+  level.root.add(grassField({ center: new THREE.Vector3(0, 0, 22), halfSize: [40, 40] }, 0.85, ground, { seed: 2, dry: 0.25, fade: [18, 38] }));
+
+  // ── stonework and cover ────────────────────────────────────────────────
+  // Ruined Numenorean stonework around the field: wall stubs, columns, arches and rubble, with
+  // colliders. `grandeur` trades low stubs for tall columns.
+  const stones = ruins({ center: new THREE.Vector3(0, 0, 20), halfSize: [36, 30] }, 16, ground, {
+    seed: 6,
+    material: 'mossy',
+    grandeur: 0.55,
+    exclude: (x, z) => Math.hypot(x, z - 18) < 11 || inSpawnLane(x, z) || Math.hypot(x, z) < 6,
+  });
+  level.root.add(stones.object);
+  addColliders(physics, stones.colliders);
+
+  // Boulders to hide behind (the big ones get colliders; `colliderMin` sets the threshold).
+  const boulders = boulderField({ center: new THREE.Vector3(0, 0, 24), halfSize: [44, 40] }, 34, [0.4, 1.6], ground, {
+    seed: 9,
+    moss: 0.5,
+    exclude: (x, z) => Math.hypot(x, z - 10) < 7 || inSpawnLane(x, z) || inSlideLane(x, z),
+  });
+  level.root.add(boulders.object);
+  addColliders(physics, boulders.colliders);
+
+  // Single props: build at the origin, place the object, then add colliders WITH the object.
+  const place = (b: Built, x: number, z: number, yaw = 0): Built => {
+    b.object.position.set(x, ground(x, z), z);
+    b.object.rotation.y = yaw;
+    level.root.add(b.object);
+    addColliders(physics, b.colliders, b.object);
+    return b;
   };
-
-  // Cover for the fights: a broken wall, a few crates and a ring of pillars.
-  addBox(-14, 20, 3.2, 1.1, 0.5, 0.25, stone, 'stone');
-  addBox(13, 24, 2.6, 0.9, 0.5, -0.3, stone, 'stone');
-  addBox(5, 12, 0.6, 0.6, 0.6, 0.4, wood, 'wood');
-  addBox(6.3, 13.1, 0.5, 0.5, 0.5, -0.2, wood, 'wood');
-  const pillarGeo = scaleUV(new THREE.CylinderGeometry(0.55, 0.65, 5.5, 14), (Math.PI * 1.2) / TILE_METERS.stone_blocks, 5.5 / TILE_METERS.stone_blocks);
-  for (let i = 0; i < 8; i++) {
-    const a = (i / 8) * Math.PI * 2;
-    const x = Math.cos(a) * 34;
-    const z = 22 + Math.sin(a) * 34;
-    const p = new THREE.Mesh(pillarGeo, stone);
-    p.position.set(x, ground(x, z) + 2.75, z);
-    p.castShadow = p.receiveShadow = true;
-    level.root.add(p);
-    physics.addCylinder(x, z, 0.62, p.position.y - 2.75, p.position.y + 2.75, { material: 'stone' });
+  // the elves' little camp at the spawn: crates, a barrel, two banners and two lit torches
+  place(crate(0.9, { seed: 1 }), 4.6, -2.2, 0.4);
+  place(crate([0.8, 0.6, 0.8], { seed: 2 }), 5.6, -1.1, -0.2);
+  place(barrel({ seed: 3 }), 3.6, -3.4);
+  place(banner(0x2f5a34, 'none', { height: 3.4 }), -3.2, -3.5, 0.3);
+  place(banner(0x2f5a34, 'none', { height: 3.4 }), 3.2, -4.5, -0.3);
+  // the orcs' side: a war banner by each spawn lane
+  for (const p of [L.waveSpots[0], L.waveSpots[2]]) place(banner(0x5a1a12, 'eye', { height: 3.8 }), p.x * 1.25, p.z + 4, Math.PI);
+  // Torches: the prop carries a cheap animated flame mesh; fx.fire adds the flickering point light
+  // and embers (the fx module enforces the per-quality light budget, so do not add raw lights).
+  for (const [x, z] of [[-1.8, -3.0], [1.8, -3.0]]) {
+    const t = place(torch({ lit: true, length: 1.5 }), x, z) as Built & { flameAnchor: THREE.Object3D };
+    t.object.updateMatrixWorld(true);
+    fx.fire(t.flameAnchor.getWorldPosition(new THREE.Vector3()), 0.35);
   }
 
-  // A scattering of trees for scale. Shared geometry/material keeps the draw calls and memory low.
-  // (Real chapters: use world/vegetation `forest()`, which is instanced and wind-animated.)
-  const trunkGeo = scaleUV(new THREE.CylinderGeometry(0.28, 0.42, 6, 8), 2.2 / TILE_METERS.bark, 6 / TILE_METERS.bark);
-  const crownGeo = new THREE.IcosahedronGeometry(2.6, 1);
-  const bark = makeMaterial('bark');
-  const leaves = makeMaterial('leaves', { repeat: [3, 3], tint: 0x9cc46a });
-  for (let i = 0; i < 26; i++) {
-    const a = rng.float() * Math.PI * 2;
-    const r = 52 + rng.float() * 40;
-    const x = Math.cos(a) * r;
-    const z = 40 + Math.sin(a) * r * 0.8;
-    if (z > 62 && z < 175 && Math.abs(x) < 36) continue; // keep the slide lane clear
-    const y = ground(x, z);
-    const t = new THREE.Mesh(trunkGeo, bark);
-    t.position.set(x, y + 3, z);
-    const c = new THREE.Mesh(crownGeo, leaves);
-    c.position.set(x, y + 7, z);
-    c.scale.set(1 + rng.float() * 0.4, 0.9 + rng.float() * 0.5, 1 + rng.float() * 0.4);
-    t.castShadow = c.castShadow = true;
-    level.root.add(t, c);
-    physics.addCylinder(x, z, 0.4, y, y + 6, { material: 'wood' });
-  }
-
-  // The shield for the slide, lying on the hilltop. A plain disc here; a real chapter would use a
-  // prop builder. Keep a reference: the script rotates/hides it.
-  const shield = new THREE.Group();
-  const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.07, 28), makeMaterial('metal_dark'));
-  const boss = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 10), new THREE.MeshStandardMaterial({ color: 0xb9a35a, metalness: 0.9, roughness: 0.35 }));
-  boss.position.y = 0.06;
-  disc.castShadow = true;
-  shield.add(disc, boss);
-  shield.position.set(L.shieldTop.x, ground(L.shieldTop.x, L.shieldTop.z) + 0.2, L.shieldTop.z);
-  shield.rotation.z = 0.12;
+  // The shield for the slide, lying face-up on the hilltop: the same model the characters carry
+  // (src/creatures/weapons). Its face points along +X, so roll it onto its back. Keep a reference:
+  // the script hides it when the player picks it up.
+  const shield = createWeapon('shield', 2);
+  shield.rotation.set(0, 0.4, Math.PI / 2);
+  shield.position.set(L.shieldTop.x, ground(L.shieldTop.x, L.shieldTop.z) + 0.12, L.shieldTop.z);
+  shield.traverse((o) => (o.castShadow = true));
   level.root.add(shield);
 
   return { shield };
@@ -259,6 +264,9 @@ export const chapter: ChapterDef = {
   checkpoints: CHECKPOINTS,
   parTime: 150, // seconds, used for the rank
   rivalry: true, // the shell starts the Gimli counter (carrying the saved totals) and shows the banter
+  // every humanoid kind this chapter spawns: meshed in worker threads behind the loading screen, so
+  // spawning a wave mid-fight never hitches. (orc_archer is the 'orc' kind; Legolas is implicit.)
+  preload: ['gimli', 'orc', 'goblin', 'troll'],
 
   async create(level: LevelAPI): Promise<ChapterInstance> {
     const { ctx } = level;

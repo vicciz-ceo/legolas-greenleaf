@@ -21,6 +21,7 @@ import type {
   HitZone,
   HumanoidKind,
   SfxName,
+  SpecialPose,
   WeaponKind,
 } from '../core/types';
 import { clamp, dirFromYaw, wrapAngle, yawOf } from '../core/math';
@@ -319,7 +320,13 @@ class EnemyImpl extends NpcBase implements Enemy {
     if (!this.aiEnabled) {
       this.clearGoal();
       if (this.moveTarget) this.setGoal(this.moveTarget, this.speedMax * 0.6, 0.5);
-      this.cancelAttack();
+      // a scripted attack (attack()) plays out even with the AI frozen; anything else is dropped
+      if (this.scriptedAtk && this.atk.phase !== 'none') {
+        if (this.updateAttack(dt)) this.scriptedAtk = false;
+      } else {
+        this.scriptedAtk = false;
+        this.cancelAttack();
+      }
       this.steer(dt);
       this.stepBody(dt);
       this.animateBody(dt);
@@ -757,6 +764,24 @@ class EnemyImpl extends NpcBase implements Enemy {
       const pd = ctx.player ? ctx.player.position.distanceTo(this.position) : 99;
       if (pd < 16) ctx.player.camera.shake(0.35 * (1 - pd / 16), 0.3);
     }
+  }
+
+  // ── scripting surface for boss patterns (Enemy.attack / playPose / attacking) ──
+  private scriptedAtk = false;
+  /** start a telegraphed attack now; false while dead or already mid-attack */
+  attack(kind: AttackAnim, opts: { windup?: number; target?: Combatant | null } = {}): boolean {
+    if (!this.alive || this.atk.phase !== 'none') return false;
+    const target = opts.target === undefined ? (this.target ?? this.ctx.player) : opts.target;
+    this.startAttack(kind, target, opts.windup ?? this.def.windup * this.diff.windup);
+    this.scriptedAtk = true;
+    return true;
+  }
+  /** hold a special pose (roar, stagger, kneel, block...) for `seconds` */
+  playPose(pose: SpecialPose, seconds: number): void {
+    this.playSpecial(pose, seconds);
+  }
+  get attacking(): boolean {
+    return this.atk.phase !== 'none';
   }
 
   dispose(): void {

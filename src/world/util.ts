@@ -262,6 +262,10 @@ export function pathXZ(p: PathPoint): { x: number; z: number; y: number } {
 const matCache = new Map<string, THREE.Material>();
 export function cachedMaterial<T extends THREE.Material>(key: string, make: () => T): T {
   let m = matCache.get(key) as T | undefined;
-  if (!m) matCache.set(key, (m = make()));
+  if (!m) {
+    m = make();
+    m.userData.shared = true; // reused by every level: never disposed by disposeObject
+    matCache.set(key, m);
+  }
   return m;
 }

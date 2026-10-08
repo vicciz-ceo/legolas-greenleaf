@@ -75,7 +75,7 @@ export function hairMaterial(color: number, opts: { rough?: number } = {}): THRE
  * follows the holder's visibility (LOD2 hides `small` extras). Pass `'body'` as the material to
  * share the instance's own body material (kit-attribute geometry such as cloth sheets, hit flash included).
  */
-export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: THREE.Material | 'body', o: { small?: boolean; castShadow?: boolean } = {}) {
+export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: THREE.Material | 'body', o: { small?: boolean; castShadow?: boolean; name?: string } = {}) {
   geo.userData.shared = true;
   ctx.object(
     () => {
@@ -91,7 +91,7 @@ export function attachSkinned(ctx: KindContext, geo: THREE.BufferGeometry, mat: 
             const body = p.children.find((c) => (c as THREE.SkinnedMesh).isSkinnedMesh) as THREE.SkinnedMesh | undefined;
             if (body) {
               mesh = makeSkinnedMesh(geo, mat === 'body' ? (body.material as THREE.Material) : mat, { skeleton: body.skeleton } as never, body.boundingSphere?.radius ?? 2, body.boundingSphere ? ([body.boundingSphere.center.x, body.boundingSphere.center.y, body.boundingSphere.center.z] as V3) : undefined);
-              mesh.name = 'skinned-extra-mesh';
+              mesh.name = o.name ?? 'skinned-extra-mesh';
               mesh.castShadow = o.castShadow ?? true;
               mesh.receiveShadow = true;
               p.add(mesh);
@@ -153,7 +153,7 @@ export function flushHair(ctx: KindContext) {
   if (!e) return;
   pendingHair.delete(ctx);
   const merged = mergeHairGeos(e.geos);
-  if (merged) attachSkinned(ctx, merged, hairMaterial(e.color));
+  if (merged) attachSkinned(ctx, merged, hairMaterial(e.color), { name: 'hair2' });
 }
 
 /** run a kind's extras and merge all the hair/beard geometry it queued into one skinned mesh */

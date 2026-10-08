@@ -1892,17 +1892,20 @@ export function createFx(engine: Engine): Fx & FxExtras {
           if (_v1.lengthSq() < 1e-10) _v1.set(0, 1, 0);
           _v1.normalize();
           _v2.set(_camPos.x - px, _camPos.y - py, _camPos.z - pz);
+          // seen end-on, every segment stacks on the same pixels: fade those parts out
+          const camD = _v2.length();
+          const cosA = camD > 1e-6 ? Math.abs(_v1.dot(_v2)) / camD : 1;
+          const endOn = 0.12 + 0.88 * (1 - cosA ** 6);
           _v2.crossVectors(_v1, _v2);
           if (_v2.lengthSq() < 1e-10) _v2.set(1, 0, 0);
           _v2.normalize();
           const age = Math.min(1, (time - sl.t[idx]) / LIFE);
           // taper toward the tail (by length) and thin out with age
           const tail = 1 - trailDist[i] / TRAIL_MAX_LEN;
-          const camD = Math.sqrt((_camPos.x - px) ** 2 + (_camPos.y - py) ** 2 + (_camPos.z - pz) ** 2);
           const w = Math.max(sl.width * (0.35 + 0.65 * tail) * (1 - 0.5 * age), camD * TRAIL_MIN_PX * (sl.width / TRAIL_HALF_WIDTH));
           trailPos[vi] = px - _v2.x * w; trailPos[vi + 1] = py - _v2.y * w; trailPos[vi + 2] = pz - _v2.z * w;
           trailPos[vi + 3] = px + _v2.x * w; trailPos[vi + 4] = py + _v2.y * w; trailPos[vi + 5] = pz + _v2.z * w;
-          const a = Math.pow(1 - age, 1.6) * tail * tail;
+          const a = Math.pow(1 - age, 1.6) * tail * tail * endOn;
           const hdr = 3.0;
           for (let k = 0; k < 2; k++) {
             trailCol[ci + k * 4] = r * hdr; trailCol[ci + k * 4 + 1] = g * hdr; trailCol[ci + k * 4 + 2] = b * hdr; trailCol[ci + k * 4 + 3] = a;

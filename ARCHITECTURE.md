@@ -27,7 +27,7 @@ node scripts/snap.mjs "/lab/?subject=<name>&view=quad&anim=walk&t=0.4" --out sho
 node scripts/snap.mjs "/lab/?view=sheet&category=enemy" --size 1600x1000 --out shots/enemies.png
 node scripts/snap.mjs "/?chapter=<id>&cp=0&quality=medium" --advance 5 --frames 3 --interval 2 --out shots/<id>.png
 ```
-Each run starts its own Vite server and headless Chromium (SwiftShader WebGL2), so parallel runs are safe. It prints JSON with `ok`, `errors` (console errors, page errors, 4xx responses) and the shot paths. **Open the PNGs with the Read tool and look at them critically.** Rendering is software, so expect 2–15 s per shot. Use `--size 960x540` for faster iteration.
+`--pre "<js>"` runs an expression before `--advance` and the shots (stage a moment); `--eval` runs after them. Each run starts its own Vite server and headless Chromium (SwiftShader WebGL2), so parallel runs are safe. It prints JSON with `ok`, `errors` (console errors, page errors, 4xx responses) and the shot paths. **Open the PNGs with the Read tool and look at them critically.** Rendering is software, so expect 2–15 s per shot. Use `--size 960x540` for faster iteration.
 
 ### Creature Lab: `/lab/`
 Any file under `src/` named `*.lab.ts` that exports `subjects: LabSubject[]` is auto-discovered. Views: `orbit` (interactive), `single`, `quad` (front/right/back/high), `sheet` (contact sheet). Use `anim=<name>&t=<sec>` to freeze a pose, `focus=head` for close-ups, `zoom=1.5` for more context, and `wire=1` for wireframe. The lab has neutral studio lighting plus a 1 m grid and a 1.85 m red/white reference pole (Legolas' height).
@@ -134,7 +134,7 @@ Use a **web worker** for meshing if a single build exceeds ~100 ms. Otherwise bu
 
 ## 8. Chapters (owner: chapter authors)
 
-One file `src/game/chapters/cN_<id>.ts` exporting `chapter: ChapterDef`, plus helper files in `src/game/chapters/<id>/` and creatures in `src/creatures/<name>.ts` (+ `.lab.ts`). Use the `LevelAPI` exclusively for game interaction; never reach into `game.ts`. Study `c0_arena.ts` first. Each chapter needs:
+One file `src/game/chapters/cN_<id>.ts` exporting `chapter: ChapterDef`, plus helper files in `src/game/chapters/<id>/` and creatures in `src/creatures/<name>.ts` (+ `.lab.ts`). Use the `LevelAPI` exclusively for game interaction; never reach into `game.ts`. Study `c0_arena.ts` first, then the handbook `docs/CHAPTER_AUTHORING.md` (LevelAPI cheat sheet, every world builder, custom creatures, movers, bosses, budgets, testing). Each chapter needs:
 
 - A detailed, realistic environment built with the world builders and terrain, at real scale, with lighting from an `ENVIRONMENTS` preset (you can tweak a copy).
 - A scripted structure: intro (title card, short cinematic camera, 1–3 lines of dialogue), 2–4 combat beats, the set-piece/boss, an outro, then `complete()`. Checkpoints between beats, and `start(cp)` must work for every checkpoint index.

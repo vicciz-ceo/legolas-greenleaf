@@ -16,7 +16,7 @@
  */
 import * as THREE from 'three';
 import type {
-  ChapterDef, ChapterInstance, ChapterResult, GameContext, Input, MenuActions, MusicMood, Settings,
+  ChapterDef, ChapterInstance, ChapterResult, GameContext, HumanoidKind, Input, MenuActions, MusicMood, Settings,
 } from '../core/types';
 import type { CameraRigExt } from '../actors/camera';
 import type { HudImpl } from '../ui/hud';
@@ -25,6 +25,12 @@ import { createRivalry } from './rivalry';
 import { clamp, damp } from '../core/math';
 import { fbm2, mulberry32 } from '../core/rng';
 import { applyEnvironment, createLevelAPI, createTerrain, loadWorld, type LevelHost, type WorldModules } from './level';
+import { buildMenuBackdrop } from './backdrop';
+import { preloadHumanoids } from '../creatures/humanoid';
+import { seedBucket } from '../creatures/humanoid/build';
+import { setWorldQuality } from '../world/quality';
+import { setWetness } from '../world/mats';
+import { getDevice } from '../ui/bus';
 import type { TimeControlExt } from './time';
 import { MAX_FRAME } from './time';
 import type { Bot } from './bot';
@@ -39,6 +45,28 @@ export interface GameDeps {
   chapters: () => ChapterDef[];
   /** render one frame (engine.render + hud + audio are handled by the caller) */
   render: (dtReal: number) => void;
+}
+
+/**
+ * Per-frame CPU timings (ms, exponentially smoothed over ~20 frames) of the update phases plus what
+ * the browser loop reports about rendering. Exposed as __game.state().perf.
+ */
+export interface GamePerf {
+  /** JS ms per frame per update phase (all substeps of the frame summed) */
+  phases: Record<'bot' | 'player' | 'chapter' | 'combatants' | 'projectiles' | 'fx' | 'rivalry' | 'camera' | 'mood', number>;
+  /** whole game.frame() (sum of the phases plus glue) */
+  frameMs: number;
+  /** engine.render() submission time, hud.update, audio.update (reported by main.ts) */
+  renderMs: number;
+  hudMs: number;
+  audioMs: number;
+  /** renderer.info of the last rendered frame, summed over every pass (shadow, scene, post) */
+  calls: number;
+  triangles: number;
+  /** live combatants by team, for context */
+  enemies: number;
+  /** chapter load breakdown (ms) of the most recent load */
+  load: Record<string, number>;
 }
 
 export interface Game {
@@ -69,7 +97,27 @@ export interface Game {
   state(): Record<string, unknown>;
   /** most recent fatal error text, if any */
   readonly error: string | null;
+  readonly perf: GamePerf;
+  /** main.ts reports the rendering side of the frame (ms, renderer.info totals) */
+  recordRender(renderMs: number, hudMs: number, audioMs: number, calls: number, triangles: number): void;
 }
+
+/**
+ * Four spawn seeds that land in the four humanoid variation buckets (seedBucket hashes any seed
+ * into 0..3), so preloading them covers every variant a chapter can spawn. Seed 0 is bucket 0.
+ */
+const BUCKET_SEEDS: number[] = (() => {
+  const out: number[] = [];
+  const seen = new Set<number>();
+  for (let sd = 0; out.length < 4 && sd < 256; sd++) {
+    const b = seedBucket(sd);
+    if (!seen.has(b)) {
+      seen.add(b);
+      out.push(sd);
+    }
+  }
+  return out;
+})();
 
 const FIXED_STEP = 1 / 60;
 /** longest slice handed to gameplay code in one call */
@@ -115,6 +163,35 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   const cpRivalry = new Map<number, { legolas: number; gimli: number }>();
   const reported = new Set<string>();
   let backdrop: { cam: THREE.Vector3; look: THREE.Vector3; hero: THREE.Vector3; t: number } | null = null;
+  let musicIntensity = 0.5;
+  let musicIntensityQ = -1;
+  let playT = 0;
+
+  // ── per-phase CPU timings ────────────────────────────────────────────────
+  const perf: GamePerf = {
+    phases: { bot: 0, player: 0, chapter: 0, combatants: 0, projectiles: 0, fx: 0, rivalry: 0, camera: 0, mood: 0 },
+    frameMs: 0,
+    renderMs: 0,
+    hudMs: 0,
+    audioMs: 0,
+    calls: 0,
+    triangles: 0,
+    enemies: 0,
+    load: {},
+  };
+  /** this frame's raw phase sums (folded into perf.phases at the end of frame()) */
+  const acc: GamePerf['phases'] = { bot: 0, player: 0, chapter: 0, combatants: 0, projectiles: 0, fx: 0, rivalry: 0, camera: 0, mood: 0 };
+  const PERF_K = 0.1;
+  const now = (): number => performance.now();
+  function foldPerf(frameMs: number): void {
+    const ph = perf.phases;
+    for (const k in acc) {
+      const key = k as keyof GamePerf['phases'];
+      ph[key] += (acc[key] - ph[key]) * PERF_K;
+      acc[key] = 0;
+    }
+    perf.frameMs += (frameMs - perf.frameMs) * PERF_K;
+  }
 
   // remember the objective text for state()
   const origObjective = hud.setObjective.bind(hud);
@@ -146,65 +223,115 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   }
 
   // ── settings ──────────────────────────────────────────────────────────────
+  /**
+   * Push every setting into the systems that use it, live (the settings menu calls this on each
+   * change) and once at boot. ctx.settings IS progression.data.settings, so readers that poll it
+   * (aim assist in the player, Show FPS in main.ts, subtitles in level.say, difficulty at spawn)
+   * see the new values immediately. Persisted to localStorage on every call.
+   */
   function applySettings(s: Settings, prev?: Settings): void {
     const cur = progression.data.settings;
     if (s !== cur) Object.assign(cur, s);
+    // controls
     input.sensitivity = cur.sensitivity;
     input.invertY = cur.invertY;
+    // audio (remembered by the audio system until its context is unlocked by a gesture)
     const a = audio as AudioSysExt;
     a.master = cur.master;
     a.musicVolume = cur.music;
     a.sfxVolume = cur.sfx;
+    // hud
     (hud as HudImpl).setSubtitlesEnabled?.(cur.subtitles);
+    if (!cur.showFps) hud.setFps(null);
+    // quality: a ?quality= URL flag wins at boot; a change made in the menu always applies.
+    // The renderer (post chain, shadows, IBL, pixel ratio) switches at once; world builders read
+    // setWorldQuality() for their density, which takes effect from the next level build.
     if (!prev || prev.quality !== cur.quality) {
       if (!ctx.flags.quality || prev) engine.setQuality(cur.quality);
+      setWorldQuality(engine.quality);
     }
     progression.save();
   }
 
   // ── adaptive music ────────────────────────────────────────────────────────
+  /**
+   * explore (no enemies) -> tension (enemies alive but none engaged) -> combat (an enemy within
+   * ENGAGE metres) -> boss (a boss bar is bound to a living combatant). Combat and boss linger a few
+   * seconds so the score does not flap; victory / defeat are set by the completion and defeat flows.
+   * A chapter can pin a mood with level.music(mood) (null hands control back).
+   */
+  const ENGAGE = 32;
   function updateMood(dtReal: number): void {
     let want: MusicMood = 'explore';
-    if (level?.bossTarget?.alive) want = 'boss';
-    else {
-      const p = ctx.player.position;
-      for (const c of combatants.byTeam('enemy')) {
-        if (!c.alive) continue;
-        const dx = c.position.x - p.x;
-        const dz = c.position.z - p.z;
-        if (dx * dx + dz * dz < 34 * 34) {
-          want = 'combat';
-          break;
-        }
-      }
+    let engaged = 0;
+    let alive = 0;
+    const p = ctx.player.position;
+    for (const c of combatants.byTeam('enemy')) {
+      if (!c.alive) continue;
+      alive++;
+      const dx = c.position.x - p.x;
+      const dz = c.position.z - p.z;
+      if (dx * dx + dz * dz < ENGAGE * ENGAGE) engaged++;
     }
+    perf.enemies = alive;
+    const forced = level?.musicOverride ?? null;
+    if (forced) want = forced;
+    else if (level?.bossTarget?.alive) want = 'boss';
+    else if (engaged > 0) want = 'combat';
+    else if (alive > 0) want = 'tension';
     if (want === 'combat' || want === 'boss') moodHold = 4;
     else moodHold -= dtReal;
-    if (want === 'explore' && moodHold > 0 && (mood === 'combat' || mood === 'boss')) want = mood;
+    if (!forced && (want === 'explore' || want === 'tension') && moodHold > 0 && (mood === 'combat' || mood === 'boss')) want = mood;
     if (want !== mood) {
       mood = want;
       audio.music(mood);
     }
+    // more drums and horns the more enemies are on the player
+    const target = want === 'boss' ? 0.9 : want === 'combat' ? clamp(0.45 + engaged * 0.06, 0.45, 1) : want === 'tension' ? 0.35 : 0.25;
+    musicIntensity = damp(musicIntensity, target, 0.8, dtReal);
+    const q = Math.round(musicIntensity * 20) / 20;
+    if (q !== musicIntensityQ) {
+      musicIntensityQ = q;
+      (audio as AudioSysExt).setMusicIntensity?.(q);
+    }
   }
 
   // ── cinematic menu backdrop ───────────────────────────────────────────────
+  /** the misty Forest River vista from ./backdrop.ts; a plain stand-in if a world builder fails */
   async function buildBackdrop(): Promise<void> {
-    const world = await loadWorld();
     applyEnvironment(ctx, 'menu');
-    const root = new THREE.Group();
-    root.name = 'menu-backdrop';
-    engine.levelRoot.add(root);
-    const height = (x: number, z: number) => {
-      const d = Math.hypot(x, z);
-      const clearing = Math.min(1, d / 14);
-      return (fbm2(x * 0.02, z * 0.02, 4, 31) * 5.5 + fbm2(x * 0.09, z * 0.09, 2, 5) * 0.5) * clearing * clearing;
-    };
-    const t = createTerrain(world, { size: 260, segments: 180, height, style: 'forest', material: 'grass' });
-    root.add(t.mesh);
-    physics.setTerrain(t.heightAt, 'grass');
-    scatterForest(root, t.heightAt);
-    const hero = new THREE.Vector3(0, t.heightAt(0, 0), 0);
-    ctx.player.teleport(hero, 0.6);
+    let hero: THREE.Vector3;
+    let facing: number;
+    const t0 = now();
+    try {
+      const b = buildMenuBackdrop();
+      perf.load = { backdrop: Math.round(now() - t0) };
+      engine.levelRoot.add(b.root);
+      physics.setTerrain(b.heightAt, 'grass');
+      const fxx = fx as unknown as { groundAt?: unknown };
+      if ('groundAt' in fxx) fxx.groundAt = b.heightAt;
+      hero = b.hero;
+      facing = b.heroFacing;
+    } catch (e) {
+      console.warn('[game] menu backdrop failed, using the stand-in', e);
+      engine.clearLevel();
+      const world = await loadWorld();
+      const root = new THREE.Group();
+      root.name = 'menu-backdrop(standin)';
+      engine.levelRoot.add(root);
+      const height = (x: number, z: number) => {
+        const d = Math.hypot(x, z);
+        const clearing = Math.min(1, d / 14);
+        return (fbm2(x * 0.02, z * 0.02, 4, 31) * 5.5 + fbm2(x * 0.09, z * 0.09, 2, 5) * 0.5) * clearing * clearing;
+      };
+      const t = createTerrain(world, { size: 260, segments: 180, height, style: 'forest', material: 'grass' });
+      root.add(t.mesh);
+      physics.setTerrain(t.heightAt, 'grass');
+      scatterForest(root, t.heightAt);
+      hero = new THREE.Vector3(0, t.heightAt(0, 0), 0);
+      facing = 0.6;
+    }
+    ctx.player.teleport(hero, facing);
     ctx.player.object.visible = true;
     backdrop = { cam: new THREE.Vector3(), look: new THREE.Vector3(), hero, t: 0 };
     orbit(0);
@@ -251,20 +378,24 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     root.add(trunks, crowns);
   }
 
+  /**
+   * A slow pendulum around the hero from the landward side, so the river, the far bank and the
+   * low sun always fill the background (a full orbit would spend half its time on bare bank).
+   */
   function orbit(dtReal: number): void {
     if (!backdrop) return;
     const b = backdrop;
     b.t += dtReal;
-    const a = 2.35 + b.t * 0.045;
-    const R = 5.6;
+    const a = Math.PI - 0.22 + Math.sin(b.t * 0.05) * 0.3;
+    const R = 5.2 + Math.sin(b.t * 0.031) * 0.45;
     const hy = b.hero.y;
-    b.cam.set(b.hero.x + Math.sin(a) * R, hy + 1.65 + Math.sin(b.t * 0.21) * 0.12, b.hero.z + Math.cos(a) * R);
-    // look slightly beside the hero so the title menu has air on the other side
-    b.look.set(b.hero.x - Math.cos(a) * 2.1, hy + 1.45, b.hero.z + Math.sin(a) * 2.1);
+    b.cam.set(b.hero.x + Math.sin(a) * R, hy + 1.8 + Math.sin(b.t * 0.21) * 0.08, b.hero.z + Math.cos(a) * R);
+    // look beside the hero (he sits in the right third), level with his chest, toward the far bank
+    b.look.set(b.hero.x - Math.cos(a) * 1.8, hy + 1.5, b.hero.z + Math.sin(a) * 1.8);
     const cam = engine.camera;
     cam.position.copy(b.cam);
     cam.lookAt(b.look);
-    cam.fov = 38;
+    cam.fov = 44;
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld();
     engine.shadowFocus.copy(b.hero);
@@ -309,6 +440,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     physics.clear();
     engine.clearLevel();
     audio.stopAllLoops();
+    setWetness(0); // shared world materials outlive the level: a storm chapter must not leave them wet
     engine.post.letterbox = 0;
     engine.post.focusTint = 0;
     engine.post.dof.enabled = false;
@@ -365,16 +497,62 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     await nextTask();
     if (token !== loadToken) return;
 
+    // progress: 0..0.1 teardown + world modules, 0.1..0.85 humanoid sculpt + meshing (real progress
+    // from the worker pool; the chapter's create() runs meanwhile), 0.95 start(), then 1.
+    const tLoad = now();
+    const load: Record<string, number> = {};
     let progress = 0.05;
+    // between real progress reports, creep forward a little so the bar never looks frozen
     const bump = window.setInterval(() => {
-      progress += (0.88 - progress) * 0.12;
+      if (progress >= 0.93) return;
+      progress += (0.93 - progress) * 0.015;
       menus.showLoading(def.title, progress);
     }, 90);
+    const setProgress = (f: number): void => {
+      progress = Math.max(progress, f);
+      menus.showLoading(def.title, progress);
+    };
     try {
+      let t0 = now();
       unload();
       const world: WorldModules = await loadWorld();
-      menus.showLoading(def.title, (progress = 0.18));
+      load.unload = now() - t0;
+      setProgress(0.1);
       await nextTask();
+      if (token !== loadToken) return;
+
+      // Mesh every humanoid kind the chapter will spawn (ChapterDef.preload) in the kit worker
+      // pool, so createHumanoid in start() and in later waves is a cache hit instead of a hitch.
+      // Seeds are picked to cover every variation bucket (spawn seeds hash into one of four).
+      // Sculpting runs here on the main thread; once every meshing job is queued, the chapter's
+      // create() builds the world WHILE the workers mesh, and start() waits for both.
+      const tPre = now();
+      const kinds = ctx.flags.preload === '0' ? [] : [...new Set<HumanoidKind>(def.preload ?? [])].filter((k) => k !== 'legolas');
+      let queued: () => void = () => {};
+      const allQueued = new Promise<void>((r) => (queued = r));
+      const preload = (async () => {
+        try {
+          await preloadHumanoids(['legolas'], { seeds: [0] }); // a cache hit after boot
+          if (kinds.length) {
+            await preloadHumanoids(kinds, {
+              seeds: BUCKET_SEEDS,
+              onProgress: (f) => {
+                // prebuildHumanoids reports 1/4 of its ticks for sculpting: past that, all jobs are queued
+                if (f >= 0.25) queued();
+                if (token === loadToken) setProgress(0.1 + 0.75 * f);
+              },
+            });
+          }
+        } catch (e) {
+          // never fatal: createHumanoid builds on demand (on the main thread) instead
+          console.warn('[game] humanoid preload failed', e);
+        } finally {
+          queued();
+          load.preload = now() - tPre;
+        }
+      })();
+      await allQueued;
+      load.sculpt = now() - tPre;
       if (token !== loadToken) return;
 
       // fresh state
@@ -401,18 +579,23 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
           hop = true;
         },
       });
-      menus.showLoading(def.title, (progress = 0.25));
       await nextTask();
+      t0 = now();
       const made = await def.create(level);
+      load.create = now() - t0;
       if (token !== loadToken) {
         made.dispose?.();
         return;
       }
       instance = made;
-      progress = 0.92;
-      menus.showLoading(def.title, progress);
+      t0 = now();
+      await preload;
+      load.preloadWait = now() - t0;
+      if (token !== loadToken) return;
+      setProgress(0.95);
       await nextTask();
       if (token !== loadToken) return;
+      t0 = now();
 
       // rivalry carries over between chapters; on respawn it resumes from the checkpoint snapshot
       if (def.rivalry) {
@@ -423,6 +606,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
       hud.setObjective(null);
       instance.start(checkpoint);
       rigOf().snap();
+      load.start = now() - t0;
       if (!def.dev) {
         progression.data.last = { chapterId: def.id, checkpoint };
         progression.save();
@@ -455,14 +639,22 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     }
     menus.showLoading(def.title, 1);
     menus.hideLoading();
+    load.total = now() - tLoad;
+    for (const k in load) load[k] = Math.round(load[k]);
+    perf.load = load;
     // the chapter may already have started a cinematic inside start(): keep the HUD off for it
     hud.show(!(level?.inCinematic ?? false));
     ctx.player.object.visible = true;
     input.enabled = true;
     setMode('playing');
+    playT = 0;
     bot.reset();
     audio.music('explore');
     mood = 'explore';
+    // keyboard + mouse: grab the pointer right away. The click that started the chapter usually
+    // still counts as a user gesture; if the browser refuses, the first click on the canvas locks
+    // it (input.ts) and the HUD shows a "Click to focus" hint meanwhile.
+    if (!input.isTouch && getDevice() === 'kbm' && !bot.active) input.lockPointer();
     if (!skipIntro && !respawn && checkpoint === 0) {
       void hud.titleCard(def.title, def.number > 0 ? `Chapter ${def.number}` : 'Development arena', def.film);
     }
@@ -488,6 +680,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     input.enabled = false;
     input.unlockPointer();
     hud.setPrompt(null);
+    hud.show(false); // the defeat screen stands alone over the scene (toasts/subtitles stay)
     audio.music('defeat');
     const choice = await menus.showDefeat(reason);
     if (!isMode('defeat') || chapter !== def) return;
@@ -534,8 +727,9 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
       ...base,
       score: rank.score,
       rank: rank.rank,
-      pointsEarned: rank.points,
-      firstClear: !progression.data.best[def.id],
+      // the dev arena is never recorded, so it neither awards points nor counts as a first clear
+      pointsEarned: def.dev ? 0 : rank.points,
+      firstClear: !def.dev && !progression.data.best[def.id],
     };
     if (!def.dev) progression.recordResult(result);
     if (def.rivalry) ctx.rivalry.stop(); // final banter line
@@ -581,7 +775,11 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   // ── simulation ────────────────────────────────────────────────────────────
   function step(dt: number): void {
     const player = ctx.player;
+    let t = now();
     player.update(dt);
+    let t2 = now();
+    acc.player += t2 - t;
+    t = t2;
     if (level && instance) {
       try {
         level.update(dt);
@@ -594,10 +792,23 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         report(`chapter ${chapter?.id}.update`, e);
       }
     }
+    t2 = now();
+    acc.chapter += t2 - t;
+    t = t2;
     combatants.update(dt);
+    t2 = now();
+    acc.combatants += t2 - t;
+    t = t2;
     projectiles.update(dt);
+    t2 = now();
+    acc.projectiles += t2 - t;
+    t = t2;
     fx.update(dt, engine.camera);
+    t2 = now();
+    acc.fx += t2 - t;
+    t = t2;
     ctx.rivalry.update(dt);
+    acc.rivalry += now() - t;
   }
 
   function simulate(dtReal: number): void {
@@ -611,10 +822,13 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
       // frozen by hit-stop: keep the player's real-time systems (camera, HUD) alive
       ctx.player.update(0);
     }
+    const t = now();
     rigOf().update(dtReal);
+    acc.camera += now() - t;
   }
 
   function frame(dtReal: number): void {
+    const tf = now();
     const dr = clamp(dtReal, 0, MAX_FRAME);
     switch (mode) {
       case 'playing': {
@@ -622,7 +836,10 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
           pause();
           break;
         }
+        playT += dr;
+        let tb = now();
         bot.update(dr);
+        acc.bot += now() - tb;
         simulate(dr);
         post(dr);
         if (god && ctx.player.alive) ctx.player.hp = ctx.player.maxHp;
@@ -634,7 +851,9 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
           completeT += dr;
           if (completeT >= COMPLETE_DELAY) void showResults();
         }
+        tb = now();
         updateMood(dr);
+        acc.mood += now() - tb;
         break;
       }
       case 'complete':
@@ -649,6 +868,28 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         break;
       default:
         break;
+    }
+    updatePointerHint();
+    foldPerf(now() - tf);
+  }
+
+  /** "Click to focus": keyboard/mouse play without pointer lock (after the start-of-chapter request had its chance) */
+  let hintOn = false;
+  function updatePointerHint(): void {
+    const ri = deps.realInput as Input & { pointerFallback?: boolean };
+    const want =
+      mode === 'playing' &&
+      playT > 1.2 &&
+      !ri.pointerLocked &&
+      !ri.isTouch &&
+      !ri.pointerFallback &&
+      !bot.active &&
+      !(level?.inCinematic ?? false) &&
+      completeT < 0 &&
+      getDevice() === 'kbm';
+    if (want !== hintOn) {
+      hintOn = want;
+      (hud as HudImpl).setPointerHint?.(want);
     }
   }
 
@@ -712,7 +953,26 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
       completing: completeT >= 0,
       bot: bot.active,
       allies: combatants.byTeam('ally').filter((a) => a.alive).length,
+      music: mood,
+      perf: perfSnapshot(),
       error,
+    };
+  }
+
+  function perfSnapshot(): Record<string, unknown> {
+    const r2 = (v: number) => Math.round(v * 100) / 100;
+    const phases: Record<string, number> = {};
+    for (const k in perf.phases) phases[k] = r2(perf.phases[k as keyof GamePerf['phases']]);
+    return {
+      phases,
+      frameMs: r2(perf.frameMs),
+      renderMs: r2(perf.renderMs),
+      hudMs: r2(perf.hudMs),
+      audioMs: r2(perf.audioMs),
+      calls: perf.calls,
+      triangles: perf.triangles,
+      enemies: perf.enemies,
+      load: perf.load,
     };
   }
 
@@ -743,6 +1003,14 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     },
     get error() {
       return error;
+    },
+    perf,
+    recordRender(renderMs, hudMs, audioMs, calls, triangles) {
+      perf.renderMs += (renderMs - perf.renderMs) * PERF_K;
+      perf.hudMs += (hudMs - perf.hudMs) * PERF_K;
+      perf.audioMs += (audioMs - perf.audioMs) * PERF_K;
+      perf.calls = calls;
+      perf.triangles = triangles;
     },
     actions,
     frame,

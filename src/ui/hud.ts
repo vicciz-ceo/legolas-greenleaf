@@ -12,6 +12,8 @@ import { injectStyles } from './styles';
 export interface HudImpl extends Hud {
   /** hide/show subtitles (Settings.subtitles). Default true. */
   setSubtitlesEnabled(v: boolean): void;
+  /** subtle "Click to focus" hint while keyboard/mouse play runs without pointer lock */
+  setPointerHint(v: boolean): void;
   /** show/hide only the gameplay widgets while keeping toasts, subtitles and title cards */
   readonly root: HTMLElement;
 }
@@ -144,6 +146,7 @@ export function createHud(root: HTMLElement): HudImpl {
 
   <div class="gl-marks gl-g"></div>
   <div class="gl-prompt gl-g"></div>
+  <div class="gl-lock gl-g">${icon('mouse_l')}<span>Click to focus</span></div>
   <div class="gl-sub"><div class="sp"></div><div class="tx"></div></div>
   <div class="gl-fps"></div>
   <div class="gl-tc"><div class="film"></div><div class="ttl"></div>${ornament()}<div class="sub"></div></div>
@@ -586,6 +589,11 @@ export function createHud(root: HTMLElement): HudImpl {
     }
   }
 
+  const lockEl = q<HTMLElement>('.gl-lock');
+  function setPointerHint(v: boolean): void {
+    toggleClass(lockEl, 'on', v);
+  }
+
   const fpsEl = q<HTMLElement>('.gl-fps');
   let fpsQ = -1;
   function setFps(fps: number | null): void {
@@ -675,6 +683,7 @@ export function createHud(root: HTMLElement): HudImpl {
     setProgress,
     setFps,
     setSubtitlesEnabled,
+    setPointerHint,
     update,
   };
 }

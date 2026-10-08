@@ -8,7 +8,6 @@ import type { V3 } from '../../../kit/sdf';
 import type { KindContext } from '../../types';
 import { along, instances, leaf, mergeAll, put, studs, taperedTube, tube } from './geo';
 import { domePoint, helmDome, nasalGuard, plume, sidePlate, DARK_STEEL, POLISHED, STEEL } from './armor';
-import { shade } from './common';
 
 interface HelmCommon {
   color: number;
@@ -18,7 +17,7 @@ interface HelmCommon {
 }
 
 /** a tube following the dome's centre meridian, lifted off the surface */
-function meridian(o: { tall?: number; clear?: number; point?: number }, from: number, to: number, lift: number, n = 10, azimuth = 0): V3[] {
+function meridian(P: import('../../proportions').Proportions, o: { tall?: number; clear?: number; point?: number }, from: number, to: number, lift: number, n = 10, azimuth = 0): V3[] {
   const pts: V3[] = [];
   for (let i = 0; i <= n; i++) {
     const t = from + (to - from) * (i / n);
@@ -26,7 +25,7 @@ function meridian(o: { tall?: number; clear?: number; point?: number }, from: nu
     const a = t < 0 ? 0 : Math.PI;
     const th = Math.abs(t) * 1.2;
     const p = domePoint(o, a + azimuth, th);
-    pts.push([p[0], p[1] + lift * 0.0, p[2]]);
+    pts.push(P.h(p[0], p[1] + lift, p[2]));
   }
   return pts;
 }
@@ -65,8 +64,8 @@ export function rohanHelm(ctx: KindContext, o: HelmCommon & { crest: number; rng
     put(ctx, tube(rimPts, 0.0055 * u, { seg: 10, radial: 3 }), { bone: 'head', color: o.trim, mat: 'gold', small: true });
   }
   // crest ridge over the dome
-  const ridge = meridian({ ...dome }, -0.62, 0.78, 0.0, 14);
-  put(ctx, tube(ridge.map((p) => [p[0], p[1], p[2]] as V3).map((p) => [p[0], p[1], p[2]] as V3), 0.018 * u, { seg: 24, radial: 4 }), { bone: 'head', color: o.trim, mat: 'gold', small: true });
+  const ridge = meridian(P, { ...dome }, -0.62, 0.78, 0.006, 14);
+  put(ctx, tube(ridge, 0.018 * u, { seg: 12, radial: 3 }), { bone: 'head', color: o.trim, mat: 'gold', small: true });
   // the plume holder and horsehair
   const hold = domePoint(dome, Math.PI, 0.55);
   put(ctx, new THREE.SphereGeometry(0.03 * u, 6, 4).translate(...P.h(hold[0], hold[1] + 0.01, hold[2] - 0.0)), { bone: 'head', color: o.trim, mat: 'gold', small: true });
@@ -78,7 +77,7 @@ export function rohanHelm(ctx: KindContext, o: HelmCommon & { crest: number; rng
 export function gondorHelm(ctx: KindContext, o: HelmCommon & { wing?: number }) {
   const { P } = ctx;
   const u = P.headH;
-  const dome = { tall: 1.38, point: 0.5, clear: 0.05 };
+  const dome = { tall: 1.45, point: 0.5, clear: 0.05 };
   helmDome(ctx, { ...dome, color: o.color, trim: o.trim, mat: o.mat ?? POLISHED, trimMat: o.trimMat ?? POLISHED, rim: 0.1, nape: 0.44 });
   nasalGuard(ctx, { color: o.color, mat: o.mat ?? POLISHED, width: 0.036, length: 0.46, wide: 1.3 });
   for (const sx of [1, -1] as const) {
@@ -96,7 +95,7 @@ export function gondorHelm(ctx: KindContext, o: HelmCommon & { wing?: number }) 
     put(ctx, g, { bone: 'head', color: o.color, mat: o.mat ?? POLISHED, small: true });
   }
   // comb: a thin tall fin along the top
-  const comb = meridian({ ...dome }, -0.5, 0.95, 0.0, 16);
+  const comb = meridian(P, { ...dome }, -0.5, 0.95, 0.0, 16);
   const pos: number[] = [];
   const idx: number[] = [];
   const hts = comb.map((_, i) => 0.05 + 0.2 * Math.sin((i / (comb.length - 1)) * Math.PI) ** 0.8);
@@ -116,8 +115,8 @@ export function gondorHelm(ctx: KindContext, o: HelmCommon & { wing?: number }) 
   fin.computeVertexNormals();
   put(ctx, fin, { bone: 'head', color: o.trim, mat: o.trimMat ?? POLISHED, small: true });
   // wings: swept back and up from above the temples
-  const wl = (o.wing ?? 1) * 0.62 * u;
-  const wing = leaf(wl, 0.085 * u, { droop: 0.05, cup: 0.15, rows: 7, rib: 0.1, pointy: 1.25 });
+  const wl = (o.wing ?? 1) * 0.95 * u;
+  const wing = leaf(wl, 0.1 * u, { droop: 0.12, cup: 0.2, rows: 6, rib: 0.1, pointy: 1.25 });
   const wm: THREE.Matrix4[] = [];
   for (const sx of [1, -1]) {
     const base = P.h(sx * 0.325, 0.06, 0.02);
@@ -129,20 +128,20 @@ export function gondorHelm(ctx: KindContext, o: HelmCommon & { wing?: number }) 
 }
 
 /** Galadhrim helm: a tall smooth pointed cap with a swept leaf crest and leaf-shaped cheek wings, gold trim */
-export function elvenHelm(ctx: KindContext, o: HelmCommon) {
+export function elvenHelm(ctx: KindContext, o: HelmCommon & { crest?: number; wings?: boolean }) {
   const { P } = ctx;
   const u = P.headH;
   const dome = { tall: 1.22, point: 0.7, clear: 0.045 };
   helmDome(ctx, { ...dome, color: o.color, trim: o.trim, mat: o.mat ?? POLISHED, trimMat: o.trimMat ?? 'gold', rim: 0.13, nape: 0.18 });
   // leaf crest sweeping back over the top
-  const crest = leaf(0.95 * u, 0.1 * u, { droop: -0.12, cup: 0.35, rows: 8, rib: 0.45, pointy: 1.1 });
+  const crest = leaf(0.95 * u * (o.crest ?? 1), 0.1 * u * Math.sqrt(o.crest ?? 1), { droop: -0.12, cup: 0.35, rows: 8, rib: 0.45, pointy: 1.1 });
   const top = domePoint(dome, 0, 0.5);
   put(ctx, instances(crest, [along(P.h(top[0], top[1] + 0.012, top[2] + 0.02), [0, 0.38, -1], [0, 1, 0.4], 1)]), { bone: 'head', color: o.trim, mat: o.trimMat ?? 'gold', small: true });
   // cheek wings: leaf-shaped plates swept back from the temples
   const cw = leaf(0.5 * u, 0.1 * u, { droop: 0.1, cup: 0.5, rows: 6, rib: 0.3 });
   const mats: THREE.Matrix4[] = [];
-  for (const sx of [1, -1]) mats.push(along(P.h(sx * 0.37, 0.0, 0.2), [sx * 0.25, -0.75, -0.55], [sx * 1, 0.2, 0.1], 1));
-  put(ctx, instances(cw, mats), { bone: 'head', color: o.color, mat: o.mat ?? POLISHED, small: true });
+  if (o.wings !== false) for (const sx of [1, -1]) mats.push(along(P.h(sx * 0.37, 0.0, 0.2), [sx * 0.25, -0.75, -0.55], [sx * 1, 0.2, 0.1], 1));
+  if (mats.length) put(ctx, instances(cw, mats), { bone: 'head', color: o.color, mat: o.mat ?? POLISHED, small: true });
   // brow ornament: a small leaf above the nose
   const bl = leaf(0.16 * u, 0.035 * u, { droop: 0.0, cup: 0.4, rows: 3 });
   put(ctx, instances(bl, [along(P.h(0, 0.12, 0.43), [0, -1, 0.15], [0, 0.1, 1], 1)]), { bone: 'head', color: o.trim, mat: 'gold', small: true });
@@ -199,11 +198,11 @@ export function sculptWoolCap(ctx: KindContext, o: { color: number; color2?: num
  * Thranduil's crown: a woven band of dark twigs round the brow with antler-like branches rising and
  * sweeping back, hung with autumn-red leaves and berries.
  */
-export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?: number; leaf?: number[]; berry?: number; branches?: number; height?: number }) {
+export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?: number; leaf?: number[]; berry?: number; branches?: number; height?: number; thick?: number; leaves?: number }) {
   const { P } = ctx;
   const u = P.headH;
-  const s = P.s;
   const rng = o.rng;
+  const th = o.thick ?? 1;
   const wood = o.wood ?? 0x3a2a1e;
   const wood2 = o.wood2 ?? 0x6a5844;
   const leafCols = o.leaf ?? [0xb8481c, 0xd0702a, 0x9a2e18, 0xc65a22];
@@ -220,7 +219,7 @@ export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?
       const y = 0.185 - 0.05 * Math.max(0, -Math.cos(a)) + wob;
       pts.push(P.h(Math.sin(a) * (bandR + 0.01 * Math.cos(a * 7 + k)), y, -0.055 + Math.cos(a) * 0.455));
     }
-    woven.push(tube(pts, 0.0075 * u, { seg: 60, radial: 4, closed: true }));
+    woven.push(tube(pts, 0.0075 * u * th, { seg: 60, radial: 4, closed: true }));
   }
   put(ctx, mergeAll(woven), { bone: 'head', color: wood, mat: surface('wood', { rough: 0.7, pat: { wrinkles: 1.2 } }), small: true });
   // branches: rise from the band, arc up and back, fork twice
@@ -228,7 +227,7 @@ export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?
   const twigs2: THREE.BufferGeometry[] = [];
   const leaves: THREE.Matrix4[] = [];
   const berries: V3[] = [];
-  const leafGeo = leaf(0.085 * u, 0.034 * u, { droop: 0.3, cup: 0.4, rows: 3, rib: 0.3 });
+  const leafGeo = leaf(0.085 * u * (o.leaves ?? 1), 0.034 * u * (o.leaves ?? 1), { droop: 0.3, cup: 0.4, rows: 3, rib: 0.3 });
   const addLeaf = (p: V3, dir: V3) => {
     leaves.push(along(p, dir, [rng.range(-1, 1), 0.3, rng.range(-1, 1)], rng.range(0.8, 1.3)));
   };
@@ -245,14 +244,14 @@ export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?
     const mid: V3 = [root[0] + lean[0] * 0.9, root[1] + hgt * u * 0.5, root[2] + lean[2] * 0.7];
     const tip: V3 = [root[0] + lean[0] * 1.9 + sx * 0.04 * u, root[1] + hgt * u, root[2] + lean[2] * 1.7 - 0.06 * u];
     const pts: V3[] = [root, mid, tip];
-    twigs.push(taperedTube(pts, 0.0105 * u, 0.0035 * u, { seg: 10, radial: 4 }));
+    twigs.push(taperedTube(pts, 0.0105 * u * th, 0.0035 * u * th, { seg: 10, radial: 4 }));
     // forks
     for (let f = 0; f < 2; f++) {
       const t = 0.45 + f * 0.25;
       const base: V3 = [root[0] + (tip[0] - root[0]) * t, root[1] + (tip[1] - root[1]) * t, root[2] + (tip[2] - root[2]) * t];
       const side = f % 2 ? -1 : 1;
       const end: V3 = [base[0] + (side * 0.14 + sx * 0.08) * u, base[1] + 0.12 * u, base[2] - 0.1 * u];
-      twigs2.push(taperedTube([base, [(base[0] + end[0]) / 2 + side * 0.02 * u, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], end], 0.0055 * u, 0.0024 * u, { seg: 6, radial: 3 }));
+      twigs2.push(taperedTube([base, [(base[0] + end[0]) / 2 + side * 0.02 * u, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], end], 0.0055 * u * th, 0.0024 * u * th, { seg: 6, radial: 3 }));
       if (rng.float() < 0.7) addLeaf(end, [end[0] - base[0], end[1] - base[1], end[2] - base[2]]);
       if (rng.float() < 0.5) berries.push([end[0] + 0.004 * u, end[1] - 0.01 * u, end[2]]);
     }
@@ -269,6 +268,4 @@ export function twigCrown(ctx: KindContext, o: { rng: Rng; wood?: number; wood2?
     if (sub.length) put(ctx, instances(leafGeo, sub), { bone: 'head', color: c, mat: surface('cloth', { rough: 0.7, sheen: 0.2, pat: { weave: 0 } }), small: true });
   });
   if (berries.length) put(ctx, studs(berries, 0.0095 * u, 1), { bone: 'head', color: 0x9a1c1c, mat: surface('lips', { rough: 0.3 }), small: true });
-  void shade;
-  void s;
 }

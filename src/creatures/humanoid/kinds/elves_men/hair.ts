@@ -5,13 +5,10 @@
  * cap) and everything visible is grown here with the kit's own hair API and attached as a skinned
  * extra (see common.attachSkinned). Named characters use the kit's hair directly.
  */
-import * as THREE from 'three';
 import type { Rng } from '../../../../core/rng';
-import { hairGeometry, type Strand } from '../../../kit/hair';
-import { sdfProbe, type SdfProbe, type V3 } from '../../../kit/sdf';
 import { buildHair, sculptHairCap } from '../../hairstyles';
 import type { BeardDef, HairDef, KindContext } from '../../types';
-import { hairMaterial, mergeHairGeos, mix, queueHair } from './common';
+import { devSkip, mix, queueHair } from './common';
 
 /** the placeholder hair a rank-and-file kind defines statically: no strands, no visible cap, chain bones kept */
 export function noKitHair(skinColor: number): HairDef {
@@ -22,11 +19,13 @@ export function noKitHair(skinColor: number): HairDef {
  * Head hair (+ optional beard) built with the kit's hairstyle code for this bucket's look and
  * attached as a skinned extra. Also sculpts the matching scalp cap into the body.
  */
-export function addHair(ctx: KindContext, o: { hair?: HairDef | null; beard?: BeardDef | null; hooded?: boolean; rng: Rng; cap?: boolean }) {
+export function addHair(ctx: KindContext, o: { hair?: HairDef | null; beard?: BeardDef | null; hooded?: boolean; rng: Rng; cap?: boolean; /** 1 = the kit's cheap hair (45 % of the cards, 7 segments instead of 12): crowds */ lod?: 0 | 1; /** push the back/shoulder colliders out so long hair hangs over a cloak */ backClear?: number }) {
   const { P, rig, sculpt: s } = ctx;
+  if (devSkip('hair')) return;
   const hooded = !!o.hooded;
   if (o.hair && o.cap !== false && !hooded) sculptHairCap(s, P, o.hair, hooded);
-  const geo = buildHair(P, rig, o.hair ?? null, o.beard ?? null, o.rng, 0, hooded).geo;
+  const Pm = o.backClear ? ({ ...P, build: { ...P.build, chest: P.build.chest * o.backClear } } as typeof P) : P;
+  const geo = buildHair(Pm, rig, o.hair ?? null, o.beard ?? null, o.rng, o.lod ?? 0, hooded).geo;
   if (!geo) return;
   const col = o.hair?.color ?? o.beard?.color ?? 0x302010;
   queueHair(ctx, geo, col);
@@ -47,21 +46,10 @@ export interface StubbleOpts {
   rng: Rng;
 }
 
-/** a face-surface probe (build once per extras call and reuse) */
-export function faceProbe(ctx: KindContext): SdfProbe {
-  const { P } = ctx;
-  return sdfProbe(ctx.sculpt.compile(), P.h(-0.34, -0.7, 0.05), P.h(0.34, 0.1, 0.62));
-}
-
-/**
- * Stubble or a short beard: darkened skin paint along the jaw, chin, upper lip and sideburns, plus
- * a layer of very short hair cards rooted on the sculpted surface (placed with an SDF probe).
- * Returns the geometry (also attached).
- */
-export function addStubble(ctx: KindContext, o: StubbleOpts): THREE.BufferGeometry | null {
-  const { P, sculpt: s, rig } = ctx;
+/** darkened skin paint for stubble: jaw, chin, upper lip, sideburns and lower cheeks */
+export function paintStubble(ctx: KindContext, o: { color: number; paint?: number; mustache?: boolean; cheeks?: number }) {
+  const { P, sculpt: s } = ctx;
   const u = P.headH;
-  const sc = P.s;
   const skin = ctx.def.skin;
   const shadow = mix(skin.color, o.color, 0.62);
   const paint = o.paint ?? 0.5;
@@ -74,56 +62,50 @@ export function addStubble(ctx: KindContext, o: StubbleOpts): THREE.BufferGeomet
     s.ellipsoid(P.h(0.16, -0.3, 0.24), [0.1 * u, 0.09 * u, 0.1 * u], { ...pj, bone: 'head', strength: paint * cheeks });
   });
   if (o.mustache !== false) s.ellipsoid(P.h(0, -0.345, 0.385), [0.12 * u, 0.026 * u, 0.06 * u], { ...pj, bone: 'head', k: 0.03 * u, strength: paint * 0.9 });
-
-  // ── short hairs ──
-  const probe = faceProbe(ctx);
-  const iJaw = rig.boneIndex('jaw');
-  const iHead = rig.boneIndex('head');
-  const strands: Strand[] = [];
-  const count = o.count ?? 260;
-  const len0 = (o.length ?? 0.016) * sc;
-  const base = new THREE.Color().setHex(o.color, THREE.SRGBColorSpace);
-  const tmp = new THREE.Color();
-  let tries = 0;
-  while (strands.length < count && tries < count * 14) {
-    tries++;
-    const x = o.rng.range(-0.3, 0.3);
-    const y = o.rng.range(-0.58, -0.1);
-    const ax = Math.abs(x);
-    // region mask in head units
-    const lowFace = y < -0.37 && ax < 0.27 - (y < -0.5 ? 0.12 : 0);
-    const jawLine = y < -0.26 && ax > 0.16 && ax < 0.29;
-    const cheek = y < -0.2 && ax > 0.1 && ax < 0.24 && o.rng.float() < cheeks;
-    const sideburn = ax > 0.22 && ax < 0.3 && y > -0.3 && y < -0.1;
-    const lip = o.mustache !== false && ax < 0.12 && y > -0.37 && y < -0.31;
-    const mouth = ax < 0.1 && y > -0.435 && y < -0.365;
-    if (mouth) continue;
-    if (!(lowFace || jawLine || cheek || sideburn || lip)) continue;
-    const p0: V3 = P.h(x, y, 0.5);
-    const p = probe.project(p0, 10);
-    // reject points that did not land on the front of the face
-    const hx = (p[0] - P.headC[0]) / u, hy = (p[1] - P.headC[1]) / u, hz = (p[2] - P.headC[2]) / u;
-    if (hz < 0.0 || Math.abs(hx - x) > 0.08 || Math.abs(hy - y) > 0.08) continue;
-    const n = probe.normal(p);
-    const nv = new THREE.Vector3(n[0], n[1], n[2]);
-    // grow downward and outward, hugging the skin
-    const dir = nv.clone().multiplyScalar(0.45).add(new THREE.Vector3(0, -0.9, 0.1)).normalize();
-    const len = len0 * o.rng.range(0.7, 1.3);
-    const pts: THREE.Vector3[] = [];
-    const nrm: THREE.Vector3[] = [];
-    for (let k = 0; k <= 2; k++) {
-      const pp = new THREE.Vector3(p[0], p[1], p[2]).addScaledVector(nv, 0.0005 * sc * (1 + k)).addScaledVector(dir, (len * k) / 2);
-      pts.push(pp);
-      nrm.push(nv.clone());
-    }
-    tmp.copy(base).multiplyScalar(o.rng.range(0.75, 1.1));
-    strands.push({ points: pts, normals: nrm, width: 0.0042 * sc, tipWidth: 0.0016 * sc, color: tmp.getHex(THREE.SRGBColorSpace), bone: y < -0.36 ? iJaw : iHead });
-  }
-  if (!strands.length) return null;
-  const geo = hairGeometry(strands, [], { color: o.color, weights: (_p, _a, out) => out.push([iHead, 1]), curl: 0, rootShade: 0.8 });
-  queueHair(ctx, geo, o.color);
-  return geo;
 }
 
-void hairMaterial;
-void mergeHairGeos;
+/**
+ * A short sculpted beard: a layer of hair-surface volume hugging the mandible, chin, cheeks and
+ * upper lip (a few triangles, reads as dense short hair). `thick` is the pile height (head
+ * units), `cheeks` how far up the cheeks it reaches, `chin` extra length at the chin point.
+ */
+export function sculptBeard(ctx: KindContext, o: { color: number; color2?: number; thick?: number; cheeks?: number; chin?: number; mustache?: boolean; mouthGap?: number }) {
+  const { P, sculpt: s } = ctx;
+  const u = P.headH;
+  const sc = P.s;
+  const f = ctx.def.face;
+  const jw = f.jaw;
+  const jl = f.jawLength;
+  const t = o.thick ?? 0.07;
+  const ch = o.cheeks ?? 0.6;
+  const mat = 'hair' as const;
+  const noise = { amp: 0.0022 * sc, freq: 120 / sc, type: 'ridged' as const, octaves: 2 };
+  const base = { color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.5 : 0, colorFreq: 60 / sc, mat, noise };
+  s.group('union', 0.02 * u, () => {
+    // along the mandible (same chain as the skin's, thicker)
+    s.with({ ...base, bone: 'head', bone2: 'jaw', blend: [0.25, 0.8] }, () => {
+      s.mirrored(() => {
+        const ear = P.h(0.265 * jw, -0.2, -0.045);
+        const gon = P.h(0.222 * jw, -0.39 * jl, 0.0);
+        const chinSide = P.h(0.08 * (0.7 + 0.3 * jw), -0.5 * jl, 0.265);
+        s.cone(ear, gon, (0.055 + t * 0.6) * u, (0.052 * jw + t) * u, { k: 0.02 * u, blendAxis: [ear, chinSide] });
+        s.cone(gon, chinSide, (0.052 * jw + t) * u, (0.05 + t * 1.15) * u, { k: 0.02 * u, blendAxis: [ear, chinSide] });
+        // upper cheeks / sideburn
+        s.ellipsoid(P.h(0.2, -0.26, 0.09), [0.05 * u, 0.12 * u * (0.5 + ch), 0.12 * u], { k: 0.025 * u });
+        if (ch > 0.5) s.ellipsoid(P.h(0.15, -0.3, 0.22), [(0.06 + t) * u, (0.05 + t * 0.6 + 0.06 * ch) * u, (0.05 + t * 0.8) * u], { k: 0.025 * u });
+      });
+    });
+    s.with({ ...base, bone: 'jaw' }, () => {
+      s.ellipsoid(P.h(0, -0.482 * jl, 0.288 + 0.03 * (f.chin - 1)), [(0.08 * (0.8 + 0.2 * jw) + t * 0.9) * u, (0.06 + t * 0.9 + (o.chin ?? 0)) * u, (0.066 + t * 1.1) * u], { k: 0.025 * u });
+      s.ellipsoid(P.h(0, -0.43, 0.25), [0.1 * u, 0.09 * u, 0.1 * u], { k: 0.025 * u });
+    });
+    if (o.mustache !== false) {
+      s.with({ ...base, bone: 'head' }, () => {
+        s.mirrored(() => s.cone(P.h(0.0, -0.336, 0.392), P.h(0.095, -0.37, 0.355), 0.022 * u + t * 0.25 * u, 0.02 * u + t * 0.2 * u, { k: 0.02 * u }));
+      });
+    }
+    // keep the mouth and lips clear
+    s.ellipsoid(P.h(0, -0.405 - (o.mouthGap ?? 0) * 0.0, 0.43), [0.082 * u * f.lips.width, 0.034 * u, 0.06 * u], { op: 'subtract', k: 0.012 * u });
+  });
+}
+

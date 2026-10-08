@@ -13,7 +13,7 @@
 import * as THREE from 'three';
 import type {
   AllySpec, CameraShot, Combatant, CrowdDef, CrowdHandle, EnemySpec, EnvironmentName, EnvironmentPreset,
-  GameContext, LevelAPI, Speaker, TerrainOpts, WaveDef, ChapterDef,
+  GameContext, LevelAPI, MusicMood, Speaker, TerrainOpts, WaveDef, ChapterDef,
 } from '../core/types';
 import type { Enemy, Ally } from '../core/types';
 import { fbm2, hashSeed, Rng } from '../core/rng';
@@ -164,7 +164,31 @@ function standinCrowd(def: CrowdDef, heightAt: (x: number, z: number) => number)
 // Environment helper (shared with game.ts)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** apply an environment preset: lighting + sky, weather particles and the ambience loop */
+/**
+ * Room reverb per environment: [amount 0..1, decay seconds]. Caves ring for seconds, open
+ * country barely at all. A tweaked copy of a preset keeps its `name`, so it keeps its reverb; a
+ * custom preset can also carry its own `reverb: [amount, decay]` (EnvironmentPresetEx).
+ */
+export const REVERB: Partial<Record<EnvironmentName, [number, number]>> = {
+  moria: [0.9, 5.5],
+  laketown_night: [0.5, 2.2],
+  helms_deep_storm: [0.45, 2.6],
+  black_gate: [0.5, 3],
+};
+const DEFAULT_REVERB: [number, number] = [0.35, 1.6];
+
+export function reverbFor(env: EnvironmentName | EnvironmentPreset): [number, number] {
+  if (typeof env === 'string') return REVERB[env] ?? DEFAULT_REVERB;
+  const own = (env as EnvironmentPreset & { reverb?: [number, number] }).reverb;
+  if (own) return own;
+  for (const key of Object.keys(ENVIRONMENTS) as EnvironmentName[]) {
+    const p = ENVIRONMENTS[key];
+    if (p === env || p.name === env.name) return REVERB[key] ?? DEFAULT_REVERB;
+  }
+  return DEFAULT_REVERB;
+}
+
+/** apply an environment preset: lighting + sky, weather particles, the ambience loop and the room reverb */
 export function applyEnvironment(ctx: GameContext, env: EnvironmentName | EnvironmentPreset, prevAmbience?: string): EnvironmentPreset {
   const eng = ctx.engine;
   eng.setEnvironment(env);
@@ -172,6 +196,8 @@ export function applyEnvironment(ctx: GameContext, env: EnvironmentName | Enviro
   ctx.fx.setWeather(p.weather ?? 'none', p.weatherIntensity ?? 1);
   if (prevAmbience && prevAmbience !== p.ambience) ctx.audio.loop(prevAmbience as never, 0);
   if (p.ambience) ctx.audio.loop(p.ambience, 0.6);
+  const [amount, decay] = reverbFor(env);
+  ctx.audio.setReverb?.(amount, decay);
   return p;
 }
 
@@ -202,6 +228,8 @@ export interface LevelHost extends LevelAPI {
   readonly inCinematic: boolean;
   /** the boss bar's combatant, if any */
   readonly bossTarget: Combatant | null;
+  /** mood pinned by the chapter with music(), or null for the adaptive score */
+  readonly musicOverride: MusicMood | null;
 }
 
 interface Waiter {
@@ -228,6 +256,7 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
   let bossName = '';
   let bossDeadT = 0;
   let clock = 0;
+  let musicOverride: MusicMood | null = null;
   let ambience: string | undefined = ctx.engine.env.ambience;
 
   function waitFor(left: number, pred: (() => boolean) | null): Promise<void> {
@@ -266,6 +295,12 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
     },
     get bossTarget() {
       return boss;
+    },
+    get musicOverride() {
+      return musicOverride;
+    },
+    music(mood) {
+      if (!disposed) musicOverride = mood;
     },
 
     objective(text) {
@@ -481,6 +516,7 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
       spawned.clear();
       boss = null;
       cinematic = false;
+      musicOverride = null;
       const p = ctx.player;
       if (p) {
         p.controlsEnabled = true;

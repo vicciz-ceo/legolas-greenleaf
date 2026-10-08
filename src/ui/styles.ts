@@ -140,6 +140,10 @@ const HUD = /* css */ `
 .gl-prompt.on{opacity:1}
 .gl-fps{position:absolute;right:var(--pr);top:4px;font:11px/1 ui-monospace,Menlo,Consolas,monospace;color:rgba(236,230,211,.7);display:none}
 .gl-fps.on{display:block}
+.gl-lock{position:absolute;left:50%;top:calc(50% - 82px);transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:5px 16px 5px 10px;font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:rgba(236,230,211,.82);background:linear-gradient(90deg,rgba(4,6,5,0),rgba(4,6,5,.5) 22%,rgba(4,6,5,.5) 78%,rgba(4,6,5,0));opacity:0;visibility:hidden;transition:opacity .5s,visibility 0s .5s}
+.gl-lock.on{opacity:1;visibility:visible;transition:opacity .5s .15s,visibility 0s;animation:gl-lockpulse 2.6s ease-in-out infinite}
+.gl-lock .gl-ic{width:16px;height:16px;color:var(--gl-gold,#d8b66a)}
+@keyframes gl-lockpulse{0%,100%{opacity:.62}50%{opacity:1}}
 
 /* focus marks */
 .gl-marks{position:absolute;inset:0}
@@ -201,7 +205,9 @@ const HUD = /* css */ `
   .gl-dev-touch .gl-boss{left:50%;top:calc(var(--pt) + 150px);width:84vw}
   .gl-dev-touch .gl-topc{left:50%;top:calc(var(--pt) + 196px);width:90vw}
   .gl-dev-touch .gl-boss:not(.none) + .gl-topc{top:calc(var(--pt) + 226px)}
-  .gl-dev-touch .gl-sub{left:50%;right:auto;transform:translateX(-50%);width:calc(100vw - var(--pl) - var(--pr));bottom:calc(var(--pb) + 316px)}
+  /* portrait: the bottom half belongs to the thumbs (stick, button cluster, interact pill), so the
+     subtitle sits just above the crosshair, below the boss bar and toasts */
+  .gl-dev-touch .gl-sub{left:50%;right:auto;transform:translateX(-50%);width:calc(100vw - var(--pl) - var(--pr));bottom:calc(50% + 46px);padding:7px 14px 9px}
   .gl-dev-touch .gl-prompt{top:54%}
 }
 @media (max-width:640px){
@@ -259,7 +265,7 @@ const MENUS = /* css */ `
 .gl-screen.leaving{animation:gl-out .18s ease both;pointer-events:none}
 .gl-screen::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 85% 75% at 50% 48%,rgba(3,6,5,.5),rgba(2,4,3,.86) 100%)}
 .gl-screen.pause::before{background:rgba(2,4,3,.6)}
-.gl-screen.title::before{background:radial-gradient(ellipse 70% 60% at 50% 46%,rgba(2,4,3,.2),rgba(2,4,3,.8) 100%),linear-gradient(180deg,rgba(2,4,3,.6),rgba(2,4,3,.05) 34%,rgba(2,4,3,.05) 55%,rgba(2,4,3,.82))}
+.gl-screen.title::before{background:radial-gradient(ellipse 70% 60% at 50% 46%,rgba(2,4,3,.22),rgba(2,4,3,.66) 100%),linear-gradient(180deg,rgba(2,4,3,.6),rgba(2,4,3,.04) 34%,rgba(2,4,3,.04) 58%,rgba(2,4,3,.74))}
 .gl-screen.defeat::before{background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(40,3,2,.55),rgba(8,1,1,.92) 100%)}
 .gl-screen.credits::before{background:rgba(2,4,3,.9)}
 @keyframes gl-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -344,7 +350,7 @@ const MENUS = /* css */ `
 .gl-ch.locked{filter:saturate(.35) brightness(.78)}
 .gl-ch .lk{display:flex;align-items:center;gap:9px;padding:6px 16px 16px;color:var(--gl-dim);font-size:14px;font-style:italic}
 .gl-ch .lk .gl-ic{width:20px;height:20px;color:var(--gl-gold-dim)}
-.gl-ch .dev{position:absolute;left:12px;top:8px;font-size:10px;letter-spacing:.3em;padding:2px 6px;border:1px solid var(--gl-gold-dim);color:var(--gl-gold)}
+.gl-ch .dev{position:absolute;left:66px;bottom:12px;font-size:10px;letter-spacing:.3em;padding:2px 6px;border:1px solid var(--gl-gold-dim);color:var(--gl-gold)}
 
 /* upgrades */
 .gl-upwrap{width:min(1020px,100%)}
@@ -542,6 +548,12 @@ const MENUS = /* css */ `
   .gl-rivres .s{font-size:24px}
   .gl-donewrap .gl-actions{margin-top:8px}
   .gl-donewrap .gl-btn{min-height:38px}
+}
+/* short landscape windows (laptops at 540-640 px tall, browser chrome): keep the pause column on screen */
+@media (max-height:640px) and (min-height:481px){
+  .gl-pausewrap .gl-actions.col{gap:8px;margin-top:10px}
+  .gl-pausewrap .gl-actions.col .gl-btn{min-height:38px;padding-top:8px;padding-bottom:8px}
+  .gl-pausewrap > .gl-orn{margin:8px auto 4px}
 }
 @media (prefers-reduced-motion:reduce){
   .gl-screen,.gl-emblem,.gl-cred,.gl-defeat-t{animation-duration:.01s!important}

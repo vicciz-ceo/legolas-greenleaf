@@ -43,6 +43,8 @@ export interface EnvironmentPresetEx extends EnvironmentPreset {
   cloudSoft?: number;
   /** brightness multiplier of the physical sky (default 0.4) */
   skyGain?: number;
+  /** room reverb [amount 0..1, decay s] the shell applies with this preset (default per environment, see game/level.ts REVERB) */
+  reverb?: [number, number];
   /** 0..1 visible sun disc brightness (default 1 for physical skies, 0 for gradient skies) */
   sunDisc?: number;
   /** apparent sun radius in degrees (default 0.6) */
@@ -733,21 +735,21 @@ const defs: Record<EnvironmentName, EnvironmentPresetEx> = {
     glow: 1.1, glowColor: 0xff5a1c, horizonGlow: 0xff4a12, horizonGlowAmount: 0.32, cloudSoft: 0.7,
   },
 
-  // ── Menu: cinematic dusk ──────────────────────────────────────────────────
+  // ── Menu: misty golden dawn over the Forest River (the title backdrop, game/backdrop.ts) ──
   menu: {
     name: 'Menu',
-    mist: 0.25,
-    sky: { kind: 'gradient', top: 0x0a1430, horizon: 0x74505f, bottom: 0x1c1b25, stars: 0.35, clouds: 0.4, cloudColor: 0xff9a5e },
-    sunColor: 0xffa05a, sunIntensity: 3.2,
-    sunDirection: dirTuple(5, 255),
-    hemiSky: 0x3f5586, hemiGround: 0x3a2a20, hemiIntensity: 0.6,
-    envIntensity: 1.0,
-    fog: { color: 0x94685c, density: 0.0095 },
-    exposure: 1.0, bloom: 0.5,
-    grade: { lift: V(0.006, 0.004, 0.012), gamma: V(1.0, 1.0, 1.0), gain: V(1.04, 1.0, 0.95), saturation: 1.1, vignette: 0.5 },
-    weather: 'dust', weatherIntensity: 0.3,
-    ambience: 'wind',
-    glow: 2.2, glowColor: 0xff7a30, shafts: 0.4, sunDisc: 0.9, sunSize: 0.9,
+    mist: 1.1,
+    sky: { kind: 'gradient', top: 0x2b3e5e, horizon: 0xe2a978, bottom: 0x3a3a34, stars: 0.0, clouds: 0.45, cloudColor: 0xffc08a },
+    sunColor: 0xffbf7a, sunIntensity: 3.0,
+    sunDirection: dirTuple(8, 40),
+    hemiSky: 0x8fa6c4, hemiGround: 0x3a3424, hemiIntensity: 0.75,
+    envIntensity: 0.95,
+    fog: { color: 0xb09c88, density: 0.0115 },
+    exposure: 1.0, bloom: 0.32,
+    grade: { lift: V(0.008, 0.006, 0.012), gamma: V(1.0, 1.0, 1.01), gain: V(1.04, 1.0, 0.94), saturation: 1.05, vignette: 0.5 },
+    weather: 'dust', weatherIntensity: 0.35,
+    ambience: 'river',
+    glow: 2.0, glowColor: 0xffa060, shafts: 0.8, sunDisc: 0.7, sunSize: 0.9, hazeHeight: 0.4,
   },
 };
 

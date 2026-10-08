@@ -174,10 +174,23 @@ async function boot(): Promise<void> {
   const bot = createBot(ctx, () => game?.botHint() ?? null);
   botRef = bot;
   bot.active = flags.bot === '1';
-  game = createGame(ctx, { realInput: input, bot, chapters: () => CHAPTERS, render: (dt) => engine.render(dt) });
+  const renderOnce = (dt: number): void => {
+    // used by __game.advance(): one rendered frame after a headless simulation burst
+    const inf = engine.renderer.info;
+    inf.autoReset = false;
+    inf.reset();
+    const t0 = performance.now();
+    engine.render(dt);
+    game?.recordRender(performance.now() - t0, 0, 0, inf.render.calls, inf.render.triangles);
+  };
+  game = createGame(ctx, { realInput: input, bot, chapters: () => CHAPTERS, render: renderOnce });
   const g = game;
 
   // 5. loop
+  // renderer.info counts every pass of a frame (shadow map, scene, post) when reset once per frame
+  // here instead of on every renderer.render() call; __game.state().perf reports the totals.
+  const info = engine.renderer.info;
+  info.autoReset = false;
   const freeze = flags.freeze === '1';
   const logged = new Set<string>();
   let last = performance.now();
@@ -189,9 +202,18 @@ async function boot(): Promise<void> {
       if (!freeze) {
         input.poll();
         g.frame(dt);
+        const t0 = performance.now();
         hud.update(dt);
+        const t1 = performance.now();
         audio.update(dt);
-        engine.render(dt);
+        const t2 = performance.now();
+        // the loading screen is opaque: rendering the half-built level behind it only steals time
+        // from the load (seconds per frame on software GL and weak phones)
+        if (g.mode !== 'loading') {
+          info.reset();
+          engine.render(dt);
+          g.recordRender(performance.now() - t2, t1 - t0, t2 - t1, info.render.calls, info.render.triangles);
+        }
       } else {
         // frozen: time only moves through __game.advance(). Keep the picture alive at a low rate so a
         // software-rendered GPU queue (headless tests) is never flooded.
@@ -199,6 +221,7 @@ async function boot(): Promise<void> {
         if (input.state.pause) g.pause(); // the edge only lives for this poll
         if (now - lastRender > 250) {
           lastRender = now;
+          info.reset();
           engine.render(0);
         }
       }

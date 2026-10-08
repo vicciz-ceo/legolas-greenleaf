@@ -24,6 +24,7 @@ export function mat(name: TextureSetName, o: MatOpts = {}): THREE.MeshStandardMa
   if (!m) {
     m = makeMaterial(name, { macro: true, ...rest });
     if (rgb) m.color.setRGB(rgb[0], rgb[1], rgb[2]);
+    m.userData.shared = true; // cached across levels: disposeObject leaves it (and its shader) alone
     cache.set(k, m);
   }
   return m;
@@ -39,6 +40,7 @@ export function plain(color: number, o: { roughness?: number; metalness?: number
       m.emissive = new THREE.Color(o.emissive);
       m.emissiveIntensity = o.emissiveIntensity ?? 1;
     }
+    m.userData.shared = true;
     cache.set(k, m);
   }
   return m;

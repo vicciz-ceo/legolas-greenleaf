@@ -8,7 +8,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const tests = [resolve(here, 'physics.test.ts'), resolve(here, '../combat/combat.test.ts')];
+const tests = [resolve(here, 'physics.test.ts'), resolve(here, '../combat/combat.test.ts'), resolve(here, '../game/shell.test.ts')];
 const dir = mkdtempSync(join(tmpdir(), 'gl-tests-'));
 let code = 0;
 try {

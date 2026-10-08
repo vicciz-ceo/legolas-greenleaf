@@ -9,7 +9,7 @@ import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { skirtGeometry, cloakGeometry } from '../../cloth';
 import { emitParts, anatomyParts } from '../../anatomy';
 import type { KindContext } from '../../types';
-import { attachSkinned } from './common';
+import { attachSkinned, devSkip } from './common';
 import { slab } from './garments';
 
 export const SKIRT_PANELS: [number, number][] = [[-0.62, 0.62], [0.75, 2.35], [2.45, 3.83], [3.93, 5.53]];
@@ -23,8 +23,9 @@ export function addSkirt(ctx: KindContext, o: { color: number; color2?: number; 
   const kneeY = P.j.shin_l[1];
   const top = hipY + 0.035 * sc;
   const bottom = o.bottom ?? hipY - (hipY - kneeY) * o.length * 1.05;
+  if (devSkip('skirt')) return;
   const geo = skirtGeometry(P, rig, { top, bottom, color: o.color, color2: o.color2, mat: o.mat ?? 'cloth', panels: o.panels ?? SKIRT_PANELS, flare: o.flare, ragged: o.ragged, seed: spec.seed ?? 0 });
-  attachSkinned(ctx, geo, 'body', { small: false });
+  attachSkinned(ctx, geo, 'body', { small: false, name: 'skirt' });
 }
 
 /** a cloak from the shoulders, with the shoulder mantle sculpted into the body */
@@ -34,7 +35,7 @@ export function addCloak(ctx: KindContext, o: { color: number; color2?: number; 
   const j = P.j;
   const mat = o.mat ?? 'wool';
   const geo = cloakGeometry(P, rig, { color: o.color, color2: o.color2, mat, length: o.length, ragged: o.ragged, seed: spec.seed ?? 0 });
-  attachSkinned(ctx, geo, 'body', { small: false });
+  attachSkinned(ctx, geo, 'body', { small: false, name: 'cloak' });
   if (o.mantle !== false) {
     const parts = anatomyParts(P);
     s.group('union', 0.004 * sc, () => {

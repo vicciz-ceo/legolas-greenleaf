@@ -183,3 +183,21 @@ function taperedTubeFlat(a: V3, b: V3, r0: number, r1: number, flat: number): TH
   g.computeVertexNormals();
   return g;
 }
+
+/** a healed scar painted on the face: a thin pale-pink line from (x0, y0) to (x1, y1) in head units on the surface */
+export function paintScar(ctx: KindContext, o: { from: [number, number]; to: [number, number]; color?: number; width?: number; strength?: number }) {
+  const { P, sculpt: s } = ctx;
+  const u = P.headH;
+  const zAt = (x: number, y: number) => 0.4 - 0.5 * Math.min(1, Math.abs(x) / 0.34) ** 2 - (y < -0.15 ? 0.1 * Math.min(1, (-y - 0.15) / 0.3) : 0) - (y > 0.15 ? 0.2 * Math.min(1, (y - 0.15) / 0.3) : 0);
+  const a = P.h(o.from[0], o.from[1], zAt(o.from[0], o.from[1]));
+  const b = P.h(o.to[0], o.to[1], zAt(o.to[0], o.to[1]));
+  const skin = ctx.def.skin.color;
+  const col = o.color ?? mixHexLocal(skin, 0x9a4a44, 0.5);
+  s.cone(a, b, (o.width ?? 0.011) * u, (o.width ?? 0.011) * u * 0.7, { op: 'paint', color: col, mat: 'skin_weathered', bone: 'head', k: 0.007 * u, strength: o.strength ?? 0.85 });
+}
+
+function mixHexLocal(a: number, b: number, t: number): number {
+  const c1 = new THREE.Color().setHex(a, THREE.SRGBColorSpace);
+  const c2 = new THREE.Color().setHex(b, THREE.SRGBColorSpace);
+  return c1.lerp(c2, t).getHex(THREE.SRGBColorSpace);
+}

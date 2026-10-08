@@ -33,19 +33,25 @@ export const _v3 = new THREE.Vector3();
 export const _q1 = new THREE.Quaternion();
 export const _m1 = new THREE.Matrix4();
 
-/** dispose every geometry/material/texture under an object */
+/**
+ * dispose every geometry/material/texture under an object. Anything flagged `userData.shared`
+ * (cached builder materials, shared geometries and textures) is left alone: it is reused by the
+ * next level, and disposing a material also throws away its compiled shader program, which made
+ * every checkpoint respawn recompile the world's shaders.
+ */
 export function disposeObject(root: THREE.Object3D): void {
   const seen = new Set<unknown>();
   root.traverse((o) => {
     const m = o as THREE.Mesh;
     if (m.geometry && !seen.has(m.geometry)) {
       seen.add(m.geometry);
-      m.geometry.dispose();
+      if (!m.geometry.userData?.shared) m.geometry.dispose();
     }
     const mats = m.material ? (Array.isArray(m.material) ? m.material : [m.material]) : [];
     for (const mat of mats) {
       if (seen.has(mat)) continue;
       seen.add(mat);
+      if (mat.userData?.shared) continue;
       for (const v of Object.values(mat)) {
         if (v && (v as THREE.Texture).isTexture && !(v as THREE.Texture).userData?.shared) (v as THREE.Texture).dispose();
       }

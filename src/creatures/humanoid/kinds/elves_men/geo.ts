@@ -22,8 +22,14 @@ export interface PutOpts {
 }
 
 /** add rigid gear to the body draw call */
+const GEAR_DEBUG = typeof location !== 'undefined' && new URLSearchParams(location.search).get('em_gear') === '1';
 export function put(ctx: KindContext, geo: THREE.BufferGeometry | null, o: PutOpts) {
   if (!geo) return;
+  if (GEAR_DEBUG) {
+    const n = geo.index ? geo.index.count / 3 : geo.attributes.position.count / 3;
+    const where = (new Error().stack ?? '').split('\n').slice(2, 4).map((l) => l.replace(/.*\/(\w+\.ts):(\d+).*/, '$1:$2')).join(' < ');
+    ((window as unknown as { __emGear?: string[] }).__emGear ??= []).push(`${ctx.kind}/${ctx.spec.seed ?? 0} ${Math.round(n)} ${where}`);
+  }
   ctx.gear(geo, o as Parameters<KindContext['gear']>[1]);
 }
 
@@ -217,6 +223,18 @@ export function torsoSection(P: Proportions, y: number): TorsoSec {
     zb = Math.min(zb, e.c[2] - e.r[2] * f);
   }
   return { rx, zf, zb };
+}
+
+/** front surface z of the torso's centre line (x = 0) at height y: only the centred anatomy parts (no pecs / glutes) */
+export function torsoCentreFront(P: Proportions, y: number): number {
+  let zf = 0.03 * P.s;
+  for (const e of torsoEllipsoids(P)) {
+    if (Math.abs(e.c[0]) > 1e-6) continue;
+    const dy = (y - e.c[1]) / e.r[1];
+    if (Math.abs(dy) >= 1) continue;
+    zf = Math.max(zf, e.c[2] + e.r[2] * Math.sqrt(1 - dy * dy));
+  }
+  return zf;
 }
 
 export interface TorsoShellOpts {

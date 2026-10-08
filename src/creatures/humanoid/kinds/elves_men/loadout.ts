@@ -61,7 +61,8 @@ export function loadoutFor(kind: HumanoidKind, seed: number): Loadout {
       return { weapon, offhand: TWO_HANDED.includes(weapon) ? 'none' : 'shield', helmet: rng.float() < 0.85, armor: pick(rng, [[0.5, 2], [0.75, 2]]) };
     }
     case 'gondor': {
-      if (seed === 0) return { weapon: 'sword', offhand: 'shield', helmet: false, armor: 0.75 };
+      // bucket 0 is the captain (Boromir): bare-headed whatever the flag says
+      if (bucket === 0) return { weapon: 'sword', offhand: 'shield', helmet: false, armor: 0.75 };
       const weapon = pick<WeaponKind>(rng, [['sword', 3], ['spear', 3]]);
       return { weapon, offhand: TWO_HANDED.includes(weapon) ? 'none' : 'shield', helmet: rng.float() < 0.85, armor: pick(rng, [[0.5, 1], [0.75, 2]]) };
     }

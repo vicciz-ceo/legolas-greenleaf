@@ -529,6 +529,10 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     get pointerLocked() {
       return locked;
     },
+    /** true when pointer lock was refused after a click and mouse look falls back to drag-look */
+    get pointerFallback() {
+      return dragFallback;
+    },
     get isTouch() {
       return touchSeen;
     },

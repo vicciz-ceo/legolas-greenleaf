@@ -9,7 +9,7 @@
  *
  * Seed-varied kinds (elf, man, rohirrim, gondor) take `&seed=N` and `&loadout=1` (apply
  * loadoutFor(kind, seed): weapon, helmet, armour level). Overrides: `&helmet=0|1 &armor=0..1
- * &weapon=<kind> &offhand=<kind>`.
+ * &weapon=<kind> &offhand=<kind> &weapons=none`; `&lod=1|2` previews the reduced geometry.
  */
 import * as THREE from 'three';
 import type { HumanoidKind, LabInstance, LabSubject, WeaponKind } from '../core/types';
@@ -56,13 +56,17 @@ interface Entry {
   lift: THREE.Group;
 }
 
-/** &loadout=1 applies loadoutFor(kind, seed); overrides: &helmet=0|1 &armor=0..1 &weapon=<kind> &offhand=<kind> */
+/** &loadout=1 applies loadoutFor(kind, seed); overrides: &helmet=0|1 &armor=0..1 &weapon=<kind> &offhand=<kind> &weapons=none */
 function urlLoadout(lo: Loadout): Loadout {
   if (typeof location === 'undefined') return lo;
   const q = new URLSearchParams(location.search);
   const out: Loadout = q.get('loadout') === '1' ? { ...lo } : {};
   if (q.has('helmet')) out.helmet = q.get('helmet') !== '0';
   if (q.has('armor')) out.armor = Number(q.get('armor'));
+  if (q.get('weapons') === 'none') {
+    out.weapon = 'none';
+    out.offhand = 'none';
+  }
   if (q.has('weapon')) out.weapon = q.get('weapon') as WeaponKind;
   if (q.has('offhand')) out.offhand = q.get('offhand') as WeaponKind;
   return out;
@@ -71,6 +75,9 @@ function urlLoadout(lo: Loadout): Loadout {
 function makeEntry(kind: HumanoidKind, seed: number, lo0: Loadout, useUrl = true): Entry {
   const lo = useUrl ? urlLoadout(lo0) : lo0;
   const h = createHumanoid({ kind, seed, weapon: lo.weapon, offhand: lo.offhand, helmet: lo.helmet, armor: lo.armor });
+  // &lod=1|2 previews the reduced geometry and the cheap animation path
+  const lodQ = typeof location !== 'undefined' ? Number(new URLSearchParams(location.search).get('lod') ?? 0) : 0;
+  if (lodQ === 1 || lodQ === 2) h.setLod(lodQ);
   const def = resolveKind(kind);
   const r = (lo.weapon ?? def.weapons.right ?? 'none') as WeaponKind;
   const l = (lo.offhand ?? def.weapons.left ?? 'none') as WeaponKind;
