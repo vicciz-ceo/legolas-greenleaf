@@ -122,7 +122,9 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     const t = e.target as HTMLElement | null;
     if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT')) return;
     keys.add(e.code);
-    if (!enabled) return;
+    // a UI layer (the menus' capture listener) already handled this key: e.g. Esc on the pause menu
+    // resumes, which re-enables input before this bubble-phase listener runs, and must not re-pause
+    if (!enabled || e.defaultPrevented) return;
     switch (e.code) {
       case 'Space': pend.jump = true; e.preventDefault(); break;
       case 'ControlLeft':
@@ -516,9 +518,12 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
       enabled = v;
       if (!v) zero();
       else {
-        // fresh start: ignore buttons that are still held from before
+        // fresh start: ignore buttons that are still held from before (the gamepad Start / A press
+        // that resumed from a menu must not fire pause / jump on the first poll)
         prevDraw = prevFocus = false;
         mouseL = false;
+        const g = activePad();
+        if (g) for (let i = 0; i < 17; i++) padPrev[i] = !!g.buttons[i]?.pressed;
       }
       syncTouch();
     },

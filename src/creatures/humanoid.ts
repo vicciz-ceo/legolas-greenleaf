@@ -49,6 +49,11 @@ export interface HumanoidExt extends Humanoid {
   /** build time of the shared assets (ms; 0 when cached) */
   readonly buildMs: number;
   readonly assets: HumanoidAssets;
+  /**
+   * 0..1 dithered fade (alpha hash) of the skinned body and hair; rigid parts (eyes, gear, weapons)
+   * are hidden below 0.5. The third-person camera uses it when it is pushed into the character.
+   */
+  setFade(alpha: number): void;
 }
 
 const _m1 = new THREE.Matrix4();
@@ -280,7 +285,28 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     for (const e of extras) e.obj.visible = (!e.small || level < 2) && (!e.stowFor || held[e.stowFor.hand].kind !== e.stowFor.weapon);
   };
 
+  // ── fade (camera inside the character) ──
+  let fadeAmt = 1;
+  const fadeHidden: THREE.Object3D[] = [];
+  const fadeMasks: number[] = [];
+  const setRigidHidden = (hide: boolean) => {
+    if (hide) {
+      if (fadeHidden.length) return;
+      root.traverse((o) => {
+        if (o === bodyMesh || o === hairMesh || !(o as THREE.Mesh).isMesh || o.layers.mask === 0) return;
+        fadeHidden.push(o);
+        fadeMasks.push(o.layers.mask);
+        o.layers.mask = 0; // layers, not `visible`: LOD / stow logic owns visibility
+      });
+    } else {
+      for (let i = 0; i < fadeHidden.length; i++) fadeHidden[i].layers.mask = fadeMasks[i];
+      fadeHidden.length = fadeMasks.length = 0;
+    }
+  };
+
   let flashT = 0;
+  const FLASH_TIME = 0.1;
+  const FLASH_GAIN = 0.3;
   const flashColor = new THREE.Color();
   const emissiveBase = bodyMat.emissive ? bodyMat.emissive.clone() : new THREE.Color();
 
@@ -315,15 +341,35 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
       anim.update(dt, input);
       if (flashT > 0) {
         flashT = Math.max(0, flashT - dt);
-        const k = flashT / 0.15;
-        bodyMat.emissive.copy(emissiveBase).lerp(flashColor, k);
-        hairMat.emissive.copy(flashColor).multiplyScalar(k * 0.6);
+        // a short additive tint on top of the lit surface: replacing the emissive with the full flash
+        // colour overpowered albedo + lighting and turned the whole body into a flat pink mannequin
+        const k = (flashT / FLASH_TIME) ** 2 * FLASH_GAIN;
+        bodyMat.emissive.copy(flashColor).multiplyScalar(k).add(emissiveBase);
+        hairMat.emissive.copy(flashColor).multiplyScalar(k * 0.5);
       }
+    },
+    setFade(alpha: number) {
+      const a = Math.max(0, Math.min(1, alpha));
+      if (Math.abs(a - fadeAmt) < 0.004 && (a < 1) === (fadeAmt < 1)) return;
+      const was = fadeAmt < 1;
+      const now = a < 1;
+      fadeAmt = a;
+      if (was !== now) {
+        // alpha hash only while fading: it would dither the soft edges of the hair cards otherwise
+        for (const m of [bodyMat, hairMat]) {
+          m.alphaHash = now;
+          m.needsUpdate = true;
+        }
+      }
+      bodyMat.opacity = a;
+      hairMat.opacity = a;
+      body.visible = a > 0.02;
+      setRigidHidden(a < 0.5);
     },
     flash(color = 0xff3a2a) {
       flashColor.setHex(color);
-      flashT = 0.15;
-      bodyMat.emissive.copy(flashColor);
+      flashT = FLASH_TIME;
+      bodyMat.emissive.copy(flashColor).multiplyScalar(FLASH_GAIN).add(emissiveBase);
     },
     setCastShadow(v: boolean) {
       castShadow = v;

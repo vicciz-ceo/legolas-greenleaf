@@ -134,8 +134,8 @@ stops. You never need to check `level.disposed` after an `await`.
 | `hud: Hud` | `setPrompt(action, text)`, `setProgress(label, frac)`, `toast(text, kind)`, `setRivalry` (the shell manages it) |
 | `input: Input` | `state` (read-only edges: `interact`, `jump`...), `setInteractLabel(label)` for the touch button |
 | `time: TimeControl` | `setScale(s, easeSec)` (slow-mo flourishes; always restore to 1), `hitStop(sec)`, `t` |
-| `rivalry: Rivalry` | `addLegolas(n)`, `addGimli(n)`, `autoGimli` |
-| `progression.data.rivalryTotals` | the saved running tally (the shell already starts the counter from it) |
+| `rivalry: Rivalry` | `addLegolas(n)`, `addGimli(n)`, `autoGimli` (off on every load; set it to `true` once Gimli is in to keep the race within ±3, as `c0_arena` does) |
+| `progression.data.rivalryTotals` | the saved running tally. The shell starts the counter itself, from the shares of the chapters before this one (`rivalryBaseline`), so a replay never counts its own earlier clear twice |
 | `flags` | URL flags; honour `flags.skipIntro === '1'` (skip your own intro and dialogue) |
 | `engine` | `scene` (rarely), `post.letterbox` (prefer `cinematic()`), `shadowFocus` (the camera rig sets it) |
 

@@ -12,7 +12,7 @@
  * `updateDeath(dt)` while dead.
  */
 import * as THREE from 'three';
-import type { BloodKind, CombatRayHit, Combatant, DamageInfo, HitZone, Humanoid, HumanoidBone, Team } from '../core/types';
+import type { BloodKind, CombatRayHit, Combatant, DamageInfo, HitZone, Humanoid, HumanoidBone, PhysicsWorld, Team } from '../core/types';
 import { disposeObject } from '../core/math';
 
 /** contract zone multipliers (weakpoint is per creature; this is the default) */
@@ -537,6 +537,25 @@ export function segSegDist2(p1: THREE.Vector3, q1: THREE.Vector3, p2: THREE.Vect
   const y = ry + d1y * s - d2y * t;
   const z = rz + d1z * s - d2z * t;
   return x * x + y * y + z * z;
+}
+
+const _mlA = new THREE.Vector3();
+const _mlB = new THREE.Vector3();
+const _mlD = new THREE.Vector3();
+/**
+ * Melee line of sight: no arrow-blocking world geometry between the two bodies at chest height
+ * (a sword or knife must not reach through a wall, a door or a pillar).
+ */
+export function meleeLineClear(physics: PhysicsWorld, a: Combatant, b: Combatant): boolean {
+  _mlA.copy(a.position);
+  _mlA.y += Math.min(a.height * 0.6, 1.3);
+  _mlB.copy(b.position);
+  _mlB.y += Math.min(b.height * 0.6, 1.3);
+  _mlD.copy(_mlB).sub(_mlA);
+  const d = _mlD.length();
+  if (d < 0.05) return true;
+  _mlD.divideScalar(d);
+  return physics.raycast(_mlA, _mlD, d, 'arrows') === null;
 }
 
 /** friendly-fire rule: player and allies never hurt each other; neutral can be hit by anyone */

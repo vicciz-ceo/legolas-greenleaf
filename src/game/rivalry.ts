@@ -35,7 +35,12 @@ export function gimliTarget(legolas: number, t: number): number {
   return clamp(Math.round(legolas + bias), legolas - 3, legolas + 3);
 }
 
-export function createRivalry(ctx: GameContext): Rivalry {
+export interface RivalryExt extends Rivalry {
+  /** stop silently (no closing line, queued banter dropped, HUD counter hidden): level unload */
+  reset(): void;
+}
+
+export function createRivalry(ctx: GameContext): RivalryExt {
   let active = false;
   let legolas = 0;
   let gimli = 0;
@@ -102,7 +107,7 @@ export function createRivalry(ctx: GameContext): Rivalry {
     void n;
   }
 
-  const r: Rivalry = {
+  const r: RivalryExt = {
     get active() {
       return active;
     },
@@ -143,6 +148,12 @@ export function createRivalry(ctx: GameContext): Rivalry {
       else if (gimli > legolas) say('Gimli', `${G}! Final count — the dwarf takes the field!`, 4, 0.2);
       else say('Legolas', `${L} each, Gimli. A fair contest.`, 4, 0.2);
       active = false;
+      hud().setRivalry(null);
+    },
+    reset() {
+      active = false;
+      pending = null;
+      r.autoGimli = false;
       hud().setRivalry(null);
     },
     addLegolas(n = 1) {

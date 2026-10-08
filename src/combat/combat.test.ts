@@ -11,6 +11,7 @@ import { createRegistry } from './registry';
 import { createProjectiles, type ProjectilesExt } from './projectiles';
 import { createPhysics } from '../physics/world';
 import { createRivalry, gimliTarget, numberWord } from '../game/rivalry';
+import { attackTokenCount, releaseAttackToken, requestAttackToken, resetCombatQueues } from '../actors/npc';
 
 let failed = 0;
 let passed = 0;
@@ -293,6 +294,26 @@ test('rivalry: numbers, rubber band within ±3', () => {
   }
   ok(maxGap <= 3, `gap stayed ≤ 3 (max ${maxGap}); L=${r.legolas} G=${r.gimli}`);
   ok(r.gimli >= r.legolas - 1, 'Gimli keeps pace');
+});
+
+test('attack tokens: survive a clock reset, never leak through dead/disposed holders', () => {
+  const P = new Dummy('player', V(0, 0, 0));
+  const a = new Dummy('enemy', V(1, 0, 0));
+  const b = new Dummy('enemy', V(-1, 0, 0));
+  const c = new Dummy('enemy', V(0, 0, 1));
+  ok(requestAttackToken(P, 100, 0.65, 2, a), 'first token at t=100');
+  ok(!requestAttackToken(P, 100.2, 0.65, 2, b), 'gap enforced');
+  releaseAttackToken(P, a);
+  // new attempt: time.resetGame() puts the clock back to 0
+  ok(requestAttackToken(P, 0, 0.65, 2, a), 'token granted at t=0 after the clock restarted');
+  ok(requestAttackToken(P, 0.7, 0.65, 2, b), 'second concurrent token');
+  ok(!requestAttackToken(P, 1.5, 0.65, 2, c), 'max concurrent enforced');
+  a.takeDamage({ amount: 1e6, type: 'arrow', source: null });
+  ok(requestAttackToken(P, 1.6, 0.65, 2, c), "a dead holder's token is reclaimed");
+  ok(attackTokenCount(P) === 2, `two holders (${attackTokenCount(P)})`);
+  resetCombatQueues();
+  ok(attackTokenCount(P) === 0, 'level unload clears every token');
+  ok(requestAttackToken(P, 0, 0.65, 2, b) && requestAttackToken(P, 0.7, 0.65, 2, c), 'both slots free again');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

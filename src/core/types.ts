@@ -388,6 +388,11 @@ export interface SaveData {
   upgrades: Partial<Record<UpgradeId, number>>;
   settings: Settings;
   rivalryTotals: { legolas: number; gimli: number };
+  /**
+   * optional: each chapter's own share of the rivalry on its latest clear (so a replay replaces its
+   * share instead of adding it to the totals again). rivalryTotals is the sum of these.
+   */
+  rivalryByChapter?: Record<string, { legolas: number; gimli: number }>;
   /** resume info */
   last?: { chapterId: string; checkpoint: number };
 }

@@ -161,8 +161,12 @@ function subStep(physics: PhysicsWorld, m: Motor, dt: number, noGravity: boolean
   _prev.copy(pos);
   const wasGrounded = m.grounded;
 
+  const vy0 = vel.y;
   if (!noGravity && !m.grounded) vel.y -= m.gravity * (vel.y < 0 ? m.fallMul : 1) * dt;
   if (m.grounded && vel.y < 0) vel.y = 0;
+  // vertical: trapezoidal (exact under constant gravity), so a jump's apex no longer depends on the
+  // frame rate (semi-implicit Euler lost ~v0·dt/2: 1.19 m at 30 Hz vs 1.30 m at 240 Hz)
+  const vyStep = m.grounded || noGravity ? vel.y : (vy0 + vel.y) * 0.5;
 
   // ── horizontal ───────────────────────────────────────────────────────────
   pos.x += vel.x * dt;
@@ -204,7 +208,7 @@ function subStep(physics: PhysicsWorld, m: Motor, dt: number, noGravity: boolean
   }
 
   // ── vertical ─────────────────────────────────────────────────────────────
-  pos.y += vel.y * dt;
+  pos.y += vyStep * dt;
   if (vel.y > 0 && isExt(physics)) {
     const ceil = physics.ceiling(pos.x, pos.z, _prev.y + m.height * 0.5, m.radius * 0.7);
     if (pos.y + m.height > ceil) {

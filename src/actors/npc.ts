@@ -24,7 +24,7 @@ export interface AttackState {
 }
 
 // ── melee slots: at most N attackers per target at once ──────────────────────
-const slotMap = new WeakMap<Combatant, Set<Combatant>>();
+let slotMap = new WeakMap<Combatant, Set<Combatant>>();
 export function requestSlot(target: Combatant, who: Combatant, max: number): boolean {
   let s = slotMap.get(target);
   if (!s) slotMap.set(target, (s = new Set()));
@@ -46,20 +46,34 @@ export function slotHolders(target: Combatant): Iterable<Combatant> {
 }
 
 // ── attack tokens: stagger swings on one target so they can be read and dodged ─
-const tokenMap = new WeakMap<Combatant, { last: number; active: number }>();
+// The persistent player outlives every level, and the game clock (ctx.time.t) restarts at 0 on each
+// load, so the token state is (a) cleared by resetCombatQueues() when a level unloads, (b) robust to
+// the clock going backwards, and (c) tracks its holders by identity so a dead or disposed attacker
+// can never keep a token forever.
+let tokenMap = new WeakMap<Combatant, { last: number; holders: Set<Combatant> }>();
 /** may `who` start a wind-up on target now? `gap` = min seconds between wind-up starts */
-export function requestAttackToken(target: Combatant, now: number, gap: number, maxActive: number): boolean {
+export function requestAttackToken(target: Combatant, now: number, gap: number, maxActive: number, who: Combatant): boolean {
   let t = tokenMap.get(target);
-  if (!t) tokenMap.set(target, (t = { last: -99, active: 0 }));
-  if (now - t.last < gap || t.active >= maxActive) return false;
+  if (!t) tokenMap.set(target, (t = { last: -Infinity, holders: new Set() }));
+  if (now < t.last) t.last = -Infinity; // the clock restarted (new attempt)
+  for (const c of t.holders) if (!c.alive) t.holders.delete(c);
+  if (t.holders.has(who)) return true;
+  if (now - t.last < gap || t.holders.size >= maxActive) return false;
   t.last = now;
-  t.active++;
+  t.holders.add(who);
   return true;
 }
-export function releaseAttackToken(target: Combatant | null): void {
-  if (!target) return;
-  const t = tokenMap.get(target);
-  if (t && t.active > 0) t.active--;
+export function releaseAttackToken(target: Combatant | null, who: Combatant): void {
+  if (target) tokenMap.get(target)?.holders.delete(who);
+}
+/** attackers currently holding a wind-up token on target */
+export function attackTokenCount(target: Combatant): number {
+  return tokenMap.get(target)?.holders.size ?? 0;
+}
+/** forget every melee slot and attack token (level unload: the player persists, the clock restarts) */
+export function resetCombatQueues(): void {
+  slotMap = new WeakMap();
+  tokenMap = new WeakMap();
 }
 
 // ── voice throttle: max 3 vocalisations per 0.6 s per game ─────────────────────
@@ -122,6 +136,12 @@ export abstract class NpcBase extends BaseCombatant {
   private avoidT = 0;
   private avoidHold = 0;
   private avoidSide = 0;
+  /** wall following: on while an obstacle blocks the way to the goal */
+  private avoiding = false;
+  private avoidTime = 0;
+  /** horizontal normal of the obstacle being skirted */
+  private avoidNx = 0;
+  private avoidNz = 0;
   private lod: 0 | 1 | 2 = 0;
   private lodT = Math.random() * 0.3;
   private shadows = true;
@@ -211,33 +231,46 @@ export abstract class NpcBase extends BaseCombatant {
     tx += sx * sepW;
     tz += sz * sepW;
 
-    // obstacle avoidance
+    // obstacle avoidance: wall following. Blocked by something close ahead -> pick the side whose
+    // tangent is nearer the goal and slide along the obstacle at full speed, keeping that side
+    // until a long probe straight at the goal is clear (that is what carries an NPC to the end of a
+    // long wall and around its corner); after 6 s without getting round, try the other side.
     this.avoidT -= dt;
     this.avoidHold -= dt;
+    this.avoidTime += dt;
+    if (this.avoidHold <= 0) this.avoiding = false;
     const tl = Math.hypot(tx, tz);
     if (tl > 0.6 && this.avoidT <= 0 && this.avoid) {
       this.avoidT = 0.12;
       _probe.set(pos.x, pos.y + Math.min(0.9, this.height * 0.45), pos.z);
       _pdir.set(tx / tl, 0, tz / tl);
-      const hit = this.ctx.physics.raycast(_probe, _pdir, this.radius + 0.9 + tl * 0.15, 'all');
+      // an obstacle beyond the goal (the wall behind a cornered player) is not in the way
+      const goalD = this.hasGoal ? Math.hypot(this.goal.x - pos.x, this.goal.z - pos.z) + this.radius : Infinity;
+      const near = this.radius + 0.9 + tl * 0.15;
+      const hit = this.ctx.physics.raycast(_probe, _pdir, Math.min(goalD, this.avoiding ? Math.max(near, 8) : near), 'all');
       if (hit && hit.normal.y < 0.6) {
-        // tangent closest to the goal direction
-        const nx = hit.normal.x;
-        const nz = hit.normal.z;
-        const side = -nz * _pdir.x + nx * _pdir.z >= 0 ? 1 : -1;
-        if (this.avoidHold <= 0) this.avoidSide = side;
+        const nl = Math.hypot(hit.normal.x, hit.normal.z) || 1;
+        const nx = hit.normal.x / nl;
+        const nz = hit.normal.z / nl;
+        if (!this.avoiding) {
+          this.avoiding = true;
+          this.avoidTime = 0;
+          this.avoidSide = -nz * _pdir.x + nx * _pdir.z >= 0 ? 1 : -1;
+        } else if (this.avoidTime > 6) {
+          this.avoidTime = 0;
+          this.avoidSide = -this.avoidSide;
+        }
         this.avoidHold = 0.6;
-      }
+        this.avoidNx = nx;
+        this.avoidNz = nz;
+      } else this.avoiding = false;
     }
-    if (this.avoidHold > 0 && tl > 0.3 && this.avoid) {
-      // rotate desired velocity 70° toward the chosen side
-      const a = this.avoidSide * 1.2;
-      const c = Math.cos(a);
-      const s = Math.sin(a);
-      const rx = tx * c + tz * s;
-      const rz = -tx * s + tz * c;
-      tx = rx;
-      tz = rz;
+    if (this.avoiding && tl > 0.3 && this.avoid) {
+      // full speed along the obstacle (rotating the desired velocity by a fixed 70° lost most of
+      // the speed into a long wall once the goal lay back along it: ~0.5 m/s along a 60 m wall)
+      const sd = this.avoidSide;
+      tx = -this.avoidNz * sd * tl;
+      tz = this.avoidNx * sd * tl;
     }
 
     const acc = (this.motor.grounded ? this.accel : 3) * dt;
@@ -283,7 +316,7 @@ export abstract class NpcBase extends BaseCombatant {
     this.onWindup(kind);
   }
   protected cancelAttack() {
-    if (this.atk.phase !== 'none' && this.atkToken) releaseAttackToken(this.atk.target);
+    if (this.atkToken) releaseAttackToken(this.atk.target, this);
     this.atkToken = false;
     this.atk.phase = 'none';
     this.atk.target = null;
@@ -312,7 +345,7 @@ export abstract class NpcBase extends BaseCombatant {
       }
     } else if (a.phase === 'recover') {
       if (a.t >= RECOVER_TIME) {
-        if (this.atkToken) releaseAttackToken(a.target);
+        if (this.atkToken) releaseAttackToken(a.target, this);
         this.atkToken = false;
         a.phase = 'none';
         a.target = null;

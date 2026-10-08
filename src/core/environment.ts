@@ -657,11 +657,13 @@ const defs: Record<EnvironmentName, EnvironmentPresetEx> = {
   moria: {
     name: 'Moria',
     mist: 0.5,
-    sky: { kind: 'cave', color: 0x05070b },
+    sky: { kind: 'cave', color: 0x0e131b },
     sunColor: 0x9db6d6, sunIntensity: 1.5,
     sunDirection: V(0.25, 0.92, -0.2),
-    hemiSky: 0x2c3f5c, hemiGround: 0x16110c, hemiIntensity: 0.85,
-    envIntensity: 0.42,
+    // a cool low-level fill so a roofed hall with no torches still reads (pillars, floor), see the
+    // vignette_moria_hall check: the shaft and the fires stay the bright accents
+    hemiSky: 0x6e7e98, hemiGround: 0x30291f, hemiIntensity: 3.2,
+    envIntensity: 0.9,
     fog: { color: 0x07090d, density: 0.021 },
     exposure: 1.9, bloom: 0.36,
     grade: { lift: V(0.004, 0.006, 0.012), gamma: V(0.99, 1.0, 1.02), gain: V(0.98, 1.0, 1.06), saturation: 0.88, vignette: 0.62 },
@@ -692,8 +694,9 @@ const defs: Record<EnvironmentName, EnvironmentPresetEx> = {
     mist: 0.3,
     sky: { kind: 'gradient', top: 0x02040a, horizon: 0x1c2738, bottom: 0x05070c, stars: 0.0, clouds: 1.0, cloudColor: 0x1d2736, moon: { elevation: 42, azimuth: 160, size: 2.6, color: 0xaebfe0 } },
     sunColor: 0x7391cf, sunIntensity: 0.95,
-    hemiSky: 0x24344f, hemiGround: 0x0b0c10, hemiIntensity: 0.6,
-    envIntensity: 0.55,
+    // enough storm-sky fill that wall faces turned away from the moon keep their stonework
+    hemiSky: 0x34476a, hemiGround: 0x121318, hemiIntensity: 1.25,
+    envIntensity: 0.75,
     fog: { color: 0x131c29, density: 0.0165 },
     exposure: 1.4, bloom: 0.3,
     grade: { lift: V(0.0, 0.005, 0.016), gamma: V(0.98, 1.0, 1.04), gain: V(0.93, 0.99, 1.1), saturation: 0.8, vignette: 0.56 },
@@ -710,12 +713,13 @@ const defs: Record<EnvironmentName, EnvironmentPresetEx> = {
     sunColor: 0xffb878, sunIntensity: 3.8,
     hemiSky: 0x87a1c8, hemiGround: 0x4c3b2b, hemiIntensity: 0.62,
     envIntensity: 1.0,
-    fog: { color: 0xc8a68c, density: 0.0078 },
+    // battlefield haze (100 m 12%, 200 m 40%, 300 m 67%); Minas Tirith caps its own fog (applyFogCap)
+    fog: { color: 0xc8a68c, density: 0.0035 },
     exposure: 0.95, bloom: 0.42,
     grade: { lift: V(0.0, 0.008, 0.014), gamma: V(1.0, 1.0, 0.98), gain: V(1.06, 1.0, 0.91), saturation: 1.1, vignette: 0.46 },
     weather: 'ash', weatherIntensity: 0.35,
     ambience: 'wind',
-    shafts: 0.35, cloudSoft: 0.4, cloudScale: 0.9,
+    shafts: 0.35, cloudSoft: 0.4, cloudScale: 0.9, hazeHeight: 0.11,
   },
 
   // ── The Black Gate: dark red-brown sky, ash, volcanic glow ────────────────
@@ -725,10 +729,11 @@ const defs: Record<EnvironmentName, EnvironmentPresetEx> = {
     sky: { kind: 'gradient', top: 0x0a0403, horizon: 0x49190d, bottom: 0x120907, stars: 0, clouds: 0.95, cloudColor: 0x4a1d0f },
     sunColor: 0xff7a3d, sunIntensity: 1.8,
     sunDirection: V(0.2, 0.2, 0.96),
-    hemiSky: 0x5a2f24, hemiGround: 0x1f120c, hemiIntensity: 0.65,
-    envIntensity: 0.75,
-    fog: { color: 0x331510, density: 0.0125 },
-    exposure: 1.15, bloom: 0.46,
+    // a stronger bounce from the burning sky so the gate face and the hosts read without torches
+    hemiSky: 0x70402f, hemiGround: 0x2a1a12, hemiIntensity: 1.3,
+    envIntensity: 0.95,
+    fog: { color: 0x4a2012, density: 0.0105 },
+    exposure: 1.25, bloom: 0.46,
     grade: { lift: V(0.012, 0.002, 0.0), gamma: V(1.0, 0.99, 0.96), gain: V(1.07, 0.96, 0.86), saturation: 0.95, vignette: 0.56 },
     weather: 'ash', weatherIntensity: 0.85,
     ambience: 'wind',

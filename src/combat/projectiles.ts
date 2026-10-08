@@ -465,16 +465,20 @@ export function createProjectiles(ctx: GameContext): ProjectilesExt {
   }
 
   const _sd = new THREE.Vector3();
+  /** half-angle between the centre and each side arrow of a triple volley (rad) */
+  const TRIPLE_SPREAD = 0.05;
   function fire(shot: ArrowShot) {
     const s = shot as ArrowShotExt;
     _sd.copy(shot.dir).normalize();
     if (shot.type === 'triple') {
-      const dmg = shot.damage * 0.75;
-      spawn(s, _sd, dmg);
-      for (const ang of [-0.075, 0.075]) {
+      // the centre arrow is a full standard arrow (a volley is never worse than one arrow on a
+      // single target); the side arrows add 0.6× each: all three land within ~8 m on one body,
+      // and at 20-25 m they reach neighbours ~1.2 m to either side
+      spawn(s, _sd, shot.damage);
+      for (const ang of [-TRIPLE_SPREAD, TRIPLE_SPREAD]) {
         _q.setFromAxisAngle(UP, ang);
         _v2.copy(_sd).applyQuaternion(_q);
-        spawn(s, _v2, dmg);
+        spawn(s, _v2, shot.damage * 0.6);
       }
     } else spawn(s, _sd, shot.damage);
   }

@@ -568,10 +568,26 @@ function axe(kind: 'axe' | 'dwarf_axe', seed: number): THREE.Object3D {
   const mergedHead = new THREE.BufferGeometry();
   {
     const pos: number[] = [], nor: number[] = [], uv: number[] = [];
-    for (const g of heads) {
-      const gi = g.index ? g.toNonIndexed() : g;
-      pos.push(...(gi.attributes.position.array as Float32Array));
-      nor.push(...(gi.attributes.normal.array as Float32Array));
+    for (let h = 0; h < heads.length; h++) {
+      const gi = heads[h].index ? heads[h].toNonIndexed() : heads[h];
+      const pa = gi.attributes.position.array as Float32Array;
+      const na = gi.attributes.normal.array as Float32Array;
+      if (h === 1) {
+        // the mirrored bit (scale -1) keeps its triangle order, which turns it inside out: swap
+        // the 2nd and 3rd vertex of every triangle so it faces outward like the first one
+        for (let t = 0; t + 8 < pa.length; t += 9) {
+          for (let c = 0; c < 3; c++) {
+            const a = pa[t + 3 + c];
+            pa[t + 3 + c] = pa[t + 6 + c];
+            pa[t + 6 + c] = a;
+            const b = na[t + 3 + c];
+            na[t + 3 + c] = na[t + 6 + c];
+            na[t + 6 + c] = b;
+          }
+        }
+      }
+      pos.push(...pa);
+      nor.push(...na);
       uv.push(...(gi.attributes.uv.array as Float32Array));
     }
     mergedHead.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
