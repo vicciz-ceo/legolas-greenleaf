@@ -194,15 +194,17 @@ const CATEGORY: Partial<Record<HumanoidKind, LabSubject['category']>> = {
 export const subjects: LabSubject[] = [
   humanoidSubject('legolas', 'legolas', 'hero', LEGOLAS_ANIMS),
   ...ALL_KINDS.filter((k) => k !== 'legolas').map((k) => humanoidSubject(`humanoid_${k}`, k, CATEGORY[k] ?? 'enemy', NPC_ANIMS)),
-  {
-    // the kit's fallback troll (the uruks_bosses dresser's troll replaces it in the game)
-    name: 'kit_placeholder_troll',
-    category: 'enemy',
-    async create(): Promise<LabInstance> {
-      registerKind('troll', placeholderKinds.troll!);
-      return humanoidSubject('kit_placeholder_troll', 'troll', 'enemy', NPC_ANIMS).create();
-    },
-  },
+  // the kit's fallback kinds (the dressers' definitions replace them in the game)
+  ...(['troll', 'orc', 'gimli'] as HumanoidKind[]).map(
+    (k): LabSubject => ({
+      name: `kit_placeholder_${k}`,
+      category: 'enemy',
+      async create(): Promise<LabInstance> {
+        registerKind(k, placeholderKinds[k]!);
+        return humanoidSubject(`kit_placeholder_${k}`, k, 'enemy', NPC_ANIMS).create();
+      },
+    }),
+  ),
   {
     name: 'humanoid_lineup',
     category: 'hero',

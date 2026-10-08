@@ -181,7 +181,6 @@ function bolgExtras(ctx: KindContext) {
 
   const proj = makeProjector(s, box);
   if (!proj) return;
-  if (typeof location !== 'undefined' && location.search.includes('gearlog')) ((window as unknown as { __gearLog?: string[] }).__gearLog ??= []).push('rings ' + [1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9].map((y) => { const r = ringRadii(proj, y); return y + ':' + r.rx.toFixed(3) + '/' + r.zf.toFixed(3); }).join(' '));
   if (cuirass) cuirassGear(ctx, gear, proj, { cuirass: 'plate' }, cuirass.botY);
   skullHardware(ctx, gear, proj);
 

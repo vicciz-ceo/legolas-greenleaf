@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import type { Sculpt, V3 } from '../../../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { anatomyParts, emitParts, type PartTag } from '../../anatomy';
+import { put, studs, tube } from './armor';
 import type { KindContext } from '../../types';
 
 const TORSO: PartTag[] = ['pelvis', 'waist', 'belly', 'ribs', 'chest', 'pecs', 'back', 'trap', 'glutes'];
@@ -42,6 +43,8 @@ export interface TorsoGarment {
   k?: number;
   color2?: number;
   bone?: string;
+  /** cover the shoulder caps (default: only when the garment has sleeves) */
+  shoulders?: boolean;
 }
 
 /** torso + shoulders + sleeves, as one smooth garment */
@@ -58,7 +61,7 @@ export function sculptTorsoGarment(ctx: KindContext, g: TorsoGarment) {
   const sleeve = g.sleeve ?? 1;
   s.group('union', g.k ?? 0.0035 * sc, () => {
     s.group('union', 0.0, () => {
-      emitParts(s, parts, [...TORSO, ...(g.neck === false ? [] : (['neck'] as PartTag[])), 'deltoid'], { ...o, inflate: g.inflate });
+      emitParts(s, parts, [...TORSO, ...(g.neck === false ? [] : (['neck'] as PartTag[])), ...(g.shoulders ?? sleeve > 0 ? (['deltoid'] as PartTag[]) : [])], { ...o, inflate: g.inflate });
       slab(s, hemY, neckTop, 0.008 * sc);
     });
     if (sleeve > 0) {
@@ -141,3 +144,55 @@ export function sculptScarf(ctx: KindContext, o: { color: number; color2?: numbe
 }
 
 export { slab, limbCutBefore, limbCutAfter };
+
+
+/**
+ * A front opening on a coat or vest: a seam (or lacing) down the middle of the chest with buttons,
+ * toggles or lace crosses, following the ribcage. `y0`/`y1` are heights (m); `inflate` is the garment thickness.
+ */
+export function placket(ctx: KindContext, o: { y0: number; y1: number; inflate: number; color: number; buttons?: number; buttonColor?: number; lace?: boolean; mat?: SurfaceName | SurfaceSpec; width?: number }) {
+  const { P } = ctx;
+  const s = P.s;
+  const b = P.build;
+  const g = b.bulk;
+  const cy = P.j.chest[1] + 0.075 * s;
+  const ry = 0.165 * s;
+  const rz = 0.103 * s * b.chest * g;
+  const waistRz = (0.092 + 0.06 * b.belly) * s * g * 1.12;
+  const zAt = (y: number): number => {
+    // chest ellipsoid in the upper part, waist/belly below it
+    const k = Math.max(0.05, 1 - ((y - cy) / ry) ** 2);
+    const zc = 0.004 * s + Math.sqrt(k) * rz;
+    const lower = Math.max(0, (cy - 0.1 * s - y) / (0.25 * s));
+    return zc * (1 - Math.min(1, lower)) + waistRz * 1.05 * Math.min(1, lower) + o.inflate;
+  };
+  const n = 8;
+  const pts: V3[] = [];
+  for (let i = 0; i <= n; i++) {
+    const y = o.y1 + (o.y0 - o.y1) * (i / n);
+    pts.push([0, y, zAt(y) + 0.001 * s]);
+  }
+  put(ctx, tube(pts, (o.width ?? 0.0042) * s, { seg: 10, radial: 3 }), { bone: 'chest', color: o.color, mat: o.mat ?? 'leather_worn', small: true });
+  const nb = o.buttons ?? 0;
+  if (nb > 0) {
+    const bp: V3[] = [];
+    for (let i = 0; i < nb; i++) {
+      const y = o.y1 + (o.y0 - o.y1) * ((i + 0.5) / nb);
+      bp.push([0.011 * s, y, zAt(y) + 0.003 * s]);
+    }
+    const bg = studs(bp, 0.0075 * s, 0.8);
+    if (bg) put(ctx, bg, { bone: 'chest', color: o.buttonColor ?? 0x9b7432, mat: 'gold', small: true });
+  }
+  if (o.lace) {
+    // criss-cross lace between two rows of eyelets
+    const segs: V3[][] = [];
+    const m = 5;
+    for (let i = 0; i < m; i++) {
+      const ya = o.y1 + (o.y0 - o.y1) * (i / m);
+      const yb = o.y1 + (o.y0 - o.y1) * ((i + 1) / m);
+      segs.push([[-0.018 * s, ya, zAt(ya) + 0.002 * s], [0.018 * s, yb, zAt(yb) + 0.002 * s]]);
+      segs.push([[0.018 * s, ya, zAt(ya) + 0.002 * s], [-0.018 * s, yb, zAt(yb) + 0.002 * s]]);
+    }
+    for (const sg of segs) put(ctx, tube([sg[0], [(sg[0][0] + sg[1][0]) / 2, (sg[0][1] + sg[1][1]) / 2, (sg[0][2] + sg[1][2]) / 2 + 0.003 * s], sg[1]], 0.0028 * s, { seg: 3, radial: 3 }), { bone: 'chest', color: o.color, mat: 'leather_worn', small: true });
+  }
+}

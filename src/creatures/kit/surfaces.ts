@@ -71,7 +71,7 @@ export const SURFACES = {
   /** short fur (sculpted pelts; use strand ribbons for long fur) */
   fur: S(0.92, 0, 0.7, 0, { fur: 1.3 }),
   /** sculpted hair volume under hair cards */
-  hair: S(0.55, 0, 0.35, 0, { fur: 1.0 }),
+  hair: S(0.55, 0, 0.35, 0, { fur: 0.55 }),
   /** thick animal hide (wargs, mûmak) */
   hide: S(0.78, 0, 0.1, 0.25, { leather: 0.5, wrinkles: 0.9, pores: 0.5 }),
   /** bat-wing membrane */

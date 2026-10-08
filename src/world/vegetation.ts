@@ -11,7 +11,7 @@ import { makeMaterial } from './textures';
 import { buildTreeGeometry, sheet, Buf, type TreeKind, type V3 } from './treegeo';
 import type { Area, HeightFn } from './util';
 import type { ColliderDesc } from './colliders';
-import { densityScale } from './quality';
+import { densityScale, worldQuality } from './quality';
 
 export type { TreeKind };
 export const TREE_KINDS: readonly TreeKind[] = ['mirkwood_oak', 'beech', 'pine', 'dead', 'birch'];
@@ -180,6 +180,8 @@ export interface ForestOpts {
   lodFar?: number;
   /** register trunk colliders (default true) */
   colliders?: boolean;
+  /** do not thin the forest on Low / Medium quality (default: 60% / 85% of `count`) */
+  noQualityScale?: boolean;
   /** forest-wide leaf tint multiplier */
   leafTint?: [number, number, number];
 }
@@ -203,7 +205,9 @@ export interface ForestResult {
 type KindSpec = TreeKind | { kind: TreeKind; weight?: number };
 
 /** Instanced forest. Colliders are in WORLD space (the object sits at the origin). */
-export function forest(area: Area, count: number, kinds: KindSpec[], heightAt: HeightFn, opts: ForestOpts = {}): ForestResult {
+export function forest(area: Area, requested: number, kinds: KindSpec[], heightAt: HeightFn, opts: ForestOpts = {}): ForestResult {
+  const wq = worldQuality();
+  const count = opts.noQualityScale ? requested : Math.max(1, Math.round(requested * (wq === 'low' ? 0.6 : wq === 'medium' ? 0.85 : 1)));
   const rng = new Rng(hashSeed('forest', opts.seed ?? 1, count, area.center.x, area.center.z));
   const specs = kinds.map((k) => (typeof k === 'string' ? { kind: k, weight: 1 } : { kind: k.kind, weight: k.weight ?? 1 }));
   const wsum = specs.reduce((s, k) => s + k.weight, 0);
@@ -797,7 +801,7 @@ export function cocoon(opts: { length?: number; seed?: number; drop?: number } =
   g.name = 'cocoon';
   // body profile: radius over normalised height (0 = feet, 1 = head top): feet, calves, hips, shoulders, head
   const prof: [number, number][] = [
-    [0.0, 0.06], [0.05, 0.16], [0.18, 0.2], [0.34, 0.27], [0.5, 0.33], [0.62, 0.34], [0.72, 0.3], [0.78, 0.2], [0.84, 0.17], [0.92, 0.19], [0.98, 0.14], [1.0, 0.0],
+    [0.0, 0.1], [0.03, 0.15], [0.12, 0.17], [0.3, 0.2], [0.42, 0.25], [0.55, 0.3], [0.65, 0.31], [0.72, 0.29], [0.77, 0.22], [0.82, 0.14], [0.87, 0.14], [0.93, 0.17], [0.98, 0.13], [1.0, 0.0],
   ];
   const rows = 40;
   const seg = 18;
@@ -816,10 +820,10 @@ export function cocoon(opts: { length?: number; seed?: number; drop?: number } =
       }
     }
     // wrapped silk bands
-    const band = 1 + 0.07 * Math.sin(t * 70) + 0.04 * Math.sin(t * 23 + 1.3);
+    const band = 1 + 0.025 * Math.sin(t * 60) + 0.02 * Math.sin(t * 23 + 1.3);
     for (let i = 0; i <= seg; i++) {
       const a = (i / seg) * Math.PI * 2;
-      const lump = 1 + 0.06 * Math.sin(a * 3 + t * 9) + 0.04 * nz(i % seg, j);
+      const lump = 1 + 0.05 * Math.sin(a + t * 22) + 0.04 * Math.sin(a * 2 - t * 31) + 0.03 * nz(i % seg, j);
       const rr = r * band * lump;
       pos.push(Math.cos(a) * rr * 1.0, -drop - (1 - t) * L, Math.sin(a) * rr * 0.9);
       uv.push((i / seg) * 2.0, t * (L / 0.5));
@@ -862,4 +866,38 @@ export function cocoon(opts: { length?: number; seed?: number; drop?: number } =
   g.userData.bodyHeight = L;
   g.userData.hangDrop = drop;
   return g;
+}
+
+/**
+ * A choking mass of web: many overlapping sagging sheets inside a box (the dark hollow of Mirkwood,
+ * a spider nest). One merged mesh, double sided, no collision. `center` is the box centre.
+ */
+export function webCluster(center: Vec3Tuple, half: Vec3Tuple, sheets = 24, seed = 1): THREE.Mesh {
+  const rng = new Rng(hashSeed('webcluster', seed, sheets));
+  const buf = new Buf();
+  for (let i = 0; i < sheets; i++) {
+    const cx = center[0] + (rng.float() * 2 - 1) * half[0];
+    const cy = center[1] + (rng.float() * 2 - 1) * half[1];
+    const cz = center[2] + (rng.float() * 2 - 1) * half[2];
+    const a = rng.float() * Math.PI * 2;
+    const tilt = (rng.float() - 0.5) * 1.2;
+    const w = 1.5 + rng.float() * 3.5;
+    const h = 1.2 + rng.float() * 3;
+    const ux = Math.cos(a) * w / 2;
+    const uz = Math.sin(a) * w / 2;
+    const vy = h / 2;
+    const vx = -Math.sin(a) * tilt * h / 2;
+    const vz = Math.cos(a) * tilt * h / 2;
+    sheet(buf, [
+      [cx - ux - vx, cy - vy, cz - uz - vz], [cx + ux - vx, cy - vy, cz + uz - vz], [cx + ux + vx, cy + vy, cz + uz + vz], [cx - ux + vx, cy + vy, cz - uz + vz],
+    ] as unknown as [V3, V3, V3, V3], 6, 0.3 + rng.float() * 0.5);
+  }
+  const g = buf.toGeometry(false);
+  g.computeVertexNormals();
+  const mesh = new THREE.Mesh(g, webMaterial());
+  mesh.userData.noAO = true;
+  mesh.renderOrder = 2;
+  mesh.name = 'web_cluster';
+  mesh.onBeforeRender = tick;
+  return mesh;
 }

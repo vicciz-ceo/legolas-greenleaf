@@ -9,6 +9,7 @@ import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import type { KindContext } from '../../types';
 import { mat4, put, shell, spike, studs, torsoShell } from './armor';
 import { IRON } from './headgear';
+import { devSkip, shade } from './common';
 
 /** uneven fangs showing over the lips (upper teeth hang down, lower ones jut up) */
 export function orcTeeth(ctx: KindContext, rng: Rng, o: { n?: number; big?: number; color?: number } = {}) {
@@ -177,14 +178,14 @@ void mat4;
  * Patchy skin: soft paint blobs in `tones` over the head, neck, upper arms and (optionally) the
  * chest/back, so no two bucket looks share one flat skin colour.
  */
-export function skinMottle(ctx: KindContext, rng: Rng, tones: number[], o: { n?: number; strength?: number; torso?: boolean; mat?: SurfaceName } = {}) {
+export function skinMottle(ctx: KindContext, rng: Rng, tones: number[], o: { n?: number; strength?: number; torso?: boolean; mat?: SurfaceName; dim?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const u = P.headH;
   const n = o.n ?? 10;
   const str = o.strength ?? 0.4;
   const mat = o.mat ?? 'skin_orc';
-  const pick = () => tones[Math.floor(rng.float() * tones.length)];
+  const pick = () => shade(tones[Math.floor(rng.float() * tones.length)], o.dim ?? 1);
   // head and neck
   for (let i = 0; i < Math.ceil(n * 0.5); i++) {
     const c = P.h(rng.range(-0.25, 0.25), rng.range(-0.45, 0.25), rng.range(0.0, 0.4));
@@ -215,13 +216,13 @@ export function skinMottle(ctx: KindContext, rng: Rng, tones: number[], o: { n?:
  * mottled paint. Call it FIRST in the extras so garments, teeth and markings added afterwards
  * keep their own colours. `torso: false` leaves the body under garments alone.
  */
-export function skinTint(ctx: KindContext, o: { color: number; color2: number; noise?: number; strength?: number; torso?: boolean; legs?: boolean; mat?: SurfaceName; freq?: number }) {
+export function skinTint(ctx: KindContext, o: { color: number; color2: number; noise?: number; strength?: number; torso?: boolean; legs?: boolean; mat?: SurfaceName; freq?: number; dim?: number }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const u = P.headH;
   const mat = o.mat ?? 'skin_orc';
   const str = o.strength ?? 0.85;
-  const base = { op: 'paint' as const, color: o.color, color2: o.color2, colorNoise: o.noise ?? 0.55, colorFreq: (o.freq ?? 16) / sc, mat, strength: str };
+  const base = { op: 'paint' as const, color: shade(o.color, o.dim ?? 1), color2: shade(o.color2, o.dim ?? 1), colorNoise: o.noise ?? 0.55, colorFreq: (o.freq ?? 16) / sc, mat, strength: str };
   s.ellipsoid(P.h(0, -0.1, 0.05), [0.52 * u, 0.62 * u, 0.55 * u], { ...base, bone: 'head', k: 0.04 * u });
   s.cone([0, P.j.neck[1] - 0.02 * sc, -0.02 * sc], [0, P.j.head[1] + 0.02 * sc, 0], 0.075 * sc * P.build.neckThick, 0.07 * sc * P.build.neckThick, { ...base, bone: 'neck', k: 0.03 * sc });
   for (const sd of ['l', 'r'] as const) {
@@ -231,10 +232,10 @@ export function skinTint(ctx: KindContext, o: { color: number; color2: number; n
     s.cone(a, e, 0.075 * sc, 0.065 * sc, { ...base, bone: `upperarm_${sd}`, k: 0.03 * sc });
     s.cone(e, [w[0] + (w[0] - e[0]) * 0.5, w[1] + (w[1] - e[1]) * 0.5, w[2]], 0.06 * sc, 0.05 * sc, { ...base, bone: `forearm_${sd}`, k: 0.03 * sc });
   }
-  if (o.torso !== false) {
+  if (o.torso !== false && !devSkip('torsotint')) {
     const hipY = P.j.thigh_l[1];
     const shY = P.j.upperarm_l[1];
-    s.ellipsoid([0, (hipY + shY) / 2 + 0.03 * sc, 0], [0.24 * sc * P.build.shoulders, (shY - hipY) / 2 + 0.07 * sc, 0.2 * sc * P.build.bulk], { ...base, bone: 'chest', k: 0.04 * sc });
+    s.ellipsoid([0, (hipY + shY) / 2 + 0.05 * sc, 0], [0.24 * sc * P.build.shoulders, (shY - hipY) / 2 + 0.02 * sc, 0.2 * sc * P.build.bulk], { ...base, bone: 'chest', k: 0.11 * sc, strength: str * 0.9 });
   }
   if (o.legs) {
     for (const sd of ['l', 'r'] as const) s.cone(P.j[`thigh_${sd}`], P.j[`foot_${sd}`], 0.1 * sc, 0.06 * sc, { ...base, bone: `shin_${sd}`, k: 0.03 * sc });

@@ -109,7 +109,7 @@ function ravager(ctx: KindContext, rng: Rng) {
   const sc = P.s;
   const A = ctx.armor;
   addHairdo(ctx, { color: 0x14100d, tip: 0x2a2018, deep: 0x0c0a08, length: 0.13 * sc, count: 55, width: 0.03, wave: 0.2, wild: 0.4, comb: 0.0, front: 0.28, back: -0.38, gravity: 1.5, mohawk: true, ridge: 0.06, segments: 4 }, rng);
-  if (!devSkip('tint')) skinTint(ctx, { color: 0x8e9874, color2: 0x65725a, noise: 0.5 });
+  if (!devSkip('tint')) skinTint(ctx, { color: 0x7c866a, color2: 0x58634c, noise: 0.5 });
   if (!devSkip('mottle')) skinMottle(ctx, rng, [0x84886a, 0x5a6048, 0x6a6a52], { n: 12, torso: true, strength: 0.5 });
   if (!devSkip('rings')) eyeRings(ctx, 0x1a1210, 0.7);
   if (!devSkip('teeth')) orcTeeth(ctx, rng, { n: 8, big: 1.25 });
@@ -170,7 +170,7 @@ export function orcExtras(ctx: KindContext) {
 export const orcDef: KindDef = {
   label: 'Orc',
   height: 1.68,
-  build: { shoulders: 1.16, hips: 0.98, bulk: 1.08, belly: 0.16, chest: 1.04, armLength: 1.2, legLength: 0.92, headSize: 1.04, neck: 0.55, neckThick: 1.35, hunch: 0.5, handSize: 1.3, footSize: 1.15, muscle: 0.85 },
+  build: { shoulders: 1.18, hips: 0.98, bulk: 1.08, belly: devNum('belly', 0.08), chest: 1.08, armLength: 1.2, legLength: devNum('leg', 0.88), headSize: 1.04, neck: 0.55, neckThick: 1.35, hunch: 0.5, handSize: 1.3, footSize: 1.15, muscle: 0.85 },
   face: ORC_FACE,
   skin: { color: 0x6a6c52, color2: 0x3c3a2c, blotch: devNum('blotch', 0.95), blemish: devNum('blemish', 0.6), scars: 3, warts: 0.35, wrinkles: 0.65, lips: 0x4a3a34, brows: 0x1a1612, surface: 'skin_orc', scatter: 0x8a7040 },
   eyes: { color: 0xc8a030, glow: 0.35, sclera: 0xb0a080 },

@@ -11,9 +11,15 @@ import * as THREE from 'three';
 import type { TerrainOpts } from '../core/types';
 import { getTextureSet, TILE_METERS, type TextureSetName } from './textures';
 import { patchShader } from './shader';
+import { registerWet } from './mats';
 
 /** optional extras (all optional, plain TerrainOpts keeps working) */
 export interface TerrainExtras {
+  /**
+   * look preset on top of `style`: 'mirkwood' (dark, mossy, little leaf litter), 'autumn' (golden litter),
+   * 'wet' (darker, glossier ground), 'dry' (sun-baked)
+   */
+  theme?: 'mirkwood' | 'autumn' | 'wet' | 'dry';
   /** multiply the whole terrain albedo (sRGB hex) */
   tint?: number;
   /** override the three layer texture sets [flat, patches/low, steep] */
@@ -58,6 +64,13 @@ const STYLES: Record<TerrainOpts['style'], StyleDef> = {
   mud: { layers: ['mud', 'dirt', 'rock'], tint: [1, 1, 1], slope: [0.28, 0.5], patch: [0.6, 0.78], low: [0.02, 0.18], tile: [1, 1, 1], rough: 0.85, nrm: [1.1, 0.9, 1.1] },
 };
 
+const THEMES: Record<string, { layers?: [TextureSetName, TextureSetName, TextureSetName]; tint?: [number, number, number]; patchiness?: number }> = {
+  mirkwood: { layers: ['forest_floor', 'mud', 'cliff'], tint: [0.55, 0.62, 0.5], patchiness: 0.4 },
+  autumn: { tint: [1.08, 0.96, 0.78], patchiness: 0.7 },
+  wet: { tint: [0.7, 0.7, 0.68], patchiness: 0.5 },
+  dry: { tint: [1.25, 1.1, 0.85], patchiness: 0.5 },
+};
+
 const GLSL_SPLAT = /* glsl */ `
 uniform sampler2D tA0; uniform sampler2D tN0;
 uniform sampler2D tA1; uniform sampler2D tN1;
@@ -66,7 +79,7 @@ uniform vec3 uTile;      // metres per tile for A,B,C
 uniform vec4 uSlope;     // slope lo, hi, patch lo, patch hi
 uniform vec4 uLow;       // low lo, low hi, hmin, 1/range
 uniform vec3 uTintA; uniform vec3 uTintB; uniform vec3 uTintC;
-uniform vec3 uNrm; uniform float uRough; uniform float uPatchBias;
+uniform vec3 uNrm; uniform float uRough; uniform float uPatchBias; uniform float uWet;
 varying vec3 vWPos; varying vec3 vWNrm; varying float vCav;
 float tH(vec2 p){ p = fract(p * vec2(0.1031, 0.1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.x); }
 float tN(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
@@ -122,13 +135,13 @@ if (wC > 0.01) {
   nXZ = vec3(ax, az, 0.0);
 }
 vec3 splat = colA * wA + colB * wB + colC * wC;
-splat *= vCav * (0.94 + 0.12 * kHi);
+splat *= vCav * (0.94 + 0.12 * kHi) * (1.0 - 0.32 * uWet);
 diffuseColor.rgb *= splat;
 float splatRough = (nA.a * wA + nB.a * wB + nC.a * wC);
 `;
 
 const FRAG_ROUGH = /* glsl */ `
-float roughnessFactor = clamp(splatRough * uRough, 0.04, 1.0);
+float roughnessFactor = clamp(splatRough * uRough * (1.0 - 0.55 * uWet), 0.04, 1.0);
 `;
 
 const FRAG_NORMAL = /* glsl */ `
@@ -164,7 +177,10 @@ export function buildTerrain(opts: TerrainOpts & TerrainExtras): { mesh: THREE.M
   const half = size / 2;
   const cell = size / segs;
   const n = segs + 1;
-  const style = STYLES[opts.style] ?? STYLES.forest;
+  const style = { ...(STYLES[opts.style] ?? STYLES.forest) };
+  const theme = THEMES[opts.theme ?? ''] ?? null;
+  if (theme?.layers && !opts.layers) style.layers = theme.layers;
+  const themeTint = theme?.tint ?? null;
 
   // ── sample the height function on the grid ──
   const h = new Float32Array(n * n);
@@ -239,7 +255,7 @@ export function buildTerrain(opts: TerrainOpts & TerrainExtras): { mesh: THREE.M
       nor[k * 3] = ox;
       nor[k * 3 + 1] = 0;
       nor[k * 3 + 2] = oz;
-      cav[k] = 0.6;
+      cav[k] = 0.4;
     }
   }
   const quads = segs * segs;
@@ -288,8 +304,10 @@ export function buildTerrain(opts: TerrainOpts & TerrainExtras): { mesh: THREE.M
   const sets = layers.map((nme) => getTextureSet(nme));
   const mat = new THREE.MeshStandardMaterial({ roughness: 1, metalness: 0, envMapIntensity: opts.style === 'snow' ? 1.0 : 0.85 });
   mat.name = `terrain:${opts.style}`;
-  const tint = opts.tint !== undefined ? new THREE.Color(opts.tint) : new THREE.Color(1, 1, 1);
-  const patchBias = ((opts.patchiness ?? 0.5) - 0.5) * 0.5;
+  const tint = opts.tint !== undefined ? new THREE.Color(opts.tint) : themeTint ? new THREE.Color(themeTint[0], themeTint[1], themeTint[2]) : new THREE.Color(1, 1, 1);
+  const patchBias = ((opts.patchiness ?? theme?.patchiness ?? 0.5) - 0.5) * 0.5;
+  const wetU = { value: 0 };
+  registerWet({ apply: (v) => { wetU.value = v; } });
   patchShader(mat, `terrain_${opts.style}_${layers.join('')}`, (shader) => {
     const u = shader.uniforms;
     u.tA0 = { value: sets[0].map };
@@ -307,6 +325,7 @@ export function buildTerrain(opts: TerrainOpts & TerrainExtras): { mesh: THREE.M
     u.uNrm = { value: new THREE.Vector3(...style.nrm) };
     u.uRough = { value: style.rough };
     u.uPatchBias = { value: patchBias };
+    u.uWet = wetU;
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nattribute float aCav;\nvarying vec3 vWPos; varying vec3 vWNrm; varying float vCav;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWPos = (modelMatrix * vec4(position, 1.0)).xyz;\nvWNrm = normalize(mat3(modelMatrix) * normal);\nvCav = aCav;');

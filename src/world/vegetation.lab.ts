@@ -3,7 +3,7 @@ import type { LabSubject } from '../core/types';
 import { fbm2 } from '../core/rng';
 import { getLeafAtlas } from './leafAtlas';
 import { buildTerrain } from './terrain';
-import { cocoon, ferns, forest, grassField, mushrooms, tree, TREE_KINDS, webSheet } from './vegetation';
+import { cocoon, ferns, forest, grassField, mushrooms, tree, TREE_KINDS, webCluster, webSheet } from './vegetation';
 import { setWindTime } from './shader';
 
 const flat = () => 0;
@@ -67,13 +67,22 @@ export const subjects: LabSubject[] = [
     },
   },
   {
+    name: 'web_cluster',
+    category: 'environment',
+    create() {
+      const g = new THREE.Group();
+      g.add(webCluster([0, 2.5, 0], [4, 2.5, 4], 30, 2));
+      return { object: g, height: 6 };
+    },
+  },
+  {
     name: 'vignette_mirkwood',
     category: 'environment',
     create() {
       setWindTime(2.1);
       const g = new THREE.Group();
       const h = (x: number, z: number) => fbm2(x * 0.03, z * 0.03, 3, 11) * 2.2 + Math.sin(x * 0.11) * 0.25;
-      const terr = buildTerrain({ size: 260, segments: 200, height: h, style: 'forest', tint: 0x8f8a80, patchiness: 0.6 });
+      const terr = buildTerrain({ size: 260, segments: 200, height: h, style: 'forest', theme: 'mirkwood' });
       g.add(terr.mesh);
       const area = { center: new THREE.Vector3(0, 0, 0), halfSize: [110, 110] as [number, number] };
       const clear = [{ x: 0, z: 8, r: 9 }];

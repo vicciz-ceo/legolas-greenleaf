@@ -8,19 +8,22 @@ import { colliderMesh } from './colliders';
 
 export type V3 = [number, number, number];
 
+/** macro variation preset for masonry: patchy tone plus rain streaks */
+const STREAK = { scale: 0.08, strength: 0.28, tint: 0.06, streaks: 0.55 };
+
 /** stone looks used across the world */
 export function stoneMat(kind: 'blocks' | 'light' | 'dark' | 'mossy' | 'white' | 'black' | 'dwarven' | 'marble' | 'rough' | 'cobble' = 'blocks'): THREE.MeshStandardMaterial | THREE.MeshPhysicalMaterial {
   switch (kind) {
-    case 'light': return mat('stone_blocks', { key: 'light', rgb: [1.0, 0.98, 0.92] });
-    case 'dark': return mat('stone_blocks', { key: 'dark', rgb: [0.62, 0.62, 0.64] });
-    case 'mossy': return mat('stone_blocks', { key: 'mossy', rgb: [0.62, 0.78, 0.52] });
+    case 'light': return mat('stone_blocks', { key: 'light', rgb: [1.0, 0.98, 0.92], macro: STREAK });
+    case 'dark': return mat('stone_blocks', { key: 'dark', rgb: [0.62, 0.62, 0.64], macro: STREAK });
+    case 'mossy': return mat('stone_blocks', { key: 'mossy', rgb: [0.62, 0.78, 0.52], macro: { ...STREAK, streaks: 0.7 } });
     case 'white': return mat('marble', { key: 'white', rgb: [1.05, 1.05, 1.02] });
     case 'black': return mat('cliff', { key: 'black', rgb: [0.3, 0.29, 0.3] });
     case 'dwarven': return mat('dwarven_stone');
     case 'marble': return mat('marble');
     case 'rough': return mat('rock');
     case 'cobble': return mat('cobble');
-    default: return mat('stone_blocks', { key: 'base', rgb: [0.82, 0.8, 0.76] });
+    default: return mat('stone_blocks', { key: 'base', rgb: [0.82, 0.8, 0.76], macro: STREAK });
   }
 }
 
@@ -206,4 +209,9 @@ export function archRing(kit: MeshKit, material: THREE.Material, span: number, t
 /** merge a list of box colliders hugging a polygon outline (used by ruins) */
 export function box(center: V3, half: V3, yaw = 0, opts?: ColliderDesc['opts']): ColliderDesc {
   return { kind: 'box', center, half, yaw, opts };
+}
+
+/** make sure every 'mesh' collider has a parent in `group`, so its world matrix follows the object when it is moved */
+export function adoptColliderMeshes(group: THREE.Object3D, colliders: readonly ColliderDesc[]): void {
+  for (const c of colliders) if (c.kind === 'mesh' && !c.mesh.parent) group.add(c.mesh);
 }

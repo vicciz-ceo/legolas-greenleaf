@@ -13,6 +13,13 @@
  *  - for twin knives call setWeapon('hand_r','elven_knives') and setWeapon('hand_l','elven_knives');
  *    the bow is then shown stowed on the back and the sheathed knives disappear from the quiver.
  *  - attack.t is the 0..1 progress of the attack; dead is 0..1 progress of the fall.
+ *  - special 'climb' | 'hang' | 'swing' | 'barrel': a bow in hand is stowed on the back for the
+ *    pose and returned afterwards (weaponObject('hand_l') still returns it).
+ *  - a crossbow in either hand: aim / 'shoot' shoulders it with both hands (no string draw).
+ *  - setLod(1|2) also switches to the cheap animation path (no springs/look-at, swing-only IK).
+ *  - bones are driven by quaternions: `bone.rotation` (Euler) is not kept in sync (fastBones).
+ *  - loading screens: `await preloadHumanoids(kinds, { onProgress })` meshes every kind in
+ *    parallel in the kit worker pool; createHumanoid is then a cache hit.
  */
 import * as THREE from 'three';
 import type { AnimInput, Humanoid, HumanoidBone, HumanoidKind, HumanoidSpec, SocketName, WeaponKind } from '../core/types';

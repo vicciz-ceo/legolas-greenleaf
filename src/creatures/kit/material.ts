@@ -209,7 +209,7 @@ float kitDetail() {
     float hole = line * (1.0 - dash) * vis;
     H += st * 8e-5 - hole * 5e-5 - wear * 2e-5;
     R += -wear * 0.12 + st * 0.06;
-    gTint = mix( vec3( 1.0 ), vec3( 1.3, 1.24, 1.15 ), wear * 0.6 ) * mix( 1.0, mix( 0.6, 0.5, leatherK ), st ) * mix( 1.0, 0.78, hole );
+    gTint = mix( vec3( 1.0 ), vec3( 1.22, 1.17, 1.1 ), wear * 0.6 ) * mix( 1.0, mix( 0.6, 0.5, leatherK ), st ) * mix( 1.0, 0.78, hole );
   }
   gH = H * detailScale * detailStrength;
   gAlbedo = clamp(1.0 - cav, 0.6, 1.0);

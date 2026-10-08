@@ -190,9 +190,46 @@ function variantsSubject(kind: HumanoidKind, name: string, category: LabSubject[
   };
 }
 
+/** builds every kind x bucket x armour x helmet combination once and reports failures / timings in window.__dwoStress */
+function stressSubject(): LabSubject {
+  return {
+    name: 'dwo_stress',
+    category: 'enemy',
+    create(): LabInstance {
+      const g = new THREE.Group();
+      const res: { kind: string; bucket: number; armor: number; helmet: boolean; ms: number; tris: number; err?: string }[] = [];
+      const kinds: HumanoidKind[] = ['gimli', 'dwarf', 'orc', 'goblin', 'gundabad', 'easterling', 'haradrim'];
+      for (const kind of kinds) {
+        for (let b = 0; b < 4; b++) {
+          for (const armor of [0, 1]) {
+            for (const helmet of [true, false]) {
+              const t0 = performance.now();
+              try {
+                const h = createHumanoid({ kind, seed: seedForBucket(b), armor, helmet });
+                h.root.position.set(res.length * 0.2, 0, 0);
+                g.add(h.root);
+                res.push({ kind, bucket: b, armor, helmet, ms: Math.round(performance.now() - t0), tris: h.triangles });
+                h.dispose();
+              } catch (e) {
+                res.push({ kind, bucket: b, armor, helmet, ms: Math.round(performance.now() - t0), tris: 0, err: String((e as Error).message ?? e) });
+              }
+              if (kind === 'gimli' && b > 0) break;
+            }
+            if (kind === 'gimli' && b > 0) break;
+          }
+        }
+      }
+      (window as unknown as { __dwoStress?: unknown }).__dwoStress = res;
+      console.info('[lab] dwo_stress done', res.filter((r) => r.err).length, 'errors of', res.length);
+      return { object: g, height: 2, animations: ['idle'], pose: () => undefined };
+    },
+  };
+}
+
 const GROUP: HumanoidKind[] = ['gimli', 'dwarf', 'orc', 'goblin', 'gundabad', 'easterling', 'haradrim'];
 
 export const subjects: LabSubject[] = [
+  stressSubject(),
   subjectFor('gimli', 'gimli', 'ally'),
   subjectFor('dwarf', 'dwarf', 'ally'),
   subjectFor('orc', 'orc', 'enemy'),

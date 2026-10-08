@@ -278,10 +278,12 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
         pushVert(q, nn, uOff * 4 + (k + 1) * 0.5, along, _c, along);
       }
     }
+    // wound so the front face points along the card normal (outward): with DoubleSide the
+    // normal is flipped on back faces, and inward-facing cards rendered the lit side dark
     for (let i = 0; i < n - 1; i++) {
       const a = base + i * 3;
       const b = base + (i + 1) * 3;
-      idx.push(a, b, a + 1, a + 1, b, b + 1, a + 1, b + 1, a + 2, a + 2, b + 1, b + 2);
+      idx.push(a, a + 1, b, a + 1, b + 1, b, a + 1, a + 2, b + 1, a + 2, b + 2, b + 1);
     }
   }
   rigidBone = -1;
@@ -316,7 +318,7 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
       for (let j = 0; j < radial; j++) {
         const a = base + i * (radial + 1) + j;
         const b = a + radial + 1;
-        idx.push(a, b, a + 1, a + 1, b, b + 1);
+        idx.push(a, a + 1, b, a + 1, b + 1, b);
       }
   }
   const g = new THREE.BufferGeometry();

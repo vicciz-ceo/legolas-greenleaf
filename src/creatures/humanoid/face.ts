@@ -73,19 +73,19 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
     s.ellipsoid(h(0, 0.035, -0.05), [0.315 * u, 0.395 * u * f.cranium, 0.425 * u], { k: 0.02 * u });
     s.ellipsoid(h(0, 0.13 - slope * 0.04, 0.13 - slope * 0.1), [0.262 * u, 0.24 * u, 0.245 * u], { k: 0.08 * u });
     // midface mass: cheek to cheek, brow to upper lip — keeps the cheeks full (no gaunt hollows)
-    s.ellipsoid(h(0, -0.17, 0.135), [(0.235 + 0.02 * cb) * (0.92 + 0.08 * jw) * u, 0.25 * u, 0.245 * u], { k: 0.1 * u });
+    s.ellipsoid(h(0, -0.17, 0.135), [(0.222 + 0.02 * cb) * (0.92 + 0.08 * jw) * u, 0.25 * u, 0.245 * u], { k: 0.1 * u });
     // face wedge toward the chin (narrow, smooth jawline)
-    s.cone(h(0, -0.14, 0.12), h(0, -0.43 * jl, 0.2), 0.232 * u * (0.9 + 0.1 * jw), 0.1 * u * (0.85 + 0.15 * jw), { k: 0.1 * u });
+    s.cone(h(0, -0.14, 0.12), h(0, -0.43 * jl, 0.2), 0.225 * u * (0.9 + 0.1 * jw), 0.094 * u * (0.85 + 0.15 * jw), { k: 0.1 * u });
     // masseter: fills the side of the face between cheekbone and jaw angle (no hollow cheeks)
-    s.mirrored(() => s.ellipsoid(h(0.19 * (0.9 + 0.1 * jw), -0.28, 0.07), [0.06 * u, 0.11 * u, 0.11 * u], { k: 0.1 * u }));
+    s.mirrored(() => s.ellipsoid(h(0.178 * (0.9 + 0.1 * jw), -0.27, 0.07), [0.05 * u, 0.1 * u, 0.1 * u], { k: 0.1 * u }));
     // cheek pads (youthful fullness under the cheekbones)
-    s.mirrored(() => s.ellipsoid(h(0.155, -0.235, 0.215), [0.105 * u, 0.11 * u, 0.088 * u], { k: 0.11 * u }));
+    s.mirrored(() => s.ellipsoid(h(0.15, -0.23, 0.215), [0.094 * u, 0.1 * u, 0.084 * u], { k: 0.11 * u }));
     // cheekbones: high and lateral
     s.mirrored((side) => s.ellipsoid(h(asym(0.222), -0.105, 0.19), [0.064 * u * cb, 0.044 * u * Math.sqrt(cb), 0.095 * u], { k: 0.075 * u, rot: [0, 0.42 * side, 0.12 * side] }));
     // temples narrow very slightly
     s.mirrored(() => s.ellipsoid(h(0.315, 0.08, 0.12), [0.02 * u, 0.075 * u, 0.045 * u], { op: 'subtract', k: 0.08 * u }));
     // dental arch / muzzle
-    s.ellipsoid(h(0, -0.37, 0.235 + 0.04 * f.underbite), [0.15 * u * (0.9 + 0.1 * jw), 0.125 * u, 0.15 * u], { k: 0.07 * u });
+    s.ellipsoid(h(0, -0.37, 0.232 + 0.04 * f.underbite), [0.15 * u * (0.9 + 0.1 * jw), 0.125 * u, 0.15 * u], { k: 0.11 * u });
   });
   // mandible (ramus + body): skin blends head → jaw toward the chin
   s.with({ ...sk, bone: 'head', bone2: 'jaw', blend: [0.25, 0.8] }, () => {
@@ -99,15 +99,15 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
   });
   s.with({ ...sk, bone: 'jaw' }, () => {
     // chin: defined but soft
-    s.ellipsoid(h(0, -0.485 * jl, 0.29 + 0.03 * (f.chin - 1) + 0.06 * f.underbite), [0.085 * u * (0.8 + 0.2 * jw), 0.064 * u, 0.07 * u * (0.85 + 0.15 * f.chin)], { k: 0.055 * u });
+    s.ellipsoid(h(0, -0.482 * jl, 0.288 + 0.03 * (f.chin - 1) + 0.06 * f.underbite), [0.08 * u * (0.8 + 0.2 * jw), 0.06 * u, 0.066 * u * (0.85 + 0.15 * f.chin)], { k: 0.055 * u });
     if (f.underbite > 0) s.ellipsoid(h(0, -0.44 * jl, 0.3 + 0.06 * f.underbite), [0.15 * u * jw, 0.06 * u, 0.08 * u], { k: 0.06 * u });
   });
 
   // ── brow & eyes ───────────────────────────────────────────────────────────
   const rs = er + 0.0085 + 0.004 * brute; // eyelid shell radius (thin lids)
-  const w = 0.064 * f.eyeSize * (0.95 + 0.05 * f.eyeSpacing); // almond half-width
-  const hU = 0.0215 * f.eyeOpen * f.eyeSize; // upper lid height above the eye centre (covers the iris top)
-  const hL = 0.0185 * f.eyeOpen * f.eyeSize; // lower lid below
+  const w = 0.066 * f.eyeSize * (0.95 + 0.05 * f.eyeSpacing); // almond half-width
+  const hU = 0.0198 * f.eyeOpen * f.eyeSize; // upper lid height above the eye centre (covers the iris top)
+  const hL = 0.0172 * f.eyeOpen * f.eyeSize; // lower lid below
   const cU = (w * w - hU * hU) / (2 * hU);
   const cL = (w * w - hL * hL) / (2 * hL);
   const zc = ez + er * 0.62; // lens plane (through the lid front)
@@ -150,19 +150,19 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
     // alae (nostril wings)
     s.mirrored(() => s.ellipsoid(h(0.04 * nw * (1 + flat * 0.5), tipY - 0.022, tipZ - 0.066), [0.024 * u * nw, 0.021 * u, 0.028 * u], { k: 0.02 * u }));
     // nostrils (angled up into the nose)
-    s.mirrored(() => s.ellipsoid(h(0.02 * nw, tipY - 0.043, tipZ - 0.056), [0.0095 * u * nw, 0.0055 * u, 0.015 * u], { op: 'subtract', k: 0.004 * u, rot: [0.25, 0.25, 0], color: mixHex(skin.lips, 0x2a1a16, 0.4), paintCarve: true }));
+    s.mirrored(() => s.ellipsoid(h(0.02 * nw, tipY - 0.043, tipZ - 0.056), [0.0085 * u * nw, 0.0048 * u, 0.014 * u], { op: 'subtract', k: 0.004 * u, rot: [0.5, 0.25, 0], color: mixHex(skin.lips, 0x2a1a16, 0.4), paintCarve: true }));
   });
 
   // ── mouth ──
   const my = -0.39;
   s.with({ ...sk, bone: 'head' }, () => {
     // upper lip (two halves meet in a soft cupid's bow)
-    s.mirrored(() => s.ellipsoid(h(0.03 * lw, my + 0.017, 0.38), [0.064 * u * lw, 0.02 * u * lf, 0.025 * u * lf], { k: 0.012 * u, rot: [0, 0, -0.08] }));
+    s.mirrored(() => s.ellipsoid(h(0.03 * lw, my + 0.017, 0.374), [0.064 * u * lw, 0.019 * u * lf, 0.025 * u * lf], { k: 0.012 * u, rot: [0, 0, -0.08] }));
     // philtrum groove
     s.ellipsoid(h(0, my + 0.068, 0.402), [0.011 * u, 0.038 * u, 0.01 * u], { op: 'subtract', k: 0.014 * u });
   });
   s.with({ ...sk, bone: 'jaw' }, () => {
-    s.ellipsoid(h(0, my - 0.025, 0.372), [0.076 * u * lw, 0.024 * u * lf, 0.027 * u * lf], { k: 0.013 * u });
+    s.ellipsoid(h(0, my - 0.025, 0.367), [0.076 * u * lw, 0.024 * u * lf, 0.027 * u * lf], { k: 0.013 * u });
     // labiomental groove (soft shadow under the lower lip)
     s.ellipsoid(h(0, my - 0.072, 0.362), [0.055 * u, 0.011 * u, 0.012 * u], { op: 'subtract', k: 0.022 * u });
   });

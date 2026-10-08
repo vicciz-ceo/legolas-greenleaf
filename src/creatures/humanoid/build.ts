@@ -209,7 +209,8 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
   const headRes = def.detail.headRes || (hero ? 0.0085 : 0.0115) * s * Math.sqrt(def.build.headSize);
   const longHair = !!def.hair && !hooded && ['long_straight', 'long_wavy', 'shoulder', 'mane', 'wild', 'tied_back'].includes(def.hair.style);
   // the back of a long-haired head is covered by hair: keep it at body resolution
-  const headMin: [number, number, number] = [head.headBox.min[0], P.h(0, -0.68, 0)[1], longHair ? P.h(0, 0, -0.2)[2] : head.headBox.min[2]];
+  // heroes: the head region reaches down to the base of the neck so necklines/collars stay clean
+  const headMin: [number, number, number] = [head.headBox.min[0], hero ? Math.min(P.h(0, -0.68, 0)[1], P.j.neck[1] - 0.035 * s) : P.h(0, -0.68, 0)[1], longHair ? P.h(0, 0, -0.2)[2] : head.headBox.min[2]];
   const headMax: [number, number, number] = [head.headBox.max[0], head.headBox.max[1], head.headBox.max[2]];
   const regions: MeshRegion[] = [
     { min: headMin, max: headMax, res: headRes, band: res * 1.5, aoScale: 0.6 },
@@ -473,8 +474,8 @@ function eyeTextures(iris: number, sclera: number) {
     return a;
   });
   const crypt = Array.from({ length: W }, () => (rnd.float() < 0.12 ? rnd.range(0.35, 0.75) : -1));
-  const pupil = 0.058 * Math.PI;
-  const irisR = 0.168 * Math.PI;
+  const pupil = 0.055 * Math.PI;
+  const irisR = 0.157 * Math.PI;
   for (let y = 0; y < H; y++) {
     const v = y / (H - 1);
     const th = (1 - v) * Math.PI; // angle from the front pole

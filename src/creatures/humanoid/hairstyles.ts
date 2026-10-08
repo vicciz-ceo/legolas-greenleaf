@@ -64,7 +64,7 @@ export function sculptHairCap(s: Sculpt, P: Proportions, hair: HairDef, hooded =
   s.group('union', 0.018 * u, () => {
     s.ellipsoid(h(0, 0.045, -0.055), [(0.325 + cfg.cap) * u, (0.4 + cfg.cap) * u, (0.425 + cfg.cap) * u], {
       // the cap reads as the hair's shadowed depth between strands: darker than the strands
-      color: shade(hair.color, 0.86),
+      color: shade(hair.color, 0.95),
       mat: 'hair',
       bone: 'head',
       k: 0.02 * u,

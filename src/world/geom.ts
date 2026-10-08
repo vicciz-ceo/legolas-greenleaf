@@ -113,14 +113,14 @@ export function rockGeometry(seed: number, o: RockOpts = {}): THREE.BufferGeomet
     for (let i = 0; i < pos.count; i++) {
       const up = nor.getY(i);
       const n = fbm3(pos.getX(i) * 2.2 + ox, pos.getY(i) * 2.2, pos.getZ(i) * 2.2, 3, 5) * 0.5 + 0.5;
-      const m = Math.max(0, Math.min(1, ((up - 0.35) * 2.0 + (n - 0.5) * 1.2) * o.moss));
-      col[i * 3] = 1 - m * 0.55;
-      col[i * 3 + 1] = 1 - m * 0.12;
-      col[i * 3 + 2] = 1 - m * 0.6;
+      const m = Math.max(0, Math.min(1, ((up - 0.45) * 2.0 + (n - 0.5) * 1.0) * o.moss));
+      col[i * 3] = 1 - m * 0.42;
+      col[i * 3 + 1] = 1 - m * 0.08;
+      col[i * 3 + 2] = 1 - m * 0.46;
     }
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
   }
-  g = bakeFaceBoxUV(g, o.tile ?? 2.2, rng.float(), rng.float());
+  g = bakeFaceBoxUV(g, o.tile ?? 3.4, rng.float(), rng.float());
   g.computeBoundingBox();
   g.computeBoundingSphere();
   rockCache.set(key, g);

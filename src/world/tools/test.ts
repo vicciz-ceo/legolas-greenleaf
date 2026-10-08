@@ -12,7 +12,8 @@ import * as P from '../props';
 import * as A from '../architecture';
 import { lake, river } from '../water';
 import { fbm2 } from '../../core/rng';
-import type { ColliderDesc } from '../colliders';
+import { addColliders, type ColliderDesc } from '../colliders';
+import { createPhysics } from '../../physics/world';
 
 setWorldQuality('high');
 const results: Record<string, unknown> = {};
@@ -51,7 +52,7 @@ function stats(name: string, obj: THREE.Object3D, colliders: readonly ColliderDe
   }
   if (bad) problems.push(`${name}: ${bad} geometry attributes with NaN/Infinity`);
   if (cbad) problems.push(`${name}: ${cbad} invalid colliders`);
-  results[name] = { tris: Math.round(tris), meshes, instances, colliders: colliders.length };
+  results[name] = { ...((results[name] as object) ?? {}), tris: Math.round(tris), meshes, instances, colliders: colliders.length };
 }
 
 function time<T>(name: string, fn: () => T): T {
@@ -175,6 +176,55 @@ const arch: [string, () => { object: THREE.Object3D; colliders: ColliderDesc[] }
 for (const [n, fn] of arch) {
   const b = time(`arch_${n}`, fn);
   stats(`arch_${n}`, b.object, b.colliders);
+}
+
+// ── physics integration ──
+{
+  const check = (name: string, got: number | null, want: number, tol: number) => {
+    results[`phys_${name}`] = got === null ? 'none' : Number(got.toFixed(2));
+    if (got === null || Math.abs(got - want) > tol) problems.push(`physics ${name}: got ${got} want ${want}±${tol}`);
+  };
+  const phys = createPhysics();
+  phys.setTerrain(() => 0);
+  // wooden house deck at the origin, translated + rotated
+  const house = A.woodenHouse();
+  house.object.position.set(100, 3, 100);
+  house.object.rotation.y = 0.7;
+  addColliders(phys, house.colliders, house.object);
+  // standing on the deck beside the door
+  const dx = 100 + 1.0 * Math.cos(0.7) + 0.5 * Math.sin(0.7);
+  const dz = 100 - 1.0 * Math.sin(0.7) + 0.5 * Math.cos(0.7);
+  check('house_deck', phys.ground(dx, dz, 5, 1)?.y ?? null, 3, 0.05);
+  // wall: a ray along the front wall must hit it
+  const wallA = A.stoneWall([[0, 0, 200], [30, 0, 200]], 8, 3);
+  addColliders(phys, wallA.colliders);
+  check('wall_top', phys.ground(15, 200, 12, 0.5)?.y ?? null, 8, 0.05);
+  const hit = phys.raycast(new THREE.Vector3(15, 4, 210), new THREE.Vector3(0, 0, -1), 20, 'arrows');
+  check('wall_ray_z', hit ? hit.point.z : null, 201.5, 0.3);
+  // stairs: midpoint of a 0..6 m rise over 30 m
+  const st = A.stairs([0, 0, 300], [0, 6, 330], 6, { ramp: false });
+  addColliders(phys, st.colliders);
+  check('stairs_mid', phys.ground(0, 315, 9, 0.5)?.y ?? null, 3, 0.25);
+  // pier
+  const pr = A.pier([[0, 0, 400], [20, 0, 400]], 2.4);
+  addColliders(phys, pr.colliders);
+  check('pier_deck', phys.ground(10, 400, 3, 1)?.y ?? null, 0, 0.1);
+  // helm's deep: the walkway of the left wall
+  const hd = A.helmsDeep();
+  hd.object.position.set(500, 0, 500);
+  addColliders(phys, hd.colliders, hd.object);
+  check('helms_walkway', phys.ground(500 - 26, 500 - 1, 30, 0.5)?.y ?? null, 14, 0.2);
+  check('helms_stair_mid', phys.ground(500 - 30, 500 - 38, 30, 0.5)?.y ?? null, 7.0, 0.35);
+  // black gate floor, house roof ridge, tower top
+  const rt = A.ruinedWatchtower();
+  rt.object.position.set(700, 0, 700);
+  addColliders(phys, rt.colliders, rt.object);
+  check('tower_floor1', phys.ground(700 + 1.5, 700 + 1.0, 8.6, 0.3)?.y ?? null, 8.2, 0.3);
+  const ch = A.chamberOfMazarbul();
+  ch.object.position.set(900, 0, 900);
+  addColliders(phys, ch.colliders, ch.object);
+  check('chamber_floor', phys.ground(900 + 3, 900 + 3, 3, 0.5)?.y ?? null, 0, 0.05);
+  check('chamber_tomb_dais', phys.ground(900, 900 - 3, 3, 0.5)?.y ?? null, 0.66, 0.1);
 }
 
 results.problems = problems;

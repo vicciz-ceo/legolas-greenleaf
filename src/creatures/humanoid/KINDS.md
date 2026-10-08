@@ -25,7 +25,18 @@ node scripts/snap.mjs "/lab/?subject=humanoid_lineup&view=single&zoom=0.55" --si
 ```
 Animations in the lab: `idle walk run slash backslash thrust overhead slam sweep shoot throw punch
 stomp bite hit death block roar cheer stagger crouch` (`rest` = bind pose, for debugging skinning).
-Debug URL flags: `&kitdebug=noao,nodetail,normals,noregions,no-<outfitType>` (e.g. `no-jerkin`).
+
+Lab URL options for humanoid subjects:
+
+| Option | Effect |
+|---|---|
+| `&portrait=1&focus=head&zoom=0.15` | frame the face (quivers, bows and helmets no longer push the head-focus framing off the face) |
+| `&weapons=none` | no held or stowed weapons (clean silhouettes / close-ups) |
+| `&weapon=crossbow&offhand=none` | override the held items |
+| `&lod=1` / `&lod=2` | preview the reduced geometry and the cheap animation path |
+| `&kitdebug=…` | `noao`, `nodetail`, `normals`, `noregions`, `norefine`, `seam` (seam channel view), `noeyes`, `nohair`, `no-<outfitType>` (e.g. `no-jerkin`) |
+
+Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dresser defines the troll.
 
 ## The KindDef format
 
@@ -46,11 +57,23 @@ Debug URL flags: `&kitdebug=noao,nodetail,normals,noregions,no-<outfitType>` (e.
 | `sfx` | hints for gameplay/audio: `voice grunt hurt die roar footstep weight` |
 | `anim` | `hunch swagger aggression stance armSwing cadence grace` — posture and gait character |
 | `variation` | `height bulk skin` (± fractions) across the ≤4 seed buckets (bucket 0 is canonical) |
-| `detail` | `res headRes faceRes detailScale` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region; crowds leave it unset (≤ ~12k tris) |
+| `detail` | `res headRes faceRes detailScale` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region, fine ear and hand regions and two seam-refinement levels; crowds leave it unset (one refinement level, ≤ ~12k tris) |
 | `extras(ctx)` | your hook: add sculpt primitives and attachments (below) |
 
 How clothing works: garments re-emit the body's anatomy parts slightly inflated with their own
 material and cut by planes (hems, sleeve ends), so they follow the body and skin perfectly.
+Material boundaries stay crisp (the mesher splits every edge that crosses a colour/material
+change, see the kit README "Crisp seams"), and garment edges are **stitched and worn**
+automatically: jerkin/vest hem, neckline and armholes, tunic/shirt neckline and sleeve cuffs,
+belt edges, bracer ends, boot tops and the hems/edges of skirt panels and cloaks. To stitch an
+edge of your own garment in `extras`, add a seam paint plane (same plane as the cut) inside the
+garment's group: `s.plane(n, d, { op: 'paint', seam: 0, k: 0.002 })`.
+
+Faces: every kind gets the same sculpted head (full midface and cheek pads, eyelid shells with an
+almond opening, nose, lips) driven by `face`; kinds with ordinary skin (`skin.surface: 'skin'`, or
+`brow ≤ 1.5`) also get eyelashes and eyebrow hair cards in `skin.brows` (lashes a darker shade),
+placed on the sculpted surface. Lip colour is `skin.lips`; light skins get a faint warmth on the
+cheeks, nose and ears automatically.
 Tunic/robe/skirt hems become separate skinned panels that swing (spring bones `skirt_f/b`);
 cloaks are skinned sheets on two spring chains (`cloak1..3_l/r`).
 
@@ -86,28 +109,46 @@ that hand holds that weapon (Legolas' sheathed knives do this).
    `cheekbones 1.1`, soft `brow 0.82`, fine straight nose (`length 0.98, width 0.84,
    bridge 1.1`), thin lips, almond eyes with a slight upward tilt `eyeTilt 0.1`, `ears: 'pointed'`.
    Fair skin with little blotching, warm scatter, blue eyes, dark-blond brows.
-3. **Hair** — `long_straight` platinum blond (`color 0xd9c89c`, `tipColor 0xe8dbb6`) with
-   `braids: 'temple'` (two braids from the temples joining at the back of the head). Long styles
-   get a sculpted hair cap, strand cards that hug the scalp and fall down the back, and the
+3. **Hair** — `long_straight` warm pale gold (`color 0xd2b984`, `tipColor 0xe6d3a2`) with
+   `braids: 'temple'` (two thin braids from the temples lying on top of the hair, joining at the
+   back of the head). Long styles get a sculpted scalp cap (a shade darker than the strands, with a
+   soft hairline that leaves the temples covered and only clears the ears), ~300 strand cards in
+   three layers combed back over the scalp and falling down the back behind the ears (lengths
+   vary for tapered ends, roots darker), a row of fine cards along the hairline, and the
    `hair1..3` spring chain.
 4. **Outfit** (order matters only for readability; layers are sorted inner → outer):
    leggings → boots (`length 0.86`, folded cuff) → tunic (green-grey, `length 0.5` → four skirt
-   panels to mid-thigh) → suede jerkin (sleeveless, stand-up collar) → bracers (with tooled edge
-   rings) → belt (with buckle).
+   panels to mid-thigh) → suede jerkin (sleeveless: wraps the ribs and opens only at the shoulder
+   joint) → bracers → belt (with buckle). Every edge is stitched and worn (see above).
 5. **Weapons** — `left: 'elven_bow'`, `right: 'none'` (the right hand draws the string). The bow
-   string follows the right hand while aiming; the arrow is shown nocked.
+   string follows the right hand while aiming; the arrow is shown nocked. During the `climb`,
+   `hang`, `swing` and `barrel` special poses the bow is stowed on the back automatically and
+   returned to the hand afterwards (any kind holding a bow).
 6. **Extras** — a leather baldric (torso parts inflated and cut by two planes into a diagonal
    band), the quiver on the back (`quiverGear`: tooled leather lathe, 16 white-fletched arrows)
    on the springy `quiver` bone, two sheaths, and the two white-handled knives as separate objects
    with `stowFor`, so they vanish from the back when the knives are drawn.
 7. **Detail** — `faceRes: 0.0048` gives Legolas a fine face region (hero quality).
 
-Result: ~25k triangles at LOD0 (body + clothing + gear in one draw call, hair, eyes), ~40% at LOD1.
+Result: ~57k triangles at LOD0 (body + clothing + gear ≈ 37k in one draw call, hair + lashes +
+brows ≈ 18k, eyes), ~12.6k at LOD1, ~5.8k at LOD2.
 
 ## Performance rules of thumb
 
 * Shared geometry is cached per (kind, seed bucket ≤ 4, armour level, helmet), so a crowd of 40
   orcs costs one build; instances only create bones and cloned materials.
-* Budget: enemies ≤ 12k triangles (default resolutions), heroes ≤ 25k. Each extra garment layer
-  adds SDF primitives (build time) but not many triangles.
-* `preloadHumanoids(['orc','uruk'])` warms the cache during a loading screen.
+* Budget: enemies ≤ 12k triangles (default resolutions), heroes ≈ 40–60k at LOD0 (one or two on
+  screen) and ≈ 10–13k at LOD1. Each extra garment layer adds SDF primitives (build time) but not
+  many triangles.
+* **Loading screens:** `await preloadHumanoids(['orc', 'uruk', 'troll'], { seeds, onProgress })`
+  sculpts each kind on the main thread (≈ 20–60 ms each) and meshes LOD0 + LOD1 of all of them in
+  parallel in the kit worker pool; `createHumanoid` afterwards is a cache hit (~5 ms). Without a
+  preload, the first `createHumanoid` of a kind meshes LOD0 synchronously and defers LOD1/2.
+* **LOD:** `setLod(1 | 2)` switches to reduced geometry *and* the cheap animation path: no spring
+  bones (hair/skirt/cloak/quiver rest rigidly), no look-at, swing-only limb IK (`fastTwoBone`),
+  hand frames only at LOD1 (weapons still point right), fingers re-posed only when the grip
+  changes, and constant bones (fingers, toes, spring chains) skip their matrix recompose. Bow
+  aiming always uses the full solve. 40 orcs: ≈ 0.5–0.6 ms per step to animate at LOD1/2 (node,
+  was 1.7–1.9 ms), ≈ 1.2–1.4 ms including three's bone matrix update (was 2.7–2.9 ms).
+* Benchmarks (browser): `node scripts/snap.mjs "/lab/?subject=humanoid_orc&view=single" --eval
+  "__kitBench.anim(40, 300)"` and `--eval "__kitBench.build()"` (sync vs worker preload).

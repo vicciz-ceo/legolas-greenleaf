@@ -43,3 +43,36 @@ export function plain(color: number, o: { roughness?: number; metalness?: number
   }
   return m;
 }
+
+// ── wetness (rain / storm / mist): shared materials get glossier, the terrain gets darker and shinier ──
+interface WetTarget {
+  apply(v: number): void;
+}
+const wetTargets: WetTarget[] = [];
+let wetness = 0;
+
+/** register something that reacts to setWetness (the terrain does) */
+export function registerWet(t: WetTarget): void {
+  wetTargets.push(t);
+  if (wetTargets.length > 8) wetTargets.shift();
+  t.apply(wetness);
+}
+
+/** 0 dry .. 1 soaked. Affects every cached world material and every terrain. Call it from a chapter (rain, storms). */
+export function setWetness(v: number): void {
+  wetness = Math.max(0, Math.min(1, v));
+  for (const m of cache.values()) {
+    const ud = m.userData as { baseRough?: number; baseEnv?: number; baseCoat?: number };
+    ud.baseRough ??= m.roughness;
+    ud.baseEnv ??= m.envMapIntensity;
+    m.roughness = ud.baseRough * (1 - 0.5 * wetness);
+    m.envMapIntensity = ud.baseEnv * (1 + 0.45 * wetness);
+    const p = m as THREE.MeshPhysicalMaterial;
+    if (p.isMeshPhysicalMaterial) {
+      ud.baseCoat ??= p.clearcoat;
+      p.clearcoat = Math.max(ud.baseCoat, 0.55 * wetness);
+      p.clearcoatRoughness = 0.25;
+    }
+  }
+  for (const t of wetTargets) t.apply(wetness);
+}

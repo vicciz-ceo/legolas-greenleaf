@@ -12,8 +12,8 @@ import { sculptHairCap } from '../../hairstyles';
 import type { KindContext, KindDef } from '../../types';
 import { box, put, ring, shell, spike, studs } from './armor';
 import { ctxBucket, devNum, mix, recipeRng, shade } from './common';
-import { sculptFurMantle, sculptScarf, sculptStrap, sculptTorsoGarment } from './garments';
-import { addBeard, addBrows, addHairdo, hairMaterial, sculptBeardMass, type BeardOpts, withHair } from './hair';
+import { placket, sculptFurMantle, sculptScarf, sculptStrap, sculptTorsoGarment } from './garments';
+import { addBeard, addBrows, addHairdo, braidClasps, hairMaterial, sculptBeardMass, type BeardOpts, withHair } from './hair';
 import { DOME_ROUND, STEEL, domeHelm, floppyHat } from './headgear';
 import { faceStroke, inkScalp, paintBlob, paintRing } from './markings';
 
@@ -34,18 +34,6 @@ function faceCommon(ctx: KindContext, o: { brow: number; blush?: number; scars?:
   }
 }
 
-/** bronze clasps along each braid */
-function braidClasps(ctx: KindContext, paths: V3[][], color: number, bone = 'beard2') {
-  const sc = ctx.P.s;
-  for (const path of paths) {
-    const curve = new THREE.CatmullRomCurve3(path.map((p) => new THREE.Vector3(p[0], p[1], p[2])), false, 'catmullrom', 0.3);
-    for (const t of [0.55, 0.97]) {
-      const p = curve.getPointAt(t);
-      const d = curve.getTangentAt(t);
-      put(ctx, ring([p.x, p.y, p.z], [d.x, d.y, d.z], 0.02 * sc, 0.0065 * sc, 8), { bone, color, mat: 'gold', small: true });
-    }
-  }
-}
 
 /** a pouch hanging from the belt */
 function pouch(ctx: KindContext, side: number, color: number, z = 0.0) {
@@ -137,6 +125,7 @@ function warrior(ctx: KindContext, rng: Rng) {
   sculptTorsoGarment(ctx, { color: 0x2c231d, mat: 'leather_worn', inflate: 0.02 * sc, hem: 0.02, sleeve: 0 });
   sculptFurMantle(ctx, { color: 0x3a3028, color2: 0x1e1814, thick: 0.034, drop: 0.07 });
   sculptStrap(ctx, { color: 0x4a3524, mat: 'leather_worn', width: 0.04 * sc, inflate: 0.03 * sc, sign: 1 });
+  placket(ctx, { y0: P.j.chest[1] - 0.12 * sc, y1: P.j.chest[1] + 0.12 * sc, inflate: 0.02 * sc, color: 0x14100c, lace: true });
   // single heavy pauldron on the left shoulder and a steel bracer
   const sh = P.j.upperarm_l;
   for (let k = 0; k < 2; k++) {
@@ -183,6 +172,7 @@ function jester(ctx: KindContext, rng: Rng) {
   floppyHat(ctx, { color: 0x6b4e2e, color2: 0x8a6a40, crown: 0.7, brim: 0.62, droop: 0.16, lean: 0.4, point: 0.7, seed: 2, y: 0.16 });
   // ochre jerkin over the brown tunic, striped scarf, straps
   sculptTorsoGarment(ctx, { color: 0x8a7236, mat: 'wool', inflate: 0.018 * sc, hem: 0.05, sleeve: 0 });
+  placket(ctx, { y0: P.j.chest[1] - 0.2 * sc, y1: P.j.chest[1] + 0.1 * sc, inflate: 0.018 * sc, color: 0x4a3a1a, buttons: 5, buttonColor: 0x5a3a1c });
   sculptScarf(ctx, { color: 0x9a3a2a, color2: 0x2a2a30, tail: 0.14 * sc });
   sculptStrap(ctx, { color: 0x4a3524, mat: 'leather_worn', width: 0.035 * sc, inflate: 0.026 * sc, sign: -1 });
   beltBuckle(ctx, 0x8a6a30);
@@ -198,12 +188,12 @@ function elder(ctx: KindContext, rng: Rng) {
   const sc = P.s;
   const white = 0xd8d2c4;
   sculptHairCap(s, P, { style: 'long_wavy', color: white, tipColor: 0xf0ece2, length: 1, density: 1 });
-  addHairdo(ctx, { color: white, tip: 0xf2eee4, deep: 0xa8a294, length: 0.5 * sc, count: 120, width: 0.04, wave: 0.7, wild: 0.2, comb: 1.0, front: 0.12, back: -0.4, gravity: 5, tail: 0 }, rng);
+  addHairdo(ctx, { color: white, tip: 0xf2eee4, deep: 0xa8a294, length: 0.5 * sc, count: 80, width: 0.05, wave: 0.7, wild: 0.2, comb: 1.0, front: 0.12, back: -0.4, gravity: 5, tail: 0 }, rng);
   faceCommon(ctx, { brow: 0xb8b2a4, blush: 0.5 }, rng);
   sculptBeardMass(ctx, { color: mix(white, 0x000000, 0.35), color2: 0x9a9488, length: 0.4 * sc, width: 1.05, fullness: 1.1 });
   const beard: BeardOpts = {
     clear: 0.05 * sc,
-    color: white, tip: 0xf2eee4, deep: 0x9a9488, length: 0.4 * sc, locks: 15, perLock: 8, shape: 'spade', spread: 1.05, cheeks: true, wave: 0.6, width: 0.042,
+    color: white, tip: 0xf2eee4, deep: 0x9a9488, length: 0.4 * sc, locks: 14, perLock: 7, shape: 'spade', spread: 1.05, cheeks: true, wave: 0.6, width: 0.042,
     moustache: { length: 0.13 * sc, droop: 0.7, curl: 0.4 },
     braids: [{ x: 0.1, length: 0.5 * sc, radius: 0.017 }, { x: 0, length: 0.55 * sc, radius: 0.017 }, { x: -0.1, length: 0.5 * sc, radius: 0.017 }],
   };
@@ -211,6 +201,7 @@ function elder(ctx: KindContext, rng: Rng) {
   braidClasps(ctx, br.braidPaths, 0xa88a48);
   // deep red coat with long sleeves and a pale fur collar
   sculptTorsoGarment(ctx, { color: 0x6a2a24, mat: 'wool', inflate: 0.017 * sc, hem: 0.3, sleeve: 1.4, color2: 0x4a1c18 });
+  placket(ctx, { y0: P.j.chest[1] - 0.3 * sc, y1: P.j.chest[1] + 0.05 * sc, inflate: 0.017 * sc, color: 0x3a1410, buttons: 6, buttonColor: 0xa88a48, width: 0.006 });
   sculptFurMantle(ctx, { color: 0xb5ad9c, color2: 0x8a8272, thick: 0.03, drop: 0.05, amp: 0.012 });
   sculptStrap(ctx, { color: 0x3a2a1c, mat: 'leather_worn', width: 0.032 * sc, inflate: 0.032 * sc, sign: 1 });
   beltBuckle(ctx, 0xa88a48);
@@ -225,14 +216,14 @@ function elder(ctx: KindContext, rng: Rng) {
 function redbeard(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  const red = 0xa8401c;
+  const red = 0x8e3418;
   sculptHairCap(s, P, { style: 'wild', color: red, tipColor: 0xc8602c, length: 1, density: 1 });
-  addHairdo(ctx, { color: red, tip: 0xc8602c, deep: 0x6a2410, length: 0.45 * sc, count: 140, width: 0.044, wave: 1.0, wild: 0.6, comb: 0.7, front: 0.12, back: -0.4, gravity: 4 }, rng);
+  addHairdo(ctx, { color: red, tip: 0xae5226, deep: 0x4a1a0c, length: 0.45 * sc, count: 90, width: 0.05, wave: 1.0, wild: 0.6, comb: 0.7, front: 0.12, back: -0.4, gravity: 4 }, rng);
   faceCommon(ctx, { brow: 0x7a2a12, blush: 0.75, scars: 1 }, rng);
   sculptBeardMass(ctx, { color: mix(red, 0x000000, 0.35), color2: red, length: 0.42 * sc, width: 1.2, fullness: 1.4 });
   const beard: BeardOpts = {
     clear: 0.05 * sc,
-    color: red, tip: 0xc8602c, deep: 0x6a2410, length: 0.42 * sc, locks: 17, perLock: 9, shape: 'round', spread: 1.2, cheeks: true, wave: 0.9, width: 0.048,
+    color: red, tip: 0xae5226, deep: 0x4a1a0c, length: 0.42 * sc, locks: 15, perLock: 8, shape: 'round', spread: 1.2, cheeks: true, wave: 0.9, width: 0.048,
     moustache: { length: 0.16 * sc, droop: 0.6, curl: 0.8 },
     braids: [{ x: 0.15, y: -0.5, length: 0.3 * sc, radius: 0.018 }, { x: -0.15, y: -0.5, length: 0.3 * sc, radius: 0.018 }],
   };
@@ -242,6 +233,7 @@ function redbeard(ctx: KindContext, rng: Rng) {
   sculptTorsoGarment(ctx, { color: 0x3a281c, mat: 'leather_worn', inflate: 0.023 * sc, hem: 0.02, sleeve: 0 });
   sculptFurMantle(ctx, { color: 0x6a4a2a, color2: 0x3a2a1a, thick: 0.034, drop: 0.08 });
   sculptStrap(ctx, { color: 0x2c1e14, mat: 'leather_worn', width: 0.04 * sc, inflate: 0.034 * sc, sign: -1 });
+  placket(ctx, { y0: P.j.chest[1] - 0.15 * sc, y1: P.j.chest[1] + 0.1 * sc, inflate: 0.024 * sc, color: 0x14100c, lace: true });
   beltBuckle(ctx, 0x9b7432);
   pouch(ctx, 1, 0x2c1e14);
   backWeapon(ctx, 'axe', 1);

@@ -19,7 +19,7 @@
 export * from './terrain';
 export * from './crowd';
 export * from './textures';
-export { mat, plain } from './mats';
+export { mat, plain, setWetness } from './mats';
 export * from './vegetation';
 export * from './water';
 export * from './props';

@@ -53,7 +53,7 @@ function legolasExtras(ctx: KindContext) {
   });
   // ── quiver on the back, top over the right shoulder ──
   const q: QuiverOpts = {
-    center: [-0.035 * sc, j.chest[1] + 0.09 * sc, -0.165 * sc * P.build.chest],
+    center: [-0.035 * sc, j.chest[1] + 0.035 * sc, -0.165 * sc * P.build.chest],
     axis: new THREE.Vector3(-0.34, 1, -0.06).normalize(),
     length: 0.56 * sc,
     radius: 0.046 * sc,
@@ -110,7 +110,7 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
       chin: 1.12,
       brow: 0.82,
       cheekbones: 1.1,
-      nose: { length: 0.94, width: 0.86, bridge: 1.1, hook: 0, tip: 0.86 },
+      nose: { length: 0.94, width: 0.86, bridge: 1.1, hook: 0, tip: 0.8 },
       lips: { width: 0.98, fullness: 0.95 },
       ears: 'pointed',
       earSize: 1.0,

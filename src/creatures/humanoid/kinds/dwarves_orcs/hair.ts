@@ -11,6 +11,7 @@ import type { V3 } from '../../../kit/sdf';
 import { buildHair } from '../../hairstyles';
 import type { HairDef, KindContext } from '../../types';
 import { attachSkinned, luminance, mergeHairGeos } from './common';
+import { put, ring } from './armor';
 
 const matCache = new Map<number, THREE.MeshPhysicalMaterial>();
 
@@ -20,8 +21,8 @@ export function hairMaterial(color: number, opts: { rough?: number } = {}): THRE
   let m = matCache.get(key);
   if (!m) {
     const lum = luminance(color);
-    m = createHairMaterial({ roughness: opts.rough ?? 0.6, anisotropy: 0.5 + 0.7 * Math.min(1, lum * 2), sheen: 0.25, sheenColor: color });
-    m.specularIntensity = 0.12 + 0.25 * Math.min(1, lum * 1.5);
+    m = createHairMaterial({ roughness: opts.rough ?? 0.72, anisotropy: 0.35 + 0.5 * Math.min(1, lum * 2), sheen: 0.12, sheenColor: color });
+    m.specularIntensity = 0.1 + 0.2 * Math.min(1, lum * 1.5);
     m.userData.shared = true;
     matCache.set(key, m);
   }
@@ -244,7 +245,7 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     });
   }
   const strands = growStrands(roots, {
-    segments: o.segments ?? 7,
+    segments: o.segments ?? 5,
     gravity: ((o.gravity ?? 6) * 3) / s,
     colliders,
     jitter: 0.06 + wild * 0.2,
@@ -259,7 +260,7 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     braids.push({ points: [h(0, -0.1, -0.5), h(0, -0.3, -0.58), [0, hc[1] - 0.5 * u - o.tail * 0.5, -0.1 * s * P.build.chest * bulk - 0.05 * s], [0, hc[1] - 0.5 * u - o.tail, -0.115 * s * P.build.chest * bulk - 0.06 * s]], radius: 0.02 * s, color: o.color, twist: 25 });
   }
   if (!strands.length && !braids.length) return null;
-  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights }) : null;
+  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights, curl: 0.25 }) : null;
   const bGeos = braids.map((b) => braidGeometry(b.points, b.radius, o.color, weights, { seg: 9, radial: 5 }));
   return mergeHairGeos([...(sGeo ? [sGeo] : []), ...bGeos]);
 }
@@ -339,7 +340,7 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
   const strands: Strand[] = [];
   const nLocks = o.locks ?? 15;
   const per = o.perLock ?? 9;
-  const segs = o.segments ?? 7;
+  const segs = o.segments ?? 5;
   const deep = o.deep ?? o.color;
   const lengthAt = (a: number): number => {
     const aa = Math.abs(a);
@@ -455,7 +456,7 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
     const t = Math.min(1, (chinY - p.y) / span);
     out.push([iJaw, Math.max(0, 1 - t * 2)], [iB1, Math.min(1, t * 2) * (1 - t)], [iB2, t * t]);
   };
-  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights: w }) : null;
+  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights: w, curl: 0.25 }) : null;
   const bGeos = braids.map((b) => braidGeometry(b.points, b.radius, o.color, w, { seg: 9, radial: 5 }));
   const geo = mergeHairGeos([...(sGeo ? [sGeo] : []), ...bGeos]);
   return { geo, braidPaths };
@@ -538,6 +539,19 @@ export function addBrows(ctx: KindContext, o: { color: number; length?: number; 
   const iHead = rig.boneIndex('head');
   const geo = hairGeometry(strands, [], { color: o.color, weights: (_p, _a, out) => out.push([iHead, 1]) });
   queueHair(ctx, geo, o.color);
+}
+
+/** bronze clasps along each braid */
+export function braidClasps(ctx: KindContext, paths: V3[][], color: number, bone = 'beard2') {
+  const sc = ctx.P.s;
+  for (const path of paths) {
+    const curve = new THREE.CatmullRomCurve3(path.map((p) => new THREE.Vector3(p[0], p[1], p[2])), false, 'catmullrom', 0.3);
+    for (const t of [0.55, 0.97]) {
+      const p = curve.getPointAt(t);
+      const d = curve.getTangentAt(t);
+      put(ctx, ring([p.x, p.y, p.z], [d.x, d.y, d.z], 0.02 * sc, 0.0065 * sc, 8), { bone, color, mat: 'gold', small: true });
+    }
+  }
 }
 
 export function addBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult {

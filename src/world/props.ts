@@ -19,6 +19,7 @@ import type { Built, ColliderDesc } from './colliders';
 export { addColliders, removeColliders, colliderMesh } from './colliders';
 export type { ColliderDesc, Built } from './colliders';
 export type { ColliderOpts } from './colliders';
+export { catapult, siegeTower, batteringRam, stoneBlock } from './props_siege';
 
 const group = (name: string, kit: MeshKit): THREE.Group => kit.build({ name });
 

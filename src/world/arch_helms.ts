@@ -7,7 +7,7 @@ import { MeshKit } from './util';
 import type { PathPoint } from './util';
 import { Path } from './path';
 import type { Built, ColliderDesc } from './colliders';
-import { mergedColliderMesh, stairSteps, stoneMat, wallPrism, archRing, type V3 } from './arch_common';
+import { adoptColliderMeshes, mergedColliderMesh, stairSteps, stoneMat, wallPrism, archRing, type V3 } from './arch_common';
 import { brazier, ladder, ringColliders, torch } from './props';
 
 export type StoneKind = 'blocks' | 'light' | 'dark' | 'mossy' | 'white' | 'black' | 'rough';
@@ -163,6 +163,7 @@ export function stoneWall(points: PathPoint[], height: number, thickness: number
     travelled += l;
   }
   const g = kit.build({ name: 'stone_wall' });
+  adoptColliderMeshes(g, colliders);
   return { object: g, colliders, path, anchors, topY: height };
 }
 
@@ -256,6 +257,7 @@ export function stairs(from: V3, to: V3, width: number, o: StairsOpts = {}): Bui
     g.add(rm);
     colliders.push({ kind: 'mesh', mesh: rm, opts: { material: 'stone', tag: 'stairs_ramp' } });
   }
+  adoptColliderMeshes(g, colliders);
   return { object: g, colliders, steps: n };
 }
 
@@ -513,20 +515,20 @@ export function helmsDeep(o: HelmsDeepOpts = {}): HelmsDeepResult {
   // culvert: arched opening at the base of the outer face
   archRing(culvertK, stoneMat('light'), 2.8, 0.55, 0.5, 2.4, 1.5);
   const cg = culvertK.build({ name: 'culvert_arch' });
-  cg.position.set(cx, 0, 1.0 - 6.5 + 2.75);
+  cg.position.set(cx, 0, -3.0);
   intact.add(cg);
   const darkHole = new THREE.Mesh(new THREE.PlaneGeometry(2.8, 3.8), plain(0x020202, { roughness: 1, key: 'culvert' }));
-  darkHole.position.set(cx, 1.9, -6.5 + 2.55 + 0.25);
+  darkHole.position.set(cx, 1.9, -3.08);
   intact.add(darkHole);
   for (let x = -1.2; x <= 1.21; x += 0.4) {
     const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 3.6, 5), ironM);
-    bar.position.set(cx + x, 1.8, -6.5 + 2.8);
+    bar.position.set(cx + x, 1.8, -3.03);
     intact.add(bar);
   }
   for (const y of [0.8, 1.9, 3.0]) {
     const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.9, 5), ironM);
     bar.rotation.z = Math.PI / 2;
-    bar.position.set(cx, y, -6.5 + 2.8);
+    bar.position.set(cx, y, -3.03);
     intact.add(bar);
   }
   root.add(intact);
@@ -682,6 +684,7 @@ export function helmsDeep(o: HelmsDeepOpts = {}): HelmsDeepResult {
       ladders.push({ top: [q.x + nx * T / 2, q.y + H, q.z + nz * T / 2], out: [nx, 0, nz] });
     }
   }
+  adoptColliderMeshes(root, colliders);
   const wlk: V3[] = [];
   for (const w of [wallA, wallB, wallC]) for (let s = 0; s <= w.path.length; s += 6) {
     const q = w.path.at(s);
@@ -694,7 +697,7 @@ export function helmsDeep(o: HelmsDeepOpts = {}): HelmsDeepResult {
       walkway: wlk,
       ladders,
       fires,
-      culvert: [cx, 0, -6.5 + 3.4],
+      culvert: [cx, 0, -2.4],
       stairTop,
       stairBottom,
       gate: [doorX, 6.0, doorZ],

@@ -443,7 +443,7 @@ function rock(s: Surf, N: TileNoise, o: { lo: C3; hi: C3; strata: number; lichen
     const h = 0.3 + facet.at(u, v) * 0.35 + mid.at(u, v) * 0.22 + rid * 0.18 - crack * 0.28 - fracture * 0.3 + strata + grain * 0.05;
     s.h[i] = h;
     lc(o.lo, o.hi, sstep(0.2, 0.9, h));
-    const k = (0.86 + (tone.at(u, v) * 0.5 + 0.5) * 0.26 + grain * 0.1) * (1 - crack * 0.4) * (1 - fracture * 0.3);
+    const k = (0.86 + (tone.at(u, v) * 0.5 + 0.5) * 0.26 + grain * 0.1) * (1 - crack * 0.24) * (1 - fracture * 0.16);
     const lm = sstep(0.2, 0.55, lich.at(u, v) + (h - 0.6)) * o.lichen * 0.5;
     s.px(i, mix(cr * k, 138, lm), mix(cg * k, 142, lm), mix(cb * k, 86, lm));
     s.rough[i] = 0.82 + grain * 0.1;
@@ -471,7 +471,7 @@ function cliff(s: Surf, N: TileNoise): void {
     const bi = clamp01(b) * (bands.length - 1);
     const b0 = Math.min(bands.length - 2, Math.floor(bi));
     lc(bands[b0], bands[b0 + 1], sstep(0.2, 0.8, bi - b0));
-    const k = (0.8 + r * 0.35 + grain * 0.1) * (1 - vcrack * 0.4);
+    const k = (0.8 + r * 0.35 + grain * 0.1) * (1 - vcrack * 0.25);
     s.px(i, cr * k, cg * k, cb * k);
     s.rough[i] = 0.88;
   });

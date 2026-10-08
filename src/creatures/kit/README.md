@@ -6,12 +6,13 @@ Everything you need to build a skinned, animated, film-look creature **in code**
 |---|---|---|
 | 1 | Rig builder (bones at rest-pose joint positions → `THREE.Bone`s + `Skeleton`) | `rig.ts` — `RigDef` |
 | 2 | SDF sculpting: round cone / capsule / sphere / tube, ellipsoid, rounded box, torus, plane; smooth union / subtract / intersect (blend `k`), nested groups, paint-only primitives, per-primitive bone(s), colour, surface preset and noise displacement | `sdf.ts` — `Sculpt` |
-| 3 | Narrow-band surface nets with Newton projection, SDF-gradient normals, fine **detail regions** (face, hands) stitched invisibly, SDF ambient occlusion, cached per definition hash | `mesher.ts`, `cache.ts` |
+| 3 | Narrow-band surface nets with Newton projection, SDF-gradient normals, fine **detail regions** (face, hands, ears) stitched invisibly, SDF ambient occlusion (per-region reach), **crisp seams** (edges across a colour/material boundary are split at the boundary into twin vertices), cached per definition hash | `mesher.ts`, `cache.ts` |
+| 3b | **Worker pool**: the pure typed-array mesher runs in module workers (`meshSculptAsync`), so loading screens mesh many creatures in parallel; synchronous fallback | `workers.ts`, `mesh.worker.ts` |
 | 4 | Auto-skinning: weights from primitive ownership, blended over `skinK` across unions, bone→bone blends along a primitive, Laplacian smoothing, top-4 | `sdf.ts` + `mesher.ts` |
-| 5 | Surface detail: vertex colour + per-vertex surface (roughness, metalness, sheen, skin scatter) + 8 procedural detail patterns (pores, weave, leather, scales/mail, chitin, fur/wood, scratches, wrinkles) evaluated in the rest pose in the shader; skin wrap-lighting | `surfaces.ts`, `material.ts` |
+| 5 | Surface detail: vertex colour + per-vertex surface (roughness, metalness, sheen, skin scatter) + 8 procedural detail patterns (pores, weave, leather, scales/mail, chitin, fur/wood, scratches, wrinkles) evaluated in the rest pose in the shader; skin wrap-lighting and softened AO on skin; **seam channel** (stitch lines + edge wear along garment edges) | `surfaces.ts`, `material.ts` |
 | 6 | Rigid attachments merged into the body draw call (`paintGeometry`, `segmentMatrix`, `limbSegment`); parametric skinned sheets (wings, cloaks, sails) | `geometry.ts`, `sheet.ts` |
-| 6b | Hair & fur: strands grown under gravity around ellipsoid colliders (scalp hugging), cards + braids, Kajiya-Kay highlight, spring bones | `hair.ts`, `anim.ts` |
-| 7 | Procedural animation: `PoseSolver` (FK), `solveTwoBone` IK, `aimBone`, `lookAt`, `SpringChain`, `bipedGait`, `quadGait`, `insectGait` (alternating tetrapod), `wingFlap`, `PoseBuffer` layering/masks, `envelope` | `anim.ts` |
+| 6b | Hair & fur: strands grown under gravity around ellipsoid colliders (scalp hugging), cards + braids, Kajiya-Kay highlight, darker roots, spring bones; `sdfProbe` places cards exactly on a sculpted surface (lashes, brows) | `hair.ts`, `sdf.ts`, `anim.ts` |
+| 7 | Procedural animation: `PoseSolver` (FK with precomputed subtrees), `solveTwoBone` IK, `fastTwoBone` (cheap LOD solve), `aimBone`, `lookAt`, `SpringChain`, `bipedGait`, `quadGait`, `insectGait` (alternating tetrapod), `wingFlap`, `PoseBuffer` layering/masks, `envelope`, `fastBones` | `anim.ts` |
 | 8 | One-call assembly with geometry sharing between instances | `creature.ts` — `buildCreature` |
 
 Import from `src/creatures/kit` (the `index.ts` re-exports everything).
@@ -89,18 +90,52 @@ Surface presets (`SURFACES`): `skin`, `skin_weathered`, `skin_orc`, `skin_troll`
 ## 3. Mesh (and cache)
 
 ```ts
-import { meshSculpt, meshDataToGeometry } from '../kit';
-const data = meshSculpt(s, {
+import { meshSculpt, meshSculptAsync, meshDataToGeometry } from '../kit';
+const opts = {
   res: 0.025,                                   // cell size (m)
-  regions: [{ min: headMin, max: headMax, res: 0.008 }], // finer detail, invisible seams
+  regions: [{ min: headMin, max: headMax, res: 0.008, aoScale: 0.4 }], // finer detail, invisible seams;
+                                                // aoScale shortens the AO reach there (faces: ~0.3)
   ao: { dist: 0.08 },                           // SDF ambient occlusion (false to disable)
   smooth: 2,                                    // skin-weight smoothing iterations
-});
-const geo = meshDataToGeometry(data);           // cached per (sculpt hash + options)
+  refine: { levels: 1 },                        // crisp seams (see below); heroes use 2
+};
+const data = meshSculpt(s, opts);               // synchronous, cached per (sculpt hash + options)
+await meshSculptAsync(s, opts);                 // same, meshed in the worker pool (fills the same cache)
+const geo = meshDataToGeometry(data);
 ```
 
 Guidelines: thin parts need ≥ 2 cells across — mesh legs/fingers of insects as rigid
 `limbSegment`s instead (see the spider). Rough budget: triangles ≈ 2.6 × area / res².
+Paint primitives need a fade `k` of at least about one cell, or they alias into stripes.
+
+**Crisp seams (`refine`).** Vertex colours blur a colour/material boundary over a whole cell
+(2–3 cm on a body), which made garments bleed into each other. With `refine`, every edge whose
+end points differ in colour or material is split: intermediate levels split at the midpoint, the
+last level bisects for the boundary crossing and creates two *twin* vertices there (same
+position, normal, skin weights and AO, different colour/material), so the colour changes exactly
+along a smooth line without a crack. Colour noise inside one material (blotches) does not
+trigger it. Cost: roughly +10–25 % triangles on clothed humanoids.
+
+**Seams: stitches and edge wear (`seam`).** A paint primitive with `seam: <offset>` writes its
+signed distance into a per-vertex `seam` channel instead of colour. The shader draws a dashed,
+raised stitch line 6 mm in from the edge and a lighter, smoother worn edge (strongest on
+leather). Because a plane's distance interpolates exactly, the line stays sharp at any mesh
+resolution. Put the seam plane inside the garment's `group` (same plane as its cut) so only
+that garment is affected; several seams on one garment keep the nearest edge:
+
+```ts
+s.group('union', 0.003, () => {
+  emitParts(s, parts, ['ribs', 'chest'], { color: 0x6e4c32, mat: 'suede', inflate: 0.014 });
+  s.plane([0, -1, 0], -hemY, { op: 'intersect', k: 0.005 });   // the hem cut…
+  s.plane([0, -1, 0], -hemY, { op: 'paint', seam: 0, k: 0.002 }); // …stitched and worn
+});
+```
+Debug view: `&kitdebug=seam` (red = seam channel set, yellow = near an edge).
+
+**Worker pool.** `meshSculptAsync` sends the compiled `SdfProgram` (plain typed arrays, see
+`SdfProgram.toData/fromData`) to `max(2, min(6, cores − 1))` module workers and caches the
+result; in-flight requests are deduplicated. Without `Worker` (node) it meshes on the main
+thread after a macrotask yield. `preloadHumanoids` uses it for every kind at once.
 
 ## 4. Skinning
 
@@ -139,6 +174,13 @@ const geo = hairGeometry(strands, braids, { color: 0xd8c8a0, weights: (p, along,
 const mat = createHairMaterial({ anisotropy: 0.8 }); // alpha-tested strand cards + Kajiya-Kay highlight
 ```
 
+`growStrands` options worth knowing: `hug: 0` keeps strands on collider 0 (the scalp) until the
+outward normal drops below `hugUntil`; `normalColliders: [0, …]` lists the colliders card normals
+come from (leave out face/ear colliders, or cards near the hairline twist upright). Cards are
+wound so their front face points along the card normal (outward). `hairGeometry` darkens the
+first `rootLength` metres (`rootShade`) for depth. To put cards on a sculpted surface (lashes,
+brows, decals), use `sdfProbe(sculpt.compile(), boxMin, boxMax)` → `project(p)` / `normal(p)`.
+
 ## 7. Animation
 
 ```ts
@@ -153,6 +195,11 @@ lookAt(ps, [ps.i('neck'), ps.i('head')], [0.4, 0.6], targetModel, { maxYaw: 1.2 
 spring.update(ps, dt, root.matrixWorld);    // after the animated pose
 ps.apply(bones);                            // → THREE.Bone quaternions/positions
 ```
+
+Performance: `PoseSolver.fkFrom` walks a precomputed subtree; call `fastBones(rig.bones)` once so
+bone quaternion writes skip three's Euler sync (bone `rotation` is then not kept in sync). For
+distant LODs, `fastTwoBone(ps, a, b, c, target, pole, restDirA, restDirB, endRotation | null)` is a
+swing-only two-bone solve (no frames, no subtree FK) — the humanoid's LOD1/2 path uses it.
 
 Gaits return per-foot samples `{ along, lift, planted, pitch }`: during stance a foot moves
 backward at exactly the body speed (stride = speed / frequency), so feet never slide.

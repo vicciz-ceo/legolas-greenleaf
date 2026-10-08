@@ -115,7 +115,7 @@ export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lame
     const c = J.clone().addScaledVector(L, (0.03 + k * 0.034 * rch) * sc).add(V(-0.012 * side * sc, 0.0, 0));
     const half = ((o.half ?? 66) - k * 5) * (Math.PI / 180);
     const fn = ellipsoidFn(c, [R * 1.05, R * (o.ry ?? 0.78), R * 1.1], [-Math.PI, Math.PI], [Math.PI / 2 - half, Math.PI / 2], { rot });
-    gear(shellPatch(fn, 14, 4, 0.0075 * sc, { closedU: true, noInner: true, thickFn: (_u, v) => 1 + 1.1 * (1 - smooth(0, 0.18, v)), skip: ['v1'] }), {
+    gear(shellPatch(fn, 12, 3, 0.0075 * sc, { closedU: true, noInner: true, thickFn: (_u, v) => 1 + 1.1 * (1 - smooth(0, 0.18, v)), skip: ['v1'] }), {
       bone,
       color: o.color ?? URUK_PAL.iron,
       mat,
@@ -185,7 +185,6 @@ export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, loo
     const yBot = yTop - hBand;
     const rt = ringRadii(proj, yTop);
     const rb = ringRadii(proj, yBot);
-    if (typeof location !== 'undefined' && location.search.includes('gearlog')) ((window as unknown as { __gearLog?: string[] }).__gearLog ??= []).push(`band y=${yTop.toFixed(2)} rt=${JSON.stringify(rt)} botY=${botY.toFixed(2)}`);
     const m = new THREE.Matrix4().makeTranslation(0, (yTop + yBot) / 2, 0);
     const g = ellipticalBand(rt.rx + 0.012 * sc, (rt.zf + rt.zb) / 2 + 0.012 * sc, rb.rx + 0.022 * sc, (rb.zf + rb.zb) / 2 + 0.022 * sc, hBand, 0.0065 * sc, 22, 0, Math.PI * 2, (rt.zf - rt.zb) / 2);
     gear(g, { bone: 'spine', color: URUK_PAL.iron, mat: IRON, matrix: m, ao: 0.85 });
@@ -318,7 +317,7 @@ export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['hel
     k += 0.1 * smooth(2.2, 3.0, t) * smooth(0, -0.4, e);
     return k;
   };
-  const shell = shellPatch(ellipsoidFn(C, R, [-Math.PI, Math.PI], [elOf, Math.PI / 2 - 1e-3], { radial }), 26, 7, 0.011 * sc, {
+  const shell = shellPatch(ellipsoidFn(C, R, [-Math.PI, Math.PI], [elOf, Math.PI / 2 - 1e-3], { radial }), 20, 5, 0.011 * sc, {
     closedU: true,
     noInner: true,
     thickFn: (_u2, v) => 1 + 0.9 * (1 - smooth(0, 0.12, v)),
@@ -391,7 +390,7 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
     return false;
   };
   if ((o.style ?? 'plate') === 'plate') {
-    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 22, 14, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
+    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 18, 12, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
     gear(upper, { bone: 'head', color, mat: IRON, ao: 0.85 });
   } else {
     // cage: a brow band over the eyes and vertical bars down the face
@@ -629,7 +628,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     face: URUK_FACE,
     skin: { color: URUK_PAL.skin, color2: URUK_PAL.skin2, blotch: 0.5, blemish: 0.45, scars: 2, warts: 0.1, wrinkles: 0.5, lips: URUK_PAL.lips, brows: 0x120e0b, surface: 'skin_orc', scatter: URUK_PAL.scatter },
     eyes: { color: URUK_PAL.eyes, glow: 0.35, sclera: 0xb8a878 },
-    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.2, length: 0.8 },
+    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 0.8 },
     outfit: [
       { type: 'trousers', color: URUK_PAL.cloth, mat: 'leather_worn' },
       { type: 'boots', color: 0x1a1613, color2: 0x120f0d, length: 0.9 },
@@ -642,7 +641,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.7 },
     anim: { hunch: 0.14, swagger: 0.4, aggression: 0.8, stance: 1.15, armSwing: 1.0, cadence: 1.0 },
     variation: { height: 0.025, bulk: 0.06, skin: 0.12 },
-    detail: { faceRes: 0, res: 0.052, headRes: 0.016 },
+    detail: { faceRes: 0, res: 0.06, headRes: 0.0175 },
     extras: urukExtras(false),
   },
   berserker: {
@@ -652,7 +651,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     face: URUK_FACE,
     skin: { color: 0x372b23, color2: 0x241b15, blotch: 0.5, blemish: 0.45, scars: 3, warts: 0.1, wrinkles: 0.5, lips: URUK_PAL.lips, brows: 0x120e0b, surface: 'skin_orc', scatter: URUK_PAL.scatter },
     eyes: { color: 0xd0a030, glow: 0.5, sclera: 0xb8a878 },
-    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.2, length: 0.8 },
+    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 0.8 },
     outfit: [
       { type: 'trousers', color: URUK_PAL.cloth, mat: 'leather_worn' },
       { type: 'boots', color: 0x1a1613, color2: 0x120f0d, length: 0.9 },
@@ -665,7 +664,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
     anim: { hunch: 0.16, swagger: 0.55, aggression: 1, stance: 1.2, armSwing: 1.1, cadence: 1.0 },
     variation: { height: 0.02, bulk: 0.05, skin: 0.1 },
-    detail: { faceRes: 0, res: 0.048, headRes: 0.017 },
+    detail: { faceRes: 0, res: 0.062, headRes: 0.0175 },
     extras: urukExtras(true),
   },
 };

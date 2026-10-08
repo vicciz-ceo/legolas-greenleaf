@@ -92,7 +92,7 @@ function lurtzExtras(ctx: KindContext) {
   const parts = anatomyParts(P);
   const box = { min: [-0.8, 0, -0.6] as [number, number, number], max: [0.8, P.H + 0.3, 0.7] as [number, number, number] };
 
-  brawnBody(ctx, { traps: 1.15, lats: 1.15, delts: 1.15, forearm: 1.1, thigh: 1.05, calf: 1.05, biceps: 1.1 });
+  brawnBody(ctx, { traps: 1.15, lats: 1.15, delts: 1.15, forearm: 1.1, thigh: 1.22, calf: 1.15, biceps: 1.1 });
   forearms(ctx, parts, 'leather', 1.1);
 
   const proj0 = makeProjector(s, box);
@@ -187,7 +187,7 @@ export const lurtzKind: KindDef = {
   height: 2.1,
   build: { shoulders: 1.34, hips: 1.04, bulk: 1.12, chest: 1.15, belly: 0, armLength: 1.08, legLength: 0.98, headSize: 0.96, neck: 0.82, neckThick: 1.4, hunch: 0.16, handSize: 1.22, footSize: 1.14, muscle: 1.0 },
   face: LURTZ_FACE,
-  skin: { color: 0x4a3c31, color2: 0x2d241d, blotch: 0.6, blemish: 0.5, scars: 3, warts: 0.08, wrinkles: 0.55, lips: 0x30221d, brows: 0x14100d, surface: 'skin_orc', scatter: 0x5a3626 },
+  skin: { color: 0x43372d, color2: 0x2a211b, blotch: 0.55, blemish: 0.5, scars: 3, warts: 0.08, wrinkles: 0.55, lips: 0x30221d, brows: 0x14100d, surface: 'skin_orc', scatter: 0x4c2e22 },
   eyes: { color: 0xd8a830, glow: 0.45, sclera: 0xb8aa80 },
   hair: { style: 'tied_back', color: URUK_PAL.hair, length: 1.6, density: 1.0 },
   outfit: [
@@ -202,6 +202,6 @@ export const lurtzKind: KindDef = {
   sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
   anim: { hunch: 0.16, swagger: 0.5, aggression: 1, stance: 1.18, armSwing: 1.05, cadence: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { faceRes: 0, res: 0.034, headRes: 0.0095 },
+  detail: { faceRes: 0, res: 0.036, headRes: 0.0095 },
   extras: lurtzExtras,
 };

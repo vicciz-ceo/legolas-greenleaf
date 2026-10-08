@@ -33,13 +33,18 @@ function warlord(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
   const A = ctx.armor;
-  skinTint(ctx, { color: 0x8a949c, color2: 0x626c74, noise: 0.55, torso: true });
-  skinMottle(ctx, rng, [0x7a848c, 0x9aa4ac, 0x566068], { n: 12, torso: true, strength: 0.4 });
+  skinTint(ctx, { dim: 0.56, color: 0x8a949c, color2: 0x626c74, noise: 0.55, torso: true });
+  skinMottle(ctx, rng, [0x7a848c, 0x9aa4ac, 0x566068], { dim: 0.56, n: 12, torso: true, strength: 0.4 });
   eyeRings(ctx, 0x2a2e34, 0.6);
   orcTeeth(ctx, rng, { n: 8, big: 1.3 });
   bodyMarks(ctx, rng, { scars: 6, color: 0x3a3a44 });
   addHairdo(ctx, { color: 0x1a1a20, tip: 0x2c2c34, deep: 0x0e0e12, length: 0.55 * sc, count: ctx.helmet ? 40 : 90, width: 0.032, wave: 0.7, wild: 0.85, comb: 0.8, front: 0.22, back: -0.4, gravity: 5, segments: 5 }, rng);
-  if (A >= 0.5) scrapBreastplate(ctx, { color: DARK, rng, half: 1.05, y0: P.j.chest[1] - 0.12 * sc, y1: P.j.chest[1] + 0.2 * sc, jag: 0.015, mat: STEEL, seed: 11, thick: 0.02 });
+  if (A >= 0.5) {
+    const cy = P.j.chest[1];
+    scrapBreastplate(ctx, { color: DARK, rng, half: 1.35, y0: cy + 0.03 * sc, y1: cy + 0.22 * sc, jag: 0.012, mat: STEEL, seed: 11, thick: 0.022 });
+    scrapBreastplate(ctx, { color: mix(DARK, 0x505058, 0.3), rng, half: 1.5, y0: cy - 0.1 * sc, y1: cy + 0.05 * sc, jag: 0.012, mat: STEEL, seed: 12, thick: 0.02 });
+    scrapBreastplate(ctx, { color: DARK, rng, half: 1.25, y0: cy - 0.24 * sc, y1: cy - 0.08 * sc, jag: 0.012, mat: STEEL, seed: 13, thick: 0.018 });
+  }
   if (A >= 0.25) {
     crudePauldron(ctx, 'l', { color: DARK, mat: STEEL, rng, layers: 3, size: 1.2, spikes: 3, trim: DARK_TRIM });
     crudePauldron(ctx, 'r', { color: DARK, mat: STEEL, rng, layers: 3, size: 1.2, spikes: 3, trim: DARK_TRIM });
@@ -57,8 +62,8 @@ function brute(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
   const A = ctx.armor;
-  skinTint(ctx, { color: 0x929ca2, color2: 0x687279, noise: 0.5, torso: true });
-  skinMottle(ctx, rng, [0x808a92, 0xa0aab0, 0x5c666e], { n: 14, torso: true, strength: 0.4 });
+  skinTint(ctx, { dim: 0.56, color: 0x929ca2, color2: 0x687279, noise: 0.5, torso: true });
+  skinMottle(ctx, rng, [0x808a92, 0xa0aab0, 0x5c666e], { dim: 0.56, n: 14, torso: true, strength: 0.4 });
   eyeRings(ctx, 0x30343a, 0.6);
   orcTeeth(ctx, rng, { n: 9, big: 1.4 });
   bodyMarks(ctx, rng, { scars: 7, color: 0x3a3a44 });
@@ -88,7 +93,7 @@ function crested(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
   const A = ctx.armor;
-  skinTint(ctx, { color: 0x86909a, color2: 0x5e6870, noise: 0.5, torso: false });
+  skinTint(ctx, { dim: 0.56, color: 0x86909a, color2: 0x5e6870, noise: 0.5, torso: false });
   eyeRings(ctx, 0x242830, 0.6);
   orcTeeth(ctx, rng, { n: 7, big: 1.2 });
   bodyMarks(ctx, rng, { scars: 4, color: 0x3a3a44 });
@@ -117,7 +122,7 @@ function raider(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
   const A = ctx.armor;
-  skinTint(ctx, { color: 0x8e9898, color2: 0x646e6e, noise: 0.5, torso: false });
+  skinTint(ctx, { dim: 0.56, color: 0x8e9898, color2: 0x646e6e, noise: 0.5, torso: false });
   eyeRings(ctx, 0x282c30, 0.55);
   orcTeeth(ctx, rng, { n: 8, big: 1.1 });
   bodyMarks(ctx, rng, { scars: 4, color: 0x3a3a44 });
@@ -152,9 +157,9 @@ export const gundabadDef: KindDef = {
   height: 2.1,
   build: { shoulders: 1.3, hips: 1.04, bulk: 1.28, belly: 0.14, chest: 1.18, armLength: 1.14, legLength: 0.92, headSize: 0.95, neck: 0.55, neckThick: 1.5, hunch: 0.28, handSize: 1.35, footSize: 1.2, muscle: 1.0 },
   face: { ...ORC_FACE, brow: 2.0, jaw: 1.4, tusks: 1.0, underbite: 0.85, ears: 'small', earSize: 1.1, eyeSize: 0.95, eyeOpen: 0.85, asym: 0.7 },
-  skin: { color: 0x8a949a, color2: 0x5c666e, blotch: 0.7, blemish: 0.5, scars: 4, warts: 0.2, wrinkles: 0.6, lips: 0x5a5658, brows: 0x1a1a20, surface: 'skin_orc', scatter: 0x8090a0 },
+  skin: { color: 0x4e585e, color2: 0x363e46, blotch: 0.7, blemish: 0.5, scars: 4, warts: 0.2, wrinkles: 0.6, lips: 0x5a5658, brows: 0x1a1a20, surface: 'skin_orc', scatter: 0x8090a0 },
   eyes: { color: 0xb8cce0, glow: 0.35, sclera: 0xb8bcb8 },
-  hair: { style: 'stringy', color: 0x8a949a, density: 0 },
+  hair: { style: 'stringy', color: 0x4e585e, density: 0 },
   beard: null,
   outfit: [
     { type: 'trousers', color: 0x2a2622, mat: 'leather_worn' },

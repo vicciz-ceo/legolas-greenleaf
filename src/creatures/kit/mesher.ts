@@ -304,7 +304,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
         if (crisp) {
           // bisection for the attribute switch along the edge
           let lo = 0, hi = 1;
-          for (let it = 0; it < 4; it++) {
+          for (let it = 0; it < 3; it++) {
             const tm = (lo + hi) / 2;
             ev.full(ax + (bx - ax) * tm, ay + (by - ay) * tm, az + (bz - az) * tm, codeArr, s0, e0, attr, bw);
             if (attrDiff(v, a) < attrDiff(v, b)) lo = tm;

@@ -5,7 +5,7 @@ import { mat } from './mats';
 import { latheGeo, limbGeo, xf } from './geom';
 import { MeshKit, type Area, type HeightFn } from './util';
 import type { Built, ColliderDesc } from './colliders';
-import { archRing, stoneMat, type V3 } from './arch_common';
+import { adoptColliderMeshes, archRing, stoneMat, type V3 } from './arch_common';
 import { stairs } from './arch_helms';
 
 export type StatuePose = 'standing' | 'toppled' | 'headless' | 'pedestal';
@@ -148,6 +148,7 @@ export function seatOfSeeing(o: { seed?: number } = {}): SeatResult {
     colliders.push(...st.colliders);
     sb.push([0, 0, sz * 24]);
   }
+  adoptColliderMeshes(root, colliders);
   return { object: root, colliders, anchors: { top: [0, topY, 0], seat: [0, topY + 1.4, 0.6], stairsBottom: sb, ring } };
 }
 

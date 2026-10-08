@@ -11,16 +11,16 @@ import type { KindContext, KindDef } from '../../types';
 import { mat4, mergeAll, put, shell, spike, studs } from './armor';
 import { DOME_POINTED, STEEL, domeHelm } from './headgear';
 import { devNum, mix, shade } from './common';
-import { addBeard, addBrows, addHairdo, sculptBeardMass, withHair } from './hair';
+import { addBeard, addBrows, addHairdo, braidClasps, sculptBeardMass, withHair } from './hair';
 import { sculptStrap, sculptTorsoGarment } from './garments';
 import { sculptHairCap } from '../../hairstyles';
 
 export const GIMLI = {
-  hair: 0x7b3f1f,
-  hairTip: 0x9a5a2c,
-  hairLight: 0xa86a33,
-  beard: 0x8e4a24,
-  beardTip: 0xb06a30,
+  hair: 0x62301a,
+  hairTip: 0x84481f,
+  hairLight: 0x9a5a28,
+  beard: 0x74381a,
+  beardTip: 0x96521f,
   skin: 0xa86a4c,
   skin2: 0x8a4a38,
   lips: 0xa85c52,
@@ -135,13 +135,14 @@ function gimliBody(ctx: KindContext) {
   if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 130, width: 0.04, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5, segments: 5 }, new Rng(0x517));
   // ── beard: long, forked into a mass with two braids and a moustache ──
   if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.4 * sc, width: 1.06, fullness: 1.15 });
-  if (!devNum('nobeard', 0)) addBeard(
+  const br = !devNum('nobeard', 0) ? addBeard(
     ctx,
     {
       color: C.beard,
       tip: C.beardTip,
       deep: mix(C.beard, 0x000000, 0.35),
       length: 0.4 * sc,
+      clear: 0.045 * sc,
       locks: 15,
       perLock: 9,
       segments: 6,
@@ -156,7 +157,8 @@ function gimliBody(ctx: KindContext) {
       ],
     },
     rng,
-  );
+  ) : null;
+  if (br) braidClasps(ctx, br.braidPaths, C.bronze);
   // ── armour ──
   if (ctx.helmet) dwarfHelm(ctx);
   if (ctx.armor >= 0.5) pauldrons(ctx);

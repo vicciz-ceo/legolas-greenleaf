@@ -175,7 +175,8 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
         const inf = 0.014 * sc + t;
         s.group('union', 0.0025 * sc, () => {
           emitParts(s, parts, [...UPPER, 'pelvis', 'glutes', 'thigh', 'neck'], { ...base(l.type === 'jerkin' ? 'suede' : 'leather'), inflate: inf });
-          slab(s, hipY + (l.length !== undefined ? -0.08 * l.length * sc : 0.02 * sc), j.neck[1] + 0.04 * sc, 0.005 * sc, true);
+          // the neckline sits on the base of the neck (a taller collar is under-resolved at body res)
+          slab(s, hipY + (l.length !== undefined ? -0.08 * l.length * sc : 0.02 * sc), j.neck[1] + 0.012 * sc, 0.005 * sc, true);
           // arm holes: the plane leans outward downward, so the vest opens at the shoulder joint
           // only and still wraps the ribs fully below the armpit
           const an = new THREE.Vector3(1, 0.42, 0).normalize();

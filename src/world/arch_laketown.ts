@@ -7,7 +7,7 @@ import { MeshKit } from './util';
 import type { PathPoint } from './util';
 import { Path } from './path';
 import type { Built, ColliderDesc } from './colliders';
-import { gableRoof, mergedColliderMesh, stoneMat, wallWithOpenings, type Opening, type V3 } from './arch_common';
+import { adoptColliderMeshes, gableRoof, mergedColliderMesh, stoneMat, wallWithOpenings, type Opening, type V3 } from './arch_common';
 import { ladder, lantern } from './props';
 
 export interface HouseResult extends Built {
@@ -310,6 +310,7 @@ export function bardsHouse(o: { lit?: boolean; seed?: number } = {}): HouseResul
   colliders.push({ kind: 'mesh', mesh: roofMesh, opts: { material: 'wood', tag: 'roof' } });
   const g = kit.build({ name: 'bards_house' });
   g.add(roofMesh);
+  adoptColliderMeshes(g, colliders);
   // shift the roof visuals to cover the balcony too
   g.traverse((ch) => {
     if ((ch as THREE.Mesh).isMesh && ch.name.includes('shingles')) ch.position.z = 0.9;

@@ -3,7 +3,7 @@ import type { LabSubject } from '../core/types';
 import type { Built } from './colliders';
 import { withDebug } from './labutil';
 import {
-  banner, barrel, batFlock, boat, boulderField, brazier, chain, crate, fallenLog, iceSheet, ladder, lantern, rock, skeleton, torch, weaponRack, well,
+  banner, barrel, batteringRam, catapult, siegeTower, stoneBlock, batFlock, boat, boulderField, brazier, chain, crate, fallenLog, iceSheet, ladder, lantern, rock, skeleton, torch, weaponRack, well,
   type Emblem, type SkeletonPose,
 } from './props';
 import { setWindTime } from './shader';
@@ -100,4 +100,8 @@ export const subjects: LabSubject[] = [
     return l;
   }, 1.4),
   one('boat', () => boat(), 1.2),
+  one('catapult', () => catapult(), 5),
+  one('siege_tower', () => siegeTower(), 14),
+  one('battering_ram', () => batteringRam(), 4),
+  one('stone_block', () => stoneBlock([3, 1.6, 3], 2), 2),
 ];

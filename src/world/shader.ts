@@ -33,6 +33,8 @@ export interface MacroOpts {
   strength?: number;
   /** hue-ish warm/cool variation 0..1 (default 0.08) */
   tint?: number;
+  /** vertical rain-streak weathering 0..1 (stone walls). default 0 */
+  streaks?: number;
 }
 
 /**
@@ -43,8 +45,11 @@ export function applyMacroVariation(mat: THREE.Material, o: MacroOpts = {}): voi
   const scale = o.scale ?? 0.07;
   const strength = o.strength ?? 0.3;
   const tint = o.tint ?? 0.08;
-  patchShader(mat, `macro${scale}_${strength}_${tint}`, (shader) => {
+  const streaks = o.streaks ?? 0;
+  patchShader(mat, `macro${scale}_${strength}_${tint}_${streaks}`, (shader) => {
     shader.uniforms.uMacro = { value: new THREE.Vector3(scale, strength, tint) };
+    shader.uniforms.uStreak = { value: streaks };
+    shader.uniforms.uStreakBase = { value: 0 };
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nvarying vec3 vMacroPos;')
       .replace(
@@ -59,7 +64,7 @@ export function applyMacroVariation(mat: THREE.Material, o: MacroOpts = {}): voi
         }`,
       );
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', `#include <common>\nvarying vec3 vMacroPos;\nuniform vec3 uMacro;\n${GLSL_HASH_NOISE}`)
+      .replace('#include <common>', `#include <common>\nvarying vec3 vMacroPos;\nuniform vec3 uMacro;\nuniform float uStreak;\nuniform float uStreakBase;\n${GLSL_HASH_NOISE}`)
       .replace(
         '#include <map_fragment>',
         `#include <map_fragment>
@@ -68,6 +73,13 @@ export function applyMacroVariation(mat: THREE.Material, o: MacroOpts = {}): voi
           float mv2 = wNoise3(vMacroPos * uMacro.x * 0.37 + 11.0);
           diffuseColor.rgb *= 1.0 + (mv - 0.5) * 2.0 * uMacro.y;
           diffuseColor.rgb *= vec3(1.0 + (mv2 - 0.5) * uMacro.z * 2.0, 1.0, 1.0 - (mv2 - 0.5) * uMacro.z * 2.0);
+          if (uStreak > 0.0) {
+            float hz = vMacroPos.x * 0.55 + vMacroPos.z * 0.55;
+            float st = wNoise3(vec3(hz * 1.7, vMacroPos.y * 0.06, 3.0)) * 0.6 + wNoise3(vec3(hz * 4.3, vMacroPos.y * 0.16, 9.0)) * 0.4;
+            float drip = smoothstep(0.52, 0.8, st);
+            float soil = 1.0 - smoothstep(0.0, 5.0, vMacroPos.y - uStreakBase);
+            diffuseColor.rgb *= 1.0 - uStreak * (drip * 0.55 + soil * 0.25);
+          }
         }`,
       );
   });

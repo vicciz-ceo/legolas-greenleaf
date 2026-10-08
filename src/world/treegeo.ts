@@ -191,7 +191,9 @@ function addLeafCard(c: CardCtx, p: V3, dir: V3, scale = 1): void {
   const away = norm(sub(mid, c.center));
   const nrm = norm(add(mul(away, c.sphere), mul([0, 1, 0], 1 - c.sphere * 0.7)));
   const tint = c.tints[Math.floor(rng.float() * c.tints.length)];
-  const j = 0.85 + rng.float() * 0.3;
+  // cards deep inside the crown get darker (cheap occlusion)
+  const depth = Math.min(1, len(sub(p, c.center)) / Math.max(1, c.crownR));
+  const j = (0.85 + rng.float() * 0.3) * (0.58 + 0.42 * depth);
   card(c.leaves, c.cell, p, up, side, L, L * 0.95, nrm, Math.min(1, Math.max(0, p[1] / c.H)), c.flutter, [tint[0] * j, tint[1] * j, tint[2] * j]);
 }
 
