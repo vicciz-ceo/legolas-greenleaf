@@ -541,30 +541,30 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | --- | --- | --- | --- |
 | views/side | accepted | 1 | Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text. |
 | views/front | accepted | 1 | Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text. |
-| views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
-| views/three_quarter | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/top | accepted | 1 | True top-down camera, eight separate legs and same ivory-marked swollen abdomen; no text. |
+| views/three_quarter | accepted | 1 | Clear front-oblique angle, eight separate legs and consistent pale scarred markings, no text. |
+| face_views/front | accepted | 1 | Eight distinct eyes in 2+4+2 rows, paired mandibles and pale scarred hairy carapace; no text. |
+| face_views/three_quarter | accepted | 1 | Oblique head with same eight-eye pattern, pale scars and paired mandibles; no text. |
+| face_views/side | accepted | 2 | Lateral edge-on eye cluster with near-side eyes and far mandible occluded; same scarred pale markings. |
+| details/cloth_leather | accepted | 1 | Matching ivory-patterned dark chitin, visible healed scars and coarse bristles; no text. |
+| details/weapon_metal | accepted | 1 | Two main downward hooked mandibles with natural lateral palps and matching coarse hair/pale scars; no text. |
+| details/skin | accepted | 0 | Reviewed close-up crop: scarred natural chitin surface proxy. |
+| details/hair | accepted | 0 | Reviewed crop of natural coarse bristles on abdomen. |
+| turnaround | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| spec | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| notes | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| check | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| face | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| details | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| observed | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
 
 ## mumak
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
+| views/side | accepted | 1 | True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four. |
+| views/front | accepted | 1 | Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text. |
+| views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
 | views/three_quarter | pending | 0 |  |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |

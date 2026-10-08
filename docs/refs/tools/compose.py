@@ -355,6 +355,7 @@ def creature(cid, pose=None):
     cfg = dict(data['composition'])
     if pose:
         target = cfg['pose_targets'][pose]
+        cfg.pop('extent_rules', None)
         cfg.update(views=[pose], reference_view=pose, scale_axis=target['axis'],
                    scale_extent_m=target['extent_m'], projected_extents_m={pose:target['extent_m']})
         cfg['landmark_regions_px'] = {pose:target['region_px']} if target.get('region_px') else {}
@@ -373,7 +374,17 @@ def creature(cid, pose=None):
                     for view,path,crop,srcbox in images}
     # All creature views are generated at independent crops. Their explicit target
     # projected extents must be supplied; a side length is not a top wingspan.
-    extents = cfg.get('projected_extents_m', {})
+    extents = dict(cfg.get('projected_extents_m', {}))
+    # Explicit projection assumptions for views whose relevant anatomical
+    # landmark is occluded or has no height axis (e.g. an overhead oliphaunt).
+    # Derive their overall extents from actual reference cutout geometry;
+    # these are normalized 2D projection assumptions, not recovered 3D sizes.
+    reference_crop = next(crop for view,path,crop,srcbox in images if view==reference_view)
+    for view, rule in cfg.get('extent_rules', {}).items():
+        require(view in views and view!=reference_view, 'Invalid projected extent rule view')
+        require(rule in ('reference_overall_height','reference_overall_width'), 'Unknown projected extent rule')
+        pixels = reference_crop.height if rule.endswith('height') else reference_crop.width
+        extents[view] = pixels*extent/measurements[reference_view]['source_span_px']
     require(all(view in extents for view in views), 'Supply projected_extents_m for each creature view')
     require(float(extents[reference_view])==extent,'Reference extent differs from ruler target')
     available_w, available_h = (1200, 850) if pose else (440, 360)
@@ -447,6 +458,7 @@ def creature(cid, pose=None):
                    'layout':{'subject_max_width_px':available_w,'subject_max_height_px':available_h,
                              'human_max_height_px':available_h,'scale_reason':'Fit all views and reserve a separate human/ruler lane'},
                    'scale_axis':axis,'reference_view':reference_view,'scale_extent_m':extent,
+                   'extent_rules':cfg.get('extent_rules',{}),
                    'interpretation':'Projected extents are design targets; no 3D measurement inferred from generated views.'})
     data.setdefault('measured',{})[key] = result
     write_spec(specpath,data)

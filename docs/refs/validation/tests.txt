@@ -1,11 +1,11 @@
-............/workspace/greenleaf-character-refs/docs/refs/tools/compose.py:548: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmpb7mmts1q/fixture/views/front.png'>
+............./workspace/greenleaf-character-refs/docs/refs/tools/compose.py:560: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmput8wpfes/fixture/views/front.png'>
   if retained and Image.open(path).mode == 'RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/workspace/greenleaf-character-refs/docs/refs/tools/compose.py:697: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmpb7mmts1q/fixture/views/front.png'>
+/workspace/greenleaf-character-refs/docs/refs/tools/compose.py:709: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmput8wpfes/fixture/views/front.png'>
   if s['coordinate_space'].startswith('retained source pixels') and Image.open(path).mode=='RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
 .....
 ----------------------------------------------------------------------
-Ran 17 tests in 3.479s
+Ran 18 tests in 3.430s
 
 OK

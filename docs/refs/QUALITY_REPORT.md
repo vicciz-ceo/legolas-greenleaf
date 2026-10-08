@@ -453,25 +453,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | mirkwood_spider | observed | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
 | brood_mother | views/side | accepted | 1 | Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text. |
 | brood_mother | views/front | accepted | 1 | Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text. |
-| brood_mother | views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
-| brood_mother | views/three_quarter | pending | 0 | Not yet attempted |
-| brood_mother | face_views/front | pending | 0 | Not yet attempted |
-| brood_mother | face_views/three_quarter | pending | 0 | Not yet attempted |
-| brood_mother | face_views/side | pending | 0 | Not yet attempted |
-| brood_mother | details/cloth_leather | pending | 0 | Not yet attempted |
-| brood_mother | details/weapon_metal | pending | 0 | Not yet attempted |
-| brood_mother | details/skin | pending | 0 | Not yet attempted |
-| brood_mother | details/hair | pending | 0 | Not yet attempted |
-| brood_mother | turnaround | pending | 0 | Not yet attempted |
-| brood_mother | spec | pending | 0 | Not yet attempted |
-| brood_mother | notes | pending | 0 | Not yet attempted |
-| brood_mother | check | pending | 0 | Not yet attempted |
-| brood_mother | face | pending | 0 | Not yet attempted |
-| brood_mother | details | pending | 0 | Not yet attempted |
-| brood_mother | observed | pending | 0 | Not yet attempted |
-| mumak | views/side | pending | 0 | Not yet attempted |
-| mumak | views/front | pending | 0 | Not yet attempted |
-| mumak | views/top | pending | 0 | Not yet attempted |
+| brood_mother | views/top | accepted | 1 | True top-down camera, eight separate legs and same ivory-marked swollen abdomen; no text. |
+| brood_mother | views/three_quarter | accepted | 1 | Clear front-oblique angle, eight separate legs and consistent pale scarred markings, no text. |
+| brood_mother | face_views/front | accepted | 1 | Eight distinct eyes in 2+4+2 rows, paired mandibles and pale scarred hairy carapace; no text. |
+| brood_mother | face_views/three_quarter | accepted | 1 | Oblique head with same eight-eye pattern, pale scars and paired mandibles; no text. |
+| brood_mother | face_views/side | accepted | 2 | Lateral edge-on eye cluster with near-side eyes and far mandible occluded; same scarred pale markings. |
+| brood_mother | face_views/side attempt 1 | rejected | — | Head remains oblique, with broad frontal eye cluster and both mandibles; requested exact profile not achieved. |
+| brood_mother | details/cloth_leather | accepted | 1 | Matching ivory-patterned dark chitin, visible healed scars and coarse bristles; no text. |
+| brood_mother | details/weapon_metal | accepted | 1 | Two main downward hooked mandibles with natural lateral palps and matching coarse hair/pale scars; no text. |
+| brood_mother | details/skin | accepted | 0 | Reviewed close-up crop: scarred natural chitin surface proxy. |
+| brood_mother | details/hair | accepted | 0 | Reviewed crop of natural coarse bristles on abdomen. |
+| brood_mother | turnaround | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | spec | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | notes | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | check | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | face | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | details | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| brood_mother | observed | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
+| mumak | views/side | accepted | 1 | True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four. |
+| mumak | views/front | accepted | 1 | Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text. |
+| mumak | views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
 | mumak | views/three_quarter | pending | 0 | Not yet attempted |
 | mumak | face_views/front | pending | 0 | Not yet attempted |
 | mumak | face_views/three_quarter | pending | 0 | Not yet attempted |

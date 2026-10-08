@@ -130,6 +130,23 @@ class ComposeTests(unittest.TestCase):
         data['measured']['pose_folded']['px_per_m']+=1;self.store(data)
         with self.assertRaisesRegex(ValueError,'recorded px_per_m|different scale'):c.check('fixture')
 
+    def test_projection_rules_derive_from_measured_reference(self):
+        self.data['composition'].update(creature=True,views=list(c.VIEWS),reference_view='side',
+                                        scale_axis='height',scale_extent_m=1.85,
+                                        projected_extents_m={v:1.85 for v in c.VIEWS},
+                                        landmark_regions_px={'side':[20,50,55,201]},
+                                        extent_rules={'front':'reference_overall_height','back':'reference_overall_width'})
+        self.store(self.data)
+        rec=c.turnaround('fixture')
+        side=next(v for v in rec['views'] if v['view']=='side')
+        ref=side['source_bbox_px'];span=side['measurement']['source_span_px']
+        front=next(v for v in rec['views'] if v['view']=='front')
+        back=next(v for v in rec['views'] if v['view']=='back')
+        self.assertAlmostEqual(front['projected_extent_m'],(ref[3]-ref[1])*1.85/span)
+        self.assertAlmostEqual(back['projected_extent_m'],(ref[2]-ref[0])*1.85/span)
+        self.data['composition']['extent_rules']['front']='invented_rule';self.store(self.data)
+        with self.assertRaisesRegex(ValueError,'Unknown projected extent rule'):c.turnaround('fixture')
+
     def test_supplement_accepted_ledger_cannot_hide_missing_assets(self):
         (c.ROOT/'progress.json').write_text(json.dumps({'entries':{'fixture':{'kind':'supplement','deliverables':{'sheet':{'status':'accepted'}}}}}))
         report=c.check_all()

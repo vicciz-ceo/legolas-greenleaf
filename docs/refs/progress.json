@@ -4042,77 +4042,146 @@
           "path": "/workspace/generated_images/exec-50ff48da-a912-4b8e-8e42-c35d1fe53161.png"
         },
         "views/top": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "True top-down camera, eight separate legs and same ivory-marked swollen abdomen; no text.",
               "path": "/workspace/generated_images/exec-1169d84e-2947-49c6-9384-ceb0bf99b845.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "True top-down camera, eight separate legs and same ivory-marked swollen abdomen; no text.",
           "path": "/workspace/generated_images/exec-1169d84e-2947-49c6-9384-ceb0bf99b845.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear front-oblique angle, eight separate legs and consistent pale scarred markings, no text.",
+              "path": "/workspace/generated_images/exec-cc807240-79e7-45b7-926e-a6189d940f21.png"
+            }
+          ],
+          "reason": "Clear front-oblique angle, eight separate legs and consistent pale scarred markings, no text.",
+          "path": "/workspace/generated_images/exec-cc807240-79e7-45b7-926e-a6189d940f21.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Eight distinct eyes in 2+4+2 rows, paired mandibles and pale scarred hairy carapace; no text.",
+              "path": "/workspace/generated_images/exec-25f70f48-f0aa-4364-ad94-a5b52531cffa.png"
+            }
+          ],
+          "reason": "Eight distinct eyes in 2+4+2 rows, paired mandibles and pale scarred hairy carapace; no text.",
+          "path": "/workspace/generated_images/exec-25f70f48-f0aa-4364-ad94-a5b52531cffa.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Oblique head with same eight-eye pattern, pale scars and paired mandibles; no text.",
+              "path": "/workspace/generated_images/exec-b836df1d-c21c-4a01-9f3a-96e2ffafe217.png"
+            }
+          ],
+          "reason": "Oblique head with same eight-eye pattern, pale scars and paired mandibles; no text.",
+          "path": "/workspace/generated_images/exec-b836df1d-c21c-4a01-9f3a-96e2ffafe217.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Head remains oblique, with broad frontal eye cluster and both mandibles; requested exact profile not achieved.",
+              "path": "/workspace/generated_images/exec-8dee5a04-e6ee-4540-bebf-8f040be7ec13.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Lateral edge-on eye cluster with near-side eyes and far mandible occluded; same scarred pale markings.",
+              "path": "/workspace/generated_images/exec-cc1a42c2-0e64-4665-865f-83121a4b1913.png"
+            }
+          ],
+          "reason": "Lateral edge-on eye cluster with near-side eyes and far mandible occluded; same scarred pale markings.",
+          "path": "/workspace/generated_images/exec-cc1a42c2-0e64-4665-865f-83121a4b1913.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Matching ivory-patterned dark chitin, visible healed scars and coarse bristles; no text.",
+              "path": "/workspace/generated_images/exec-9acffdec-d910-48b9-8749-f227ac2e17d2.png"
+            }
+          ],
+          "reason": "Matching ivory-patterned dark chitin, visible healed scars and coarse bristles; no text.",
+          "path": "/workspace/generated_images/exec-9acffdec-d910-48b9-8749-f227ac2e17d2.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Two main downward hooked mandibles with natural lateral palps and matching coarse hair/pale scars; no text.",
+              "path": "/workspace/generated_images/exec-b6af011f-1d26-4e09-bd29-e7f9dedd0ee1.png"
+            }
+          ],
+          "reason": "Two main downward hooked mandibles with natural lateral palps and matching coarse hair/pale scars; no text.",
+          "path": "/workspace/generated_images/exec-b6af011f-1d26-4e09-bd29-e7f9dedd0ee1.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed close-up crop: scarred natural chitin surface proxy."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed crop of natural coarse bristles on abdomen."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass."
         }
       }
     },
@@ -4121,16 +4190,43 @@
       "design_extent_m": 14,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four.",
+              "path": "/workspace/generated_images/exec-76a8ef4a-0e03-4029-b9b5-5e400cc5c09e.png"
+            }
+          ],
+          "reason": "True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four.",
+          "path": "/workspace/generated_images/exec-76a8ef4a-0e03-4029-b9b5-5e400cc5c09e.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text.",
+              "path": "/workspace/generated_images/exec-69039ee4-5705-4cdd-9eeb-fa2326c9b69d.png"
+            }
+          ],
+          "reason": "Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text.",
+          "path": "/workspace/generated_images/exec-69039ee4-5705-4cdd-9eeb-fa2326c9b69d.png"
         },
         "views/top": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-6079e64b-53a5-4740-9262-97953abd0fc2.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-6079e64b-53a5-4740-9262-97953abd0fc2.png"
         },
         "views/three_quarter": {
           "status": "pending",
