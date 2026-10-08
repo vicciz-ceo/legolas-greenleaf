@@ -4216,77 +4216,156 @@
           "path": "/workspace/generated_images/exec-69039ee4-5705-4cdd-9eeb-fa2326c9b69d.png"
         },
         "views/top": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "rejected",
+              "reason": "High frontal/oblique camera shows vertical howdah faces and broad frontal head; not exact top-down.",
               "path": "/workspace/generated_images/exec-6079e64b-53a5-4740-9262-97953abd0fc2.png"
+            },
+            {
+              "number": 2,
+              "status": "rejected",
+              "reason": "Upper tail tuft reaches and is cut by the source image edge; framing lacks a complete tail tip, despite improved overhead angle.",
+              "path": "/workspace/generated_images/exec-3f13d662-d351-4cf8-8dd3-c5455d1e1c79.png"
+            },
+            {
+              "number": 3,
+              "status": "accepted",
+              "reason": "Overhead plan view of head/back and platform floors, complete curved tail tuft/trunk and own-left ladder edge on image right; no text.",
+              "path": "/workspace/generated_images/exec-7d8f44f0-3057-449d-ac4f-329351fde420.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
-          "path": "/workspace/generated_images/exec-6079e64b-53a5-4740-9262-97953abd0fc2.png"
+          "reason": "Overhead plan view of head/back and platform floors, complete curved tail tuft/trunk and own-left ladder edge on image right; no text.",
+          "path": "/workspace/generated_images/exec-7d8f44f0-3057-449d-ac4f-329351fde420.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Insufficient frontal rotation; candidate repeats side angle too closely.",
+              "path": "/workspace/generated_images/exec-1522eb76-4fb2-44ba-8f0f-8d8cbbb563b1.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Distinct front-oblique head/body, same own-left ladder and howdah, natural overlapping tusks; frontal source confirms four.",
+              "path": "/workspace/generated_images/exec-fe4bea44-91c3-44a0-93fa-e16274d66021.png"
+            }
+          ],
+          "reason": "Distinct front-oblique head/body, same own-left ladder and howdah, natural overlapping tusks; frontal source confirms four.",
+          "path": "/workspace/generated_images/exec-fe4bea44-91c3-44a0-93fa-e16274d66021.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Two natural eyes, one complete trunk and four separate tusks, same red paint and wrinkled grey-brown hide; no text.",
+              "path": "/workspace/generated_images/exec-a5624af5-e4b0-4249-9e8f-6b17c9a82afe.png"
+            }
+          ],
+          "reason": "Two natural eyes, one complete trunk and four separate tusks, same red paint and wrinkled grey-brown hide; no text.",
+          "path": "/workspace/generated_images/exec-a5624af5-e4b0-4249-9e8f-6b17c9a82afe.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique head, same four tusks and complete trunk/ears, natural two-eye face with original red paint.",
+              "path": "/workspace/generated_images/exec-5e4a4a2e-833a-4162-bf0c-9dd8783b6247.png"
+            }
+          ],
+          "reason": "Clear oblique head, same four tusks and complete trunk/ears, natural two-eye face with original red paint.",
+          "path": "/workspace/generated_images/exec-5e4a4a2e-833a-4162-bf0c-9dd8783b6247.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Lateral head profile with one near eye and ear, same four tusks overlapping naturally and complete trunk, no text.",
+              "path": "/workspace/generated_images/exec-b2b93cef-1c23-40a4-ba82-559e52875ef3.png"
+            }
+          ],
+          "reason": "Lateral head profile with one near eye and ear, same four tusks overlapping naturally and complete trunk, no text.",
+          "path": "/workspace/generated_images/exec-b2b93cef-1c23-40a4-ba82-559e52875ef3.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Howdah close-up cuts the ladder ropes/lower end at the bottom image edge; supplemental close-up needs complete ladder.",
+              "path": "/workspace/generated_images/exec-c41390fe-736c-4538-b681-7cf1ff2216fe.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Same tower/banners/girths and complete own-left ladder through final rung and rope ends; no text.",
+              "path": "/workspace/generated_images/exec-71a92521-198c-42e8-8111-60c604f86eb2.png"
+            }
+          ],
+          "reason": "Same tower/banners/girths and complete own-left ladder through final rung and rope ends; no text.",
+          "path": "/workspace/generated_images/exec-71a92521-198c-42e8-8111-60c604f86eb2.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed close-up crop of accepted individual source: ivory."
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed accepted-side crop of wrinkled hide."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed accepted-side crop of actual coarse tail tuft."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass."
         }
       }
     },
@@ -4295,16 +4374,43 @@
       "design_extent_m": 7,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text.",
+              "path": "/workspace/generated_images/exec-93afad91-5189-4bee-b9de-5ad09e107229.png"
+            }
+          ],
+          "reason": "Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text.",
+          "path": "/workspace/generated_images/exec-93afad91-5189-4bee-b9de-5ad09e107229.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text.",
+              "path": "/workspace/generated_images/exec-92bfeebd-f7e6-4fe2-bb34-caa0a6ba887f.png"
+            }
+          ],
+          "reason": "Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text.",
+          "path": "/workspace/generated_images/exec-92bfeebd-f7e6-4fe2-bb34-caa0a6ba887f.png"
         },
         "views/top": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips.",
+              "path": "/workspace/generated_images/exec-5a526d29-d9ad-459f-8907-294078236ccb.png"
+            }
+          ],
+          "reason": "Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips.",
+          "path": "/workspace/generated_images/exec-5a526d29-d9ad-459f-8907-294078236ccb.png"
         },
         "views/three_quarter": {
           "status": "pending",
@@ -4936,24 +5042,29 @@
       "kind": "supplement",
       "deliverables": {
         "howdah": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass."
         },
         "sheet": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass."
         }
       }
     }

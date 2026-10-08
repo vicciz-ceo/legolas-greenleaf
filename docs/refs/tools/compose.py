@@ -578,7 +578,10 @@ def preview64(cid):
     outdir.mkdir(parents=True,exist_ok=True)
     paths=[]
     thumbnails=[]
-    for view in data['measured']['turnaround']['views']:
+    preview_views = list(data['measured']['turnaround']['views'])
+    for name in data.get('composition',{}).get('pose_targets',{}):
+        preview_views += data['measured'].get(f'pose_{name}',{}).get('views',[])
+    for view in preview_views:
         _,im = source(folder,view['source'])
         im,_ = tight(im)
         target=(max(1,round(im.width*64/im.height)),64)

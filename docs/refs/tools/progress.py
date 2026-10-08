@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Persistent review ledger and index; never auto-accepts imagery."""
-import json
+import json, hashlib, tempfile, os, fcntl
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 STATE=ROOT/'progress.json'
@@ -13,7 +13,9 @@ ROSTER={
 WEAPONS=['galadhrim_bow','elven_knives','gimli_axe','uruk_falchion','orc_cleaver','orc_scimitar','bolg_mace','cave_troll_club','war_hammer','pike','rohan_shield','gondor_shield','uruk_shield','torch']
 
 def save(data):
- STATE.write_text(json.dumps(data,indent=2)+'\n')
+ with tempfile.NamedTemporaryFile(mode='w',dir=STATE.parent,prefix='.progress-',suffix='.tmp',delete=False) as out:
+  out.write(json.dumps(data,indent=2)+'\n');name=out.name
+ os.replace(name,STATE)
 
 def initialize():
  if STATE.exists():return
@@ -33,6 +35,12 @@ def initialize():
  save(data)
 
 def record(cid,key,status,reason='',path=None,attempt=False):
+ lockpath=Path(tempfile.gettempdir())/('greenleaf-progress-'+hashlib.sha256(str(STATE).encode()).hexdigest()[:16]+'.lock')
+ with lockpath.open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX)
+  return _record(cid,key,status,reason,path,attempt)
+
+def _record(cid,key,status,reason='',path=None,attempt=False):
  data=json.loads(STATE.read_text());item=data['entries'][cid]['deliverables'][key]
  if attempt:
   if len(item['attempts'])>=4:raise ValueError('Four-attempt cap reached')
@@ -79,7 +87,7 @@ def index_and_report(data):
    for attempt in d['attempts']:
     if attempt['status']=='rejected':quality.append(f"| {cid} | {key} attempt {attempt['number']} | rejected | — | {attempt['reason']} |")
  lines+=['','## Composition and storage','',f'Retained library size: **{stored_bytes(ROOT):,} bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.','', 'Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.','', 'Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.']
- quality+=['','## Validation','', '- Eighteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).','- Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
+ quality+=['','## Validation','', '- Nineteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).','- Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.','- Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.']
  (ROOT/'README.md').write_text('\n'.join(lines).rstrip()+'\n');(ROOT/'QUALITY_REPORT.md').write_text('\n'.join(quality)+'\n')
 
 if __name__=='__main__':

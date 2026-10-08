@@ -4,8 +4,8 @@
     "id": "gundabad_bat",
     "source": "design_target",
     "display_name": "Gundabad Bat",
-    "height_m": 7,
-    "overall_height_m": 7,
+    "height_m": 2.0,
+    "overall_height_m": 2.0,
     "proportions": {
       "head_height_m": 0,
       "shoulder_width_m": 0,
@@ -20,23 +20,23 @@
     "face": {
       "shape": "Gundabad giant bat: original rat-like head, furred dark grey torso, TWO leathery membranous translucent wings with natural finger struts, TWO clawed rear feet; wings SPREAD with 7 m span, no armour or gear.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
-        "size_note": "natural adult scale, defined upper and lower lids"
+        "iris_hex": "#241b15",
+        "shape": "Two natural glossy dark bat eyes",
+        "size_note": "Rat-like head, no human eyes"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
-      "skin_base_hex": "#777064",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "brow": "Natural rat-like bat brow",
+      "nose": "Short rat-like muzzle and natural bat nostrils",
+      "lips": "Natural small fanged bat mouth",
+      "ears": "Two large natural bat ears",
+      "skin_base_hex": "#675848",
+      "skin_variation": "Grey-brown fur and translucent brown-grey wing membranes"
     },
     "hair": {
-      "root_hex": "#5a4c38",
-      "tip_hex": "#5a4c38",
-      "length_m": 0.04,
-      "style": "Gundabad giant bat: original rat-like head, furred dark grey torso, TWO leathery membranous translucent wings with natural finger struts, TWO clawed rear feet; wings SPREAD with 7 m span, no armour or gear.",
-      "braids": "as described, no additional ornamental braids"
+      "root_hex": "#3c342c",
+      "tip_hex": "#78614a",
+      "length_m": 0.12,
+      "style": "Short coarse grey-brown bat body fur",
+      "braids": "None"
     },
     "outfit_layers": [],
     "armor": [],
@@ -58,29 +58,31 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Original creature scale target; humanoid-schema proportions are not applicable and are zero. Projected extents and palettes are authored design targets, not recovered 3D measurements.",
-    "description": "Gundabad giant bat: original rat-like head, furred dark grey torso, TWO leathery membranous translucent wings with natural finger struts, TWO clawed rear feet; wings SPREAD with 7 m span, no armour or gear."
+    "description": "Gundabad giant bat: original rat-like head, furred dark grey torso, TWO leathery membranous translucent wings with natural finger struts, TWO clawed rear feet; wings SPREAD with 7 m span, no armour or gear.",
+    "wingspan_m": 7.0,
+    "dimension_note": "Original wingspan 6\u20138 m, selected 7 m. Body height and non-frontal projected extents are explicitly authored intent, not prescribed or recovered dimensions. Side view is generated first for identity; the frontal spread view supplies the visible wingspan calibration."
   },
   "composition": {
     "fit_policy": "fit",
     "detail_tiles": [
       {
         "name": "cloth_leather",
-        "label": "CLOTH / LEATHER",
+        "label": "WING MEMBRANE",
         "source": "details/cloth_leather.png"
       },
       {
         "name": "weapon_metal",
-        "label": "GEAR / METAL",
+        "label": "CLAW / STRUT",
         "source": "details/weapon_metal.png"
       },
       {
         "name": "skin",
-        "label": "SKIN / FACE",
+        "label": "FURRED SKIN",
         "source": "details/skin.png"
       },
       {
         "name": "hair",
-        "label": "HAIR / STRANDS",
+        "label": "COARSE FUR",
         "source": "details/hair.png"
       }
     ],
@@ -92,15 +94,34 @@
       "top",
       "three_quarter"
     ],
-    "reference_view": "side",
+    "reference_view": "front",
     "scale_axis": "width",
-    "scale_extent_m": 7,
+    "scale_extent_m": 7.0,
     "projected_extents_m": {
-      "front": 7,
-      "side": 7,
-      "top": 7,
-      "three_quarter": 7
+      "front": 7.0,
+      "side": 3.5,
+      "top": 7.0,
+      "three_quarter": 6.0
     },
-    "measurement_note": "Span endpoint pair selected on accepted reference; perpendicular projections require authored projected extent before composing."
+    "measurement_note": "Front: wing-tip to wing-tip visible projected span, 7 m original target. Top same authored span; oblique 6 m, side flight height 3.5 m and folded body height 2 m are authored projection assumptions, not recovered 3D measurements. Natural creature wing flight poses are an explicit roster exception to humanoid relaxed-A-pose and held-gear head limits.",
+    "scale_axes": {
+      "side": "height"
+    },
+    "source_heights": {
+      "body": 256,
+      "face": 192
+    },
+    "pose_targets": {
+      "folded": {
+        "axis": "height",
+        "extent_m": 2.0
+      }
+    },
+    "turnaround_labels": {
+      "side": "SIDE / FLIGHT",
+      "front": "FRONT / WINGS SPREAD",
+      "top": "TOP / WINGS SPREAD",
+      "folded": "WINGS FOLDED"
+    }
   }
 }

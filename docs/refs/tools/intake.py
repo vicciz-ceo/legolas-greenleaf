@@ -5,7 +5,10 @@ from pathlib import Path
 from PIL import Image
 import compose,progress
 
+_LAST_DETAIL_RGBA = None
+
 def intake(cid,key,path,crop=None,remove_detail_bg=False):
+ global _LAST_DETAIL_RGBA
  folder=compose.ROOT/cid
  relative=key+'.png'
  original=Path(path)
@@ -15,7 +18,14 @@ def intake(cid,key,path,crop=None,remove_detail_bg=False):
   import os
   if compose._REMBG_SESSION is None:
    compose._REMBG_SESSION=new_session(os.environ.get('GREENLEAF_REMBG_MODEL','u2net'))
-  image=remove(image,session=compose._REMBG_SESSION)
+  fingerprint=compose.digest(original)
+  if _LAST_DETAIL_RGBA is not None and _LAST_DETAIL_RGBA[0]==fingerprint:
+   image=_LAST_DETAIL_RGBA[1].copy()
+  else:
+   image=remove(image,session=compose._REMBG_SESSION)
+   # Keep only the latest full-resolution mask, for distinct detail crops of
+   # one accepted original. Never retain this temporary cache in the library.
+   _LAST_DETAIL_RGBA=(fingerprint,image.copy())
  if crop:
   image=image.crop(crop)
   temp=Path('/tmp/greenleaf-intake-crop.png');image.save(temp);inp=temp

@@ -472,25 +472,29 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | brood_mother | observed | accepted | 0 | All body/head/detail sources, final sheets and 64 px silhouettes reviewed; source/canvas/endpoint/human/ruler/material/budget checks pass. |
 | mumak | views/side | accepted | 1 | True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four. |
 | mumak | views/front | accepted | 1 | Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text. |
-| mumak | views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
-| mumak | views/three_quarter | pending | 0 | Not yet attempted |
-| mumak | face_views/front | pending | 0 | Not yet attempted |
-| mumak | face_views/three_quarter | pending | 0 | Not yet attempted |
-| mumak | face_views/side | pending | 0 | Not yet attempted |
-| mumak | details/cloth_leather | pending | 0 | Not yet attempted |
-| mumak | details/weapon_metal | pending | 0 | Not yet attempted |
-| mumak | details/skin | pending | 0 | Not yet attempted |
-| mumak | details/hair | pending | 0 | Not yet attempted |
-| mumak | turnaround | pending | 0 | Not yet attempted |
-| mumak | spec | pending | 0 | Not yet attempted |
-| mumak | notes | pending | 0 | Not yet attempted |
-| mumak | check | pending | 0 | Not yet attempted |
-| mumak | face | pending | 0 | Not yet attempted |
-| mumak | details | pending | 0 | Not yet attempted |
-| mumak | observed | pending | 0 | Not yet attempted |
-| gundabad_bat | views/side | pending | 0 | Not yet attempted |
-| gundabad_bat | views/front | pending | 0 | Not yet attempted |
-| gundabad_bat | views/top | pending | 0 | Not yet attempted |
+| mumak | views/top | accepted | 3 | Overhead plan view of head/back and platform floors, complete curved tail tuft/trunk and own-left ladder edge on image right; no text. |
+| mumak | views/top attempt 1 | rejected | — | High frontal/oblique camera shows vertical howdah faces and broad frontal head; not exact top-down. |
+| mumak | views/top attempt 2 | rejected | — | Upper tail tuft reaches and is cut by the source image edge; framing lacks a complete tail tip, despite improved overhead angle. |
+| mumak | views/three_quarter | accepted | 2 | Distinct front-oblique head/body, same own-left ladder and howdah, natural overlapping tusks; frontal source confirms four. |
+| mumak | views/three_quarter attempt 1 | rejected | — | Insufficient frontal rotation; candidate repeats side angle too closely. |
+| mumak | face_views/front | accepted | 1 | Two natural eyes, one complete trunk and four separate tusks, same red paint and wrinkled grey-brown hide; no text. |
+| mumak | face_views/three_quarter | accepted | 1 | Clear oblique head, same four tusks and complete trunk/ears, natural two-eye face with original red paint. |
+| mumak | face_views/side | accepted | 1 | Lateral head profile with one near eye and ear, same four tusks overlapping naturally and complete trunk, no text. |
+| mumak | details/cloth_leather | accepted | 2 | Same tower/banners/girths and complete own-left ladder through final rung and rope ends; no text. |
+| mumak | details/cloth_leather attempt 1 | rejected | — | Howdah close-up cuts the ladder ropes/lower end at the bottom image edge; supplemental close-up needs complete ladder. |
+| mumak | details/weapon_metal | accepted | 0 | Reviewed close-up crop of accepted individual source: ivory. |
+| mumak | details/skin | accepted | 0 | Reviewed accepted-side crop of wrinkled hide. |
+| mumak | details/hair | accepted | 0 | Reviewed accepted-side crop of actual coarse tail tuft. |
+| mumak | turnaround | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | spec | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | notes | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | check | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | face | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | details | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| mumak | observed | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| gundabad_bat | views/side | accepted | 1 | Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text. |
+| gundabad_bat | views/front | accepted | 1 | Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text. |
+| gundabad_bat | views/top | accepted | 1 | Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips. |
 | gundabad_bat | views/three_quarter | pending | 0 | Not yet attempted |
 | gundabad_bat | views/folded | pending | 0 | Not yet attempted |
 | gundabad_bat | face_views/front | pending | 0 | Not yet attempted |
@@ -630,14 +634,14 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | dwarf_company | spec | pending | 0 | Not yet attempted |
 | dwarf_company | notes | pending | 0 | Not yet attempted |
 | dwarf_company | check | pending | 0 | Not yet attempted |
-| mumak_howdah | howdah | pending | 0 | Not yet attempted |
-| mumak_howdah | sheet | pending | 0 | Not yet attempted |
-| mumak_howdah | spec | pending | 0 | Not yet attempted |
-| mumak_howdah | notes | pending | 0 | Not yet attempted |
-| mumak_howdah | check | pending | 0 | Not yet attempted |
+| mumak_howdah | howdah | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| mumak_howdah | sheet | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| mumak_howdah | spec | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| mumak_howdah | notes | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| mumak_howdah | check | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
 
 ## Validation
 
-- Seventeen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
+- Eighteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

@@ -564,30 +564,30 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | --- | --- | --- | --- |
 | views/side | accepted | 1 | True left-flank side view, four natural feet, complete howdah/girths/left ladder; tusks overlap in profile, frontal view must show all four. |
 | views/front | accepted | 1 | Four clear tusks, two per side of one trunk, original howdah and own-left ladder visible at viewer right; no text. |
-| views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
-| views/three_quarter | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/top | accepted | 3 | Overhead plan view of head/back and platform floors, complete curved tail tuft/trunk and own-left ladder edge on image right; no text. |
+| views/three_quarter | accepted | 2 | Distinct front-oblique head/body, same own-left ladder and howdah, natural overlapping tusks; frontal source confirms four. |
+| face_views/front | accepted | 1 | Two natural eyes, one complete trunk and four separate tusks, same red paint and wrinkled grey-brown hide; no text. |
+| face_views/three_quarter | accepted | 1 | Clear oblique head, same four tusks and complete trunk/ears, natural two-eye face with original red paint. |
+| face_views/side | accepted | 1 | Lateral head profile with one near eye and ear, same four tusks overlapping naturally and complete trunk, no text. |
+| details/cloth_leather | accepted | 2 | Same tower/banners/girths and complete own-left ladder through final rung and rope ends; no text. |
+| details/weapon_metal | accepted | 0 | Reviewed close-up crop of accepted individual source: ivory. |
+| details/skin | accepted | 0 | Reviewed accepted-side crop of wrinkled hide. |
+| details/hair | accepted | 0 | Reviewed accepted-side crop of actual coarse tail tuft. |
+| turnaround | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| spec | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| notes | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| check | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| face | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| details | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
+| observed | accepted | 0 | Individual visual review and 64 px silhouette gate pass; source/canvas/geometry/sample/budget checks pass. |
 
 ## gundabad_bat
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
+| views/side | accepted | 1 | Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text. |
+| views/front | accepted | 1 | Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text. |
+| views/top | accepted | 1 | Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips. |
 | views/three_quarter | pending | 0 |  |
 | views/folded | pending | 0 |  |
 | face_views/front | pending | 0 |  |
@@ -781,8 +781,8 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| howdah | pending | 0 |  |
-| sheet | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
+| howdah | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| sheet | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| spec | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| notes | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
+| check | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
