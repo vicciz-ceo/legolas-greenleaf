@@ -101,7 +101,7 @@ for manifest,count in [('current-capture-results.json',10),('current-vignette-re
  for capture in captures:
   check(capture['result']['ok'] and not capture['result']['errors'],capture['id']+' capture browser errors')
   check((R/capture['published_image']).exists(),capture['id']+' capture delivery')
-files=[p for p in R.rglob('*') if p.is_file()];total=sum(p.stat().st_size for p in files)
+files=[p for p in R.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc'];total=sum(p.stat().st_size for p in files)
 check(total<=120_000_000,f'Library exceeds 120 MB: {total} bytes')
 result={'source':'measured_script','script':'tools/validate_refs.py','checks':checks,'errors':errors,'file_count':len(files),'library_bytes_before_this_report':total,'limit_bytes':120_000_000}
 (R/'tools/validation-scenes.json').write_text(json.dumps(result,indent=2)+'\n')
