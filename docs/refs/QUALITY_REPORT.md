@@ -357,25 +357,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | lurtz | views/three_quarter | accepted | 2 | Second candidate turns head with oblique body, nose projects right and far face compressed; correct own-left bow/right sword/back shield retained. |
 | lurtz | views/three_quarter attempt 1 | rejected | — | Body is oblique but face remains near frontal instead of rotating with head/torso; repair three-quarter angle. |
 | lurtz | views/side | accepted | 1 | Exact side profile; close silhouette retains own-right near sword, own-left far bow and shield on back, with complete low tips and bare torso. |
-| lurtz | views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| lurtz | face_views/front | pending | 0 | Not yet attempted |
-| lurtz | face_views/three_quarter | pending | 0 | Not yet attempted |
-| lurtz | face_views/side | pending | 0 | Not yet attempted |
-| lurtz | details/cloth_leather | pending | 0 | Not yet attempted |
-| lurtz | details/weapon_metal | pending | 0 | Not yet attempted |
-| lurtz | details/skin | pending | 0 | Not yet attempted |
-| lurtz | details/hair | pending | 0 | Not yet attempted |
-| lurtz | turnaround | pending | 0 | Not yet attempted |
-| lurtz | spec | pending | 0 | Not yet attempted |
-| lurtz | notes | pending | 0 | Not yet attempted |
-| lurtz | check | pending | 0 | Not yet attempted |
-| lurtz | face | pending | 0 | Not yet attempted |
-| lurtz | details | pending | 0 | Not yet attempted |
-| lurtz | observed | pending | 0 | Not yet attempted |
-| easterling | views/front | pending | 0 | Not yet attempted |
-| easterling | views/three_quarter | pending | 0 | Not yet attempted |
-| easterling | views/side | pending | 0 | Not yet attempted |
-| easterling | views/back | pending | 0 | Not yet attempted |
+| lurtz | views/back | accepted | 1 | True rear with loose black back hair, back-mounted angular shield and visible straps; bow own-left image left/sword own-right image right, full low tips. |
+| lurtz | face_views/front | accepted | 1 | Same original scarred dark broad fanged face with five-finger white hand paint, long black hair and bare torso; complete crown, no actor likeness. |
+| lurtz | face_views/three_quarter | accepted | 1 | Clear oblique face/chest with foreshortened far cheek, same scarred white-hand face, loose hair and bare torso. |
+| lurtz | face_views/side | accepted | 1 | Exact single-eye profile with same original fangs/scars/white-hand paint, complete loose black hair and bare chest. |
+| lurtz | details/cloth_leather | accepted | 1 | Same rough dark belt/kilt/foot wraps, opaque lower-body clothing and no extra gear; small buckle/strap drift tolerated. |
+| lurtz | details/weapon_metal | accepted | 1 | Same broad weathered straight iron blade with angular projecting point, simple short guard and wrapped grip; isolated whole object. |
+| lurtz | details/skin | accepted | 0 | Reviewed original texture crop from accepted independently generated portrait, background removed. |
+| lurtz | details/hair | accepted | 0 | Reviewed original texture crop from accepted independently generated portrait, background removed. |
+| lurtz | turnaround | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | spec | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | notes | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | check | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | face | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | details | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| lurtz | observed | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| easterling | views/front | accepted | 1 | Square-front gold masked helmet/scale armor, dark red-black cloth, low horizontal own-right spear and left-arm shield. Close crop confirms gloved natural grip; skin/hair concealed by prescribed gear. |
+| easterling | views/three_quarter | accepted | 2 | Second candidate rotates masked head clearly with oblique chest/feet; near right spear/far left shield stay attached correctly, all gear complete. |
+| easterling | views/three_quarter attempt 1 | rejected | — | Head/torso rotation too shallow, near-frontal faceplate and shoulders; needs clear45degree three-quarter perspective. |
+| easterling | views/side | accepted | 1 | Exact side-on masked head/body, right near hand holds low complete spear, left far shield partly occluded, gold scales/red cloth/gloves consistent. |
+| easterling | views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
 | easterling | face_views/front | pending | 0 | Not yet attempted |
 | easterling | face_views/three_quarter | pending | 0 | Not yet attempted |
 | easterling | face_views/side | pending | 0 | Not yet attempted |

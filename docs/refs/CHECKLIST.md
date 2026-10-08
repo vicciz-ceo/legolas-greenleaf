@@ -427,30 +427,30 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/front | accepted | 1 | Original broad painted face, bare scarred torso, complete low bow own-left/right sword and back shield edges; natural relaxed A-pose and limbs. |
 | views/three_quarter | accepted | 2 | Second candidate turns head with oblique body, nose projects right and far face compressed; correct own-left bow/right sword/back shield retained. |
 | views/side | accepted | 1 | Exact side profile; close silhouette retains own-right near sword, own-left far bow and shield on back, with complete low tips and bare torso. |
-| views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/back | accepted | 1 | True rear with loose black back hair, back-mounted angular shield and visible straps; bow own-left image left/sword own-right image right, full low tips. |
+| face_views/front | accepted | 1 | Same original scarred dark broad fanged face with five-finger white hand paint, long black hair and bare torso; complete crown, no actor likeness. |
+| face_views/three_quarter | accepted | 1 | Clear oblique face/chest with foreshortened far cheek, same scarred white-hand face, loose hair and bare torso. |
+| face_views/side | accepted | 1 | Exact single-eye profile with same original fangs/scars/white-hand paint, complete loose black hair and bare chest. |
+| details/cloth_leather | accepted | 1 | Same rough dark belt/kilt/foot wraps, opaque lower-body clothing and no extra gear; small buckle/strap drift tolerated. |
+| details/weapon_metal | accepted | 1 | Same broad weathered straight iron blade with angular projecting point, simple short guard and wrapped grip; isolated whole object. |
+| details/skin | accepted | 0 | Reviewed original texture crop from accepted independently generated portrait, background removed. |
+| details/hair | accepted | 0 | Reviewed original texture crop from accepted independently generated portrait, background removed. |
+| turnaround | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| spec | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| notes | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| check | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| face | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| details | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| observed | accepted | 0 | Individual sheets/material crops, bowstring cutout and64px silhouettes reviewed; all deterministic checks/budgets pass. |
 
 ## easterling
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
+| views/front | accepted | 1 | Square-front gold masked helmet/scale armor, dark red-black cloth, low horizontal own-right spear and left-arm shield. Close crop confirms gloved natural grip; skin/hair concealed by prescribed gear. |
+| views/three_quarter | accepted | 2 | Second candidate rotates masked head clearly with oblique chest/feet; near right spear/far left shield stay attached correctly, all gear complete. |
+| views/side | accepted | 1 | Exact side-on masked head/body, right near hand holds low complete spear, left far shield partly occluded, gold scales/red cloth/gloves consistent. |
+| views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |

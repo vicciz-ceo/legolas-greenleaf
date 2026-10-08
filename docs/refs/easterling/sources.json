@@ -1,0 +1,38 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-fc6c3c42-f914-4cb5-9e6b-3b164808c72f.png",
+    "original_sha256": "00421238959ae1759e8e1fdd41570a766e91bac4ed7e382eee5aec1d90c427a9",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "d25de16ffc399bbe26c433c4290896b768ef67dc468ae58eded227c05ea10154"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-dd5430d3-0363-4b95-99e8-b5b3740fb98c.png",
+    "original_sha256": "4f5cb697f299305609e834a1adb731019a80b46ab95d5b538c78f63251aeca6c",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "4842ecb75d84c9855e3f80f51591e192361163b97ad2fb21dd2269dfa5fa1aba"
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5726a5e5-3c1b-4c37-85bf-adce6b93cd5e.png",
+    "original_sha256": "be4966af608f4bab22b54c67cd63e19a573fea37ace9b510dead9025b101bc16",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "9239b232100a203757a1aa6d32a5426ecb7dbd20c7aefe920f17ba90d7ff3557"
+  }
+}

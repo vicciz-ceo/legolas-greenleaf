@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+Accepted three-quarter body attempt2 repairs near-frontal head from attempt1; all other generated required views pass attempt1. Bow remains own-left, sword own-right, angular shield strapped to back in every rotation. Segmented front bowstring inspected and retained. Torso stays bare; accepted dark bracers read as segmented blackened iron over leather backing, an authored choice in the original unspecified arm gear. Minor belt buckle, ties, shield straps and lighting drift tolerated.

@@ -40,28 +40,44 @@
     },
     "outfit_layers": [
       {
-        "name": "cloth",
-        "material": "woven cloth or brocade as described",
-        "color_hex": "#3f3426",
-        "roughness": 0.85,
-        "sheen": 0.3,
-        "notes": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK."
+        "name": "dark_kilt",
+        "material": "coarse opaque ragged dark cloth",
+        "color_hex": "#302a25",
+        "roughness": 0.9,
+        "sheen": 0.05,
+        "notes": "Knee-length dark kilt."
       },
       {
-        "name": "leather",
-        "material": "worn stitched leather",
-        "color_hex": "#5a3f2a",
-        "roughness": 0.72,
+        "name": "leather_belt",
+        "material": "rough dark leather",
+        "color_hex": "#4d3a2b",
+        "roughness": 0.8,
         "sheen": 0.08,
-        "notes": "Only where required by description"
+        "notes": "Thick belt and ties."
+      },
+      {
+        "name": "foot_wraps",
+        "material": "dark layered cloth/leather bindings",
+        "color_hex": "#40352b",
+        "roughness": 0.9,
+        "sheen": 0.04,
+        "notes": "Wrapped feet and shins."
       }
     ],
     "armor": [
       {
-        "name": "metal",
+        "name": "bracer_iron",
         "material": "metal fittings or armour as described",
         "color_hex": "#6b6657",
         "roughness": 0.5,
+        "metalness": 1,
+        "notes": "Accepted dark segmented bracers are blackened iron over leather backing; torso remains bare as original requires."
+      },
+      {
+        "name": "back_shield_iron",
+        "material": "worn blackened iron",
+        "color_hex": "#302e28",
+        "roughness": 0.7,
         "metalness": 1
       }
     ],
@@ -104,7 +120,25 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK."
+    "description": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK.",
+    "authored_material_families": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#3f3426",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Original Uruk captain Lurtz: huge muscular dark brown-black skin, long black hair, uneven fangs, old scars, white hand painted across face; no upper armour, leather bracers and belt, substantial opaque dark knee-length kilt and boots; bow own LEFT hand, sword own RIGHT hand, shield on BACK."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#5a3f2a",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ]
   },
   "composition": {
     "fit_policy": "fit",
@@ -130,5 +164,622 @@
         "source": "details/hair.png"
       }
     ]
+  },
+  "measured": {
+    "turnaround": {
+      "path": "lurtz_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "348139a00dc3ff2794dcc5c73fce23c1739aaf21ea88bebe4477177fbe177ace",
+      "size_bytes": 165156,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "648f53de01cf3faefb92871eac63418a39c8933700c938fb28b347441cf575f2",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 258.57142857142856,
+      "baseline_y_px": 940,
+      "overall_height_m": 2.1,
+      "height_fill_fraction": 0.5302734375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "bf2b871b6f4a16f864909244d36f7072d7a61140b30bc62357e18db4db2ba2e0",
+          "source_bbox_px": [
+            4,
+            4,
+            324,
+            564
+          ],
+          "sheet_bbox_px": [
+            163,
+            397,
+            473,
+            940
+          ],
+          "silhouette_height_px": 543,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9696428571428571,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            310,
+            543
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "3490e8fc5653180b9893ca74af2e8e78781323a41a5e9832e3df73eeb28c5388",
+          "source_bbox_px": [
+            4,
+            4,
+            283,
+            564
+          ],
+          "sheet_bbox_px": [
+            526,
+            397,
+            797,
+            940
+          ],
+          "silhouette_height_px": 543,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9696428571428571,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            271,
+            543
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "7c85376aba4817cc7b30530cfba737408989efc59d50f3c39138fca1b734833e",
+          "source_bbox_px": [
+            4,
+            4,
+            176,
+            564
+          ],
+          "sheet_bbox_px": [
+            921,
+            397,
+            1088,
+            940
+          ],
+          "silhouette_height_px": 543,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9696428571428571,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            167,
+            543
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "f9062f34168ecb612a3818bf7d4732dbc3d07e499e93c198d45b653c0ccbd6f6",
+          "source_bbox_px": [
+            4,
+            4,
+            333,
+            564
+          ],
+          "sheet_bbox_px": [
+            1188,
+            397,
+            1507,
+            940
+          ],
+          "silhouette_height_px": 543,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 0.9696428571428571,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            543
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 397,
+        "endpoint_m": 2.1,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 875
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 811
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 746
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 681
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 617
+          },
+          {
+            "value_m": 1.5,
+            "y_px": 552
+          },
+          {
+            "value_m": 1.75,
+            "y_px": 488
+          },
+          {
+            "value_m": 2.0,
+            "y_px": 423
+          }
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "lurtz_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "3bfbcccaf518443d404da241ed7e3349b14abe6bbc8c5437bf0e15b5ffa71235",
+      "size_bytes": 222096,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "9e0e24ab4c1f1cb6e1a4d231fe964b24a3b95f3041b4cf56ed43b8c5e7468000",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "1114a49df73d804c721f177faf1caf1b8d88190d1e2a5f88a7935bbf80d0f28f",
+          "source_bbox_px": [
+            4,
+            4,
+            223,
+            324
+          ],
+          "sheet_bbox_px": [
+            26,
+            248,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "d7e743daea021e11a88ab18aa843332a954222ff5f6c55225a27e024ced46ee3",
+          "source_bbox_px": [
+            4,
+            4,
+            222,
+            324
+          ],
+          "sheet_bbox_px": [
+            530,
+            245,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "b47b82b036ed86e6f64efa8f4b59929bf2e1b99f2c82ee278735512873fbf3a1",
+          "source_bbox_px": [
+            4,
+            4,
+            192,
+            324
+          ],
+          "sheet_bbox_px": [
+            1034,
+            137,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "lurtz_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+      "size_bytes": 116493,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "5a59ff4effe89aeed86937a7ee613d7106b414520aa19132a07665a8eaed9c1e",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "15826cbb837a38e3ddc594feb591064b667104911a3a3824650f75725d9749fe",
+          "sheet_bbox_px": [
+            107,
+            12,
+            404,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13",
+          "sheet_bbox_px": [
+            619,
+            12,
+            916,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "44f16e154459af91c3c4fefbd45b651cc65d835ce5c92e3f45ee1de6592ec963",
+          "sheet_bbox_px": [
+            63,
+            524,
+            449,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "28735635f66ed694f0bfff03e90010aac0ccb58ddb2c385dd621afaf2c742299",
+          "sheet_bbox_px": [
+            682,
+            524,
+            854,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "sheet": "details",
+      "rect_px": [
+        190,
+        628,
+        224,
+        670
+      ]
+    },
+    {
+      "name": "hair",
+      "sheet": "details",
+      "rect_px": [
+        740,
+        665,
+        765,
+        718
+      ]
+    },
+    {
+      "name": "dark_kilt",
+      "sheet": "details",
+      "rect_px": [
+        215,
+        145,
+        235,
+        180
+      ]
+    },
+    {
+      "name": "leather_belt",
+      "sheet": "details",
+      "rect_px": [
+        223,
+        19,
+        244,
+        28
+      ]
+    },
+    {
+      "name": "foot_wraps",
+      "sheet": "details",
+      "rect_px": [
+        323,
+        352,
+        335,
+        373
+      ]
+    },
+    {
+      "name": "sword_iron",
+      "sheet": "details",
+      "rect_px": [
+        760,
+        274,
+        773,
+        320
+      ]
+    },
+    {
+      "name": "face_paint",
+      "sheet": "face",
+      "rect_px": [
+        261,
+        369,
+        271,
+        379
+      ]
+    },
+    {
+      "name": "bracer_iron",
+      "sheet": "turnaround",
+      "rect_px": [
+        220,
+        639,
+        230,
+        657
+      ]
+    },
+    {
+      "name": "back_shield_iron",
+      "sheet": "turnaround",
+      "rect_px": [
+        1335,
+        530,
+        1351,
+        551
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          190,
+          628,
+          224,
+          670
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          127,
+          100,
+          91
+        ],
+        "srgb_hex": "#7f645b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          740,
+          665,
+          765,
+          718
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          27,
+          23,
+          20
+        ],
+        "srgb_hex": "#1b1714",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "dark_kilt": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          215,
+          145,
+          235,
+          180
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          70,
+          62,
+          58
+        ],
+        "srgb_hex": "#463e3a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather_belt": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          223,
+          19,
+          244,
+          28
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          70,
+          57,
+          51
+        ],
+        "srgb_hex": "#463933",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "foot_wraps": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          323,
+          352,
+          335,
+          373
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          64,
+          54,
+          47
+        ],
+        "srgb_hex": "#40362f",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "sword_iron": {
+        "sheet": "lurtz_details.jpg",
+        "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "rect_px": [
+          760,
+          274,
+          773,
+          320
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          92,
+          84,
+          77
+        ],
+        "srgb_hex": "#5c544d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "face_paint": {
+        "sheet": "lurtz_face.jpg",
+        "sheet_sha256": "3bfbcccaf518443d404da241ed7e3349b14abe6bbc8c5437bf0e15b5ffa71235",
+        "rect_px": [
+          261,
+          369,
+          271,
+          379
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          222,
+          221,
+          226
+        ],
+        "srgb_hex": "#dedde2",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "bracer_iron": {
+        "sheet": "lurtz_turnaround.jpg",
+        "sheet_sha256": "348139a00dc3ff2794dcc5c73fce23c1739aaf21ea88bebe4477177fbe177ace",
+        "rect_px": [
+          220,
+          639,
+          230,
+          657
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          58,
+          49,
+          46
+        ],
+        "srgb_hex": "#3a312e",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "back_shield_iron": {
+        "sheet": "lurtz_turnaround.jpg",
+        "sheet_sha256": "348139a00dc3ff2794dcc5c73fce23c1739aaf21ea88bebe4477177fbe177ace",
+        "rect_px": [
+          1335,
+          530,
+          1351,
+          551
+        ],
+        "coordinate_space": "final JPEG pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          57,
+          56,
+          55
+        ],
+        "srgb_hex": "#393837",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
   }
 }
