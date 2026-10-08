@@ -37,7 +37,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | dwarf_bald | 1.35 | — | [spec](dwarf_bald/spec.json) | [notes](dwarf_bald/notes.md) | pending |
 | dwarf_hat | 1.3 | <img src="dwarf_hat/dwarf_hat_turnaround.jpg" width="180" alt="dwarf_hat"> | [spec](dwarf_hat/spec.json) | [notes](dwarf_hat/notes.md) | accepted |
 | dwarf_elder | 1.37 | — | [spec](dwarf_elder/spec.json) | [notes](dwarf_elder/notes.md) | pending |
-| dwarf_redbeard | 1.4 | — | [spec](dwarf_redbeard/spec.json) | [notes](dwarf_redbeard/notes.md) | pending |
+| dwarf_redbeard | 1.4 | <img src="dwarf_redbeard/dwarf_redbeard_turnaround.jpg" width="180" alt="dwarf_redbeard"> | [spec](dwarf_redbeard/spec.json) | [notes](dwarf_redbeard/notes.md) | accepted |
 | weapons | supplement | <img src="weapons/weapons.jpg" width="180" alt="weapons"> | [spec](weapons/spec.json) | [notes](weapons/notes.md) | accepted |
 | orc_variants | supplement | <img src="orc_variants/orc_variants.jpg" width="180" alt="orc_variants"> | [spec](orc_variants/spec.json) | [notes](orc_variants/notes.md) | accepted |
 | dwarf_company | supplement | <img src="dwarf_company/dwarf_company.jpg" width="180" alt="dwarf_company"> | [spec](dwarf_company/spec.json) | [notes](dwarf_company/notes.md) | accepted |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **59,346,115 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **59,359,792 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

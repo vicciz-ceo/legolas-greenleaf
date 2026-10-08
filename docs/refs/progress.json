@@ -6146,33 +6146,60 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Final turnaround, face and detail sheets visually preserve the same original broad stocky dwarf, enormous loose wild red beard, red-brown scalp/back hair, russet tunic, worn brown leather vest, thick belt and boots, with empty hands. Front, three-quarter, right profile and rear body views and all three face angles are coherent; no definite anatomy, clipping, segmentation-edge or material-consistency defect observed. Construction receipt is PASS; final hashes and source/sampling metadata agree.",
+        "receipt_sha256": "cd9024d9aa05d2afff5d7cb4c96a56aa7d8783566aa5a38d3d71c0a52de100f0",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/dwarf_redbeard_turnaround.jpg",
+            "sha256": "6dea1cc0b6e0dfb48a7a3c8f71807f4ac06edbe701a0afb096a8b5f836c1cfd3"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/dwarf_redbeard_face.jpg",
+            "sha256": "e97b0cd4b7f0291c6c4699aded11caa793c1b6c9b752cc42d6b1db888cc0f2f8"
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/dwarf_redbeard_details.jpg",
+            "sha256": "b00b8b5f212d25cd6bae55a9b019a9213c4d2249c655a43704dd4e06dff6fb92"
+          }
+        ],
+        "defects": []
       }
     },
     "weapons": {
@@ -6487,7 +6514,7 @@
   },
   "validation_summary": [
     "23 regression tests pass, including intake alpha handling, original concurrency/caps and separate recovery-history tests.",
-    "27 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
+    "28 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }

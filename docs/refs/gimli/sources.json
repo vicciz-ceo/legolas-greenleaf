@@ -324,6 +324,35 @@
     "detail_background_removed": false,
     "detail_trim_box_in_cropped_source_px": null,
     "saved_cutout": "details/weapon_metal.png",
-    "cutout_sha256": "86011041b4def96c24ff1c2f54144376080a31e92e6a5f97e2876c92a8788d05"
+    "cutout_sha256": "86011041b4def96c24ff1c2f54144376080a31e92e6a5f97e2876c92a8788d05",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 1,
+      "kind": "conditioned_material_macro",
+      "transparent_background": false,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity_and_gear": "Single battle axe matches accepted front: same broad asymmetric crescent head with unequal points, concave socket-side notches, dark iron face, bright worn cutting rim, three bronze geometric panels, bronze socket/collars and dark wooden haft with leather wrapped grip.",
+      "framing": "Complete head, collar, grip and pommel framed; no clipping.",
+      "surface": "Photoreal iron hammer pits and scratches, bronze wear, wood grain and wrapped leather seam visible.",
+      "anatomy": "No character or hand in weapon macro.",
+      "text": "No text, labels or watermark.",
+      "edges": "Opaque RGB image retained by ordinary detail intake without segmentation.",
+      "minor_drift": "Small engraving/collar ornament drift within tolerated material detail variation."
+    }
   }
 }
