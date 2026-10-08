@@ -792,6 +792,10 @@ def validate_schema(data):
 
 
 def stored_bytes(folder):
+    # Both independently budgeted libraries coexist below docs/refs.
+    if Path(folder).resolve() == ROOT.resolve():
+        from reference_inventory import library_bytes
+        return library_bytes(folder, 'characters')
     # Python bytecode is disposable tooling cache, never a retained library asset.
     return sum(p.stat().st_size for p in Path(folder).rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix!='.pyc')
 

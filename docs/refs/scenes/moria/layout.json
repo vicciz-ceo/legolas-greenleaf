@@ -1,0 +1,582 @@
+{
+  "schema_version": 1,
+  "units": "metres",
+  "coordinate_system": {
+    "up": "+Y",
+    "forward": "+Z",
+    "right": "+X",
+    "plan_north": "+Z",
+    "origin": "chapter-local recommended layout",
+    "anchor_semantics": "Checkpoints/routes are foot or platform-top elevations. Structure position_m is plan centre at base elevation; size_m is W/H/D. Falling-block routes are landing surface heights."
+  },
+  "chapter": "moria",
+  "source": "design_target",
+  "status": "recommended design dimensions; not surveyed current code",
+  "extent_m": [
+    180,
+    360
+  ],
+  "terrain": {
+    "size": 360,
+    "segments": 160,
+    "style": "cave",
+    "height": "See elevation_m on route, checkpoints and structures; interpolate safely; do not serialize a function."
+  },
+  "player_start_m": [
+    0,
+    0,
+    -10
+  ],
+  "checkpoints": [
+    {
+      "index": 0,
+      "label": "The Chamber of Mazarbul",
+      "position_m": [
+        0,
+        0,
+        -10
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 1,
+      "label": "The Cave Troll",
+      "position_m": [
+        0,
+        0,
+        6
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 2,
+      "label": "Flight to the Bridge",
+      "position_m": [
+        0,
+        0,
+        40
+      ],
+      "radius_m": 3
+    }
+  ],
+  "enemy_entry_zones": [
+    {
+      "id": "E1L",
+      "checkpoint": 0,
+      "center_m": [
+        -15,
+        0,
+        2
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    },
+    {
+      "id": "E1R",
+      "checkpoint": 0,
+      "center_m": [
+        15,
+        0,
+        2
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    },
+    {
+      "id": "E2L",
+      "checkpoint": 1,
+      "center_m": [
+        -15,
+        0,
+        18
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    },
+    {
+      "id": "E2R",
+      "checkpoint": 1,
+      "center_m": [
+        15,
+        0,
+        18
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    },
+    {
+      "id": "E3L",
+      "checkpoint": 2,
+      "center_m": [
+        -15,
+        0,
+        52
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    },
+    {
+      "id": "E3R",
+      "checkpoint": 2,
+      "center_m": [
+        15,
+        0,
+        52
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Moria goblins from doors and wall ledges; 4.5 m cave troll with ankle chain."
+    }
+  ],
+  "ally_positions": [
+    {
+      "name": "Gimli",
+      "position_m": [
+        3,
+        0,
+        -8
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Aragorn",
+      "position_m": [
+        5,
+        0,
+        -8
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Boromir",
+      "position_m": [
+        7,
+        0,
+        -8
+      ],
+      "active_from_checkpoint": 0
+    }
+  ],
+  "cover": [
+    {
+      "id": "C1L",
+      "position_m": [
+        -6,
+        0,
+        -5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C1R",
+      "position_m": [
+        6,
+        0,
+        -5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2L",
+      "position_m": [
+        -6,
+        0,
+        11
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2R",
+      "position_m": [
+        6,
+        0,
+        11
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3L",
+      "position_m": [
+        -6,
+        0,
+        45
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3R",
+      "position_m": [
+        6,
+        0,
+        45
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    }
+  ],
+  "high_ground": [
+    {
+      "id": "H1",
+      "position_m": [
+        11,
+        3,
+        -2
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H2",
+      "position_m": [
+        11,
+        3,
+        14
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H3",
+      "position_m": [
+        11,
+        3,
+        48
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    }
+  ],
+  "set_piece_route": {
+    "points_m": [
+      [
+        0,
+        0,
+        -10
+      ],
+      [
+        0,
+        0,
+        6
+      ],
+      [
+        0,
+        0,
+        40
+      ],
+      [
+        0,
+        0,
+        115
+      ],
+      [
+        40,
+        0,
+        115
+      ],
+      [
+        40,
+        0,
+        35
+      ],
+      [
+        -40,
+        0,
+        35
+      ],
+      [
+        -40,
+        0,
+        140
+      ],
+      [
+        0,
+        0,
+        155
+      ]
+    ],
+    "width_m": 4,
+    "elevations_are_binding": true
+  },
+  "structures": [
+    {
+      "id": "S1",
+      "name": "Mazarbul chamber",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "size_m": [
+        32,
+        14,
+        32
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S2",
+      "name": "Balin tomb",
+      "position_m": [
+        0,
+        0,
+        3
+      ],
+      "size_m": [
+        2.4,
+        1,
+        1.2
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S3",
+      "name": "Well",
+      "position_m": [
+        -11,
+        0,
+        10
+      ],
+      "size_m": [
+        2.2,
+        1.1,
+        2.2
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S4",
+      "name": "Hall pillar",
+      "position_m": [
+        27,
+        0,
+        66
+      ],
+      "size_m": [
+        6,
+        42,
+        6
+      ],
+      "yaw_deg": 0
+    }
+  ],
+  "extra_set_pieces": {
+    "mazarbul_tomb": {
+      "chamber_m": [
+        32,
+        14,
+        32
+      ],
+      "tomb_m": [
+        2.4,
+        1,
+        1.2
+      ],
+      "window_m": [
+        1.2,
+        2.4
+      ],
+      "shaft_beam_m": 2.5
+    },
+    "troll_chain_climb": {
+      "troll_m": 4.5,
+      "chain_link_m": 0.14,
+      "chain_length_m": 7,
+      "shoulder_footing_m": 0.35
+    }
+  },
+  "plan_render": {
+    "source": "measured_script",
+    "pixels_per_metre": 2.0416666666666665,
+    "origin_px": [
+      615,
+      478
+    ],
+    "image_size_px": [
+      1536,
+      1024
+    ],
+    "script": "tools/compose_scenes.py:layout"
+  },
+  "pillar_grid_m": [
+    [
+      -27,
+      0,
+      48
+    ],
+    [
+      -27,
+      0,
+      66
+    ],
+    [
+      -27,
+      0,
+      84
+    ],
+    [
+      -27,
+      0,
+      102
+    ],
+    [
+      -27,
+      0,
+      120
+    ],
+    [
+      -27,
+      0,
+      138
+    ],
+    [
+      -9,
+      0,
+      48
+    ],
+    [
+      -9,
+      0,
+      66
+    ],
+    [
+      -9,
+      0,
+      84
+    ],
+    [
+      -9,
+      0,
+      102
+    ],
+    [
+      -9,
+      0,
+      120
+    ],
+    [
+      -9,
+      0,
+      138
+    ],
+    [
+      9,
+      0,
+      48
+    ],
+    [
+      9,
+      0,
+      66
+    ],
+    [
+      9,
+      0,
+      84
+    ],
+    [
+      9,
+      0,
+      102
+    ],
+    [
+      9,
+      0,
+      120
+    ],
+    [
+      9,
+      0,
+      138
+    ],
+    [
+      27,
+      0,
+      48
+    ],
+    [
+      27,
+      0,
+      66
+    ],
+    [
+      27,
+      0,
+      84
+    ],
+    [
+      27,
+      0,
+      102
+    ],
+    [
+      27,
+      0,
+      120
+    ],
+    [
+      27,
+      0,
+      138
+    ]
+  ],
+  "flight_route_length_m": 422.72,
+  "flight_duration_s": 120
+}

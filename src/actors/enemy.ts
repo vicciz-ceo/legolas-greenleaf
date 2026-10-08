@@ -28,7 +28,7 @@ import { clamp, dirFromYaw, wrapAngle, yawOf } from '../core/math';
 import { Rng, hashSeed } from '../core/rng';
 import { makeHumanoid } from './humanoids';
 import { NpcBase, releaseSlot, requestAttackToken, requestSlot, slotHolders, vocal } from './npc';
-import { hostile } from './combatant';
+import { hostile, meleeLineClear } from './combatant';
 import { ARROW_GRAVITY, ballisticDir, leadTarget, spreadDir } from '../combat/aim';
 
 export interface ArchetypeDef {
@@ -67,10 +67,10 @@ export const ARCHETYPES: Record<EnemyArchetype, ArchetypeDef> = {
   goblin: { kind: 'goblin', hp: 38, damage: 8, speed: 5.4, weapon: 'scimitar', attacks: ['slash', 'thrust'], windup: 0.42, reach: 1.6, behavior: 'charge', scale: 1, girth: 0.9, blood: 'dark', voice: { grunt: 'goblin_screech', die: 'orc_die', roar: 'goblin_screech', pitch: 1.3 }, poise: 0, cooldown: [0.9, 1.6] },
   gundabad: { kind: 'gundabad', hp: 95, damage: 17, speed: 4.3, weapon: 'cleaver', attacks: ['overhead', 'slash'], windup: 0.6, reach: 2.0, behavior: 'charge', scale: 1, girth: 1.15, blood: 'dark', voice: { ...ORC_VOICE, pitch: 0.8 }, poise: 0.3, cooldown: [1.3, 2.2] },
   uruk: { kind: 'uruk', hp: 115, damage: 18, speed: 4.9, weapon: 'sword', attacks: ['slash', 'overhead', 'thrust'], windup: 0.55, reach: 2.1, behavior: 'charge', scale: 1, girth: 1.1, blood: 'black', voice: URUK_VOICE, poise: 0.3, cooldown: [1.2, 2.0] },
-  uruk_archer: { kind: 'uruk', hp: 85, damage: 14, speed: 4.6, weapon: 'uruk_bow', attacks: ['punch'], windup: 0.45, reach: 1.7, behavior: 'archer', scale: 1, girth: 1.05, blood: 'black', voice: URUK_VOICE, poise: 0.1, cooldown: [1.4, 2.2], ranged: { speed: 38, interval: [2.4, 3.6], style: 'uruk', draw: 0.95 } },
+  uruk_archer: { kind: 'uruk', hp: 85, damage: 14, speed: 4.6, weapon: 'uruk_bow', attacks: ['punch'], windup: 0.45, reach: 1.7, behavior: 'archer', scale: 1, girth: 1.05, blood: 'black', voice: URUK_VOICE, poise: 0.1, cooldown: [1.4, 2.2], ranged: { speed: 38, interval: [1.9, 3.0], style: 'uruk', draw: 0.95 } },
   uruk_pike: { kind: 'uruk', hp: 115, damage: 20, speed: 4.2, weapon: 'pike', attacks: ['thrust'], windup: 0.6, reach: 3.2, behavior: 'hold', scale: 1, girth: 1.1, blood: 'black', voice: URUK_VOICE, poise: 0.4, cooldown: [1.4, 2.4] },
   berserker: { kind: 'berserker', hp: 170, damage: 28, speed: 5.8, weapon: 'sword', attacks: ['overhead', 'slash', 'backslash'], windup: 0.45, reach: 2.2, behavior: 'charge', scale: 1, girth: 1.15, blood: 'black', voice: { ...URUK_VOICE, pitch: 0.75 }, poise: 0.6, cooldown: [0.8, 1.5] },
-  orc_archer: { kind: 'orc', hp: 45, damage: 10, speed: 4.6, weapon: 'orc_bow', attacks: ['punch'], windup: 0.45, reach: 1.6, behavior: 'archer', scale: 1, girth: 1, blood: 'dark', voice: ORC_VOICE, poise: 0, cooldown: [1.3, 2.2], ranged: { speed: 34, interval: [2.6, 4.0], style: 'orc', draw: 1.05 } },
+  orc_archer: { kind: 'orc', hp: 45, damage: 12, speed: 4.6, weapon: 'orc_bow', attacks: ['punch'], windup: 0.45, reach: 1.6, behavior: 'archer', scale: 1, girth: 1, blood: 'dark', voice: ORC_VOICE, poise: 0, cooldown: [1.3, 2.2], ranged: { speed: 34, interval: [2.0, 3.2], style: 'orc', draw: 1.05 } },
   easterling: { kind: 'easterling', hp: 100, damage: 16, speed: 4.4, weapon: 'sword', offhand: 'shield', attacks: ['slash', 'thrust'], windup: 0.55, reach: 2.0, behavior: 'charge', scale: 1, girth: 1, blood: 'red', voice: MAN_VOICE, poise: 0.35, cooldown: [1.2, 2.0], armored: true },
   haradrim: { kind: 'haradrim', hp: 85, damage: 15, speed: 4.8, weapon: 'scimitar', attacks: ['slash', 'thrust', 'backslash'], windup: 0.5, reach: 2.0, behavior: 'charge', scale: 1, girth: 1, blood: 'red', voice: MAN_VOICE, poise: 0.1, cooldown: [1.1, 1.9] },
   troll: { kind: 'troll', hp: 900, damage: 40, speed: 3.0, weapon: 'club', attacks: ['sweep', 'slam', 'stomp'], windup: 0.7, reach: 4.4, behavior: 'charge', scale: 1, girth: 1.5, blood: 'dark', voice: { grunt: 'troll_roar', die: 'troll_roar', roar: 'troll_roar', pitch: 1 }, poise: 1, cooldown: [1.4, 2.4], headZone: 'weakpoint', headMult: 3, bodyMult: 0.8 },
@@ -500,8 +500,10 @@ class EnemyImpl extends NpcBase implements Enemy {
         }
       }
       if (this.cooldown <= 0 && gap <= reach + 0.2 && this.angleTo(t.position) < 0.9 && this.atk.phase === 'none') {
+        // never wind up a swing that cannot land (a wall, door or pillar in between)
+        if (!meleeLineClear(this.ctx.physics, this, t)) this.cooldown = 0.3;
         // one wind-up at a time per target (troll ignores the queue)
-        if (troll || requestAttackToken(t, this.ctx.time.t, this.diff.tokenGap, this.diff.concurrent)) {
+        else if (troll || requestAttackToken(t, this.ctx.time.t, this.diff.tokenGap, this.diff.concurrent, this)) {
           const kind = this.chooseAttack(gap, t);
           this.startAttack(kind, t, this.def.windup * this.diff.windup);
           this.atkToken = !troll;
@@ -541,7 +543,8 @@ class EnemyImpl extends NpcBase implements Enemy {
       if (this.position.distanceTo(anchor) < leash && gap > reach * 0.8) this.setGoal(t.position, this.speedMax * 0.6, reach * 0.7 + t.radius);
       else this.setGoal(anchor, this.speedMax * 0.5, 0.4);
       if (this.cooldown <= 0 && gap <= reach + 0.2 && this.angleTo(t.position) < 0.8) {
-        if (requestAttackToken(t, this.ctx.time.t, this.diff.tokenGap, this.diff.concurrent)) {
+        if (!meleeLineClear(this.ctx.physics, this, t)) this.cooldown = 0.3;
+        else if (requestAttackToken(t, this.ctx.time.t, this.diff.tokenGap, this.diff.concurrent, this)) {
           this.startAttack(this.chooseAttack(gap, t), t, this.def.windup * this.diff.windup);
           this.atkToken = true;
           this.cooldown = this.rng.range(...this.def.cooldown) * this.diff.cooldown + this.def.windup;
@@ -630,7 +633,8 @@ class EnemyImpl extends NpcBase implements Enemy {
       this.shootT = this.rng.range(r.interval[0], r.interval[1]) * this.diff.cooldown;
       ballisticDir(_o, this.aimAt, r.speed, ARROW_GRAVITY, _dir);
       const dist = _o.distanceTo(this.aimAt);
-      const spread = THREE.MathUtils.degToRad(2 + dist * 0.03) * this.diff.spread;
+      // ~±0.5 m at 20 m: archers hit a standing target about half the time, a strafing one less
+      const spread = THREE.MathUtils.degToRad(1.1 + dist * 0.018) * this.diff.spread;
       spreadDir(_dir, spread, this.rng.float(), this.rng.float(), _dir);
       this.ctx.projectiles.fire({
         origin: _o.clone(),
@@ -745,6 +749,7 @@ class EnemyImpl extends NpcBase implements Enemy {
       const g = this.gap(v);
       const a = this.angleTo(v.position);
       if (g > reachOk || a > cone || Math.abs(v.position.y - this.position.y) > this.height * 0.8) continue;
+      if (!meleeLineClear(ctx.physics, this, v)) continue; // blade stopped by the wall in between
       _v.set(v.position.x - this.position.x, 0, v.position.z - this.position.z).normalize();
       const heavy = kind === 'overhead' || kind === 'sweep' || this.def.kind === 'berserker';
       v.takeDamage({
@@ -786,6 +791,7 @@ class EnemyImpl extends NpcBase implements Enemy {
 
   dispose(): void {
     releaseSlot(this.target, this);
+    this.cancelAttack(); // a wind-up in progress must hand its attack token back
     super.dispose();
   }
 }

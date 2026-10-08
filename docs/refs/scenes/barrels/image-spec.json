@@ -1,0 +1,150 @@
+{
+  "image_size_px": [
+    1536,
+    1024
+  ],
+  "establishing": {
+    "height_m": 8,
+    "vertical_fov_deg": 55,
+    "scale_figure_height_m": 1.85,
+    "composition": "hero location with checkpoint landmarks"
+  },
+  "gameplay_view": {
+    "height_m": 1.6,
+    "behind_player_m": 3.2,
+    "shoulder_offset_m": 1.2,
+    "vertical_fov_deg": 70,
+    "horizontal_fov_deg": 92.81,
+    "player_height_m": 1.85,
+    "player_screen_center_percent": [
+      30,
+      77
+    ],
+    "expected_player_height_percent": 42.34,
+    "note": "Background is uncalibrated look art. Code projects the schematic 1.85 m player through the exact camera; character look is owned by the parallel sheets.",
+    "pitch_deg": 3,
+    "size_px": [
+      1536,
+      1024
+    ]
+  },
+  "beats": {
+    "grid": [
+      2,
+      3
+    ],
+    "order": "row-major",
+    "captions": [
+      "Gate walkway: protect the lever",
+      "Bank run at 8 m/s",
+      "Leap onto dwarf barrels",
+      "Three lanes through rocks and low logs",
+      "Drop captain log bridge by its supports",
+      "Calm pool; shingle bank outro"
+    ],
+    "frames_per_checkpoint": "Beat subdivisions preserve chapter order; four-beat chapters split action into six panels."
+  },
+  "readability": {
+    "primary_path_width_m": 4,
+    "target_silhouette_contrast_min": 0.18,
+    "target_test": "Compare relative luminance of enemy torso and immediate background; evaluate at 10–35 m.",
+    "no_baked_ui": true
+  },
+  "palette": {
+    "swatch_count": 9,
+    "values": {
+      "sky_top": "#8298ae",
+      "horizon": "#bdd0d0",
+      "fog": "#bdd0d0",
+      "sun": "#fff1da",
+      "shadow_fill": "#d5e6f2",
+      "dominant_ground": "#68745b",
+      "dominant_structure": "#777c75",
+      "accent": "#dde9df",
+      "fire_emissive": "#ffad55"
+    }
+  },
+  "extras": {
+    "barrel_rapids": {
+      "lanes": 3,
+      "lane_width_m": 3,
+      "river_width_m": [
+        9,
+        24
+      ],
+      "rocks_m": [
+        1,
+        3
+      ],
+      "low_log_clearance_m": 0.6,
+      "speed_m_s": [
+        7,
+        11
+      ]
+    }
+  },
+  "source": "design_target",
+  "scale_cues": "Script-drawn calibration figures. Generated people are uncalibrated narrative illustration, never evidence of dimensions.",
+  "observed_composition": {
+    "establishing": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "barrel_rapids": {
+      "scale_legend": {
+        "source": "design_target",
+        "height_m": 1.85,
+        "pixels_per_metre": 50,
+        "height_px": 92.5,
+        "meaning": "Separate script-drawn dimensional legend; generated people are uncalibrated narrative figures."
+      }
+    },
+    "gameplay_view": {
+      "source": "measured_script",
+      "method": "pinhole projection of a 1.85 m vertical subject; background remains an uncalibrated look reference",
+      "head_px": [
+        494.5389268368307,
+        493.2719446357383
+      ],
+      "foot_px": [
+        486.030583909303,
+        926.7963531338851
+      ],
+      "projected_height_px": 433.5244084981468,
+      "camera": {
+        "height_m": 1.6,
+        "behind_player_m": 3.2,
+        "shoulder_offset_m": 1.2,
+        "vertical_fov_deg": 70,
+        "pitch_deg": 3,
+        "size_px": [
+          1536,
+          1024
+        ]
+      }
+    },
+    "beats": {
+      "source": "measured_script",
+      "columns": 2,
+      "rows": 3,
+      "frame_rect_px": [
+        752,
+        282
+      ],
+      "caption_font": "DejaVu Sans 17 px",
+      "inputs": [
+        "scenes/barrels/frames/beat_00_look.jpg",
+        "scenes/barrels/frames/beat_01_look.jpg",
+        "scenes/barrels/frames/beat_02_look.jpg",
+        "scenes/barrels/frames/beat_03_look.jpg",
+        "scenes/barrels/frames/beat_04_look.jpg",
+        "scenes/barrels/frames/beat_05_look.jpg"
+      ]
+    }
+  }
+}

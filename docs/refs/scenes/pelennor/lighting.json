@@ -1,0 +1,208 @@
+{
+  "name": "Pelennor Fields",
+  "sky": {
+    "kind": "physical",
+    "elevation": 9,
+    "azimuth": 100,
+    "turbidity": 8,
+    "rayleigh": 2.2,
+    "mieCoefficient": 0.008,
+    "mieDirectionalG": 0.88,
+    "clouds": 0.62
+  },
+  "sunColor": "#f1cba1",
+  "sunIntensity": 3.2,
+  "hemiSky": "#87a1c8",
+  "hemiGround": "#4c3b2b",
+  "hemiIntensity": 0.62,
+  "envIntensity": 1,
+  "fog": {
+    "color": "#c8a68c",
+    "density": 0.0045
+  },
+  "exposure": 0.95,
+  "bloom": 0.22,
+  "grade": {
+    "lift": [
+      0,
+      0.008,
+      0.014
+    ],
+    "gamma": [
+      1,
+      1,
+      0.98
+    ],
+    "gain": [
+      1.06,
+      1,
+      0.91
+    ],
+    "saturation": 1.04,
+    "vignette": 0.32
+  },
+  "weather": "ash",
+  "weatherIntensity": 0.35,
+  "ambience": "wind",
+  "palette": {
+    "sky_top": "#8298ae",
+    "horizon": "#c8a68c",
+    "fog": "#c8a68c",
+    "sun": "#f1cba1",
+    "shadow_fill": "#87a1c8",
+    "dominant_ground": "#716448",
+    "dominant_structure": "#dedacf",
+    "accent": "#9b3330",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunColor",
+      "current": "#ffb878",
+      "recommended": "#f1cba1",
+      "reason": "Neutralise excessive orange/blue cast so fire, hide and wet stone keep distinguishable hues."
+    },
+    {
+      "field": "sunIntensity",
+      "current": 3.8,
+      "recommended": 3.2,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0078,
+      "recommended": 0.0045,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.42,
+      "recommended": 0.22,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.saturation",
+      "current": 1.1,
+      "recommended": 1.04,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.46,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#97a3bc",
+      "region_px": [
+        922,
+        20,
+        1152,
+        102
+      ],
+      "pixel_count": 18860,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#707988",
+      "region_px": [
+        952,
+        205,
+        1167,
+        287
+      ],
+      "pixel_count": 17630,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#90959f",
+      "region_px": [
+        737,
+        328,
+        891,
+        440
+      ],
+      "pixel_count": 17248,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#4e3322",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#3b322b",
+      "region_px": [
+        691,
+        850,
+        891,
+        952
+      ],
+      "pixel_count": 20400,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#6a6c72",
+      "region_px": [
+        1198,
+        307,
+        1290,
+        379
+      ],
+      "pixel_count": 6624,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#281f19",
+      "region_px": [
+        430,
+        164,
+        461,
+        205
+      ],
+      "pixel_count": 1271,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "pelennor"
+}

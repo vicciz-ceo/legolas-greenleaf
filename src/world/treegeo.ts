@@ -127,7 +127,10 @@ function tube(buf: Buf, pts: V3[], radii: number[], o: TubeOpts): void {
       const b = a + 1;
       const c = a + (seg + 1);
       const d = c + 1;
-      buf.idx.push(a, c, b, b, c, d);
+      // counter-clockwise seen from outside (the face normal agrees with the outward vertex normal):
+      // the reverse order rendered the far inner wall of every trunk, whose normals face away from
+      // the camera, which turned GTAO black on every tree
+      buf.idx.push(a, b, c, b, d, c);
     }
   }
   if (o.capStart) {

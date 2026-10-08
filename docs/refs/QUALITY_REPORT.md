@@ -715,7 +715,7 @@ Historical generation and acceptance records are preserved. Newly authored repla
 
 ## Validation
 
-- 24 regression tests pass, covering construction, intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.
+- 25 regression tests pass, including complete file accounting for both integrated libraries, construction, alpha intake, original concurrency/caps and recovery history.
 - All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.
 - All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view.
 - Historical game build/smoke evidence is retained from the prior pass; this reference-only continuation does not change game files.

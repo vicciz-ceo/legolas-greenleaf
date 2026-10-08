@@ -138,6 +138,14 @@ export function sanitizeSettings(raw: unknown, base: Settings = defaultSettings(
   };
 }
 
+/** a chapter id usable as a record key (never an Object.prototype member name) */
+function safeKey(id: string): boolean {
+  return id.length > 0 && id.length < 64 && !(id in Object.prototype);
+}
+
+/** opening balance of a save written before per-chapter rivalry shares existed */
+const RIVALRY_LEGACY = '_before';
+
 function freshSave(first: string | undefined): SaveData {
   return {
     version: 1,
@@ -165,9 +173,10 @@ export function sanitizeSave(raw: unknown, first: string | undefined): SaveData 
 
   if (o.best && typeof o.best === 'object') {
     for (const [id, v] of Object.entries(o.best as Record<string, unknown>)) {
-      if (!v || typeof v !== 'object') continue;
+      if (!v || typeof v !== 'object' || !safeKey(id)) continue;
       const b = v as Record<string, unknown>;
-      if (typeof b.rank === 'string' && b.rank in RANK_VALUE && typeof b.score === 'number' && Number.isFinite(b.score)) {
+      // own keys only: `in` also accepted inherited names such as 'constructor' or 'toString' as ranks
+      if (typeof b.rank === 'string' && Object.prototype.hasOwnProperty.call(RANK_VALUE, b.rank) && typeof b.score === 'number' && Number.isFinite(b.score)) {
         out.best[id] = { rank: b.rank as Rank, score: Math.max(0, Math.round(b.score)) };
       }
     }
@@ -186,6 +195,15 @@ export function sanitizeSave(raw: unknown, first: string | undefined): SaveData 
     const r = o.rivalryTotals as Record<string, unknown>;
     out.rivalryTotals = { legolas: Math.floor(num(r.legolas, 0, 0, 1e6)), gimli: Math.floor(num(r.gimli, 0, 0, 1e6)) };
   }
+  if (o.rivalryByChapter && typeof o.rivalryByChapter === 'object' && !Array.isArray(o.rivalryByChapter)) {
+    const by: Record<string, { legolas: number; gimli: number }> = {};
+    for (const [id, v] of Object.entries(o.rivalryByChapter as Record<string, unknown>)) {
+      if (!v || typeof v !== 'object' || !safeKey(id)) continue;
+      const r = v as Record<string, unknown>;
+      by[id] = { legolas: Math.floor(num(r.legolas, 0, 0, 1e6)), gimli: Math.floor(num(r.gimli, 0, 0, 1e6)) };
+    }
+    out.rivalryByChapter = by;
+  }
   if (o.last && typeof o.last === 'object') {
     const l = o.last as Record<string, unknown>;
     if (typeof l.chapterId === 'string' && l.chapterId) {
@@ -202,6 +220,11 @@ export interface ProgressionExt extends Progression {
   setChapterOrder(order: readonly string[]): void;
   /** total upgrade points ever spent (diagnostics) */
   readonly spent: number;
+  /**
+   * rivalry count a (non-respawn) run of this chapter starts from: the shares of the chapters before
+   * it in story order. A replay therefore never starts from totals that already contain itself.
+   */
+  rivalryBaseline(chapterId: string): { legolas: number; gimli: number };
 }
 
 function storage(): Storage | null {
@@ -303,6 +326,21 @@ export function createProgression(chapterOrder?: readonly string[] | (() => read
       if (r.rivalry && r.rivalry.legolas > r.rivalry.gimli) points += 1; // beat Gimli
       return { score, rank, points };
     },
+    rivalryBaseline(chapterId) {
+      const by = data.rivalryByChapter;
+      if (!by) return { ...data.rivalryTotals }; // old save: everything so far
+      const idx = order.indexOf(chapterId);
+      let legolas = 0;
+      let gimli = 0;
+      for (const [id, v] of Object.entries(by)) {
+        if (id === chapterId) continue;
+        const i = order.indexOf(id);
+        if (id !== RIVALRY_LEGACY && idx >= 0 && (i < 0 || i > idx)) continue; // later chapters
+        legolas += v.legolas;
+        gimli += v.gimli;
+      }
+      return { legolas, gimli };
+    },
     recordResult(r) {
       const prev = data.best[r.chapterId];
       if (!prev || r.score > prev.score || RANK_VALUE[r.rank] > RANK_VALUE[prev.rank]) {
@@ -312,7 +350,27 @@ export function createProgression(chapterOrder?: readonly string[] | (() => read
         };
       }
       data.points += Math.max(0, Math.floor(r.pointsEarned));
-      if (r.rivalry) data.rivalryTotals = { legolas: r.rivalry.legolas, gimli: r.rivalry.gimli };
+      if (r.rivalry) {
+        if (!data.rivalryByChapter) {
+          // first clear with shares: an older save's totals become a fixed opening balance
+          data.rivalryByChapter = {};
+          const t = data.rivalryTotals;
+          if (t.legolas || t.gimli) data.rivalryByChapter[RIVALRY_LEGACY] = { ...t };
+        }
+        // this run started from the baseline (game.ts): its share replaces any earlier clear's
+        const base = p.rivalryBaseline(r.chapterId);
+        data.rivalryByChapter[r.chapterId] = {
+          legolas: Math.max(0, r.rivalry.legolas - base.legolas),
+          gimli: Math.max(0, r.rivalry.gimli - base.gimli),
+        };
+        let legolas = 0;
+        let gimli = 0;
+        for (const v of Object.values(data.rivalryByChapter)) {
+          legolas += v.legolas;
+          gimli += v.gimli;
+        }
+        data.rivalryTotals = { legolas, gimli };
+      }
       const i = order.indexOf(r.chapterId);
       const next = i >= 0 ? order[i + 1] : undefined;
       if (next && !data.unlocked.includes(next)) data.unlocked.push(next);

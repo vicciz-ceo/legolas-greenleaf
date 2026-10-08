@@ -125,6 +125,11 @@ async function runOne(base, info, cp) {
         if (errors.length > 8) break;
       }
       const st = await page.evaluate(() => window.__game.state());
+      // regression: Esc pauses and the same key resumes (it used to re-pause on the resuming press)
+      if (cp === 0 && !errors.length) {
+        const pr = await checkPauseResume(page);
+        if (pr !== 'ok') errors.push(`pause/resume: ${pr}`);
+      }
       row.kills = st.kills ?? 0;
       row.hp = Math.round(st.hp ?? 0);
       row.enemies = st.enemies ?? 0;
@@ -138,6 +143,25 @@ async function runOne(base, info, cp) {
     if (!REUSE) await page?.close().catch(() => {});
   }
   return row;
+}
+
+/** Esc -> paused, Esc again -> playing and still playing a few frames later ('ok' or a reason) */
+async function checkPauseResume(page) {
+  const mode = () => page.evaluate(() => window.__game.state().mode);
+  const frames = (n) =>
+    page.evaluate((k) => new Promise((r) => {
+      const f = () => (--k <= 0 ? r(null) : requestAnimationFrame(f));
+      requestAnimationFrame(f);
+    }), n);
+  if ((await mode()) !== 'playing') return 'ok'; // completing / defeated: nothing to check
+  await page.keyboard.press('Escape');
+  await frames(3);
+  const m1 = await mode();
+  if (m1 !== 'paused') return `Esc did not pause (mode ${m1})`;
+  await page.keyboard.press('Escape');
+  await frames(6);
+  const m2 = await mode();
+  return m2 === 'playing' ? 'ok' : `Esc did not resume (mode ${m2})`;
 }
 
 try {

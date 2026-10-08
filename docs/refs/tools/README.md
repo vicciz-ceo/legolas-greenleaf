@@ -32,7 +32,7 @@ For creatures, set `composition.creature: true`, `views` (four names), `referenc
 
 All three output canvases begin at exact RGB (127,127,127). JPEG quality is 88 with no chroma subsampling. JPEG is lossy: ringing immediately beside a subject or label can perturb background pixels. `check` reconstructs the lossless canvas from retained sources and compares its raw-pixel hash and exact safe background patch. The decoded JPEG patch uses a maximum per-channel tolerance of 3; metadata records the exact pre-encoding canvas colour. It does not falsely claim that every decoded edge pixel is lossless.
 
-Budgets use decimal bytes: 2,500,000 per character and 70,000,000 for the whole library, including source images, JSON, notes and tooling. Previews go to the operating system's temporary directory and are never committed. A passing `check` certifies construction and freshness, **not** anatomy, identity, gear sides or artistic quality; those receive a separate by-eye review.
+Budgets use decimal bytes: 2,500,000 per character and 70,000,000 for the character library, including source images, JSON, notes and tooling. Previews go to the operating system's temporary directory and are never committed. A passing `check` certifies construction and freshness, **not** anatomy, identity, gear sides or artistic quality; those receive a separate by-eye review.
 
 Creature `scale_axes` can override the projected axis by view. `landmark_regions_px` holds reviewed rectangles in retained-cutout coordinates, for example the mumak body region below its shoulder and excluding the howdah. Code computes half-open alpha extrema, source and sheet endpoints and effective scale. The reference view extent must equal `scale_extent_m`; other projected extents are explicitly authored design targets, never inferred anatomy.
 
@@ -59,3 +59,5 @@ Creature extent_rules may select reference_overall_height or reference_overall_w
 Additional creature resting poses use dedicated 768×512 panels at the main sheet scale; this is a documented roster-specific canvas exception. Creature span checks measure the resampled alpha mask itself and preserve thin extrema if raster reduction would erase them.
 
 For a wide opaque detail tile, `composition.detail_margin_px` can increase the inset from its default 12 pixels to preserve the safe background patch. The dwarf elder uses 24 pixels; other accepted layouts retain the default.
+
+Scene/graphics composition uses the independent `scene_composition.py` primitives. `reference_inventory.py` counts both libraries and all retained files, charging shared accounting files against both existing caps. See [combined inventory](../reference-inventory.json) for ownership and combined totals.

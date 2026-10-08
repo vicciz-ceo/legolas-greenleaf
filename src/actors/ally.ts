@@ -11,7 +11,7 @@ import { dirFromYaw } from '../core/math';
 import { Rng, hashSeed } from '../core/rng';
 import { makeHumanoid } from './humanoids';
 import { NpcBase, vocal } from './npc';
-import { hostile } from './combatant';
+import { hostile, meleeLineClear } from './combatant';
 import { ARROW_GRAVITY, ballisticDir, spreadDir } from '../combat/aim';
 
 interface AllyDef {
@@ -42,6 +42,8 @@ const ALLIES: Record<AllyKind, AllyDef> = {
 
 const ENGAGE_RANGE = 10;
 const LEASH = 14;
+/** height difference beyond which a melee ally neither picks nor strikes a foe (m) */
+const MELEE_DY = 1.6;
 
 const _v = new THREE.Vector3();
 const _o = new THREE.Vector3();
@@ -142,9 +144,14 @@ class AllyImpl extends NpcBase implements Ally {
     for (const c of this.ctx.combatants.all()) {
       if (!c.alive || !hostile(this.team, c.team) || c.team === 'neutral') continue;
       const fromAnchor = c.position.distanceTo(anchor);
-      if (fromAnchor > LEASH + (this.def.archer ? 14 : 0)) continue;
+      // a rival (Gimli) ranges further out to meet the foes the player is shooting, otherwise they
+      // all die before reaching him and his count never moves
+      const rival = this.spec.rivalry ? 8 : 0;
+      if (fromAnchor > LEASH + rival + (this.def.archer ? 14 : 0)) continue;
       const d = this.gap(c);
-      if (d > ENGAGE_RANGE + (this.def.archer ? 22 : 0)) continue;
+      if (d > ENGAGE_RANGE + rival + (this.def.archer ? 22 : 0)) continue;
+      // a melee ally cannot reach a foe on a ledge / platform far above or below him
+      if (!this.def.archer && Math.abs(c.position.y - this.position.y) > MELEE_DY) continue;
       // prefer foes already near us; keep the current one (hysteresis)
       const score = d - (c === this.foe ? 2 : 0) + (c.isBoss ? 4 : 0);
       if (score < bd) {
@@ -305,6 +312,7 @@ class AllyImpl extends NpcBase implements Ally {
   protected strike(kind: AttackAnim, target: Combatant | null): void {
     if (!target || !target.alive) return;
     if (this.gap(target) > this.def.reach + 0.5 || this.angleTo(target.position) > 1.3) return;
+    if (Math.abs(target.position.y - this.position.y) > MELEE_DY || !meleeLineClear(this.ctx.physics, this, target)) return;
     _v.set(target.position.x - this.position.x, 0, target.position.z - this.position.z).normalize();
     const finisher = kind === 'overhead' || kind === 'knife3';
     target.takeDamage({

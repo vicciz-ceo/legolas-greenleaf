@@ -1,0 +1,560 @@
+{
+  "schema_version": 1,
+  "units": "metres",
+  "coordinate_system": {
+    "up": "+Y",
+    "forward": "+Z",
+    "right": "+X",
+    "plan_north": "+Z",
+    "origin": "chapter-local recommended layout",
+    "anchor_semantics": "Checkpoints/routes are foot or platform-top elevations. Structure position_m is plan centre at base elevation; size_m is W/H/D. Falling-block routes are landing surface heights."
+  },
+  "chapter": "barrels",
+  "source": "design_target",
+  "status": "recommended design dimensions; not surveyed current code",
+  "extent_m": [
+    180,
+    1500
+  ],
+  "terrain": {
+    "size": 1500,
+    "segments": 256,
+    "style": "riverbank",
+    "height": "See elevation_m on route, checkpoints and structures; interpolate safely; do not serialize a function."
+  },
+  "player_start_m": [
+    0,
+    3,
+    -670
+  ],
+  "checkpoints": [
+    {
+      "index": 0,
+      "label": "The River Gate",
+      "position_m": [
+        0,
+        3,
+        -670
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 1,
+      "label": "Along the Banks",
+      "position_m": [
+        -11,
+        1,
+        -585
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 2,
+      "label": "Riding the Rapids",
+      "position_m": [
+        0,
+        1.35,
+        -475
+      ],
+      "radius_m": 3
+    }
+  ],
+  "enemy_entry_zones": [
+    {
+      "id": "E1L",
+      "checkpoint": 0,
+      "center_m": [
+        -15,
+        3,
+        -658
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    },
+    {
+      "id": "E1R",
+      "checkpoint": 0,
+      "center_m": [
+        15,
+        3,
+        -658
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    },
+    {
+      "id": "E2L",
+      "checkpoint": 1,
+      "center_m": [
+        -26,
+        3,
+        -573
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    },
+    {
+      "id": "E2R",
+      "checkpoint": 1,
+      "center_m": [
+        4,
+        3,
+        -573
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    },
+    {
+      "id": "E3L",
+      "checkpoint": 2,
+      "center_m": [
+        -15,
+        3,
+        -463
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    },
+    {
+      "id": "E3R",
+      "checkpoint": 2,
+      "center_m": [
+        15,
+        3,
+        -463
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Orcs on both banks and log bridges; Gundabad log-bridge captain with four guards."
+    }
+  ],
+  "ally_positions": [
+    {
+      "name": "Tauriel",
+      "position_m": [
+        3,
+        3,
+        -668
+      ],
+      "active_from_checkpoint": 0
+    }
+  ],
+  "cover": [
+    {
+      "id": "C1L",
+      "position_m": [
+        -6,
+        3,
+        -665
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C1R",
+      "position_m": [
+        6,
+        3,
+        -665
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2L",
+      "position_m": [
+        -17,
+        1,
+        -580
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2R",
+      "position_m": [
+        -5,
+        1,
+        -580
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3L",
+      "position_m": [
+        -6,
+        0.5,
+        -470
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3R",
+      "position_m": [
+        6,
+        0.5,
+        -470
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    }
+  ],
+  "high_ground": [
+    {
+      "id": "H1",
+      "position_m": [
+        11,
+        6,
+        -662
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H2",
+      "position_m": [
+        0,
+        4,
+        -577
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H3",
+      "position_m": [
+        11,
+        3.5,
+        -467
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    }
+  ],
+  "set_piece_route": {
+    "points_m": [
+      [
+        0,
+        0,
+        -680
+      ],
+      [
+        -8,
+        0,
+        -570
+      ],
+      [
+        5,
+        0,
+        -475
+      ],
+      [
+        -4,
+        0,
+        -280
+      ],
+      [
+        10,
+        0,
+        -80
+      ],
+      [
+        -8,
+        0,
+        150
+      ],
+      [
+        6,
+        0,
+        365
+      ],
+      [
+        0,
+        0,
+        530
+      ],
+      [
+        0,
+        0,
+        635
+      ]
+    ],
+    "width_m": 9,
+    "elevations_are_binding": true
+  },
+  "structures": [
+    {
+      "id": "S1",
+      "name": "Water gate",
+      "position_m": [
+        0,
+        0,
+        -670
+      ],
+      "size_m": [
+        24,
+        9,
+        5
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S2",
+      "name": "Barrel",
+      "position_m": [
+        0,
+        0.1,
+        -475
+      ],
+      "size_m": [
+        1,
+        1.25,
+        1
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S3",
+      "name": "Log bridge",
+      "position_m": [
+        0,
+        4,
+        150
+      ],
+      "size_m": [
+        22,
+        1.5,
+        2
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S4",
+      "name": "Calm pool",
+      "position_m": [
+        0,
+        0,
+        455
+      ],
+      "size_m": [
+        46,
+        3,
+        60
+      ],
+      "yaw_deg": 0
+    }
+  ],
+  "extra_set_pieces": {
+    "barrel_rapids": {
+      "lanes": 3,
+      "lane_width_m": 3,
+      "river_width_m": [
+        9,
+        24
+      ],
+      "rocks_m": [
+        1,
+        3
+      ],
+      "low_log_clearance_m": 0.6,
+      "speed_m_s": [
+        7,
+        11
+      ]
+    }
+  },
+  "rapids_length_m": 901.976,
+  "ride_duration_s": 90,
+  "average_speed_m_s": 10.022,
+  "lanes": [
+    {
+      "center_offset_m": -3,
+      "clear_width_m": 3
+    },
+    {
+      "center_offset_m": 0,
+      "clear_width_m": 3
+    },
+    {
+      "center_offset_m": 3,
+      "clear_width_m": 3
+    }
+  ],
+  "plan_render": {
+    "source": "measured_script",
+    "pixels_per_metre": 0.49,
+    "origin_px": [
+      615,
+      478
+    ],
+    "image_size_px": [
+      1536,
+      1024
+    ],
+    "script": "tools/compose_scenes.py:layout"
+  },
+  "ride_route_m": [
+    [
+      0,
+      0,
+      -475
+    ],
+    [
+      -4,
+      0,
+      -280
+    ],
+    [
+      10,
+      0,
+      -80
+    ],
+    [
+      -8,
+      0,
+      150
+    ],
+    [
+      6,
+      0,
+      360
+    ],
+    [
+      0,
+      0,
+      425
+    ]
+  ],
+  "barrel_head_step_height_m": 1.35,
+  "gate_lever_m": [
+    -10,
+    3,
+    -668
+  ],
+  "bank_route_m": [
+    [
+      -10,
+      3,
+      -670
+    ],
+    [
+      -11,
+      1,
+      -585
+    ],
+    [
+      -11,
+      1,
+      -480
+    ]
+  ],
+  "rock_obstacles_m": [
+    {
+      "center": [
+        -2,
+        0,
+        -350
+      ],
+      "diameter": 2
+    },
+    {
+      "center": [
+        4,
+        0,
+        -210
+      ],
+      "diameter": 2.5
+    },
+    {
+      "center": [
+        -4,
+        0,
+        -55
+      ],
+      "diameter": 3
+    },
+    {
+      "center": [
+        3,
+        0,
+        80
+      ],
+      "diameter": 2
+    },
+    {
+      "center": [
+        -2,
+        0,
+        250
+      ],
+      "diameter": 2.5
+    }
+  ],
+  "low_log_m": {
+    "center": [
+      0,
+      0.6,
+      315
+    ],
+    "size": [
+      12,
+      0.35,
+      0.35
+    ]
+  }
+}

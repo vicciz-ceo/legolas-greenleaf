@@ -1,0 +1,164 @@
+[
+  {
+    "id": "mirkwood",
+    "subject": "mirkwood",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/mirkwood/current_vignette.png"
+      ],
+      "readyMs": 10401,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/mirkwood/current_vignette.jpg"
+  },
+  {
+    "id": "barrels",
+    "subject": "woods",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/barrels/current_vignette.png"
+      ],
+      "readyMs": 9767,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/barrels/current_vignette.jpg"
+  },
+  {
+    "id": "laketown",
+    "subject": "laketown",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/laketown/current_vignette.png"
+      ],
+      "readyMs": 9434,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/laketown/current_vignette.jpg"
+  },
+  {
+    "id": "ravenhill",
+    "subject": "ravenhill",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/ravenhill/current_vignette.png"
+      ],
+      "readyMs": 10943,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/ravenhill/current_vignette.jpg"
+  },
+  {
+    "id": "moria",
+    "subject": "moria_hall",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/moria/current_vignette.png"
+      ],
+      "readyMs": 8564,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/moria/current_vignette.jpg"
+  },
+  {
+    "id": "amon_hen",
+    "subject": "amon_hen",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/amon_hen/current_vignette.png"
+      ],
+      "readyMs": 9919,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/amon_hen/current_vignette.jpg"
+  },
+  {
+    "id": "helms_deep",
+    "subject": "deeping_wall",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/helms_deep/current_vignette.png"
+      ],
+      "readyMs": 8283,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/helms_deep/current_vignette.jpg"
+  },
+  {
+    "id": "pelennor",
+    "subject": "pelennor",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/pelennor/current_vignette.png"
+      ],
+      "readyMs": 10324,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/pelennor/current_vignette.jpg"
+  },
+  {
+    "id": "black_gate",
+    "subject": "black_gate",
+    "exit": 0,
+    "result": {
+      "ok": true,
+      "shots": [
+        "/workspace/greenleaf-scene-refs/docs/refs/scenes/black_gate/current_vignette.png"
+      ],
+      "readyMs": 8940,
+      "errors": [],
+      "warnings": []
+    },
+    "stderr": "",
+    "source": "measured_script",
+    "base_commit": "7ab3afd",
+    "published_image": "scenes/black_gate/current_vignette.jpg"
+  }
+]

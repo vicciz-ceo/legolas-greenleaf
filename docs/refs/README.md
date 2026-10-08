@@ -2,7 +2,7 @@
 
 Development references only; the game imports none of these images. All source meshes, textures and sound remain procedural.
 
-Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). The original briefs are retained in [recovery/original-brief.txt](recovery/original-brief.txt). [CHECKLIST.md](CHECKLIST.md) and [progress.json](progress.json) track every required deliverable and its attempt history.
+Branch `reference/character-sheets`; [PR #1](https://github.com/vicciz-ceo/legolas-greenleaf/pull/1). The original briefs are retained in [recovery/original-brief.txt](recovery/original-brief.txt). [CHECKLIST.md](CHECKLIST.md) and [progress.json](progress.json) track every required deliverable and its attempt history.
 
 | Character / group | Design height or span | Thumbnail | Spec | Notes | Delivery status |
 | --- | --- | --- | --- | --- | --- |
@@ -45,15 +45,17 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **69,565,718 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained character library size: **69,617,976 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
+
+The scene/graphics library has a separate 120,000,000-byte cap. [Combined inventory](reference-inventory.json) reports every retained file, both library totals and the combined size; shared inventory files count against both caps.
 
 Minor buckle, stitching, strap-count and light drift is tolerated and documented per character. No source is mirrored. Creature views, flight silhouettes and supplements follow their explicitly recorded exceptions.
 
 ## Verification
 
-- 24 regression tests pass, covering construction, intake alpha handling, original concurrency/caps, separate recovery history and detail-grid insets.
+- 25 regression tests pass, including complete file accounting for both integrated libraries, construction, alpha intake, original concurrency/caps and recovery history.
 - All 36 entries (32 character sets and four supplements) pass construction checks and have accepted visual-review evidence.
 - All 360 retained reconstruction sources match provenance hashes; the original 22 accepted sets and three prior supplements remain unchanged. All 284 historical attempt records are preserved; all recovery series remain within four attempts per view.
 

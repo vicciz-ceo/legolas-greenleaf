@@ -85,6 +85,32 @@ export function applyMacroVariation(mat: THREE.Material, o: MacroOpts = {}): voi
   });
 }
 
+/**
+ * Cap the fog on a far-horizon landmark (Minas Tirith, Erebor...): exponential fog makes anything
+ * past a few hundred metres pure fog colour, a flat cut-out against the sky. With a cap the
+ * silhouette keeps `1 - max` of its own lit colour (tiers, shading) while still sitting in the haze.
+ */
+export function applyFogCap(mat: THREE.Material, max: number): void {
+  if (mat.userData.fogCap !== undefined) return; // shared cached materials: patch once
+  mat.userData.fogCap = max;
+  patchShader(mat, `fogcap${max}`, (shader) => {
+    shader.uniforms.uFogCap = { value: max };
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform float uFogCap;')
+      .replace(
+        '#include <fog_fragment>',
+        `#ifdef USE_FOG
+          #ifdef FOG_EXP2
+            float fogFactor = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);
+          #else
+            float fogFactor = smoothstep(fogNear, fogFar, vFogDepth);
+          #endif
+          gl_FragColor.rgb = mix(gl_FragColor.rgb, fogColor, min(fogFactor, uFogCap));
+        #endif`,
+      );
+  });
+}
+
 /** Shared wind uniforms. Updated automatically from performance.now() by materials via onBeforeRender helpers. */
 export const windUniforms = {
   uTime: { value: 0 },

@@ -75,9 +75,27 @@ async function boot(): Promise<void> {
   const story = CHAPTERS.filter((c) => !c.dev && c.number > 0).sort((a, b) => a.number - b.number);
   const progression = createProgression(story.length ? story.map((c) => c.id) : undefined);
   const settings = progression.data.settings;
-  if (DIFFICULTIES.includes(flags.difficulty as Difficulty)) settings.difficulty = flags.difficulty as Difficulty;
+  // ?difficulty= applies to this session only (like ?quality=): the save keeps the player's own
+  // choice unless they change the difficulty in the settings menu meanwhile
+  if (DIFFICULTIES.includes(flags.difficulty as Difficulty)) {
+    const flagDiff = flags.difficulty as Difficulty;
+    const savedDiff = settings.difficulty;
+    settings.difficulty = flagDiff;
+    const save = progression.save.bind(progression);
+    progression.save = () => {
+      if (settings.difficulty !== flagDiff) return save();
+      settings.difficulty = savedDiff;
+      try {
+        save();
+      } finally {
+        settings.difficulty = flagDiff;
+      }
+    };
+  }
   const quality: Quality = QUALITIES.includes(flags.quality as Quality) ? (flags.quality as Quality) : settings.quality;
-  const devVisible = flags.dev === '1' || flags.chapter !== undefined;
+  // dev chapters show with ?dev=1 / ?chapter=, and whenever no story chapter is registered yet (else
+  // the shipped title would have nothing to Continue into)
+  const devVisible = flags.dev === '1' || flags.chapter !== undefined || story.length === 0;
   const menuChapters = () => CHAPTERS.filter((c) => !c.dev || devVisible);
 
   // 2. core systems
@@ -267,8 +285,17 @@ async function boot(): Promise<void> {
   requestAnimationFrame(loop);
 
   // 6. first screen
-  if (flags.chapter) {
-    await g.startChapter(flags.chapter, Math.max(0, parseInt(flags.cp ?? '0', 10) || 0));
+  if (flags.chapter && !CHAPTERS.some((c) => c.id === flags.chapter)) {
+    // a stale bookmark / deep link: land on the title instead of a dead black screen
+    console.warn(`[boot] unknown chapter "${flags.chapter}" (known: ${CHAPTERS.map((c) => c.id).join(', ')})`);
+    await g.toTitle(true);
+    hud.toast(`Chapter "${flags.chapter}" was not found`, 'warning');
+  } else if (flags.chapter) {
+    try {
+      await g.startChapter(flags.chapter, Math.max(0, parseInt(flags.cp ?? '0', 10) || 0));
+    } catch {
+      return; // the load fell back to the title with a toast; __snapError is set for the tools
+    }
     if (g.error) return; // __snapError already set
   } else {
     await g.toTitle(flags.menu !== '0');

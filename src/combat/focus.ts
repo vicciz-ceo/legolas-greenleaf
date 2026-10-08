@@ -38,6 +38,8 @@ export interface FocusController {
   update(dtReal: number, input: InputState, canUse: boolean): void;
   /** abort without firing; restores time */
   cancel(): void;
+  /** was c a target of a Focus volley (kills by the volley refill the meter at a quarter of the rate) */
+  wasVolleyTarget(c: Combatant): boolean;
 }
 
 export const FOCUS_SCALE = 0.2;
@@ -63,6 +65,11 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
   const points: { x: number; y: number; locked: boolean }[] = [];
   const pointPool: { x: number; y: number; locked: boolean }[] = [];
   let shownMarks = 0;
+  /** meter drained since entering (refunded when a stagger interrupts Focus before the volley) */
+  let spent = 0;
+  /** "not enough Focus" feedback throttle (real seconds) */
+  let deniedT = 0;
+  const volleyTargets = new WeakSet<Combatant>();
 
   function screenOf(c: Combatant, out: { x: number; y: number }): boolean {
     const cam = ctx.engine.camera;
@@ -107,6 +114,7 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
 
   function enter() {
     state = 'active';
+    spent = 0;
     marks.length = 0;
     autoT = 0;
     ctx.time.setScale(FOCUS_SCALE, 0.25);
@@ -123,6 +131,7 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
 
   function startVolley() {
     state = 'volley';
+    for (const m of marks) volleyTargets.add(m);
     volleyIdx = 0;
     volleyT = 0; // first arrow immediately
   }
@@ -204,13 +213,26 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
       const dt = Math.min(dtReal, 0.1);
       cooldown = Math.max(0, cooldown - dt);
       drawPulse = Math.max(0, drawPulse - dt / 0.07);
+      deniedT = Math.max(0, deniedT - dt);
       if (state === 'idle') {
-        if (canUse && input.focusPressed && cooldown <= 0 && host.focus >= MIN_TO_START) enter();
+        if (canUse && input.focusPressed && cooldown <= 0) {
+          if (host.focus >= MIN_TO_START) enter();
+          else if (deniedT <= 0) {
+            // tell the player why nothing happened
+            deniedT = 1.2;
+            ctx.audio.play('ui_back', { volume: 0.6, pitch: 0.7 });
+            ctx.hud.toast('Not enough Focus', 'warning');
+          }
+        }
       } else if (state === 'active') {
         if (!canUse) {
+          // interrupted (stagger, stun, weapons off) before the volley: give the drained meter back
+          host.focus = Math.min(host.stats.focusMax, host.focus + spent);
           api.cancel();
         } else {
-          host.focus = Math.max(0, host.focus - (host.stats.focusMax / FOCUS_DRAIN_SECONDS) * dt);
+          const drain = Math.min(host.focus, (host.stats.focusMax / FOCUS_DRAIN_SECONDS) * dt);
+          host.focus -= drain;
+          spent += drain;
           const max = Math.max(1, host.stats.focusTargets);
           const list = candidates();
           if (marks.length < max) {
@@ -286,6 +308,9 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
         ctx.engine.post.focusTint = blend;
         ctx.audio.setSlowmo(blend);
       }
+    },
+    wasVolleyTarget(c) {
+      return volleyTargets.has(c);
     },
     cancel() {
       if (state === 'idle') return;

@@ -4,6 +4,7 @@ import { Rng, hashSeed } from '../core/rng';
 import { mat, plain } from './mats';
 import { cliffGeometry, limbGeo, xf } from './geom';
 import { MeshKit } from './util';
+import { applyFogCap } from './shader';
 import type { Built } from './colliders';
 
 /**
@@ -112,6 +113,8 @@ export function minasTirith(o: { scale?: number; tiers?: number; fires?: boolean
   const fk = new MeshKit();
   for (const [x, y, z] of fireBoxes) fk.box(emissive, [2.4 * S, 3 * S, 2.4 * S], [x, y, z], 0, undefined);
   if (fireBoxes.length) root.add(fk.build({ name: 'minas_fires', castShadow: false, receiveShadow: false }));
+  // a landmark seen from 1 km+: keep some of its own shading through the haze (see applyFogCap)
+  for (const m of [white, roofs, tint2, rockMat]) applyFogCap(m, 0.72);
   root.traverse((c) => {
     const m = c as THREE.Mesh;
     if (m.isMesh) m.userData.noAO = true;

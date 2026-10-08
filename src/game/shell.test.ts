@@ -108,6 +108,37 @@ test('computeRank points: base + first clear + rivalry; recordResult unlocks nex
   p2.recordResult({ ...base, chapterId: 'c', score: 500, rank: 'C', pointsEarned: 2, firstClear: true });
   ok(p2.data.unlocked.join() === 'a,b', 'last chapter unlocks nothing');
 });
+test('save: inherited names are not ranks or chapter keys', () => {
+  const d = sanitizeSave(JSON.parse('{"version":1,"best":{"arena":{"rank":"constructor","score":5},"toString":{"rank":"A","score":5},"__proto__":{"rank":"S","score":9},"mirkwood":{"rank":"B","score":7}}}'), 'mirkwood');
+  ok(!('arena' in d.best), 'rank "constructor" rejected');
+  ok(!Object.prototype.hasOwnProperty.call(d.best, 'toString') && !Object.prototype.hasOwnProperty.call(d.best, '__proto__'), 'prototype keys rejected');
+  ok(d.best.mirkwood?.rank === 'B', 'valid entry kept');
+});
+test('rivalry: a replay replaces its share instead of adding it again', () => {
+  const p = createProgression(['moria', 'amon_hen'], new MemStore());
+  const base = { title: 'x', timeSec: 100, kills: 10, headshots: 4, shots: 10, hits: 8, damageTaken: 0, score: 500, rank: 'C' as const, pointsEarned: 0, firstClear: true };
+  const b0 = p.rivalryBaseline('moria');
+  ok(b0.legolas === 0 && b0.gimli === 0, 'first chapter starts at 0');
+  p.recordResult({ ...base, chapterId: 'moria', rivalry: { legolas: 9, gimli: 3 } });
+  ok(p.data.rivalryTotals.legolas === 9 && p.data.rivalryTotals.gimli === 3, 'totals 9-3');
+  const b1 = p.rivalryBaseline('moria');
+  ok(b1.legolas === 0 && b1.gimli === 0, `replay starts from 0 again (got ${b1.legolas}-${b1.gimli})`);
+  p.recordResult({ ...base, chapterId: 'moria', rivalry: { legolas: 8, gimli: 4 } });
+  ok(p.data.rivalryTotals.legolas === 8 && p.data.rivalryTotals.gimli === 4, `replay replaced the share (got ${p.data.rivalryTotals.legolas}-${p.data.rivalryTotals.gimli})`);
+  const b2 = p.rivalryBaseline('amon_hen');
+  ok(b2.legolas === 8 && b2.gimli === 4, 'next chapter carries the totals');
+  p.recordResult({ ...base, chapterId: 'amon_hen', rivalry: { legolas: 20, gimli: 15 } });
+  ok(p.data.rivalryTotals.legolas === 20 && p.data.rivalryTotals.gimli === 15, 'totals after chapter 2');
+  ok(p.rivalryBaseline('amon_hen').legolas === 8, 'chapter 2 replay starts after chapter 1');
+  // an older save without shares keeps its totals as an opening balance
+  const s2 = new MemStore();
+  s2.setItem(SAVE_KEY, JSON.stringify({ version: 1, rivalryTotals: { legolas: 5, gimli: 6 } }));
+  const q = createProgression(['moria', 'amon_hen'], s2);
+  ok(q.rivalryBaseline('moria').legolas === 5, 'legacy baseline = totals');
+  q.recordResult({ ...base, chapterId: 'moria', rivalry: { legolas: 12, gimli: 9 } });
+  ok(q.data.rivalryTotals.legolas === 12 && q.data.rivalryTotals.gimli === 9, 'legacy migrated');
+  ok(q.rivalryBaseline('moria').legolas === 5, 'legacy replay starts from the opening balance');
+});
 test('time: scale easing, hitStop, clocks', () => {
   const t = createTime();
   near(t.step(0.016), 0.016, 1e-9, 'dt at scale 1');

@@ -1,0 +1,3532 @@
+{
+  "schema_version": 1,
+  "units": "metres, seconds, m/s, m/s\u00b2; normalized t over particle lifetime",
+  "particle_budget": "Caps apply to each active emitter at High. Emission is clipped to cap. Low halves counts and disables effect point lights. Decals use a separate bounded pool.",
+  "light_units": "Artist-tunable Three.js point-light intensity; radius is fade distance in metres, not physical lumens. Non-shadow casting; max four dynamic lights globally.",
+  "effects": {
+    "normal_arrow": {
+      "particle_count": 24,
+      "lifetime_s": [
+        0.02,
+        0.08
+      ],
+      "size_m": {
+        "start": 0.015,
+        "end": 0.003
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#c8bda6",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#8d877c",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -0.1,
+          -0.1,
+          30
+        ],
+        "max": [
+          0.1,
+          0.1,
+          65
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "normal_arrow.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.016,
+        0.032,
+        0.048,
+        0.064,
+        0.08
+      ],
+      "hero_time_s": 0.032,
+      "description": "A physical 0.75 m wooden arrow flies left-to-right, subtle directional motion blur, 0.015 m shaft; no glowing trail.",
+      "projectile": {
+        "length_m": 0.75,
+        "shaft_diameter_m": 0.015,
+        "gravity_m_s2": [
+          0,
+          -9.81,
+          0
+        ]
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 24,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.016,
+          "drawn_particles": 24,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.032,
+          "drawn_particles": 21,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.048,
+          "drawn_particles": 14,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.064,
+          "drawn_particles": 8,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.08,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/normal_arrow.jpg"
+    },
+    "focus_volley": {
+      "particle_count": 96,
+      "lifetime_s": [
+        0.15,
+        0.4
+      ],
+      "size_m": {
+        "start": 0.025,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#d8eee7",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#82c5c3",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#31595b",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 120,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -1,
+          -1,
+          35
+        ],
+        "max": [
+          1,
+          1,
+          75
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -1.5,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": true,
+      "light": {
+        "color": "#92d3d0",
+        "intensity": 0.4,
+        "radius_m": 1.2
+      },
+      "image": "focus_volley.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.08,
+        0.16,
+        0.24,
+        0.32,
+        0.4
+      ],
+      "hero_time_s": 0.16,
+      "description": "Three physical arrows with thin cool teal Focus trails, curved trajectories converge on three rune-like target diamonds; retain visible wooden shafts.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.08,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.16,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.24,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.32,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.4,
+          "drawn_particles": 33,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/focus_volley.jpg"
+    },
+    "impact_flesh": {
+      "particle_count": 18,
+      "lifetime_s": [
+        0.08,
+        0.35
+      ],
+      "size_m": {
+        "start": 0.02,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#97382e",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#63251f",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#361b19",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -2,
+          0.3,
+          -2
+        ],
+        "max": [
+          2,
+          4,
+          2
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "impact_flesh.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.07,
+        0.14,
+        0.21,
+        0.28,
+        0.35
+      ],
+      "hero_time_s": 0.14,
+      "description": "Small non-graphic arrow contact puff: dark red droplets on neutral leather test surface, no body parts or wounds.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 18,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.07,
+          "drawn_particles": 18,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.14,
+          "drawn_particles": 15,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.21,
+          "drawn_particles": 7,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.28,
+          "drawn_particles": 4,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.35,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/impact_flesh.jpg"
+    },
+    "impact_ichor": {
+      "particle_count": 22,
+      "lifetime_s": [
+        0.12,
+        0.45
+      ],
+      "size_m": {
+        "start": 0.025,
+        "end": 0.008
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#b6bb42",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#778527",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#394a1f",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -2,
+          0.3,
+          -2
+        ],
+        "max": [
+          2,
+          4,
+          2
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "impact_ichor.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.09,
+        0.18,
+        0.27,
+        0.36,
+        0.45
+      ],
+      "hero_time_s": 0.18,
+      "description": "Small yellow-green spider ichor contact droplets on chitin test plate, non-graphic.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 22,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.09,
+          "drawn_particles": 22,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.18,
+          "drawn_particles": 20,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.27,
+          "drawn_particles": 13,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 9,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.45,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/impact_ichor.jpg"
+    },
+    "impact_stone": {
+      "particle_count": 32,
+      "lifetime_s": [
+        0.15,
+        0.7
+      ],
+      "size_m": {
+        "start": 0.02,
+        "end": 0.12
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#a39b89",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#7d796f",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#595950",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -2,
+          0.2,
+          -2
+        ],
+        "max": [
+          2,
+          3,
+          2
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -5,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "impact_stone.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.14,
+        0.28,
+        0.42,
+        0.56,
+        0.7
+      ],
+      "hero_time_s": 0.28,
+      "description": "Arrow strikes grey stone slab; dry dust puff and 1\u20133 cm grit, no explosive fire.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 32,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.14,
+          "drawn_particles": 32,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.28,
+          "drawn_particles": 26,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.42,
+          "drawn_particles": 17,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.56,
+          "drawn_particles": 9,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.7,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/impact_stone.jpg"
+    },
+    "impact_wood": {
+      "particle_count": 24,
+      "lifetime_s": [
+        0.1,
+        0.6
+      ],
+      "size_m": {
+        "start": 0.035,
+        "end": 0.025
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#bf9a69",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#816144",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#43372b",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          0.3,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "impact_wood.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.12,
+        0.24,
+        0.36,
+        0.48,
+        0.6
+      ],
+      "hero_time_s": 0.24,
+      "description": "Arrow strikes old wooden plank; directional splinters 2\u20138 cm and fine sawdust, gravity-driven arc.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 24,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.12,
+          "drawn_particles": 23,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.24,
+          "drawn_particles": 15,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 11,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.48,
+          "drawn_particles": 6,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/impact_wood.jpg"
+    },
+    "impact_metal": {
+      "particle_count": 30,
+      "lifetime_s": [
+        0.04,
+        0.25
+      ],
+      "size_m": {
+        "start": 0.012,
+        "end": 0.002
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#fff0c1",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#ffc76a",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#ad4c24",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -4,
+          0.5,
+          -4
+        ],
+        "max": [
+          4,
+          6,
+          4
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": true,
+      "light": {
+        "color": "#ffd89b",
+        "intensity": 0.3,
+        "radius_m": 0.4
+      },
+      "image": "impact_metal.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25
+      ],
+      "hero_time_s": 0.1,
+      "description": "Arrow glances off dark iron plate; short bright metal sparks, no huge fireball.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 30,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.05,
+          "drawn_particles": 30,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.1,
+          "drawn_particles": 26,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.15,
+          "drawn_particles": 19,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.2,
+          "drawn_particles": 12,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.25,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/impact_metal.jpg"
+    },
+    "blood_red": {
+      "particle_count": 36,
+      "lifetime_s": [
+        0.12,
+        0.65
+      ],
+      "size_m": {
+        "start": 0.018,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#a2322a",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#6c211e",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#3a1817",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          0.5,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "blood_red.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.13,
+        0.26,
+        0.39,
+        0.52,
+        0.65
+      ],
+      "hero_time_s": 0.26,
+      "description": "Non-graphic red blood spray abstract droplets and flat irregular ground decal 0.4\u20130.8 m; no figures or wounds.",
+      "ground_decal": {
+        "size_m": [
+          0.4,
+          0.8
+        ],
+        "lifetime_s": 25,
+        "fade_out_s": 5,
+        "max_active": 32,
+        "blend_mode": "alpha",
+        "surface_offset_m": 0.002
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.13,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.26,
+          "drawn_particles": 25,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.39,
+          "drawn_particles": 19,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.52,
+          "drawn_particles": 7,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.65,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/blood_red.jpg"
+    },
+    "blood_dark": {
+      "particle_count": 36,
+      "lifetime_s": [
+        0.12,
+        0.65
+      ],
+      "size_m": {
+        "start": 0.018,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#582e29",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#36201d",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#1f1715",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          0.5,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "blood_dark.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.13,
+        0.26,
+        0.39,
+        0.52,
+        0.65
+      ],
+      "hero_time_s": 0.26,
+      "description": "Non-graphic dark orc blood abstract droplets and flat wet ground decal 0.4\u20130.8 m, deep brown-red; no body.",
+      "ground_decal": {
+        "size_m": [
+          0.4,
+          0.8
+        ],
+        "lifetime_s": 25,
+        "fade_out_s": 5,
+        "max_active": 32,
+        "blend_mode": "alpha",
+        "surface_offset_m": 0.002
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.13,
+          "drawn_particles": 35,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.26,
+          "drawn_particles": 26,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.39,
+          "drawn_particles": 15,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.52,
+          "drawn_particles": 10,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.65,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/blood_dark.jpg"
+    },
+    "blood_black": {
+      "particle_count": 36,
+      "lifetime_s": [
+        0.12,
+        0.65
+      ],
+      "size_m": {
+        "start": 0.018,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#292827",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#191b1a",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#101312",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          0.5,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "blood_black.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.13,
+        0.26,
+        0.39,
+        0.52,
+        0.65
+      ],
+      "hero_time_s": 0.26,
+      "description": "Non-graphic black blood abstract spray droplets and irregular ground decal 0.4\u20130.8 m, readable through subtle grey wet glints; no body.",
+      "ground_decal": {
+        "size_m": [
+          0.4,
+          0.8
+        ],
+        "lifetime_s": 25,
+        "fade_out_s": 5,
+        "max_active": 32,
+        "blend_mode": "alpha",
+        "surface_offset_m": 0.002
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.13,
+          "drawn_particles": 35,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.26,
+          "drawn_particles": 29,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.39,
+          "drawn_particles": 18,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.52,
+          "drawn_particles": 6,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.65,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/blood_black.jpg"
+    },
+    "blood_ichor": {
+      "particle_count": 36,
+      "lifetime_s": [
+        0.12,
+        0.65
+      ],
+      "size_m": {
+        "start": 0.018,
+        "end": 0.006
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#b2b83e",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#748126",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#3e4c1c",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          0.5,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "blood_ichor.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.13,
+        0.26,
+        0.39,
+        0.52,
+        0.65
+      ],
+      "hero_time_s": 0.26,
+      "description": "Non-graphic yellow-green ichor abstract spray droplets and flat irregular sticky ground decal 0.4\u20130.8 m; no body.",
+      "ground_decal": {
+        "size_m": [
+          0.4,
+          0.8
+        ],
+        "lifetime_s": 25,
+        "fade_out_s": 5,
+        "max_active": 32,
+        "blend_mode": "alpha",
+        "surface_offset_m": 0.002
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.13,
+          "drawn_particles": 36,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.26,
+          "drawn_particles": 28,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.39,
+          "drawn_particles": 14,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.52,
+          "drawn_particles": 7,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.65,
+          "drawn_particles": 0,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/blood_ichor.jpg"
+    },
+    "torch": {
+      "particle_count": 64,
+      "lifetime_s": [
+        0.2,
+        0.65
+      ],
+      "size_m": {
+        "start": 0.07,
+        "end": 0.2
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#fff0c1",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#ffb448",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#b74621",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 70,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.2,
+          0.6,
+          -0.2
+        ],
+        "max": [
+          0.2,
+          1.4,
+          0.2
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0.2,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": true,
+      "light": {
+        "color": "#ffba68",
+        "intensity": 2.2,
+        "radius_m": 6
+      },
+      "image": "torch.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.13,
+        0.26,
+        0.39,
+        0.52,
+        0.65
+      ],
+      "hero_time_s": 0.26,
+      "description": "Warm 0.45 m torch flame with turbulent orange tongues, small blue base and fine embers; flame stays attached to torch tip.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 29,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.13,
+          "drawn_particles": 29,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.26,
+          "drawn_particles": 30,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.39,
+          "drawn_particles": 30,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.52,
+          "drawn_particles": 29,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.65,
+          "drawn_particles": 29,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/torch.jpg"
+    },
+    "brazier": {
+      "particle_count": 120,
+      "lifetime_s": [
+        0.3,
+        0.9
+      ],
+      "size_m": {
+        "start": 0.12,
+        "end": 0.4
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#fff0b8",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#ffb04c",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#983c20",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 100,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.3,
+          0.8,
+          -0.3
+        ],
+        "max": [
+          0.3,
+          1.8,
+          0.3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0.2,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": true,
+      "light": {
+        "color": "#ffc077",
+        "intensity": 4,
+        "radius_m": 10
+      },
+      "image": "brazier.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.18,
+        0.36,
+        0.54,
+        0.72,
+        0.9
+      ],
+      "hero_time_s": 0.36,
+      "description": "Iron brazier 0.9 m diameter with 0.8 m warm flame envelope and dull glowing coals, no neon smoke.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 56,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.18,
+          "drawn_particles": 53,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 53,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.54,
+          "drawn_particles": 55,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.72,
+          "drawn_particles": 56,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.9,
+          "drawn_particles": 53,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/brazier.jpg"
+    },
+    "burning_house": {
+      "particle_count": 320,
+      "lifetime_s": [
+        0.5,
+        1.8
+      ],
+      "size_m": {
+        "start": 0.35,
+        "end": 1.5
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#fff0bc",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#ffa33d",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#832e1d",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 140,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.7,
+          1,
+          -0.7
+        ],
+        "max": [
+          0.7,
+          4,
+          0.7
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0.3,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": true,
+      "light": {
+        "color": "#ffac58",
+        "intensity": 8,
+        "radius_m": 20
+      },
+      "image": "burning_house.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.36,
+        0.72,
+        1.08,
+        1.44,
+        1.8
+      ],
+      "hero_time_s": 0.72,
+      "description": "Standalone VFX study of an original 9 m wide timber Lake-town house with 2\u20134 m flames licking roof, amber window glow and dark smoke. This is an effect prototype, not the chapter setting.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 132,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 142,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.72,
+          "drawn_particles": 139,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.08,
+          "drawn_particles": 146,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.44,
+          "drawn_particles": 137,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.8,
+          "drawn_particles": 137,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/burning_house.jpg"
+    },
+    "smoke_column": {
+      "particle_count": 180,
+      "lifetime_s": [
+        3,
+        8
+      ],
+      "size_m": {
+        "start": 1.5,
+        "end": 8
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#3d3c38",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#555650",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#85847b",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 20,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.5,
+          1,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          3,
+          0.5
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0.05,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "smoke_column.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        1.6,
+        3.2,
+        4.8,
+        6.4,
+        8.0
+      ],
+      "hero_time_s": 3.2,
+      "description": "Grey-brown smoke column from unseen distant battle fire, 3 m source width expanding to 8 m at 30 m height, soft turbulent curls and no opaque black cylinder.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 83,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.6,
+          "drawn_particles": 83,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 3.2,
+          "drawn_particles": 85,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.8,
+          "drawn_particles": 88,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 6.4,
+          "drawn_particles": 90,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 8.0,
+          "drawn_particles": 81,
+          "world_view_height_m": 30,
+          "projection_pixels_per_metre": 4.266666666666667,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/smoke_column.jpg"
+    },
+    "culvert_explosion": {
+      "particle_count": 650,
+      "lifetime_s": [
+        0.08,
+        5
+      ],
+      "size_m": {
+        "start": 0.15,
+        "end": 7
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#fff0c9",
+          "alpha": 1
+        },
+        {
+          "t": 0.333,
+          "hex": "#ffab40",
+          "alpha": 0.65
+        },
+        {
+          "t": 0.667,
+          "hex": "#a74622",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#49443e",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -18,
+          4,
+          -18
+        ],
+        "max": [
+          18,
+          25,
+          18
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": true,
+      "light": {
+        "color": "#ffc580",
+        "intensity": 18,
+        "radius_m": 24
+      },
+      "image": "culvert_explosion.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "hero_time_s": 2.0,
+      "description": "Helm Deep culvert explosion: first hot ignition then 7 m-radius fireball, radial dust shockwave, grey stone chunks 0.5\u20131.2 m, dense 10 m smoke plume after 3 s. Reference test on neutral ground, no crowds.",
+      "components": [
+        {
+          "kind": "fire",
+          "count": 200,
+          "lifetime_s": [
+            0.08,
+            1.2
+          ],
+          "blend_mode": "additive"
+        },
+        {
+          "kind": "dust_smoke",
+          "count": 400,
+          "lifetime_s": [
+            1,
+            5
+          ],
+          "blend_mode": "alpha"
+        },
+        {
+          "kind": "mesh_debris",
+          "count": 50,
+          "size_m": [
+            0.5,
+            1.2
+          ],
+          "lifetime_s": [
+            2,
+            5
+          ],
+          "blend_mode": "alpha"
+        }
+      ],
+      "shockwave": {
+        "radius_m": [
+          0,
+          18
+        ],
+        "duration_s": 0.4,
+        "opacity": [
+          0.25,
+          0
+        ]
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 650,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.0,
+          "drawn_particles": 368,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.0,
+          "drawn_particles": 145,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 3.0,
+          "drawn_particles": 47,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.0,
+          "drawn_particles": 17,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 5.0,
+          "drawn_particles": 0,
+          "world_view_height_m": 24,
+          "projection_pixels_per_metre": 5.333333333333333,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/culvert_explosion.jpg"
+    },
+    "rain": {
+      "particle_count": 480,
+      "lifetime_s": [
+        0.3,
+        0.6
+      ],
+      "size_m": {
+        "start": 0.012,
+        "end": 0.012
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#b8ced7",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#7f9aa6",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 700,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -1,
+          -24,
+          -1
+        ],
+        "max": [
+          1,
+          -16,
+          1
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "rain.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.12,
+        0.24,
+        0.36,
+        0.48,
+        0.6
+      ],
+      "hero_time_s": 0.24,
+      "description": "Natural rain streaks 0.12\u20130.4 m long, diagonal wind, droplets splash on a dark stone test ground; restrained opacity and no thick white rods.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 291,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.12,
+          "drawn_particles": 294,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.24,
+          "drawn_particles": 298,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 302,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.48,
+          "drawn_particles": 305,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "drawn_particles": 293,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/rain.jpg"
+    },
+    "storm_lightning": {
+      "particle_count": 650,
+      "lifetime_s": [
+        0.25,
+        0.6
+      ],
+      "size_m": {
+        "start": 0.014,
+        "end": 0.014
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#b9cddc",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#7893a4",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 950,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -5,
+          -28,
+          -2
+        ],
+        "max": [
+          -2,
+          -18,
+          2
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": true,
+      "light": {
+        "color": "#d9e4f2",
+        "intensity": 8,
+        "radius_m": 120
+      },
+      "image": "storm_lightning.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.12,
+        0.24,
+        0.36,
+        0.48,
+        0.6
+      ],
+      "hero_time_s": 0.24,
+      "description": "Heavy rain and one branching distant lightning bolt, cool sky flash lights neutral stone floor for 80\u2013180 ms; no continuous electric arcs.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 368,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.12,
+          "drawn_particles": 361,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.24,
+          "drawn_particles": 354,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.36,
+          "drawn_particles": 381,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.48,
+          "drawn_particles": 372,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "drawn_particles": 369,
+          "world_view_height_m": 12,
+          "projection_pixels_per_metre": 10.666666666666666,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/storm_lightning.jpg"
+    },
+    "snow": {
+      "particle_count": 360,
+      "lifetime_s": [
+        3,
+        7
+      ],
+      "size_m": {
+        "start": 0.008,
+        "end": 0.014
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#eef2f0",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#bccbd3",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 45,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.4,
+          -0.8,
+          -0.4
+        ],
+        "max": [
+          0.4,
+          -0.3,
+          0.4
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -0.08,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "snow.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        1.4,
+        2.8,
+        4.2,
+        5.6,
+        7.0
+      ],
+      "hero_time_s": 2.8,
+      "description": "Fine falling snowflakes 3\u201314 mm with soft drift, varying depth; test frame not a blizzard of giant discs.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.4,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.8,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.2,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 5.6,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 7.0,
+          "drawn_particles": 225,
+          "world_view_height_m": 8,
+          "projection_pixels_per_metre": 16.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/snow.jpg"
+    },
+    "embers": {
+      "particle_count": 160,
+      "lifetime_s": [
+        1,
+        3
+      ],
+      "size_m": {
+        "start": 0.012,
+        "end": 0.003
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#ffe1a1",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#e89743",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#7f3523",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 45,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.4,
+          0.4,
+          -0.4
+        ],
+        "max": [
+          0.4,
+          1.8,
+          0.4
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0.12,
+        0
+      ],
+      "blend_mode": "additive",
+      "emits_light": false,
+      "light": null,
+      "image": "embers.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.6,
+        1.2,
+        1.8,
+        2.4,
+        3.0
+      ],
+      "hero_time_s": 1.2,
+      "description": "Sparse orange fire embers rise and fade, tiny 3\u201312 mm flecks and occasional curved streak; no individual point lights.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 23,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "drawn_particles": 35,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.2,
+          "drawn_particles": 32,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.8,
+          "drawn_particles": 30,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.4,
+          "drawn_particles": 25,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 3.0,
+          "drawn_particles": 27,
+          "world_view_height_m": 2,
+          "projection_pixels_per_metre": 64.0,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/embers.jpg"
+    },
+    "ash": {
+      "particle_count": 220,
+      "lifetime_s": [
+        2,
+        5
+      ],
+      "size_m": {
+        "start": 0.012,
+        "end": 0.02
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#958e83",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#68645d",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#484842",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 40,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.6,
+          -0.5,
+          -0.4
+        ],
+        "max": [
+          0.6,
+          -0.15,
+          0.4
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -0.03,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "ash.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "hero_time_s": 2.0,
+      "description": "Fine dull grey volcanic ash flakes drift and fall, 5\u201320 mm, non-emissive with subtle warm environmental rim.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 3.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 5.0,
+          "drawn_particles": 140,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/ash.jpg"
+    },
+    "mirkwood_spores": {
+      "particle_count": 180,
+      "lifetime_s": [
+        3,
+        8
+      ],
+      "size_m": {
+        "start": 0.008,
+        "end": 0.018
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#c3cf9e",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#809370",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#4f6650",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 20,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.15,
+          -0.03,
+          -0.15
+        ],
+        "max": [
+          0.15,
+          0.15,
+          0.15
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "mirkwood_spores.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        1.6,
+        3.2,
+        4.8,
+        6.4,
+        8.0
+      ],
+      "hero_time_s": 3.2,
+      "description": "Sparse pale green-gold forest spores 4\u201318 mm, softly lit by a narrow canopy shaft, organic drifting rather than glowing magical orbs.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 110,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.6,
+          "drawn_particles": 110,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 3.2,
+          "drawn_particles": 110,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.8,
+          "drawn_particles": 110,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 6.4,
+          "drawn_particles": 110,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 8.0,
+          "drawn_particles": 109,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/mirkwood_spores.jpg"
+    },
+    "dust_motes": {
+      "particle_count": 140,
+      "lifetime_s": [
+        3,
+        10
+      ],
+      "size_m": {
+        "start": 0.004,
+        "end": 0.012
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#c7c5b5",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#898f87",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#56615a",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 12,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.07,
+          -0.03,
+          -0.07
+        ],
+        "max": [
+          0.07,
+          0.06,
+          0.07
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "dust_motes.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        2.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0
+      ],
+      "hero_time_s": 4.0,
+      "description": "Tiny neutral dust motes 1\u201312 mm visible only in cool light shaft; no fog wall, no sparkling glitter.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 4.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 6.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 8.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 10.0,
+          "drawn_particles": 78,
+          "world_view_height_m": 6,
+          "projection_pixels_per_metre": 21.333333333333332,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/dust_motes.jpg"
+    },
+    "barrel_splash": {
+      "particle_count": 160,
+      "lifetime_s": [
+        0.2,
+        1.1
+      ],
+      "size_m": {
+        "start": 0.025,
+        "end": 0.008
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#d2e0db",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#8faeae",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#537a83",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "burst",
+      "velocity_range_m_s": {
+        "min": [
+          -3,
+          1,
+          -3
+        ],
+        "max": [
+          3,
+          5,
+          3
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        -9.81,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "barrel_splash.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.22,
+        0.44,
+        0.66,
+        0.88,
+        1.1
+      ],
+      "hero_time_s": 0.44,
+      "description": "One 1 m barrel hits river water: 1\u20132 m outward splash crown, droplets arc down and ripple decays; clean natural foam, no milk.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 160,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.22,
+          "drawn_particles": 157,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.44,
+          "drawn_particles": 120,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.66,
+          "drawn_particles": 74,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.88,
+          "drawn_particles": 25,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.1,
+          "drawn_particles": 0,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/barrel_splash.jpg"
+    },
+    "rapids_foam": {
+      "particle_count": 300,
+      "lifetime_s": [
+        0.5,
+        2
+      ],
+      "size_m": {
+        "start": 0.12,
+        "end": 0.35
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#e5ece5",
+          "alpha": 1
+        },
+        {
+          "t": 0.5,
+          "hex": "#b3c8c5",
+          "alpha": 0.65
+        },
+        {
+          "t": 1.0,
+          "hex": "#829f9f",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 120,
+      "emission_mode": "continuous",
+      "velocity_range_m_s": {
+        "min": [
+          -0.5,
+          0,
+          7
+        ],
+        "max": [
+          0.5,
+          0.3,
+          11
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "rapids_foam.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.4,
+        0.8,
+        1.2,
+        1.6,
+        2.0
+      ],
+      "hero_time_s": 0.8,
+      "description": "River rapids foam: broken lace-like white patches and bubbles around 1\u20133 m rocks, downstream motion 7\u201311 m/s, foam patches 0.12\u20130.35 m.",
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "drawn_particles": 148,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.4,
+          "drawn_particles": 149,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.8,
+          "drawn_particles": 149,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.2,
+          "drawn_particles": 150,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.6,
+          "drawn_particles": 150,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        },
+        {
+          "source": "design_target",
+          "time_s": 2.0,
+          "drawn_particles": 149,
+          "world_view_height_m": 3,
+          "projection_pixels_per_metre": 42.666666666666664,
+          "simulation": "Seeded velocity/lifetime/colour integration from targets; illustrative code study, not measured runtime output."
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "vfx/looks/rapids_foam.jpg"
+    },
+    "focus_screen": {
+      "particle_count": 0,
+      "lifetime_s": [
+        0.12,
+        1
+      ],
+      "size_m": {
+        "start": 0,
+        "end": 0
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#b6d7d4",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#739b9f",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "screen",
+      "velocity_range_m_s": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "focus_screen.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0
+      ],
+      "hero_time_s": 0.4,
+      "description": "Three-person forest combat image comparison: normal, partial Focus and full Focus. Full state desaturates to 35%, cool teal tint 20%, radial edge blur leaving central 35% sharp. Same camera throughout, no HUD text.",
+      "screen_uniforms": {
+        "saturation": 0.35,
+        "teal_tint_mix": 0.2,
+        "radial_blur_px_1080p": 6,
+        "sharp_center_radius_viewport": 0.35,
+        "enter_ms": 120,
+        "exit_ms": 180
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "strength": 0.0,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.2,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.4,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.8,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.0,
+          "strength": 0,
+          "method": "CPU reference filter using the target screen parameters"
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "scenes/mirkwood/gameplay_look.jpg"
+    },
+    "damage_vignette": {
+      "particle_count": 0,
+      "lifetime_s": [
+        0.08,
+        0.45
+      ],
+      "size_m": {
+        "start": 0,
+        "end": 0
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#8f251f",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#571a18",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "screen",
+      "velocity_range_m_s": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "damage_vignette.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0
+      ],
+      "hero_time_s": 0.4,
+      "description": "Same neutral forest gameplay image: restrained dark-red directional edge vignette flashes and fades over 0.45 seconds. Centre 60% remains unaffected and readable; no graphic injury.",
+      "screen_uniforms": {
+        "max_opacity": 0.32,
+        "unaffected_center_fraction": 0.6,
+        "attack_ms": 80,
+        "decay_ms": 370
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "strength": 0.0,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.2,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.4,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.8,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.0,
+          "strength": 0,
+          "method": "CPU reference filter using the target screen parameters"
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "scenes/mirkwood/gameplay_look.jpg"
+    },
+    "cinematic_letterbox": {
+      "particle_count": 0,
+      "lifetime_s": [
+        0.3,
+        1
+      ],
+      "size_m": {
+        "start": 0,
+        "end": 0
+      },
+      "colours_over_life": [
+        {
+          "t": 0.0,
+          "hex": "#000000",
+          "alpha": 1
+        },
+        {
+          "t": 1.0,
+          "hex": "#000000",
+          "alpha": 0
+        }
+      ],
+      "emission_rate_per_s": 0,
+      "emission_mode": "screen",
+      "velocity_range_m_s": {
+        "min": [
+          0,
+          0,
+          0
+        ],
+        "max": [
+          0,
+          0,
+          0
+        ]
+      },
+      "gravity_m_s2": [
+        0,
+        0,
+        0
+      ],
+      "blend_mode": "alpha",
+      "emits_light": false,
+      "light": null,
+      "image": "cinematic_letterbox.jpg",
+      "image_size_px": [
+        1536,
+        1024
+      ],
+      "sequence_times_s": [
+        0.0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0
+      ],
+      "hero_time_s": 0.4,
+      "description": "Same cinematic forest vista with pure black top and bottom letterbox bars increasing smoothly from zero to 12% image height each. Centre remains unwarped; no text inside scene.",
+      "screen_uniforms": {
+        "bar_height_percent": 12,
+        "enter_ms": 300,
+        "exit_ms": 300,
+        "easing": "ease-in-out"
+      },
+      "source": "design_target",
+      "sequence_composition": [
+        {
+          "source": "design_target",
+          "time_s": 0.0,
+          "strength": 0.0,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.2,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.4,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.6,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 0.8,
+          "strength": 1,
+          "method": "CPU reference filter using the target screen parameters"
+        },
+        {
+          "source": "design_target",
+          "time_s": 1.0,
+          "strength": 0,
+          "method": "CPU reference filter using the target screen parameters"
+        }
+      ],
+      "scale_legend": {
+        "source": "design_target",
+        "metres": 1,
+        "pixels": 60,
+        "applies_to": "Separate dimensional cue, not surveyed hero photometry"
+      },
+      "hero_look_source": "scenes/mirkwood/gameplay_look.jpg"
+    }
+  },
+  "source": "design_target"
+}

@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "units": "metres",
+  "coordinate_system": {
+    "up": "+Y",
+    "forward": "+Z",
+    "right": "+X",
+    "plan_north": "+Z",
+    "origin": "chapter-local recommended layout"
+  },
+  "chapter": "menu",
+  "source": "design_target",
+  "status": "recommended design dimensions; not surveyed current code",
+  "extent_m": [
+    300,
+    340
+  ],
+  "terrain": {
+    "size": 340,
+    "segments": 160,
+    "style": "riverbank",
+    "height": "See elevation_m on route, checkpoints and structures; interpolate safely; do not serialize a function."
+  },
+  "player_start_m": null,
+  "checkpoints": [],
+  "enemy_entry_zones": [],
+  "ally_positions": [],
+  "cover": [],
+  "high_ground": [],
+  "set_piece_route": {
+    "points_m": [
+      [
+        -40,
+        0,
+        -130
+      ],
+      [
+        0,
+        0,
+        -30
+      ],
+      [
+        30,
+        0,
+        40
+      ],
+      [
+        15,
+        0,
+        140
+      ]
+    ],
+    "width_m": 4,
+    "elevations_are_binding": true
+  },
+  "structures": [
+    {
+      "id": "S1",
+      "name": "River bend",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "size_m": [
+        22,
+        2,
+        180
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S2",
+      "name": "Oak",
+      "position_m": [
+        -66.0,
+        0,
+        -30.599999999999994
+      ],
+      "size_m": [
+        4,
+        30,
+        4
+      ],
+      "yaw_deg": 0
+    }
+  ],
+  "extra_set_pieces": {},
+  "plan_render": {
+    "source": "measured_script",
+    "pixels_per_metre": 2.161764705882353,
+    "origin_px": [
+      615,
+      478
+    ],
+    "image_size_px": [
+      1536,
+      1024
+    ],
+    "script": "tools/compose_scenes.py:layout"
+  }
+}

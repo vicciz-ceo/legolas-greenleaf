@@ -16,12 +16,12 @@
  */
 import * as THREE from 'three';
 import type {
-  ChapterDef, ChapterInstance, ChapterResult, GameContext, HumanoidKind, Input, MenuActions, MusicMood, Settings,
+  ChapterDef, ChapterInstance, ChapterResult, GameContext, HumanoidKind, Input, InputState, MenuActions, MusicMood, Progression, Rivalry, Settings,
 } from '../core/types';
 import type { CameraRigExt } from '../actors/camera';
 import type { HudImpl } from '../ui/hud';
 import type { AudioSysExt } from '../core/audio';
-import { createRivalry } from './rivalry';
+import { createRivalry, type RivalryExt } from './rivalry';
 import { clamp, damp } from '../core/math';
 import { fbm2, mulberry32 } from '../core/rng';
 import { applyEnvironment, createLevelAPI, createTerrain, loadWorld, type LevelHost, type WorldModules } from './level';
@@ -32,8 +32,10 @@ import { setWorldQuality } from '../world/quality';
 import { setWetness } from '../world/mats';
 import { getDevice } from '../ui/bus';
 import type { TimeControlExt } from './time';
+import type { ProgressionExt } from './progression';
 import { MAX_FRAME } from './time';
 import type { Bot } from './bot';
+import { resetCombatQueues } from '../actors/npc';
 
 export type GameMode = 'boot' | 'title' | 'loading' | 'playing' | 'paused' | 'complete' | 'defeat';
 
@@ -161,6 +163,9 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   let mood: MusicMood = 'none';
   let moodHold = 0;
   const cpRivalry = new Map<number, { legolas: number; gimli: number }>();
+  /** the player's tally when each checkpoint was reached: a respawn replays that beat, so its kills,
+   * shots and hits are rolled back like the rivalry (damage taken and time stay as the penalty) */
+  const cpTally = new Map<number, { kills: number; shots: number; hits: number; headshots: number }>();
   const reported = new Set<string>();
   let backdrop: { cam: THREE.Vector3; look: THREE.Vector3; hero: THREE.Vector3; t: number } | null = null;
   let musicIntensity = 0.5;
@@ -417,8 +422,11 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     level?.dispose();
     level = null;
     bot.reset();
-    if (ctx.rivalry.active) {
-      // a silent stop: stop() would queue a banter line that surfaces over the menu
+    // a silent stop: stop() would queue a banter line that surfaces over the menu. The same
+    // instance is reused (a fresh createRivalry per load stacked one more onKill listener each time)
+    const rv = ctx.rivalry as Rivalry & Partial<RivalryExt>;
+    if (rv.reset) rv.reset();
+    else if (rv.active) {
       hud.setRivalry(null);
       ctx.rivalry = createRivalry(ctx);
     }
@@ -428,6 +436,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     p.controlsEnabled = true;
     p.weaponsEnabled = true;
     combatants.clear();
+    resetCombatQueues(); // melee slots + attack tokens on the persistent player (time.t restarts at 0)
     try {
       projectiles.clear();
     } catch {
@@ -500,8 +509,13 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     });
   }
 
+  /** the error of the most recent failed chapter load (startChapter rejects with it) */
+  let loadError: unknown = null;
+
   async function loadChapter(def: ChapterDef, cp: number, respawn: boolean): Promise<void> {
     const token = ++loadToken;
+    error = null; // a new attempt: state().error only describes this load (window.__snapError stays)
+    loadError = null;
     setMode('loading');
     completeT = -1;
     deathT = 0;
@@ -584,6 +598,14 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         player.resetTally();
         attemptTime = 0;
         cpRivalry.clear();
+        cpTally.clear();
+      } else {
+        const t = player.tally;
+        const snap = cpTally.get(checkpoint) ?? { kills: 0, shots: 0, hits: 0, headshots: 0 };
+        t.kills = snap.kills;
+        t.shots = snap.shots;
+        t.hits = snap.hits;
+        t.headshots = snap.headshots;
       }
       time.resetGame();
       applyEnvironment(ctx, def.environment);
@@ -617,7 +639,10 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
 
       // rivalry carries over between chapters; on respawn it resumes from the checkpoint snapshot
       if (def.rivalry) {
-        const from = (respawn && cpRivalry.get(checkpoint)) || { ...progression.data.rivalryTotals };
+        // a fresh run (first play, Retry, Replay) starts from the chapters before this one, so a
+        // replay never counts its own earlier clear twice (progression.rivalryBaseline)
+        const pe = progression as Progression & Partial<Pick<ProgressionExt, 'rivalryBaseline'>>;
+        const from = (respawn && cpRivalry.get(checkpoint)) || (pe.rivalryBaseline ? pe.rivalryBaseline(def.id) : { ...progression.data.rivalryTotals });
         ctx.rivalry.start(from);
       }
       player.camera.shot = null;
@@ -632,6 +657,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     } catch (e) {
       window.clearInterval(bump);
       fatal(e);
+      loadError = e;
       menus.hideLoading();
       setMode('title');
       chapter = null;
@@ -642,6 +668,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         /* ignore */
       }
       menus.showTitle();
+      hud.toast(`Could not load ${def.title}`, 'warning');
       return;
     } finally {
       window.clearInterval(bump); // every exit path, including a superseded load
@@ -683,6 +710,8 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     if (!chapter || index <= checkpoint) return;
     checkpoint = Math.min(index, Math.max(0, chapter.checkpoints.length - 1));
     if (ctx.rivalry.active) cpRivalry.set(checkpoint, { legolas: ctx.rivalry.legolas, gimli: ctx.rivalry.gimli });
+    const t = ctx.player.tally;
+    cpTally.set(checkpoint, { kills: t.kills, shots: t.shots, hits: t.hits, headshots: t.headshots });
     hud.toast(chapter.checkpoints[checkpoint] ?? 'Checkpoint', 'checkpoint');
     audio.play('checkpoint');
     if (!chapter.dev) {
@@ -700,8 +729,11 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     hud.setPrompt(null);
     hud.show(false); // the defeat screen stands alone over the scene (toasts/subtitles stay)
     audio.music('defeat');
+    // a load / title change while the screen is up supersedes this continuation, even for the same
+    // chapter (the next defeat screen resolves this stale promise; it must not drive the new run)
+    const token = loadToken;
     const choice = await menus.showDefeat(reason);
-    if (!isMode('defeat') || chapter !== def) return;
+    if (!isMode('defeat') || chapter !== def || token !== loadToken) return;
     if (choice === 'checkpoint') await loadChapter(def, checkpoint, true);
     else if (choice === 'restart') await loadChapter(def, 0, false);
     else {
@@ -752,8 +784,9 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     if (!def.dev) progression.recordResult(result);
     if (def.rivalry) ctx.rivalry.stop(); // final banter line
     hud.show(false);
+    const token = loadToken;
     const choice = await menus.showChapterComplete(result);
-    if (!isMode('complete') || chapter !== def) return;
+    if (!isMode('complete') || chapter !== def || token !== loadToken) return;
     const story = deps.chapters().filter((c) => !c.dev && c.number > 0).sort((a, b) => a.number - b.number);
     const idx = story.findIndex((c) => c.id === def.id);
     if (choice === 'retry') await loadChapter(def, 0, false);
@@ -791,6 +824,14 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   }
 
   // ── simulation ────────────────────────────────────────────────────────────
+  /** clear the per-frame parts of an input state (edges, look deltas); held buttons and sticks stay */
+  function consumeFrameInput(s: InputState): void {
+    s.lookX = s.lookY = 0;
+    s.drawReleased = s.melee = s.jump = s.dash = s.interact = s.nextArrow = s.pause = false;
+    s.arrowSlot = 0;
+    s.focusPressed = s.focusReleased = false;
+  }
+
   function step(dt: number): void {
     const player = ctx.player;
     let t = now();
@@ -834,7 +875,13 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     if (dt > 0) {
       const n = Math.max(1, Math.ceil(dt / MAX_SUBSTEP));
       const h = dt / n;
-      for (let i = 0; i < n; i++) step(h);
+      for (let i = 0; i < n; i++) {
+        step(h);
+        // edges and look deltas belong to the FRAME: below 30 fps a frame runs several substeps, and
+        // each one re-read them (one Space press burned both jumps, one Tab skipped an arrow type,
+        // mouse look turned twice as far)
+        if (i === 0 && n > 1) consumeFrameInput(ctx.input.state);
+      }
       if (mode === 'playing' || mode === 'defeat') attemptTime += dt;
     } else {
       // frozen by hit-stop: keep the player's real-time systems (camera, HUD) alive
@@ -996,7 +1043,8 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
 
   // ── menu actions ──────────────────────────────────────────────────────────
   const actions: MenuActions = {
-    startChapter: (id, cp) => void game.startChapter(id, cp ?? 0).catch(fatal),
+    // a failed load already reported itself (fatal + toast) and fell back to the title
+    startChapter: (id, cp) => void game.startChapter(id, cp ?? 0).catch((e) => (e === loadError ? undefined : fatal(e))),
     resume,
     restartCheckpoint: () => {
       if (chapter) void loadChapter(chapter, checkpoint, true).catch(fatal);
@@ -1047,6 +1095,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         throw e;
       }
       await loadChapter(def, cp, false);
+      if (loadError) throw loadError;
     },
   };
 

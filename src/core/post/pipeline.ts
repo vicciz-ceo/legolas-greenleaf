@@ -25,13 +25,77 @@ import { ScenePass } from './scenePass';
 import { ShaftsPass } from './shaftsPass';
 import { createGradePass } from './gradePass';
 
+/**
+ * AO blend that fades the occlusion out with distance and fog: the scene colour arriving here is
+ * already fogged, so multiplying AO into a mostly-fog pixel crushed the haze (distant trunks went
+ * dark instead of dissolving into the mist). AO is mixed toward 1 by the FogExp2 factor at the
+ * pixel's depth and faded out entirely between AO_FADE_NEAR and AO_FADE_FAR metres.
+ */
+const AO_FADE_NEAR = 30;
+const AO_FADE_FAR = 60;
+function fogAwareBlendMaterial(depth: THREE.Texture | null): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    name: 'Greenleaf.GTAOFogBlend',
+    uniforms: {
+      tDiffuse: { value: null },
+      tDepth: { value: depth },
+      intensity: { value: 1 },
+      cameraNear: { value: 0.1 },
+      cameraFar: { value: 1000 },
+      fogDensity: { value: 0 },
+      fade: { value: new THREE.Vector2(AO_FADE_NEAR, AO_FADE_FAR) },
+    },
+    vertexShader: /* glsl */ `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform float intensity;
+      uniform sampler2D tDiffuse;
+      uniform sampler2D tDepth;
+      uniform float cameraNear;
+      uniform float cameraFar;
+      uniform float fogDensity;
+      uniform vec2 fade;
+      varying vec2 vUv;
+      void main() {
+        vec4 texel = texture2D(tDiffuse, vUv);
+        float z = texture2D(tDepth, vUv).x;
+        // perspective depth -> view distance (metres)
+        float d = (cameraNear * cameraFar) / max(1e-6, cameraFar - z * (cameraFar - cameraNear));
+        float fogF = 1.0 - exp(-fogDensity * fogDensity * d * d);
+        float keep = (1.0 - fogF) * (1.0 - smoothstep(fade.x, fade.y, d)) * step(z, 0.99999);
+        gl_FragColor = vec4(mix(vec3(1.0), texel.rgb, intensity * keep), texel.a);
+      }`,
+    transparent: true,
+    depthTest: false,
+    depthWrite: false,
+    blending: THREE.CustomBlending,
+    blendSrc: THREE.DstColorFactor,
+    blendDst: THREE.ZeroFactor,
+    blendEquation: THREE.AddEquation,
+    blendSrcAlpha: THREE.DstAlphaFactor,
+    blendDstAlpha: THREE.ZeroFactor,
+    blendEquationAlpha: THREE.AddEquation,
+  });
+}
+
 /** GTAO that can run at a fraction of the frame resolution and ignores non-depth-writing geometry. */
 class ScaledGTAOPass extends GTAOPass {
   scaleFactor = 1;
   hideCache: THREE.Object3D[] = [];
+  private fogBlend: THREE.ShaderMaterial;
   constructor(scene: THREE.Scene, camera: THREE.Camera, w: number, h: number) {
     super(scene, camera, w, h);
-    const self = this as unknown as { _overrideVisibility: () => void; _restoreVisibility: () => void; scene: THREE.Scene };
+    const self = this as unknown as {
+      _overrideVisibility: () => void;
+      _restoreVisibility: () => void;
+      scene: THREE.Scene;
+      blendMaterial: THREE.ShaderMaterial;
+      depthTexture: THREE.Texture;
+    };
     const cache = this.hideCache;
     self._overrideVisibility = function () {
       hideNonDepth(self.scene, cache);
@@ -39,9 +103,47 @@ class ScaledGTAOPass extends GTAOPass {
     self._restoreVisibility = function () {
       showNonDepth(cache);
     };
+    self.blendMaterial.dispose();
+    this.fogBlend = self.blendMaterial = fogAwareBlendMaterial(self.depthTexture);
+  }
+  override render(
+    renderer: THREE.WebGLRenderer,
+    writeBuffer: THREE.WebGLRenderTarget,
+    readBuffer: THREE.WebGLRenderTarget,
+    deltaTime: number,
+    maskActive: boolean,
+  ): void {
+    const u = this.fogBlend.uniforms;
+    const cam = this.camera as THREE.PerspectiveCamera;
+    const fog = this.scene.fog;
+    // AO is faded out by AO_FADE_FAR, so the normal/depth pre-pass and the AO solve only need what
+    // lies within it: a short far plane frustum-culls the distant forest chunks, rocks and props
+    // (~100k triangles of the pre-pass on High) and buys depth precision where AO is visible
+    const far = cam.far;
+    const clip = Math.min(far, AO_FADE_FAR + 20);
+    if (clip < far) {
+      cam.far = clip;
+      cam.updateProjectionMatrix();
+    }
+    u.cameraNear.value = cam.near;
+    u.cameraFar.value = cam.far;
+    u.fogDensity.value = fog && (fog as THREE.FogExp2).isFogExp2 ? (fog as THREE.FogExp2).density : 0;
+    u.tDepth.value = (this as unknown as { depthTexture: THREE.Texture }).depthTexture;
+    try {
+      super.render(renderer, writeBuffer, readBuffer, deltaTime, maskActive);
+    } finally {
+      if (clip < far) {
+        cam.far = far;
+        cam.updateProjectionMatrix();
+      }
+    }
   }
   override setSize(width: number, height: number): void {
     super.setSize(Math.max(1, Math.round(width * this.scaleFactor)), Math.max(1, Math.round(height * this.scaleFactor)));
+  }
+  override dispose(): void {
+    super.dispose();
+    this.fogBlend.dispose();
   }
 }
 

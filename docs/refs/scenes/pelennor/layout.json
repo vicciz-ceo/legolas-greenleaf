@@ -1,0 +1,504 @@
+{
+  "schema_version": 1,
+  "units": "metres",
+  "coordinate_system": {
+    "up": "+Y",
+    "forward": "+Z",
+    "right": "+X",
+    "plan_north": "+Z",
+    "origin": "chapter-local recommended layout"
+  },
+  "chapter": "pelennor",
+  "source": "design_target",
+  "status": "recommended design dimensions; not surveyed current code",
+  "extent_m": [
+    420,
+    460
+  ],
+  "terrain": {
+    "size": 460,
+    "segments": 160,
+    "style": "plains",
+    "height": "See elevation_m on route, checkpoints and structures; interpolate safely; do not serialize a function."
+  },
+  "player_start_m": [
+    -55,
+    0,
+    -38
+  ],
+  "checkpoints": [
+    {
+      "index": 0,
+      "label": "The Field",
+      "position_m": [
+        -55,
+        0,
+        -38
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 1,
+      "label": "The Mûmak",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 2,
+      "label": "The Last Charge",
+      "position_m": [
+        70,
+        0,
+        55
+      ],
+      "radius_m": 3
+    }
+  ],
+  "enemy_entry_zones": [
+    {
+      "id": "E1L",
+      "checkpoint": 0,
+      "center_m": [
+        -70,
+        0,
+        -26
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    },
+    {
+      "id": "E1R",
+      "checkpoint": 0,
+      "center_m": [
+        -40,
+        0,
+        -26
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    },
+    {
+      "id": "E2L",
+      "checkpoint": 1,
+      "center_m": [
+        -15,
+        0,
+        12
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    },
+    {
+      "id": "E2R",
+      "checkpoint": 1,
+      "center_m": [
+        15,
+        0,
+        12
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    },
+    {
+      "id": "E3L",
+      "checkpoint": 2,
+      "center_m": [
+        55,
+        0,
+        67
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    },
+    {
+      "id": "E3R",
+      "checkpoint": 2,
+      "center_m": [
+        85,
+        0,
+        67
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Haradrim crew and infantry, orcs, first climb mumak and second range-kill mumak."
+    }
+  ],
+  "ally_positions": [
+    {
+      "name": "Gimli",
+      "position_m": [
+        -52,
+        0,
+        -36
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Aragorn",
+      "position_m": [
+        -50,
+        0,
+        -36
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Rohirrim",
+      "position_m": [
+        -48,
+        0,
+        -36
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Gondor soldiers",
+      "position_m": [
+        -46,
+        0,
+        -36
+      ],
+      "active_from_checkpoint": 0
+    }
+  ],
+  "cover": [
+    {
+      "id": "C1L",
+      "position_m": [
+        -61,
+        0,
+        -33
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C1R",
+      "position_m": [
+        -49,
+        0,
+        -33
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2L",
+      "position_m": [
+        -6,
+        0,
+        5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2R",
+      "position_m": [
+        6,
+        0,
+        5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3L",
+      "position_m": [
+        64,
+        0,
+        60
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3R",
+      "position_m": [
+        76,
+        0,
+        60
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    }
+  ],
+  "high_ground": [
+    {
+      "id": "H1",
+      "position_m": [
+        -44,
+        3,
+        -30
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H2",
+      "position_m": [
+        11,
+        3,
+        8
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H3",
+      "position_m": [
+        81,
+        3,
+        63
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    }
+  ],
+  "set_piece_route": {
+    "points_m": [
+      [
+        -55,
+        0,
+        -38
+      ],
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        70,
+        0,
+        55
+      ]
+    ],
+    "width_m": 4,
+    "elevations_are_binding": true
+  },
+  "structures": [
+    {
+      "id": "S1",
+      "name": "Mumak shoulder",
+      "position_m": [
+        0,
+        0,
+        0
+      ],
+      "size_m": [
+        9,
+        14,
+        19
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S2",
+      "name": "Howdah",
+      "position_m": [
+        0,
+        14,
+        0
+      ],
+      "size_m": [
+        7,
+        7,
+        5
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S3",
+      "name": "Rope ladder",
+      "position_m": [
+        -4.5,
+        1,
+        0
+      ],
+      "size_m": [
+        0.8,
+        12,
+        0.12
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S4",
+      "name": "Minas Tirith distant",
+      "position_m": [
+        0,
+        0,
+        900
+      ],
+      "size_m": [
+        480,
+        320,
+        440
+      ],
+      "yaw_deg": 0
+    }
+  ],
+  "extra_set_pieces": {
+    "mumak_climb": {
+      "shoulder_height_m": 14,
+      "body_length_m": 19,
+      "howdah_m": [
+        7,
+        7,
+        5
+      ],
+      "rope_ladder_m": [
+        0.8,
+        12
+      ],
+      "girth_width_m": 0.25,
+      "neck_run_width_m": 1.2
+    }
+  },
+  "plan_render": {
+    "source": "measured_script",
+    "pixels_per_metre": 1.5978260869565217,
+    "origin_px": [
+      615,
+      478
+    ],
+    "image_size_px": [
+      1536,
+      1024
+    ],
+    "script": "tools/compose_scenes.py:layout"
+  },
+  "mumak_climb_route_m": [
+    [
+      -4.5,
+      1,
+      0
+    ],
+    [
+      -4.5,
+      7,
+      0
+    ],
+    [
+      -4.5,
+      13,
+      0
+    ],
+    [
+      -3.5,
+      14,
+      0
+    ],
+    [
+      0,
+      14,
+      0
+    ],
+    [
+      0,
+      14,
+      4
+    ],
+    [
+      0,
+      13,
+      7
+    ],
+    [
+      0,
+      11,
+      9
+    ]
+  ],
+  "girth_cut_points_m": [
+    [
+      -3.5,
+      14,
+      -1.8
+    ],
+    [
+      3.5,
+      14,
+      1.8
+    ]
+  ],
+  "trunk_slide_route_m": [
+    [
+      0,
+      11,
+      9
+    ],
+    [
+      0,
+      7,
+      12
+    ],
+    [
+      0,
+      1,
+      16
+    ]
+  ],
+  "second_mumak_position_m": [
+    110,
+    0,
+    90
+  ]
+}

@@ -296,6 +296,10 @@ export const chapter: ChapterDef = {
     const spawnGimli = (near: THREE.Vector3) => {
       // `rivalry: true` makes his kills feed the HUD counter. `anchor: 'player'` keeps him close.
       gimli = level.spawnAlly({ kind: 'gimli', rivalry: true, anchor: 'player' }, near, faceTowards(L.waveSpots[1]));
+      // opt in to the rubber band: Gimli's count also creeps up on its own while enemies are alive,
+      // so the race stays close (within ±3) even when the player clears a wave alone. The shell
+      // resets autoGimli to false on every load; a chapter that wants it sets it once Gimli is in.
+      ctx.rivalry.autoGimli = true;
     };
 
     // ── beats ────────────────────────────────────────────────────────────
