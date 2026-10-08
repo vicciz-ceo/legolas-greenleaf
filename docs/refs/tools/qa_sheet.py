@@ -3,10 +3,11 @@
 from pathlib import Path
 import argparse,json
 from PIL import Image,ImageDraw
-from compose import *
+from scene_composition import *
+from reference_inventory import library_files
 R=Path(__file__).resolve().parents[1]
 a=argparse.ArgumentParser();a.add_argument('--mode',choices=['baseline','final','materials','ui','looks'],default='final');a.add_argument('--out',default='/tmp/greenleaf-ref-qa');args=a.parse_args();out=Path(args.out);out.mkdir(parents=True,exist_ok=True)
-files=sorted([p for p in R.rglob('*') if p.suffix.lower() in ['.jpg','.png']])
+files=[p for p in library_files(R, 'scenes') if p.suffix.lower() in ['.jpg','.png']]
 if args.mode=='baseline':files=[p for p in files if p.stem.startswith('current_')]
 elif args.mode=='materials':files=[p for p in files if p.parent==R/'materials' and p.stem!='materials_overview']
 elif args.mode=='ui':files=[p for p in files if 'ui' in p.relative_to(R).parts]

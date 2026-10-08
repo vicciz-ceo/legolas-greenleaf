@@ -1,0 +1,657 @@
+{
+  "id": "dwarf_redbeard",
+  "design": {
+    "id": "dwarf_redbeard",
+    "source": "design_target",
+    "display_name": "Dwarf Redbeard",
+    "height_m": 1.4,
+    "overall_height_m": 1.43,
+    "proportions": {
+      "head_height_m": 0.24,
+      "shoulder_width_m": 0.56,
+      "hip_width_m": 0.43,
+      "arm_length_m": 0.55,
+      "leg_length_m": 0.6,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.07,
+      "bulk_0to1": 0.85,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Broad ruddy face, thick red brows, rounded nose and huge wild red beard",
+      "eyes": {
+        "iris_hex": "#684f36",
+        "shape": "Natural deep-set dwarf eyes",
+        "size_note": "Original adult face, no actor likeness"
+      },
+      "brow": "Thick natural dwarf brows",
+      "nose": "Broad bulbous dwarf nose",
+      "lips": "Natural lips partly covered by moustache",
+      "ears": "Rounded dwarf ears",
+      "skin_base_hex": "#bd8d70",
+      "skin_variation": "Natural ruddy pores/age lines, tattoos on bald warrior"
+    },
+    "hair": {
+      "root_hex": "#8f4424",
+      "tip_hex": "#8f4424",
+      "length_m": 0.35,
+      "style": "Broad ruddy face, thick red brows, rounded nose and huge wild red beard",
+      "braids": "None"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#74412c",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Original huge stocky dwarf: enormous wild red beard and red-brown hair, broad full face; russet tunic, heavy brown leather vest, thick belt and boots; both hands empty; very broad shoulders and huge beard silhouette."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#594232",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#66615a",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Original huge stocky dwarf: enormous wild red beard and red-brown hair, broad full face",
+      " russet tunic, heavy brown leather vest, thick belt and boots",
+      " both hands empty",
+      " very broad shoulders and huge beard silhouette."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Original huge stocky dwarf: enormous wild red beard and red-brown hair, broad full face; russet tunic, heavy brown leather vest, thick belt and boots; both hands empty; very broad shoulders and huge beard silhouette."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    }
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        24,
+        32,
+        100,
+        210
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        190,
+        36,
+        240,
+        208
+      ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        89,
+        57,
+        177,
+        66
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        89,
+        122,
+        130,
+        161
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        48,
+        48,
+        208,
+        208
+      ]
+    }
+  ],
+  "measured": {
+    "turnaround": {
+      "path": "dwarf_redbeard_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "6dea1cc0b6e0dfb48a7a3c8f71807f4ac06edbe701a0afb096a8b5f836c1cfd3",
+      "size_bytes": 157092,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "732d2cad2927437123a8542cd7822f58eb9615a9f3ea88d2a674e4107e1cb459",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 339.8601398601399,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.43,
+      "height_fill_fraction": 0.474609375,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+          "source_bbox_px": [
+            4,
+            4,
+            287,
+            444
+          ],
+          "sheet_bbox_px": [
+            162,
+            454,
+            475,
+            940
+          ],
+          "silhouette_height_px": 486,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1045454545454545,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            313,
+            486
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "08402f28e3c8a8a36e67b1d802943c9576e50e2ff6e5327bd6718a54353f434a",
+          "source_bbox_px": [
+            4,
+            4,
+            255,
+            444
+          ],
+          "sheet_bbox_px": [
+            523,
+            454,
+            800,
+            940
+          ],
+          "silhouette_height_px": 486,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1045454545454545,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            277,
+            486
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "40bcc34b6b83d7402d9b7f0aeb9316abe51d8e2d9760b83491aa6c6a60725a0a",
+          "source_bbox_px": [
+            4,
+            4,
+            159,
+            444
+          ],
+          "sheet_bbox_px": [
+            919,
+            454,
+            1090,
+            940
+          ],
+          "silhouette_height_px": 486,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1045454545454545,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            171,
+            486
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "4fb2ce25d08d2cc0e0e5388dcb8644963867895a7cffbaa8abd34d90d715bb45",
+          "source_bbox_px": [
+            4,
+            4,
+            293,
+            444
+          ],
+          "sheet_bbox_px": [
+            1188,
+            454,
+            1507,
+            940
+          ],
+          "silhouette_height_px": 486,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1045454545454545,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            486
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 454,
+        "endpoint_m": 1.43,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 855
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 770
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 685
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 600
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 515
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            849,
+            93,
+            861
+          ],
+          [
+            57,
+            764,
+            93,
+            776
+          ],
+          [
+            57,
+            679,
+            93,
+            691
+          ],
+          [
+            57,
+            594,
+            93,
+            606
+          ],
+          [
+            57,
+            509,
+            93,
+            521
+          ],
+          [
+            117,
+            435,
+            180,
+            448
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "dwarf_redbeard_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "e97b0cd4b7f0291c6c4699aded11caa793c1b6c9b752cc42d6b1db888cc0f2f8",
+      "size_bytes": 182870,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "355cb9ed595341e72a98480cc74e269bee767563544a691a74a815e1ef77b18f",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68",
+          "source_bbox_px": [
+            4,
+            4,
+            247,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            435,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "4bad7938f4e206813410f2a650f9dabdf03e5fa800f0dc648668ec81e1810ebd",
+          "source_bbox_px": [
+            4,
+            4,
+            379,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            606,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "e0b2d90dfe9b78e70df0cd8fdbd83892391dc819d9b42bb19ab6ef0f362a7aa0",
+          "source_bbox_px": [
+            4,
+            5,
+            257,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            456,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "dwarf_redbeard_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "b00b8b5f212d25cd6bae55a9b019a9213c4d2249c655a43704dd4e06dff6fb92",
+      "size_bytes": 317352,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "4828498ba770afd440f9fe514a2ffe389d4ef72f697cc87833e376a546353170",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "2b418819fe714122930f476ce38224d6e8686591b7b60be7779157dc216d3df3",
+          "sheet_bbox_px": [
+            34,
+            12,
+            478,
+            456
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "2f1799a16502f07d65ca5806d342f350eff6a3460fe1695ff03018a28ba7a3a1",
+          "sheet_bbox_px": [
+            546,
+            12,
+            990,
+            456
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "1b1396b001dae2049ce34354bdc1faf10242166afa1eefc4eede337de38852f5",
+          "sheet_bbox_px": [
+            34,
+            524,
+            478,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "50df8c5de67b2285335588052bf117194a2b308c6a53dea89a1ace11716215d4",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "cloth": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "2b418819fe714122930f476ce38224d6e8686591b7b60be7779157dc216d3df3",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          24,
+          32,
+          100,
+          210
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          109,
+          46,
+          29
+        ],
+        "srgb_hex": "#6d2e1d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "2b418819fe714122930f476ce38224d6e8686591b7b60be7779157dc216d3df3",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          190,
+          36,
+          240,
+          208
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          83,
+          59,
+          46
+        ],
+        "srgb_hex": "#533b2e",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "2f1799a16502f07d65ca5806d342f350eff6a3460fe1695ff03018a28ba7a3a1",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          89,
+          57,
+          177,
+          66
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          104,
+          92,
+          83
+        ],
+        "srgb_hex": "#685c53",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "1b1396b001dae2049ce34354bdc1faf10242166afa1eefc4eede337de38852f5",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          89,
+          122,
+          130,
+          161
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          208,
+          136,
+          122
+        ],
+        "srgb_hex": "#d0887a",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "50df8c5de67b2285335588052bf117194a2b308c6a53dea89a1ace11716215d4",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          48,
+          48,
+          208,
+          208
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          112,
+          44,
+          19
+        ],
+        "srgb_hex": "#702c13",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

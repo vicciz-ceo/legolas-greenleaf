@@ -1,0 +1,408 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-606bf618-545b-4d99-9330-ba3520d8bc2f.png",
+    "original_sha256": "b369fe7edc02750871d472ee9114d9407e4930b1b35a3837ec6ef36179b943dd",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_front",
+      "local_attempt": 2,
+      "kind": "front_repair",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-5065e170-f054-480c-b78d-21344b97e4eb.png"
+      ],
+      "referenced_sha256": [
+        "af3034df46e1d64c9155ae91516764610b83a8b8cb08bb7b1a581e41a59b915e"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Original weathered ranger face and same identity as initial candidate",
+      "anatomy": "Five visible digits on each empty hand; complete natural limbs",
+      "view": "Frontal relaxed A-pose, approximately 25-30 degrees",
+      "attachments": "Sword sheathed anatomical left hip (image right), scabbard above soles; both hands empty",
+      "framing": "Full crown, hands, gear and both boot soles framed; clear transparent margins",
+      "silhouette64": "Ranger hair, long coat and left sword readable",
+      "segmentation": "Existing alpha preserved; optimized retained cutout reviewed; fine hair and sword edges retained"
+    },
+    "minor_drift": "Repair preserves identity and costume with slight palm pose and belt buckle drift."
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c175949c-9360-4016-8369-5ac3ed58de44.png",
+    "original_sha256": "9ba1c1d80a76b8d3e5e5810b9b2b528c64399f41c66c3e837f4eeaff469ce656",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "a75e04ced14b2792090ff529976ac22a9b3e732df8e228a6c4554897f56ae7df",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_rotations",
+      "local_attempt": 1,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged long-oval face, full cheeks, short beard and wavy shoulder-length dark-brown hair",
+      "anatomy": "Empty natural hands; far hand clearly five digits, near thumb plus curled finger overlap, no definite fused/extra digits; natural complete limbs",
+      "view": "Three-quarter front facing image right, anatomical right side nearer camera; relaxed A-pose within 20-40 degrees",
+      "attachments": "Sword remains sheathed anatomical left/far hip; both hands empty; scabbard above soles",
+      "framing": "Full crown, hands, coat, sword and both boots framed with clear alpha margins",
+      "silhouette64": "Hair, long coat and sword silhouette readable at 64px",
+      "segmentation": "existing_alpha intake preserved edges; retained cutout reviewed"
+    },
+    "minor_drift": "Small buckle, seam and strap detail drift tolerated; same major costume inventory and material families."
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d69e43eb-ae32-4ae7-864f-071c89a14260.png",
+    "original_sha256": "6477b7a6f493c12a9888e461ec9c724eff702535f3be3dd0bbfc4770271d8624",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "5ccc4a0b2473a5f838202999e211273f569f07aef8fc3deea8d1a97a4c6b9934",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_rotations",
+      "local_attempt": 2,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged long-oval ranger face, full cheeks, short beard and shoulder-length wavy dark-brown hair",
+      "anatomy": "Near empty hand clearly has thumb and four fingers; far hand naturally occluded; natural complete limbs and boots",
+      "view": "Exact right-side profile, nose image right, one eye visible; arms project with relaxed anatomical A-pose, feet overlap in side elevation",
+      "attachments": "Sword sheathed at anatomical left/far hip with hilt partly visible beyond frontal body edge; right/near side has pouch and empty hand; scabbard below skull and above soles",
+      "framing": "Complete crown, hair, coat, hand, gear and both boots; opaque silhouette starts 10px below original top, no definite clipping",
+      "silhouette64": "Right-facing profile, wavy hair and long coat clearly readable at 64px",
+      "segmentation": "existing_alpha intake preserved crown, hand and sword edges; optimized retained source reviewed"
+    },
+    "minor_drift": "Small strap, buckle and seam drift tolerated; crown upper margin narrow but intact; same major outfit and gear."
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e6ae4b5c-244e-4cef-8ad3-6bb0a549ad3c.png",
+    "original_sha256": "375bb7a01a8c1084c2768e9643feb7c2dc58d72737ed10447e545a4a4fffd29a",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "9ea6549dc135e3d483984270c00239054bfb98fe8f2f767d146cd25450aa9655",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_back_cloth",
+      "local_attempt": 1,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same original rugged ranger identity inferred from shoulder-length wavy dark-brown hair and costume; face naturally concealed in exact rear view",
+      "anatomy": "Thumb and four fingers on each empty relaxed hand, with natural curl and occlusion; complete natural limbs",
+      "view": "Exact rear full body, no face visible; relaxed A-pose within 20-40 degrees",
+      "attachments": "Sword fully sheathed anatomical left hip, image left in rear view; both hands empty; scabbard above soles",
+      "framing": "Full crown, hands, coat, scabbard and both boot soles; opaque contour begins 10px below original top and is intact",
+      "silhouette64": "Hair, long coat, boots and left-hip sword readable at 64px",
+      "segmentation": "Existing alpha preserved without rembg; original and optimized retained edges reviewed"
+    },
+    "minor_drift": "Small seam placement, strap detail and buckle drift tolerated; same garment materials and major inventory."
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1cfa8a0a-930a-400c-8465-363272ea2cea.png",
+    "original_sha256": "e45f44546fb955afe36d3a3d6a6e94164bcc1c484d57e2b2ff0bbd70e1dc45a4",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      910,
+      1728
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "5b73ec1ed480c92f14507238514f0ecd666636501f70edfac5be07fda74bb4ec",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_back_cloth",
+      "local_attempt": 2,
+      "kind": "conditioned_material_macro",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/views/front.png"
+      ],
+      "referenced_sha256": [
+        "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Continuous close-up of the accepted ranger costume, matching dark woven shirt, muted green-grey woven coat and dark brown worn stitched leather jerkin",
+      "view": "Single continuous front chest material close-up; no grid or other figure",
+      "materials": "Three existing garments adjoining at their neckline seam; weave, worn leather pores, stitching and frayed coat edge visible",
+      "attachments": "No weapons or new gear introduced; bracers, belt pouches and boots outside macro crop",
+      "framing": "Material fills whole frame, no studio backdrop, no text or watermarks",
+      "segmentation": "Full original existing alpha range 222-249 preserved without rembg; retained RGBA 135x256 source reviewed"
+    },
+    "minor_drift": "Stitch scale and seam placement mildly vary in macro; garment inventory, layering, colors and material families match accepted front."
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-606bf618-545b-4d99-9330-ba3520d8bc2f.png",
+    "original_sha256": "b369fe7edc02750871d472ee9114d9407e4930b1b35a3837ec6ef36179b943dd",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      275,
+      55,
+      750,
+      435
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "1847ac6c94f66612f4823eac98e9f101aecfc19bc8bdc65dc966c0b956e2bde1",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/front",
+    "reused_source_sha256": "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462",
+    "imagegen_calls": 0,
+    "by_eye_review": "Frontal native head-and-shoulders crop preserves the accepted original long-oval ranger identity, complete shoulder-length wavy hair and neck. Both eyes, lids, brow, nose bridge, lips, cheek weathering and short beard remain legible. Complete hair contour and shoulder tops are inside the crop; lower chest is deliberately cropped. No pixels were invented or edited.",
+    "reviewed_crop_receipt_sha256": "608df1830726f2630c324a25d435770a5bea4807dcd16c1c45b2e26853dc1d59",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c175949c-9360-4016-8369-5ac3ed58de44.png",
+    "original_sha256": "9ba1c1d80a76b8d3e5e5810b9b2b528c64399f41c66c3e837f4eeaff469ce656",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": [
+      285,
+      5,
+      690,
+      370
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "1bfd5c61262f77cdf8e793f9f4040611acbdf3793b48cc5db24b985e3c0360a8",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/three_quarter",
+    "reused_source_sha256": "a75e04ced14b2792090ff529976ac22a9b3e732df8e228a6c4554897f56ae7df",
+    "imagegen_calls": 0,
+    "by_eye_review": "Native three-quarter head-and-shoulders crop preserves the accepted same ranger identity and original rotation toward image right. Complete crown, shoulder-length wavy hair, neck and shoulder tops remain framed. Near and far eye shapes, brow, nose, lips, cheek weathering and short beard are legible. Lower chest is deliberately cropped; no pixels were invented or edited.",
+    "reviewed_crop_receipt_sha256": "658a69edd37eba677042a8198eb79deaeed627f448a6929ac6c07b562e9e53df",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d69e43eb-ae32-4ae7-864f-071c89a14260.png",
+    "original_sha256": "6477b7a6f493c12a9888e461ec9c724eff702535f3be3dd0bbfc4770271d8624",
+    "original_size_px": [
+      910,
+      1728
+    ],
+    "crop_px": [
+      280,
+      0,
+      595,
+      420
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "a422c68d63438bb9c5785962d4f8d8575e5ddb50dad527801ba71a2ae44811d6",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "5ccc4a0b2473a5f838202999e211273f569f07aef8fc3deea8d1a97a4c6b9934",
+    "imagegen_calls": 0,
+    "by_eye_review": "Native exact right-profile head-and-shoulders crop preserves the accepted same ranger identity with nose pointing image right and one eye visible. Complete crown, wavy hair ends, ear, neck and near shoulder remain framed; the narrow original crown margin is intact. Eye/lid, brow, nose bridge, lips and short-beard silhouette are legible. Lower chest is deliberately cropped; no pixels were invented or edited.",
+    "reviewed_crop_receipt_sha256": "99674d65849cf122b67e4bc8dac3c6ba6894a2b9d8801c0f15f3074e3ddd5b70",
+    "newly_authored_recovery": true,
+    "provenance": "Reviewed derivative of newly authored recovery single-view original; not a recovered historical asset"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-ac58a79a-ba09-490f-8de2-8a2ca0fec8c4.png",
+    "original_sha256": "a1e50cd9c172b516bc4ac3fa46ac846b0afd233ea661c59bb56cf38c0165ddcb",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "50321da0ae604fb4352e99942a961e7938772cb6bac0660f66c7b803344b3873",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_weapon_skin",
+      "local_attempt": 1,
+      "kind": "conditioned_material_macro",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-606bf618-545b-4d99-9330-ba3520d8bc2f.png"
+      ],
+      "referenced_sha256": [
+        "b369fe7edc02750871d472ee9114d9407e4930b1b35a3837ec6ef36179b943dd"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same accepted original ranger costume and simple sword design; no actor likeness involved in gear-only macro",
+      "view": "One continuous close-up of anatomical-left sheathed sword hilt, guard and scabbard throat",
+      "materials": "Scratched tarnished steel pommel, crossguard and throat with worn brown wrapped leather grip and weathered scabbard",
+      "attachments": "Sword fully inserted in scabbard at left hip; no blade exposed, no new weapon, no hands",
+      "framing": "Complete pommel, grip and crossguard retained; scabbard intentionally continues below material crop; no generated text/panels",
+      "segmentation": "Existing transparent alpha preserved without rembg; optimized RGBA 171x256 source reviewed; fine guard contours retained"
+    },
+    "minor_drift": "Small wrap spacing, scabbard stitching and fitting surface variation tolerated; same major sword structure/materials and sheath state."
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-6f1e066a-df46-4fef-9574-f339a42345c6.png",
+    "original_sha256": "438727f676f88d4df66ffe645d1bbf75538ee8d530fc8acfafcb35e3d2a09ef0",
+    "original_size_px": [
+      1381,
+      1139
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1381,
+      1139
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "453247b8d6c2d1dd95d582cc9c7324aca4a36fe7446ef1fd14b30d5ad441905c",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_weapon_skin",
+      "local_attempt": 2,
+      "kind": "conditioned_material_macro",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/aragorn/face_views/front.png"
+      ],
+      "referenced_sha256": [
+        "1847ac6c94f66612f4823eac98e9f101aecfc19bc8bdc65dc966c0b956e2bde1"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Same accepted original ranger cheek, grey-green eye, nose and closed lips; original identity retained with no actor likeness",
+      "view": "One continuous front-facing facial skin macro; cheek, eye, nose and short stubbled jaw, no panels",
+      "materials": "Weathered warm tan skin with visible pores, fine creases, subtle redness and short brown beard follicles",
+      "attachments": "No costume or gear additions in facial macro",
+      "framing": "Facial surface fills frame; natural intentional macro crop, no generated text or background panels",
+      "segmentation": "Existing alpha 135-245 preserved without rembg; retained RGBA 256x211 source reviewed, material edges intact"
+    },
+    "minor_drift": "Macro reveals more pores and slight warm skin lighting variation; identity landmarks and short brown beard match reference."
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-b53fc249-7ad4-4eed-899f-9de4718d1adf.png",
+    "original_sha256": "60a0c3509ea55ca5c944714d3f6c079fed59a450936b51f2a25f2b768569da11",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1024,
+      1536
+    ],
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "8fb73a31bc9ad528c97bf3244fe37340b632c514fccb179b8c6978dda1deeb6a",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_hair",
+      "local_attempt": 1,
+      "kind": "conditioned_material_macro",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-606bf618-545b-4d99-9330-ba3520d8bc2f.png"
+      ],
+      "referenced_sha256": [
+        "b369fe7edc02750871d472ee9114d9407e4930b1b35a3837ec6ef36179b943dd"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Loose wavy dark-brown strands match the accepted original ranger hair color and tousled wave character.",
+      "view": "One continuous individual hair-only macro, with no panels or portrait features.",
+      "materials": "Organic fine fibers, darker root-area brown and subtly warmer lower strand variation; realistic soft sheen and flyaway strands.",
+      "attachments": "No new braids, ties, accessories or helmet.",
+      "framing": "Intentional close-up crop of flowing hair material; no text, labels or watermarks.",
+      "segmentation": "Existing alpha preserved by intake without rembg; retained 171x256 RGBA source. Central recommended sampling rectangle has alpha 250-252, no background pixels."
+    },
+    "minor_drift": "Macro softly warms a few highlighted strands while preserving the reference dark-brown wavy material."
+  }
+}

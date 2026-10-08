@@ -1,0 +1,669 @@
+{
+  "id": "dwarf_bald",
+  "design": {
+    "id": "dwarf_bald",
+    "source": "design_target",
+    "display_name": "Dwarf Bald",
+    "height_m": 1.35,
+    "overall_height_m": 1.35,
+    "proportions": {
+      "head_height_m": 0.24,
+      "shoulder_width_m": 0.56,
+      "hip_width_m": 0.43,
+      "arm_length_m": 0.55,
+      "leg_length_m": 0.6,
+      "hand_length_m": 0.19,
+      "neck_length_m": 0.07,
+      "bulk_0to1": 0.85,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Broad square tattooed bald scalp, heavy dark brows, broad bulbous nose, dark braided beard",
+      "eyes": {
+        "iris_hex": "#684f36",
+        "shape": "Natural deep-set dwarf eyes",
+        "size_note": "Original adult face, no actor likeness"
+      },
+      "brow": "Thick natural dwarf brows",
+      "nose": "Broad bulbous dwarf nose",
+      "lips": "Natural lips partly covered by moustache",
+      "ears": "Rounded dwarf ears",
+      "skin_base_hex": "#bc947c",
+      "skin_variation": "Natural ruddy pores/age lines, tattoos on bald warrior"
+    },
+    "hair": {
+      "root_hex": "#34251e",
+      "tip_hex": "#34251e",
+      "length_m": 0.35,
+      "style": "Broad square tattooed bald scalp, heavy dark brows, broad bulbous nose, dark braided beard",
+      "braids": "Short dark beard braids"
+    },
+    "outfit_layers": [
+      {
+        "name": "cloth",
+        "material": "woven cloth or brocade as described",
+        "color_hex": "#624533",
+        "roughness": 0.85,
+        "sheen": 0.3,
+        "notes": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable."
+      },
+      {
+        "name": "leather",
+        "material": "worn stitched leather",
+        "color_hex": "#594232",
+        "roughness": 0.72,
+        "sheen": 0.08,
+        "notes": "Only where required by description"
+      }
+    ],
+    "armor": [
+      {
+        "name": "metal",
+        "material": "metal fittings or armour as described",
+        "color_hex": "#66615a",
+        "roughness": 0.5,
+        "metalness": 1
+      }
+    ],
+    "weapons": [
+      {
+        "kind": "axe",
+        "length_m": 0.85,
+        "notes": "Authored design length where original brief does not prescribe a length; never a recovered measurement."
+      }
+    ],
+    "attachments": {
+      "right_hand": "axe",
+      "left_hand": "empty"
+    },
+    "silhouette_keywords": [
+      "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard",
+      " worn brown leather and mail, crossed straps, belt axes, thick boots",
+      " axe own RIGHT hand, left empty",
+      " upper-body tattoos clearly readable."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
+    "description": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CLOTH / LEATHER",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "GEAR / METAL",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "SKIN / FACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "HAIR / STRANDS",
+        "source": "details/hair.png"
+      }
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; all existing portrait attempt history retained."
+    }
+  },
+  "measured": {
+    "turnaround": {
+      "path": "dwarf_bald_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "f84ef6baf38339ba721af3b232187b5c79d62992ef804f17901dede182e42415",
+      "size_bytes": 185876,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "5f19364572689b533db1aa819d52a1c3d84d0f640e12d0fbb936cfcf78f32a7b",
+      "decoded_background_tolerance": 3,
+      "px_per_m": 358.5185185185185,
+      "baseline_y_px": 940,
+      "overall_height_m": 1.35,
+      "height_fill_fraction": 0.47265625,
+      "fit_policy": "fit",
+      "scale_reduction_reason": "Horizontal panel fit",
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "ca8ca87e3b9ba89bcc301b5b2df7c0a41aa118215e0c973bb30624ebe0f2153b",
+          "source_bbox_px": [
+            4,
+            4,
+            294,
+            444
+          ],
+          "sheet_bbox_px": [
+            159,
+            456,
+            478,
+            940
+          ],
+          "silhouette_height_px": 484,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            319,
+            484
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "57fcdd736a77dfeef60740ff5106b3d6180b42fce15df608f7e69c0c9749537b",
+          "source_bbox_px": [
+            4,
+            4,
+            275,
+            444
+          ],
+          "sheet_bbox_px": [
+            512,
+            456,
+            810,
+            940
+          ],
+          "silhouette_height_px": 484,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            298,
+            484
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "3e4eab431f8e9f7ce2ef093673550e360ffe2c8a1e2e78ad7c47a51849292203",
+          "source_bbox_px": [
+            4,
+            4,
+            149,
+            444
+          ],
+          "sheet_bbox_px": [
+            924,
+            456,
+            1084,
+            940
+          ],
+          "silhouette_height_px": 484,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            160,
+            484
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        },
+        {
+          "view": "back",
+          "source": "views/back.png",
+          "source_sha256": "5cf80e6d322838c65df38f0334e980d347cda9e2e3166fbeeeccae7fbccf4d61",
+          "source_bbox_px": [
+            4,
+            4,
+            287,
+            444
+          ],
+          "sheet_bbox_px": [
+            1192,
+            456,
+            1503,
+            940
+          ],
+          "silhouette_height_px": 484,
+          "baseline_y_px": 940,
+          "resize_uniform_scale": 1.1,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            311,
+            484
+          ],
+          "alpha_threshold": 127,
+          "mirrored": false
+        }
+      ],
+      "ruler": {
+        "axis": "vertical",
+        "x_px": 105,
+        "baseline_y_px": 940,
+        "top_y_px": 456,
+        "endpoint_m": 1.35,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "y_px": 940
+          },
+          {
+            "value_m": 0.25,
+            "y_px": 850
+          },
+          {
+            "value_m": 0.5,
+            "y_px": 761
+          },
+          {
+            "value_m": 0.75,
+            "y_px": 671
+          },
+          {
+            "value_m": 1.0,
+            "y_px": 581
+          },
+          {
+            "value_m": 1.25,
+            "y_px": 492
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            844,
+            93,
+            856
+          ],
+          [
+            57,
+            755,
+            93,
+            767
+          ],
+          [
+            57,
+            665,
+            93,
+            677
+          ],
+          [
+            57,
+            575,
+            93,
+            587
+          ],
+          [
+            57,
+            486,
+            93,
+            498
+          ],
+          [
+            117,
+            437,
+            180,
+            450
+          ]
+        ]
+      },
+      "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "dwarf_bald_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "c490631332ebde532f9c8fb8c079b20f3f9fec3200542f7871dd16816b9b20bc",
+      "size_bytes": 184764,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "494daf4e193683f7eaa8d6635d28bdeaceac5fd442b8edf6bc719c094343d8c8",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "ddf6a8217b488523c6214dbdef8f42764a1571782436c25251f242316d190920",
+          "source_bbox_px": [
+            4,
+            4,
+            392,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            616,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "d98b492c6d348afdb0869f485e0c9a4edd329e7f03fb1ff73d8c04a602990d68",
+          "source_bbox_px": [
+            4,
+            4,
+            373,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            601,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "20127e5c11c28439d356d31666ee4e2af439ed221fa1ccd55f8b5b4593276a82",
+          "source_bbox_px": [
+            4,
+            4,
+            181,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            255,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "dwarf_bald_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "70e85c9bcb90bd8968104bef5e14a8a3f897ba7076b74cc6dc471b1d5c1907fc",
+      "size_bytes": 235639,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "aa3bddbfaccda06dcd4c8bd4a51e2da18ffa567ecc5bf7683e34994e165d6214",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+          "sheet_bbox_px": [
+            12,
+            67,
+            500,
+            401
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+          "sheet_bbox_px": [
+            524,
+            71,
+            1012,
+            397
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+          "sheet_bbox_px": [
+            45,
+            524,
+            466,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        167,
+        39,
+        212,
+        75
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        88,
+        78,
+        118,
+        108
+      ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        32,
+        65,
+        66,
+        95
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        120,
+        174,
+        146,
+        197
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        16,
+        16,
+        88,
+        112
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "cloth": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          167,
+          39,
+          212,
+          75
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          71,
+          51,
+          39
+        ],
+        "srgb_hex": "#473327",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          88,
+          78,
+          118,
+          108
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          91,
+          69,
+          59
+        ],
+        "srgb_hex": "#5b453b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          32,
+          65,
+          66,
+          95
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          83,
+          80,
+          81
+        ],
+        "srgb_hex": "#535051",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          120,
+          174,
+          146,
+          197
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          201,
+          126,
+          104
+        ],
+        "srgb_hex": "#c97e68",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          16,
+          16,
+          88,
+          112
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          49,
+          30,
+          22
+        ],
+        "srgb_hex": "#311e16",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

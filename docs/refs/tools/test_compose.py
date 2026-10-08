@@ -1,0 +1,303 @@
+"""Synthetic regression tests; no generated imagery or fixtures are committed."""
+import copy
+import importlib.util
+import json
+from pathlib import Path
+import tempfile
+import unittest
+
+from PIL import Image, ImageDraw
+
+spec = importlib.util.spec_from_file_location('compose', Path(__file__).with_name('compose.py'))
+c = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(c)
+
+
+class ComposeTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.oldroot = c.ROOT
+        c.ROOT = Path(self.temp.name)
+        self.folder = c.ROOT/'fixture'
+        self.folder.mkdir()
+        for part, names in [('views', c.VIEWS), ('face_views', ('front','three_quarter','side'))]:
+            (self.folder/part).mkdir()
+            for i,name in enumerate(names):
+                im=Image.new('RGBA',(80+i*8,220),(0,0,0,0))
+                draw=ImageDraw.Draw(im)
+                draw.rectangle((20,10,50+i*4,200),fill=(80,60,40,255))
+                im.save(self.folder/part/(name+'.png'))
+        (self.folder/'details').mkdir()
+        tiles=[]
+        for i in range(4):
+            path=f'details/{i}.png'
+            Image.new('RGB',(96,96),(90+i*20,70,60)).save(self.folder/path)
+            tiles.append({'name':f'mat{i}','label':f'MATERIAL {i}','source':path})
+        self.data={'id':'fixture','design':{'source':'design_target','overall_height_m':1.85},
+                   'composition':{'fit_policy':'fit','detail_tiles':tiles},
+                   'sampling':[{'name':name,'sheet':'details','rect_px':[64,64,128,128]} for name in ('cloth','skin','hair')]}
+        design=self.data['design']
+        design.update(display_name='Fixture',height_m=1.85,proportions={f:0.2 for f in c.PROPORTION_FIELDS},face={f:'fixture' for f in ('shape','eyes','brow','nose','lips','ears','skin_base_hex','skin_variation')},hair={f:'fixture' for f in ('root_hex','tip_hex','length_m','style','braids')},outfit_layers=[],armor=[],weapons=[],silhouette_keywords=[],avoid=[])
+        design['face'].update(eyes={'iris_hex':'#506070','shape':'almond','size_note':'natural'},skin_base_hex='#c0a090')
+        design['hair'].update(root_hex='#503020',tip_hex='#503020',length_m=.35)
+        (self.folder/'notes.md').write_text('Synthetic fixture only.')
+        self.store(self.data)
+
+    def tearDown(self):
+        c.ROOT=self.oldroot
+        self.temp.cleanup()
+
+    def store(self,data):
+        (self.folder/'spec.json').write_text(json.dumps(data))
+
+    def ready(self):
+        c.turnaround('fixture');c.face('fixture');c.grid('fixture');c.sample('fixture')
+
+    def test_real_composition_and_observed_median(self):
+        self.ready()
+        result=c.check('fixture')
+        self.assertEqual(result['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text())
+        self.assertEqual(data['design'],self.data['design'])
+        self.assertEqual(data['measured']['turnaround']['baseline_y_px'],940)
+        self.assertTrue(all(abs(a-b)<=1 for a,b in zip(data['observed']['samples']['cloth']['rgb'],[90,70,60])))
+        with Image.open(self.folder/'fixture_details.jpg') as image:
+            self.assertEqual(image.size,(1024,1024))
+        self.assertEqual(c.preview64('fixture')['temporary_directory'].startswith(tempfile.gettempdir()),True)
+
+    def test_resampled_alpha_bounds_define_calibrated_height(self):
+        im = Image.new('RGBA', (100, 400), (0, 0, 0, 0))
+        draw = ImageDraw.Draw(im)
+        draw.rectangle((20, 8, 79, 399), fill=(90, 70, 50, 255))
+        draw.line((50, 0, 50, 8), fill=(90, 70, 50, 129), width=1)
+        crop, _ = c.tight(im)
+        old = crop.resize((25, 100), Image.Resampling.LANCZOS)
+        self.assertLess(c.bbox(old, require_transparency=False)[3] - c.bbox(old, require_transparency=False)[1], 100)
+        normalized, scale, bounds = c.resize_silhouette(crop, 100)
+        self.assertEqual(c.bbox(normalized, require_transparency=False), (0, 0, normalized.width, 100))
+        self.assertAlmostEqual(scale * crop.height - (bounds[1]), 100, delta=1)
+
+    def test_source_sampling_and_missing_material_failure(self):
+        self.data['sampling'].append({'name':'small_metal','source_image':'views/front.png','rect_px':[25,25,45,45]})
+        self.store(self.data);self.ready()
+        data=json.loads((self.folder/'spec.json').read_text())
+        sample=data['observed']['samples']['small_metal']
+        self.assertEqual(sample['rgb'],[80,60,40])
+        self.assertTrue(sample['coordinate_space'].startswith('retained source pixels'))
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data['sampling']=[s for s in data['sampling'] if s['name']!='skin']
+        self.store(data);c.sample('fixture')
+        with self.assertRaisesRegex(ValueError,'Missing observed material: skin'):c.check('fixture')
+
+    def test_actual_human_pixels_and_close_endpoint_label_layout(self):
+        im=Image.new('RGB',c.TURN_SIZE,c.BG);draw=ImageDraw.Draw(im)
+        marker=c.human(draw,55,430,100)
+        import numpy as np
+        pixels=np.asarray(im)
+        yy,xx=np.where(np.all(pixels[:431,:130]==(30,30,30),axis=2))
+        self.assertEqual(int(yy.max())+1-int(yy.min()),185)
+        self.assertEqual(marker['sheet_bbox_px'],[int(xx.min()),int(yy.min()),int(xx.max())+1,int(yy.max())+1])
+        r=c.ruler(draw,260,940,2.04)
+        c.check_text_boxes(r['label_bboxes_px'])
+        with self.assertRaisesRegex(ValueError,'Overlapping ruler labels'):c.check_text_boxes([[10,10,20,20],[15,15,25,25]])
+
+    def test_supplement_actual_scale_png_and_stale_files(self):
+        data=copy.deepcopy(self.data)
+        data['composition']={'supplement':True,'metric':True,'columns':2,'rows':1,'png_name':'fixture.png',
+                             'items':[{'name':v,'source':f'views/{v}.png','label':v.upper(),'extent_m':1.0+i}
+                                      for i,v in enumerate(('front','back'))]}
+        self.store(data)
+        rec=c.supplement('fixture')
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        for obj in rec['objects']:
+            box=obj['sheet_bbox_px']
+            self.assertEqual(box[3]-box[1],round(obj['extent_m']*rec['px_per_m']))
+        self.assertEqual(rec['rulers'][0]['top_y_px'],934-round(2*rec['px_per_m']))
+        im=Image.open(self.folder/'fixture.png');im.putpixel((1,1),(128,127,127));im.save(self.folder/'fixture.png')
+        with self.assertRaisesRegex(ValueError,'PNG changed'):c.check('fixture')
+
+    def test_additional_creature_pose_same_scale_and_stale_failure(self):
+        self.data['composition'].update(creature=True, views=list(c.VIEWS), reference_view='side',
+                                        scale_axis='height',scale_extent_m=1.85,
+                                        projected_extents_m={v:1.85 for v in c.VIEWS},
+                                        pose_targets={'folded':{'axis':'height','extent_m':1.85}})
+        self.store(self.data)
+        with Image.open(self.folder/'views/front.png') as im:im.save(self.folder/'views/folded.png')
+        self.ready();c.poses('fixture')
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text())
+        self.assertEqual(data['measured']['pose_folded']['px_per_m'],data['measured']['turnaround']['px_per_m'])
+        data['measured']['pose_folded']['px_per_m']+=1;self.store(data)
+        with self.assertRaisesRegex(ValueError,'recorded px_per_m|different scale'):c.check('fixture')
+
+    def test_projection_rules_derive_from_measured_reference(self):
+        self.data['composition'].update(creature=True,views=list(c.VIEWS),reference_view='side',
+                                        scale_axis='height',scale_extent_m=1.85,
+                                        projected_extents_m={v:1.85 for v in c.VIEWS},
+                                        landmark_regions_px={'side':[20,50,55,201]},
+                                        extent_rules={'front':'reference_overall_height','back':'reference_overall_width'})
+        self.store(self.data)
+        rec=c.turnaround('fixture')
+        side=next(v for v in rec['views'] if v['view']=='side')
+        ref=side['source_bbox_px'];span=side['measurement']['source_span_px']
+        front=next(v for v in rec['views'] if v['view']=='front')
+        back=next(v for v in rec['views'] if v['view']=='back')
+        self.assertAlmostEqual(front['projected_extent_m'],(ref[3]-ref[1])*1.85/span)
+        self.assertAlmostEqual(back['projected_extent_m'],(ref[2]-ref[0])*1.85/span)
+        self.data['composition']['extent_rules']['front']='invented_rule';self.store(self.data)
+        with self.assertRaisesRegex(ValueError,'Unknown projected extent rule'):c.turnaround('fixture')
+
+    def test_creature_resampled_thin_tips_keep_actual_span(self):
+        im=Image.new('RGBA',(1600,1000),(0,0,0,0));draw=ImageDraw.Draw(im)
+        draw.polygon([(60,500),(750,50),(750,950)],fill=(90,70,50,255))
+        draw.polygon([(1539,500),(850,50),(850,950)],fill=(90,70,50,255))
+        draw.rectangle((750,450,850,600),fill=(90,70,50,255))
+        draw.line((0,500,60,500),fill=(90,70,50,129))
+        draw.line((1539,500,1599,500),fill=(90,70,50,129))
+        for v in c.VIEWS:im.save(self.folder/f'views/{v}.png')
+        crop,_=c.tight(im)
+        plain=crop.resize((440,round(crop.height*440/crop.width)),Image.Resampling.LANCZOS)
+        b=c.bbox(plain,require_transparency=False)
+        self.assertLess(b[2]-b[0],439)
+        self.data['composition'].update(creature=True,views=list(c.VIEWS),reference_view='side',
+                                        scale_axis='width',scale_extent_m=7.,
+                                        projected_extents_m={v:7. for v in c.VIEWS})
+        self.store(self.data);self.ready()
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text())
+        for view in data['measured']['turnaround']['views']:
+            self.assertTrue(view['extrema_preserved_after_resampling'])
+            self.assertEqual(view['measurement']['sheet_span_px'],440)
+            b=view['resampled_alpha_bbox_px'];self.assertEqual(b[2]-b[0],440)
+
+    def test_supplement_accepted_ledger_cannot_hide_missing_assets(self):
+        (c.ROOT/'progress.json').write_text(json.dumps({'entries':{'fixture':{'kind':'supplement','deliverables':{'sheet':{'status':'accepted'}}}}}))
+        report=c.check_all()
+        self.assertEqual(report['status'],'PARTIAL')
+        self.assertEqual(report['entries'][0]['status'],'FAIL')
+
+    def test_invalid_design_colours_and_material_ranges_fail(self):
+        data=copy.deepcopy(self.data);data['design']['face']['eyes']['iris_hex']='brown'
+        with self.assertRaisesRegex(ValueError,'sRGB'):c.validate_schema(data)
+        data=copy.deepcopy(self.data);data['design']['armor']=[{'name':'plate','material':'steel','color_hex':'#aaaaaa','roughness':1.1,'metalness':1}]
+        with self.assertRaisesRegex(ValueError,'allowed range'):c.validate_schema(data)
+        data=copy.deepcopy(self.data);data['design']['hair']['length_m']=True
+        with self.assertRaisesRegex(ValueError,'finite number'):c.validate_schema(data)
+
+    def test_concealed_material_never_gets_fabricated_colour(self):
+        self.data['design']['concealed_materials']={'hair':'Completely covered by prescribed helmet.'}
+        self.data['sampling']=[a for a in self.data['sampling'] if a['name']!='hair']
+        self.data['sampling'].append({'name':'hair','sheet':'face','not_visible':'Completely covered by prescribed helmet.'})
+        self.store(self.data);self.ready()
+        sample=json.loads((self.folder/'spec.json').read_text())['observed']['samples']['hair']
+        self.assertIsNone(sample['rgb']);self.assertIsNone(sample['rect_px'])
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text());data['observed']['samples']['hair']['rgb']=[1,2,3];self.store(data)
+        with self.assertRaisesRegex(ValueError,'fabricated'):c.check('fixture')
+
+    def test_detects_stale_source_and_height_change(self):
+        self.ready()
+        source=self.folder/'views/front.png'
+        im=Image.open(source).convert('RGBA');im.putpixel((30,30),(100,20,30,255));im.save(source)
+        with self.assertRaisesRegex(ValueError,'stale source'):
+            c.check('fixture')
+        c.turnaround('fixture')
+        data=json.loads((self.folder/'spec.json').read_text());data['design']['overall_height_m']=2
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'height changed'):
+            c.check('fixture')
+
+    def test_detects_wrong_baseline_tick_and_budget(self):
+        self.ready()
+        base=json.loads((self.folder/'spec.json').read_text())
+        data=copy.deepcopy(base);data['measured']['turnaround']['views'][0]['baseline_y_px']=939
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'share baseline|recorded views'):
+            c.check('fixture')
+        data=copy.deepcopy(base);data['measured']['turnaround']['ruler']['ticks'][1]['y_px']+=1
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'calibration|recorded ruler'):
+            c.check('fixture')
+        self.store(base)
+        (self.folder/'oversized.bin').write_bytes(bytes(c.CHAR_BUDGET))
+        with self.assertRaisesRegex(ValueError,'2.5 MB'):
+            c.check('fixture')
+
+    def test_threshold_fallback_with_transparent_hole(self):
+        im=Image.new('RGB',(160,240),(210,210,210));d=ImageDraw.Draw(im)
+        d.rectangle((40,15,120,225),fill=(45,35,25));d.rectangle((65,80,95,140),fill=(210,210,210))
+        inp=c.ROOT/'input.png';out=c.ROOT/'cutout.png';im.save(inp)
+        result=c.segment(inp,out,38,160,'threshold')
+        self.assertEqual(result['method'],'corner_median_colour_distance_morphology')
+        arr=Image.open(out)
+        self.assertLessEqual(arr.height,168)
+        self.assertEqual(arr.getpixel((0,0))[3],0)
+        self.assertEqual(arr.getpixel((arr.width//2,arr.height//2))[3],0)
+
+    def test_strict_layout_rejects_wide_subject(self):
+        im=Image.new('RGBA',(240,200),(0,0,0,0));ImageDraw.Draw(im).rectangle((10,10,230,190),fill=(40,40,40,255))
+        im.save(self.folder/'views/front.png')
+        self.data['composition']['fit_policy']='strict_85_percent';self.store(self.data)
+        with self.assertRaisesRegex(ValueError,'do not fit'):
+            c.turnaround('fixture')
+
+    def test_creature_ruler_and_human(self):
+        (self.folder/'views/side.png').replace(self.folder/'views/top.png')
+        im=Image.new('RGBA',(400,150),(0,0,0,0));ImageDraw.Draw(im).rectangle((10,10,390,140),fill=(40,40,40,255))
+        im.save(self.folder/'views/side.png')
+        self.data['composition'].update({'creature':True,'silhouette_only':True,'reference_view':'side',
+            'scale_axis':'width','scale_extent_m':10,'views':['front','side','top','three_quarter'],
+            'projected_extents_m':{'front':8,'side':10,'top':10,'three_quarter':9}})
+        self.store(self.data)
+        c.turnaround('fixture')
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+
+    def test_creature_landmark_excludes_headgear_and_changes_axis(self):
+        Image.open(self.folder/'views/side.png').save(self.folder/'views/top.png')
+        config={'creature':True,'silhouette_only':True,'reference_view':'side',
+                'scale_axis':'height','scale_extent_m':14,
+                'views':['front','side','top','three_quarter'],
+                'projected_extents_m':{'front':14,'side':14,'top':20,'three_quarter':14},
+                'scale_axes':{'top':'width'},
+                'landmark_regions_px':{'side':[20,60,58,201]}}
+        self.data['composition'].update(config);self.store(self.data)
+        result=c.turnaround('fixture')
+        side=next(v for v in result['views'] if v['view']=='side')
+        self.assertEqual(side['measurement']['source_span_px'],141)
+        self.assertEqual(side['measurement']['source_endpoints_px'][0][1],60)
+        self.assertEqual(result['ruler']['endpoint_m'],14)
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text());data['composition']['landmark_regions_px']['side']=[20,59,58,201];self.store(data)
+        with self.assertRaisesRegex(ValueError,'recorded views|canvas'):c.check('fixture')
+
+
+    def test_missing_schema_and_overlap_fail(self):
+        self.ready()
+        base=json.loads((self.folder/'spec.json').read_text())
+        data=copy.deepcopy(base);del data['design']['face']
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'Missing design.face'):c.check('fixture')
+        data=copy.deepcopy(base);data['measured']['turnaround']['views'][1]['sheet_bbox_px']=data['measured']['turnaround']['views'][0]['sheet_bbox_px']
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'overlapping objects'):c.check('fixture')
+
+    def test_pre_encoding_hash_and_library_path(self):
+        self.ready()
+        data=json.loads((self.folder/'spec.json').read_text())
+        data['measured']['face']['pre_jpeg_sha256']='invalid'
+        self.store(data)
+        with self.assertRaisesRegex(ValueError,'pre-JPEG canvas'):c.check('fixture')
+        self.ready()
+        self.assertEqual(c.check_all()['status'],'PASS')
+
+    def test_detail_inset_keeps_safe_background_for_wide_opaque_tile(self):
+        Image.new('RGB', (256, 232), (20, 30, 55)).save(self.folder/'details/0.png')
+        with self.assertRaisesRegex(ValueError, 'Pre-JPEG background patch'):
+            c.grid('fixture')
+        self.data['composition']['detail_margin_px'] = 24
+        self.store(self.data)
+        self.ready()
+        self.assertEqual(c.check('fixture')['status'], 'PASS')
+
+if __name__=='__main__':
+    unittest.main()

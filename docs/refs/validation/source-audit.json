@@ -1,0 +1,1487 @@
+{
+  "branch_head": "5107b510cf78c4bf6d5cfb91112f984642666321",
+  "historical_originals_found": 0,
+  "searched": [
+    "accessible worktrees and workspace image/archive files",
+    "saved manifest paths",
+    "Git history for historical sets and dwarf_bald"
+  ],
+  "retained_sources": [
+    {
+      "id": "berserker",
+      "key": "views/front",
+      "path": "berserker/views/front.png",
+      "sha256": "72b3ac595ca36f4aad37e27a4c5d957a3438c00c6686d15e75076c0a089d242f"
+    },
+    {
+      "id": "berserker",
+      "key": "views/three_quarter",
+      "path": "berserker/views/three_quarter.png",
+      "sha256": "03e40fa0173d7ad31e1be5a54d0f5b20faaf2d619be701edf2013cea610d77e2"
+    },
+    {
+      "id": "berserker",
+      "key": "views/side",
+      "path": "berserker/views/side.png",
+      "sha256": "7b19f109c13027e819c3da339a1d4728509de36b04689fe037b1d3d440db8077"
+    },
+    {
+      "id": "berserker",
+      "key": "views/back",
+      "path": "berserker/views/back.png",
+      "sha256": "16b1ae8dadbef52512f473a540c2a229842abbb6e3055ce49f6c8ef0df44a288"
+    },
+    {
+      "id": "berserker",
+      "key": "face_views/front",
+      "path": "berserker/face_views/front.png",
+      "sha256": "9d9b77f15f69a4e5f1d261b0e6334ee425cc124c50a0ca15075431f2c651e371"
+    },
+    {
+      "id": "berserker",
+      "key": "face_views/three_quarter",
+      "path": "berserker/face_views/three_quarter.png",
+      "sha256": "9498de48d5a883c1ee48792fecbed52d87c887198e62ca370a0236e0a7c8d753"
+    },
+    {
+      "id": "berserker",
+      "key": "face_views/side",
+      "path": "berserker/face_views/side.png",
+      "sha256": "793011ddc74198ed8e3fc556b8e5fa13f906b473497f73ec896b4973d8a0e6d7"
+    },
+    {
+      "id": "berserker",
+      "key": "details/cloth_leather",
+      "path": "berserker/details/cloth_leather.png",
+      "sha256": "2d19f02bcd57c5e2b831ca90e056c78e680351e7d63c91df3fc4afb751e5de82"
+    },
+    {
+      "id": "berserker",
+      "key": "details/weapon_metal",
+      "path": "berserker/details/weapon_metal.png",
+      "sha256": "c04b094191ca1f56abce4b026bedeb9fc028d8158786708a720b923037601ff1"
+    },
+    {
+      "id": "berserker",
+      "key": "details/skin",
+      "path": "berserker/details/skin.png",
+      "sha256": "bb19e96754b13d009fdb78c14a635fb2ba0f2ed8df3ec4058016aa556e3f9cee"
+    },
+    {
+      "id": "berserker",
+      "key": "details/hair",
+      "path": "berserker/details/hair.png",
+      "sha256": "33a181f977f997266e1e30cd46f3b290abb9b51652ae0082d921ff7186d81f0c"
+    },
+    {
+      "id": "boromir",
+      "key": "views/front",
+      "path": "boromir/views/front.png",
+      "sha256": "4de8fd2f93976df49c4e4e3db5045500e85da0d3ced1b5819eea60903733eb57"
+    },
+    {
+      "id": "boromir",
+      "key": "views/three_quarter",
+      "path": "boromir/views/three_quarter.png",
+      "sha256": "0968b185718d849aa2f3eb55cc0ca08ed7fa03a87a5ba3b312dc4b8f660f1fe0"
+    },
+    {
+      "id": "boromir",
+      "key": "views/side",
+      "path": "boromir/views/side.png",
+      "sha256": "4754d45c854698e038244e25146f884a10ca7f55552f861712d6ae05df2e4b22"
+    },
+    {
+      "id": "boromir",
+      "key": "views/back",
+      "path": "boromir/views/back.png",
+      "sha256": "7eb0d2712c4cc28e7d2af7325eccbd1d8fc732894266272377309807ffc4b25b"
+    },
+    {
+      "id": "boromir",
+      "key": "face_views/front",
+      "path": "boromir/face_views/front.png",
+      "sha256": "652a6c1f69e89da450dc67f4c0496c8dd233c2f6a4c94bbc25d37dab1b4c7a55"
+    },
+    {
+      "id": "boromir",
+      "key": "face_views/three_quarter",
+      "path": "boromir/face_views/three_quarter.png",
+      "sha256": "637e32beb918a3ac13b9c81eaf82a35476edfb31cfd3a1d82599d34494a159bd"
+    },
+    {
+      "id": "boromir",
+      "key": "face_views/side",
+      "path": "boromir/face_views/side.png",
+      "sha256": "85d774c76ab23009d350871f64e6f2e48a8b1a27d16be51430804158f41ed70f"
+    },
+    {
+      "id": "boromir",
+      "key": "details/cloth_leather",
+      "path": "boromir/details/cloth_leather.png",
+      "sha256": "6ee64078ff558c270d200172e80fb384502bf4ce6ba6ed94108c65020ef2150d"
+    },
+    {
+      "id": "boromir",
+      "key": "details/weapon_metal",
+      "path": "boromir/details/weapon_metal.png",
+      "sha256": "5f7fe23d7569868339dc9bb6c2cbd1dfc9c04ecb3bdc5b9910a144f616d98327"
+    },
+    {
+      "id": "boromir",
+      "key": "details/skin",
+      "path": "boromir/details/skin.png",
+      "sha256": "c7a0bdd75c6299d8bbea65d7a33ca359c4a91565bc03816ec1ffe0453809db84"
+    },
+    {
+      "id": "boromir",
+      "key": "details/hair",
+      "path": "boromir/details/hair.png",
+      "sha256": "32d04f60fee6d314fcb31ca422b513716506d42230e2fb3ed3fbe2504b353121"
+    },
+    {
+      "id": "brood_mother",
+      "key": "views/side",
+      "path": "brood_mother/views/side.png",
+      "sha256": "010027cfe5cabff1f14165bac334e3c7314739e73fffe04e53f5942eb23e33d7"
+    },
+    {
+      "id": "brood_mother",
+      "key": "views/front",
+      "path": "brood_mother/views/front.png",
+      "sha256": "45385e91667bbedc45ffccf61cb4ad4804a1330038308c71ef417f16d431bd13"
+    },
+    {
+      "id": "brood_mother",
+      "key": "views/top",
+      "path": "brood_mother/views/top.png",
+      "sha256": "336cacf368f1493ef8056829640c1a51ee13cffbfee11a762d1f809488e24aaa"
+    },
+    {
+      "id": "brood_mother",
+      "key": "views/three_quarter",
+      "path": "brood_mother/views/three_quarter.png",
+      "sha256": "852061e025a97f8d3dac10d47c55c0285d89cf6b936d1c239f4230eb989b269e"
+    },
+    {
+      "id": "brood_mother",
+      "key": "face_views/front",
+      "path": "brood_mother/face_views/front.png",
+      "sha256": "6e79f8c15b4ed6ec63d075bb6961c6318dd5e42103f1ad8b3d34b9c5e4ff16a2"
+    },
+    {
+      "id": "brood_mother",
+      "key": "face_views/three_quarter",
+      "path": "brood_mother/face_views/three_quarter.png",
+      "sha256": "ca780047f4ab7402db4b7c08943dbdbab849a8fbb69a4d5c5a4a6d2a3d195ed7"
+    },
+    {
+      "id": "brood_mother",
+      "key": "face_views/side",
+      "path": "brood_mother/face_views/side.png",
+      "sha256": "e35f59220db462be8b7531fa7ca5f4c01a763046e2d939eb4d5e427d59cb12f9"
+    },
+    {
+      "id": "brood_mother",
+      "key": "details/cloth_leather",
+      "path": "brood_mother/details/cloth_leather.png",
+      "sha256": "487201ff149f5dae5a19d28607e379fce5912e450e20eeec35ff33b57b73c632"
+    },
+    {
+      "id": "brood_mother",
+      "key": "details/weapon_metal",
+      "path": "brood_mother/details/weapon_metal.png",
+      "sha256": "9aa9cd19c91dbe56aa9eae40a32263e79769b25078d694cb5654600b8bd8609c"
+    },
+    {
+      "id": "brood_mother",
+      "key": "details/skin",
+      "path": "brood_mother/details/skin.png",
+      "sha256": "8dd75c260f39cb820e759899eb2e13091402ffd1345f23bc5e18c80750f6c190"
+    },
+    {
+      "id": "brood_mother",
+      "key": "details/hair",
+      "path": "brood_mother/details/hair.png",
+      "sha256": "3ff217a5ff0362718cd5f596fa596b9905564ad39cb24b9cb883aecc3c2cab8c"
+    },
+    {
+      "id": "easterling",
+      "key": "views/front",
+      "path": "easterling/views/front.png",
+      "sha256": "d25de16ffc399bbe26c433c4290896b768ef67dc468ae58eded227c05ea10154"
+    },
+    {
+      "id": "easterling",
+      "key": "views/three_quarter",
+      "path": "easterling/views/three_quarter.png",
+      "sha256": "4842ecb75d84c9855e3f80f51591e192361163b97ad2fb21dd2269dfa5fa1aba"
+    },
+    {
+      "id": "easterling",
+      "key": "views/side",
+      "path": "easterling/views/side.png",
+      "sha256": "9239b232100a203757a1aa6d32a5426ecb7dbd20c7aefe920f17ba90d7ff3557"
+    },
+    {
+      "id": "easterling",
+      "key": "views/back",
+      "path": "easterling/views/back.png",
+      "sha256": "29d4426a54ab8ff49cad6dc48dd3e034c4bbd89736da4fe7fa7d46bf4b2eff78"
+    },
+    {
+      "id": "easterling",
+      "key": "face_views/front",
+      "path": "easterling/face_views/front.png",
+      "sha256": "5f0eccb7247643f4606b6eb1fc6fe82829a47ab445d7a404191912714bab3966"
+    },
+    {
+      "id": "easterling",
+      "key": "face_views/three_quarter",
+      "path": "easterling/face_views/three_quarter.png",
+      "sha256": "5b9670a0e00fdb18184fafdff50dbb8cb3d1acaad0ee4bc8315a2062788d8752"
+    },
+    {
+      "id": "easterling",
+      "key": "face_views/side",
+      "path": "easterling/face_views/side.png",
+      "sha256": "b19fc40a4e4054de0ce4ee3c09ceba2456c90bf8abd47f714c00ac2337beb798"
+    },
+    {
+      "id": "easterling",
+      "key": "details/cloth_leather",
+      "path": "easterling/details/cloth_leather.png",
+      "sha256": "a8ae860526b8ffe768691fa3194ee1776e791f6b6a9a83fc158d8973a7bcb193"
+    },
+    {
+      "id": "easterling",
+      "key": "details/weapon_metal",
+      "path": "easterling/details/weapon_metal.png",
+      "sha256": "22f9b43d5f9d8e0c52108205ffc9d7343d546e08a968889862ae62560fe39922"
+    },
+    {
+      "id": "easterling",
+      "key": "details/skin",
+      "path": "easterling/details/skin.png",
+      "sha256": "480e026cb9cf0d5df05bf1d7a87f7bb44c5c1ee896c9eaecae2dc61f1220ef0e"
+    },
+    {
+      "id": "easterling",
+      "key": "details/hair",
+      "path": "easterling/details/hair.png",
+      "sha256": "b4890b2d748c68fab4f0d7c93b02b90b327af14a9246dc805af944a772fc99d4"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "views/front",
+      "path": "elf_galadhrim/views/front.png",
+      "sha256": "7a1f2387a87c5147c3333771d4f2239dd0691da710bdfac782903f189d2f5d9d"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "views/three_quarter",
+      "path": "elf_galadhrim/views/three_quarter.png",
+      "sha256": "e929ee6711a6bc30c092da3bbbdd2858981f8bcb3e0e0b9b93b895007c257f62"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "views/side",
+      "path": "elf_galadhrim/views/side.png",
+      "sha256": "4b63930a44c4c6aea82317ae40b2af65614a45f2877b1ff75d84ed3004b19cf8"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "views/back",
+      "path": "elf_galadhrim/views/back.png",
+      "sha256": "8bbd0ac4b0dbf3d758bd49e33fb59f20536f41f059f52d10d6c10e1e3efc3bea"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "face_views/front",
+      "path": "elf_galadhrim/face_views/front.png",
+      "sha256": "1c18a2f363c8eae43e5bc5f7eb823871c47941ed78f3ea4bcbced9e5668d104e"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "face_views/three_quarter",
+      "path": "elf_galadhrim/face_views/three_quarter.png",
+      "sha256": "e19ac39cab30db7d379c5db469ac497cd1f855e48c6d79c6079d593293db4648"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "details/cloth_leather",
+      "path": "elf_galadhrim/details/cloth_leather.png",
+      "sha256": "6fe603f87f0d07e34d369822c713450b92d5d7f5e2855b3711cfd97a9895c0c8"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "details/weapon_metal",
+      "path": "elf_galadhrim/details/weapon_metal.png",
+      "sha256": "fcd331cd31b0c7761e748c8b86c7d1688a120d31885cefc1275562cd7de93c20"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "face_views/side",
+      "path": "elf_galadhrim/face_views/side.png",
+      "sha256": "0e8f6db5cf4b1ca36d4f4ecc28b64bfe530fe0b2ac9a3282bf5f87d17ee6f2a5"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "details/skin",
+      "path": "elf_galadhrim/details/skin.png",
+      "sha256": "cffbffa55b5916f1a34d9baebe87c6bb198c85194f7f8ad8f16ca72402135368"
+    },
+    {
+      "id": "elf_galadhrim",
+      "key": "details/hair",
+      "path": "elf_galadhrim/details/hair.png",
+      "sha256": "e3907b28cc02465306bba4dd9f777584c960081bf87ca9cd5dabf358f3e8076b"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "views/front",
+      "path": "elf_mirkwood/views/front.png",
+      "sha256": "ba163053d5329d0d6d0510010f01dad529da5fd019a5d1a7185db29322a5ff4a"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "views/three_quarter",
+      "path": "elf_mirkwood/views/three_quarter.png",
+      "sha256": "439ab2a9f2c186483674fc91525ffd9b4a281712958187cfb2a77833ba45fb91"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "views/side",
+      "path": "elf_mirkwood/views/side.png",
+      "sha256": "f20b8b7f1aea3f486b39c1eefb0b2dc656353c05a7140a413c8cb1ad8befbbad"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "views/back",
+      "path": "elf_mirkwood/views/back.png",
+      "sha256": "6308c37d64553dd17d51e3d595a2899a19ae6e883a20702537a7d6d84f36a68b"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "face_views/front",
+      "path": "elf_mirkwood/face_views/front.png",
+      "sha256": "bd50938f0a5553fdee465924bbc6f557b1ae5681b46c3f8950aee9f75ca9c2e9"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "face_views/three_quarter",
+      "path": "elf_mirkwood/face_views/three_quarter.png",
+      "sha256": "ef25a1cd4ee9d87399c392a13c24aea75808a32e334bc838efb47cdb75562c51"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "face_views/side",
+      "path": "elf_mirkwood/face_views/side.png",
+      "sha256": "3a313ed2160ce765a1b2635608e960c28d8b64ef716f13f00631daac073ad84d"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "details/cloth_leather",
+      "path": "elf_mirkwood/details/cloth_leather.png",
+      "sha256": "9f5223d432491ccffb49205e838f2c023b21c829e87052f5562e11086bf7e600"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "details/skin",
+      "path": "elf_mirkwood/details/skin.png",
+      "sha256": "8d36fdbd22e6b8688e85132326038943ca876eae63e1568119b8cbcef1e7e72e"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "details/hair",
+      "path": "elf_mirkwood/details/hair.png",
+      "sha256": "bc4a1cddd84314912deb99bbb5bd44ae832b3c3b5134b24924968cf831dafe77"
+    },
+    {
+      "id": "elf_mirkwood",
+      "key": "details/weapon_metal",
+      "path": "elf_mirkwood/details/weapon_metal.png",
+      "sha256": "d731354c6505cf82672f4246cc7423d784c4545dd3b8ef275193c1485c37e6f2"
+    },
+    {
+      "id": "fell_beast",
+      "key": "views/side",
+      "path": "fell_beast/views/side.png",
+      "sha256": "3806e25e411fed38b808aa6eb6acade9275785aeaadcb08c9490128233fe7411"
+    },
+    {
+      "id": "fell_beast",
+      "key": "views/front",
+      "path": "fell_beast/views/front.png",
+      "sha256": "67d4c23c590259a31a03c125669feed5b7c54f9256f6ff4f7ed2a75a87042e54"
+    },
+    {
+      "id": "fell_beast",
+      "key": "views/top",
+      "path": "fell_beast/views/top.png",
+      "sha256": "ccedc4a72c6ed0985c4370aba9a1c505489759cf80bfcc3bc5a7500b8d56cfca"
+    },
+    {
+      "id": "fell_beast",
+      "key": "views/three_quarter",
+      "path": "fell_beast/views/three_quarter.png",
+      "sha256": "fe5165101311b608235fee4023f91976ce8af68771d637850756f783a3379c91"
+    },
+    {
+      "id": "goblin",
+      "key": "views/front",
+      "path": "goblin/views/front.png",
+      "sha256": "79b7174b580355e67fcb980d0ae677ade15997b16cade1fd4efa799b0fbfe04a"
+    },
+    {
+      "id": "goblin",
+      "key": "views/three_quarter",
+      "path": "goblin/views/three_quarter.png",
+      "sha256": "984039b30b59c81e99e9380aa68e2bc8819fb05fef68bfef6de76f31b9bbd0fb"
+    },
+    {
+      "id": "goblin",
+      "key": "views/side",
+      "path": "goblin/views/side.png",
+      "sha256": "76f7f980c0027f83bf629a73a52630d5928885c51b6d26a122718ee5d3d370bf"
+    },
+    {
+      "id": "goblin",
+      "key": "views/back",
+      "path": "goblin/views/back.png",
+      "sha256": "d4ab41ab60b94f66b4bc3ce530f4e84d787f4bd5366dbd77275dae5cdc1faaae"
+    },
+    {
+      "id": "goblin",
+      "key": "face_views/front",
+      "path": "goblin/face_views/front.png",
+      "sha256": "7cc8228d5525b373dfa608a396f4300add677c3476aed4eefc3e9656aaaaa237"
+    },
+    {
+      "id": "goblin",
+      "key": "face_views/three_quarter",
+      "path": "goblin/face_views/three_quarter.png",
+      "sha256": "389ecdc88b6caedf4f35f6c38c0d7916afa72d2057834331e78231e476a164e4"
+    },
+    {
+      "id": "goblin",
+      "key": "face_views/side",
+      "path": "goblin/face_views/side.png",
+      "sha256": "9cc823bbb627255f29fad7bc3080682d241ed6bb5dd8e1da06b37ec6189eeb48"
+    },
+    {
+      "id": "goblin",
+      "key": "details/cloth_leather",
+      "path": "goblin/details/cloth_leather.png",
+      "sha256": "f0819525abc6354e883f6087b570f0ed0a591bdb959b73dab6b763348be56e3d"
+    },
+    {
+      "id": "goblin",
+      "key": "details/weapon_metal",
+      "path": "goblin/details/weapon_metal.png",
+      "sha256": "6adf3a87bbc4f3a24ddad8cc5707f02cb55a78df350f6265a0f69cd0aa46adda"
+    },
+    {
+      "id": "goblin",
+      "key": "details/skin",
+      "path": "goblin/details/skin.png",
+      "sha256": "863716d748f5ad7fc97fd753241c66460652243df4206522cc58656b621aec85"
+    },
+    {
+      "id": "goblin",
+      "key": "details/hair",
+      "path": "goblin/details/hair.png",
+      "sha256": "8ed10cad8f6071de9968b377b0a468ba04ffa99f2ba9134d83603a4fc5765679"
+    },
+    {
+      "id": "gondor",
+      "key": "views/front",
+      "path": "gondor/views/front.png",
+      "sha256": "4a47d1531f501560569ebf28e1cc5496bdb8f2657836e32260d51b669cf4950e"
+    },
+    {
+      "id": "gondor",
+      "key": "views/three_quarter",
+      "path": "gondor/views/three_quarter.png",
+      "sha256": "139870c5da428a5105d1b935ede264eae8b81a9dc98a75bcace3d1e1faee8e23"
+    },
+    {
+      "id": "gondor",
+      "key": "views/side",
+      "path": "gondor/views/side.png",
+      "sha256": "8f775a7d92e8295345c45b7d2030fd6cdf351e23840027a58dcf9fbf99179002"
+    },
+    {
+      "id": "gondor",
+      "key": "views/back",
+      "path": "gondor/views/back.png",
+      "sha256": "2a118527fe6caec713f195487b0242e223694ffa3e26bbca5ea2098e06490e29"
+    },
+    {
+      "id": "gondor",
+      "key": "face_views/front",
+      "path": "gondor/face_views/front.png",
+      "sha256": "c13ed9a18d92eb3c9ae61723157922993a84fd075c75c451de46ba3702fc053a"
+    },
+    {
+      "id": "gondor",
+      "key": "face_views/three_quarter",
+      "path": "gondor/face_views/three_quarter.png",
+      "sha256": "4eaa520b72fdf3a92a6c43fde13053473b0c9031c0638690871d8eb471c8ae54"
+    },
+    {
+      "id": "gondor",
+      "key": "face_views/side",
+      "path": "gondor/face_views/side.png",
+      "sha256": "8061ddf9f37835a9ba18c845f3350c8b86753585a67e979a3380691a0f366bfe"
+    },
+    {
+      "id": "gondor",
+      "key": "details/cloth_leather",
+      "path": "gondor/details/cloth_leather.png",
+      "sha256": "8288f8c42d205e2828c424b54847b349235328508cc1ab945bcef7b563925a9f"
+    },
+    {
+      "id": "gondor",
+      "key": "details/weapon_metal",
+      "path": "gondor/details/weapon_metal.png",
+      "sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960"
+    },
+    {
+      "id": "gondor",
+      "key": "details/skin",
+      "path": "gondor/details/skin.png",
+      "sha256": "aa26eda58f45ab1d07317cbf38ccac02cf84810bf4797484545759014534d305"
+    },
+    {
+      "id": "gondor",
+      "key": "details/hair",
+      "path": "gondor/details/hair.png",
+      "sha256": "2926fbbc9d634cfaf9e3ef6e229d70664a9344eaa53b45ca70323118ee62e0e6"
+    },
+    {
+      "id": "great_eagle",
+      "key": "views/side",
+      "path": "great_eagle/views/side.png",
+      "sha256": "02867c9d47e95da6d87b0647bb9f4a8a368fea40adef7f63af3e3d72bc6b32d7"
+    },
+    {
+      "id": "great_eagle",
+      "key": "views/front",
+      "path": "great_eagle/views/front.png",
+      "sha256": "6ea4fbc5f8cf822a0f4a26ce80ffd5c04033270e861f1d2d1405ad763db0a532"
+    },
+    {
+      "id": "great_eagle",
+      "key": "views/top",
+      "path": "great_eagle/views/top.png",
+      "sha256": "0ec7aa3ec5a54d87d333f8b67f6996264c182da6540f849cb75b456214311b48"
+    },
+    {
+      "id": "great_eagle",
+      "key": "views/three_quarter",
+      "path": "great_eagle/views/three_quarter.png",
+      "sha256": "3285241114f42f0dc3ec22ce61de84ec2ba03c84e17a78ddce7b06e880e76c48"
+    },
+    {
+      "id": "gundabad",
+      "key": "views/front",
+      "path": "gundabad/views/front.png",
+      "sha256": "4053b6d7e7331af5e2696560bc3bd7963337be8f910d4f37b9966959ad141dc5"
+    },
+    {
+      "id": "gundabad",
+      "key": "views/three_quarter",
+      "path": "gundabad/views/three_quarter.png",
+      "sha256": "c1f8edd6494f2337e7dc171b201a52a187d08b145b9760225a497fb1d696fb5c"
+    },
+    {
+      "id": "gundabad",
+      "key": "views/side",
+      "path": "gundabad/views/side.png",
+      "sha256": "cf84d3e0a20391788a29d71ac326e0f9c7672975140c8d6c388ec538063b4b09"
+    },
+    {
+      "id": "gundabad",
+      "key": "views/back",
+      "path": "gundabad/views/back.png",
+      "sha256": "0909d32c80ae9b249652f210eabae9de284c36a71ceef6173307718a433b87f8"
+    },
+    {
+      "id": "gundabad",
+      "key": "face_views/front",
+      "path": "gundabad/face_views/front.png",
+      "sha256": "67daaa5d15911e97a923ad34cc7dc5b0a611d89d9d695771334b303884adb542"
+    },
+    {
+      "id": "gundabad",
+      "key": "face_views/three_quarter",
+      "path": "gundabad/face_views/three_quarter.png",
+      "sha256": "eb80c48bc87b47840218716f75bf31506913484ba85405f8a434271dfa6b75ee"
+    },
+    {
+      "id": "gundabad",
+      "key": "face_views/side",
+      "path": "gundabad/face_views/side.png",
+      "sha256": "41e16b25a99bcd6b3b0848175fed153cc1245fe4b45ceb3eaa45187a70b0f9db"
+    },
+    {
+      "id": "gundabad",
+      "key": "details/cloth_leather",
+      "path": "gundabad/details/cloth_leather.png",
+      "sha256": "5573affb254d0ad7139b542f978b5d6f2ab358a1224af1b2b3657240a4bc2a0c"
+    },
+    {
+      "id": "gundabad",
+      "key": "details/weapon_metal",
+      "path": "gundabad/details/weapon_metal.png",
+      "sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64"
+    },
+    {
+      "id": "gundabad",
+      "key": "details/skin",
+      "path": "gundabad/details/skin.png",
+      "sha256": "ea6acf4360621ac1585b99f427e76803195518996c622afec1e9dc124d342688"
+    },
+    {
+      "id": "gundabad",
+      "key": "details/hair",
+      "path": "gundabad/details/hair.png",
+      "sha256": "f9f47ffd6262a0302608506f4e3b0d81ce46819c3362e31ba22fbbbdf68f8ef7"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "views/side",
+      "path": "gundabad_bat/views/side.png",
+      "sha256": "d94c82fbfbc71e9616cd186638468ddefcc8d9d8593a7bb9d181cc60346c0453"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "views/front",
+      "path": "gundabad_bat/views/front.png",
+      "sha256": "ee2bdd552187f0b1aeeb3e7cc9b71065607c1a302f82dd1ced43218cebc39717"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "views/top",
+      "path": "gundabad_bat/views/top.png",
+      "sha256": "fe7157556822db941032c58e8e75f0e2759579c5748d51785976193c8afd28eb"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "views/three_quarter",
+      "path": "gundabad_bat/views/three_quarter.png",
+      "sha256": "f30c6d69b8914a357f3850c5d8628d32fda2f45fe82897129730d6b01d9a5098"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "views/folded",
+      "path": "gundabad_bat/views/folded.png",
+      "sha256": "c8ec65ef3cb05fccf00cab2b9c6713bd215cddb656b3e14bc23d672ca4395e03"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "face_views/front",
+      "path": "gundabad_bat/face_views/front.png",
+      "sha256": "077ad0a478f8895c4d25b13d1ec0374c22766d0af48a6aabdfeb48277299f047"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "face_views/three_quarter",
+      "path": "gundabad_bat/face_views/three_quarter.png",
+      "sha256": "d830a343614aa8ecb541100b6816d53f67e3f78f0109b76227a069a19fa234e7"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "face_views/side",
+      "path": "gundabad_bat/face_views/side.png",
+      "sha256": "8759f4b424829d89873fc43a8f88e7e4243e877307f569d03e5158759de93330"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "details/cloth_leather",
+      "path": "gundabad_bat/details/cloth_leather.png",
+      "sha256": "89caf4df4c6a1ebd94894973b562c830c9d5df2a67494f89846cca8a6d50782d"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "details/weapon_metal",
+      "path": "gundabad_bat/details/weapon_metal.png",
+      "sha256": "f8a15c3d69e32626ce9ed38867e94cedc1d86df152721690a1ffa5a74e6fae1d"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "details/skin",
+      "path": "gundabad_bat/details/skin.png",
+      "sha256": "df8a8975692dd1abb1bd92480258861d97653151a4ed73c1d6cdb7dfa334ae76"
+    },
+    {
+      "id": "gundabad_bat",
+      "key": "details/hair",
+      "path": "gundabad_bat/details/hair.png",
+      "sha256": "39f9fdd61cb57c5e13607c843ca5cb2128078867f318bb5c02cfc4d06c636cd4"
+    },
+    {
+      "id": "haradrim",
+      "key": "views/front",
+      "path": "haradrim/views/front.png",
+      "sha256": "8310ef41f794c2200d0f566bb4aac60141cef53369ada6a3f6b83e9584d1987f"
+    },
+    {
+      "id": "haradrim",
+      "key": "views/three_quarter",
+      "path": "haradrim/views/three_quarter.png",
+      "sha256": "d7ab1ae6f781ef4d4fc020ac4fb29f3e0fd87e61ecd04504f93ea1c1d3b45fbc"
+    },
+    {
+      "id": "haradrim",
+      "key": "views/side",
+      "path": "haradrim/views/side.png",
+      "sha256": "99873a00ae2ec436e35f6d1f65e2754e88b7776d52e410a90e11ff259998b422"
+    },
+    {
+      "id": "haradrim",
+      "key": "views/back",
+      "path": "haradrim/views/back.png",
+      "sha256": "3c359796448a464d645cfaeaa14d4eb225a18610cfa0bf58b74f92822209163b"
+    },
+    {
+      "id": "haradrim",
+      "key": "face_views/front",
+      "path": "haradrim/face_views/front.png",
+      "sha256": "ef3ee7a072a293b6b71df5fec0cc57ea88c1b4c16619ca525feafd91bfd65e93"
+    },
+    {
+      "id": "haradrim",
+      "key": "face_views/three_quarter",
+      "path": "haradrim/face_views/three_quarter.png",
+      "sha256": "c5203ff5ab418218f05e8b1ed04885173cf42a1cab97bdb60de431ad1c5e7e41"
+    },
+    {
+      "id": "haradrim",
+      "key": "face_views/side",
+      "path": "haradrim/face_views/side.png",
+      "sha256": "77bf431b5472b35db3c5ae27b302e9536d050fab930475435aa850dfa683c7d1"
+    },
+    {
+      "id": "haradrim",
+      "key": "details/cloth_leather",
+      "path": "haradrim/details/cloth_leather.png",
+      "sha256": "fcb4cc27954f7196cf57620a047b0e231a205e7330c1a36e4737cab67a7d18d7"
+    },
+    {
+      "id": "haradrim",
+      "key": "details/weapon_metal",
+      "path": "haradrim/details/weapon_metal.png",
+      "sha256": "61ad50113c897be3275a0296c411371bbbb6d7ec9583fb0da4f4ee1d3e5d7010"
+    },
+    {
+      "id": "haradrim",
+      "key": "details/skin",
+      "path": "haradrim/details/skin.png",
+      "sha256": "835a9d1e4aa47f9e06b9da651677b65f1c38ac3e51ec2a7a1e2db91e9c13879d"
+    },
+    {
+      "id": "haradrim",
+      "key": "details/hair",
+      "path": "haradrim/details/hair.png",
+      "sha256": "10bb2244a03fd573de9b7bfc02eb3edb47b23bf94806c358b4bb374e5ca27d14"
+    },
+    {
+      "id": "laketown_man",
+      "key": "views/front",
+      "path": "laketown_man/views/front.png",
+      "sha256": "d4a3debc9e2753dd34122bec1833ff58a88a3ec1158391ac49a72e26ace915ee"
+    },
+    {
+      "id": "laketown_man",
+      "key": "views/three_quarter",
+      "path": "laketown_man/views/three_quarter.png",
+      "sha256": "5d9c9c8958d72cc46dda77e98e010771cc118f3d113e9d4975c479b346013441"
+    },
+    {
+      "id": "laketown_man",
+      "key": "views/side",
+      "path": "laketown_man/views/side.png",
+      "sha256": "42c1b8515787a426860fc6f71351cc8d026e3e16cb3058c25ac77ce31afc4325"
+    },
+    {
+      "id": "laketown_man",
+      "key": "views/back",
+      "path": "laketown_man/views/back.png",
+      "sha256": "a0c82656b86f394152da72a629f44e8061d82cdc7cae6975e32b6bcd00e9fbf1"
+    },
+    {
+      "id": "laketown_man",
+      "key": "face_views/front",
+      "path": "laketown_man/face_views/front.png",
+      "sha256": "dda1f276541d86c3110646e0f2dda20e0d43bf5dec847c5899c67aef8d1fc3cc"
+    },
+    {
+      "id": "laketown_man",
+      "key": "face_views/three_quarter",
+      "path": "laketown_man/face_views/three_quarter.png",
+      "sha256": "8c9adce818d8c320ce5389bb5eb5e899a66a6b04392d6b0a8b1a21e5306e2265"
+    },
+    {
+      "id": "laketown_man",
+      "key": "face_views/side",
+      "path": "laketown_man/face_views/side.png",
+      "sha256": "f46e58455ae5fa9dfe37d6b005289f6564c1db5e445fc21a08361c56b9d9e378"
+    },
+    {
+      "id": "laketown_man",
+      "key": "details/cloth_leather",
+      "path": "laketown_man/details/cloth_leather.png",
+      "sha256": "5aea7b90a4cd011937104a48cb6917f69b7392b72888da158526ae9e0fb10179"
+    },
+    {
+      "id": "laketown_man",
+      "key": "details/weapon_metal",
+      "path": "laketown_man/details/weapon_metal.png",
+      "sha256": "7adb3370e67481ff926783416c2431205f387f65d5c83c3b8a4eec7cbc5a9738"
+    },
+    {
+      "id": "laketown_man",
+      "key": "details/skin",
+      "path": "laketown_man/details/skin.png",
+      "sha256": "5991a672a796b69610ef336d2950fff62967b486eaeecaca617d30f674feeb18"
+    },
+    {
+      "id": "laketown_man",
+      "key": "details/hair",
+      "path": "laketown_man/details/hair.png",
+      "sha256": "ad63e5692b38a50949aa966c81bf1ec60ba1432cb992623d78180046bd6b02a9"
+    },
+    {
+      "id": "lurtz",
+      "key": "views/front",
+      "path": "lurtz/views/front.png",
+      "sha256": "bf2b871b6f4a16f864909244d36f7072d7a61140b30bc62357e18db4db2ba2e0"
+    },
+    {
+      "id": "lurtz",
+      "key": "views/three_quarter",
+      "path": "lurtz/views/three_quarter.png",
+      "sha256": "3490e8fc5653180b9893ca74af2e8e78781323a41a5e9832e3df73eeb28c5388"
+    },
+    {
+      "id": "lurtz",
+      "key": "views/side",
+      "path": "lurtz/views/side.png",
+      "sha256": "7c85376aba4817cc7b30530cfba737408989efc59d50f3c39138fca1b734833e"
+    },
+    {
+      "id": "lurtz",
+      "key": "views/back",
+      "path": "lurtz/views/back.png",
+      "sha256": "f9062f34168ecb612a3818bf7d4732dbc3d07e499e93c198d45b653c0ccbd6f6"
+    },
+    {
+      "id": "lurtz",
+      "key": "face_views/front",
+      "path": "lurtz/face_views/front.png",
+      "sha256": "1114a49df73d804c721f177faf1caf1b8d88190d1e2a5f88a7935bbf80d0f28f"
+    },
+    {
+      "id": "lurtz",
+      "key": "face_views/three_quarter",
+      "path": "lurtz/face_views/three_quarter.png",
+      "sha256": "d7e743daea021e11a88ab18aa843332a954222ff5f6c55225a27e024ced46ee3"
+    },
+    {
+      "id": "lurtz",
+      "key": "face_views/side",
+      "path": "lurtz/face_views/side.png",
+      "sha256": "b47b82b036ed86e6f64efa8f4b59929bf2e1b99f2c82ee278735512873fbf3a1"
+    },
+    {
+      "id": "lurtz",
+      "key": "details/cloth_leather",
+      "path": "lurtz/details/cloth_leather.png",
+      "sha256": "15826cbb837a38e3ddc594feb591064b667104911a3a3824650f75725d9749fe"
+    },
+    {
+      "id": "lurtz",
+      "key": "details/weapon_metal",
+      "path": "lurtz/details/weapon_metal.png",
+      "sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13"
+    },
+    {
+      "id": "lurtz",
+      "key": "details/skin",
+      "path": "lurtz/details/skin.png",
+      "sha256": "44f16e154459af91c3c4fefbd45b651cc65d835ce5c92e3f45ee1de6592ec963"
+    },
+    {
+      "id": "lurtz",
+      "key": "details/hair",
+      "path": "lurtz/details/hair.png",
+      "sha256": "28735635f66ed694f0bfff03e90010aac0ccb58ddb2c385dd621afaf2c742299"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "views/side",
+      "path": "mirkwood_spider/views/side.png",
+      "sha256": "8974c4d3f4a30bf381f5e6ba265502ce9a523783d61acc7a490ba7615d4e2e49"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "views/front",
+      "path": "mirkwood_spider/views/front.png",
+      "sha256": "2834974683f7730f7a0652ba99b6c5a0f56538b62b1f5bb98cb80e242249ed2a"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "views/top",
+      "path": "mirkwood_spider/views/top.png",
+      "sha256": "024396c4523e5de861d486c9b1e61a045d95b0faf730660eac20c71784e6331d"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "views/three_quarter",
+      "path": "mirkwood_spider/views/three_quarter.png",
+      "sha256": "1def49e02b230a0ccc60d5416e91273f8bbec4e1185b2e6497c1f27404256a56"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "face_views/front",
+      "path": "mirkwood_spider/face_views/front.png",
+      "sha256": "f0810b53c185dff8eb7a7471d590daa8465daba5520c8f938a5cdb85f75afb35"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "face_views/three_quarter",
+      "path": "mirkwood_spider/face_views/three_quarter.png",
+      "sha256": "f07daf9ece22ad48ea780cec7452e27e38a21c9de0b581a2436be6353a2de753"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "face_views/side",
+      "path": "mirkwood_spider/face_views/side.png",
+      "sha256": "d1ba28289fb53a6347b406a8c7f32e9ba69be0fcb2f4e7ea2d34e88edd052d69"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "details/cloth_leather",
+      "path": "mirkwood_spider/details/cloth_leather.png",
+      "sha256": "2a7596d18e0fa2eb453c97931314f44100685c65f3139191bcab64d804e446f9"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "details/weapon_metal",
+      "path": "mirkwood_spider/details/weapon_metal.png",
+      "sha256": "5abf57e0756707ce264572f80febb5bef4472b40a5f0f5d2a6949ba24cfa6c1e"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "details/skin",
+      "path": "mirkwood_spider/details/skin.png",
+      "sha256": "5c9aee6991d952e8927b9214f6c4d0bf1b62beda83da3ef2cb5477dcbf370b9d"
+    },
+    {
+      "id": "mirkwood_spider",
+      "key": "details/hair",
+      "path": "mirkwood_spider/details/hair.png",
+      "sha256": "3061552a56c893af92621f23abdcd0258a2a6b1cf75d2a39cc83369f175394dc"
+    },
+    {
+      "id": "mumak",
+      "key": "views/side",
+      "path": "mumak/views/side.png",
+      "sha256": "8b5ee4289d00770ff29659529e2870fd868a7c05fd1fb7d3989e6214167d88a8"
+    },
+    {
+      "id": "mumak",
+      "key": "views/front",
+      "path": "mumak/views/front.png",
+      "sha256": "18cddce19671f93c9131dbbb821e46103f5caa9d573e0839701928632b6428f8"
+    },
+    {
+      "id": "mumak",
+      "key": "views/top",
+      "path": "mumak/views/top.png",
+      "sha256": "da415d09ae80814e8a347ebfe94d3af43b8ac4775f232a4db4f547633cf69bfc"
+    },
+    {
+      "id": "mumak",
+      "key": "views/three_quarter",
+      "path": "mumak/views/three_quarter.png",
+      "sha256": "687db62bd57c054edfe958e02cb62fec4f58be86951261bb6af13c4c4d4061f0"
+    },
+    {
+      "id": "mumak",
+      "key": "face_views/front",
+      "path": "mumak/face_views/front.png",
+      "sha256": "35ed0b5f93ebf0796d3439a9b899b7782e61c9f1dcc315748baeaa5c39f640c5"
+    },
+    {
+      "id": "mumak",
+      "key": "face_views/three_quarter",
+      "path": "mumak/face_views/three_quarter.png",
+      "sha256": "70b7fbafdb1821ef7681c7a97dfe0fd353875cb9fd92a9c72bffcd20105904c2"
+    },
+    {
+      "id": "mumak",
+      "key": "face_views/side",
+      "path": "mumak/face_views/side.png",
+      "sha256": "b6af4f86356466f2c345f637574a9751c8ef85d884ecead8bf0ddf28c6a67eaa"
+    },
+    {
+      "id": "mumak",
+      "key": "details/cloth_leather",
+      "path": "mumak/details/cloth_leather.png",
+      "sha256": "4344f26985dadba0790fbf2f604b6dec1bb6451799eb3af9f56f4192b2282102"
+    },
+    {
+      "id": "mumak",
+      "key": "details/weapon_metal",
+      "path": "mumak/details/weapon_metal.png",
+      "sha256": "85f0e69758f65b2f88f74e027540ed05ad90e69181f3f3c50769e4ea89e0c478"
+    },
+    {
+      "id": "mumak",
+      "key": "details/skin",
+      "path": "mumak/details/skin.png",
+      "sha256": "022c2880e2815c41aefb96dbab9861f851678deb504508f45ca52d4f0473b0a5"
+    },
+    {
+      "id": "mumak",
+      "key": "details/hair",
+      "path": "mumak/details/hair.png",
+      "sha256": "e4e0df12dc94a41e29facafd1bc028439981ea9185447a1aa5f1f5224b9c95da"
+    },
+    {
+      "id": "orc",
+      "key": "views/front",
+      "path": "orc/views/front.png",
+      "sha256": "5351578963fabc30849860f315926c1d5b6135ad13521dd1abb92660c6aab10b"
+    },
+    {
+      "id": "orc",
+      "key": "views/three_quarter",
+      "path": "orc/views/three_quarter.png",
+      "sha256": "8ee2eeb28844a3430811e9fbe606b40557c50f139f2c985554b674b55bba1c99"
+    },
+    {
+      "id": "orc",
+      "key": "views/side",
+      "path": "orc/views/side.png",
+      "sha256": "e90eb95bd0ce01d05aa2bc9df07aabddbcf40391544c75e8dad0dc2ba4da415d"
+    },
+    {
+      "id": "orc",
+      "key": "views/back",
+      "path": "orc/views/back.png",
+      "sha256": "c52a3742a754ec666456d00c6a2549be706885ef006b94a8519c9acaa4cbb29c"
+    },
+    {
+      "id": "orc",
+      "key": "face_views/front",
+      "path": "orc/face_views/front.png",
+      "sha256": "fd114ec380b8f208897c5b664195cfa95fb179e94ae9eb64c06422b18051f71b"
+    },
+    {
+      "id": "orc",
+      "key": "face_views/three_quarter",
+      "path": "orc/face_views/three_quarter.png",
+      "sha256": "9a08d65f6f57522d1430b545fd888c02fa37308bb4a139bcbf7e5b406a5a16c0"
+    },
+    {
+      "id": "orc",
+      "key": "face_views/side",
+      "path": "orc/face_views/side.png",
+      "sha256": "777fd98fcd38a16c0446d731372dfef1f6c3e6817a7e663a2c33584c21b0d3f6"
+    },
+    {
+      "id": "orc",
+      "key": "details/cloth_leather",
+      "path": "orc/details/cloth_leather.png",
+      "sha256": "3fd15cd51bfd02d020989d59e325dc5e2861ea49997ef09bdcc5d45df43ac894"
+    },
+    {
+      "id": "orc",
+      "key": "details/weapon_metal",
+      "path": "orc/details/weapon_metal.png",
+      "sha256": "4a756ef1fce58c281b130dd36ce7a6ff6cd2428914e0b26778ae02a64a905b04"
+    },
+    {
+      "id": "orc",
+      "key": "details/skin",
+      "path": "orc/details/skin.png",
+      "sha256": "8d440db3be5b20d7eaac49e9454ab731668eaa39d09b6be80582e5614b667a5d"
+    },
+    {
+      "id": "orc",
+      "key": "details/hair",
+      "path": "orc/details/hair.png",
+      "sha256": "4a6c3a4ffb3efc3e7a9d347eea53cce9401f19f91c17a222fc24d4480f38dc54"
+    },
+    {
+      "id": "orc_variants",
+      "key": "wiry",
+      "path": "orc_variants/views/wiry.png",
+      "sha256": "c7f0c5c92fa98e22fdd58f77f711946fe1f9060fc993070db46b866716382cfa"
+    },
+    {
+      "id": "orc_variants",
+      "key": "brown",
+      "path": "orc_variants/views/brown.png",
+      "sha256": "90a3bb82572ff2f3e2c7edc822452f9ca1c647215d43ab480baa6348f09ae1b1"
+    },
+    {
+      "id": "orc_variants",
+      "key": "scarred",
+      "path": "orc_variants/views/scarred.png",
+      "sha256": "c148d387123cc99aeee3c9197913ce1d094bdd8574655da459c935fb09815293"
+    },
+    {
+      "id": "orc_variants",
+      "key": "matted",
+      "path": "orc_variants/views/matted.png",
+      "sha256": "8ce488a4b34245ca53dc25e089fd070aa2d3adb1c86d54ac4061a8565791980f"
+    },
+    {
+      "id": "rohirrim",
+      "key": "views/front",
+      "path": "rohirrim/views/front.png",
+      "sha256": "3ce675365d727a56432fed4a6ea4b48462e75ed1cdaf015c3c0870ba6119cc84"
+    },
+    {
+      "id": "rohirrim",
+      "key": "views/three_quarter",
+      "path": "rohirrim/views/three_quarter.png",
+      "sha256": "b4892162a7fcbf9233af427abaae56ca94be499646652e6ab34d3d4321dd5c6e"
+    },
+    {
+      "id": "rohirrim",
+      "key": "views/side",
+      "path": "rohirrim/views/side.png",
+      "sha256": "85bd89d9e6b290141f24001eaa32d07074a56d8ff46e5d7c499935fac369059f"
+    },
+    {
+      "id": "rohirrim",
+      "key": "views/back",
+      "path": "rohirrim/views/back.png",
+      "sha256": "d291844fb500484e11ab5ee29b817b6c81578735364f9718e9cd117ef878199a"
+    },
+    {
+      "id": "rohirrim",
+      "key": "face_views/front",
+      "path": "rohirrim/face_views/front.png",
+      "sha256": "5ca5ee7d72a9b1999be00c8c9ad4eb19d1fc15b85f94763f29589ed42ef9c015"
+    },
+    {
+      "id": "rohirrim",
+      "key": "face_views/three_quarter",
+      "path": "rohirrim/face_views/three_quarter.png",
+      "sha256": "f7bf17b8d51fdecedd49f735d81816b182a6ae1529f54439bb98c0f1614bd10a"
+    },
+    {
+      "id": "rohirrim",
+      "key": "face_views/side",
+      "path": "rohirrim/face_views/side.png",
+      "sha256": "8eaff900c6586d9d23473c4c2e1ae9492434d14c63e5c166350df6f2eed8594d"
+    },
+    {
+      "id": "rohirrim",
+      "key": "details/cloth_leather",
+      "path": "rohirrim/details/cloth_leather.png",
+      "sha256": "836feb65ac27f3ac9722ae79bdc520ab1ec9c1a8cb6a010fbdad5fc10304d60b"
+    },
+    {
+      "id": "rohirrim",
+      "key": "details/weapon_metal",
+      "path": "rohirrim/details/weapon_metal.png",
+      "sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df"
+    },
+    {
+      "id": "rohirrim",
+      "key": "details/skin",
+      "path": "rohirrim/details/skin.png",
+      "sha256": "17da5e48ddc2594ebdb7d18430970d2e4c6416711b7db4e61af2dc8cb921a03d"
+    },
+    {
+      "id": "rohirrim",
+      "key": "details/hair",
+      "path": "rohirrim/details/hair.png",
+      "sha256": "e6b379d6a073c14bba200f3b0bab7a2e50404090a3be0da680caa0ff288cb5f9"
+    },
+    {
+      "id": "thranduil",
+      "key": "views/front",
+      "path": "thranduil/views/front.png",
+      "sha256": "b14eefedcd744fa33dda7142d454c247bdfccb80ab19d2b556dc3f54377170e5"
+    },
+    {
+      "id": "thranduil",
+      "key": "views/three_quarter",
+      "path": "thranduil/views/three_quarter.png",
+      "sha256": "cda1f2ed193a41a008eea8d72bcdb9b06efe87f1a9461ae1362848a7337ea9d4"
+    },
+    {
+      "id": "thranduil",
+      "key": "views/side",
+      "path": "thranduil/views/side.png",
+      "sha256": "761e6a21b84a8754ee14cfbadef41d3e068a6c8f87d6a1f9356e469c2fa5ba8d"
+    },
+    {
+      "id": "thranduil",
+      "key": "views/back",
+      "path": "thranduil/views/back.png",
+      "sha256": "eb984f8715bc7ad41da0021c9c3bff238de54693650b7213d5c9f98d39ed70a7"
+    },
+    {
+      "id": "thranduil",
+      "key": "face_views/front",
+      "path": "thranduil/face_views/front.png",
+      "sha256": "489545c3d0a7c27a4c0b1e4627634a8da6d87f2d58514f26dc2e5a3917888305"
+    },
+    {
+      "id": "thranduil",
+      "key": "face_views/three_quarter",
+      "path": "thranduil/face_views/three_quarter.png",
+      "sha256": "2da823ff4cd5f57789b5429f950ad592b9ae3895ec56a0f3f38e690ec1d8be0f"
+    },
+    {
+      "id": "thranduil",
+      "key": "face_views/side",
+      "path": "thranduil/face_views/side.png",
+      "sha256": "c85e6037ed91e7ea5b78f7e07bad259b8eff24dd23a46ba40f89d85180d590e9"
+    },
+    {
+      "id": "thranduil",
+      "key": "details/cloth_leather",
+      "path": "thranduil/details/cloth_leather.png",
+      "sha256": "c18d82ca9766347d10afad2d77d1d09c0e27de683e1743e9fbe29ecad39073aa"
+    },
+    {
+      "id": "thranduil",
+      "key": "details/skin",
+      "path": "thranduil/details/skin.png",
+      "sha256": "f7c304a119389b421a7471af81be16e3312fefc2cc36dff8752df9ea200606f3"
+    },
+    {
+      "id": "thranduil",
+      "key": "details/hair",
+      "path": "thranduil/details/hair.png",
+      "sha256": "45429b7b2ac8fe05e1794aa15cea9ab7d0ec029c2c7cfcb3d8ce94190833919d"
+    },
+    {
+      "id": "uruk",
+      "key": "views/front",
+      "path": "uruk/views/front.png",
+      "sha256": "2ad8be22b4c586e8f363c0ac590d61a1df7b6d65bccb8374ac0b37473146b03d"
+    },
+    {
+      "id": "uruk",
+      "key": "views/three_quarter",
+      "path": "uruk/views/three_quarter.png",
+      "sha256": "f25298f2f065bc24c45ca88d4b8f5da5fd5956f191d8e2b5efe00252bfff7df6"
+    },
+    {
+      "id": "uruk",
+      "key": "views/side",
+      "path": "uruk/views/side.png",
+      "sha256": "b7203169969620afb9970b13f8b01e58833b3a0cda680de44fbfc6e0d775106e"
+    },
+    {
+      "id": "uruk",
+      "key": "views/back",
+      "path": "uruk/views/back.png",
+      "sha256": "053be45ed1cffa4c6424848d7e1c669694b27f19b4a9ae59579c0b1c923b3db9"
+    },
+    {
+      "id": "uruk",
+      "key": "face_views/front",
+      "path": "uruk/face_views/front.png",
+      "sha256": "4b020dcb3380368a0181dd31c33c9d61162ff1c245b237f88f3a8a6056882534"
+    },
+    {
+      "id": "uruk",
+      "key": "face_views/three_quarter",
+      "path": "uruk/face_views/three_quarter.png",
+      "sha256": "e6c0b0b570743da002c356a279cc23a37555ac618770ecfa70c72bcbf88156a4"
+    },
+    {
+      "id": "uruk",
+      "key": "face_views/side",
+      "path": "uruk/face_views/side.png",
+      "sha256": "9ca94af810d99125d50e403f914aa359810e2d58c19184c24e85825c9aa079ac"
+    },
+    {
+      "id": "uruk",
+      "key": "details/cloth_leather",
+      "path": "uruk/details/cloth_leather.png",
+      "sha256": "0a5fc9ce1d60d8d109f70c5114f383cff8b3e48f36adcbb88786f2036605f2c0"
+    },
+    {
+      "id": "uruk",
+      "key": "details/weapon_metal",
+      "path": "uruk/details/weapon_metal.png",
+      "sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452"
+    },
+    {
+      "id": "uruk",
+      "key": "details/skin",
+      "path": "uruk/details/skin.png",
+      "sha256": "8ae7fa215f227bca00908e12cd036bafcb6df68a1f8c2c1fcc7bd5ea108fdafe"
+    },
+    {
+      "id": "uruk",
+      "key": "details/hair",
+      "path": "uruk/details/hair.png",
+      "sha256": "ce52f5ff2b56a7d95ff5e41ce984dde21219732178688fe599e8ab20a6ee8b62"
+    },
+    {
+      "id": "war_troll",
+      "key": "views/front",
+      "path": "war_troll/views/front.png",
+      "sha256": "3e01860bba93e9d4fa96fc6c94c685c0aa9aa4c679e02a403af57e93c088dcc3"
+    },
+    {
+      "id": "war_troll",
+      "key": "views/three_quarter",
+      "path": "war_troll/views/three_quarter.png",
+      "sha256": "f775fd7bd593b0ff2ffec3193be039a269360d1b7cfb55bcd12e9f434c36bdc8"
+    },
+    {
+      "id": "war_troll",
+      "key": "views/side",
+      "path": "war_troll/views/side.png",
+      "sha256": "8f88402f6d921c4446bea02e5ffe7f98ffbd6ead1a633f04bad6fc979e15e2f3"
+    },
+    {
+      "id": "war_troll",
+      "key": "views/back",
+      "path": "war_troll/views/back.png",
+      "sha256": "49d8c5e8b134d5c224392c5b63b6a23fe8326e63957d8fa656440cfb0b5a769f"
+    },
+    {
+      "id": "war_troll",
+      "key": "face_views/front",
+      "path": "war_troll/face_views/front.png",
+      "sha256": "6864933fdb72c5620850b7b1797e1f5a0617df416ef4c7c32f6de895d452dea3"
+    },
+    {
+      "id": "war_troll",
+      "key": "face_views/three_quarter",
+      "path": "war_troll/face_views/three_quarter.png",
+      "sha256": "ef5cfe77447fd99551feaeebdef9d2ef10db271eacccf4f04b1b34880a2ec361"
+    },
+    {
+      "id": "war_troll",
+      "key": "face_views/side",
+      "path": "war_troll/face_views/side.png",
+      "sha256": "79bc609f7941854a9a21a7ea67cd62e41ef56e6270eb9d6e41e4ebd99932f549"
+    },
+    {
+      "id": "war_troll",
+      "key": "details/skin",
+      "path": "war_troll/details/skin.png",
+      "sha256": "7ed7ffc834e6a90fc405e1ef417dd1ab8d1309e4345f1b8fdfd928d48ff93176"
+    },
+    {
+      "id": "war_troll",
+      "key": "details/hair",
+      "path": "war_troll/details/hair.png",
+      "sha256": "8b0c4a03862c8fe8f0a956ee9d65319924c2434c56ae70c3ef28115f1bebffdf"
+    },
+    {
+      "id": "war_troll",
+      "key": "details/cloth_leather",
+      "path": "war_troll/details/cloth_leather.png",
+      "sha256": "7ca262725033888206f61f850393f61d8c48affad89f803dc5c4bff868fccbb5"
+    },
+    {
+      "id": "war_troll",
+      "key": "details/weapon_metal",
+      "path": "war_troll/details/weapon_metal.png",
+      "sha256": "7fa84e02a6372235e4c52a808a2def9a77e35d61a02d363060d61c98ddff2072"
+    },
+    {
+      "id": "weapons",
+      "key": "galadhrim_bow",
+      "path": "weapons/details/galadhrim_bow.png",
+      "sha256": "39a05cf89ab7aef65c5f6f5d5f764eb575702bbf8479765958ed4a34a1afb3d3"
+    },
+    {
+      "id": "weapons",
+      "key": "orc_cleaver",
+      "path": "weapons/details/orc_cleaver.png",
+      "sha256": "831f62258ea500a342c69f7601bbb7623e64ec8b21ef43d2e93de72e334e3f5f"
+    },
+    {
+      "id": "weapons",
+      "key": "war_hammer",
+      "path": "weapons/details/war_hammer.png",
+      "sha256": "f75b55ab84e9effdf418926f54c0baccb9369fe4ba356fe75a4eb91c59971811"
+    },
+    {
+      "id": "weapons",
+      "key": "uruk_shield",
+      "path": "weapons/details/uruk_shield.png",
+      "sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452"
+    },
+    {
+      "id": "weapons",
+      "key": "rohan_shield",
+      "path": "weapons/details/rohan_shield.png",
+      "sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df"
+    },
+    {
+      "id": "weapons",
+      "key": "gondor_shield",
+      "path": "weapons/details/gondor_shield.png",
+      "sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960"
+    },
+    {
+      "id": "weapons",
+      "key": "uruk_falchion",
+      "path": "weapons/details/uruk_falchion.png",
+      "sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13"
+    },
+    {
+      "id": "weapons",
+      "key": "bolg_mace",
+      "path": "weapons/details/bolg_mace.png",
+      "sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64"
+    },
+    {
+      "id": "weapons",
+      "key": "elven_knives",
+      "path": "weapons/details/elven_knives.png",
+      "sha256": "ddb8713bd5681413932205fa527dad60c4207becdfe08ba5ad0c246dc4ade59c"
+    },
+    {
+      "id": "weapons",
+      "key": "gimli_axe",
+      "path": "weapons/details/gimli_axe.png",
+      "sha256": "0b1b8b5ddbb36e2d9075bfe671a217c7e50a76b6956bb34f72bd00d7156207b5"
+    },
+    {
+      "id": "weapons",
+      "key": "orc_scimitar",
+      "path": "weapons/details/orc_scimitar.png",
+      "sha256": "75d9efeb54bf44c0c18f6e0af16a21ae19a91ada1ab5ef5d74642d5c25b42bf8"
+    },
+    {
+      "id": "weapons",
+      "key": "cave_troll_club",
+      "path": "weapons/details/cave_troll_club.png",
+      "sha256": "82a15511c943f1249cb08fbadb261be700855240fb5993ebd29165291c3149d1"
+    },
+    {
+      "id": "weapons",
+      "key": "pike",
+      "path": "weapons/details/pike.png",
+      "sha256": "46483b9949f1904fd5b06f2fe619c451d3f294e036f66c2a477c80cbc976309c"
+    },
+    {
+      "id": "weapons",
+      "key": "torch",
+      "path": "weapons/details/torch.png",
+      "sha256": "f2bb676779083d1edb4eb59944c9fa5b2e122ef7b8e844678213415cce136571"
+    }
+  ]
+}

@@ -1,0 +1,802 @@
+{
+  "id": "weapons",
+  "design": {
+    "source": "design_target",
+    "design_sources": [
+      "recovery/original-brief.txt: weapons sheet and roster weapons",
+      "ARCHITECTURE.md section 4"
+    ],
+    "dimension_note": "Galadhrim bow 1.6 m from original brief. Other projected vertical end-to-end spans are authored design targets where the original brief supplies no numeric weapon dimension. Two knives share one item span.",
+    "weapons": [
+      {
+        "kind": "galadhrim_bow",
+        "projected_extent_m": 1.6
+      },
+      {
+        "kind": "elven_knives",
+        "projected_extent_m": 0.65
+      },
+      {
+        "kind": "gimli_axe",
+        "projected_extent_m": 1.15
+      },
+      {
+        "kind": "uruk_falchion",
+        "projected_extent_m": 0.85
+      },
+      {
+        "kind": "orc_cleaver",
+        "projected_extent_m": 0.85
+      },
+      {
+        "kind": "orc_scimitar",
+        "projected_extent_m": 0.95
+      },
+      {
+        "kind": "bolg_mace",
+        "projected_extent_m": 1.5
+      },
+      {
+        "kind": "cave_troll_club",
+        "projected_extent_m": 2.7
+      },
+      {
+        "kind": "war_hammer",
+        "projected_extent_m": 2.5
+      },
+      {
+        "kind": "pike",
+        "projected_extent_m": 3
+      },
+      {
+        "kind": "rohan_shield",
+        "projected_extent_m": 0.9
+      },
+      {
+        "kind": "gondor_shield",
+        "projected_extent_m": 1.15
+      },
+      {
+        "kind": "uruk_shield",
+        "projected_extent_m": 1
+      },
+      {
+        "kind": "torch",
+        "projected_extent_m": 0.75
+      }
+    ]
+  },
+  "composition": {
+    "supplement": true,
+    "metric": true,
+    "columns": 7,
+    "rows": 2,
+    "canvas_px": [
+      1536,
+      1024
+    ],
+    "png_name": "weapons.png",
+    "items": [
+      {
+        "name": "galadhrim_bow",
+        "label": "GALADHRIM BOW",
+        "source": "details/galadhrim_bow.png",
+        "extent_m": 1.6
+      },
+      {
+        "name": "elven_knives",
+        "label": "ELVEN KNIVES",
+        "source": "details/elven_knives.png",
+        "extent_m": 0.65
+      },
+      {
+        "name": "gimli_axe",
+        "label": "GIMLI AXE",
+        "source": "details/gimli_axe.png",
+        "extent_m": 1.15
+      },
+      {
+        "name": "uruk_falchion",
+        "label": "URUK FALCHION",
+        "source": "details/uruk_falchion.png",
+        "extent_m": 0.85
+      },
+      {
+        "name": "orc_cleaver",
+        "label": "ORC CLEAVER",
+        "source": "details/orc_cleaver.png",
+        "extent_m": 0.85
+      },
+      {
+        "name": "orc_scimitar",
+        "label": "ORC SCIMITAR",
+        "source": "details/orc_scimitar.png",
+        "extent_m": 0.95
+      },
+      {
+        "name": "bolg_mace",
+        "label": "BOLG MACE",
+        "source": "details/bolg_mace.png",
+        "extent_m": 1.5
+      },
+      {
+        "name": "cave_troll_club",
+        "label": "CAVE TROLL CLUB",
+        "source": "details/cave_troll_club.png",
+        "extent_m": 2.7
+      },
+      {
+        "name": "war_hammer",
+        "label": "WAR HAMMER",
+        "source": "details/war_hammer.png",
+        "extent_m": 2.5
+      },
+      {
+        "name": "pike",
+        "label": "PIKE",
+        "source": "details/pike.png",
+        "extent_m": 3
+      },
+      {
+        "name": "rohan_shield",
+        "label": "ROHAN SHIELD",
+        "source": "details/rohan_shield.png",
+        "extent_m": 0.9
+      },
+      {
+        "name": "gondor_shield",
+        "label": "GONDOR SHIELD",
+        "source": "details/gondor_shield.png",
+        "extent_m": 1.15
+      },
+      {
+        "name": "uruk_shield",
+        "label": "URUK SHIELD",
+        "source": "details/uruk_shield.png",
+        "extent_m": 1
+      },
+      {
+        "name": "torch",
+        "label": "TORCH",
+        "source": "details/torch.png",
+        "extent_m": 0.75
+      }
+    ]
+  },
+  "measured": {
+    "supplement": {
+      "path": "weapons.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "451e8080adfce14fe1ddc58beebe78e44df5e5f8bee38f313e38a3ae198640a2",
+      "size_bytes": 82828,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "8decc654407d9dc6c6dd1a5b6a89f20c0a68e434ea644463ad74002e6ebe046a",
+      "decoded_background_tolerance": 3,
+      "lossless_png": {
+        "path": "weapons.png",
+        "sha256": "c7e3795f0003dd15ddee2a402bfc03280ff073f03b90d215929d8820120cda30"
+      },
+      "objects": [
+        {
+          "name": "galadhrim_bow",
+          "source": "details/galadhrim_bow.png",
+          "source_sha256": "39a05cf89ab7aef65c5f6f5d5f764eb575702bbf8479765958ed4a34a1afb3d3",
+          "source_bbox_px": [
+            0,
+            0,
+            41,
+            288
+          ],
+          "sheet_bbox_px": [
+            172,
+            258,
+            195,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 1.6,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            23,
+            164
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "elven_knives",
+          "source": "details/elven_knives.png",
+          "source_sha256": "ddb8713bd5681413932205fa527dad60c4207becdfe08ba5ad0c246dc4ade59c",
+          "source_bbox_px": [
+            4,
+            4,
+            137,
+            387
+          ],
+          "sheet_bbox_px": [
+            382,
+            355,
+            403,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 0.65,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            21,
+            67
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "gimli_axe",
+          "source": "details/gimli_axe.png",
+          "source_sha256": "0b1b8b5ddbb36e2d9075bfe671a217c7e50a76b6956bb34f72bd00d7156207b5",
+          "source_bbox_px": [
+            4,
+            4,
+            205,
+            388
+          ],
+          "sheet_bbox_px": [
+            569,
+            304,
+            631,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 1.15,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            62,
+            118
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "uruk_falchion",
+          "source": "details/uruk_falchion.png",
+          "source_sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13",
+          "source_bbox_px": [
+            67,
+            6,
+            104,
+            249
+          ],
+          "sheet_bbox_px": [
+            802,
+            335,
+            815,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 0.85,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            13,
+            87
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "orc_cleaver",
+          "source": "details/orc_cleaver.png",
+          "source_sha256": "831f62258ea500a342c69f7601bbb7623e64ec8b21ef43d2e93de72e334e3f5f",
+          "source_bbox_px": [
+            0,
+            0,
+            76,
+            251
+          ],
+          "sheet_bbox_px": [
+            1003,
+            335,
+            1029,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 0.85,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            26,
+            87
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "orc_scimitar",
+          "source": "details/orc_scimitar.png",
+          "source_sha256": "75d9efeb54bf44c0c18f6e0af16a21ae19a91ada1ab5ef5d74642d5c25b42bf8",
+          "source_bbox_px": [
+            4,
+            4,
+            90,
+            388
+          ],
+          "sheet_bbox_px": [
+            1213,
+            324,
+            1235,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 0.95,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            22,
+            98
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "bolg_mace",
+          "source": "details/bolg_mace.png",
+          "source_sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64",
+          "source_bbox_px": [
+            28,
+            4,
+            99,
+            236
+          ],
+          "sheet_bbox_px": [
+            1408,
+            268,
+            1455,
+            422
+          ],
+          "mirrored": false,
+          "extent_m": 1.5,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            47,
+            154
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "cave_troll_club",
+          "source": "details/cave_troll_club.png",
+          "source_sha256": "82a15511c943f1249cb08fbadb261be700855240fb5993ebd29165291c3149d1",
+          "source_bbox_px": [
+            4,
+            4,
+            139,
+            388
+          ],
+          "sheet_bbox_px": [
+            136,
+            657,
+            233,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 2.7,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            97,
+            277
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "war_hammer",
+          "source": "details/war_hammer.png",
+          "source_sha256": "f75b55ab84e9effdf418926f54c0baccb9369fe4ba356fe75a4eb91c59971811",
+          "source_bbox_px": [
+            0,
+            0,
+            174,
+            266
+          ],
+          "sheet_bbox_px": [
+            308,
+            677,
+            476,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 2.5,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            168,
+            257
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "pike",
+          "source": "details/pike.png",
+          "source_sha256": "46483b9949f1904fd5b06f2fe619c451d3f294e036f66c2a477c80cbc976309c",
+          "source_bbox_px": [
+            4,
+            4,
+            19,
+            388
+          ],
+          "sheet_bbox_px": [
+            594,
+            626,
+            606,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 3,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            12,
+            308
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "rohan_shield",
+          "source": "details/rohan_shield.png",
+          "source_sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df",
+          "source_bbox_px": [
+            4,
+            4,
+            249,
+            260
+          ],
+          "sheet_bbox_px": [
+            764,
+            842,
+            852,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 0.9,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            88,
+            92
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "gondor_shield",
+          "source": "details/gondor_shield.png",
+          "source_sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960",
+          "source_bbox_px": [
+            4,
+            4,
+            108,
+            260
+          ],
+          "sheet_bbox_px": [
+            992,
+            816,
+            1040,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1.15,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            48,
+            118
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "uruk_shield",
+          "source": "details/uruk_shield.png",
+          "source_sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452",
+          "source_bbox_px": [
+            6,
+            2,
+            120,
+            245
+          ],
+          "sheet_bbox_px": [
+            1200,
+            831,
+            1248,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 1,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            48,
+            103
+          ],
+          "scale_axis": "vertical"
+        },
+        {
+          "name": "torch",
+          "source": "details/torch.png",
+          "source_sha256": "f2bb676779083d1edb4eb59944c9fa5b2e122ef7b8e844678213415cce136571",
+          "source_bbox_px": [
+            4,
+            4,
+            94,
+            388
+          ],
+          "sheet_bbox_px": [
+            1423,
+            857,
+            1441,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": 0.75,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            18,
+            77
+          ],
+          "scale_axis": "vertical"
+        }
+      ],
+      "px_per_m": 102.73103448275862,
+      "rulers": [
+        {
+          "axis": "vertical",
+          "x_px": 65,
+          "baseline_y_px": 422,
+          "top_y_px": 258,
+          "endpoint_m": 1.6,
+          "step_m": 0.25,
+          "ticks": [
+            {
+              "value_m": 0.0,
+              "y_px": 422
+            },
+            {
+              "value_m": 0.25,
+              "y_px": 396
+            },
+            {
+              "value_m": 0.5,
+              "y_px": 371
+            },
+            {
+              "value_m": 0.75,
+              "y_px": 345
+            },
+            {
+              "value_m": 1.0,
+              "y_px": 319
+            },
+            {
+              "value_m": 1.25,
+              "y_px": 294
+            },
+            {
+              "value_m": 1.5,
+              "y_px": 268
+            }
+          ],
+          "label_bboxes_px": [
+            [
+              17,
+              416,
+              53,
+              428
+            ],
+            [
+              17,
+              390,
+              53,
+              402
+            ],
+            [
+              17,
+              365,
+              53,
+              377
+            ],
+            [
+              17,
+              339,
+              53,
+              351
+            ],
+            [
+              17,
+              313,
+              53,
+              325
+            ],
+            [
+              17,
+              288,
+              53,
+              300
+            ],
+            [
+              17,
+              262,
+              53,
+              274
+            ],
+            [
+              77,
+              239,
+              140,
+              252
+            ]
+          ]
+        },
+        {
+          "axis": "vertical",
+          "x_px": 65,
+          "baseline_y_px": 934,
+          "top_y_px": 626,
+          "endpoint_m": 3,
+          "step_m": 0.25,
+          "ticks": [
+            {
+              "value_m": 0.0,
+              "y_px": 934
+            },
+            {
+              "value_m": 0.25,
+              "y_px": 908
+            },
+            {
+              "value_m": 0.5,
+              "y_px": 883
+            },
+            {
+              "value_m": 0.75,
+              "y_px": 857
+            },
+            {
+              "value_m": 1.0,
+              "y_px": 831
+            },
+            {
+              "value_m": 1.25,
+              "y_px": 806
+            },
+            {
+              "value_m": 1.5,
+              "y_px": 780
+            },
+            {
+              "value_m": 1.75,
+              "y_px": 754
+            },
+            {
+              "value_m": 2.0,
+              "y_px": 729
+            },
+            {
+              "value_m": 2.25,
+              "y_px": 703
+            },
+            {
+              "value_m": 2.5,
+              "y_px": 677
+            },
+            {
+              "value_m": 2.75,
+              "y_px": 651
+            },
+            {
+              "value_m": 3.0,
+              "y_px": 626
+            }
+          ],
+          "label_bboxes_px": [
+            [
+              17,
+              928,
+              53,
+              940
+            ],
+            [
+              17,
+              902,
+              53,
+              914
+            ],
+            [
+              17,
+              877,
+              53,
+              889
+            ],
+            [
+              17,
+              851,
+              53,
+              863
+            ],
+            [
+              17,
+              825,
+              53,
+              837
+            ],
+            [
+              17,
+              800,
+              53,
+              812
+            ],
+            [
+              17,
+              774,
+              53,
+              786
+            ],
+            [
+              17,
+              748,
+              53,
+              760
+            ],
+            [
+              17,
+              723,
+              53,
+              735
+            ],
+            [
+              17,
+              697,
+              53,
+              709
+            ],
+            [
+              17,
+              671,
+              53,
+              683
+            ],
+            [
+              17,
+              645,
+              53,
+              657
+            ],
+            [
+              17,
+              620,
+              53,
+              632
+            ],
+            [
+              77,
+              607,
+              140,
+              620
+            ]
+          ]
+        }
+      ],
+      "scale_requirement": "projected vertical design span"
+    }
+  }
+}

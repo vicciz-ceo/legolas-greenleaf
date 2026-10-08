@@ -1,0 +1,89 @@
+{
+  "id": "mumak_howdah",
+  "design": {
+    "source": "design_target",
+    "description": "Original brief: close-up of the howdah, girths and rope ladder. Reuse accepted own-left-flank close-up, no scale requirement.",
+    "source_references": [
+      "recovery/original-brief.txt: creatures mumak"
+    ]
+  },
+  "composition": {
+    "supplement": true,
+    "metric": false,
+    "columns": 1,
+    "rows": 1,
+    "canvas_px": [
+      1024,
+      1024
+    ],
+    "png_name": "mumak_howdah.png",
+    "items": [
+      {
+        "name": "howdah",
+        "label": "HOWDAH / GIRTHS / LEFT LADDER",
+        "source": "details/howdah.png"
+      }
+    ]
+  },
+  "measured": {
+    "supplement": {
+      "path": "mumak_howdah.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "5dca8b4d1c5366b4226727a224f3f095d5fa81f98be84d860e7c233890266eed",
+      "size_bytes": 141994,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "d8a4c78bb3a79531cefcf9b5f1965b9f4803bdb1426c93a1bc7229b41bab0dfa",
+      "decoded_background_tolerance": 3,
+      "lossless_png": {
+        "path": "mumak_howdah.png",
+        "sha256": "bd563d43500d1bc3008224c42c635c30016ebdffe7319ba001631e8a81211cbd"
+      },
+      "objects": [
+        {
+          "name": "howdah",
+          "source": "details/howdah.png",
+          "source_sha256": "4344f26985dadba0790fbf2f604b6dec1bb6451799eb3af9f56f4192b2282102",
+          "source_bbox_px": [
+            0,
+            0,
+            256,
+            184
+          ],
+          "sheet_bbox_px": [
+            20,
+            227,
+            1004,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            984,
+            707
+          ],
+          "scale_axis": null
+        }
+      ],
+      "px_per_m": null,
+      "rulers": [],
+      "scale_requirement": "none; original supplemental close-up / upper-body exception"
+    }
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-25b76143-715c-4a71-9dde-72a7383441d8.png",
+    "original_sha256": "05219fd4f6ac9abebb8aa8057547d8991a39429b774da27e6326005982dafa2d",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "8974c4d3f4a30bf381f5e6ba265502ce9a523783d61acc7a490ba7615d4e2e49",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        664,
+        392
+      ],
+      "to_size_px": [
+        556,
+        328
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-dd64f0ec-1e0f-4700-9fa4-f934b3c0a1e0.png",
+    "original_sha256": "2e8d22b38f4d4baf019da7647a7152a728b167d52ecbfd274f7e2cb3e4655db5",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "2834974683f7730f7a0652ba99b6c5a0f56538b62b1f5bb98cb80e242249ed2a",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        628,
+        392
+      ],
+      "to_size_px": [
+        525,
+        328
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "views/top": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5e202521-15a6-4efc-8364-a5a9753546ba.png",
+    "original_sha256": "c3d35c0cc14da3af7e0b9f7a1f3023e4e83b240c4b0017afdce2f63b8728b0a3",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/top.png",
+    "cutout_sha256": "024396c4523e5de861d486c9b1e61a045d95b0faf730660eac20c71784e6331d",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        525,
+        392
+      ],
+      "to_size_px": [
+        439,
+        328
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-2c7694c1-aa95-4765-8dda-cd4f1572a48a.png",
+    "original_sha256": "69758b6759b703b517bca745231872c4a611765e28ac71925d060332af52d2c7",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "1def49e02b230a0ccc60d5416e91273f8bbec4e1185b2e6497c1f27404256a56",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        644,
+        392
+      ],
+      "to_size_px": [
+        539,
+        328
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-cb58ee16-d4d8-4305-b43a-01320afeaedd.png",
+    "original_sha256": "07a0a358692ec00debb6c5a4c792386c87d5abacb747996598640d18445ca3bc",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "f0810b53c185dff8eb7a7471d590daa8465daba5520c8f938a5cdb85f75afb35",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        392,
+        264
+      ],
+      "to_size_px": [
+        333,
+        224
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-42a555e3-aba3-40cc-a3b4-f0c3dc38372f.png",
+    "original_sha256": "08c1cee44de0c0fb170913362c0ddf7eaee15914e33dcee9818b2adf3518687a",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "f07daf9ece22ad48ea780cec7452e27e38a21c9de0b581a2436be6353a2de753",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        392,
+        264
+      ],
+      "to_size_px": [
+        333,
+        224
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-27470432-364b-45a9-858a-49871c00bc56.png",
+    "original_sha256": "93b954b821f8975bc6fab558e41c931ad7bb8576f5b41fc5cc842a87fd1316a2",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "d1ba28289fb53a6347b406a8c7f32e9ba69be0fcb2f4e7ea2d34e88edd052d69",
+    "post_intake_uniform_resize": {
+      "from_size_px": [
+        316,
+        264
+      ],
+      "to_size_px": [
+        268,
+        224
+      ],
+      "reason": "Include all retained sources within 2.5 MB budget; full-resolution original preserved."
+    }
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d102ee8d-1a4a-4992-83cf-d7abc985a95e.png",
+    "original_sha256": "ed974c98ec87446d801615ddd29f4fd02f5c8c7987095be936c960083ec4efe7",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1512,
+      1024
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "2a7596d18e0fa2eb453c97931314f44100685c65f3139191bcab64d804e446f9"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-de912e38-e8aa-4f31-a649-b1b2417a11b1.png",
+    "original_sha256": "ecc629c5b7f26b8b442eddfed3b8a9f730c73c628b7b073d99390972e6da7aed",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1536,
+      1000
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "5abf57e0756707ce264572f80febb5bef4472b40a5f0f5d2a6949ba24cfa6c1e"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d102ee8d-1a4a-4992-83cf-d7abc985a95e.png",
+    "original_sha256": "ed974c98ec87446d801615ddd29f4fd02f5c8c7987095be936c960083ec4efe7",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      750,
+      250,
+      970,
+      430
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "5c9aee6991d952e8927b9214f6c4d0bf1b62beda83da3ef2cb5477dcbf370b9d"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d102ee8d-1a4a-4992-83cf-d7abc985a95e.png",
+    "original_sha256": "ed974c98ec87446d801615ddd29f4fd02f5c8c7987095be936c960083ec4efe7",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": [
+      750,
+      600,
+      1010,
+      800
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "3061552a56c893af92621f23abdcd0258a2a6b1cf75d2a39cc83369f175394dc"
+  }
+}

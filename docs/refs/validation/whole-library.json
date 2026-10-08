@@ -1,0 +1,383 @@
+{
+  "status": "PASS",
+  "library_bytes": 69617976,
+  "library_budget_bytes": 70000000,
+  "entries": [
+    {
+      "id": "legolas",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1866998,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 368.10810810810807,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "gimli",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2419203,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 286.9281045751634,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "aragorn",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1796330,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 327.6595744680851,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "tauriel",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1918913,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 402.24719101123594,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "bolg",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2231306,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 174.6153846153846,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "cave_troll",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2455137,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 71.55555555555556,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "thranduil",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2313296,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 279.8076923076923,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "elf_mirkwood",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1785038,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 220.81218274111674,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "elf_galadhrim",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2189501,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 261.6216216216216,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "boromir",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2336464,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 242.70270270270268,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "gondor",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1841385,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 258.3333333333333,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "rohirrim",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2334619,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 238.54166666666669,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "laketown_man",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1893212,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 299.42857142857144,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "orc",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2262454,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 281.1764705882353,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "goblin",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2409920,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 275.45454545454544,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "gundabad",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2439161,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 226.66666666666666,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "uruk",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2215382,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 228.50467289719626,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "berserker",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1699206,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 213.33333333333334,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "lurtz",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1930366,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 258.57142857142856,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "easterling",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2029242,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 132.30769230769232,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "haradrim",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1807356,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 270.46632124352334,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "war_troll",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2319112,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 78.38383838383838,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "mirkwood_spider",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2473749,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 160.0,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "brood_mother",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2451495,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 73.33333333333333,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "mumak",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1358481,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 14.107142857142858,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "gundabad_bat",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1892484,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 62.857142857142854,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "great_eagle",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 804093,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 44.0,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "fell_beast",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 494525,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 36.666666666666664,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "dwarf_bald",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2189350,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 358.5185185185185,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "dwarf_hat",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2100710,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 345.8904109589041,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "dwarf_elder",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 1995738,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 361.8705035971223,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "dwarf_redbeard",
+      "status": "PASS",
+      "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
+      "character_bytes": 2268715,
+      "character_budget_bytes": 2500000,
+      "library_bytes": 69617976,
+      "library_budget_bytes": 70000000,
+      "px_per_m": 339.8601398601399,
+      "visual_review": "Separate by-eye gate; not certified by this command."
+    },
+    {
+      "id": "weapons",
+      "status": "PASS",
+      "character_bytes": 958166,
+      "checked": "source reconstruction, scale, layout, PNG, JPEG and budgets"
+    },
+    {
+      "id": "orc_variants",
+      "status": "PASS",
+      "character_bytes": 1117011,
+      "checked": "source reconstruction, scale, layout, PNG, JPEG and budgets"
+    },
+    {
+      "id": "dwarf_company",
+      "status": "PASS",
+      "character_bytes": 936926,
+      "checked": "source reconstruction, scale, layout, PNG, JPEG and budgets"
+    },
+    {
+      "id": "mumak_howdah",
+      "status": "PASS",
+      "character_bytes": 870191,
+      "checked": "source reconstruction, scale, layout, PNG, JPEG and budgets"
+    }
+  ]
+}

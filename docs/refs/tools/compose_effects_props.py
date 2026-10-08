@@ -4,7 +4,7 @@ from pathlib import Path
 import json,math,hashlib
 import numpy as np
 from PIL import Image,ImageDraw,ImageOps,ImageFilter,ImageEnhance
-from compose import *
+from scene_composition import *
 R=Path(__file__).resolve().parents[1]
 def read(p):return json.loads(Path(p).read_text())
 def write(p,d):Path(p).write_text(json.dumps(d,indent=2)+'\n')

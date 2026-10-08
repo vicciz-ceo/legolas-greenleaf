@@ -1,0 +1,881 @@
+{
+  "id": "mirkwood_spider",
+  "design": {
+    "id": "mirkwood_spider",
+    "source": "design_target",
+    "display_name": "Mirkwood Spider",
+    "height_m": 1.2,
+    "overall_height_m": 1.2,
+    "proportions": {
+      "head_height_m": 0,
+      "shoulder_width_m": 0,
+      "hip_width_m": 0,
+      "arm_length_m": 0,
+      "leg_length_m": 0,
+      "hand_length_m": 0,
+      "neck_length_m": 0,
+      "bulk_0to1": 0,
+      "hunch_0to1": 0
+    },
+    "face": {
+      "shape": "Giant Mirkwood spider: exactly EIGHT jointed legs, black-brown chitin with coarse hair, patterned bulbous abdomen, eight glossy clustered eyes, paired mandibles; body about 1.2 m tall, leg span 2.75 m; no armour or gear.",
+      "eyes": {
+        "iris_hex": "#211b16",
+        "shape": "eight glossy clustered arachnid eyes",
+        "size_note": "Eight discrete eyes, no human eyelids"
+      },
+      "brow": "Not applicable: arachnid carapace",
+      "nose": "Not applicable: arachnid paired mandibles",
+      "lips": "Not applicable: chelicerae and paired mandibles",
+      "ears": "Not applicable: no external ears",
+      "skin_base_hex": "#342e27",
+      "skin_variation": "Black-brown chitin with mottled tan abdomen pattern"
+    },
+    "hair": {
+      "root_hex": "#302b23",
+      "tip_hex": "#665547",
+      "length_m": 0.04,
+      "style": "Coarse bristly arachnid hairs",
+      "braids": "Not applicable"
+    },
+    "outfit_layers": [],
+    "armor": [],
+    "weapons": [],
+    "attachments": {},
+    "silhouette_keywords": [
+      "Giant Mirkwood spider: exactly EIGHT jointed legs, black-brown chitin with coarse hair, patterned bulbous abdomen, eight glossy clustered eyes, paired mandibles",
+      " body about 1.2 m tall, leg span 2.75 m",
+      " no armour or gear."
+    ],
+    "avoid": [
+      "actor likeness",
+      "incorrect limbs or digits",
+      "gear side swaps",
+      "generated text",
+      "cropped extremities"
+    ],
+    "design_sources": [
+      "recovery/original-brief.txt: original roster entry",
+      "ARCHITECTURE.md section 4: applicable scale list"
+    ],
+    "proportion_note": "Original creature scale target; humanoid-schema proportions are not applicable and are zero. Projected extents and palettes are authored design targets, not recovered 3D measurements.",
+    "description": "Giant Mirkwood spider: exactly EIGHT jointed legs, black-brown chitin with coarse hair, patterned bulbous abdomen, eight glossy clustered eyes, paired mandibles; body about 1.2 m tall, leg span 2.75 m; no armour or gear.",
+    "leg_span_m": 2.75,
+    "height_source_note": "Original brief body about 1.2 m tall; scale dimension for creature sheet is 2.75 m leg span, within original 2.5–3 m range and ARCHITECTURE approximate 2.5 m."
+  },
+  "composition": {
+    "fit_policy": "fit",
+    "detail_tiles": [
+      {
+        "name": "cloth_leather",
+        "label": "CHITIN / PATTERN",
+        "source": "details/cloth_leather.png"
+      },
+      {
+        "name": "weapon_metal",
+        "label": "PAIRED MANDIBLES",
+        "source": "details/weapon_metal.png"
+      },
+      {
+        "name": "skin",
+        "label": "CHITIN / SURFACE",
+        "source": "details/skin.png"
+      },
+      {
+        "name": "hair",
+        "label": "COARSE HAIR",
+        "source": "details/hair.png"
+      }
+    ],
+    "creature": true,
+    "silhouette_only": false,
+    "views": [
+      "front",
+      "side",
+      "top",
+      "three_quarter"
+    ],
+    "reference_view": "side",
+    "scale_axis": "width",
+    "scale_extent_m": 2.75,
+    "projected_extents_m": {
+      "front": 2.75,
+      "side": 2.75,
+      "top": 2.75,
+      "three_quarter": 2.75
+    },
+    "measurement_note": "Side reference: fore-aft outer leg-tip projected extent. Front and top: left-right outer leg-tip span; three-quarter projected span is an authored target, not measured 3D anatomy.",
+    "source_heights": {
+      "body": 320,
+      "face": 216
+    },
+    "turnaround_labels": {
+      "side": "SIDE / LEG SPAN"
+    }
+  },
+  "measured": {
+    "turnaround": {
+      "path": "mirkwood_spider_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "4800340f6578107836b105ab593202850a95643d38d1e2dab05e687a46973c4f",
+      "size_bytes": 169594,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "90ad7ec958316ec9f66b6ef709c78d960dda68c9f01116ad44252855f0d330d4",
+      "decoded_background_tolerance": 3,
+      "creature": true,
+      "px_per_m": 160.0,
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "2834974683f7730f7a0652ba99b6c5a0f56538b62b1f5bb98cb80e242249ed2a",
+          "source_bbox_px": [
+            3,
+            4,
+            522,
+            325
+          ],
+          "sheet_bbox_px": [
+            205,
+            158,
+            645,
+            430
+          ],
+          "projected_extent_m": 2.75,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            272
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                3,
+                164.5
+              ],
+              [
+                522,
+                164.5
+              ]
+            ],
+            "source_span_px": 519,
+            "axis": "width",
+            "source_region_px": [
+              3,
+              4,
+              522,
+              325
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                205,
+                294.0
+              ],
+              [
+                645,
+                294.0
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                136.0
+              ],
+              [
+                440,
+                136.0
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              272
+            ],
+            "effective_px_per_m": 160.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 296,
+            "top_y_px": 134,
+            "baseline_y_px": 430,
+            "center_x_px": 100,
+            "sheet_bbox_px": [
+              46,
+              134,
+              156,
+              430
+            ]
+          }
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "8974c4d3f4a30bf381f5e6ba265502ce9a523783d61acc7a490ba7615d4e2e49",
+          "source_bbox_px": [
+            5,
+            5,
+            553,
+            325
+          ],
+          "sheet_bbox_px": [
+            973,
+            173,
+            1413,
+            430
+          ],
+          "projected_extent_m": 2.75,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            2,
+            440,
+            257
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                5,
+                165.0
+              ],
+              [
+                553,
+                165.0
+              ]
+            ],
+            "source_span_px": 548,
+            "axis": "width",
+            "source_region_px": [
+              5,
+              5,
+              553,
+              325
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                973,
+                302.5
+              ],
+              [
+                1413,
+                302.5
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                129.5
+              ],
+              [
+                440,
+                129.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              257
+            ],
+            "effective_px_per_m": 160.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 296,
+            "top_y_px": 134,
+            "baseline_y_px": 430,
+            "center_x_px": 868,
+            "sheet_bbox_px": [
+              814,
+              134,
+              924,
+              430
+            ]
+          }
+        },
+        {
+          "view": "top",
+          "source": "views/top.png",
+          "source_sha256": "024396c4523e5de861d486c9b1e61a045d95b0faf730660eac20c71784e6331d",
+          "source_bbox_px": [
+            3,
+            6,
+            436,
+            325
+          ],
+          "sheet_bbox_px": [
+            205,
+            618,
+            645,
+            942
+          ],
+          "projected_extent_m": 2.75,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            324
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                3,
+                165.5
+              ],
+              [
+                436,
+                165.5
+              ]
+            ],
+            "source_span_px": 433,
+            "axis": "width",
+            "source_region_px": [
+              3,
+              6,
+              436,
+              325
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                205,
+                780.0
+              ],
+              [
+                645,
+                780.0
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                162.0
+              ],
+              [
+                440,
+                162.0
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              324
+            ],
+            "effective_px_per_m": 160.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 296,
+            "top_y_px": 646,
+            "baseline_y_px": 942,
+            "center_x_px": 100,
+            "sheet_bbox_px": [
+              46,
+              646,
+              156,
+              942
+            ]
+          }
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "1def49e02b230a0ccc60d5416e91273f8bbec4e1185b2e6497c1f27404256a56",
+          "source_bbox_px": [
+            3,
+            6,
+            536,
+            325
+          ],
+          "sheet_bbox_px": [
+            973,
+            679,
+            1413,
+            942
+          ],
+          "projected_extent_m": 2.75,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            263
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                3,
+                165.5
+              ],
+              [
+                536,
+                165.5
+              ]
+            ],
+            "source_span_px": 533,
+            "axis": "width",
+            "source_region_px": [
+              3,
+              6,
+              536,
+              325
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                973,
+                810.5
+              ],
+              [
+                1413,
+                810.5
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                131.5
+              ],
+              [
+                440,
+                131.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              263
+            ],
+            "effective_px_per_m": 160.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 296,
+            "top_y_px": 646,
+            "baseline_y_px": 942,
+            "center_x_px": 868,
+            "sheet_bbox_px": [
+              814,
+              646,
+              924,
+              942
+            ]
+          }
+        }
+      ],
+      "ruler": {
+        "axis": "horizontal",
+        "start_x_px": 973,
+        "end_x_px": 1413,
+        "y_px": 442,
+        "endpoint_m": 2.75,
+        "px_per_m": 160.0,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "x_px": 973
+          },
+          {
+            "value_m": 0.25,
+            "x_px": 1013
+          },
+          {
+            "value_m": 0.5,
+            "x_px": 1053
+          },
+          {
+            "value_m": 0.75,
+            "x_px": 1093
+          },
+          {
+            "value_m": 1.0,
+            "x_px": 1133
+          },
+          {
+            "value_m": 1.25,
+            "x_px": 1173
+          },
+          {
+            "value_m": 1.5,
+            "x_px": 1213
+          },
+          {
+            "value_m": 1.75,
+            "x_px": 1253
+          },
+          {
+            "value_m": 2.0,
+            "x_px": 1293
+          },
+          {
+            "value_m": 2.25,
+            "x_px": 1333
+          },
+          {
+            "value_m": 2.5,
+            "x_px": 1373
+          },
+          {
+            "value_m": 2.75,
+            "x_px": 1413
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            969,
+            455,
+            977,
+            464
+          ],
+          [
+            1129,
+            455,
+            1137,
+            464
+          ],
+          [
+            1289,
+            455,
+            1297,
+            464
+          ],
+          [
+            1392,
+            455,
+            1434,
+            464
+          ]
+        ]
+      },
+      "layout": {
+        "subject_max_width_px": 440,
+        "subject_max_height_px": 360,
+        "human_max_height_px": 360,
+        "scale_reason": "Fit all views and reserve a separate human/ruler lane"
+      },
+      "scale_axis": "width",
+      "reference_view": "side",
+      "scale_extent_m": 2.75,
+      "extent_rules": {},
+      "interpretation": "Projected extents are design targets; no 3D measurement inferred from generated views."
+    },
+    "face": {
+      "path": "mirkwood_spider_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "113d619630a49b7d1bd6a2ebe6216efe6cf3c9d1ce7c5016342339d10b196ec2",
+      "size_bytes": 200163,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "16a330e3aeae35c7c9ecd42ae4c33483b31d8e5422250d125e40aa79565531b4",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "f0810b53c185dff8eb7a7471d590daa8465daba5520c8f938a5cdb85f75afb35",
+          "source_bbox_px": [
+            3,
+            3,
+            330,
+            221
+          ],
+          "sheet_bbox_px": [
+            26,
+            613,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "f07daf9ece22ad48ea780cec7452e27e38a21c9de0b581a2436be6353a2de753",
+          "source_bbox_px": [
+            3,
+            3,
+            330,
+            221
+          ],
+          "sheet_bbox_px": [
+            530,
+            613,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "d1ba28289fb53a6347b406a8c7f32e9ba69be0fcb2f4e7ea2d34e88edd052d69",
+          "source_bbox_px": [
+            3,
+            3,
+            261,
+            221
+          ],
+          "sheet_bbox_px": [
+            1034,
+            531,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "mirkwood_spider_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "003b2c8716c1ad582c469c3c699752df896215099610657aa27df315fe8f53b6",
+      "size_bytes": 258329,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "44856d8b0d2d3c5c6a28a7c36587a38e492c8b9419f6a1eea8cdf8fe23768b38",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CHITIN / PATTERN",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "2a7596d18e0fa2eb453c97931314f44100685c65f3139191bcab64d804e446f9",
+          "sheet_bbox_px": [
+            12,
+            69,
+            500,
+            399
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "PAIRED MANDIBLES",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "5abf57e0756707ce264572f80febb5bef4472b40a5f0f5d2a6949ba24cfa6c1e",
+          "sheet_bbox_px": [
+            524,
+            75,
+            1012,
+            393
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "CHITIN / SURFACE",
+          "source": "details/skin.png",
+          "source_sha256": "5c9aee6991d952e8927b9214f6c4d0bf1b62beda83da3ef2cb5477dcbf370b9d",
+          "sheet_bbox_px": [
+            12,
+            546,
+            500,
+            945
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "COARSE HAIR",
+          "source": "details/hair.png",
+          "source_sha256": "3061552a56c893af92621f23abdcd0258a2a6b1cf75d2a39cc83369f175394dc",
+          "sheet_bbox_px": [
+            524,
+            558,
+            1012,
+            934
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        40,
+        40,
+        85,
+        75
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        91,
+        127,
+        93,
+        129
+      ]
+    },
+    {
+      "name": "chitin_pattern",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        150,
+        50,
+        175,
+        70
+      ]
+    },
+    {
+      "name": "mandible_chitin",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        107,
+        120,
+        114,
+        130
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "5c9aee6991d952e8927b9214f6c4d0bf1b62beda83da3ef2cb5477dcbf370b9d",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          40,
+          40,
+          85,
+          75
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          67,
+          56,
+          49
+        ],
+        "srgb_hex": "#433831",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "3061552a56c893af92621f23abdcd0258a2a6b1cf75d2a39cc83369f175394dc",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          91,
+          127,
+          93,
+          129
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          73,
+          49,
+          29
+        ],
+        "srgb_hex": "#49311d",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "chitin_pattern": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "2a7596d18e0fa2eb453c97931314f44100685c65f3139191bcab64d804e446f9",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          150,
+          50,
+          175,
+          70
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          100,
+          86,
+          73
+        ],
+        "srgb_hex": "#645649",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "mandible_chitin": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "5abf57e0756707ce264572f80febb5bef4472b40a5f0f5d2a6949ba24cfa6c1e",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          107,
+          120,
+          114,
+          130
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          35,
+          26,
+          19
+        ],
+        "srgb_hex": "#231a13",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Reference production tools
 
-These tools only write development references below `docs/refs/`. They do not alter or import game code. The image model supplies unlabelled appearance; Python and native browser rendering supply all measurable and textual content. The parallel character library can reuse the primitives in `compose.py` without changing its own files.
+These tools only write development references below `docs/refs/`. They do not alter or import game code. The image model supplies unlabelled appearance; Python and native browser rendering supply all measurable and textual content. Scene/graphics primitives live in `scene_composition.py`; the independent character CLI remains in `compose.py`, preserving its background and encoding rules.
 
 Requirements: Python 3 with Pillow and NumPy, Node with the repository's `playwright-core`, and system Chromium. Engineering captions use local DejaVu Sans; product UI uses only the system serif stack in `ui-spec.json`. No web font or image-based UI decoration is used.
 
@@ -36,7 +36,7 @@ Generated inputs must contain no typography, labels, rulers, scale bars, calibra
 
 ## Encoding and validation
 
-Photographic inputs, art sheets and browser screenshots use JPEG quality 88 with chroma subsampling. Explicitly requested diagrams retain PNG (`layout`, `beats`, palettes, colour script, material overview). The entire library, including these tools and retained inputs, must remain at or below 120,000,000 bytes.
+Photographic inputs, art sheets and browser screenshots use JPEG quality 88 with chroma subsampling. Explicitly requested diagrams retain PNG (`layout`, `beats`, palettes, colour script, material overview). The scene/graphics library, including its tools, retained inputs and shared accounting files, must remain at or below 120,000,000 bytes. The character library keeps its separate 70,000,000-byte cap. [Combined inventory](../reference-inventory.json) lists every retained file and reports both scoped totals and the combined size; no retained file escapes accounting.
 
 `validate_refs.py` checks asset coverage, exact output resolutions, EnvironmentPreset serialization, source markers, palette medians, material seam errors, prop view counts, browser errors, touch targets/safe areas and the byte budget. Visual QA is separate and documented in `../QUALITY_REPORT-scenes.md`; a passing schema check is not a claim of photogrammetric accuracy.
 

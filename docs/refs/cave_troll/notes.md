@@ -1,0 +1,17 @@
+# Cave Troll modelling notes
+
+- Preserve the defining silhouette: one barrel chest, hanging belly, huge shoulders, small head, long heavy arms.
+- Treat 4.50 m as the body-height design target and 4.50 m as the overall normalization target including headgear.
+- Use these attachment sides from the character's own body: {'right_hand': 'wooden club', 'left_hand': 'empty', 'right_ankle': 'iron shackle with short chain'}.
+- Keep the face original: small head with heavy brow, broad nose, tiny deep-set eyes and tusks. Avoid any actor likeness.
+- Hair silhouette: sparse coarse bristles on scalp and shoulders; build fine strands rather than a solid helmet of hair.
+- Materials: primitive ragged loinwrap and broad leather waist belt; bare warty hide and feet; one rusted right ankle shackle with short chain; no torso armour.
+- Avoid: two stacked chests, human six-pack, slender torso, helmet, four-finger hands.
+- Design dimensions and PBR values are intent. The compositor records image normalization; observed colours are rendered and lit, not albedo.
+- Tolerate minor buckle, seam and strap-count drift and mild lighting differences. Keep attachment sides, anatomy, gear inventory and view angle consistent.
+
+- Front, three-quarter and side portraits reuse author-reviewed head-and-shoulders crops from corresponding accepted single-view full-resolution body originals; native detail and angles passed review. No mirroring or new generation calls; prior attempt history is preserved.
+
+Lost-source recovery: retained appearance assets are newly authored from the preserved design, including explicitly reviewed portrait derivatives; they are not recovered historical originals. Original attempts and the separate capped replacement series remain in progress.json.
+
+Sparse bristle sampling uses a narrow rendered root tuft; most strands become subpixel at retained resolution. The observation includes lit, antialiased bristle roots and underlying hide, and is not pure strand albedo.

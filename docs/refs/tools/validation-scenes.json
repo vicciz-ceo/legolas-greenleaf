@@ -1,9 +1,11 @@
 {
   "source": "measured_script",
+  "scope": "scenes-and-graphics",
+  "combined_reference_bytes": 180553288,
   "script": "tools/validate_refs.py",
   "checks": 1107,
   "errors": [],
-  "file_count": 485,
-  "library_bytes_before_this_report": 110934782,
+  "file_count": 489,
+  "library_bytes_before_this_report": 110985423,
   "limit_bytes": 120000000
 }
