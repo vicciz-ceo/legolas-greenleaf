@@ -1,0 +1,633 @@
+{
+  "source": "measured_script",
+  "base_commit": "7ab3afd",
+  "method": "TypeScript transpilation of src/core/environment.ts and JSON export of current preset data",
+  "presets": {
+    "arena": {
+      "name": "Arena",
+      "sky": {
+        "kind": "physical",
+        "elevation": 46,
+        "azimuth": 140,
+        "turbidity": 3.2,
+        "rayleigh": 1.3,
+        "mieCoefficient": 0.004,
+        "mieDirectionalG": 0.8,
+        "clouds": 0.38
+      },
+      "sunColor": 16773598,
+      "sunIntensity": 3.6,
+      "hemiSky": 12375026,
+      "hemiGround": 7036233,
+      "hemiIntensity": 0.18,
+      "envIntensity": 0.7,
+      "fog": {
+        "color": 11913693,
+        "density": 0.0032
+      },
+      "exposure": 1,
+      "bloom": 0.12,
+      "grade": {
+        "lift": [
+          0,
+          0,
+          0
+        ],
+        "gamma": [
+          1,
+          1,
+          1
+        ],
+        "gain": [
+          1,
+          1,
+          1
+        ],
+        "saturation": 1.05,
+        "vignette": 0.22
+      },
+      "weather": "none",
+      "ambience": "wind"
+    },
+    "lab": {
+      "name": "Lab",
+      "sky": {
+        "kind": "gradient",
+        "top": 2830133,
+        "horizon": 5593697,
+        "bottom": 2369323,
+        "stars": 0
+      },
+      "sunColor": 16773340,
+      "sunIntensity": 2.8,
+      "sunDirection": [
+        0.45,
+        0.8,
+        0.55
+      ],
+      "hemiSky": 13621478,
+      "hemiGround": 3813926,
+      "hemiIntensity": 0.5,
+      "envIntensity": 0.7,
+      "fog": {
+        "color": 4869716,
+        "density": 0.0016
+      },
+      "exposure": 1,
+      "bloom": 0.08,
+      "grade": {
+        "lift": [
+          0,
+          0,
+          0
+        ],
+        "gamma": [
+          1,
+          1,
+          1
+        ],
+        "gain": [
+          1,
+          1,
+          1
+        ],
+        "saturation": 1,
+        "vignette": 0.2
+      },
+      "weather": "none",
+      "haze": 0.6
+    },
+    "mirkwood": {
+      "name": "Mirkwood",
+      "mist": 0.8,
+      "sky": {
+        "kind": "gradient",
+        "top": 726803,
+        "horizon": 3955529,
+        "bottom": 659725,
+        "stars": 0,
+        "clouds": 0.5,
+        "cloudColor": 3099195
+      },
+      "sunColor": 13625510,
+      "sunIntensity": 3.4,
+      "sunDirection": [
+        -0.35,
+        0.82,
+        0.3
+      ],
+      "hemiSky": 6986362,
+      "hemiGround": 2305302,
+      "hemiIntensity": 1.1,
+      "envIntensity": 1,
+      "fog": {
+        "color": 3428415,
+        "density": 0.03
+      },
+      "exposure": 1.3,
+      "bloom": 0.32,
+      "grade": {
+        "lift": [
+          0,
+          0.012,
+          0.008
+        ],
+        "gamma": [
+          0.98,
+          1.03,
+          0.97
+        ],
+        "gain": [
+          0.95,
+          1.05,
+          0.93
+        ],
+        "saturation": 0.92,
+        "vignette": 0.55
+      },
+      "weather": "spores",
+      "weatherIntensity": 0.7,
+      "ambience": "forest",
+      "shafts": 1.4,
+      "glow": 0.2,
+      "hazeHeight": 0.5
+    },
+    "forest_river": {
+      "name": "Forest River",
+      "mist": 1,
+      "sky": {
+        "kind": "physical",
+        "elevation": 34,
+        "azimuth": 205,
+        "turbidity": 8,
+        "rayleigh": 2.2,
+        "mieCoefficient": 0.012,
+        "mieDirectionalG": 0.7,
+        "clouds": 1
+      },
+      "sunColor": 16773594,
+      "sunIntensity": 2.6,
+      "hemiSky": 14018290,
+      "hemiGround": 5202484,
+      "hemiIntensity": 0.95,
+      "envIntensity": 1,
+      "fog": {
+        "color": 12439760,
+        "density": 0.0125
+      },
+      "exposure": 0.95,
+      "bloom": 0.16,
+      "grade": {
+        "lift": [
+          0,
+          0.004,
+          0.004
+        ],
+        "gamma": [
+          1,
+          1.02,
+          1
+        ],
+        "gain": [
+          1,
+          1.03,
+          0.98
+        ],
+        "saturation": 1.12,
+        "vignette": 0.38
+      },
+      "weather": "dust",
+      "weatherIntensity": 0.25,
+      "ambience": "river",
+      "shafts": 0.35,
+      "cloudSoft": 0.9,
+      "cloudShade": 8359832
+    },
+    "laketown_night": {
+      "name": "Lake-town Night",
+      "mist": 0.6,
+      "sky": {
+        "kind": "gradient",
+        "top": 198159,
+        "horizon": 1714758,
+        "bottom": 329485,
+        "stars": 0.85,
+        "clouds": 0.4,
+        "cloudColor": 2437968,
+        "moon": {
+          "elevation": 33,
+          "azimuth": 205,
+          "size": 2.2,
+          "color": 14017279
+        }
+      },
+      "sunColor": 8824038,
+      "sunIntensity": 1.15,
+      "hemiSky": 2044248,
+      "hemiGround": 920850,
+      "hemiIntensity": 0.55,
+      "envIntensity": 0.7,
+      "fog": {
+        "color": 1055535,
+        "density": 0.0115
+      },
+      "exposure": 1.35,
+      "bloom": 0.5,
+      "grade": {
+        "lift": [
+          0,
+          0.006,
+          0.02
+        ],
+        "gamma": [
+          0.98,
+          1,
+          1.04
+        ],
+        "gain": [
+          0.96,
+          1,
+          1.1
+        ],
+        "saturation": 0.95,
+        "vignette": 0.5
+      },
+      "weather": "embers",
+      "weatherIntensity": 0.5,
+      "ambience": "wind",
+      "glow": 0.5
+    },
+    "ravenhill_winter": {
+      "name": "Ravenhill",
+      "mist": 0.4,
+      "sky": {
+        "kind": "gradient",
+        "top": 8293533,
+        "horizon": 13029593,
+        "bottom": 10003373,
+        "stars": 0,
+        "clouds": 0.92,
+        "cloudColor": 11845578
+      },
+      "sunColor": 14411767,
+      "sunIntensity": 1.9,
+      "sunDirection": [
+        -0.45,
+        0.55,
+        0.5
+      ],
+      "hemiSky": 12833766,
+      "hemiGround": 9279908,
+      "hemiIntensity": 1,
+      "envIntensity": 1.05,
+      "fog": {
+        "color": 12240850,
+        "density": 0.0145
+      },
+      "exposure": 1,
+      "bloom": 0.2,
+      "grade": {
+        "lift": [
+          0.004,
+          0.008,
+          0.014
+        ],
+        "gamma": [
+          1,
+          1,
+          1.02
+        ],
+        "gain": [
+          0.97,
+          1,
+          1.06
+        ],
+        "saturation": 0.78,
+        "vignette": 0.42
+      },
+      "weather": "snow",
+      "weatherIntensity": 0.85,
+      "ambience": "snow_wind",
+      "cloudSoft": 0.9,
+      "glow": 0.2
+    },
+    "moria": {
+      "name": "Moria",
+      "mist": 0.5,
+      "sky": {
+        "kind": "cave",
+        "color": 329483
+      },
+      "sunColor": 10335958,
+      "sunIntensity": 1.5,
+      "sunDirection": [
+        0.25,
+        0.92,
+        -0.2
+      ],
+      "hemiSky": 2899804,
+      "hemiGround": 1446156,
+      "hemiIntensity": 0.85,
+      "envIntensity": 0.42,
+      "fog": {
+        "color": 461069,
+        "density": 0.021
+      },
+      "exposure": 1.9,
+      "bloom": 0.36,
+      "grade": {
+        "lift": [
+          0.004,
+          0.006,
+          0.012
+        ],
+        "gamma": [
+          0.99,
+          1,
+          1.02
+        ],
+        "gain": [
+          0.98,
+          1,
+          1.06
+        ],
+        "saturation": 0.88,
+        "vignette": 0.62
+      },
+      "weather": "dust",
+      "weatherIntensity": 0.6,
+      "ambience": "cave",
+      "shafts": 0.8
+    },
+    "amon_hen": {
+      "name": "Amon Hen",
+      "mist": 0.3,
+      "sky": {
+        "kind": "physical",
+        "elevation": 12,
+        "azimuth": 250,
+        "turbidity": 6,
+        "rayleigh": 1.7,
+        "mieCoefficient": 0.011,
+        "mieDirectionalG": 0.86,
+        "clouds": 0.32
+      },
+      "sunColor": 16762500,
+      "sunIntensity": 4,
+      "hemiSky": 10336473,
+      "hemiGround": 5918508,
+      "hemiIntensity": 0.62,
+      "envIntensity": 1,
+      "fog": {
+        "color": 14464908,
+        "density": 0.0115
+      },
+      "exposure": 0.95,
+      "bloom": 0.38,
+      "grade": {
+        "lift": [
+          0.012,
+          0.006,
+          0
+        ],
+        "gamma": [
+          1,
+          1,
+          0.97
+        ],
+        "gain": [
+          1.05,
+          1,
+          0.92
+        ],
+        "saturation": 1.12,
+        "vignette": 0.42
+      },
+      "weather": "dust",
+      "weatherIntensity": 0.55,
+      "ambience": "forest",
+      "shafts": 1
+    },
+    "helms_deep_storm": {
+      "name": "Helm's Deep Storm",
+      "mist": 0.3,
+      "sky": {
+        "kind": "gradient",
+        "top": 132106,
+        "horizon": 1845048,
+        "bottom": 329484,
+        "stars": 0,
+        "clouds": 1,
+        "cloudColor": 1910582,
+        "moon": {
+          "elevation": 42,
+          "azimuth": 160,
+          "size": 2.6,
+          "color": 11452384
+        }
+      },
+      "sunColor": 7573967,
+      "sunIntensity": 0.95,
+      "hemiSky": 2372687,
+      "hemiGround": 723984,
+      "hemiIntensity": 0.6,
+      "envIntensity": 0.55,
+      "fog": {
+        "color": 1252393,
+        "density": 0.0165
+      },
+      "exposure": 1.4,
+      "bloom": 0.3,
+      "grade": {
+        "lift": [
+          0,
+          0.005,
+          0.016
+        ],
+        "gamma": [
+          0.98,
+          1,
+          1.04
+        ],
+        "gain": [
+          0.93,
+          0.99,
+          1.1
+        ],
+        "saturation": 0.8,
+        "vignette": 0.56
+      },
+      "weather": "storm",
+      "weatherIntensity": 1,
+      "ambience": "storm",
+      "cloudSoft": 0.85,
+      "glow": 0.1
+    },
+    "pelennor": {
+      "name": "Pelennor Fields",
+      "mist": 0.35,
+      "sky": {
+        "kind": "physical",
+        "elevation": 9,
+        "azimuth": 100,
+        "turbidity": 8,
+        "rayleigh": 2.2,
+        "mieCoefficient": 0.008,
+        "mieDirectionalG": 0.88,
+        "clouds": 0.62
+      },
+      "sunColor": 16758904,
+      "sunIntensity": 3.8,
+      "hemiSky": 8888776,
+      "hemiGround": 4995883,
+      "hemiIntensity": 0.62,
+      "envIntensity": 1,
+      "fog": {
+        "color": 13149836,
+        "density": 0.0078
+      },
+      "exposure": 0.95,
+      "bloom": 0.42,
+      "grade": {
+        "lift": [
+          0,
+          0.008,
+          0.014
+        ],
+        "gamma": [
+          1,
+          1,
+          0.98
+        ],
+        "gain": [
+          1.06,
+          1,
+          0.91
+        ],
+        "saturation": 1.1,
+        "vignette": 0.46
+      },
+      "weather": "ash",
+      "weatherIntensity": 0.35,
+      "ambience": "wind",
+      "shafts": 0.35,
+      "cloudSoft": 0.4,
+      "cloudScale": 0.9
+    },
+    "black_gate": {
+      "name": "Black Gate",
+      "mist": 0.4,
+      "sky": {
+        "kind": "gradient",
+        "top": 656387,
+        "horizon": 4790541,
+        "bottom": 1181959,
+        "stars": 0,
+        "clouds": 0.95,
+        "cloudColor": 4857103
+      },
+      "sunColor": 16742973,
+      "sunIntensity": 1.8,
+      "sunDirection": [
+        0.2,
+        0.2,
+        0.96
+      ],
+      "hemiSky": 5910308,
+      "hemiGround": 2036236,
+      "hemiIntensity": 0.65,
+      "envIntensity": 0.75,
+      "fog": {
+        "color": 3347728,
+        "density": 0.0125
+      },
+      "exposure": 1.15,
+      "bloom": 0.46,
+      "grade": {
+        "lift": [
+          0.012,
+          0.002,
+          0
+        ],
+        "gamma": [
+          1,
+          0.99,
+          0.96
+        ],
+        "gain": [
+          1.07,
+          0.96,
+          0.86
+        ],
+        "saturation": 0.95,
+        "vignette": 0.56
+      },
+      "weather": "ash",
+      "weatherIntensity": 0.85,
+      "ambience": "wind",
+      "glow": 1.1,
+      "glowColor": 16734748,
+      "horizonGlow": 16730642,
+      "horizonGlowAmount": 0.32,
+      "cloudSoft": 0.7
+    },
+    "menu": {
+      "name": "Menu",
+      "mist": 1.1,
+      "sky": {
+        "kind": "gradient",
+        "top": 2834014,
+        "horizon": 14854520,
+        "bottom": 3815988,
+        "stars": 0,
+        "clouds": 0.45,
+        "cloudColor": 16760970
+      },
+      "sunColor": 16760698,
+      "sunIntensity": 3,
+      "sunDirection": [
+        0.6365320448552996,
+        0.13917310096006544,
+        0.7585893512576422
+      ],
+      "hemiSky": 9414340,
+      "hemiGround": 3814436,
+      "hemiIntensity": 0.75,
+      "envIntensity": 0.95,
+      "fog": {
+        "color": 11574408,
+        "density": 0.0115
+      },
+      "exposure": 1,
+      "bloom": 0.32,
+      "grade": {
+        "lift": [
+          0.008,
+          0.006,
+          0.012
+        ],
+        "gamma": [
+          1,
+          1,
+          1.01
+        ],
+        "gain": [
+          1.04,
+          1,
+          0.94
+        ],
+        "saturation": 1.05,
+        "vignette": 0.5
+      },
+      "weather": "dust",
+      "weatherIntensity": 0.35,
+      "ambience": "river",
+      "glow": 2,
+      "glowColor": 16752736,
+      "shafts": 0.8,
+      "sunDisc": 0.7,
+      "sunSize": 0.9,
+      "hazeHeight": 0.4
+    }
+  }
+}
