@@ -1,0 +1,213 @@
+{
+  "name": "Helm's Deep Storm",
+  "sky": {
+    "kind": "gradient",
+    "top": "#02040a",
+    "horizon": "#1c2738",
+    "bottom": "#05070c",
+    "stars": 0,
+    "clouds": 1,
+    "cloudColor": "#1d2736",
+    "moon": {
+      "elevation": 42,
+      "azimuth": 160,
+      "size": 2.6,
+      "color": "#aebfe0"
+    }
+  },
+  "sunColor": "#9baecb",
+  "sunIntensity": 1.1,
+  "hemiSky": "#24344f",
+  "hemiGround": "#0b0c10",
+  "hemiIntensity": 0.7,
+  "envIntensity": 0.55,
+  "fog": {
+    "color": "#131c29",
+    "density": 0.01
+  },
+  "exposure": 1.4,
+  "bloom": 0.18,
+  "grade": {
+    "lift": [
+      0,
+      0.005,
+      0.016
+    ],
+    "gamma": [
+      0.98,
+      1,
+      1.04
+    ],
+    "gain": [
+      0.93,
+      0.99,
+      1.1
+    ],
+    "saturation": 0.8,
+    "vignette": 0.32
+  },
+  "weather": "storm",
+  "weatherIntensity": 1,
+  "ambience": "storm",
+  "palette": {
+    "sky_top": "#02040a",
+    "horizon": "#1c2738",
+    "fog": "#131c29",
+    "sun": "#9baecb",
+    "shadow_fill": "#24344f",
+    "dominant_ground": "#333e47",
+    "dominant_structure": "#64717b",
+    "accent": "#c0cfdd",
+    "fire_emissive": "#ffad55"
+  },
+  "changes_vs_current": [
+    {
+      "field": "sunColor",
+      "current": "#7391cf",
+      "recommended": "#9baecb",
+      "reason": "Neutralise excessive orange/blue cast so fire, hide and wet stone keep distinguishable hues."
+    },
+    {
+      "field": "sunIntensity",
+      "current": 0.95,
+      "recommended": 1.1,
+      "reason": "Reduce broad key wash while preserving local contrast; Moria shaft and storm key use stronger directional separation."
+    },
+    {
+      "field": "hemiIntensity",
+      "current": 0.6,
+      "recommended": 0.7,
+      "reason": "Balance readable shadow silhouettes with directional depth; avoid uniformly filled interiors."
+    },
+    {
+      "field": "fog.density",
+      "current": 0.0165,
+      "recommended": 0.01,
+      "reason": "Extend silhouette visibility across the combat and set-piece routes; horizon colour remains matched."
+    },
+    {
+      "field": "bloom",
+      "current": 0.3,
+      "recommended": 0.18,
+      "reason": "Restrict bloom to flames and hot glints; prevent haze from obscuring aiming targets."
+    },
+    {
+      "field": "grade.vignette",
+      "current": 0.56,
+      "recommended": 0.32,
+      "reason": "Lower edge darkening and oversaturation to preserve peripheral enemy and traversal readability."
+    }
+  ],
+  "source": "design_target",
+  "observed_palette": {
+    "sky_top": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#13191f",
+      "region_px": [
+        922,
+        20,
+        1152,
+        102
+      ],
+      "pixel_count": 18860,
+      "image": "looks/establishing.jpg",
+      "label": "sky_top"
+    },
+    "horizon": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#34363d",
+      "region_px": [
+        108,
+        328,
+        184,
+        389
+      ],
+      "pixel_count": 4636,
+      "image": "looks/establishing.jpg",
+      "label": "horizon"
+    },
+    "fog": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#3b2f2b",
+      "region_px": [
+        92,
+        461,
+        154,
+        543
+      ],
+      "pixel_count": 5084,
+      "image": "looks/establishing.jpg",
+      "label": "fog"
+    },
+    "sun": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    },
+    "shadow_fill": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#2e292a",
+      "region_px": [
+        138,
+        461,
+        246,
+        532
+      ],
+      "pixel_count": 7668,
+      "image": "looks/establishing.jpg",
+      "label": "shadow_fill"
+    },
+    "dominant_ground": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1d242c",
+      "region_px": [
+        691,
+        850,
+        891,
+        952
+      ],
+      "pixel_count": 20400,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_ground"
+    },
+    "dominant_structure": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#1f242a",
+      "region_px": [
+        645,
+        481,
+        737,
+        563
+      ],
+      "pixel_count": 7544,
+      "image": "looks/establishing.jpg",
+      "label": "dominant_structure"
+    },
+    "accent": {
+      "source": "measured_script",
+      "method": "per-channel median in encoded sRGB",
+      "hex": "#13171d",
+      "region_px": [
+        737,
+        338,
+        814,
+        410
+      ],
+      "pixel_count": 5544,
+      "image": "looks/establishing.jpg",
+      "label": "accent"
+    },
+    "fire_emissive": {
+      "source": "measured_script",
+      "hex": null,
+      "reason": "No unambiguous visible region; do not infer a value from unrelated pixels."
+    }
+  },
+  "environment_name": "helms_deep_storm"
+}

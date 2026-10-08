@@ -1,0 +1,603 @@
+{
+  "schema_version": 1,
+  "units": "metres",
+  "coordinate_system": {
+    "up": "+Y",
+    "forward": "+Z",
+    "right": "+X",
+    "plan_north": "+Z",
+    "origin": "chapter-local recommended layout",
+    "anchor_semantics": "Checkpoints/routes are foot or platform-top elevations. Structure position_m is plan centre at base elevation; size_m is W/H/D. Falling-block routes are landing surface heights."
+  },
+  "chapter": "helms_deep",
+  "source": "design_target",
+  "status": "recommended design dimensions; not surveyed current code",
+  "extent_m": [
+    280,
+    300
+  ],
+  "terrain": {
+    "size": 300,
+    "segments": 160,
+    "style": "mud",
+    "height": "See elevation_m on route, checkpoints and structures; interpolate safely; do not serialize a function."
+  },
+  "player_start_m": [
+    -35,
+    20,
+    -21.2
+  ],
+  "checkpoints": [
+    {
+      "index": 0,
+      "label": "The Deeping Wall",
+      "position_m": [
+        -35,
+        20,
+        -21.2
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 1,
+      "label": "The Culvert",
+      "position_m": [
+        0,
+        20,
+        -24
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 2,
+      "label": "The Shield Stair",
+      "position_m": [
+        24,
+        20,
+        -21.1
+      ],
+      "radius_m": 3
+    },
+    {
+      "index": 3,
+      "label": "The Hornburg",
+      "position_m": [
+        46,
+        24,
+        52
+      ],
+      "radius_m": 3
+    }
+  ],
+  "enemy_entry_zones": [
+    {
+      "id": "E1L",
+      "checkpoint": 0,
+      "center_m": [
+        -50,
+        20,
+        -6
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E1R",
+      "checkpoint": 0,
+      "center_m": [
+        -20,
+        20,
+        -6
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E2L",
+      "checkpoint": 1,
+      "center_m": [
+        -15,
+        20,
+        -4
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E2R",
+      "checkpoint": 1,
+      "center_m": [
+        15,
+        20,
+        -4
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E3L",
+      "checkpoint": 2,
+      "center_m": [
+        9,
+        20,
+        2
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E3R",
+      "checkpoint": 2,
+      "center_m": [
+        39,
+        20,
+        2
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E4L",
+      "checkpoint": 3,
+      "center_m": [
+        31,
+        24,
+        64
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    },
+    {
+      "id": "E4R",
+      "checkpoint": 3,
+      "center_m": [
+        61,
+        24,
+        64
+      ],
+      "half_size_m": [
+        4,
+        4
+      ],
+      "kind": "Uruk climbers, crossbowmen, three stoppable berserkers plus scripted final runner, ram team."
+    }
+  ],
+  "ally_positions": [
+    {
+      "name": "Aragorn",
+      "position_m": [
+        -32,
+        20,
+        -16
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Gimli",
+      "position_m": [
+        -30,
+        20,
+        -16
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Galadhrim archers",
+      "position_m": [
+        -28,
+        20,
+        -16
+      ],
+      "active_from_checkpoint": 0
+    },
+    {
+      "name": "Rohirrim",
+      "position_m": [
+        -26,
+        20,
+        -16
+      ],
+      "active_from_checkpoint": 0
+    }
+  ],
+  "cover": [
+    {
+      "id": "C1L",
+      "position_m": [
+        -41,
+        20,
+        -13
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C1R",
+      "position_m": [
+        -29,
+        20,
+        -13
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2L",
+      "position_m": [
+        -6,
+        20,
+        -11
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C2R",
+      "position_m": [
+        6,
+        20,
+        -11
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3L",
+      "position_m": [
+        18,
+        20,
+        -5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C3R",
+      "position_m": [
+        30,
+        20,
+        -5
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C4L",
+      "position_m": [
+        40,
+        24,
+        57
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    },
+    {
+      "id": "C4R",
+      "position_m": [
+        52,
+        24,
+        57
+      ],
+      "size_m": [
+        2,
+        1.2,
+        1.5
+      ],
+      "material": "rock"
+    }
+  ],
+  "high_ground": [
+    {
+      "id": "H1",
+      "position_m": [
+        -24,
+        23,
+        -10
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H2",
+      "position_m": [
+        11,
+        23,
+        -8
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H3",
+      "position_m": [
+        35,
+        23,
+        -2
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    },
+    {
+      "id": "H4",
+      "position_m": [
+        57,
+        27,
+        60
+      ],
+      "size_m": [
+        5,
+        3,
+        5
+      ],
+      "access": "jump or ramp; no invisible perch"
+    }
+  ],
+  "set_piece_route": {
+    "points_m": [
+      [
+        24,
+        20,
+        -21.1
+      ],
+      [
+        24,
+        10,
+        8.9
+      ],
+      [
+        24,
+        0,
+        38.9
+      ]
+    ],
+    "width_m": 6,
+    "elevations_are_binding": true
+  },
+  "structures": [
+    {
+      "id": "S1",
+      "name": "Deeping wall",
+      "position_m": [
+        0,
+        0,
+        -20
+      ],
+      "size_m": [
+        160,
+        20,
+        6
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S2",
+      "name": "Wall walk",
+      "position_m": [
+        0,
+        19.35,
+        -20
+      ],
+      "size_m": [
+        160,
+        0.65,
+        6
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S3",
+      "name": "Culvert",
+      "position_m": [
+        0,
+        0,
+        -24
+      ],
+      "size_m": [
+        3,
+        2.4,
+        6
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S4",
+      "name": "Shield stair",
+      "position_m": [
+        24,
+        0,
+        8.9
+      ],
+      "size_m": [
+        6,
+        20,
+        60
+      ],
+      "yaw_deg": 0
+    },
+    {
+      "id": "S5",
+      "name": "Hornburg keep",
+      "position_m": [
+        46,
+        0,
+        90
+      ],
+      "size_m": [
+        42,
+        58,
+        38
+      ],
+      "yaw_deg": 0
+    }
+  ],
+  "extra_set_pieces": {
+    "ladder_assault": {
+      "wall_height_m": 20,
+      "walk_width_m": 6,
+      "ladder_count": 6,
+      "ladder_length_m": 22,
+      "socket_spacing_m": 12
+    },
+    "culvert_breach": {
+      "culvert_m": [
+        3,
+        2.4
+      ],
+      "breach_width_m": 18,
+      "fireball_radius_m": 7,
+      "debris_m": [
+        0.5,
+        1.2
+      ]
+    },
+    "shield_stair": {
+      "run_m": 60,
+      "width_m": 6,
+      "rise_m": 20,
+      "riser_m": 0.18018018018018017,
+      "tread_m": 0.5405405405405406,
+      "risers": 111
+    }
+  },
+  "ladder_sockets_m": [
+    [
+      -30,
+      20,
+      -24.6
+    ],
+    [
+      -18,
+      20,
+      -25.56
+    ],
+    [
+      -6,
+      20,
+      -26.52
+    ],
+    [
+      6,
+      20,
+      -26.52
+    ],
+    [
+      18,
+      20,
+      -25.56
+    ],
+    [
+      30,
+      20,
+      -24.6
+    ]
+  ],
+  "dawn_transition": {
+    "duration_s": 12,
+    "sunColor": "#ffe3b6",
+    "sunIntensity": 2.6,
+    "exposure": 1.0,
+    "grade_saturation": 1.0
+  },
+  "plan_render": {
+    "source": "measured_script",
+    "pixels_per_metre": 2.45,
+    "origin_px": [
+      615,
+      478
+    ],
+    "image_size_px": [
+      1536,
+      1024
+    ],
+    "script": "tools/compose_scenes.py:layout"
+  },
+  "wall_path_m": [
+    [
+      -78.1,
+      0,
+      -10
+    ],
+    [
+      -50,
+      0,
+      -20
+    ],
+    [
+      0,
+      0,
+      -24
+    ],
+    [
+      50,
+      0,
+      -20
+    ],
+    [
+      78.1,
+      0,
+      -10
+    ]
+  ],
+  "wall_path_length_m": 159.972
+}
