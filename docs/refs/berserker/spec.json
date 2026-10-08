@@ -340,6 +340,74 @@
             "value_m": 2.25,
             "y_px": 460
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            881,
+            93,
+            893
+          ],
+          [
+            57,
+            827,
+            93,
+            839
+          ],
+          [
+            57,
+            774,
+            93,
+            786
+          ],
+          [
+            57,
+            721,
+            93,
+            733
+          ],
+          [
+            57,
+            667,
+            93,
+            679
+          ],
+          [
+            57,
+            614,
+            93,
+            626
+          ],
+          [
+            57,
+            561,
+            93,
+            573
+          ],
+          [
+            57,
+            507,
+            93,
+            519
+          ],
+          [
+            57,
+            454,
+            93,
+            466
+          ],
+          [
+            117,
+            441,
+            180,
+            454
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -589,6 +657,7 @@
       "skin": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           210,
           620,
@@ -608,6 +677,7 @@
       "hair": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           727,
           710,
@@ -627,6 +697,7 @@
       "black_kilt": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           207,
           155,
@@ -646,6 +717,7 @@
       "leather_belt": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           211,
           24,
@@ -665,6 +737,7 @@
       "foot_wraps": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           327,
           344,
@@ -684,6 +757,7 @@
       "helmet_iron": {
         "sheet": "berserker_face.jpg",
         "sheet_sha256": "c4c83c482aa9cd50872f0ccc2d8f4b8fa6ebda9b4d95c3db88e2bc7db3bf5246",
+        "source_image": "berserker_face.jpg",
         "rect_px": [
           219,
           632,
@@ -703,6 +777,7 @@
       "sword_iron": {
         "sheet": "berserker_details.jpg",
         "sheet_sha256": "5c7093d8762fa4f0694e6d29cd2f5d34208957f5eb475b12403b42552c421e3f",
+        "source_image": "berserker_details.jpg",
         "rect_px": [
           762,
           264,
@@ -722,6 +797,7 @@
       "white_paint": {
         "sheet": "berserker_face.jpg",
         "sheet_sha256": "c4c83c482aa9cd50872f0ccc2d8f4b8fa6ebda9b4d95c3db88e2bc7db3bf5246",
+        "source_image": "berserker_face.jpg",
         "rect_px": [
           212,
           816,

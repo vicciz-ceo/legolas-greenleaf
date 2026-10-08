@@ -154,7 +154,19 @@
         "sheen": 0.08,
         "notes": "Only where required by description"
       }
-    ]
+    ],
+    "sample_aliases": {
+      "bracers": [
+        "leather_bracers"
+      ],
+      "belt": [
+        "leather_belt"
+      ],
+      "metal": [
+        "steel_mail",
+        "horn_bronze_fittings"
+      ]
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -365,6 +377,62 @@
             "value_m": 1.75,
             "y_px": 515
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            873,
+            93,
+            885
+          ],
+          [
+            57,
+            813,
+            93,
+            825
+          ],
+          [
+            57,
+            752,
+            93,
+            764
+          ],
+          [
+            57,
+            691,
+            93,
+            703
+          ],
+          [
+            57,
+            631,
+            93,
+            643
+          ],
+          [
+            57,
+            570,
+            93,
+            582
+          ],
+          [
+            57,
+            509,
+            93,
+            521
+          ],
+          [
+            117,
+            472,
+            180,
+            485
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -644,6 +712,7 @@
       "skin": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           300,
           540,
@@ -663,6 +732,7 @@
       "hair": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           700,
           620,
@@ -682,6 +752,7 @@
       "tunic": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           180,
           110,
@@ -701,6 +772,7 @@
       "cloak": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           360,
           180,
@@ -720,6 +792,7 @@
       "fur_collar": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           280,
           25,
@@ -739,6 +812,7 @@
       "leather_bracers": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           320,
           235,
@@ -758,6 +832,7 @@
       "leather_belt": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           215,
           245,
@@ -777,6 +852,7 @@
       "steel_mail": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           355,
           195,
@@ -796,6 +872,7 @@
       "horn_bronze_fittings": {
         "sheet": "boromir_details.jpg",
         "sheet_sha256": "e3953478d058bf918fb4f9d4f7e80ee326ad425c39e58f6a4f5893f0b3319516",
+        "source_image": "boromir_details.jpg",
         "rect_px": [
           650,
           35,
@@ -815,6 +892,7 @@
       "trousers": {
         "sheet": "boromir_turnaround.jpg",
         "sheet_sha256": "781c8e96acbfe0211c93e5f5396adbaf5ec265e65514c6b1aeee1c7a9db2026b",
+        "source_image": "boromir_turnaround.jpg",
         "rect_px": [
           280,
           755,
@@ -834,6 +912,7 @@
       "boots": {
         "sheet": "boromir_turnaround.jpg",
         "sheet_sha256": "781c8e96acbfe0211c93e5f5396adbaf5ec265e65514c6b1aeee1c7a9db2026b",
+        "source_image": "boromir_turnaround.jpg",
         "rect_px": [
           262,
           897,

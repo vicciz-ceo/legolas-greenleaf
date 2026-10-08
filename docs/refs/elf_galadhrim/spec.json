@@ -144,7 +144,12 @@
         "sheen": 0.08,
         "notes": "Only where required by description"
       }
-    ]
+    ],
+    "sample_aliases": {
+      "metal": [
+        "gold_armour"
+      ]
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -358,6 +363,62 @@
             "value_m": 1.75,
             "y_px": 482
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            869,
+            93,
+            881
+          ],
+          [
+            57,
+            803,
+            93,
+            815
+          ],
+          [
+            57,
+            738,
+            93,
+            750
+          ],
+          [
+            57,
+            672,
+            93,
+            684
+          ],
+          [
+            57,
+            607,
+            93,
+            619
+          ],
+          [
+            57,
+            542,
+            93,
+            554
+          ],
+          [
+            57,
+            476,
+            93,
+            488
+          ],
+          [
+            117,
+            437,
+            180,
+            450
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -617,6 +678,7 @@
       "skin": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           170,
           610,
@@ -636,6 +698,7 @@
       "hair": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           750,
           620,
@@ -655,6 +718,7 @@
       "tunic": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           205,
           400,
@@ -674,6 +738,7 @@
       "cloak": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           155,
           200,
@@ -693,6 +758,7 @@
       "bracers": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           183,
           230,
@@ -712,6 +778,7 @@
       "belt": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           290,
           147,
@@ -731,6 +798,7 @@
       "gold_armour": {
         "sheet": "elf_galadhrim_details.jpg",
         "sheet_sha256": "eacdceea99f5f3572555d4ab1a224b9877172f451c0d3ceda7cc59d2c20ea58d",
+        "source_image": "elf_galadhrim_details.jpg",
         "rect_px": [
           295,
           20,
@@ -750,6 +818,7 @@
       "boots": {
         "sheet": "elf_galadhrim_turnaround.jpg",
         "sheet_sha256": "66c57ee676625e2b2d65d24fdbf4a9cd85ea16b7deb92b0aff22ae501df0237b",
+        "source_image": "elf_galadhrim_turnaround.jpg",
         "rect_px": [
           255,
           904,
@@ -769,6 +838,7 @@
       "trousers": {
         "sheet": "elf_galadhrim_turnaround.jpg",
         "sheet_sha256": "66c57ee676625e2b2d65d24fdbf4a9cd85ea16b7deb92b0aff22ae501df0237b",
+        "source_image": "elf_galadhrim_turnaround.jpg",
         "rect_px": [
           252,
           805,

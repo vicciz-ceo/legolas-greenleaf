@@ -1,3 +1,4 @@
+test_actual_human_pixels_and_close_endpoint_label_layout (test_compose.ComposeTests.test_actual_human_pixels_and_close_endpoint_label_layout) ... ok
 test_concealed_material_never_gets_fabricated_colour (test_compose.ComposeTests.test_concealed_material_never_gets_fabricated_colour) ... ok
 test_creature_landmark_excludes_headgear_and_changes_axis (test_compose.ComposeTests.test_creature_landmark_excludes_headgear_and_changes_axis) ... ok
 test_creature_ruler_and_human (test_compose.ComposeTests.test_creature_ruler_and_human) ... ok
@@ -8,12 +9,19 @@ test_missing_schema_and_overlap_fail (test_compose.ComposeTests.test_missing_sch
 test_pre_encoding_hash_and_library_path (test_compose.ComposeTests.test_pre_encoding_hash_and_library_path) ... ok
 test_real_composition_and_observed_median (test_compose.ComposeTests.test_real_composition_and_observed_median) ... ok
 test_resampled_alpha_bounds_define_calibrated_height (test_compose.ComposeTests.test_resampled_alpha_bounds_define_calibrated_height) ... ok
+test_source_sampling_and_missing_material_failure (test_compose.ComposeTests.test_source_sampling_and_missing_material_failure) ... /workspace/greenleaf-character-refs/docs/refs/tools/compose.py:535: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp1rqfk227/fixture/views/front.png'>
+  if retained and Image.open(path).mode == 'RGBA':
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/workspace/greenleaf-character-refs/docs/refs/tools/compose.py:675: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp1rqfk227/fixture/views/front.png'>
+  if s['coordinate_space'].startswith('retained source pixels') and Image.open(path).mode=='RGBA':
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+ok
 test_strict_layout_rejects_wide_subject (test_compose.ComposeTests.test_strict_layout_rejects_wide_subject) ... ok
 test_supplement_accepted_ledger_cannot_hide_missing_assets (test_compose.ComposeTests.test_supplement_accepted_ledger_cannot_hide_missing_assets) ... ok
 test_supplement_actual_scale_png_and_stale_files (test_compose.ComposeTests.test_supplement_actual_scale_png_and_stale_files) ... ok
 test_threshold_fallback_with_transparent_hole (test_compose.ComposeTests.test_threshold_fallback_with_transparent_hole) ... ok
 
 ----------------------------------------------------------------------
-Ran 14 tests in 2.092s
+Ran 16 tests in 3.730s
 
 OK

@@ -315,6 +315,44 @@
             "value_m": 1.0,
             "y_px": 665
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            865,
+            93,
+            877
+          ],
+          [
+            57,
+            796,
+            93,
+            808
+          ],
+          [
+            57,
+            727,
+            93,
+            739
+          ],
+          [
+            57,
+            659,
+            93,
+            671
+          ],
+          [
+            117,
+            618,
+            180,
+            631
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -544,6 +582,7 @@
       "skin": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           205,
           560,
@@ -563,6 +602,7 @@
       "hair": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           660,
           721,
@@ -582,6 +622,7 @@
       "rag_wrap": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           230,
           275,
@@ -601,6 +642,7 @@
       "waist_binding": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           219,
           198,
@@ -620,6 +662,7 @@
       "rusty_plates": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           365,
           70,
@@ -639,6 +682,7 @@
       "blade_iron": {
         "sheet": "goblin_details.jpg",
         "sheet_sha256": "d16510109bce40a02bb9fdac649af21d8a577b3e0b0ff67ebd7f2cc143c24b8e",
+        "source_image": "goblin_details.jpg",
         "rect_px": [
           734,
           283,

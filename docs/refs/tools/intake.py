@@ -20,16 +20,20 @@ def intake(cid,key,path,crop=None,remove_detail_bg=False):
   image=image.crop(crop)
   temp=Path('/tmp/greenleaf-intake-crop.png');image.save(temp);inp=temp
  else:inp=original
+ detail_trim=None
  if key.startswith(('views/','face_views/')):
   config=json.loads((folder/'spec.json').read_text()).get('composition',{}).get('source_heights',{})
   height=config.get('body',560) if key.startswith('views/') else config.get('face',320)
   result=compose.segment(inp,folder/relative,max_height=height,backend='rembg')
  else:
+  if remove_detail_bg:
+   detail_trim=compose.bbox(image.convert('RGBA'),require_transparency=False)
+   image=image.crop(detail_trim)
   image=image.convert('RGBA' if remove_detail_bg else 'RGB');image.thumbnail((256,256),Image.Resampling.LANCZOS)
   (folder/relative).parent.mkdir(parents=True,exist_ok=True);image.save(folder/relative,optimize=True)
   result={'output':relative,'size_px':list(image.size)}
  p=folder/'sources.json';data=json.loads(p.read_text()) if p.exists() else {}
- data[key]={'original_full_resolution_path':str(original),'original_sha256':compose.digest(original),'original_size_px':list(Image.open(original).size),'crop_px':list(crop) if crop else None,'detail_background_removed':remove_detail_bg,'saved_cutout':relative,'cutout_sha256':compose.digest(folder/relative)}
+ data[key]={'original_full_resolution_path':str(original),'original_sha256':compose.digest(original),'original_size_px':list(Image.open(original).size),'crop_px':list(crop) if crop else None,'detail_background_removed':remove_detail_bg,'detail_trim_box_in_cropped_source_px':list(detail_trim) if detail_trim else None,'saved_cutout':relative,'cutout_sha256':compose.digest(folder/relative)}
  p.write_text(json.dumps(data,indent=2)+'\n')
  return result
 if __name__=='__main__':

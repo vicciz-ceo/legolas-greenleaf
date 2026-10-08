@@ -348,6 +348,62 @@
             "value_m": 1.75,
             "y_px": 416
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            859,
+            93,
+            871
+          ],
+          [
+            57,
+            784,
+            93,
+            796
+          ],
+          [
+            57,
+            709,
+            93,
+            721
+          ],
+          [
+            57,
+            635,
+            93,
+            647
+          ],
+          [
+            57,
+            560,
+            93,
+            572
+          ],
+          [
+            57,
+            485,
+            93,
+            497
+          ],
+          [
+            57,
+            410,
+            93,
+            422
+          ],
+          [
+            117,
+            397,
+            180,
+            410
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -617,6 +673,7 @@
       "skin": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           310,
           525,
@@ -636,6 +693,7 @@
       "hair": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           680,
           600,
@@ -655,6 +713,7 @@
       "jacket": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           125,
           85,
@@ -674,6 +733,7 @@
       "tunic": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           220,
           120,
@@ -693,6 +753,7 @@
       "belt": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           220,
           235,
@@ -712,6 +773,7 @@
       "pouch": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           315,
           270,
@@ -731,6 +793,7 @@
       "pouch_fastening_metal": {
         "sheet": "laketown_man_details.jpg",
         "sheet_sha256": "6ce34a71f4207072e50ecf0549a0a97b17b2f5ffdf9b8f866b92530ee8ae2bbe",
+        "source_image": "laketown_man_details.jpg",
         "rect_px": [
           866,
           231,
@@ -750,6 +813,7 @@
       "cap": {
         "sheet": "laketown_man_turnaround.jpg",
         "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "source_image": "laketown_man_turnaround.jpg",
         "rect_px": [
           300,
           438,
@@ -769,6 +833,7 @@
       "trousers": {
         "sheet": "laketown_man_turnaround.jpg",
         "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "source_image": "laketown_man_turnaround.jpg",
         "rect_px": [
           265,
           800,
@@ -788,6 +853,7 @@
       "boots": {
         "sheet": "laketown_man_turnaround.jpg",
         "sheet_sha256": "33f4dcc9849d442bff3b6cb9d0f55f68d5fa74cd090d77e451419b189ec0bb8d",
+        "source_image": "laketown_man_turnaround.jpg",
         "rect_px": [
           262,
           895,

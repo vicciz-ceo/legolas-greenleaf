@@ -450,29 +450,29 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/front | accepted | 1 | Square-front gold masked helmet/scale armor, dark red-black cloth, low horizontal own-right spear and left-arm shield. Close crop confirms gloved natural grip; skin/hair concealed by prescribed gear. |
 | views/three_quarter | accepted | 2 | Second candidate rotates masked head clearly with oblique chest/feet; near right spear/far left shield stay attached correctly, all gear complete. |
 | views/side | accepted | 1 | Exact side-on masked head/body, right near hand holds low complete spear, left far shield partly occluded, gold scales/red cloth/gloves consistent. |
-| views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/back | accepted | 1 | True rear helmet/scale harness, low horizontal spear own-right image right and shield own-left image left, same gold/red-black gear and complete endpoints. |
+| face_views/front | accepted | 1 | Same original golden masked faceplate/short crest, dark eye slits and red cowl, gold scale shoulders; no exposed invented face or hair. |
+| face_views/three_quarter | accepted | 1 | Clear oblique masked head/chest with foreshortened far slit and broader near helmet side, same gold plates/red cowl; complete crest. |
+| face_views/side | accepted | 1 | Exact helmet/torso profile, one slit and edge-on faceplate, same crest/scales/red cowl; face/hair remain covered. |
+| details/cloth_leather | accepted | 1 | Same gold/bronze scales over black undercloth, red neck/skirt panels, dark gloves/boots, leather diagonal straps. Complete neck-to-feet costume and natural gloved hands. |
+| details/weapon_metal | accepted | 1 | Same bronze-black pointed kite shield, gilded rim/rivets, gold sun rays and round boss; complete isolated object. Minor ray engraving drift tolerated. |
+| details/skin | accepted | 0 | Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented. |
+| details/hair | accepted | 0 | Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented. |
+| turnaround | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| spec | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| notes | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| check | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| face | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| details | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| observed | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
 
 ## haradrim
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
+| views/front | accepted | 2 | Second front gives clear relaxed A-pose and close crop confirms natural thumb/four fingers. Same original painted face, red-black robes/gold jewelry, own-right low sword, complete feet/tip. |
+| views/three_quarter | accepted | 1 | Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip. |
+| views/side | accepted | 2 | Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry. |
 | views/back | pending | 0 |  |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |

@@ -161,6 +161,13 @@
     ],
     "concealed_materials": {
       "trousers": "Trousers are fully concealed by mail, surcoat and steel greaves in the prescribed outfit."
+    },
+    "sample_aliases": {
+      "metal": [
+        "steel_mail",
+        "steel_plate",
+        "dark_shield_steel"
+      ]
     }
   },
   "composition": {
@@ -376,6 +383,68 @@
             "value_m": 2.0,
             "y_px": 423
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            869,
+            93,
+            881
+          ],
+          [
+            57,
+            805,
+            93,
+            817
+          ],
+          [
+            57,
+            740,
+            93,
+            752
+          ],
+          [
+            57,
+            676,
+            93,
+            688
+          ],
+          [
+            57,
+            611,
+            93,
+            623
+          ],
+          [
+            57,
+            546,
+            93,
+            558
+          ],
+          [
+            57,
+            482,
+            93,
+            494
+          ],
+          [
+            57,
+            417,
+            93,
+            429
+          ],
+          [
+            117,
+            394,
+            180,
+            407
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -660,6 +729,7 @@
       "skin": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           150,
           730,
@@ -679,6 +749,7 @@
       "hair": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           635,
           550,
@@ -698,6 +769,7 @@
       "surcoat": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           275,
           330,
@@ -717,6 +789,7 @@
       "cloak": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           300,
           20,
@@ -736,6 +809,7 @@
       "belt": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           265,
           263,
@@ -755,6 +829,7 @@
       "bracers": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           140,
           270,
@@ -774,6 +849,7 @@
       "gloves": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           125,
           420,
@@ -793,6 +869,7 @@
       "steel_mail": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           151,
           137,
@@ -812,6 +889,7 @@
       "steel_plate": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           187,
           55,
@@ -831,6 +909,7 @@
       "dark_shield_steel": {
         "sheet": "gondor_details.jpg",
         "sheet_sha256": "fdc49e42add8469cc68fc1763d6bcd654d92cc3671fee8f0d5bd400a4195a069",
+        "source_image": "gondor_details.jpg",
         "rect_px": [
           770,
           250,
@@ -850,6 +929,7 @@
       "boots": {
         "sheet": "gondor_turnaround.jpg",
         "sheet_sha256": "66e038e5e21f8cf5280b364c7a53e2a871a4c4044c0e1d57cbaeb824103a404c",
+        "source_image": "gondor_turnaround.jpg",
         "rect_px": [
           265,
           903,

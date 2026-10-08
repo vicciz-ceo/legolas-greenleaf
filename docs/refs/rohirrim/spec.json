@@ -149,7 +149,26 @@
         "sheen": 0.08,
         "notes": "Only where required by description"
       }
-    ]
+    ],
+    "sample_aliases": {
+      "tunic": [
+        "green_tunic"
+      ],
+      "bracers": [
+        "leather_bracers"
+      ],
+      "belt": [
+        "leather_belt"
+      ],
+      "diagonal_strap": [
+        "leather_strap"
+      ],
+      "metal": [
+        "steel_mail",
+        "shield_steel_boss",
+        "shield_bronze_rim"
+      ]
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -360,6 +379,62 @@
             "value_m": 1.75,
             "y_px": 523
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            874,
+            93,
+            886
+          ],
+          [
+            57,
+            815,
+            93,
+            827
+          ],
+          [
+            57,
+            755,
+            93,
+            767
+          ],
+          [
+            57,
+            695,
+            93,
+            707
+          ],
+          [
+            57,
+            636,
+            93,
+            648
+          ],
+          [
+            57,
+            576,
+            93,
+            588
+          ],
+          [
+            57,
+            517,
+            93,
+            529
+          ],
+          [
+            117,
+            463,
+            180,
+            476
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -649,6 +724,7 @@
       "skin": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           70,
           825,
@@ -668,6 +744,7 @@
       "hair": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           780,
           710,
@@ -687,6 +764,7 @@
       "green_tunic": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           145,
           170,
@@ -706,6 +784,7 @@
       "steel_mail": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           175,
           90,
@@ -725,6 +804,7 @@
       "leather_bracers": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           135,
           260,
@@ -744,6 +824,7 @@
       "leather_belt": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           245,
           212,
@@ -763,6 +844,7 @@
       "leather_strap": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           270,
           165,
@@ -782,6 +864,7 @@
       "shield_green_wood": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           750,
           375,
@@ -801,6 +884,7 @@
       "shield_steel_boss": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           750,
           210,
@@ -820,6 +904,7 @@
       "shield_bronze_rim": {
         "sheet": "rohirrim_details.jpg",
         "sheet_sha256": "386e7e2e25511c7733d48dd6c6375b801d311eb47e0e9dce3fe7d69f4ed3be9b",
+        "source_image": "rohirrim_details.jpg",
         "rect_px": [
           967,
           215,
@@ -839,6 +924,7 @@
       "trousers": {
         "sheet": "rohirrim_turnaround.jpg",
         "sheet_sha256": "461cb65df80b39aab6f73de1f8e4746cc1fb664b49b636c4c2584607d810d894",
+        "source_image": "rohirrim_turnaround.jpg",
         "rect_px": [
           270,
           782,
@@ -858,6 +944,7 @@
       "boots": {
         "sheet": "rohirrim_turnaround.jpg",
         "sheet_sha256": "461cb65df80b39aab6f73de1f8e4746cc1fb664b49b636c4c2584607d810d894",
+        "source_image": "rohirrim_turnaround.jpg",
         "rect_px": [
           253,
           895,

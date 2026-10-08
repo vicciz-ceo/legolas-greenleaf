@@ -1,11 +1,11 @@
 {
-  "id": "boromir",
+  "id": "easterling",
   "status": "PASS",
   "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
-  "character_bytes": 2336464,
+  "character_bytes": 2029242,
   "character_budget_bytes": 2500000,
-  "library_bytes": 30475518,
+  "library_bytes": 30484208,
   "library_budget_bytes": 70000000,
-  "px_per_m": 242.70270270270268,
+  "px_per_m": 132.30769230769232,
   "visual_review": "Separate by-eye gate; not certified by this command."
 }

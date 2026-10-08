@@ -117,7 +117,13 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Unspecified proportions, crown allowance and palette/PBR values are authored modelling intent, not prescribed requirements or measured anatomy.",
-    "description": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty."
+    "description": "Wiry hunched orc: mottled grey-green skin, old scars, uneven fangs, matted black hair; rag armour and crude rusty plates over opaque ragged brown tunic and kilt, wrapped feet; rusty cleaver in own RIGHT hand, left empty.",
+    "sample_aliases": {
+      "metal": [
+        "rusted_iron_plates",
+        "cleaver_rust"
+      ]
+    }
   },
   "composition": {
     "fit_policy": "fit",
@@ -324,6 +330,56 @@
             "value_m": 1.5,
             "y_px": 518
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            864,
+            93,
+            876
+          ],
+          [
+            57,
+            793,
+            93,
+            805
+          ],
+          [
+            57,
+            723,
+            93,
+            735
+          ],
+          [
+            57,
+            653,
+            93,
+            665
+          ],
+          [
+            57,
+            583,
+            93,
+            595
+          ],
+          [
+            57,
+            512,
+            93,
+            524
+          ],
+          [
+            117,
+            443,
+            180,
+            456
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -583,6 +639,7 @@
       "skin": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           330,
           580,
@@ -602,6 +659,7 @@
       "hair": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           710,
           660,
@@ -621,6 +679,7 @@
       "rag_tunic": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           205,
           100,
@@ -640,6 +699,7 @@
       "rag_kilt": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           220,
           340,
@@ -659,6 +719,7 @@
       "straps": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           260,
           165,
@@ -678,6 +739,7 @@
       "bracers": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           118,
           236,
@@ -697,6 +759,7 @@
       "rusted_iron_plates": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           320,
           40,
@@ -716,6 +779,7 @@
       "cleaver_rust": {
         "sheet": "orc_details.jpg",
         "sheet_sha256": "09fd6110a5518458fc3aba00acf0a2324d351acdbd1a43ef8a3e39d7338b9de2",
+        "source_image": "orc_details.jpg",
         "rect_px": [
           685,
           299,
@@ -735,6 +799,7 @@
       "foot_wraps": {
         "sheet": "orc_turnaround.jpg",
         "sheet_sha256": "f09f69be374625cd98fef67264b485d4ac7df59bc774d4ccac74ad1f63cbbbf0",
+        "source_image": "orc_turnaround.jpg",
         "rect_px": [
           278,
           866,

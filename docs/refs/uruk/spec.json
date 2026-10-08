@@ -340,6 +340,68 @@
             "value_m": 2.0,
             "y_px": 483
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            877,
+            93,
+            889
+          ],
+          [
+            57,
+            820,
+            93,
+            832
+          ],
+          [
+            57,
+            763,
+            93,
+            775
+          ],
+          [
+            57,
+            705,
+            93,
+            717
+          ],
+          [
+            57,
+            648,
+            93,
+            660
+          ],
+          [
+            57,
+            591,
+            93,
+            603
+          ],
+          [
+            57,
+            534,
+            93,
+            546
+          ],
+          [
+            57,
+            477,
+            93,
+            489
+          ],
+          [
+            117,
+            432,
+            180,
+            445
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -599,6 +661,7 @@
       "skin": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           185,
           650,
@@ -618,6 +681,7 @@
       "hair": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           777,
           625,
@@ -637,6 +701,7 @@
       "black_kilt": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           225,
           313,
@@ -656,6 +721,7 @@
       "leather_belt": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           183,
           182,
@@ -675,6 +741,7 @@
       "blackened_plates": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           183,
           110,
@@ -694,6 +761,7 @@
       "shield_iron": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           715,
           273,
@@ -713,6 +781,7 @@
       "white_paint": {
         "sheet": "uruk_details.jpg",
         "sheet_sha256": "072cca8933d8ea8e1b494669f3c16cfd4321776544684934590e200a26abeea8",
+        "source_image": "uruk_details.jpg",
         "rect_px": [
           766,
           188,
@@ -732,6 +801,7 @@
       "boots": {
         "sheet": "uruk_turnaround.jpg",
         "sheet_sha256": "e90cbcd6e8df6654fdd4bc269a914a7dcc19efc6dbe290e7547229a1c96aff85",
+        "source_image": "uruk_turnaround.jpg",
         "rect_px": [
           247,
           902,
@@ -751,6 +821,7 @@
       "falchion_iron": {
         "sheet": "uruk_turnaround.jpg",
         "sheet_sha256": "e90cbcd6e8df6654fdd4bc269a914a7dcc19efc6dbe290e7547229a1c96aff85",
+        "source_image": "uruk_turnaround.jpg",
         "rect_px": [
           177,
           799,

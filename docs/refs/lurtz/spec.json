@@ -353,6 +353,68 @@
             "value_m": 2.0,
             "y_px": 423
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            869,
+            93,
+            881
+          ],
+          [
+            57,
+            805,
+            93,
+            817
+          ],
+          [
+            57,
+            740,
+            93,
+            752
+          ],
+          [
+            57,
+            675,
+            93,
+            687
+          ],
+          [
+            57,
+            611,
+            93,
+            623
+          ],
+          [
+            57,
+            546,
+            93,
+            558
+          ],
+          [
+            57,
+            482,
+            93,
+            494
+          ],
+          [
+            57,
+            417,
+            93,
+            429
+          ],
+          [
+            117,
+            378,
+            180,
+            391
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -612,6 +674,7 @@
       "skin": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           190,
           628,
@@ -631,6 +694,7 @@
       "hair": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           740,
           665,
@@ -650,6 +714,7 @@
       "dark_kilt": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           215,
           145,
@@ -669,6 +734,7 @@
       "leather_belt": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           223,
           19,
@@ -688,6 +754,7 @@
       "foot_wraps": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           323,
           352,
@@ -707,6 +774,7 @@
       "sword_iron": {
         "sheet": "lurtz_details.jpg",
         "sheet_sha256": "4d6f0103a80f95570f35525a305cf9b1a68ec1e75852ca5fbaf5e42c8c50ead4",
+        "source_image": "lurtz_details.jpg",
         "rect_px": [
           760,
           274,
@@ -726,6 +794,7 @@
       "face_paint": {
         "sheet": "lurtz_face.jpg",
         "sheet_sha256": "3bfbcccaf518443d404da241ed7e3349b14abe6bbc8c5437bf0e15b5ffa71235",
+        "source_image": "lurtz_face.jpg",
         "rect_px": [
           261,
           369,
@@ -745,6 +814,7 @@
       "bracer_iron": {
         "sheet": "lurtz_turnaround.jpg",
         "sheet_sha256": "348139a00dc3ff2794dcc5c73fce23c1739aaf21ea88bebe4477177fbe177ace",
+        "source_image": "lurtz_turnaround.jpg",
         "rect_px": [
           220,
           639,
@@ -764,6 +834,7 @@
       "back_shield_iron": {
         "sheet": "lurtz_turnaround.jpg",
         "sheet_sha256": "348139a00dc3ff2794dcc5c73fce23c1739aaf21ea88bebe4477177fbe177ace",
+        "source_image": "lurtz_turnaround.jpg",
         "rect_px": [
           1335,
           530,

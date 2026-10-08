@@ -300,6 +300,68 @@
             "value_m": 2.0,
             "y_px": 380
           }
+        ],
+        "label_bboxes_px": [
+          [
+            57,
+            934,
+            93,
+            946
+          ],
+          [
+            57,
+            864,
+            93,
+            876
+          ],
+          [
+            57,
+            794,
+            93,
+            806
+          ],
+          [
+            57,
+            724,
+            93,
+            736
+          ],
+          [
+            57,
+            654,
+            93,
+            666
+          ],
+          [
+            57,
+            584,
+            93,
+            596
+          ],
+          [
+            57,
+            514,
+            93,
+            526
+          ],
+          [
+            57,
+            444,
+            93,
+            456
+          ],
+          [
+            57,
+            374,
+            93,
+            386
+          ],
+          [
+            117,
+            339,
+            180,
+            352
+          ]
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
@@ -529,6 +591,7 @@
       "skin": {
         "sheet": "thranduil_details.jpg",
         "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
         "rect_px": [
           310,
           620,
@@ -548,6 +611,7 @@
       "hair": {
         "sheet": "thranduil_details.jpg",
         "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
         "rect_px": [
           760,
           650,
@@ -567,6 +631,7 @@
       "coat": {
         "sheet": "thranduil_details.jpg",
         "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
         "rect_px": [
           120,
           130,
@@ -586,6 +651,7 @@
       "robe": {
         "sheet": "thranduil_details.jpg",
         "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
         "rect_px": [
           225,
           150,
@@ -605,6 +671,7 @@
       "crown_wood": {
         "sheet": "thranduil_details.jpg",
         "sheet_sha256": "4ee9cb8a8d4ec37ac702b55b000e6ce846f246b50dc1310f5195359c9cab5973",
+        "source_image": "thranduil_details.jpg",
         "rect_px": [
           780,
           405,
@@ -624,6 +691,7 @@
       "boots": {
         "sheet": "thranduil_turnaround.jpg",
         "sheet_sha256": "8b5b540046dd1bb77af6ad6f749442900d917f53dc802f05526335f77bfc92cd",
+        "source_image": "thranduil_turnaround.jpg",
         "rect_px": [
           275,
           905,

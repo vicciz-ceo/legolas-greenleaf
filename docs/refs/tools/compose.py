@@ -69,6 +69,14 @@ def font(size=22):
 
 def text(draw, xy, label, size=22, anchor='mm'):
     draw.text(xy, label, fill=(238, 238, 238), font=font(size), anchor=anchor)
+    return list(draw.textbbox(xy, label, font=font(size), anchor=anchor))
+
+
+def check_text_boxes(boxes, canvas_size=TURN_SIZE):
+    for i,b in enumerate(boxes):
+        require(0<=b[0]<b[2]<=canvas_size[0] and 0<=b[1]<b[3]<=canvas_size[1], 'Clipped ruler label')
+        for other in boxes[i+1:]:
+            require(min(b[2],other[2])<=max(b[0],other[0]) or min(b[3],other[3])<=max(b[1],other[1]), 'Overlapping ruler labels')
 
 
 def bbox(im, require_transparency=True):
@@ -209,20 +217,21 @@ def segment(inp, out, threshold=38.0, max_height=768, backend='auto'):
 def ruler(draw, ppm, baseline, height, x=105):
     ytop = baseline - round(height * ppm)
     draw.line((x, ytop, x, baseline), fill=(225, 225, 225), width=1)
-    ticks = []
+    ticks, labels = [], []
     stride = max(1,math.ceil(18/(.25*ppm)))
     if stride>1:stride = 4*math.ceil(stride/4)
     for i in range(math.floor(height / .25 + 1e-8) + 1):
         value = i * .25
         y = baseline - round(value * ppm)
         draw.line((x - 8, y, x + 8, y), fill=(225, 225, 225), width=1)
-        if i%stride==0:text(draw, (x - 12, y), f'{value:.2f}', 16, 'rm')
+        if i%stride==0:labels.append(text(draw, (x - 12, y), f'{value:.2f}', 16, 'rm'))
         ticks.append({'value_m': value, 'y_px': y})
     # Put endpoint label on the right to avoid overlap with a near-quarter tick.
     draw.line((x - 8, ytop, x + 8, ytop), fill=(225, 225, 225), width=1)
-    text(draw, (x + 12, ytop - 12), f'{height:.2f} m', 18, 'lm')
+    labels.append(text(draw, (x + 12, ytop - 12), f'{height:.2f} m', 18, 'lm'))
+    check_text_boxes(labels)
     result = {'axis': 'vertical', 'x_px': x, 'baseline_y_px': baseline, 'top_y_px': ytop,
-              'endpoint_m': height, 'step_m': .25, 'ticks': ticks}
+              'endpoint_m': height, 'step_m': .25, 'ticks': ticks, 'label_bboxes_px': labels}
     if stride>1:result['label_stride_ticks']=stride
     return result
 
@@ -230,24 +239,30 @@ def ruler(draw, ppm, baseline, height, x=105):
 def human(draw, x, baseline, ppm):
     # A deterministic, original 1.85 m scale icon, not generated imagery.
     h = round(1.85 * ppm)
+    require(h>=5, 'Human comparison is too small to draw')
     y = baseline - h
-    r = max(2, round(.10 * ppm))
-    head = y + r
-    draw.ellipse((x-r, y, x+r, y+2*r), fill=(30, 30, 30))
-    shoulder = y + round(.30 * ppm)
-    hip = y + round(.93 * ppm)
-    half = max(3, round(.21 * ppm))
-    draw.polygon([(x-half, shoulder), (x+half, shoulder), (x+round(.14*ppm), hip),
-                  (x-round(.14*ppm), hip)], fill=(30, 30, 30))
     width = max(2, round(.09*ppm))
+    offset = math.ceil(.30*ppm + width + 2)
+    icon = Image.new('RGBA',(offset*2+1,h),(0,0,0,0))
+    ink = ImageDraw.Draw(icon)
+    r = max(2, round(.10 * ppm))
+    ink.ellipse((offset-r,0,offset+r,2*r-1), fill=(30,30,30,255))
+    shoulder = round(.30 * ppm)
+    hip = round(.93 * ppm)
+    half = max(3, round(.21 * ppm))
+    ink.polygon([(offset-half,shoulder),(offset+half,shoulder),(offset+round(.14*ppm),hip),
+                 (offset-round(.14*ppm),hip)],fill=(30,30,30,255))
     for sign in (-1, 1):
-        draw.line((x+sign*half, shoulder, x+sign*round(.30*ppm), y+round(1.02*ppm)),
-                  fill=(30, 30, 30), width=width)
-        draw.line((x+sign*round(.08*ppm), hip, x+sign*round(.13*ppm), baseline-1),
-                  fill=(30, 30, 30), width=width)
+        ink.line((offset+sign*half,shoulder,offset+sign*round(.30*ppm),round(1.02*ppm)),fill=(30,30,30,255),width=width)
+        foot=offset+sign*round(.13*ppm)
+        ink.line((offset+sign*round(.08*ppm),hip,foot,h-1),fill=(30,30,30,255),width=width)
+        ink.rectangle((foot-width//2,h-2,foot+width//2,h-1),fill=(30,30,30,255))
+    bounds=bbox(icon)
+    require(bounds[1]==0 and bounds[3]==h,'Human silhouette lost calibrated height')
+    draw.bitmap((x-offset,y),icon.getchannel('A'),fill=(30,30,30))
     text(draw, (x, baseline+18), '1.85 m', 14)
     return {'height_m': 1.85, 'height_px': h, 'top_y_px': y, 'baseline_y_px': baseline,
-            'center_x_px': x}
+            'center_x_px': x, 'sheet_bbox_px':[x-offset+bounds[0],y,x-offset+bounds[2],baseline]}
 
 
 def turnaround(cid):
@@ -272,11 +287,11 @@ def turnaround(cid):
     ppm_height = math.floor(1024 * .85) / height
     ppm_width = min((panel_width - 8) * crop.height / (crop.width * height)
                     for _, _, crop, _ in images)
-    fit_policy = config.get('fit_policy', 'strict_85_percent')
+    fit_policy = config.get('fit_policy', 'fit')
     if fit_policy == 'fit':
         ppm = min(ppm_height, ppm_width)
     else:
-        require(ppm_width >= ppm_height, 'Four views do not fit at 85% height; use composition.fit_policy="fit" if authorised')
+        require(ppm_width >= ppm_height, 'Four views do not fit at diagnostic strict85% height; use composition.fit_policy="fit"')
         ppm = ppm_height
     target_height = round(height * ppm)
     require(target_height > 0, 'Invalid projected height')
@@ -356,8 +371,8 @@ def creature(cid):
     extents = cfg.get('projected_extents_m', {})
     require(all(view in extents for view in views), 'Supply projected_extents_m for each creature view')
     require(float(extents[reference_view])==extent,'Reference extent differs from ruler target')
-    available_w, available_h = 610, 360
-    max_ppm = []
+    available_w, available_h = 440, 360
+    max_ppm = [available_h/1.85]
     for view, path, crop, srcbox in images:
         e = float(extents[view])
         base = measurements[view]['source_span_px']
@@ -373,7 +388,7 @@ def creature(cid):
         w, h = round(crop.width*factor), round(crop.height*factor)
         panel_x = (i%2)*768
         baseline = 430 + (i//2)*512
-        x = panel_x+120+(610-w)//2
+        x = panel_x+205+(available_w-w)//2
         y = baseline-h
         image = crop.resize((w, h), Image.Resampling.LANCZOS)
         canvas.paste(image, (x, y), image)
@@ -397,25 +412,33 @@ def creature(cid):
     x0,y0 = start
     x1,y1 = end
     axis = refbox['scale_axis']
-    ticks = []
+    ticks, label_boxes = [], []
     if axis == 'width':
         ruler_y = source_bounds[3]+12
         draw.line((x0, ruler_y, x1-1, ruler_y), fill=(225,225,225))
         effective_ppm = (x1-x0)/float(extents[reference_view])
+        endpoint_label=f'{extent:g} m'
+        endpoint_box=list(draw.textbbox((x1,ruler_y+17),endpoint_label,font=font(12),anchor='mm'))
         for i in range(math.floor(extent/.25)+1):
             value = i*.25
             x = x0 + round(value*effective_ppm)
             draw.line((x,ruler_y-4,x,ruler_y+4),fill=(225,225,225))
-            if i % 4 == 0 or abs(value-extent)<1e-7:
-                text(draw,(x,ruler_y+17),f'{value:g} m' if abs(value-extent)<1e-7 else f'{value:g}',12)
+            if i % 4 == 0 and abs(value-extent)>1e-7:
+                box=list(draw.textbbox((x,ruler_y+17),f'{value:g}',font=font(12),anchor='mm'))
+                if all(min(box[2],b[2])<=max(box[0],b[0]) or min(box[3],b[3])<=max(box[1],b[1]) for b in label_boxes+[endpoint_box]):
+                    label_boxes.append(text(draw,(x,ruler_y+17),f'{value:g}',12))
             ticks.append({'value_m':value,'x_px':x})
+        label_boxes.append(text(draw,(x1,ruler_y+17),endpoint_label,12))
         calibration = {'axis':'horizontal','start_x_px':x0,'end_x_px':x1,'y_px':ruler_y,
-                       'endpoint_m':extent,'px_per_m':effective_ppm,'step_m':.25,'ticks':ticks}
+                       'endpoint_m':extent,'px_per_m':effective_ppm,'step_m':.25,'ticks':ticks,'label_bboxes_px':label_boxes}
+        check_text_boxes(label_boxes)
     else:
         calibration = ruler(draw, (y1-y0)/extent, y1, extent, max(100,source_bounds[0]-25))
         calibration['px_per_m'] = (y1-y0)/extent
     result = save_sheet(canvas, folder/f'{cid}_turnaround.jpg')
     result.update({'creature':True,'px_per_m':ppm,'views':boxes,'ruler':calibration,
+                   'layout':{'subject_max_width_px':available_w,'subject_max_height_px':available_h,
+                             'human_max_height_px':available_h,'scale_reason':'Fit all views and reserve a separate human/ruler lane'},
                    'scale_axis':axis,'reference_view':reference_view,'scale_extent_m':extent,
                    'interpretation':'Projected extents are design targets; no 3D measurement inferred from generated views.'})
     data.setdefault('measured',{})['turnaround'] = result
@@ -485,9 +508,18 @@ def sample(cid):
     require(rectangles, 'Supply author-reviewed sampling rectangles in top-level sampling')
     samples = {}
     for item in rectangles:
-        sheet = item['sheet']
-        require(sheet in ('turnaround','face','details'), 'Unknown sampling sheet')
-        filename = f'{cid}_{sheet}.jpg'
+        require(item['name'] not in samples, 'Duplicate material sample name')
+        retained = item.get('source_image')
+        if retained:
+            require(retained.startswith(('views/','face_views/','details/')), 'Sample must use a retained library source')
+            filename = retained
+            path, rgba = source(folder, filename)
+        else:
+            sheet = item['sheet']
+            require(sheet in ('turnaround','face','details'), 'Unknown sampling sheet')
+            filename = f'{cid}_{sheet}.jpg'
+            path = folder/filename
+            rgba = Image.open(path).convert('RGBA')
         if item.get('not_visible'):
             require(item['name'] in data['design'].get('concealed_materials',{}), 'Unobservable sample needs an explicit design concealment exception')
             samples[item['name']]={'sheet':filename,'sheet_sha256':digest(folder/filename),
@@ -495,15 +527,20 @@ def sample(cid):
                                   'visibility':'not_visible','reason':item['not_visible'],
                                   'interpretation':'rendered and lit, not albedo'}
             continue
-        im = Image.open(folder/filename).convert('RGB')
+        im = rgba.convert('RGB')
         rect = item['rect_px']
         x0,y0,x1,y1 = map(int,rect)
         require(0<=x0<x1<=im.width and 0<=y0<y1<=im.height, 'Invalid sampling rectangle')
         values = np.asarray(im)[y0:y1,x0:x1].reshape(-1,3)
-        require(np.mean(np.any(np.abs(values.astype(int)-np.array(BG))>2,axis=1)) > .60, f"{item['name']}: sample contains mostly background")
+        if retained and Image.open(path).mode == 'RGBA':
+            require(np.mean(np.asarray(rgba)[y0:y1,x0:x1,3] > 127) >= .95, f"{item['name']}: source rectangle contains transparent background")
+        else:
+            require(np.mean(np.any(np.abs(values.astype(int)-np.array(BG))>2,axis=1)) > .60, f"{item['name']}: sample contains mostly background")
         rgb = np.floor(np.median(values,axis=0)+.5).astype(int).tolist()
         samples[item['name']] = {'sheet':filename,'sheet_sha256':digest(folder/filename),
-            'rect_px':[x0,y0,x1,y1],'coordinate_space':'final JPEG pixels, top-left origin, half-open rectangle','rgb':rgb,'srgb_hex':'#%02x%02x%02x'%tuple(rgb),
+            'source_image':filename, 'rect_px':[x0,y0,x1,y1],
+            'coordinate_space':('retained source pixels' if retained else 'final JPEG pixels')+', top-left origin, half-open rectangle',
+            'rgb':rgb,'srgb_hex':'#%02x%02x%02x'%tuple(rgb),
             'statistic':'per-channel median sRGB','interpretation':'rendered and lit, not albedo'}
     data['observed'] = {'source':'compose.py sample','interpretation':'rendered and lit, not albedo','samples':samples}
     write_spec(specpath,data)
@@ -585,6 +622,7 @@ def check(cid):
         require(hashlib.sha256(rebuilt.tobytes()).hexdigest() == rec['pre_jpeg_sha256'], f'{sheet}: pre-JPEG canvas or geometry changed')
         require(np.all(np.asarray(rebuilt)[y0:y1,x0:x1] == np.array(BG)), f'{sheet}: wrong pre-JPEG background')
     turn=measured['turnaround']
+    check_text_boxes(turn['ruler']['label_bboxes_px'])
     if not turn.get('creature'):
         ppm=turn['px_per_m']; height=data['design']['overall_height_m']; baseline=turn['baseline_y_px']
         require(height==turn['overall_height_m'],'Design overall height changed; recompose')
@@ -611,18 +649,35 @@ def check(cid):
             require(abs(v['measurement']['sheet_span_px']-v['projected_extent_m']*turn['px_per_m'])<=1.1,'Creature landmark scale mismatch')
             human_rec=v['human']
             require(human_rec['height_px']==round(1.85*turn['px_per_m']),'Human comparison height wrong')
+            hb=human_rec['sheet_bbox_px']; vb=v['sheet_bbox_px']
+            require(hb[3]-hb[1]==human_rec['height_px'],'Actual human silhouette height wrong')
+            require(0<=hb[0]<hb[2]<=TURN_SIZE[0] and 0<=hb[1]<hb[3]<=TURN_SIZE[1],'Clipped human comparison')
+            require(hb[2]<=vb[0],'Human comparison overlaps creature')
     require(data.get('observed',{}).get('interpretation')=='rendered and lit, not albedo' or data.get('composition',{}).get('silhouette_only'), 'Missing observed rendered colour samples')
-    for name,s in data.get('observed',{}).get('samples',{}).items():
-        require(digest(folder/s['sheet'])==s['sheet_sha256'],'Observed sample is stale')
+    samples=data.get('observed',{}).get('samples',{})
+    if not data.get('composition',{}).get('silhouette_only'):
+        required={'skin','hair'} | {a['name'] for a in data['design']['outfit_layers']+data['design']['armor']}
+        aliases=data['design'].get('sample_aliases',{})
+        for material in required:
+            names=aliases.get(material,[material])
+            require(isinstance(names,list) and names and all(n in samples for n in names), f'Missing observed material: {material}')
+    for name,s in samples.items():
+        path,rgba=source(folder,s['sheet'])
+        require(digest(path)==s['sheet_sha256'],'Observed sample is stale')
         if s.get('visibility')=='not_visible':
             require(name in data['design'].get('concealed_materials',{}),'Unobservable material lacks a design exception')
             require(s['rect_px'] is None and s['rgb'] is None and s['srgb_hex'] is None,'Unobservable material must not have fabricated sampled values')
             require(bool(s.get('reason')),'Unobservable material needs a reason')
             continue
-        im=np.asarray(Image.open(folder/s['sheet']).convert('RGB'))
+        im=np.asarray(rgba.convert('RGB'))
         x0,y0,x1,y1=s['rect_px']
+        require(0<=x0<x1<=rgba.width and 0<=y0<y1<=rgba.height,'Observed rectangle outside source')
+        if s['coordinate_space'].startswith('retained source pixels') and Image.open(path).mode=='RGBA':
+            require(np.mean(np.asarray(rgba)[y0:y1,x0:x1,3]>127)>=.95,'Observed source rectangle contains transparent background')
         rgb=np.floor(np.median(im[y0:y1,x0:x1].reshape(-1,3),axis=0)+.5).astype(int).tolist()
         require(rgb==s['rgb'],'Observed sample does not match median pixels')
+        require(s['srgb_hex']=='#%02x%02x%02x'%tuple(rgb),'Observed hex does not match median pixels')
+        require(s['interpretation']=='rendered and lit, not albedo','Observed material lacks lighting qualification')
     total=stored_bytes(folder)
     library=stored_bytes(ROOT)
     require(total<=CHAR_BUDGET,f'Character exceeds 2.5 MB: {total}')

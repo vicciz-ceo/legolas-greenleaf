@@ -376,24 +376,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | easterling | views/three_quarter | accepted | 2 | Second candidate rotates masked head clearly with oblique chest/feet; near right spear/far left shield stay attached correctly, all gear complete. |
 | easterling | views/three_quarter attempt 1 | rejected | — | Head/torso rotation too shallow, near-frontal faceplate and shoulders; needs clear45degree three-quarter perspective. |
 | easterling | views/side | accepted | 1 | Exact side-on masked head/body, right near hand holds low complete spear, left far shield partly occluded, gold scales/red cloth/gloves consistent. |
-| easterling | views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| easterling | face_views/front | pending | 0 | Not yet attempted |
-| easterling | face_views/three_quarter | pending | 0 | Not yet attempted |
-| easterling | face_views/side | pending | 0 | Not yet attempted |
-| easterling | details/cloth_leather | pending | 0 | Not yet attempted |
-| easterling | details/weapon_metal | pending | 0 | Not yet attempted |
-| easterling | details/skin | pending | 0 | Not yet attempted |
-| easterling | details/hair | pending | 0 | Not yet attempted |
-| easterling | turnaround | pending | 0 | Not yet attempted |
-| easterling | spec | pending | 0 | Not yet attempted |
-| easterling | notes | pending | 0 | Not yet attempted |
-| easterling | check | pending | 0 | Not yet attempted |
-| easterling | face | pending | 0 | Not yet attempted |
-| easterling | details | pending | 0 | Not yet attempted |
-| easterling | observed | pending | 0 | Not yet attempted |
-| haradrim | views/front | pending | 0 | Not yet attempted |
-| haradrim | views/three_quarter | pending | 0 | Not yet attempted |
-| haradrim | views/side | pending | 0 | Not yet attempted |
+| easterling | views/back | accepted | 1 | True rear helmet/scale harness, low horizontal spear own-right image right and shield own-left image left, same gold/red-black gear and complete endpoints. |
+| easterling | face_views/front | accepted | 1 | Same original golden masked faceplate/short crest, dark eye slits and red cowl, gold scale shoulders; no exposed invented face or hair. |
+| easterling | face_views/three_quarter | accepted | 1 | Clear oblique masked head/chest with foreshortened far slit and broader near helmet side, same gold plates/red cowl; complete crest. |
+| easterling | face_views/side | accepted | 1 | Exact helmet/torso profile, one slit and edge-on faceplate, same crest/scales/red cowl; face/hair remain covered. |
+| easterling | details/cloth_leather | accepted | 1 | Same gold/bronze scales over black undercloth, red neck/skirt panels, dark gloves/boots, leather diagonal straps. Complete neck-to-feet costume and natural gloved hands. |
+| easterling | details/weapon_metal | accepted | 1 | Same bronze-black pointed kite shield, gilded rim/rivets, gold sun rays and round boss; complete isolated object. Minor ray engraving drift tolerated. |
+| easterling | details/skin | accepted | 0 | Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented. |
+| easterling | details/hair | accepted | 0 | Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented. |
+| easterling | turnaround | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | spec | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | notes | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | check | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | face | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | details | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| easterling | observed | accepted | 0 | Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass. |
+| haradrim | views/front | accepted | 2 | Second front gives clear relaxed A-pose and close crop confirms natural thumb/four fingers. Same original painted face, red-black robes/gold jewelry, own-right low sword, complete feet/tip. |
+| haradrim | views/front attempt 1 | rejected | — | Arm separation is too narrow for clear20–40degree A-pose; natural five-digit curled hand is otherwise intact. Repair pose before rotations. |
+| haradrim | views/three_quarter | accepted | 1 | Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip. |
+| haradrim | views/side | accepted | 2 | Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry. |
+| haradrim | views/side attempt 1 | rejected | — | Head is profile but torso/pelvis remain oblique with broad frontal tunic/jewelry window and far shoulder exposed; needs exact body side view. |
 | haradrim | views/back | pending | 0 | Not yet attempted |
 | haradrim | face_views/front | pending | 0 | Not yet attempted |
 | haradrim | face_views/three_quarter | pending | 0 | Not yet attempted |

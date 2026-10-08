@@ -3347,73 +3347,127 @@
           "path": "/workspace/generated_images/exec-5726a5e5-3c1b-4c37-85bf-adce6b93cd5e.png"
         },
         "views/back": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "True rear helmet/scale harness, low horizontal spear own-right image right and shield own-left image left, same gold/red-black gear and complete endpoints.",
               "path": "/workspace/generated_images/exec-76a07701-4a55-4a4d-b13e-3cf1445283f9.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "True rear helmet/scale harness, low horizontal spear own-right image right and shield own-left image left, same gold/red-black gear and complete endpoints.",
           "path": "/workspace/generated_images/exec-76a07701-4a55-4a4d-b13e-3cf1445283f9.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same original golden masked faceplate/short crest, dark eye slits and red cowl, gold scale shoulders; no exposed invented face or hair.",
+              "path": "/workspace/generated_images/exec-e0751174-d5e9-4bd4-b734-b20f1291baa9.png"
+            }
+          ],
+          "reason": "Same original golden masked faceplate/short crest, dark eye slits and red cowl, gold scale shoulders; no exposed invented face or hair.",
+          "path": "/workspace/generated_images/exec-e0751174-d5e9-4bd4-b734-b20f1291baa9.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique masked head/chest with foreshortened far slit and broader near helmet side, same gold plates/red cowl; complete crest.",
+              "path": "/workspace/generated_images/exec-9cc74983-3a35-4463-82cc-fccca342a5b7.png"
+            }
+          ],
+          "reason": "Clear oblique masked head/chest with foreshortened far slit and broader near helmet side, same gold plates/red cowl; complete crest.",
+          "path": "/workspace/generated_images/exec-9cc74983-3a35-4463-82cc-fccca342a5b7.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact helmet/torso profile, one slit and edge-on faceplate, same crest/scales/red cowl; face/hair remain covered.",
+              "path": "/workspace/generated_images/exec-45935878-061b-4148-aa35-d859d58faaba.png"
+            }
+          ],
+          "reason": "Exact helmet/torso profile, one slit and edge-on faceplate, same crest/scales/red cowl; face/hair remain covered.",
+          "path": "/workspace/generated_images/exec-45935878-061b-4148-aa35-d859d58faaba.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same gold/bronze scales over black undercloth, red neck/skirt panels, dark gloves/boots, leather diagonal straps. Complete neck-to-feet costume and natural gloved hands.",
+              "path": "/workspace/generated_images/exec-ac49c813-8b09-4263-8b63-8e0a32540e8c.png"
+            }
+          ],
+          "reason": "Same gold/bronze scales over black undercloth, red neck/skirt panels, dark gloves/boots, leather diagonal straps. Complete neck-to-feet costume and natural gloved hands.",
+          "path": "/workspace/generated_images/exec-ac49c813-8b09-4263-8b63-8e0a32540e8c.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same bronze-black pointed kite shield, gilded rim/rivets, gold sun rays and round boss; complete isolated object. Minor ray engraving drift tolerated.",
+              "path": "/workspace/generated_images/exec-82e1cb78-0540-434b-bfcf-65611de3f247.png"
+            }
+          ],
+          "reason": "Same bronze-black pointed kite shield, gilded rim/rivets, gold sun rays and round boss; complete isolated object. Minor ray engraving drift tolerated.",
+          "path": "/workspace/generated_images/exec-82e1cb78-0540-434b-bfcf-65611de3f247.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed covering material crop from accepted portrait, explicitly labeled covered skin/hair; no exposed features invented."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets/material/source rectangles and64px silhouettes reviewed; checks/coverage and budgets pass."
         }
       }
     },
@@ -3422,16 +3476,55 @@
       "design_extent_m": 1.8,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Arm separation is too narrow for clear20\u201340degree A-pose; natural five-digit curled hand is otherwise intact. Repair pose before rotations.",
+              "path": "/workspace/generated_images/exec-c8e05d2f-5209-4586-881c-e208ac11bd6e.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second front gives clear relaxed A-pose and close crop confirms natural thumb/four fingers. Same original painted face, red-black robes/gold jewelry, own-right low sword, complete feet/tip.",
+              "path": "/workspace/generated_images/exec-969308f5-4419-41f1-a13f-378b19cb5831.png"
+            }
+          ],
+          "reason": "Second front gives clear relaxed A-pose and close crop confirms natural thumb/four fingers. Same original painted face, red-black robes/gold jewelry, own-right low sword, complete feet/tip.",
+          "path": "/workspace/generated_images/exec-969308f5-4419-41f1-a13f-378b19cb5831.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip.",
+              "path": "/workspace/generated_images/exec-eccb3021-3ac5-4759-b4c5-86d79b1a776d.png"
+            }
+          ],
+          "reason": "Clear oblique torso/head, nose projects right with foreshortened far face; same painted original identity/red-black robes/gold jewelry/right sword, complete feet/tip.",
+          "path": "/workspace/generated_images/exec-eccb3021-3ac5-4759-b4c5-86d79b1a776d.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Head is profile but torso/pelvis remain oblique with broad frontal tunic/jewelry window and far shoulder exposed; needs exact body side view.",
+              "path": "/workspace/generated_images/exec-3407a232-4dfc-4fbf-a25b-dbde1dfd157d.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry.",
+              "path": "/workspace/generated_images/exec-32de4a4a-5cb6-483e-9020-9f82c479d1c4.png"
+            }
+          ],
+          "reason": "Second candidate rotates torso/pelvis/feet fully side-on, frontal tunic window reduced to thin edge; correct profile face, right near low sword, same robes/jewelry.",
+          "path": "/workspace/generated_images/exec-32de4a4a-5cb6-483e-9020-9f82c479d1c4.png"
         },
         "views/back": {
           "status": "pending",

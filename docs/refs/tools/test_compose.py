@@ -35,7 +35,7 @@ class ComposeTests(unittest.TestCase):
             tiles.append({'name':f'mat{i}','label':f'MATERIAL {i}','source':path})
         self.data={'id':'fixture','design':{'source':'design_target','overall_height_m':1.85},
                    'composition':{'fit_policy':'fit','detail_tiles':tiles},
-                   'sampling':[{'name':'cloth','sheet':'details','rect_px':[64,64,128,128]}]}
+                   'sampling':[{'name':name,'sheet':'details','rect_px':[64,64,128,128]} for name in ('cloth','skin','hair')]}
         design=self.data['design']
         design.update(display_name='Fixture',height_m=1.85,proportions={f:0.2 for f in c.PROPORTION_FIELDS},face={f:'fixture' for f in ('shape','eyes','brow','nose','lips','ears','skin_base_hex','skin_variation')},hair={f:'fixture' for f in ('root_hex','tip_hex','length_m','style','braids')},outfit_layers=[],armor=[],weapons=[],silhouette_keywords=[],avoid=[])
         design['face'].update(eyes={'iris_hex':'#506070','shape':'almond','size_note':'natural'},skin_base_hex='#c0a090')
@@ -77,6 +77,30 @@ class ComposeTests(unittest.TestCase):
         self.assertEqual(c.bbox(normalized, require_transparency=False), (0, 0, normalized.width, 100))
         self.assertAlmostEqual(scale * crop.height - (bounds[1]), 100, delta=1)
 
+    def test_source_sampling_and_missing_material_failure(self):
+        self.data['sampling'].append({'name':'small_metal','source_image':'views/front.png','rect_px':[25,25,45,45]})
+        self.store(self.data);self.ready()
+        data=json.loads((self.folder/'spec.json').read_text())
+        sample=data['observed']['samples']['small_metal']
+        self.assertEqual(sample['rgb'],[80,60,40])
+        self.assertTrue(sample['coordinate_space'].startswith('retained source pixels'))
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data['sampling']=[s for s in data['sampling'] if s['name']!='skin']
+        self.store(data);c.sample('fixture')
+        with self.assertRaisesRegex(ValueError,'Missing observed material: skin'):c.check('fixture')
+
+    def test_actual_human_pixels_and_close_endpoint_label_layout(self):
+        im=Image.new('RGB',c.TURN_SIZE,c.BG);draw=ImageDraw.Draw(im)
+        marker=c.human(draw,55,430,100)
+        import numpy as np
+        pixels=np.asarray(im)
+        yy,xx=np.where(np.all(pixels[:431,:130]==(30,30,30),axis=2))
+        self.assertEqual(int(yy.max())+1-int(yy.min()),185)
+        self.assertEqual(marker['sheet_bbox_px'],[int(xx.min()),int(yy.min()),int(xx.max())+1,int(yy.max())+1])
+        r=c.ruler(draw,260,940,2.04)
+        c.check_text_boxes(r['label_bboxes_px'])
+        with self.assertRaisesRegex(ValueError,'Overlapping ruler labels'):c.check_text_boxes([[10,10,20,20],[15,15,25,25]])
+
     def test_supplement_actual_scale_png_and_stale_files(self):
         data=copy.deepcopy(self.data)
         data['composition']={'supplement':True,'metric':True,'columns':2,'rows':1,'png_name':'fixture.png',
@@ -108,6 +132,7 @@ class ComposeTests(unittest.TestCase):
 
     def test_concealed_material_never_gets_fabricated_colour(self):
         self.data['design']['concealed_materials']={'hair':'Completely covered by prescribed helmet.'}
+        self.data['sampling']=[a for a in self.data['sampling'] if a['name']!='hair']
         self.data['sampling'].append({'name':'hair','sheet':'face','not_visible':'Completely covered by prescribed helmet.'})
         self.store(self.data);self.ready()
         sample=json.loads((self.folder/'spec.json').read_text())['observed']['samples']['hair']
