@@ -16,10 +16,10 @@ import { faceStroke, paintBlob } from './markings';
 import { bodyMarks, boneNecklace, crudePauldron, eyeRings, orcTeeth, scrapBreastplate, skinMottle, skinTint } from './orcparts';
 
 export const ORC_FACE = {
-  jaw: 1.2, jawLength: 1.05, chin: 0.8, brow: 1.6, cheekbones: 1.2,
-  nose: { length: 0.8, width: 1.35, bridge: 0.6, hook: 0, tip: 1.1, flat: 0.7 },
-  lips: { width: 1.15, fullness: 0.75 }, ears: 'orc' as const, earSize: 1.15, eyeSize: 0.9, eyeSpacing: 1.02, eyeTilt: -0.06,
-  eyeOpen: 0.75, tusks: 0.4, underbite: 0.5, foreheadSlope: 0.6, asym: 0.7, cranium: 0.92,
+  jaw: 1.3, jawLength: 1.1, chin: 0.7, brow: 1.9, cheekbones: 1.3,
+  nose: { length: 0.75, width: 1.55, bridge: 0.5, hook: 0, tip: 1.15, flat: 0.85 },
+  lips: { width: 1.3, fullness: 0.7 }, ears: 'orc' as const, earSize: 1.3, eyeSize: 1.0, eyeSpacing: 1.04, eyeTilt: -0.1,
+  eyeOpen: 0.95, tusks: 0.9, underbite: 0.75, foreheadSlope: 0.65, asym: 0.8, cranium: 0.9,
 };
 
 function warPaintFace(ctx: KindContext, color: number, rng: Rng) {
@@ -108,7 +108,7 @@ function ravager(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
   const A = ctx.armor;
-  addHairdo(ctx, { color: 0x14100d, tip: 0x2a2018, deep: 0x0c0a08, length: 0.2 * sc, count: 38, width: 0.034, wave: 0.2, wild: 0.5, comb: 0.0, front: 0.28, back: -0.38, gravity: 1.5, mohawk: true, ridge: 0.06, segments: 4 }, rng);
+  addHairdo(ctx, { color: 0x14100d, tip: 0x2a2018, deep: 0x0c0a08, length: 0.13 * sc, count: 55, width: 0.03, wave: 0.2, wild: 0.4, comb: 0.0, front: 0.28, back: -0.38, gravity: 1.5, mohawk: true, ridge: 0.06, segments: 4 }, rng);
   if (!devSkip('tint')) skinTint(ctx, { color: 0x8e9874, color2: 0x65725a, noise: 0.5 });
   if (!devSkip('mottle')) skinMottle(ctx, rng, [0x84886a, 0x5a6048, 0x6a6a52], { n: 12, torso: true, strength: 0.5 });
   if (!devSkip('rings')) eyeRings(ctx, 0x1a1210, 0.7);
@@ -184,7 +184,7 @@ export const orcDef: KindDef = {
   weapons: { right: 'scimitar', style: 'orc' },
   anim: { hunch: 0.35, swagger: 0.6, aggression: 0.75, stance: 1.15, cadence: 1.1 },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
-  detail: { res: devNum('res', 0.031), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
+  detail: { res: devNum('res', 0.05), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.5 },
   extras: orcExtras,
 };

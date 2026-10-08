@@ -217,3 +217,25 @@ export function torsoShell(o: {
   g.computeVertexNormals();
   return g;
 }
+
+/** a tapered tube along a smooth path: radius r0 at the start, r1 at the end (horns, tusks, tails) */
+export function taperedTube(points: V3[], r0: number, r1: number, o: { seg?: number; radial?: number } = {}): THREE.BufferGeometry {
+  const seg = o.seg ?? 14;
+  const radial = o.radial ?? 6;
+  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(p[0], p[1], p[2])), false, 'catmullrom', 0.4);
+  const g = new THREE.TubeGeometry(curve, seg, 1, radial, false);
+  const pos = g.attributes.position;
+  const c = new THREE.Vector3();
+  const v = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    const ring = Math.floor(i / (radial + 1));
+    const t = ring / seg;
+    curve.getPointAt(Math.min(1, t), c);
+    v.fromBufferAttribute(pos, i).sub(c); // unit-radius offset from the centre line
+    const r = r0 + (r1 - r0) * t;
+    v.multiplyScalar(r).add(c);
+    pos.setXYZ(i, v.x, v.y, v.z);
+  }
+  g.computeVertexNormals();
+  return g;
+}

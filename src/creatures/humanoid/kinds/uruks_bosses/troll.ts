@@ -53,7 +53,7 @@ const TROLL_FACE = {
   lips: { width: 1.3, fullness: 0.7 },
   ears: 'small' as const,
   earSize: 0.9,
-  eyeSize: 1.7,
+  eyeSize: 1.2,
   eyeSpacing: 0.95,
   eyeTilt: -0.12,
   eyeOpen: 0.9,
@@ -139,10 +139,10 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
   });
   // re-open the eye sockets after the brow and cheek masses
   const ex = 0.135 * 0.95;
-  const eR = P.eyeR * 1.7;
+  const eR = P.eyeR * 1.2;
   s.mirrored((side) => {
     const c = H(ex, -0.075, 0.29);
-    s.ellipsoid([c[0], c[1] + 0.2 * eR, c[2] + 0.9 * eR], [1.55 * eR, 1.0 * eR, 1.6 * eR], { op: 'subtract', k: 0.8 * eR, bone: 'head' });
+    s.ellipsoid([c[0], c[1] + 0.2 * eR, c[2] + 0.9 * eR], [1.7 * eR, 1.15 * eR, 1.7 * eR], { op: 'subtract', k: 0.9 * eR, bone: 'head' });
     void side;
   });
   // tusks

@@ -12,6 +12,10 @@ import type { KindDef } from '../types';
 import { bucketOf } from './dwarves_orcs/common';
 import { dwarfDef } from './dwarves_orcs/dwarf';
 import { gimliDef } from './dwarves_orcs/gimli';
+import { easterlingDef } from './dwarves_orcs/easterling';
+import { goblinDef } from './dwarves_orcs/goblin';
+import { gundabadDef } from './dwarves_orcs/gundabad';
+import { haradrimDef } from './dwarves_orcs/haradrim';
 import { orcDef } from './dwarves_orcs/orc';
 
 export interface Loadout {
@@ -25,6 +29,10 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
   gimli: gimliDef,
   dwarf: dwarfDef,
   orc: orcDef,
+  goblin: goblinDef,
+  gundabad: gundabadDef,
+  easterling: easterlingDef,
+  haradrim: haradrimDef,
 };
 
 const seedMemo = new Map<number, number>();

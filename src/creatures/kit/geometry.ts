@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import type { MeshData } from './mesher';
 import { SURFACES, type SurfaceName, type SurfaceSpec } from './surfaces';
 
-export const KIT_ATTRS = ['position', 'normal', 'color', 'surf', 'pat0', 'pat1', 'ao', 'skinIndex', 'skinWeight'] as const;
+export const KIT_ATTRS = ['position', 'normal', 'color', 'surf', 'pat0', 'pat1', 'seam', 'ao', 'skinIndex', 'skinWeight'] as const;
 const SIZES: Record<(typeof KIT_ATTRS)[number], number> = {
   position: 3,
   normal: 3,
@@ -18,6 +18,7 @@ const SIZES: Record<(typeof KIT_ATTRS)[number], number> = {
   surf: 4,
   pat0: 4,
   pat1: 4,
+  seam: 2,
   ao: 1,
   skinIndex: 4,
   skinWeight: 4,
@@ -31,6 +32,7 @@ export function meshDataToGeometry(d: MeshData): THREE.BufferGeometry {
   g.setAttribute('surf', new THREE.BufferAttribute(d.surf, 4));
   g.setAttribute('pat0', new THREE.BufferAttribute(d.pat0, 4));
   g.setAttribute('pat1', new THREE.BufferAttribute(d.pat1, 4));
+  g.setAttribute('seam', new THREE.BufferAttribute(d.seam ?? new Float32Array(d.vertexCount * 2), 2));
   g.setAttribute('ao', new THREE.BufferAttribute(d.ao, 1));
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(d.skinIndex, 4));
   g.setAttribute('skinWeight', new THREE.BufferAttribute(d.skinWeight, 4));
@@ -122,6 +124,7 @@ export function paintGeometry(src: THREE.BufferGeometry, o: PaintOpts): THREE.Bu
   g.setAttribute('surf', new THREE.BufferAttribute(surf, 4));
   g.setAttribute('pat0', new THREE.BufferAttribute(pat0, 4));
   g.setAttribute('pat1', new THREE.BufferAttribute(pat1, 4));
+  g.setAttribute('seam', new THREE.BufferAttribute(new Float32Array(n * 2), 2));
   g.setAttribute('ao', new THREE.BufferAttribute(ao, 1));
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4));
   g.setAttribute('skinWeight', new THREE.BufferAttribute(sw, 4));

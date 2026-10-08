@@ -62,10 +62,13 @@ function subject(name: string, o: SubjOpts): LabSubject {
     name,
     category: o.category ?? 'enemy',
     create(): LabInstance {
-      const h = createHumanoid({ kind: o.kind, seed: o.seed, weapon: o.weapon, offhand: o.offhand, helmet: o.helmet, armor: o.armor });
+      const q = new URLSearchParams(location.search);
+      const armorQ = q.get('armor');
+      const h = createHumanoid({ kind: o.kind, seed: o.seed, weapon: o.weapon, offhand: o.offhand, helmet: q.get('helmet') === '0' ? false : o.helmet, armor: armorQ !== null ? Number(armorQ) : o.armor });
       const holder = new THREE.Group();
       holder.add(h.root);
       console.info(`[lab] ${name}: ${h.triangles} tris (LOD0), assets ${h.buildMs.toFixed(0)} ms`, h.assets.lods.map((l) => l.tris));
+      ((window as unknown as { __ub?: Record<string, unknown> }).__ub ??= {})[name] = { buildMs: Math.round(h.buildMs), tris: h.triangles, lods: h.assets.lods.map((l) => l.tris) };
       return {
         object: holder,
         height: h.height,
@@ -93,3 +96,52 @@ export const subjects: LabSubject[] = [
   subject('troll_war', { kind: 'troll', seed: seedForBucket(2), weapon: 'warhammer', attack: 'overhead' }),
   subject('troll_war_b', { kind: 'troll', seed: seedForBucket(3), weapon: 'warhammer', attack: 'slam' }),
 ];
+
+// ── lineup: every kind of the group at true scale, next to Legolas ──────────────────────────────
+
+interface LineupEntry {
+  kind: HumanoidKind;
+  seed?: number;
+  weapon?: WeaponKind;
+  offhand?: WeaponKind;
+  width: number;
+  attack: string;
+}
+const LINEUP: LineupEntry[] = [
+  { kind: 'legolas', width: 1.0, attack: 'slash' },
+  { kind: 'uruk', width: 1.1, attack: 'slash' },
+  { kind: 'uruk', seed: seedForBucket(1), weapon: 'pike', offhand: 'none', width: 1.1, attack: 'thrust' },
+  { kind: 'uruk', seed: seedForBucket(2), weapon: 'uruk_bow', offhand: 'none', width: 1.1, attack: 'shoot' },
+  { kind: 'berserker', width: 1.25, attack: 'overhead' },
+  { kind: 'lurtz', width: 1.3, attack: 'slash' },
+  { kind: 'bolg', width: 1.9, attack: 'overhead' },
+  { kind: 'troll', seed: seedForBucket(0), width: 3.0, attack: 'slam' },
+  { kind: 'troll', seed: seedForBucket(2), weapon: 'warhammer', width: 3.0, attack: 'overhead' },
+];
+
+subjects.push({
+  name: 'uruks_bosses_lineup',
+  category: 'enemy',
+  create(): LabInstance {
+    const g = new THREE.Group();
+    const hs: { h: HumanoidExt; attack: string }[] = [];
+    const total = LINEUP.reduce((a, e) => a + e.width, 0);
+    let x = -total / 2;
+    const t0 = performance.now();
+    for (const e of LINEUP) {
+      const h = createHumanoid({ kind: e.kind, seed: e.seed, weapon: e.weapon, offhand: e.offhand });
+      h.root.position.x = x + e.width / 2;
+      x += e.width;
+      g.add(h.root);
+      hs.push({ h, attack: e.attack });
+    }
+    console.info(`[lab] uruks_bosses_lineup built in ${(performance.now() - t0).toFixed(0)} ms`, hs.map((e) => `${e.h.kind}:${e.h.triangles}`).join(' '));
+    return {
+      object: g,
+      height: 4.6,
+      animations: ANIMS,
+      pose: (anim, t) => hs.forEach((e) => poseAt(e.h, anim, t, e.attack)),
+      dispose: () => hs.forEach((e) => e.h.dispose()),
+    };
+  },
+});

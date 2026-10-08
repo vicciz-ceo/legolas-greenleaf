@@ -28,6 +28,68 @@ export function hairMaterial(color: number, opts: { rough?: number } = {}): THRE
   return m;
 }
 
+/**
+ * A braid as a tapered tube with a twisted three-strand colour pattern (about 1/4 of the triangles
+ * of the kit's braid tubes). Carries the same attributes as hairGeometry (uv, colour, skin weights).
+ */
+export function braidGeometry(points: V3[], radius: number, color: number, weights: WeightFn, o: { seg?: number; radial?: number; taper?: number; twist?: number } = {}): THREE.BufferGeometry {
+  const seg = o.seg ?? 10;
+  const radial = o.radial ?? 5;
+  const curve = new THREE.CatmullRomCurve3(points.map((p) => new THREE.Vector3(p[0], p[1], p[2])), false, 'catmullrom', 0.3);
+  const len = curve.getLength();
+  const frames = curve.computeFrenetFrames(seg, false);
+  const base = new THREE.Color().setHex(color, THREE.SRGBColorSpace);
+  const pos: number[] = [], nor: number[] = [], uv: number[] = [], col: number[] = [], si: number[] = [], sw: number[] = [], idx: number[] = [];
+  const wtmp: [number, number][] = [];
+  const c = new THREE.Color();
+  const q = new THREE.Vector3();
+  const nrm = new THREE.Vector3();
+  for (let i = 0; i <= seg; i++) {
+    const t = i / seg;
+    const p = curve.getPointAt(t);
+    const N = frames.normals[i];
+    const B = frames.binormals[i];
+    const r = radius * (1 - (o.taper ?? 0.4) * t * t);
+    for (let j = 0; j <= radial; j++) {
+      const a = (j / radial) * Math.PI * 2;
+      const lump = 0.78 + 0.22 * Math.abs(Math.sin(a * 1.5 + t * len * (o.twist ?? 40)));
+      nrm.copy(N).multiplyScalar(Math.cos(a)).addScaledVector(B, Math.sin(a));
+      q.copy(p).addScaledVector(nrm, r * lump);
+      pos.push(q.x, q.y, q.z);
+      nor.push(nrm.x, nrm.y, nrm.z);
+      uv.push(j / radial, t);
+      c.copy(base).multiplyScalar(0.72 + 0.28 * lump);
+      col.push(c.r, c.g, c.b);
+      wtmp.length = 0;
+      weights(q, t, wtmp);
+      wtmp.sort((x, y) => y[1] - x[1]);
+      let sum = 0;
+      for (let k = 0; k < 4; k++) sum += wtmp[k]?.[1] ?? 0;
+      sum = sum || 1;
+      for (let k = 0; k < 4; k++) {
+        si.push(wtmp[k]?.[0] ?? 0);
+        sw.push((wtmp[k]?.[1] ?? 0) / sum);
+      }
+    }
+  }
+  for (let i = 0; i < seg; i++)
+    for (let j = 0; j < radial; j++) {
+      const a = i * (radial + 1) + j;
+      const b = a + radial + 1;
+      idx.push(a, b, a + 1, a + 1, b, b + 1);
+    }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
+  g.setIndex(idx);
+  g.computeBoundingSphere();
+  return g;
+}
+
 /** hair of the head via the kit's own styles (cap + cards + braids), as a skinned extra */
 export function addHeadHair(ctx: KindContext, hair: HairDef, rng: Rng, o: { hooded?: boolean; cap?: boolean } = {}) {
   const geo = buildHair(ctx.P, ctx.rig, hair, null, rng, 0, !!o.hooded).geo;
@@ -171,7 +233,9 @@ export function makeHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng): THREE.Buf
     braids.push({ points: [h(0, -0.1, -0.5), h(0, -0.3, -0.58), [0, hc[1] - 0.5 * u - o.tail * 0.5, -0.1 * s * P.build.chest * bulk - 0.05 * s], [0, hc[1] - 0.5 * u - o.tail, -0.115 * s * P.build.chest * bulk - 0.06 * s]], radius: 0.02 * s, color: o.color, twist: 25 });
   }
   if (!strands.length && !braids.length) return null;
-  return hairGeometry(strands, braids, { color: o.color, tipColor: o.tip, weights });
+  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights }) : null;
+  const bGeos = braids.map((b) => braidGeometry(b.points, b.radius, o.color, weights, { seg: 9, radial: 5 }));
+  return mergeHairGeos([...(sGeo ? [sGeo] : []), ...bGeos]);
 }
 
 export function addHairdo(ctx: KindContext, o: HairdoOpts, rng: Rng) {
@@ -365,7 +429,9 @@ export function makeBeard(ctx: KindContext, o: BeardOpts, rng: Rng): BeardResult
     const t = Math.min(1, (chinY - p.y) / span);
     out.push([iJaw, Math.max(0, 1 - t * 2)], [iB1, Math.min(1, t * 2) * (1 - t)], [iB2, t * t]);
   };
-  const geo = strands.length || braids.length ? hairGeometry(strands, braids, { color: o.color, tipColor: o.tip, weights: w }) : null;
+  const sGeo = strands.length ? hairGeometry(strands, [], { color: o.color, tipColor: o.tip, weights: w }) : null;
+  const bGeos = braids.map((b) => braidGeometry(b.points, b.radius, o.color, w, { seg: 9, radial: 5 }));
+  const geo = mergeHairGeos([...(sGeo ? [sGeo] : []), ...bGeos]);
   return { geo, braidPaths };
 }
 

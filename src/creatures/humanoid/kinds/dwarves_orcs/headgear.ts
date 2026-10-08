@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import type { V3 } from '../../../kit/sdf';
 import { surface, type SurfaceName, type SurfaceSpec } from '../../../kit/surfaces';
 import type { KindContext } from '../../types';
-import { arcPlate, lathe, mergeAll, put, spike, studs, tube } from './armor';
+import { arcPlate, lathe, mergeAll, put, spike, studs, taperedTube, tube } from './armor';
 
 /** hammered steel that reads grey in studio light and in shade */
 export const STEEL = surface('metal_dark', { rough: 0.46, metal: 0.8 });
@@ -214,3 +214,154 @@ export function domeHelm(ctx: KindContext, o: DomeHelmOpts) {
 
 void mergeAll;
 void spike;
+
+/** a pair of curved horns growing from the temples */
+export function hornPair(ctx: KindContext, o: { color: number; length?: number; curl?: number; y?: number; z?: number; thick?: number; mat?: SurfaceName | SurfaceSpec; lift?: number }) {
+  const { P } = ctx;
+  const u = P.headH;
+  const L = (o.length ?? 0.7) * u;
+  const curl = o.curl ?? 0.5;
+  const y = o.y ?? 0.15;
+  const z = o.z ?? -0.05;
+  for (const sd of [1, -1]) {
+    const pts: V3[] = [
+      P.h(sd * 0.36, y, z),
+      P.h(sd * 0.5, y + 0.08, z - 0.02),
+      P.h(sd * (0.6 + 0.2 * curl), y + 0.26 + 0.1 * (1 - curl), z + 0.02 * curl),
+      P.h(sd * (0.58 + 0.3 * curl), y + 0.42 + L / u * 0.4, z + 0.12 * curl + 0.04),
+    ];
+    put(ctx, taperedTube(pts, (o.thick ?? 0.05) * u, 0.008 * u, { seg: 12, radial: 5 }), { bone: 'head', color: o.color, mat: o.mat ?? 'horn', small: true });
+  }
+}
+
+export interface MaskOpts {
+  color: number;
+  trim?: number;
+  mat?: SurfaceName | SurfaceSpec;
+  /** distance in front of the skin (head units) */
+  lift?: number;
+  /** eye slit: y range (head units) of the gap between the upper and lower plates */
+  slit?: [number, number];
+  /** brow/forehead plate top (head units) */
+  top?: number;
+  /** chin bottom (head units) */
+  bottom?: number;
+  /** half width of the plates at the cheeks (head units) */
+  half?: number;
+  /** nose bump height (head units) */
+  nose?: number;
+  /** mouth grill slits */
+  mouth?: boolean;
+}
+
+/** a stylised face mask (golden Easterling faceplate): forehead + nose bridge, cheek/mouth plate, eye slits between */
+export function faceMask(ctx: KindContext, o: MaskOpts) {
+  const { P } = ctx;
+  const h = P.h;
+  const lift = o.lift ?? 0.04;
+  const slit = o.slit ?? [-0.115, -0.015];
+  const top = o.top ?? 0.13;
+  const bottom = o.bottom ?? -0.6;
+  const half = o.half ?? 0.3;
+  const noseH = o.nose ?? 0.1;
+  const mat = o.mat ?? 'gold';
+  const surfZ = (x: number, y: number): number => {
+    const ax = Math.min(1, Math.abs(x) / 0.36);
+    let z = 0.405 - 0.52 * ax * ax;
+    if (y > 0.1) z -= 0.12 * Math.min(1, (y - 0.1) / 0.3);
+    if (y < -0.18) z -= 0.05 * Math.min(1, (-y - 0.18) / 0.3) * (1 - ax) - 0.12 * Math.min(1, (-y - 0.3) / 0.3) * ax;
+    // nose and brow bulge
+    const nb = Math.exp(-((x / 0.075) ** 2)) * Math.min(1, Math.max(0, (0.0 - y) / 0.12)) * Math.min(1, Math.max(0, (y + 0.3) / 0.06));
+    z += noseH * nb + 0.2 * Math.exp(-((x / 0.04) ** 2)) * Math.exp(-(((y + 0.27) / 0.05) ** 2)) * 0;
+    return z + lift;
+  };
+  const patch = (xHalf: (y: number) => number, y0: number, y1: number, nx: number, ny: number, tint?: number): THREE.BufferGeometry => {
+    const pos: number[] = [];
+    const idx: number[] = [];
+    for (let j = 0; j <= ny; j++) {
+      const y = y0 + (y1 - y0) * (j / ny);
+      const hw = xHalf(y);
+      for (let i = 0; i <= nx; i++) {
+        const x = -hw + (2 * hw * i) / nx;
+        const q = h(x, y, surfZ(x, y));
+        pos.push(q[0], q[1], q[2]);
+      }
+    }
+    for (let j = 0; j < ny; j++)
+      for (let i = 0; i < nx; i++) {
+        const a = j * (nx + 1) + i;
+        const b = a + nx + 1;
+        idx.push(a, a + 1, b, a + 1, b + 1, b);
+      }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setIndex(idx);
+    g.computeVertexNormals();
+    void tint;
+    return g;
+  };
+  // forehead / brow plate
+  put(ctx, patch((y) => half * (0.95 - 0.35 * Math.max(0, (y - 0.0) / 0.3)), slit[1], top, 8, 4), { bone: 'head', color: o.color, mat, small: true });
+  // nose bridge down the middle through the slit
+  put(ctx, patch(() => 0.05, slit[0], slit[1], 2, 2), { bone: 'head', color: o.color, mat, small: true });
+  // cheeks, mouth and chin
+  put(ctx, patch((y) => half * (1.0 - 0.7 * Math.max(0, (slit[0] - y) / 0.5)), bottom, slit[0], 10, 8), { bone: 'head', color: o.color, mat, small: true });
+  // rim lines: slit edges and mouth grill
+  const rim = o.trim ?? o.color;
+  const edge = (y: number, hw: number, r: number) => {
+    const pts: V3[] = [];
+    for (let i = 0; i <= 8; i++) {
+      const x = -hw + (2 * hw * i) / 8;
+      pts.push(h(x, y, surfZ(x, y) + 0.004));
+    }
+    put(ctx, tube(pts, r * P.headH, { seg: 14, radial: 4 }), { bone: 'head', color: rim, mat, small: true });
+  };
+  edge(slit[0], half * 0.95, 0.008);
+  edge(slit[1], half * 0.9, 0.008);
+  if (o.mouth !== false) {
+    for (const y of [-0.4, -0.45, -0.5]) edge(y, 0.1, 0.005);
+  }
+}
+
+/** wrapped cloth head covering (turban): layered torus bands + a cap, sculpted into the body */
+export function sculptTurban(ctx: KindContext, o: { color: number; color2?: number; mat?: SurfaceName; y?: number; height?: number; thick?: number }) {
+  const { P, sculpt: s } = ctx;
+  const u = P.headH;
+  const y0 = o.y ?? 0.1;
+  const th = (o.thick ?? 0.07) * u;
+  const mat = o.mat ?? 'cloth';
+  s.with({ color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.5 : 0, colorFreq: 20 / P.s, mat, bone: 'head', noise: { amp: 0.0035 * P.s, freq: 36 / P.s, type: 'ridged', octaves: 2 } }, () => {
+    s.group('union', 0.012 * u, () => {
+      s.ellipsoid(P.h(0, y0 + 0.17, -0.06), [0.37 * u, 0.32 * u, 0.45 * u], { k: 0.03 * u });
+      for (let i = 0; i < 4; i++) {
+        const f = i / 3;
+        s.torus(P.h(0, y0 + 0.03 + f * 0.26, -0.06 - f * 0.01), 0.355 * u * (1 - f * 0.1), th * (1 - f * 0.15), { k: 0.02 * u, rot: [-0.18 + f * 0.1 + (i % 2 ? 0.08 : -0.06), 0, (i % 2 ? 0.1 : -0.08)] });
+      }
+      // knot / tail at the side
+      s.cone(P.h(-0.3, y0 + 0.2, 0.05), P.h(-0.42, y0 - 0.2, -0.15), 0.09 * u, 0.04 * u, { k: 0.03 * u });
+    });
+    // keep the face open
+    s.ellipsoid(P.h(0, -0.1, 0.5), [0.33 * u, 0.3 * u, 0.3 * u], { op: 'subtract', k: 0.03 * u });
+  });
+}
+
+/** a cloth veil over the lower face (cheek-veil / scarf mask), as a partial cylinder with a fold */
+export function veil(ctx: KindContext, o: { color: number; y0?: number; y1?: number; mat?: SurfaceName | SurfaceSpec }) {
+  const { P } = ctx;
+  const u = P.headH;
+  const y0 = o.y0 ?? -0.6;
+  const y1 = o.y1 ?? -0.12;
+  const g = new THREE.CylinderGeometry(0.34 * u, 0.28 * u, (y1 - y0) * u, 18, 3, true, -Math.PI * 0.62 + Math.PI / 2 * 0 + 0, Math.PI * 1.24);
+  // cylinder theta=0 faces +Z in three? (x = sin, z = cos) -> centre the arc on +Z
+  g.rotateY(0);
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i), z = pos.getZ(i), y = pos.getY(i);
+    // squash to the face depth and add a gentle fold line
+    pos.setZ(i, z * 1.05 + 0.03 * u * Math.sin((y / ((y1 - y0) * u)) * 9));
+    pos.setX(i, x);
+  }
+  g.computeVertexNormals();
+  g.translate(...P.h(0, (y0 + y1) / 2, 0.11));
+  put(ctx, g, { bone: 'head', color: o.color, mat: o.mat ?? 'cloth', small: true });
+}

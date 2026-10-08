@@ -271,7 +271,7 @@ export const dwarfDef: KindDef = {
   weapons: { right: 'axe', style: 'dwarf' },
   anim: { swagger: 0.5, aggression: 0.5, stance: 1.2, cadence: 1.05 },
   variation: { height: 0.04, bulk: 0.1, skin: 0.14 },
-  detail: { res: devNum('res', 0.0245), headRes: devNum('headRes', 0.0095), faceRes: 0, detailScale: 1.3 },
+  detail: { res: devNum('res', 0.05), headRes: devNum('headRes', 0.0145), faceRes: 0, detailScale: 1.3 },
   sfx: { voice: 'dwarf', weight: 0.7 },
   extras: dwarfExtras,
 };

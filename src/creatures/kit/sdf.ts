@@ -60,6 +60,14 @@ export interface PrimOpts {
   strength?: number;
   /** subtract/intersect: also repaint the carved surface (default false: keeps the base attributes) */
   paintCarve?: boolean;
+  /**
+   * paint ops only: instead of colour/material, write this primitive's signed distance (minus the
+   * given offset, metres) into the per-vertex `seam` channel. Linear interpolation of a distance is
+   * exact for planes, so the shader draws crisp stitch lines and edge wear along garment edges at
+   * any mesh resolution (stitches at seam ≈ −stitchInset, wear where |seam| is small). Put it inside
+   * the garment's group so it only affects that garment. See material.ts (`seam`).
+   */
+  seam?: number;
   /** rotation: Euler XYZ (radians) or a quaternion (ellipsoid, box, torus) */
   rot?: V3 | THREE.Quaternion;
   /** debug label */
@@ -358,6 +366,7 @@ export class Sculpt {
         mix(o.colorFreq ?? 0);
         mix(o.strength ?? 1);
         mix(o.paintCarve ? 1 : 0);
+        mix(o.seam ?? -9);
         if (o.blend) {
           mix(o.blend[0]);
           mix(o.blend[1]);
@@ -546,6 +555,8 @@ export class SdfProgram {
         A[a + 20] = p.o.colorFreq ?? 30;
       }
       A[a + 21] = p.o.paintCarve ? 1 : 0;
+      A[a + 22] = p.o.seam !== undefined && op === 3 ? 1 : 0;
+      A[a + 23] = p.o.seam ?? 0;
       // bones
       const B = this.PB;
       const b = i * BONE_STRIDE;
@@ -699,7 +710,7 @@ export interface Evaluator {
   full(x: number, y: number, z: number, list: Int32Array, start: number, end: number, attr: Float64Array, bw: Float64Array): number;
 }
 
-export const ATTR_COUNT = 16; // r g b | rough metal sheen skin | pat0..7 | (unused)
+export const ATTR_COUNT = 17; // r g b | rough metal sheen skin | pat0..7 | seam distance, seam flag
 
 export function makeEvaluator(prog: SdfProgram): Evaluator {
   const PF = prog.PF;
@@ -886,6 +897,8 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
       pa[2] += (PA[a + 18] - pa[2]) * w;
     }
     for (let j = 3; j < 15; j++) pa[j] = PA[a + j];
+    pa[15] = 0;
+    pa[16] = 0;
   }
   function primBones(c: number, x: number, y: number, z: number) {
     const b = c * BONE_STRIDE;
@@ -1017,8 +1030,17 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
         let w = k > 0 ? 1 - Math.min(1, Math.max(0, b / k)) : b <= 0 ? 1 : 0;
         w = w * w * (3 - 2 * w) * s;
         if (w > 0) {
+          if (!isGroup && PA[c * ATTR_STRIDE + 22] > 0) {
+            // seam paint: only the seam channel (signed distance to this primitive − offset)
+            let sd = Math.max(-0.03, Math.min(0.03, b - PA[c * ATTR_STRIDE + 23]));
+            // several seams on one garment: keep the nearest edge
+            if (attr[16] > 0.5 && Math.abs(attr[15]) < Math.abs(sd)) sd = attr[15];
+            attr[15] += (sd - attr[15]) * w;
+            attr[16] += (1 - attr[16]) * w;
+            continue;
+          }
           if (!isGroup) primColor(c, x, y, z);
-          for (let j = 0; j < 15; j++) attr[j] += (pa[j] - attr[j]) * w;
+          for (let j = 0; j < 17; j++) attr[j] += (pa[j] - attr[j]) * w;
         }
         continue;
       }
@@ -1043,7 +1065,7 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
         empty = false;
         if (wb > 0) {
           if (!isGroup) primColor(c, x, y, z);
-          for (let j = 0; j < 15; j++) attr[j] += (pa[j] - attr[j]) * wb;
+          for (let j = 0; j < 17; j++) attr[j] += (pa[j] - attr[j]) * wb;
         }
         if (ws > 0) {
           if (ws >= 0.999999) wClear();
@@ -1067,7 +1089,7 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
         }
         if (c >= 0 && PA[c * ATTR_STRIDE + 21] > 0 && h > 0) {
           primColor(c, x, y, z);
-          for (let j = 0; j < 15; j++) attr[j] += (pa[j] - attr[j]) * h;
+          for (let j = 0; j < 17; j++) attr[j] += (pa[j] - attr[j]) * h;
         }
       } else {
         let h: number;
@@ -1080,7 +1102,7 @@ export function makeEvaluator(prog: SdfProgram): Evaluator {
         }
         if (c >= 0 && PA[c * ATTR_STRIDE + 21] > 0 && h < 1) {
           primColor(c, x, y, z);
-          for (let j = 0; j < 15; j++) attr[j] += (pa[j] - attr[j]) * (1 - h);
+          for (let j = 0; j < 17; j++) attr[j] += (pa[j] - attr[j]) * (1 - h);
         }
       }
     }

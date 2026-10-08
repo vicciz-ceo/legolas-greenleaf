@@ -24,9 +24,11 @@ interface Builder {
   si: number[];
   sw: number[];
   idx: number[];
+  /** (signed distance to the nearest hem/edge, 1) — stitches and wear in the shader */
+  seam: number[];
 }
 function newBuilder(): Builder {
-  return { pos: [], nor: [], col: [], surf: [], pat0: [], pat1: [], ao: [], si: [], sw: [], idx: [] };
+  return { pos: [], nor: [], col: [], surf: [], pat0: [], pat1: [], seam: [], ao: [], si: [], sw: [], idx: [] };
 }
 function finish(b: Builder): THREE.BufferGeometry {
   const g = new THREE.BufferGeometry();
@@ -35,6 +37,7 @@ function finish(b: Builder): THREE.BufferGeometry {
   g.setAttribute('surf', new THREE.Float32BufferAttribute(b.surf, 4));
   g.setAttribute('pat0', new THREE.Float32BufferAttribute(b.pat0, 4));
   g.setAttribute('pat1', new THREE.Float32BufferAttribute(b.pat1, 4));
+  g.setAttribute('seam', new THREE.Float32BufferAttribute(b.seam, 2));
   g.setAttribute('ao', new THREE.Float32BufferAttribute(b.ao, 1));
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(b.si, 4));
   g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(b.sw, 4));
@@ -45,8 +48,10 @@ function finish(b: Builder): THREE.BufferGeometry {
 
 const _c = new THREE.Color();
 
-function pushVertex(b: Builder, p: THREE.Vector3, color: THREE.Color, spec: SurfaceSpec, ao: number, weights: [number, number][]) {
+function pushVertex(b: Builder, p: THREE.Vector3, color: THREE.Color, spec: SurfaceSpec, ao: number, weights: [number, number][], edge = 1) {
   b.pos.push(p.x, p.y, p.z);
+  // edge: distance (m) to the nearest hem/edge; ≥ 0.03 means none
+  b.seam.push(-Math.min(0.03, edge), 1);
   b.col.push(color.r, color.g, color.b);
   b.surf.push(spec.rough, spec.metal, spec.sheen, spec.skin);
   b.pat0.push(spec.pat[0], spec.pat[1], spec.pat[2], spec.pat[3]);
@@ -133,7 +138,9 @@ export function skirtGeometry(P: Proportions, rig: RigDef, o: SkirtOpts): THREE.
         w.push([iH, Math.max(0.0001, 1 - lower * 0.9)], [iTL, tl], [iTR, tr]);
         if (iSF >= 0) w.push([iSF, sf]);
         if (iSB >= 0) w.push([iSB, sb]);
-        pushVertex(b, p, _c, spec, 0.55 + 0.45 * v, w);
+        const arc = (a1 - a0) * (rx0 + rx1) * 0.5;
+        const edge = Math.min(H * (1 - v), arc * u, arc * (1 - u));
+        pushVertex(b, p, _c, spec, 0.55 + 0.45 * v, w, edge);
       }
     }
     for (let iv = 0; iv < nv; iv++)
@@ -213,7 +220,8 @@ export function cloakGeometry(P: Proportions, rig: RigDef, o: CloakOpts): THREE.
         if (chains[1][k] >= 0) w.push([chains[1][k], cw * blendLR]);
       }
       void side;
-      pushVertex(b, p, _c, spec, 0.5 + 0.5 * Math.min(1, v * 2), w);
+      const arcC = (a1 - a0) * (rxTop + rxLow) * 0.5;
+      pushVertex(b, p, _c, spec, 0.5 + 0.5 * Math.min(1, v * 2), w, Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
     }
   }
   for (let iv = 0; iv < nv; iv++)

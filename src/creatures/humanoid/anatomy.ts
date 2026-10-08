@@ -75,9 +75,23 @@ export function anatomyParts(P: Proportions): Part[] {
   const hs = b.handSize * s;
   const handRot = basisQuat(fl.T, fl.L);
   parts.push({ tag: 'hand', side: 'l', t: 'box', c: P.hp('l', P.palm * 0.5, 0.002 * hs, 0), half: [0.04 * hs * gm, P.palm * 0.52, 0.0145 * hs * gm], round: 0.012 * hs, o: { bone: 'hand_l', k: 0.015 * s, rot: handRot } });
-  // mitten fingers: proximal + distal in one box blended fing1 → fing2
-  const f0 = P.hp('l', P.palm + P.finger * 0.48, -0.004 * hs, 0.001 * hs);
-  parts.push({ tag: 'fingers', side: 'l', t: 'box', c: f0, half: [0.038 * hs * gm, P.finger * 0.5, 0.0105 * hs * gm], round: 0.0095 * hs, o: { bone: 'fing1_l', bone2: 'fing2_l', blend: [0.35, 0.65], blendAxis: [P.hp('l', P.palm, 0, 0), P.hp('l', P.palm + P.finger, 0, 0)], k: 0.008 * s, rot: handRot } });
+  // four fingers (index → pinky across the thumb axis T), proximal → distal blended fing1 → fing2.
+  // At crowd resolution they merge into a mitten; hero hand regions resolve the grooves.
+  const FING: [number, number, number][] = [
+    // [offset along T, length × finger, radius]
+    [0.0265, 0.97, 0.0092],
+    [0.0088, 1.06, 0.0096],
+    [-0.0088, 1.0, 0.0091],
+    [-0.0255, 0.8, 0.0081],
+  ];
+  for (const [tOff, len, rad] of FING) {
+    const a = P.hp('l', P.palm - 0.006 * hs, tOff * hs * gm, 0.001 * hs);
+    const b = P.hp('l', P.palm + P.finger * len - rad * hs * 0.9, tOff * hs * gm * 1.04, 0.001 * hs);
+    const rA = rad * hs * gm, rB = rad * hs * 0.82 * gm;
+    parts.push({ tag: 'fingers', side: 'l', t: 'cone', a, b, ra: rA, rb: rB, o: { bone: 'fing1_l', bone2: 'fing2_l', blend: [0.42, 0.62], blendAxis: [P.hp('l', P.palm, 0, 0), P.hp('l', P.palm + P.finger, 0, 0)], k: 0.0035 * s } });
+    // knuckle on the back of the hand (−N)
+    parts.push({ tag: 'fingers', side: 'l', t: 'ell', c: P.hp('l', P.palm - 0.004 * hs, tOff * hs * gm, -0.006 * hs), r: [rA * 0.95, rA * 0.8, rA * 0.75], o: { bone: 'fing1_l', k: 0.006 * s } });
+  }
   // thumb
   parts.push({ tag: 'thumb', side: 'l', t: 'cone', a: P.hp('l', 0.012 * hs, 0.018 * hs, 0.004 * hs), b: j.thumb2_l, ra: 0.016 * hs, rb: 0.012 * hs, o: { bone: 'thumb1_l', k: 0.012 * s } });
   const tdir = new THREE.Vector3(...j.thumb2_l).sub(new THREE.Vector3(...j.thumb1_l)).normalize();

@@ -197,6 +197,10 @@ export interface HairGeoOpts {
   weights: WeightFn;
   /** card curl: bend the card across its width (0 = flat) for volume */
   curl?: number;
+  /** brightness at the root (darker roots give depth), default 0.72 */
+  rootShade?: number;
+  /** length over which the root shade fades out (m), default 0.04 */
+  rootLength?: number;
 }
 
 export interface BraidDef {
@@ -251,6 +255,9 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
     const sc = s.color !== undefined ? _c2.setHex(s.color, THREE.SRGBColorSpace) : null;
     // each card samples a different slice of the strand texture
     uOff = (uOff + 0.37) % 1;
+    let strandLen = 0;
+    for (let i = 1; i < n; i++) strandLen += s.points[i].distanceTo(s.points[i - 1]);
+    const rootFrac = Math.min(1, (o.rootLength ?? 0.04) / Math.max(1e-4, strandLen));
     for (let i = 0; i < n; i++) {
       const p = s.points[i];
       const along = i / (n - 1);
@@ -261,7 +268,8 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
       _side.crossVectors(_tan, nm).normalize();
       const w = (s.width + (s.tipWidth - s.width) * along) * 0.5;
       // root slightly darker, tips toward the tip colour
-      _c.copy(sc ?? root).multiplyScalar(0.82 + 0.18 * Math.min(1, along * 3));
+      const rs0 = o.rootShade ?? 0.72;
+      _c.copy(sc ?? root).multiplyScalar(rs0 + (1 - rs0) * Math.min(1, along / rootFrac));
       if (o.tipColor !== undefined) _c.lerp(tip, along * along * 0.8);
       // three verts across (centre raised along the normal for a curved card)
       for (let k = -1; k <= 1; k++) {
@@ -335,7 +343,8 @@ export function strandTexture(): THREE.DataTexture {
   for (let x = 0; x < W; x++) {
     const u = (x % 64) / 64; // 4 tiles across (cards pick one)
     const edge = Math.min(u, 1 - u) * 2; // 0 at card edge, 1 at centre
-    fib.push({ b: 0.72 + rnd() * 0.42, end: 0.72 + rnd() * 0.28 * (0.4 + edge), a: edge < 0.25 ? (rnd() < edge * 3.2 ? 1 : 0) : rnd() < 0.94 ? 1 : 0.35 });
+    // brightness is a LINEAR multiplier on the vertex colour (texture is not sRGB-decoded)
+    fib.push({ b: 0.74 + rnd() * 0.3, end: 0.72 + rnd() * 0.28 * (0.4 + edge), a: edge < 0.25 ? (rnd() < edge * 3.2 ? 1 : 0) : rnd() < 0.94 ? 1 : 0.35 });
   }
   for (let y = 0; y < H; y++) {
     const v = y / (H - 1);
@@ -346,7 +355,8 @@ export function strandTexture(): THREE.DataTexture {
       const vary = 0.92 + 0.08 * Math.sin(v * 37 + x * 0.7);
       const b = Math.min(1, f.b * vary);
       data[i] = data[i + 1] = data[i + 2] = Math.round(b * 255);
-      const tipFade = v > f.end ? 0 : 1;
+      // tips end at different lengths; roots fade in over the first few % (no square card starts)
+      const tipFade = v > f.end ? 0 : v < 0.012 ? (v / 0.012 > (x % 7) / 7 ? 1 : 0) : 1;
       data[i + 3] = Math.round(f.a * tipFade * 255);
     }
   }
@@ -356,7 +366,7 @@ export function strandTexture(): THREE.DataTexture {
   t.magFilter = THREE.LinearFilter;
   t.minFilter = THREE.LinearMipmapLinearFilter;
   t.generateMipmaps = true;
-  t.colorSpace = THREE.SRGBColorSpace;
+  t.colorSpace = THREE.NoColorSpace;
   t.anisotropy = 4;
   t.needsUpdate = true;
   t.userData.shared = true;

@@ -70,6 +70,7 @@ export function sheetGeometry(o: SheetOpts): THREE.BufferGeometry {
   g.setAttribute('surf', new THREE.BufferAttribute(surf, 4));
   g.setAttribute('pat0', new THREE.BufferAttribute(pat0, 4));
   g.setAttribute('pat1', new THREE.BufferAttribute(pat1, 4));
+  g.setAttribute('seam', new THREE.BufferAttribute(new Float32Array((pos.length / 3) * 2), 2));
   g.setAttribute('ao', new THREE.BufferAttribute(ao, 1));
   g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4));
   g.setAttribute('skinWeight', new THREE.BufferAttribute(sw, 4));

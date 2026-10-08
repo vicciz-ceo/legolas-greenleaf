@@ -12,11 +12,11 @@ import { quiverGear, quiverSheathMatrix, type QuiverOpts } from '../gear';
 import { createWeapon } from '../../weapons';
 
 const PALETTE = {
-  hair: 0xd9c89c,
-  hairTip: 0xe8dbb6,
+  hair: 0xd2b984,
+  hairTip: 0xe6d3a2,
   brows: 0x8f7650,
-  skin: 0xe2b99c,
-  skin2: 0xd6a88c,
+  skin: 0xdfb497,
+  skin2: 0xd3a286,
   lips: 0xc58d82,
   eyes: 0x4f7fae,
   tunic: 0x4b5546,
@@ -105,8 +105,8 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
       footSize: 0.97,
     },
     face: {
-      jaw: 0.95,
-      jawLength: 1.05,
+      jaw: 0.9,
+      jawLength: 1.0,
       chin: 1.12,
       brow: 0.82,
       cheekbones: 1.1,
@@ -117,7 +117,7 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
       eyeSize: 1.06,
       eyeSpacing: 1.0,
       eyeTilt: 0.1,
-      eyeOpen: 1.08,
+      eyeOpen: 1.14,
       foreheadSlope: 0.08,
       cranium: 1.0,
     },

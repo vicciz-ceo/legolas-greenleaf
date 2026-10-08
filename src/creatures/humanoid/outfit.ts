@@ -25,17 +25,27 @@ const TORSO: PartTag[] = ['pelvis', 'waist', 'belly', 'ribs', 'chest', 'pecs', '
 const UPPER: PartTag[] = ['waist', 'belly', 'ribs', 'chest', 'pecs', 'back', 'trap'];
 const LEGS: PartTag[] = ['thigh', 'knee', 'shin', 'calf'];
 
-/** keep y in [y0, y1] (soft edges k) */
-function slab(s: Sculpt, y0: number | null, y1: number | null, k: number) {
+/** keep y in [y0, y1] (soft edges k); `seams` also marks both edges for stitching / edge wear */
+function slab(s: Sculpt, y0: number | null, y1: number | null, k: number, seams = false) {
   if (y1 !== null) s.plane([0, 1, 0], y1, { op: 'intersect', k });
   if (y0 !== null) s.plane([0, -1, 0], -y0, { op: 'intersect', k });
+  if (seams) {
+    if (y1 !== null) s.plane([0, 1, 0], y1, { op: 'paint', seam: 0, k: 0.002 });
+    if (y0 !== null) s.plane([0, -1, 0], -y0, { op: 'paint', seam: 0, k: 0.002 });
+  }
+}
+
+/** stitched / worn edge along a plane (call inside the garment's group so only it is affected) */
+function seamPlane(s: Sculpt, n: V3, d: number) {
+  s.plane(n, d, { op: 'paint', seam: 0, k: 0.002 });
 }
 
 /** keep the part of a limb beyond `at` along direction L (left side; mirrored for right) */
-function limbCut(s: Sculpt, L: THREE.Vector3, at: V3, keepBeyond: boolean, k: number) {
+function limbCut(s: Sculpt, L: THREE.Vector3, at: V3, keepBeyond: boolean, k: number, seam = false) {
   const n = keepBeyond ? L.clone().multiplyScalar(-1) : L.clone();
   const d = n.x * at[0] + n.y * at[1] + n.z * at[2];
   s.plane([n.x, n.y, n.z], d, { op: 'intersect', k });
+  if (seam) seamPlane(s, [n.x, n.y, n.z], d);
 }
 
 export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: ResolvedKind, rng: Rng): OutfitResult {
@@ -86,7 +96,7 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
         s.group('union', tight, () => {
           emitParts(s, parts, ['foot', 'toes'], { ...base('leather', { k: 0.03 * sc }), inflate: inf });
           emitParts(s, parts, ['shin', 'calf'], { ...base('leather', { k: 0.03 * sc }), inflate: inf + 0.002 * sc });
-          slab(s, null, top, 0.006 * sc);
+          slab(s, null, top, 0.006 * sc, l.type === 'boots');
         });
         // sole
         s.mirrored(() => {
@@ -134,10 +144,12 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
           emitParts(s, parts, [...TORSO, 'neck'], { ...base(m, { noise }), inflate: inf });
           emitParts(s, parts, sleeveParts, { ...base(m, { noise }), inflate: inf * 0.85 });
           slab(s, hipY - 0.03 * sc, neckTop, 0.008 * sc);
+          if (l.type !== 'rags' && l.type !== 'mail_shirt') seamPlane(s, [0, 1, 0], neckTop);
           // sleeve ends ("keep not beyond" cuts are compatible across sides)
+          const hemmed = l.type !== 'rags' && l.type !== 'mail_shirt';
           s.mirrored(() => {
-            if (sleeve < 1) limbCut(s, L, [P.j.upperarm_l[0] + L.x * P.upperArm * sleeve, P.j.upperarm_l[1] + L.y * P.upperArm * sleeve, P.j.upperarm_l[2]], false, 0.008 * sc);
-            else limbCut(s, L, [P.j.hand_l[0] - L.x * 0.012 * sc, P.j.hand_l[1] - L.y * 0.012 * sc, P.j.hand_l[2]], false, 0.006 * sc);
+            if (sleeve < 1) limbCut(s, L, [P.j.upperarm_l[0] + L.x * P.upperArm * sleeve, P.j.upperarm_l[1] + L.y * P.upperArm * sleeve, P.j.upperarm_l[2]], false, 0.008 * sc, hemmed);
+            else limbCut(s, L, [P.j.hand_l[0] - L.x * 0.012 * sc, P.j.hand_l[1] - L.y * 0.012 * sc, P.j.hand_l[2]], false, 0.006 * sc, hemmed);
           });
         });
         if (l.type !== 'shirt' && (l.length ?? 0.4) > 0.05) {
@@ -161,11 +173,18 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
       case 'jerkin':
       case 'vest': {
         const inf = 0.014 * sc + t;
-        s.group('union', 0.003 * sc, () => {
-          emitParts(s, parts, [...UPPER, 'pelvis', 'glutes', 'thigh', 'neck', 'deltoid'], { ...base(l.type === 'jerkin' ? 'suede' : 'leather'), inflate: inf });
-          slab(s, hipY + (l.length !== undefined ? -0.08 * l.length * sc : 0.02 * sc), j.neck[1] + 0.04 * sc, 0.006 * sc);
-          // arm holes: keep inside the shoulder line
-          s.mirrored(() => s.plane([1, -0.25, 0], P.shoulderX * 0.98 - 0.25 * j.upperarm_l[1], { op: 'intersect', k: 0.012 * sc }));
+        s.group('union', 0.0025 * sc, () => {
+          emitParts(s, parts, [...UPPER, 'pelvis', 'glutes', 'thigh', 'neck'], { ...base(l.type === 'jerkin' ? 'suede' : 'leather'), inflate: inf });
+          slab(s, hipY + (l.length !== undefined ? -0.08 * l.length * sc : 0.02 * sc), j.neck[1] + 0.04 * sc, 0.005 * sc, true);
+          // arm holes: the plane leans outward downward, so the vest opens at the shoulder joint
+          // only and still wraps the ribs fully below the armpit
+          const an = new THREE.Vector3(1, 0.42, 0).normalize();
+          const ap: V3 = [P.shoulderX * 0.9, j.upperarm_l[1] - 0.01 * sc, 0];
+          const ad = an.x * ap[0] + an.y * ap[1];
+          s.mirrored(() => {
+            s.plane([an.x, an.y, 0], ad, { op: 'intersect', k: 0.008 * sc });
+            seamPlane(s, [an.x, an.y, 0], ad);
+          });
         });
 
         break;
@@ -175,18 +194,11 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
         s.mirrored(() =>
           s.group('union', 0.002 * sc, () => {
             emitParts(s, parts, ['forearm'], { ...base('leather', { k: 0.02 * sc }), inflate: inf, oneSide: true });
-            limbCut(s, L, [P.j.hand_l[0] - L.x * 0.008 * sc, P.j.hand_l[1] - L.y * 0.008 * sc, P.j.hand_l[2]], false, 0.004 * sc);
-            limbCut(s, L, [P.j.forearm_l[0] + L.x * P.foreArm * 0.3, P.j.forearm_l[1] + L.y * P.foreArm * 0.3, P.j.forearm_l[2]], true, 0.004 * sc);
+            limbCut(s, L, [P.j.hand_l[0] - L.x * 0.008 * sc, P.j.hand_l[1] - L.y * 0.008 * sc, P.j.hand_l[2]], false, 0.004 * sc, true);
+            limbCut(s, L, [P.j.forearm_l[0] + L.x * P.foreArm * 0.3, P.j.forearm_l[1] + L.y * P.foreArm * 0.3, P.j.forearm_l[2]], true, 0.004 * sc, true);
           }),
         );
-        // tooled edge rings
-        s.mirrored(() => {
-          for (const f of [0.31, 0.95]) {
-            const c: V3 = [P.j.forearm_l[0] + L.x * P.foreArm * f, P.j.forearm_l[1] + L.y * P.foreArm * f, P.j.forearm_l[2]];
-            const r = (0.039 + (0.026 - 0.039) * f) * sc * P.build.bulk + inf;
-            s.torus(c, r, 0.0035 * sc, { color: l.color2 ?? l.color, mat: 'leather_worn', bone: 'forearm_l', rot: [0, 0, Math.PI / 4], k: 0.003 * sc });
-          }
-        });
+        // (edges are stitched and worn via the seam channel; thin tooled rings alias at body resolution)
         break;
       }
       case 'belt':
@@ -196,7 +208,7 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
         const hw = (l.type === 'sash' ? 0.045 : 0.021) * sc;
         s.group('union', 0.002 * sc, () => {
           emitParts(s, parts, ['pelvis', 'waist', 'belly', 'glutes', 'thigh'], { ...base(l.type === 'sash' ? 'cloth' : 'leather'), inflate: 0.02 * sc + t });
-          slab(s, y - hw, y + hw, 0.003 * sc);
+          slab(s, y - hw, y + hw, 0.003 * sc, l.type === 'belt');
         });
         break;
       }

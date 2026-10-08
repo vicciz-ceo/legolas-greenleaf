@@ -224,9 +224,10 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
     ...(hero ? (['l', 'r'] as const) : []).map((sd) => {
       const w = P.j[`hand_${sd}`];
       const r = (P.palm + P.finger) * 1.15;
-      const x0 = sd === 'l' ? w[0] - 0.03 * s : w[0] - r;
-      const x1 = sd === 'l' ? w[0] + r : w[0] + 0.03 * s;
-      return { min: [x0, w[1] - r, w[2] - 0.06 * s] as [number, number, number], max: [x1, w[1] + 0.03 * s, w[2] + 0.07 * s] as [number, number, number], res: Math.max(headRes * 0.9, 0.0075 * s), band: res * 1.5, aoScale: 0.5 };
+      // starts just past the wrist so the region seam never crosses a bracer/glove/sleeve edge
+      const x0 = sd === 'l' ? w[0] + 0.004 * s : w[0] - r;
+      const x1 = sd === 'l' ? w[0] + r : w[0] - 0.004 * s;
+      return { min: [x0, w[1] - r, w[2] - 0.06 * s] as [number, number, number], max: [x1, w[1] - 0.004 * s, w[2] + 0.07 * s] as [number, number, number], res: Math.max(headRes * 0.72, 0.0062 * s), band: res * 1.5, aoScale: 0.45 };
     }),
   ];
   const ao = DEBUG.has('noao') ? (false as const) : { dist: 0.07 * s, strength: 1 };

@@ -202,6 +202,6 @@ export const lurtzKind: KindDef = {
   sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
   anim: { hunch: 0.16, swagger: 0.5, aggression: 1, stance: 1.18, armSwing: 1.05, cadence: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { faceRes: 0, res: 0.032, headRes: 0.0085 },
+  detail: { faceRes: 0, res: 0.034, headRes: 0.0095 },
   extras: lurtzExtras,
 };

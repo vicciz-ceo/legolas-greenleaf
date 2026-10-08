@@ -99,7 +99,7 @@ export interface SurfPoint {
 /** parametric mid-surface: u, v in 0..1 → point and outward normal */
 export type SurfFn = (u: number, v: number, o: SurfPoint) => void;
 
-class Builder {
+export class Builder {
   pos: number[] = [];
   nor: number[] = [];
   idx: number[] = [];
@@ -147,6 +147,8 @@ export interface ShellOpts {
   noInner?: boolean;
   /** skip rim walls on some sides */
   skip?: ('u0' | 'u1' | 'v0' | 'v1')[];
+  /** omit grid cells (slits, vents): called with the cell centre on the mid-surface */
+  cull?: (centre: THREE.Vector3) => boolean;
 }
 
 /** A curved plate: outer + inner skin and rim walls. Great for pauldrons, helmet lames, cuirass plates. */
@@ -175,9 +177,14 @@ export function shellPatch(f: SurfFn, nu: number, nv: number, thick: number, opt
       outer.push(b.vert(tmp.copy(P[k]).addScaledVector(N[k], hi), N[k]));
       inner.push(b.vert(tmp.copy(P[k]).addScaledVector(N[k], -lo), tmp.clone().copy(N[k]).negate()));
     }
+  const centre = V();
   for (let j = 0; j < nv; j++)
     for (let i = 0; i < nu; i++) {
       const a = j * W + i;
+      if (opt.cull) {
+        centre.copy(P[a]).add(P[a + 1]).add(P[a + W]).add(P[a + W + 1]).multiplyScalar(0.25);
+        if (opt.cull(centre)) continue;
+      }
       const n = N[a].clone().add(N[a + 1]).add(N[a + W]).add(N[a + W + 1]);
       b.quad(outer[a], outer[a + 1], outer[a + W + 1], outer[a + W], n);
       if (!opt.noInner) b.quad(inner[a], inner[a + 1], inner[a + W + 1], inner[a + W], n.clone().negate());
@@ -392,22 +399,104 @@ export function whiteHandMask(x: number, y: number, soft = 0.02): number {
   return 1 - smooth(-soft, soft, whiteHandSd(x, y));
 }
 
-/** outline points (CCW) of the hand, traced by marching radially from the palm centre */
-export function whiteHandOutline(n = 120): THREE.Vector2[] {
-  const pts: THREE.Vector2[] = [];
+/** outline points (CCW) of the hand (unit height), traced radially from the palm centre and simplified */
+export function whiteHandOutline(n = 360, eps = 0.012): THREE.Vector2[] {
+  const raw: THREE.Vector2[] = [];
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2;
     const dx = Math.cos(a), dy = Math.sin(a);
-    // fingers make the shape star-shaped around the palm centre (0, -0.1) except between fingers: march outward until outside
-    let r = 0;
-    for (let k = 0; k < 200; k++) {
-      const rr = k * 0.005;
-      if (whiteHandSd(dx * rr, -0.1 + dy * rr) > 0) break;
-      r = rr;
+    let lo = 0, hi = 0.9;
+    for (let k = 0; k < 24; k++) {
+      const m = (lo + hi) / 2;
+      if (whiteHandSd(dx * m, -0.1 + dy * m) < 0) lo = m;
+      else hi = m;
     }
-    pts.push(new THREE.Vector2(dx * r, -0.1 + dy * r));
+    raw.push(new THREE.Vector2(dx * lo, -0.1 + dy * lo));
   }
-  return pts;
+  // Douglas-Peucker-ish simplification on the closed loop (greedy: drop points that deviate < eps from the chord)
+  const out: THREE.Vector2[] = [raw[0]];
+  let last = 0;
+  for (let i = 2; i <= raw.length; i++) {
+    const a = raw[last];
+    const b = raw[i % raw.length];
+    let ok = true;
+    for (let j = last + 1; j < i; j++) {
+      const p = raw[j];
+      const ab = b.clone().sub(a);
+      const t = Math.max(0, Math.min(1, p.clone().sub(a).dot(ab) / (ab.lengthSq() || 1e-9)));
+      if (p.distanceTo(a.clone().addScaledVector(ab, t)) > eps) {
+        ok = false;
+        break;
+      }
+    }
+    if (!ok) {
+      out.push(raw[i - 1]);
+      last = i - 1;
+    }
+  }
+  return out;
+}
+
+/** a strip between two points of a frame's XY plane, draped over the surface (width tapers w0 → w1) */
+export function surfaceStrip(proj: Projector, frame: THREE.Matrix4, a: [number, number], b: [number, number], w0: number, w1: number, lift: number, samples: number, out: Builder): void {
+  const dir = new THREE.Vector2(b[0] - a[0], b[1] - a[1]);
+  const len = dir.length();
+  if (len < 1e-6) return;
+  dir.divideScalar(len);
+  const perp = new THREE.Vector2(-dir.y, dir.x);
+  const rows: [number, number][] = [];
+  const n = V(), p = V();
+  for (let i = 0; i <= samples; i++) {
+    const t = i / samples;
+    const w = lerp(w0, w1, t) / 2;
+    const cx = a[0] + dir.x * len * t, cy = a[1] + dir.y * len * t;
+    const ids: number[] = [];
+    for (const sd of [-1, 1]) {
+      p.set(cx + perp.x * w * sd, cy + perp.y * w * sd, 0).applyMatrix4(frame);
+      if (!proj.project(p, n, 4)) {
+        ids.push(-1);
+        continue;
+      }
+      p.addScaledVector(n, lift);
+      ids.push(out.vert(p, n));
+    }
+    rows.push([ids[0], ids[1]]);
+  }
+  for (let i = 0; i < samples; i++) {
+    const [l0, r0] = rows[i];
+    const [l1, r1] = rows[i + 1];
+    if (l0 < 0 || r0 < 0 || l1 < 0 || r1 < 0) continue;
+    const nn = V(out.nor[l0 * 3], out.nor[l0 * 3 + 1], out.nor[l0 * 3 + 2]);
+    out.quad(l0, r0, r1, l1, nn);
+  }
+}
+
+/** the white hand (unit height ≈ 1 → `size` metres) built from strips draped over the surface */
+export function handStrips(proj: Projector, frame: THREE.Matrix4, size: number, lift: number, o: { wrist?: boolean; samples?: number; jitter?: number; seed?: number } = {}): THREE.BufferGeometry | null {
+  const b = new Builder();
+  const S = size;
+  const ns = o.samples ?? 4;
+  const j = o.jitter ?? 0;
+  let r = (o.seed ?? 1) * 12.9898;
+  const rnd = () => {
+    r = (Math.sin(r) * 43758.5453) % 1;
+    return Math.abs(r) - 0.5;
+  };
+  const P = (x: number, y: number): [number, number] => [(x + rnd() * j) * S, (y + rnd() * j) * S];
+  // palm: three wide strips
+  for (const [y, h] of [[-0.19, 0.12], [-0.075, 0.12], [0.03, 0.115]] as [number, number][]) surfaceStrip(proj, frame, P(-0.255, y), P(0.255, y), h * S, h * S, lift, ns + 2, b);
+  // fingers
+  const fingers: [number, number, number, number, number][] = [
+    [-0.19, 0.06, -0.265, 0.42, 0.098],
+    [-0.065, 0.07, -0.085, 0.5, 0.1],
+    [0.065, 0.07, 0.095, 0.47, 0.1],
+    [0.185, 0.05, 0.27, 0.35, 0.088],
+  ];
+  for (const [x0, y0, x1, y1, w] of fingers) surfaceStrip(proj, frame, P(x0, y0), P(x1, y1), w * S, w * S * 0.72, lift, ns, b);
+  // thumb
+  surfaceStrip(proj, frame, P(-0.22, -0.16), P(-0.46, 0.02), 0.105 * S, 0.075 * S, lift, ns, b);
+  if (o.wrist) surfaceStrip(proj, frame, P(0, -0.26), P(0, -0.5), 0.3 * S, 0.24 * S, lift, ns, b);
+  return b.idx.length ? b.geometry() : null;
 }
 
 /** a flat extruded white-hand emblem (width ~1 unit × scale). Faces +Z, centred on its palm. */
@@ -771,4 +860,32 @@ export function scarTube(proj: Projector, pts: SnapPoint[], radius: number, lift
   if (path.length < 3) return null;
   const c2 = new THREE.CatmullRomCurve3(path, false, 'catmullrom');
   return new THREE.TubeGeometry(c2, Math.max(8, path.length), radius, 4, false);
+}
+
+/**
+ * Make whatever the given hand holds bigger (huge two-handed swords, giant hammers). KindDef has no
+ * weapon scale, so this adds a marker object to the hand socket that rescales the held weapon
+ * object (matched by userData.kind) the first time it sees it. Works for weapons swapped later too.
+ */
+export function scaleHeldWeapon(ctx: KindContext, hand: 'hand_r' | 'hand_l', kinds: string[], scale: [number, number, number]) {
+  ctx.object(
+    () => {
+      const g = new THREE.Group();
+      g.name = 'weapon_scaler';
+      g.updateMatrixWorld = function (force?: boolean) {
+        const par = this.parent;
+        if (par) {
+          for (const c of par.children) {
+            if (c !== this && typeof c.userData.kind === 'string' && kinds.includes(c.userData.kind) && !c.userData.scaledBy) {
+              c.scale.set(c.scale.x * scale[0], c.scale.y * scale[1], c.scale.z * scale[2]);
+              c.userData.scaledBy = 'uruks_bosses';
+            }
+          }
+        }
+        THREE.Object3D.prototype.updateMatrixWorld.call(this, force);
+      };
+      return g;
+    },
+    { socket: hand },
+  );
 }

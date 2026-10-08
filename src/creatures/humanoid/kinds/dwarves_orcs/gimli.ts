@@ -128,7 +128,7 @@ export function gimliExtras(ctx: KindContext) {
   sculptTorsoGarment(ctx, { color: C.mail, mat: 'mail', inflate: 0.0145 * sc, hem: 0.0, sleeve: 0.8 });
   sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: 1 });
   sculptStrap(ctx, { color: C.jerkin, mat: 'leather_worn', width: 0.05 * sc, inflate: 0.022 * sc, sign: -1 });
-  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 150, width: 0.042, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5 }, new Rng(0x517));
+  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.55 * sc, count: 100, width: 0.05, wave: 0.8, wild: 0.35, comb: 0.9, front: 0.27, back: -0.4, gravity: 5, segments: 5 }, new Rng(0x517));
   // ── beard: long, forked into a mass with two braids and a moustache ──
   if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.4 * sc, width: 1.06, fullness: 1.15 });
   if (!devNum('nobeard', 0)) addBeard(
@@ -138,8 +138,9 @@ export function gimliExtras(ctx: KindContext) {
       tip: C.beardTip,
       deep: mix(C.beard, 0x000000, 0.35),
       length: 0.4 * sc,
-      locks: 15,
-      perLock: 8,
+      locks: 14,
+      perLock: 7,
+      segments: 6,
       spread: 1.05,
       cheeks: true,
       wave: 0.7,
@@ -188,7 +189,7 @@ export const gimliDef: KindDef = {
   palette: GIMLI,
   anim: { swagger: 0.5, aggression: 0.55, stance: 1.2, cadence: 1.05, armSwing: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { res: devNum('res', 0.0215), headRes: devNum('headRes', 0.0085), faceRes: devNum('faceRes', 0.0055), detailScale: 1.3 },
+  detail: { res: devNum('res', 0.032), headRes: devNum('headRes', 0.0095), faceRes: devNum('faceRes', 0), detailScale: 1.3 },
   sfx: { voice: 'dwarf', weight: 0.7 },
   extras: gimliExtras,
 };

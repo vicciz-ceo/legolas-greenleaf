@@ -9,9 +9,10 @@ import { anatomyParts } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
 import type { PrimOpts } from '../../../kit/sdf';
 import {
-  V, gearOf, makeProjector, carveSnapped, paintSnapped, scarTube, spike, placeAlong, hexBolt, shellPatch, ellipsoidFn, ribbon, lerp, smooth, skullGeo, chainLinks, ringSnap, densePath, snapPath, type SnapPoint, type GearFn,
+  V, snapPoint, gearOf, makeProjector, carveSnapped, paintSnapped, scarTube, spike, placeAlong, hexBolt, shellPatch, ellipsoidFn, ribbon, lerp, smooth, skullGeo, chainLinks, ringSnap, densePath, snapPath, type SnapPoint, type GearFn,
 } from './common';
 import { brawnBody } from './body';
+import { scaleHeldWeapon } from './common';
 import { URUK_PAL, forearms, cuirassSdf, cuirassGear, pauldron } from './uruk';
 import { emitParts } from '../../anatomy';
 
@@ -22,14 +23,14 @@ const BONE = surface('bone', { rough: 0.6 });
 const SCAR = 0x2d2828;
 
 export const BOLG_PAL = {
-  skin: 0x9d988e,
-  skin2: 0x66615a,
+  skin: 0x8d887f,
+  skin2: 0x56514b,
   lips: 0x5a4a48,
   scatter: 0x8a6a62,
   eyes: 0xa6b2bc,
   iron: 0x2a2724,
   rust: 0x4a3426,
-  fur: 0x2e261f,
+  fur: 0x241d17,
   leather: 0x1f1813,
 };
 
@@ -167,7 +168,7 @@ function bolgExtras(ctx: KindContext) {
 
   // heavy fur collar over the trapezius
   s.group('union', 0.006 * sc, () => {
-    emitParts(s, parts, ['trap', 'neck'], { color: BOLG_PAL.fur, mat: 'fur', inflate: 0.04 * sc, k: 0.05 * sc, noise: { amp: 0.012 * sc, freq: 22 / sc, type: 'fbm', octaves: 3 } });
+    emitParts(s, parts, ['trap', 'neck'], { color: BOLG_PAL.fur, mat: 'fur', inflate: 0.05 * sc, k: 0.06 * sc, noise: { amp: 0.018 * sc, freq: 16 / sc, type: 'fbm', octaves: 3 } });
     s.plane([0, 1, 0], j.neck[1] + 0.05 * sc, { op: 'intersect', k: 0.02 * sc });
     s.plane([0, -1, 0], -(j.neck[1] - 0.06 * sc), { op: 'intersect', k: 0.02 * sc });
   });
@@ -179,6 +180,9 @@ function bolgExtras(ctx: KindContext) {
   if (!proj) return;
   if (cuirass) cuirassGear(ctx, gear, proj, { cuirass: 'plate' }, cuirass.botY);
   skullHardware(ctx, gear, proj);
+
+  // a mace sized for a 2.6 m brute
+  scaleHeldWeapon(ctx, 'hand_r', ['mace'], [1.45, 1.4, 1.45]);
 
   // spiked pauldron (left) and a smaller plate on the right
   if (armor >= 0.5) {
@@ -192,9 +196,10 @@ function bolgExtras(ctx: KindContext) {
     L.x *= side;
     const a = new THREE.Vector3(...j[side > 0 ? 'forearm_l' : 'forearm_r']);
     for (let i = 0; i < 3; i++) {
-      const c = a.clone().addScaledVector(L, (0.5 + i * 0.13) * P.foreArm);
-      const out = V(side * 0.7, 0.4, 0.55).normalize();
-      gear(spike(0.012 * sc, 0.07 * sc, 5), { bone: side > 0 ? 'forearm_l' : 'forearm_r', color: BOLG_PAL.iron, mat: IRON, matrix: placeAlong(c.addScaledVector(out, 0.052 * sc), out, V(0, 1, 0)), small: true });
+      const c = a.clone().addScaledVector(L, (0.42 + i * 0.17) * P.foreArm);
+      const pp = V(), nn = V();
+      if (!snapPoint(proj, [c.x, c.y, c.z], side > 0 ? 'l' : 'r', pp, nn)) continue;
+      gear(spike(0.0125 * sc, 0.075 * sc, 5), { bone: side > 0 ? 'forearm_l' : 'forearm_r', color: BOLG_PAL.iron, mat: IRON, matrix: placeAlong(pp.addScaledVector(nn, 0.004 * sc), nn, V(0, 1, 0)), small: true });
     }
   }
 
@@ -231,11 +236,11 @@ function bolgExtras(ctx: KindContext) {
       const sfx = side > 0 ? 'l' : 'r';
       const t = new THREE.Vector3(...j[`thigh_${sfx}`]);
       const g = Math.sqrt(P.build.bulk);
-      for (let k = 0; k < 3; k++) {
-        const c = V(t.x + side * 0.01 * sc, t.y - (0.09 + k * 0.065) * sc, 0.006 * sc);
-        const R: [number, number, number] = [(0.1 + k * 0.004) * sc * g, 0.085 * sc, (0.098 + k * 0.004) * sc * g];
-        const fn = ellipsoidFn(c, R, [-0.85, 0.85], [-0.45, 0.45]);
-        gear(shellPatch(fn, 8, 2, 0.008 * sc, { noInner: true }), { bone: `thigh_${sfx}`, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85, small: k > 0 });
+      {
+        const c = V(t.x + side * 0.012 * sc, t.y - 0.17 * sc, 0.0);
+        const R: [number, number, number] = [0.108 * sc * g, 0.17 * sc, 0.105 * sc * g];
+        const fn = ellipsoidFn(c, R, [-0.8, 0.8], [-0.75, 0.55]);
+        gear(shellPatch(fn, 10, 6, 0.009 * sc, { noInner: true }), { bone: `thigh_${sfx}`, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
       }
       const kn = new THREE.Vector3(...j[`shin_${sfx}`]);
       const kc = V(kn.x, kn.y + 0.005 * sc, kn.z + 0.012 * sc);
@@ -267,7 +272,7 @@ export const bolgKind: KindDef = {
   height: 2.6,
   build: { shoulders: 1.3, hips: 1.08, bulk: 1.25, chest: 1.15, belly: 0.05, armLength: 1.1, legLength: 0.98, headSize: 0.98, neck: 0.8, neckThick: 1.5, hunch: 0.15, handSize: 1.25, footSize: 1.2, muscle: 1.0 },
   face: BOLG_FACE,
-  skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.55, blemish: 0.5, scars: 5, warts: 0.12, wrinkles: 0.7, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_orc', scatter: BOLG_PAL.scatter },
+  skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.75, blemish: 0.6, scars: 5, warts: 0.12, wrinkles: 0.7, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_orc', scatter: BOLG_PAL.scatter },
   eyes: { color: BOLG_PAL.eyes, glow: 0.3, sclera: 0xbdb6a6 },
   hair: { style: 'bald', color: 0x1a1612 },
   outfit: [

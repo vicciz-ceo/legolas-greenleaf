@@ -588,9 +588,9 @@ function dwarvenStone(s: Surf, N: TileNoise): void {
     h -= groove * 0.34;
     s.h[i] = h;
     const base = 0.85 + ve * 0.25 + grain * 0.08;
-    let r = 34 * base * (1 - groove * 0.55);
-    let g = 38 * base * (1 - groove * 0.55);
-    let b = 47 * base * (1 - groove * 0.5);
+    let r = 66 * base * (1 - groove * 0.55);
+    let g = 70 * base * (1 - groove * 0.55);
+    let b = 82 * base * (1 - groove * 0.5);
     if (inlay > 0) {
       r = mix(r, 92, 0.45);
       g = mix(g, 74, 0.45);

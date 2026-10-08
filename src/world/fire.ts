@@ -49,10 +49,10 @@ function material(): THREE.ShaderMaterial {
         float turb = n2(vec2(x * 2.2 + vSeed * 9.0, y * 3.5 - t * 1.6));
         shape *= smoothstep(0.0, 0.25, turb + (1.0 - y) * 0.75 - y * 0.35);
         float core = smoothstep(0.7, 0.0, abs(x) / max(width, 0.05)) * (1.0 - y);
-        vec3 col = mix(vec3(1.0, 0.28, 0.04), vec3(1.0, 0.72, 0.2), core);
-        col = mix(col, vec3(1.0, 0.95, 0.7), core * core * (1.0 - y));
+        vec3 col = mix(vec3(0.95, 0.22, 0.03), vec3(1.0, 0.6, 0.14), core);
+        col = mix(col, vec3(1.0, 0.82, 0.45), core * core * (1.0 - y) * 0.6);
         float a = shape * (1.0 - smoothstep(0.75, 1.0, y)) * smoothstep(0.0, 0.06, y);
-        gl_FragColor = vec4(col * (1.3 + core * 0.8), a);
+        gl_FragColor = vec4(col * (0.75 + core * 0.45), a * 0.85);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }`,

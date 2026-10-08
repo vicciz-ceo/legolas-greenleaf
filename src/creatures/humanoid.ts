@@ -91,6 +91,7 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
   eyeMesh.castShadow = false;
   body.add(eyeMesh);
   if (dbg.includes('noeyes')) eyeMesh.visible = false;
+  if (dbg.includes('seam')) (bodyMat.userData.kitUniforms as { kitDebug: { value: number } } | undefined)?.kitDebug && ((bodyMat.userData.kitUniforms as { kitDebug: { value: number } }).kitDebug.value = 1);
   if (dbg.includes('nohair') && hairMesh) hairMesh.visible = false;
 
   // ── sockets ──

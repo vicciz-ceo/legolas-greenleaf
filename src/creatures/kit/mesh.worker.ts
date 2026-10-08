@@ -20,7 +20,7 @@ ctx.onmessage = (e) => {
   const { id, prog, opts } = e.data;
   try {
     const d = meshSdf(SdfProgram.fromData(prog), opts);
-    const transfer: Transferable[] = [d.position.buffer, d.normal.buffer, d.color.buffer, d.surf.buffer, d.pat0.buffer, d.pat1.buffer, d.ao.buffer, d.skinIndex.buffer, d.skinWeight.buffer, d.index.buffer];
+    const transfer: Transferable[] = [d.position.buffer, d.normal.buffer, d.color.buffer, d.surf.buffer, d.pat0.buffer, d.pat1.buffer, d.seam.buffer, d.ao.buffer, d.skinIndex.buffer, d.skinWeight.buffer, d.index.buffer];
     ctx.postMessage({ id, data: d }, transfer);
   } catch (err) {
     ctx.postMessage({ id, error: err instanceof Error ? `${err.message}\n${err.stack ?? ''}` : String(err) });

@@ -48,6 +48,7 @@ const EXTRA: Partial<Record<HumanoidKind, LabAnim[]>> = {
 };
 
 interface Entry {
+  seed: number;
   h: HumanoidExt;
   d: { r: WeaponKind; l: WeaponKind };
   attacks: string[];
@@ -74,10 +75,45 @@ function makeEntry(kind: HumanoidKind, seed: number, lo0: Loadout): Entry {
   const l = (lo.offhand ?? def.weapons.left ?? 'none') as WeaponKind;
   const lift = new THREE.Group();
   lift.add(h.root);
-  return { h, d: { r, l }, attacks: attackSet(r), lift };
+  return { seed, h, d: { r, l }, attacks: attackSet(r), lift };
+}
+
+const _seen = new WeakSet<Entry>();
+
+/** triangles of everything visible on a humanoid except its held weapons: body + kit hair + eyes + our skinned extras */
+function totalTris(e: Entry): { total: number; body: number; extras: number } {
+  e.h.root.updateMatrixWorld(true);
+  const skip = new Set<THREE.Object3D>();
+  for (const hand of ['hand_r', 'hand_l'] as const) {
+    const w = e.h.weaponObject(hand);
+    if (w) skip.add(w);
+  }
+  let body = 0;
+  let extras = 0;
+  const walk = (o: THREE.Object3D) => {
+    if (skip.has(o)) return;
+    const m = o as THREE.Mesh;
+    if (m.isMesh && m.geometry) {
+      const g = m.geometry as THREE.BufferGeometry;
+      const n = g.index ? g.index.count / 3 : (g.attributes.position?.count ?? 0) / 3;
+      if (m.name === 'body' || m.name === 'hair' || m.name === 'eyes') body += n;
+      else extras += n;
+    }
+    for (const c of o.children) walk(c);
+  };
+  walk(e.h.root);
+  return { total: body + extras, body, extras };
 }
 
 function poseEntry(e: Entry, anim: string, t: number) {
+  if (!_seen.has(e)) {
+    _seen.add(e);
+    queueMicrotask(() => {
+      const st = totalTris(e);
+      const w = window as unknown as { __dwoStats?: Record<string, unknown>[] };
+      (w.__dwoStats ??= []).push({ kind: e.h.kind, bucket: seedBucket(e.seed), total: Math.round(st.total), body: Math.round(st.body), extras: Math.round(st.extras), lod0: e.h.triangles });
+    });
+  }
   let a = anim;
   let tt = t;
   if (anim === 'attack') {
@@ -132,7 +168,8 @@ function variantsSubject(kind: HumanoidKind, name: string, category: LabSubject[
       const def = resolveKind(kind);
       const g = new THREE.Group();
       const entries: Entry[] = [];
-      const w = Math.max(1.0, def.height * 0.62);
+      const q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : null;
+      const w = q?.has('gap') ? Number(q.get('gap')) : Math.max(1.0, def.height * 0.62);
       for (let b = 0; b < 4; b++) {
         const seed = seedForBucket(b);
         const e = makeEntry(kind, seed, loadoutFor(kind, seed));
@@ -140,7 +177,7 @@ function variantsSubject(kind: HumanoidKind, name: string, category: LabSubject[
         g.add(e.lift);
         entries.push(e);
       }
-      addFramer(g, def.height, 0.9);
+      addFramer(g, def.height, 0.3);
       console.info(`[lab] ${name}:`, entries.map((e) => `${e.h.triangles}t/${e.h.buildMs.toFixed(0)}ms`).join(' '));
       return {
         object: g,

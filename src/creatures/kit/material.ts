@@ -37,6 +37,7 @@ export interface CreatureMaterialOpts {
 }
 
 const GLSL_COMMON = /* glsl */ `
+varying vec2 vSeam;
 varying vec4 vSurf;
 varying vec4 vPat0;
 varying vec4 vPat1;
@@ -47,9 +48,11 @@ uniform float detailStrength;
 uniform float detailScale;
 uniform vec3 scatterColor;
 uniform float wrapAmount;
+uniform float kitDebug;
 float gSkin = 0.0;
 float gH = 0.0;
 float gAlbedo = 1.0;
+vec3 gTint = vec3( 1.0 );
 
 float kh13(vec3 p3) {
   p3 = fract(p3 * 0.1031);
@@ -131,9 +134,9 @@ float kitDetail() {
     float c = 1.0 - abs(kvn(p * vec3(55.0, 22.0, 55.0)));
     c = pow(c, 6.0);
     float big = kvn(p * 12.0);
-    H += w * (g * 3.5e-5 * kfade(0.002, px) - c * 1.2e-4 * kfade(0.012, px));
-    R += w * (big * 0.08 + c * 0.08 - g * 0.04);
-    cav += w * (c * 0.18 + max(big, 0.0) * 0.05);
+    H += w * (g * 3.5e-5 * kfade(0.002, px) - c * 6e-5 * kfade(0.012, px));
+    R += w * (big * 0.08 + c * 0.05 - g * 0.04);
+    cav += w * (c * 0.07 + max(big, 0.0) * 0.05);
   }
   // scales / mail rings
   w = vPat0.w;
@@ -187,6 +190,26 @@ float kitDetail() {
     H += w * -wr * 2.4e-4 * kfade(0.01, px);
     cav += w * wr * 0.35;
     R += w * wr * 0.06;
+  }
+  // seams: edge wear and a dashed stitch line along garment edges. vSeam.x is the signed distance
+  // (m) to the garment edge plane, interpolated linearly — exact for planes, so it stays crisp.
+  if (vSeam.y > 0.05) {
+    float sw = clamp((vSeam.y - 0.05) / 0.5, 0.0, 1.0);
+    float sd = abs(vSeam.x);
+    float pw = fwidth(vSeam.x) * 0.75 + 1e-5;
+    // burnished, lighter edge (leather) / lighter fold (cloth)
+    float leatherK = clamp(vPat0.z, 0.0, 1.0);
+    float wear = (1.0 - smoothstep(0.0, 0.009, sd)) * sw * mix(0.3, 1.0, leatherK);
+    // stitches 6 mm in from the edge: raised thread, dashed (period ≈ 5 mm)
+    float line = 1.0 - smoothstep(0.0008, 0.0008 + pw + 0.0005, abs(sd - 0.006));
+    float ph = fract(dot(vRest, vec3(0.83, 0.61, 0.97)) * 200.0);
+    float dash = smoothstep(0.06, 0.16, ph) * (1.0 - smoothstep(0.6, 0.7, ph));
+    float vis = sw * kfade(0.0045, px);
+    float st = line * dash * vis;
+    float hole = line * (1.0 - dash) * vis;
+    H += st * 8e-5 - hole * 5e-5 - wear * 2e-5;
+    R += -wear * 0.12 + st * 0.06;
+    gTint = mix( vec3( 1.0 ), vec3( 1.3, 1.24, 1.15 ), wear * 0.6 ) * mix( 1.0, mix( 0.6, 0.5, leatherK ), st ) * mix( 1.0, 0.78, hole );
   }
   gH = H * detailScale * detailStrength;
   gAlbedo = clamp(1.0 - cav, 0.6, 1.0);
@@ -255,6 +278,8 @@ export function createCreatureMaterial(o: CreatureMaterialOpts = {}): THREE.Mesh
     detailScale: { value: o.detailScale ?? 1 },
     scatterColor: { value: new THREE.Vector3(scatter.r, scatter.g, scatter.b) },
     wrapAmount: { value: o.wrap ?? 0.55 },
+    /** 1 = visualise the seam channel (lab debugging) */
+    kitDebug: { value: 0 },
   };
   mat.userData.kitUniforms = uniforms;
   mat.onBeforeCompile = (shader) => {
@@ -267,6 +292,8 @@ attribute vec4 surf;
 attribute vec4 pat0;
 attribute vec4 pat1;
 attribute float ao;
+attribute vec2 seam;
+varying vec2 vSeam;
 varying vec4 vSurf;
 varying vec4 vPat0;
 varying vec4 vPat1;
@@ -277,7 +304,7 @@ varying vec3 vRestN;`,
       .replace(
         '#include <color_vertex>',
         `#include <color_vertex>
-	vSurf = surf; vPat0 = pat0; vPat1 = pat1; vAO = ao; vRest = position; vRestN = normal;`,
+	vSurf = surf; vPat0 = pat0; vPat1 = pat1; vAO = ao; vRest = position; vRestN = normal; vSeam = seam;`,
       );
     if (!patchedLights) patchedLights = patchLights();
     shader.fragmentShader = shader.fragmentShader
@@ -287,7 +314,8 @@ varying vec3 vRestN;`,
         '#include <roughnessmap_fragment>',
         `float kitR = kitDetail();
 	gSkin = vSurf.w;
-	diffuseColor.rgb *= gAlbedo;
+	diffuseColor.rgb *= gAlbedo * gTint;
+	if ( kitDebug > 0.5 ) diffuseColor.rgb = vec3( vSeam.y, 1.0 - clamp( abs( vSeam.x ) * 60.0, 0.0, 1.0 ), 0.1 );
 	float roughnessFactor = clamp( ( vSurf.x + kitR ) * roughness, 0.04, 1.0 );`,
       )
       .replace('#include <metalnessmap_fragment>', 'float metalnessFactor = vSurf.y * metalness;')
@@ -318,7 +346,7 @@ varying vec3 vRestN;`,
 	reflectedLight.directDiffuse *= mix( 1.0, kitAO, 0.3 );`,
       );
   };
-  mat.customProgramCacheKey = () => 'kit-creature-v2';
+  mat.customProgramCacheKey = () => 'kit-creature-v3';
   return mat;
 }
 
