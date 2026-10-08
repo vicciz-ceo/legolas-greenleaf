@@ -1,0 +1,54 @@
+{
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-187ac643-dd76-4a75-862f-3cc327bbedf2.png",
+    "original_sha256": "0d10d8819162150765c52c3ff73ed125ceb8c083edd82f684689e9a66119bdd8",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "3806e25e411fed38b808aa6eb6acade9275785aeaadcb08c9490128233fe7411"
+  },
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-33bde5ee-5dce-4f08-b6f3-70ff52746156.png",
+    "original_sha256": "d7fc3fbf84e8068a17307731dc483f9428a85e665684286c1ddd9d1c7b951f8d",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "67d4c23c590259a31a03c125669feed5b7c54f9256f6ff4f7ed2a75a87042e54"
+  },
+  "views/top": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-59632e3e-bd63-4ff8-8890-3b1af127d618.png",
+    "original_sha256": "dfe2f6a333843c5e3d8edf1b13a3db3822cd16ad8436726f6c686c7e55a91a1c",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/top.png",
+    "cutout_sha256": "ccedc4a72c6ed0985c4370aba9a1c505489759cf80bfcc3bc5a7500b8d56cfca"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8e2c91bb-558e-49e1-8f43-fc9715545f1d.png",
+    "original_sha256": "4eaf5a78d953147f8c9a8da3d52fa0cddd7dd1e0a42f9dc30a3e43ed4c7f22e1",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "fe5165101311b608235fee4023f91976ce8af68771d637850756f783a3379c91"
+  }
+}

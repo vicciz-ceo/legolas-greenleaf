@@ -109,5 +109,645 @@
     "source_heights": {
       "body": 256
     }
+  },
+  "measured": {
+    "turnaround": {
+      "path": "great_eagle_turnaround.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "969997ca804dd1d3d14aee540695cbe9a50a41a691d58255e5132962efa850f4",
+      "size_bytes": 125943,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "6cb63624a294afed43e820683f9aa8166bdeb3b23f6d2473ea2582d61ad46ad1",
+      "decoded_background_tolerance": 3,
+      "creature": true,
+      "px_per_m": 44.0,
+      "views": [
+        {
+          "view": "front",
+          "source": "views/front.png",
+          "source_sha256": "6ea4fbc5f8cf822a0f4a26ce80ffd5c04033270e861f1d2d1405ad763db0a532",
+          "source_bbox_px": [
+            4,
+            4,
+            697,
+            260
+          ],
+          "sheet_bbox_px": [
+            205,
+            267,
+            645,
+            430
+          ],
+          "projected_extent_m": 10.0,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            163
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                4,
+                132.0
+              ],
+              [
+                697,
+                132.0
+              ]
+            ],
+            "source_span_px": 693,
+            "axis": "width",
+            "source_region_px": [
+              4,
+              4,
+              697,
+              260
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                205,
+                348.5
+              ],
+              [
+                645,
+                348.5
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                81.5
+              ],
+              [
+                440,
+                81.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              163
+            ],
+            "effective_px_per_m": 44.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 81,
+            "top_y_px": 349,
+            "baseline_y_px": 430,
+            "center_x_px": 100,
+            "sheet_bbox_px": [
+              86,
+              349,
+              116,
+              430
+            ]
+          }
+        },
+        {
+          "view": "side",
+          "source": "views/side.png",
+          "source_sha256": "02867c9d47e95da6d87b0647bb9f4a8a368fea40adef7f63af3e3d72bc6b32d7",
+          "source_bbox_px": [
+            4,
+            4,
+            373,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            210,
+            1351,
+            430
+          ],
+          "projected_extent_m": 5.0,
+          "scale_axis": "height",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            317,
+            220
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                188.5,
+                4
+              ],
+              [
+                188.5,
+                260
+              ]
+            ],
+            "source_span_px": 256,
+            "axis": "height",
+            "source_region_px": [
+              4,
+              4,
+              373,
+              260
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                1192.5,
+                210
+              ],
+              [
+                1192.5,
+                430
+              ]
+            ],
+            "sheet_span_px": 220,
+            "resampled_endpoints_px": [
+              [
+                158.5,
+                0
+              ],
+              [
+                158.5,
+                220
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              317,
+              220
+            ],
+            "effective_px_per_m": 44.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 81,
+            "top_y_px": 349,
+            "baseline_y_px": 430,
+            "center_x_px": 868,
+            "sheet_bbox_px": [
+              854,
+              349,
+              884,
+              430
+            ]
+          }
+        },
+        {
+          "view": "top",
+          "source": "views/top.png",
+          "source_sha256": "0ec7aa3ec5a54d87d333f8b67f6996264c182da6540f849cb75b456214311b48",
+          "source_bbox_px": [
+            4,
+            4,
+            504,
+            260
+          ],
+          "sheet_bbox_px": [
+            205,
+            717,
+            645,
+            942
+          ],
+          "projected_extent_m": 10.0,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            225
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                4,
+                132.0
+              ],
+              [
+                504,
+                132.0
+              ]
+            ],
+            "source_span_px": 500,
+            "axis": "width",
+            "source_region_px": [
+              4,
+              4,
+              504,
+              260
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                205,
+                829.5
+              ],
+              [
+                645,
+                829.5
+              ]
+            ],
+            "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                112.5
+              ],
+              [
+                440,
+                112.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              225
+            ],
+            "effective_px_per_m": 44.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 81,
+            "top_y_px": 861,
+            "baseline_y_px": 942,
+            "center_x_px": 100,
+            "sheet_bbox_px": [
+              86,
+              861,
+              116,
+              942
+            ]
+          }
+        },
+        {
+          "view": "three_quarter",
+          "source": "views/three_quarter.png",
+          "source_sha256": "3285241114f42f0dc3ec22ce61de84ec2ba03c84e17a78ddce7b06e880e76c48",
+          "source_bbox_px": [
+            4,
+            4,
+            488,
+            260
+          ],
+          "sheet_bbox_px": [
+            1006,
+            744,
+            1380,
+            942
+          ],
+          "projected_extent_m": 8.5,
+          "scale_axis": "width",
+          "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            374,
+            198
+          ],
+          "extrema_preserved_after_resampling": false,
+          "measurement": {
+            "source_endpoints_px": [
+              [
+                4,
+                132.0
+              ],
+              [
+                488,
+                132.0
+              ]
+            ],
+            "source_span_px": 484,
+            "axis": "width",
+            "source_region_px": [
+              4,
+              4,
+              488,
+              260
+            ],
+            "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
+            "sheet_endpoints_px": [
+              [
+                1006,
+                843.0
+              ],
+              [
+                1380,
+                843.0
+              ]
+            ],
+            "sheet_span_px": 374,
+            "resampled_endpoints_px": [
+              [
+                0,
+                99.0
+              ],
+              [
+                374,
+                99.0
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              374,
+              198
+            ],
+            "effective_px_per_m": 44.0
+          },
+          "human": {
+            "height_m": 1.85,
+            "height_px": 81,
+            "top_y_px": 861,
+            "baseline_y_px": 942,
+            "center_x_px": 868,
+            "sheet_bbox_px": [
+              854,
+              861,
+              884,
+              942
+            ]
+          }
+        }
+      ],
+      "ruler": {
+        "axis": "horizontal",
+        "start_x_px": 205,
+        "end_x_px": 645,
+        "y_px": 442,
+        "endpoint_m": 10.0,
+        "px_per_m": 44.0,
+        "step_m": 0.25,
+        "ticks": [
+          {
+            "value_m": 0.0,
+            "x_px": 205
+          },
+          {
+            "value_m": 0.25,
+            "x_px": 216
+          },
+          {
+            "value_m": 0.5,
+            "x_px": 227
+          },
+          {
+            "value_m": 0.75,
+            "x_px": 238
+          },
+          {
+            "value_m": 1.0,
+            "x_px": 249
+          },
+          {
+            "value_m": 1.25,
+            "x_px": 260
+          },
+          {
+            "value_m": 1.5,
+            "x_px": 271
+          },
+          {
+            "value_m": 1.75,
+            "x_px": 282
+          },
+          {
+            "value_m": 2.0,
+            "x_px": 293
+          },
+          {
+            "value_m": 2.25,
+            "x_px": 304
+          },
+          {
+            "value_m": 2.5,
+            "x_px": 315
+          },
+          {
+            "value_m": 2.75,
+            "x_px": 326
+          },
+          {
+            "value_m": 3.0,
+            "x_px": 337
+          },
+          {
+            "value_m": 3.25,
+            "x_px": 348
+          },
+          {
+            "value_m": 3.5,
+            "x_px": 359
+          },
+          {
+            "value_m": 3.75,
+            "x_px": 370
+          },
+          {
+            "value_m": 4.0,
+            "x_px": 381
+          },
+          {
+            "value_m": 4.25,
+            "x_px": 392
+          },
+          {
+            "value_m": 4.5,
+            "x_px": 403
+          },
+          {
+            "value_m": 4.75,
+            "x_px": 414
+          },
+          {
+            "value_m": 5.0,
+            "x_px": 425
+          },
+          {
+            "value_m": 5.25,
+            "x_px": 436
+          },
+          {
+            "value_m": 5.5,
+            "x_px": 447
+          },
+          {
+            "value_m": 5.75,
+            "x_px": 458
+          },
+          {
+            "value_m": 6.0,
+            "x_px": 469
+          },
+          {
+            "value_m": 6.25,
+            "x_px": 480
+          },
+          {
+            "value_m": 6.5,
+            "x_px": 491
+          },
+          {
+            "value_m": 6.75,
+            "x_px": 502
+          },
+          {
+            "value_m": 7.0,
+            "x_px": 513
+          },
+          {
+            "value_m": 7.25,
+            "x_px": 524
+          },
+          {
+            "value_m": 7.5,
+            "x_px": 535
+          },
+          {
+            "value_m": 7.75,
+            "x_px": 546
+          },
+          {
+            "value_m": 8.0,
+            "x_px": 557
+          },
+          {
+            "value_m": 8.25,
+            "x_px": 568
+          },
+          {
+            "value_m": 8.5,
+            "x_px": 579
+          },
+          {
+            "value_m": 8.75,
+            "x_px": 590
+          },
+          {
+            "value_m": 9.0,
+            "x_px": 601
+          },
+          {
+            "value_m": 9.25,
+            "x_px": 612
+          },
+          {
+            "value_m": 9.5,
+            "x_px": 623
+          },
+          {
+            "value_m": 9.75,
+            "x_px": 634
+          },
+          {
+            "value_m": 10.0,
+            "x_px": 645
+          }
+        ],
+        "label_bboxes_px": [
+          [
+            201,
+            455,
+            209,
+            464
+          ],
+          [
+            245,
+            455,
+            253,
+            464
+          ],
+          [
+            289,
+            455,
+            297,
+            464
+          ],
+          [
+            333,
+            455,
+            341,
+            464
+          ],
+          [
+            377,
+            455,
+            385,
+            464
+          ],
+          [
+            421,
+            455,
+            429,
+            464
+          ],
+          [
+            465,
+            455,
+            473,
+            464
+          ],
+          [
+            509,
+            455,
+            517,
+            464
+          ],
+          [
+            553,
+            455,
+            561,
+            464
+          ],
+          [
+            597,
+            455,
+            605,
+            464
+          ],
+          [
+            630,
+            455,
+            661,
+            464
+          ]
+        ]
+      },
+      "layout": {
+        "subject_max_width_px": 440,
+        "subject_max_height_px": 360,
+        "human_max_height_px": 360,
+        "scale_reason": "Fit all views and reserve a separate human/ruler lane"
+      },
+      "scale_axis": "width",
+      "reference_view": "front",
+      "scale_extent_m": 10.0,
+      "extent_rules": {},
+      "interpretation": "Projected extents are design targets; no 3D measurement inferred from generated views."
+    }
   }
 }

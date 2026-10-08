@@ -1,0 +1,166 @@
+{
+  "id": "weapons",
+  "design": {
+    "source": "design_target",
+    "design_sources": [
+      "recovery/original-brief.txt: weapons sheet and roster weapons",
+      "ARCHITECTURE.md section 4"
+    ],
+    "dimension_note": "Galadhrim bow 1.6 m from original brief. Other projected vertical end-to-end spans are authored design targets where the original brief supplies no numeric weapon dimension. Two knives share one item span.",
+    "weapons": [
+      {
+        "kind": "galadhrim_bow",
+        "projected_extent_m": 1.6
+      },
+      {
+        "kind": "elven_knives",
+        "projected_extent_m": 0.65
+      },
+      {
+        "kind": "gimli_axe",
+        "projected_extent_m": 1.15
+      },
+      {
+        "kind": "uruk_falchion",
+        "projected_extent_m": 0.85
+      },
+      {
+        "kind": "orc_cleaver",
+        "projected_extent_m": 0.85
+      },
+      {
+        "kind": "orc_scimitar",
+        "projected_extent_m": 0.95
+      },
+      {
+        "kind": "bolg_mace",
+        "projected_extent_m": 1.5
+      },
+      {
+        "kind": "cave_troll_club",
+        "projected_extent_m": 2.7
+      },
+      {
+        "kind": "war_hammer",
+        "projected_extent_m": 2.5
+      },
+      {
+        "kind": "pike",
+        "projected_extent_m": 3
+      },
+      {
+        "kind": "rohan_shield",
+        "projected_extent_m": 0.9
+      },
+      {
+        "kind": "gondor_shield",
+        "projected_extent_m": 1.15
+      },
+      {
+        "kind": "uruk_shield",
+        "projected_extent_m": 1
+      },
+      {
+        "kind": "torch",
+        "projected_extent_m": 0.75
+      }
+    ]
+  },
+  "composition": {
+    "supplement": true,
+    "metric": true,
+    "columns": 7,
+    "rows": 2,
+    "canvas_px": [
+      1536,
+      1024
+    ],
+    "png_name": "weapons.png",
+    "items": [
+      {
+        "name": "galadhrim_bow",
+        "label": "GALADHRIM BOW",
+        "source": "details/galadhrim_bow.png",
+        "extent_m": 1.6
+      },
+      {
+        "name": "elven_knives",
+        "label": "ELVEN KNIVES",
+        "source": "details/elven_knives.png",
+        "extent_m": 0.65
+      },
+      {
+        "name": "gimli_axe",
+        "label": "GIMLI AXE",
+        "source": "details/gimli_axe.png",
+        "extent_m": 1.15
+      },
+      {
+        "name": "uruk_falchion",
+        "label": "URUK FALCHION",
+        "source": "details/uruk_falchion.png",
+        "extent_m": 0.85
+      },
+      {
+        "name": "orc_cleaver",
+        "label": "ORC CLEAVER",
+        "source": "details/orc_cleaver.png",
+        "extent_m": 0.85
+      },
+      {
+        "name": "orc_scimitar",
+        "label": "ORC SCIMITAR",
+        "source": "details/orc_scimitar.png",
+        "extent_m": 0.95
+      },
+      {
+        "name": "bolg_mace",
+        "label": "BOLG MACE",
+        "source": "details/bolg_mace.png",
+        "extent_m": 1.5
+      },
+      {
+        "name": "cave_troll_club",
+        "label": "CAVE TROLL CLUB",
+        "source": "details/cave_troll_club.png",
+        "extent_m": 2.7
+      },
+      {
+        "name": "war_hammer",
+        "label": "WAR HAMMER",
+        "source": "details/war_hammer.png",
+        "extent_m": 2.5
+      },
+      {
+        "name": "pike",
+        "label": "PIKE",
+        "source": "details/pike.png",
+        "extent_m": 3
+      },
+      {
+        "name": "rohan_shield",
+        "label": "ROHAN SHIELD",
+        "source": "details/rohan_shield.png",
+        "extent_m": 0.9
+      },
+      {
+        "name": "gondor_shield",
+        "label": "GONDOR SHIELD",
+        "source": "details/gondor_shield.png",
+        "extent_m": 1.15
+      },
+      {
+        "name": "uruk_shield",
+        "label": "URUK SHIELD",
+        "source": "details/uruk_shield.png",
+        "extent_m": 1
+      },
+      {
+        "name": "torch",
+        "label": "TORCH",
+        "source": "details/torch.png",
+        "extent_m": 0.75
+      }
+    ]
+  }
+}

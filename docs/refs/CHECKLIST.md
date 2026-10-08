@@ -616,10 +616,10 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 | views/front | accepted | 1 | Symmetric frontal spread-wing raptor; both wing tips complete (left edge crop inspected), two tucked feet, no text. |
 | views/top | accepted | 1 | Vertical dorsal overhead view, head down/tail up; two complete spread wings; no text. |
 | views/three_quarter | accepted | 3 | Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips. |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
+| turnaround | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| spec | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| notes | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
 
 ## fell_beast
 
@@ -627,14 +627,14 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 1 | Generated and saved; awaiting individual visual review. |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
+| views/side | accepted | 1 | Strict side flight, serpentine neck/tail, two wing forelimbs and tucked hind feet; all tips complete, no rider/text. |
+| views/front | accepted | 1 | Frontal narrow reptilian head/neck, symmetric wings, two tucked feet, single tail; no extra arms or text. |
+| views/top | accepted | 1 | Vertical dorsal view, head down/tail up, two complete wings; all extremities inside frame. |
+| views/three_quarter | accepted | 2 | Attempt 2: frontal-oblique head, neck and chest, near/far wing foreshortening; complete tail and two hind feet. |
+| turnaround | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| spec | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| notes | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
 
 ## dwarf_bald
 
@@ -732,19 +732,19 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| galadhrim_bow | pending | 0 |  |
-| elven_knives | pending | 0 |  |
-| gimli_axe | pending | 0 |  |
-| uruk_falchion | pending | 0 |  |
-| orc_cleaver | pending | 0 |  |
-| orc_scimitar | pending | 0 |  |
-| bolg_mace | pending | 0 |  |
-| cave_troll_club | pending | 0 |  |
-| war_hammer | pending | 0 |  |
-| pike | pending | 0 |  |
-| rohan_shield | pending | 0 |  |
-| gondor_shield | pending | 0 |  |
-| uruk_shield | pending | 0 |  |
+| galadhrim_bow | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| elven_knives | accepted | 1 | Two matching complete upright white-handled curved steel knives, no overlap/text; first attempt. |
+| gimli_axe | accepted | 1 | Complete double-bit iron axe, bronze collars and wood/leather haft; upright, no generated text. Authored prop, not historical Gimli recovery. |
+| uruk_falchion | accepted | 0 | Reused accepted complete isolated Uruk falchion from Lurtz detail; no new attempts. |
+| orc_cleaver | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| orc_scimitar | accepted | 1 | Visibly curved rusted single-edged blade with full point, complete leather grip/guard, no text; first attempt. |
+| bolg_mace | accepted | 0 | Reviewed complete rusted spiked mace, reused Gundabad prop as authored Bolg lineup design; does not claim recovery of missing historical Bolg gear. No new attempts. |
+| cave_troll_club | accepted | 1 | Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output. |
+| war_hammer | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| pike | pending | 1 | Generated and saved; awaiting individual visual review. |
+| rohan_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
+| gondor_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
+| uruk_shield | accepted | 0 | Reused accepted complete isolated white-hand Uruk shield; no new attempts. |
 | torch | pending | 0 |  |
 | sheet | pending | 0 |  |
 | spec | pending | 0 |  |

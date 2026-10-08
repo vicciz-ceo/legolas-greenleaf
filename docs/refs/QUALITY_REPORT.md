@@ -519,18 +519,19 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | great_eagle | views/three_quarter | accepted | 3 | Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips. |
 | great_eagle | views/three_quarter attempt 1 | rejected | — | Repeated lateral flight angle; head and body insufficiently frontal-oblique. |
 | great_eagle | views/three_quarter attempt 2 | rejected | — | Second attempt still near lateral: chest and head do not provide the requested frontal-oblique angle. |
-| great_eagle | turnaround | pending | 0 | Not yet attempted |
-| great_eagle | spec | pending | 0 | Not yet attempted |
-| great_eagle | notes | pending | 0 | Not yet attempted |
-| great_eagle | check | pending | 0 | Not yet attempted |
-| fell_beast | views/side | pending | 1 | Generated and saved; awaiting individual visual review. |
-| fell_beast | views/front | pending | 0 | Not yet attempted |
-| fell_beast | views/top | pending | 0 | Not yet attempted |
-| fell_beast | views/three_quarter | pending | 0 | Not yet attempted |
-| fell_beast | turnaround | pending | 0 | Not yet attempted |
-| fell_beast | spec | pending | 0 | Not yet attempted |
-| fell_beast | notes | pending | 0 | Not yet attempted |
-| fell_beast | check | pending | 0 | Not yet attempted |
+| great_eagle | turnaround | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| great_eagle | spec | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| great_eagle | notes | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| great_eagle | check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json). |
+| fell_beast | views/side | accepted | 1 | Strict side flight, serpentine neck/tail, two wing forelimbs and tucked hind feet; all tips complete, no rider/text. |
+| fell_beast | views/front | accepted | 1 | Frontal narrow reptilian head/neck, symmetric wings, two tucked feet, single tail; no extra arms or text. |
+| fell_beast | views/top | accepted | 1 | Vertical dorsal view, head down/tail up, two complete wings; all extremities inside frame. |
+| fell_beast | views/three_quarter | accepted | 2 | Attempt 2: frontal-oblique head, neck and chest, near/far wing foreshortening; complete tail and two hind feet. |
+| fell_beast | views/three_quarter attempt 1 | rejected | — | Repeated lateral neck/head/body profile; lacks frontal-oblique chest angle. |
+| fell_beast | turnaround | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| fell_beast | spec | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| fell_beast | notes | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
+| fell_beast | check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
 | dwarf_bald | views/front | pending | 0 | Not yet attempted |
 | dwarf_bald | views/three_quarter | pending | 0 | Not yet attempted |
 | dwarf_bald | views/side | pending | 0 | Not yet attempted |
@@ -603,19 +604,19 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | dwarf_redbeard | face | pending | 0 | Not yet attempted |
 | dwarf_redbeard | details | pending | 0 | Not yet attempted |
 | dwarf_redbeard | observed | pending | 0 | Not yet attempted |
-| weapons | galadhrim_bow | pending | 0 | Not yet attempted |
-| weapons | elven_knives | pending | 0 | Not yet attempted |
-| weapons | gimli_axe | pending | 0 | Not yet attempted |
-| weapons | uruk_falchion | pending | 0 | Not yet attempted |
-| weapons | orc_cleaver | pending | 0 | Not yet attempted |
-| weapons | orc_scimitar | pending | 0 | Not yet attempted |
-| weapons | bolg_mace | pending | 0 | Not yet attempted |
-| weapons | cave_troll_club | pending | 0 | Not yet attempted |
-| weapons | war_hammer | pending | 0 | Not yet attempted |
-| weapons | pike | pending | 0 | Not yet attempted |
-| weapons | rohan_shield | pending | 0 | Not yet attempted |
-| weapons | gondor_shield | pending | 0 | Not yet attempted |
-| weapons | uruk_shield | pending | 0 | Not yet attempted |
+| weapons | galadhrim_bow | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| weapons | elven_knives | accepted | 1 | Two matching complete upright white-handled curved steel knives, no overlap/text; first attempt. |
+| weapons | gimli_axe | accepted | 1 | Complete double-bit iron axe, bronze collars and wood/leather haft; upright, no generated text. Authored prop, not historical Gimli recovery. |
+| weapons | uruk_falchion | accepted | 0 | Reused accepted complete isolated Uruk falchion from Lurtz detail; no new attempts. |
+| weapons | orc_cleaver | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| weapons | orc_scimitar | accepted | 1 | Visibly curved rusted single-edged blade with full point, complete leather grip/guard, no text; first attempt. |
+| weapons | bolg_mace | accepted | 0 | Reviewed complete rusted spiked mace, reused Gundabad prop as authored Bolg lineup design; does not claim recovery of missing historical Bolg gear. No new attempts. |
+| weapons | cave_troll_club | accepted | 1 | Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output. |
+| weapons | war_hammer | accepted | 0 | Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts. |
+| weapons | pike | pending | 1 | Generated and saved; awaiting individual visual review. |
+| weapons | rohan_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
+| weapons | gondor_shield | accepted | 0 | Reused accepted complete isolated heraldic shield; no new attempts. |
+| weapons | uruk_shield | accepted | 0 | Reused accepted complete isolated white-hand Uruk shield; no new attempts. |
 | weapons | torch | pending | 0 | Not yet attempted |
 | weapons | sheet | pending | 0 | Not yet attempted |
 | weapons | spec | pending | 0 | Not yet attempted |

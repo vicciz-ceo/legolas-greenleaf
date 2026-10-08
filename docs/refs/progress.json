@@ -4630,20 +4630,24 @@
           "path": "/workspace/generated_images/exec-8ad78d7d-d702-47bc-a80d-10083eb84f89.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json)."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json)."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json)."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed, check PASS (validation/great_eagle.json)."
         }
       },
       "historical_multipanel_attempts": {
@@ -4673,32 +4677,69 @@
           "path": "/workspace/generated_images/exec-187ac643-dd76-4a75-862f-3cc327bbedf2.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Frontal narrow reptilian head/neck, symmetric wings, two tucked feet, single tail; no extra arms or text.",
+              "path": "/workspace/generated_images/exec-33bde5ee-5dce-4f08-b6f3-70ff52746156.png"
+            }
+          ],
+          "reason": "Frontal narrow reptilian head/neck, symmetric wings, two tucked feet, single tail; no extra arms or text.",
+          "path": "/workspace/generated_images/exec-33bde5ee-5dce-4f08-b6f3-70ff52746156.png"
         },
         "views/top": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Vertical dorsal view, head down/tail up, two complete wings; all extremities inside frame.",
+              "path": "/workspace/generated_images/exec-59632e3e-bd63-4ff8-8890-3b1af127d618.png"
+            }
+          ],
+          "reason": "Vertical dorsal view, head down/tail up, two complete wings; all extremities inside frame.",
+          "path": "/workspace/generated_images/exec-59632e3e-bd63-4ff8-8890-3b1af127d618.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Repeated lateral neck/head/body profile; lacks frontal-oblique chest angle.",
+              "path": "/workspace/generated_images/exec-0edcef4d-90cd-45ac-b488-1645fe89bb5f.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Attempt 2: frontal-oblique head, neck and chest, near/far wing foreshortening; complete tail and two hind feet.",
+              "path": "/workspace/generated_images/exec-8e2c91bb-558e-49e1-8f43-fc9715545f1d.png"
+            }
+          ],
+          "reason": "Attempt 2: frontal-oblique head, neck and chest, near/far wing foreshortening; complete tail and two hind feet.",
+          "path": "/workspace/generated_images/exec-8e2c91bb-558e-49e1-8f43-fc9715545f1d.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json)."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json)."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json)."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json)."
         }
       },
       "historical_multipanel_attempts": {
@@ -5026,56 +5067,109 @@
       "kind": "supplement",
       "deliverables": {
         "galadhrim_bow": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts."
         },
         "elven_knives": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Two matching complete upright white-handled curved steel knives, no overlap/text; first attempt.",
+              "path": "/workspace/generated_images/exec-8bbb9a25-1cf5-4b75-aae5-4624ebce8501.png"
+            }
+          ],
+          "reason": "Two matching complete upright white-handled curved steel knives, no overlap/text; first attempt.",
+          "path": "/workspace/generated_images/exec-8bbb9a25-1cf5-4b75-aae5-4624ebce8501.png"
         },
         "gimli_axe": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete double-bit iron axe, bronze collars and wood/leather haft; upright, no generated text. Authored prop, not historical Gimli recovery.",
+              "path": "/workspace/generated_images/exec-58345c4e-9548-44ce-9164-9c178ff791ed.png"
+            }
+          ],
+          "reason": "Complete double-bit iron axe, bronze collars and wood/leather haft; upright, no generated text. Authored prop, not historical Gimli recovery.",
+          "path": "/workspace/generated_images/exec-58345c4e-9548-44ce-9164-9c178ff791ed.png"
         },
         "uruk_falchion": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused accepted complete isolated Uruk falchion from Lurtz detail; no new attempts."
         },
         "orc_cleaver": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts."
         },
         "orc_scimitar": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Visibly curved rusted single-edged blade with full point, complete leather grip/guard, no text; first attempt.",
+              "path": "/workspace/generated_images/exec-640e32ef-3db6-44f8-b0dd-cdff25ab72ef.png"
+            }
+          ],
+          "reason": "Visibly curved rusted single-edged blade with full point, complete leather grip/guard, no text; first attempt.",
+          "path": "/workspace/generated_images/exec-640e32ef-3db6-44f8-b0dd-cdff25ab72ef.png"
         },
         "bolg_mace": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed complete rusted spiked mace, reused Gundabad prop as authored Bolg lineup design; does not claim recovery of missing historical Bolg gear. No new attempts."
         },
         "cave_troll_club": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output.",
+              "path": "/workspace/generated_images/exec-e2bd8a8c-fdc2-43b4-9eda-a6ea54fe8bb4.png"
+            }
+          ],
+          "reason": "Complete gnarled wooden club, iron bands/studs and leather grip, upright; no text, first attempt. Authored prop, not recovery of missing troll output.",
+          "path": "/workspace/generated_images/exec-e2bd8a8c-fdc2-43b4-9eda-a6ea54fe8bb4.png"
         },
         "war_hammer": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused reviewed complete isolated prop from accepted character detail; in-plane upright rotation recorded, never mirrored; zero new attempts."
         },
         "pike": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Full straight shaft, narrow spearhead and butt, vertical, no clipping/text; first attempt.",
+              "path": "/workspace/generated_images/exec-cd8ca679-5d59-4fba-b7fd-aab9e851072f.png"
+            }
+          ],
+          "reason": "Full straight shaft, narrow spearhead and butt, vertical, no clipping/text; first attempt.",
+          "path": "/workspace/generated_images/exec-cd8ca679-5d59-4fba-b7fd-aab9e851072f.png"
         },
         "rohan_shield": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused accepted complete isolated heraldic shield; no new attempts."
         },
         "gondor_shield": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused accepted complete isolated heraldic shield; no new attempts."
         },
         "uruk_shield": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reused accepted complete isolated white-hand Uruk shield; no new attempts."
         },
         "torch": {
           "status": "pending",

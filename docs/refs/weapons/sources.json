@@ -1,0 +1,121 @@
+{
+  "galadhrim_bow": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d49009a5-6487-4f49-82af-f9f12416ca4d.png",
+    "original_sha256": "f48202a43d86d189419533eeb14f6bc7b5c8e11e02b47e7d64bc3d90ac4be494",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "saved_cutout": "details/galadhrim_bow.png",
+    "cutout_sha256": "39a05cf89ab7aef65c5f6f5d5f764eb575702bbf8479765958ed4a34a1afb3d3",
+    "segmentation": "corner median distance threshold 38; inspected fine string preservation",
+    "reused_accepted_source": "docs/refs/elf_galadhrim/details/weapon_metal.png",
+    "in_plane_rotation_degrees": 25,
+    "mirrored": false
+  },
+  "orc_cleaver": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c9a8393b-f69f-4862-8cb1-dcaf61c9ca32.png",
+    "original_sha256": "6a61cb5e7dc283de273379d747a151d205424117f55e6c96df46c64ddfcb6700",
+    "original_size_px": [
+      1065,
+      1477
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/orc_cleaver.png",
+    "cutout_sha256": "831f62258ea500a342c69f7601bbb7623e64ec8b21ef43d2e93de72e334e3f5f",
+    "reused_accepted_source": "docs/refs/orc/details/weapon_metal.png",
+    "in_plane_rotation_degrees": 33,
+    "mirrored": false
+  },
+  "war_hammer": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-02d68cc8-b71d-40fb-97eb-9122fbe541bf.png",
+    "original_sha256": "995c7548452110c9c0b2a57bea1cd191aaaee48822de09b445614dceb387a440",
+    "original_size_px": [
+      1145,
+      1374
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      92,
+      27,
+      1103,
+      1310
+    ],
+    "saved_cutout": "details/war_hammer.png",
+    "cutout_sha256": "f75b55ab84e9effdf418926f54c0baccb9369fe4ba356fe75a4eb91c59971811",
+    "reused_accepted_source": "docs/refs/war_troll/details/weapon_metal.png",
+    "in_plane_rotation_degrees": 32,
+    "mirrored": false
+  },
+  "uruk_shield": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-304cbb56-aab0-4a5f-aea5-8283086dfa70.png",
+    "original_sha256": "f4f53854236f20ac488e50133c2150eeebc9487ece4c13bc9b38a99a46a8a97e",
+    "original_size_px": [
+      879,
+      1790
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/uruk_shield.png",
+    "cutout_sha256": "d2adfb287a352c88f0a4df55e054289c3a5c82c985e3439bbc94fd6d15500452",
+    "reused_accepted_source": "docs/refs/uruk/details/weapon_metal.png",
+    "mirrored": false
+  },
+  "rohan_shield": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-81ab20ed-a298-4b88-9dec-ebb1a8ce8222.png",
+    "original_sha256": "3777d5a8391d95b5364327b890639818b263bbcde410e28decc0366ef1d3cc6e",
+    "original_size_px": [
+      1230,
+      1278
+    ],
+    "crop_px": null,
+    "saved_cutout": "details/rohan_shield.png",
+    "cutout_sha256": "98390022d1635d54bd7312708d71a24f2df68339ceb94ddf85b153fe140805df",
+    "reused_accepted_source": "docs/refs/rohirrim/details/weapon_metal.png",
+    "mirrored": false
+  },
+  "gondor_shield": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-eaa0ae4c-da2d-431f-b84b-b2504418cd53.png",
+    "original_sha256": "a9dede100abbc0d233c1111627867fb62c7f12a19b3280a51cf058337f6d585c",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "saved_cutout": "details/gondor_shield.png",
+    "cutout_sha256": "133c80aefbd2b2d2ff1be54886522dd7e78e508d02a3454fdaf5e678e2539960",
+    "reused_accepted_source": "docs/refs/gondor/details/weapon_metal.png",
+    "mirrored": false
+  },
+  "uruk_falchion": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5c948f3d-5447-4850-8e28-ac244ff00be8.png",
+    "original_sha256": "b2962437c3715eb5608a14886c4d474e19958ab38d77fb608e98a1add5db92b3",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/uruk_falchion.png",
+    "cutout_sha256": "7929f2ade7a1a1a109421e2c1ad4f10e5484e33062924a92f1ec218b5d7f8e13",
+    "reused_accepted_source": "docs/refs/lurtz/details/weapon_metal.png",
+    "mirrored": false
+  },
+  "bolg_mace": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-78909e31-c8e8-4fd2-b054-896c06768e79.png",
+    "original_sha256": "62e055bab6debb979af763c373afebbeca59b3ceb9c123ae8cf5cc2ec8d09299",
+    "original_size_px": [
+      873,
+      1802
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "saved_cutout": "details/bolg_mace.png",
+    "cutout_sha256": "612ee7ca36a18ca32b62ede0659f6a4a8d3076dbdb6fcfa24a7fb15857298b64",
+    "reused_accepted_source": "docs/refs/gundabad/details/weapon_metal.png",
+    "mirrored": false
+  }
+}

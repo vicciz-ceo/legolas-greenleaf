@@ -874,13 +874,20 @@ def supplement(cid):
         baseline = round((i//columns+1)*ch-90)
         x = round(left_margin+(i%columns)*cw+(cw-w)/2)
         y = baseline-h
-        image = crop.resize((w,h),Image.Resampling.LANCZOS)
+        if metric:
+            image,_,_=resize_silhouette(crop,h)
+            w,h=image.size
+            require(w<=cw-40 and h<=ch-140, 'Metric supplement cutout exceeds panel')
+            x=round(left_margin+(i%columns)*cw+(cw-w)/2)
+            y=baseline-h
+        else:
+            image=crop.resize((w,h),Image.Resampling.LANCZOS)
         canvas.paste(image,(x,y),image)
         text(draw,(round(left_margin+(i%columns+.5)*cw),baseline+35),item['label'],14 if columns>4 else 19)
         geometry.append({'name':item['name'],'source':str(path.relative_to(folder)),
                          'source_sha256':digest(path),'source_bbox_px':list(srcbox),
                          'sheet_bbox_px':[x,y,x+w,baseline], 'mirrored':False,
-                         'extent_m':item.get('extent_m'), 'scale_axis':'vertical' if metric else None})
+                         'extent_m':item.get('extent_m'), 'resampled_alpha_bbox_px':list(bbox(image,require_transparency=False)), 'scale_axis':'vertical' if metric else None})
     rulers = []
     if metric:
         # A narrow code ruler occupies the reserved left margin of each row.
@@ -953,7 +960,10 @@ def check_supplement(cid):
         with Image.open(folder/a['source']) as source_im:
             require(source_im.height<=1024,'Oversized supplement source')
         require(not a['mirrored'],'Mirrored supplement source')
-        if cfg.get('metric'):require(b[3]-b[1]==round(a['extent_m']*rec['px_per_m']),'Supplement scale mismatch')
+        if cfg.get('metric'):
+            require(b[3]-b[1]==round(a['extent_m']*rec['px_per_m']),'Supplement scale mismatch')
+            box=a['resampled_alpha_bbox_px']
+            require(box[3]-box[1]==round(a['extent_m']*rec['px_per_m']),'Supplement raster silhouette scale mismatch')
         for other in rec['objects'][i+1:]:
             c=other['sheet_bbox_px']
             require(min(b[2],c[2])<=max(b[0],c[0]) or min(b[3],c[3])<=max(b[1],c[1]),'Overlapping supplement objects')

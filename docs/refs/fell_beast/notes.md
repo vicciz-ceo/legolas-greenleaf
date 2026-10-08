@@ -1,10 +1,5 @@
-# Fell Beast modelling notes
+# Fell beast modelling notes
 
-- Fell beast in FLIGHT: original dark reptilian winged creature, single serpentine neck and narrow toothy head, long tail, TWO bat-like membrane wings, TWO tucked hind legs; far-distance readable silhouette, 12 m wingspan, no rider or gear.
-- Preserve the original face; no actor likeness.
-- Keep gear on its own anatomical side under rotation.
-- Build surface weave, skin and hair as procedural detail.
-- Do not infer 3D dimensions from the image normalization.
-- Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
-- Minor seams, buckle shapes, strap count and mild light differences may vary.
-- Maintain natural joints and all required limb and digit counts.
+Original dark-grey winged reptile, narrow toothy head on a long serpentine neck, long tail, two membranous wing forelimbs and two tucked hind legs. No rider or gear. Original roster calls for one far-distance flight silhouette sheet only, without portraits, details or sampling. Side generated first; accepted frontal wing-tip extrema calibrate the original 12 m span. Top width 12 m, oblique width 10.2 m and side flight height 6 m are authored projected assumptions, not recovered 3D measurements.
+
+Side/front/top passed first attempts. Three-quarter attempt 1 repeated the lateral angle; attempt 2 passed using accepted front and side for identity. Minor spikes, scale textures and lighting drift are tolerated. All tips and limbs complete; no source mirrored or generated text. Comparisons, geometry, rulers, labels and backgrounds are code-drawn. Full-resolution originals are archived with sources.json provenance.
