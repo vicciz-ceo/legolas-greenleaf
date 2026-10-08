@@ -263,29 +263,29 @@ Statuses are evidence-based. Accepted design notes do not certify a completed vi
 | views/three_quarter | accepted | 1 | Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side. |
 | views/side | accepted | 1 | Exact right side profile, left shield occluded naturally on far side; all extremities present. |
 | views/back | accepted | 1 | Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| face_views/front | accepted | 1 | Original weathered bearded front with complete horsehair crest, consistent helmet and hair. |
+| face_views/three_quarter | accepted | 1 | Correct three-quarter portrait, original face and helmet match accepted front. |
+| face_views/side | accepted | 1 | Exact face profile, original weathered sandy-brown identity; crest and helmet complete. |
+| details/cloth_leather | accepted | 1 | Green tunic, steel mail and brown leather match accepted body. |
+| details/weapon_metal | accepted | 1 | Complete round wooden green horse shield, steel boss and rim. |
+| details/skin | accepted | 1 | Skin crop from independent accepted front portrait. |
+| details/hair | accepted | 1 | Hair crop from independent accepted profile. |
+| turnaround | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| spec | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| notes | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| check | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| face | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| details | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| observed | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
 
 ## laketown_man
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
+| views/front | accepted | 1 | First front: original weathered face, quilted blue jacket/beige tunic, own LEFT pouch; A-pose and fingers/framing pass. |
+| views/three_quarter | accepted | 1 | Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass. |
+| views/side | accepted | 1 | Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved. |
+| views/back | accepted | 1 | True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass. |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |

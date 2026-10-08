@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+All body views and portraits reviewed individually. First front rejected for narrow sword-arm pose; second passes. Sword own RIGHT, round horse shield own LEFT, shield rear wood/straps visible in back view, far-side shield occluded from right profile. Minor horse painting, bronze trim, mail-ring and strap drift tolerated. Skin/hair tiles crop independent portraits; costume/shield separately generated. Fine hair background removed and reviewed. Samples cover lit skin/hair, tunic, trousers, boots, belt, strap, bracers, steel mail/boss and bronze rim; not albedo.

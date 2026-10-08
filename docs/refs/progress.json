@@ -1888,60 +1888,130 @@
           "path": "/workspace/generated_images/exec-a83590fd-203c-4257-8b26-a03b63dd2181.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original weathered bearded front with complete horsehair crest, consistent helmet and hair.",
+              "path": "/workspace/generated_images/exec-bf0d9dbe-6d64-48e9-9248-f0aec9b0fdc2.png"
+            }
+          ],
+          "reason": "Original weathered bearded front with complete horsehair crest, consistent helmet and hair.",
+          "path": "/workspace/generated_images/exec-bf0d9dbe-6d64-48e9-9248-f0aec9b0fdc2.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Awaiting individual preview review.",
+              "path": "/workspace/generated_images/exec-a631e395-35fc-45fd-af12-0a8b54217c52.png"
+            }
+          ],
+          "reason": "Correct three-quarter portrait, original face and helmet match accepted front.",
+          "path": "/workspace/generated_images/exec-a631e395-35fc-45fd-af12-0a8b54217c52.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact face profile, original weathered sandy-brown identity; crest and helmet complete.",
+              "path": "/workspace/generated_images/exec-cc433620-efad-49ae-8ef9-ef52614600f9.png"
+            }
+          ],
+          "reason": "Exact face profile, original weathered sandy-brown identity; crest and helmet complete.",
+          "path": "/workspace/generated_images/exec-cc433620-efad-49ae-8ef9-ef52614600f9.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Green tunic, steel mail and brown leather match accepted body.",
+              "path": "/workspace/generated_images/exec-f6da149a-7a78-4fa9-b37e-11406c01a844.png"
+            }
+          ],
+          "reason": "Green tunic, steel mail and brown leather match accepted body.",
+          "path": "/workspace/generated_images/exec-f6da149a-7a78-4fa9-b37e-11406c01a844.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete round wooden green horse shield, steel boss and rim.",
+              "path": "/workspace/generated_images/exec-81ab20ed-a298-4b88-9dec-ebb1a8ce8222.png"
+            }
+          ],
+          "reason": "Complete round wooden green horse shield, steel boss and rim.",
+          "path": "/workspace/generated_images/exec-81ab20ed-a298-4b88-9dec-ebb1a8ce8222.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Skin crop from independent accepted front portrait.",
+              "path": "/workspace/generated_images/exec-bf0d9dbe-6d64-48e9-9248-f0aec9b0fdc2.png"
+            }
+          ],
+          "reason": "Skin crop from independent accepted front portrait.",
+          "path": "/workspace/generated_images/exec-bf0d9dbe-6d64-48e9-9248-f0aec9b0fdc2.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Hair crop from independent accepted profile.",
+              "path": "/workspace/generated_images/exec-cc433620-efad-49ae-8ef9-ef52614600f9.png"
+            }
+          ],
+          "reason": "Hair crop from independent accepted profile.",
+          "path": "/workspace/generated_images/exec-cc433620-efad-49ae-8ef9-ef52614600f9.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual appearance review and deterministic checks pass; approximately 2.32 MB."
         }
       }
     },
@@ -1950,20 +2020,56 @@
       "design_extent_m": 1.75,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "First front: original weathered face, quilted blue jacket/beige tunic, own LEFT pouch; A-pose and fingers/framing pass.",
+              "path": "/workspace/generated_images/exec-50c59d52-1841-41ce-80e4-2b202a21eae0.png"
+            }
+          ],
+          "reason": "First front: original weathered face, quilted blue jacket/beige tunic, own LEFT pouch; A-pose and fingers/framing pass.",
+          "path": "/workspace/generated_images/exec-50c59d52-1841-41ce-80e4-2b202a21eae0.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass.",
+              "path": "/workspace/generated_images/exec-5cd2b9a4-309e-4dee-890e-93763d654d4d.png"
+            }
+          ],
+          "reason": "Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass.",
+          "path": "/workspace/generated_images/exec-5cd2b9a4-309e-4dee-890e-93763d654d4d.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved.",
+              "path": "/workspace/generated_images/exec-b83f1508-52e6-41de-bfa8-8e607c1b3987.png"
+            }
+          ],
+          "reason": "Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved.",
+          "path": "/workspace/generated_images/exec-b83f1508-52e6-41de-bfa8-8e607c1b3987.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass.",
+              "path": "/workspace/generated_images/exec-ea6b94a8-294a-4d71-b61a-085ff30d3a79.png"
+            }
+          ],
+          "reason": "True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass.",
+          "path": "/workspace/generated_images/exec-ea6b94a8-294a-4d71-b61a-085ff30d3a79.png"
         },
         "face_views/front": {
           "status": "pending",

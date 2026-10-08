@@ -717,6 +717,14 @@ def check_supplement(cid):
     require((folder/'notes.md').is_file(),'Missing supplement notes')
     rec = data['measured']['supplement']
     cfg = data['composition']
+    names = [item['name'] for item in cfg['items']]
+    require(len(names)==len(set(names)), 'Duplicated supplement item')
+    state_path = ROOT/'progress.json'
+    if state_path.exists():
+        entry = json.loads(state_path.read_text()).get('entries',{}).get(cid)
+        if entry:
+            expected = set(entry['deliverables'])-{'sheet','spec','notes','check'}
+            require(set(names)==expected,'Supplement roster membership differs from checklist')
     path = folder/rec['path']
     require(digest(path)==rec['sha256'],'Supplement JPEG changed')
     im = Image.open(path)

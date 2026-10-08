@@ -225,24 +225,24 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | rohirrim | views/three_quarter | accepted | 1 | Correct three-quarter, shield on own LEFT near camera; own RIGHT low sword far side. |
 | rohirrim | views/side | accepted | 1 | Exact right side profile, left shield occluded naturally on far side; all extremities present. |
 | rohirrim | views/back | accepted | 1 | Correct rear side assignments, shield back/straps own LEFT and low right sword; crest/boots/tips intact. |
-| rohirrim | face_views/front | pending | 0 | Not yet attempted |
-| rohirrim | face_views/three_quarter | pending | 0 | Not yet attempted |
-| rohirrim | face_views/side | pending | 0 | Not yet attempted |
-| rohirrim | details/cloth_leather | pending | 0 | Not yet attempted |
-| rohirrim | details/weapon_metal | pending | 0 | Not yet attempted |
-| rohirrim | details/skin | pending | 0 | Not yet attempted |
-| rohirrim | details/hair | pending | 0 | Not yet attempted |
-| rohirrim | turnaround | pending | 0 | Not yet attempted |
-| rohirrim | spec | pending | 0 | Not yet attempted |
-| rohirrim | notes | pending | 0 | Not yet attempted |
-| rohirrim | check | pending | 0 | Not yet attempted |
-| rohirrim | face | pending | 0 | Not yet attempted |
-| rohirrim | details | pending | 0 | Not yet attempted |
-| rohirrim | observed | pending | 0 | Not yet attempted |
-| laketown_man | views/front | pending | 0 | Not yet attempted |
-| laketown_man | views/three_quarter | pending | 0 | Not yet attempted |
-| laketown_man | views/side | pending | 0 | Not yet attempted |
-| laketown_man | views/back | pending | 0 | Not yet attempted |
+| rohirrim | face_views/front | accepted | 1 | Original weathered bearded front with complete horsehair crest, consistent helmet and hair. |
+| rohirrim | face_views/three_quarter | accepted | 1 | Correct three-quarter portrait, original face and helmet match accepted front. |
+| rohirrim | face_views/side | accepted | 1 | Exact face profile, original weathered sandy-brown identity; crest and helmet complete. |
+| rohirrim | details/cloth_leather | accepted | 1 | Green tunic, steel mail and brown leather match accepted body. |
+| rohirrim | details/weapon_metal | accepted | 1 | Complete round wooden green horse shield, steel boss and rim. |
+| rohirrim | details/skin | accepted | 1 | Skin crop from independent accepted front portrait. |
+| rohirrim | details/hair | accepted | 1 | Hair crop from independent accepted profile. |
+| rohirrim | turnaround | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | spec | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | notes | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | check | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | face | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | details | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| rohirrim | observed | accepted | 0 | Individual appearance review and deterministic checks pass; approximately 2.32 MB. |
+| laketown_man | views/front | accepted | 1 | First front: original weathered face, quilted blue jacket/beige tunic, own LEFT pouch; A-pose and fingers/framing pass. |
+| laketown_man | views/three_quarter | accepted | 1 | Correct rotation, original identity and padded outfit; own LEFT pouch preserved, fingers and A-pose pass. |
+| laketown_man | views/side | accepted | 1 | Correct profile, left-hip pouch naturally far-side occluded; no new gear, original face/outfit/boots preserved. |
+| laketown_man | views/back | accepted | 1 | True rear, own LEFT pouch image left, loose hair below cap, A-pose fingers/framing and padded costume pass. |
 | laketown_man | face_views/front | pending | 0 | Not yet attempted |
 | laketown_man | face_views/three_quarter | pending | 0 | Not yet attempted |
 | laketown_man | face_views/side | pending | 0 | Not yet attempted |

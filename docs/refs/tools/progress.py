@@ -62,7 +62,8 @@ def index_and_report(data):
   statuses=[d['status'] for d in e['deliverables'].values()]
   status='accepted' if all(x=='accepted' for x in statuses) else 'blocked' if 'blocked' in statuses else 'rejected / pending' if 'rejected' in statuses else 'pending'
   exists=(ROOT/cid/'spec.json').exists()
-  thumb=f'<img src="{cid}/{cid}_turnaround.jpg" width="180" alt="{cid}">' if status=='accepted' and (ROOT/cid/f'{cid}_turnaround.jpg').exists() else '—'
+  image_name=f"{cid}.jpg" if e.get("kind")=="supplement" else f"{cid}_turnaround.jpg"
+  thumb=f'<img src="{cid}/{image_name}" width="180" alt="{cid}">' if status=='accepted' and (ROOT/cid/image_name).exists() else '—'
   spec=f'[spec]({cid}/spec.json)' if exists else '—'
   notes=f'[notes]({cid}/notes.md)' if (ROOT/cid/'notes.md').exists() else '—'
   lines.append(f"| {cid} | {e.get('design_extent_m','supplement')} | {thumb} | {spec} | {notes} | {status} |")
