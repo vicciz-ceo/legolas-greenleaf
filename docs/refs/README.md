@@ -4,6 +4,8 @@
 
 These references are intended solely for development. The game continues to generate its meshes, textures and audio in code. This branch was created from `origin/build/foundation` at `7ab3afd`; its changes are confined to new files in `docs/refs/`.
 
+The requested local branch is `refs/character-sheets`. GitHub rejected that remote branch name with `GH014` because names beginning with `refs/` are forbidden. The remote branch used for the draft PR is therefore `reference/character-sheets`.
+
 The required context was read: `GOAL.md`, `ARCHITECTURE.md` (including §4 and the scale list), and `docs/CHAPTERS.md`. Original character designs were requested throughout, with explicit exclusion of actor likenesses and copied film frames.
 
 Thirteen image candidates were generated and reviewed, including targeted regenerations. None passed the complete applicable quality gate. They are excluded from this branch, in accordance with the instruction not to keep flawed sheets. See [the quality report](QUALITY_REPORT.md) for observed failures and measurement evidence.
