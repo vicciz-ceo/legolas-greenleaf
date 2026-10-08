@@ -1,0 +1,770 @@
+/**
+ * The game: state machine + chapter manager (owner: shell).
+ *
+ *   title -> loading -> playing <-> paused -> complete | defeat -> (next chapter | title)
+ *
+ * One `frame(dtReal)` call advances everything: input-driven bot, time scale, the fixed update
+ * order (player -> chapter -> combatants -> projectiles -> fx -> rivalry) and the camera. The
+ * browser loop in main.ts and the headless `__game.advance()` test hook both call it, so a
+ * smoke-test run exercises exactly the code path a player does.
+ *
+ * Responsibilities
+ *  - chapter load / unload (clean teardown of physics, registry, projectiles, fx, GPU resources),
+ *  - checkpoints + full-rebuild respawn, defeat and chapter-complete flows, ranks, unlocks,
+ *  - the cinematic menu backdrop (Legolas in a misty forest, slowly orbited),
+ *  - adaptive music mood, letterbox easing, pause rules.
+ */
+import * as THREE from 'three';
+import type {
+  ChapterDef, ChapterInstance, ChapterResult, GameContext, Input, MenuActions, MusicMood, Settings,
+} from '../core/types';
+import type { CameraRigExt } from '../actors/camera';
+import type { HudImpl } from '../ui/hud';
+import type { AudioSysExt } from '../core/audio';
+import { createRivalry } from './rivalry';
+import { clamp, damp } from '../core/math';
+import { fbm2, mulberry32 } from '../core/rng';
+import { applyEnvironment, createLevelAPI, createTerrain, loadWorld, type LevelHost, type WorldModules } from './level';
+import type { TimeControlExt } from './time';
+import { MAX_FRAME } from './time';
+import type { Bot } from './bot';
+
+export type GameMode = 'boot' | 'title' | 'loading' | 'playing' | 'paused' | 'complete' | 'defeat';
+
+export interface GameDeps {
+  /** the real device input (the ctx.input the player sees may be a bot wrapper) */
+  realInput: Input;
+  bot: Bot;
+  /** every registered chapter, including dev ones */
+  chapters: () => ChapterDef[];
+  /** render one frame (engine.render + hud + audio are handled by the caller) */
+  render: (dtReal: number) => void;
+}
+
+export interface Game {
+  readonly mode: GameMode;
+  readonly chapter: ChapterDef | null;
+  readonly checkpoint: number;
+  readonly actions: MenuActions;
+  /** simulate one real frame */
+  frame(dtReal: number): void;
+  startChapter(id: string, cp?: number): Promise<void>;
+  /** drop whatever is running and show the title menu (unless showMenu is false) over the cinematic backdrop */
+  toTitle(showMenu?: boolean): Promise<void>;
+  /** what the running chapter wants the autopilot to do this frame */
+  botHint(): ReturnType<NonNullable<ChapterInstance['botHint']>>;
+  pause(): void;
+  /**
+   * Fixed-step simulation without real-time rendering (test hook), then one rendered frame.
+   * Returns a Promise: chapter scripts are async functions, and their continuations only run when
+   * the JS stack unwinds, so whenever a script is waiting to resume (a wait / waitUntil / say
+   * resolved) the loop yields to let it run before stepping on. `await` it (page.evaluate does).
+   * Without scripts it is purely synchronous, so `advance(1)` followed by a read still works.
+   */
+  advance(sec: number, step?: number, render?: boolean): Promise<void>;
+  /** same as advance() (kept as an explicit name for scripts that want to be clear about awaiting) */
+  advanceAsync(sec: number, step?: number, render?: boolean): Promise<void>;
+  /** strictly synchronous stepping: chapter scripts only progress one await-hop per call */
+  advanceSync(sec: number, step?: number, render?: boolean): void;
+  state(): Record<string, unknown>;
+  /** most recent fatal error text, if any */
+  readonly error: string | null;
+}
+
+const FIXED_STEP = 1 / 60;
+/** longest slice handed to gameplay code in one call */
+const MAX_SUBSTEP = 1 / 30;
+const DEATH_DELAY = 1.9;
+const COMPLETE_DELAY = 1.6;
+
+const nextTask = (): Promise<void> => new Promise((r) => setTimeout(r, 0));
+/** yield to the event loop without the 4 ms clamp of nested setTimeout (flushes all pending microtasks) */
+const yieldTask = (): Promise<void> =>
+  new Promise((resolve) => {
+    const ch = new MessageChannel();
+    ch.port1.onmessage = () => {
+      ch.port1.close();
+      resolve();
+    };
+    ch.port2.postMessage(0);
+  });
+
+export function createGame(ctx: GameContext, deps: GameDeps): Game {
+  const { engine, hud, menus, audio, fx, physics, combatants, projectiles, input, progression } = ctx;
+  const time = ctx.time as TimeControlExt;
+  const bot = deps.bot;
+  const god = ctx.flags.god === '1';
+  const skipIntro = ctx.flags.skipIntro === '1';
+
+  let mode: GameMode = 'boot';
+  let chapter: ChapterDef | null = null;
+  let instance: ChapterInstance | null = null;
+  let level: LevelHost | null = null;
+  let checkpoint = 0;
+  let loadToken = 0;
+  let attemptTime = 0;
+  let deathT = 0;
+  let completeT = -1;
+  let pendingResult = false;
+  let error: string | null = null;
+  /** set by the level when a script continuation is pending (see advance) */
+  let hop = false;
+  let lastObjective: string | null = null;
+  let mood: MusicMood = 'none';
+  let moodHold = 0;
+  const cpRivalry = new Map<number, { legolas: number; gimli: number }>();
+  const reported = new Set<string>();
+  let backdrop: { cam: THREE.Vector3; look: THREE.Vector3; hero: THREE.Vector3; t: number } | null = null;
+
+  // remember the objective text for state()
+  const origObjective = hud.setObjective.bind(hud);
+  hud.setObjective = (text: string | null) => {
+    lastObjective = text;
+    origObjective(text);
+  };
+
+  const rigOf = (): CameraRigExt => ctx.player.camera as CameraRigExt;
+  const setMode = (m: GameMode) => {
+    mode = m;
+  };
+  /** mode check that TypeScript cannot narrow away across awaits / calls that change it */
+  const isMode = (...m: GameMode[]): boolean => m.includes(mode);
+
+  /** log a chapter-script error once per message, loudly enough for the smoke test to fail on it */
+  function report(where: string, e: unknown): void {
+    const msg = `[${where}] ${String((e as Error)?.stack ?? e)}`;
+    const key = msg.slice(0, 200);
+    if (reported.has(key)) return;
+    reported.add(key);
+    console.error(msg);
+  }
+
+  function fatal(e: unknown): void {
+    error = String((e as Error)?.stack ?? e);
+    console.error('[game] fatal', e);
+    (window as unknown as { __snapError?: string }).__snapError = error;
+  }
+
+  // ── settings ──────────────────────────────────────────────────────────────
+  function applySettings(s: Settings, prev?: Settings): void {
+    const cur = progression.data.settings;
+    if (s !== cur) Object.assign(cur, s);
+    input.sensitivity = cur.sensitivity;
+    input.invertY = cur.invertY;
+    const a = audio as AudioSysExt;
+    a.master = cur.master;
+    a.musicVolume = cur.music;
+    a.sfxVolume = cur.sfx;
+    (hud as HudImpl).setSubtitlesEnabled?.(cur.subtitles);
+    if (!prev || prev.quality !== cur.quality) {
+      if (!ctx.flags.quality || prev) engine.setQuality(cur.quality);
+    }
+    progression.save();
+  }
+
+  // ── adaptive music ────────────────────────────────────────────────────────
+  function updateMood(dtReal: number): void {
+    let want: MusicMood = 'explore';
+    if (level?.bossTarget?.alive) want = 'boss';
+    else {
+      const p = ctx.player.position;
+      for (const c of combatants.byTeam('enemy')) {
+        if (!c.alive) continue;
+        const dx = c.position.x - p.x;
+        const dz = c.position.z - p.z;
+        if (dx * dx + dz * dz < 34 * 34) {
+          want = 'combat';
+          break;
+        }
+      }
+    }
+    if (want === 'combat' || want === 'boss') moodHold = 4;
+    else moodHold -= dtReal;
+    if (want === 'explore' && moodHold > 0 && (mood === 'combat' || mood === 'boss')) want = mood;
+    if (want !== mood) {
+      mood = want;
+      audio.music(mood);
+    }
+  }
+
+  // ── cinematic menu backdrop ───────────────────────────────────────────────
+  async function buildBackdrop(): Promise<void> {
+    const world = await loadWorld();
+    applyEnvironment(ctx, 'menu');
+    const root = new THREE.Group();
+    root.name = 'menu-backdrop';
+    engine.levelRoot.add(root);
+    const height = (x: number, z: number) => {
+      const d = Math.hypot(x, z);
+      const clearing = Math.min(1, d / 14);
+      return (fbm2(x * 0.02, z * 0.02, 4, 31) * 5.5 + fbm2(x * 0.09, z * 0.09, 2, 5) * 0.5) * clearing * clearing;
+    };
+    const t = createTerrain(world, { size: 260, segments: 180, height, style: 'forest', material: 'grass' });
+    root.add(t.mesh);
+    physics.setTerrain(t.heightAt, 'grass');
+    scatterForest(root, t.heightAt);
+    const hero = new THREE.Vector3(0, t.heightAt(0, 0), 0);
+    ctx.player.teleport(hero, 0.6);
+    ctx.player.object.visible = true;
+    backdrop = { cam: new THREE.Vector3(), look: new THREE.Vector3(), hero, t: 0 };
+    orbit(0);
+  }
+
+  /** instanced trunks + canopies: a cheap misty forest used when no world builder is around */
+  function scatterForest(root: THREE.Group, h: (x: number, z: number) => number): void {
+    const rnd = mulberry32(77);
+    const N = 520;
+    const trunkG = new THREE.CylinderGeometry(0.22, 0.4, 1, 7).translate(0, 0.5, 0);
+    const crownG = new THREE.ConeGeometry(1, 1, 8).translate(0, 0.5, 0);
+    const trunkM = new THREE.MeshStandardMaterial({ color: 0x3a2f24, roughness: 0.95 });
+    const crownM = new THREE.MeshStandardMaterial({ color: 0x1f3324, roughness: 0.9 });
+    const trunks = new THREE.InstancedMesh(trunkG, trunkM, N);
+    const crowns = new THREE.InstancedMesh(crownG, crownM, N * 2);
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const e = new THREE.Euler();
+    const p = new THREE.Vector3();
+    const s = new THREE.Vector3();
+    let ci = 0;
+    for (let i = 0; i < N; i++) {
+      const a = rnd() * Math.PI * 2;
+      const r = 9 + Math.sqrt(rnd()) * 120;
+      const x = Math.cos(a) * r;
+      const z = Math.sin(a) * r;
+      const th = 7 + rnd() * 11;
+      p.set(x, h(x, z) - 0.2, z);
+      e.set(0, rnd() * 6.28, 0);
+      q.setFromEuler(e);
+      s.set(0.8 + rnd() * 0.8, th, 0.8 + rnd() * 0.8);
+      m.compose(p, q, s);
+      trunks.setMatrixAt(i, m);
+      for (let k = 0; k < 2; k++) {
+        const cr = 2.6 + rnd() * 1.6 - k * 0.7;
+        p.set(x, h(x, z) + th * (0.45 + k * 0.25), z);
+        s.set(cr, th * 0.5, cr);
+        m.compose(p, q, s);
+        crowns.setMatrixAt(ci++, m);
+      }
+    }
+    trunks.castShadow = crowns.castShadow = true;
+    trunks.receiveShadow = crowns.receiveShadow = true;
+    root.add(trunks, crowns);
+  }
+
+  function orbit(dtReal: number): void {
+    if (!backdrop) return;
+    const b = backdrop;
+    b.t += dtReal;
+    const a = 2.35 + b.t * 0.045;
+    const R = 5.6;
+    const hy = b.hero.y;
+    b.cam.set(b.hero.x + Math.sin(a) * R, hy + 1.65 + Math.sin(b.t * 0.21) * 0.12, b.hero.z + Math.cos(a) * R);
+    // look slightly beside the hero so the title menu has air on the other side
+    b.look.set(b.hero.x - Math.cos(a) * 2.1, hy + 1.45, b.hero.z + Math.sin(a) * 2.1);
+    const cam = engine.camera;
+    cam.position.copy(b.cam);
+    cam.lookAt(b.look);
+    cam.fov = 38;
+    cam.updateProjectionMatrix();
+    cam.updateMatrixWorld();
+    engine.shadowFocus.copy(b.hero);
+    audio.setListener(cam.position, _fwd.set(0, 0, -1).applyQuaternion(cam.quaternion));
+    const dof = engine.post.dof;
+    dof.enabled = engine.quality === 'high' || engine.quality === 'ultra';
+    dof.focus = b.cam.distanceTo(b.hero) ;
+  }
+  const _fwd = new THREE.Vector3();
+
+  // ── unload / load ─────────────────────────────────────────────────────────
+  function unload(): void {
+    try {
+      instance?.dispose?.();
+    } catch (e) {
+      report('chapter.dispose', e);
+    }
+    instance = null;
+    level?.dispose();
+    level = null;
+    bot.reset();
+    if (ctx.rivalry.active) {
+      // a silent stop: stop() would queue a banter line that surfaces over the menu
+      hud.setRivalry(null);
+      ctx.rivalry = createRivalry(ctx);
+    }
+    const p = ctx.player;
+    p.mover = null;
+    p.camera.shot = null;
+    p.controlsEnabled = true;
+    p.weaponsEnabled = true;
+    combatants.clear();
+    try {
+      projectiles.clear();
+    } catch {
+      // compatibility: projectiles.clear() before the first arrow was ever fired used to throw
+      // (pools are created lazily); there is nothing to clear in that case
+    }
+    fx.clear();
+    const fxx = fx as unknown as { groundAt?: unknown };
+    if ('groundAt' in fxx) fxx.groundAt = null; // the previous terrain's height function
+    physics.clear();
+    engine.clearLevel();
+    audio.stopAllLoops();
+    engine.post.letterbox = 0;
+    engine.post.focusTint = 0;
+    engine.post.dof.enabled = false;
+    audio.setSlowmo(0);
+    time.setScale(1, 0);
+    hud.setObjective(null);
+    hud.setBoss(null);
+    hud.setPrompt(null);
+    hud.setProgress(null);
+    hud.setFocusMarks([]);
+    backdrop = null;
+    mood = 'none';
+    moodHold = 0;
+  }
+
+  async function toTitle(showMenu = true): Promise<void> {
+    const token = ++loadToken;
+    setMode('loading');
+    menus.hideAll();
+    hud.show(false);
+    input.enabled = false;
+    input.unlockPointer();
+    unload();
+    chapter = null;
+    checkpoint = 0;
+    completeT = -1;
+    pendingResult = false;
+    try {
+      await buildBackdrop();
+    } catch (e) {
+      console.warn('[game] backdrop failed', e);
+      backdrop = null;
+    }
+    if (token !== loadToken) return;
+    setMode('title');
+    ctx.player.revive();
+    audio.music('menu');
+    menus.hideLoading();
+    if (showMenu) menus.showTitle();
+  }
+
+  async function loadChapter(def: ChapterDef, cp: number, respawn: boolean): Promise<void> {
+    const token = ++loadToken;
+    setMode('loading');
+    completeT = -1;
+    deathT = 0;
+    pendingResult = false;
+    menus.hideAll();
+    hud.show(false);
+    input.enabled = false;
+    input.unlockPointer();
+    audio.music('none');
+    menus.showLoading(def.title, 0.02);
+    await nextTask();
+    if (token !== loadToken) return;
+
+    let progress = 0.05;
+    const bump = window.setInterval(() => {
+      progress += (0.88 - progress) * 0.12;
+      menus.showLoading(def.title, progress);
+    }, 90);
+    try {
+      unload();
+      const world: WorldModules = await loadWorld();
+      menus.showLoading(def.title, (progress = 0.18));
+      await nextTask();
+      if (token !== loadToken) return;
+
+      // fresh state
+      chapter = def;
+      checkpoint = clamp(cp, 0, Math.max(0, def.checkpoints.length - 1));
+      const player = ctx.player;
+      player.revive();
+      player.invulnerable = god;
+      player.arrowType = 'standard';
+      if (!respawn) {
+        player.resetTally();
+        attemptTime = 0;
+        cpRivalry.clear();
+      }
+      time.resetGame();
+      applyEnvironment(ctx, def.environment);
+      ctx.rivalry.autoGimli = false;
+
+      level = createLevelAPI(ctx, def, world, {
+        onCheckpoint: handleCheckpoint,
+        onComplete: handleComplete,
+        onFail: (reason) => void defeat(reason),
+        onHop: () => {
+          hop = true;
+        },
+      });
+      menus.showLoading(def.title, (progress = 0.25));
+      await nextTask();
+      const made = await def.create(level);
+      if (token !== loadToken) {
+        made.dispose?.();
+        return;
+      }
+      instance = made;
+      progress = 0.92;
+      menus.showLoading(def.title, progress);
+      await nextTask();
+      if (token !== loadToken) return;
+
+      // rivalry carries over between chapters; on respawn it resumes from the checkpoint snapshot
+      if (def.rivalry) {
+        const from = (respawn && cpRivalry.get(checkpoint)) || { ...progression.data.rivalryTotals };
+        ctx.rivalry.start(from);
+      }
+      player.camera.shot = null;
+      hud.setObjective(null);
+      instance.start(checkpoint);
+      rigOf().snap();
+      if (!def.dev) {
+        progression.data.last = { chapterId: def.id, checkpoint };
+        progression.save();
+      }
+    } catch (e) {
+      window.clearInterval(bump);
+      fatal(e);
+      menus.hideLoading();
+      setMode('title');
+      chapter = null;
+      try {
+        unload();
+        await buildBackdrop();
+      } catch {
+        /* ignore */
+      }
+      menus.showTitle();
+      return;
+    } finally {
+      window.clearInterval(bump); // every exit path, including a superseded load
+    }
+    if (token !== loadToken) return;
+
+    // pose everything once (animations, camera) so the first visible frame is not a T-pose
+    try {
+      step(0.001);
+      rigOf().update(FIXED_STEP);
+    } catch (e) {
+      report('first frame', e);
+    }
+    menus.showLoading(def.title, 1);
+    menus.hideLoading();
+    // the chapter may already have started a cinematic inside start(): keep the HUD off for it
+    hud.show(!(level?.inCinematic ?? false));
+    ctx.player.object.visible = true;
+    input.enabled = true;
+    setMode('playing');
+    bot.reset();
+    audio.music('explore');
+    mood = 'explore';
+    if (!skipIntro && !respawn && checkpoint === 0) {
+      void hud.titleCard(def.title, def.number > 0 ? `Chapter ${def.number}` : 'Development arena', def.film);
+    }
+  }
+
+  // ── checkpoints, defeat, completion ───────────────────────────────────────
+  function handleCheckpoint(index: number): void {
+    if (!chapter || index <= checkpoint) return;
+    checkpoint = Math.min(index, Math.max(0, chapter.checkpoints.length - 1));
+    if (ctx.rivalry.active) cpRivalry.set(checkpoint, { legolas: ctx.rivalry.legolas, gimli: ctx.rivalry.gimli });
+    hud.toast(chapter.checkpoints[checkpoint] ?? 'Checkpoint', 'checkpoint');
+    audio.play('checkpoint');
+    if (!chapter.dev) {
+      progression.data.last = { chapterId: chapter.id, checkpoint };
+      progression.save();
+    }
+  }
+
+  async function defeat(reason: string): Promise<void> {
+    if (mode !== 'playing' || !chapter) return;
+    const def = chapter;
+    setMode('defeat');
+    input.enabled = false;
+    input.unlockPointer();
+    hud.setPrompt(null);
+    audio.music('defeat');
+    const choice = await menus.showDefeat(reason);
+    if (!isMode('defeat') || chapter !== def) return;
+    if (choice === 'checkpoint') await loadChapter(def, checkpoint, true);
+    else if (choice === 'restart') await loadChapter(def, 0, false);
+    else {
+      await toTitle();
+      menus.showChapterSelect();
+    }
+  }
+
+  function handleComplete(): void {
+    if (mode !== 'playing' || completeT >= 0) return;
+    completeT = 0;
+    input.enabled = false;
+    hud.setPrompt(null);
+    audio.music('victory');
+    audio.play('level_complete');
+    time.setScale(0.4, 0.5);
+  }
+
+  async function showResults(): Promise<void> {
+    const def = chapter;
+    if (!def || pendingResult) return;
+    pendingResult = true;
+    setMode('complete');
+    input.unlockPointer();
+    time.setScale(1, 0.3);
+    const t = ctx.player.tally;
+    const riv = def.rivalry ? { legolas: ctx.rivalry.legolas, gimli: ctx.rivalry.gimli } : undefined;
+    const base = {
+      chapterId: def.id,
+      title: def.title,
+      timeSec: attemptTime,
+      kills: t.kills,
+      headshots: t.headshots,
+      shots: t.shots,
+      hits: t.hits,
+      damageTaken: Math.round(t.damageTaken),
+      rivalry: riv,
+    };
+    const rank = progression.computeRank(base, def.parTime);
+    const result: ChapterResult = {
+      ...base,
+      score: rank.score,
+      rank: rank.rank,
+      pointsEarned: rank.points,
+      firstClear: !progression.data.best[def.id],
+    };
+    if (!def.dev) progression.recordResult(result);
+    if (def.rivalry) ctx.rivalry.stop(); // final banter line
+    hud.show(false);
+    const choice = await menus.showChapterComplete(result);
+    if (!isMode('complete') || chapter !== def) return;
+    const story = deps.chapters().filter((c) => !c.dev && c.number > 0).sort((a, b) => a.number - b.number);
+    const idx = story.findIndex((c) => c.id === def.id);
+    if (choice === 'retry') await loadChapter(def, 0, false);
+    else if (choice === 'next') {
+      const next = idx >= 0 ? story[idx + 1] : undefined;
+      if (next) await loadChapter(next, 0, false);
+      else {
+        if (idx >= 0 && idx === story.length - 1) {
+          // the last story chapter: roll the credits over the menu backdrop, then back to the title
+          await toTitle(false);
+          await menus.showCredits();
+          menus.showTitle();
+        } else await toTitle();
+      }
+    } else {
+      await toTitle();
+      menus.showChapterSelect();
+    }
+  }
+
+  // ── pause ─────────────────────────────────────────────────────────────────
+  function pause(): void {
+    if (mode !== 'playing') return;
+    setMode('paused');
+    input.enabled = false;
+    input.unlockPointer();
+    menus.showPause();
+  }
+
+  function resume(): void {
+    if (mode !== 'paused') return;
+    setMode('playing');
+    input.enabled = true;
+    input.lockPointer();
+  }
+
+  // ── simulation ────────────────────────────────────────────────────────────
+  function step(dt: number): void {
+    const player = ctx.player;
+    player.update(dt);
+    if (level && instance) {
+      try {
+        level.update(dt);
+      } catch (e) {
+        report('level.update', e);
+      }
+      try {
+        instance.update(dt);
+      } catch (e) {
+        report(`chapter ${chapter?.id}.update`, e);
+      }
+    }
+    combatants.update(dt);
+    projectiles.update(dt);
+    fx.update(dt, engine.camera);
+    ctx.rivalry.update(dt);
+  }
+
+  function simulate(dtReal: number): void {
+    const dt = time.step(dtReal);
+    if (dt > 0) {
+      const n = Math.max(1, Math.ceil(dt / MAX_SUBSTEP));
+      const h = dt / n;
+      for (let i = 0; i < n; i++) step(h);
+      if (mode === 'playing' || mode === 'defeat') attemptTime += dt;
+    } else {
+      // frozen by hit-stop: keep the player's real-time systems (camera, HUD) alive
+      ctx.player.update(0);
+    }
+    rigOf().update(dtReal);
+  }
+
+  function frame(dtReal: number): void {
+    const dr = clamp(dtReal, 0, MAX_FRAME);
+    switch (mode) {
+      case 'playing': {
+        if (deps.realInput.state.pause) {
+          pause();
+          break;
+        }
+        bot.update(dr);
+        simulate(dr);
+        post(dr);
+        if (god && ctx.player.alive) ctx.player.hp = ctx.player.maxHp;
+        if (!ctx.player.alive) {
+          deathT += dr;
+          if (deathT >= DEATH_DELAY) void defeat('Legolas has fallen.');
+        } else deathT = 0;
+        if (completeT >= 0) {
+          completeT += dr;
+          if (completeT >= COMPLETE_DELAY) void showResults();
+        }
+        updateMood(dr);
+        break;
+      }
+      case 'complete':
+      case 'defeat':
+        simulate(dr);
+        post(dr);
+        break;
+      case 'title':
+        orbit(dr);
+        ctx.player.update(time.step(dr));
+        fx.update(dr, engine.camera);
+        break;
+      default:
+        break;
+    }
+  }
+
+  /** letterbox easing and other real-time presentation state */
+  function post(dtReal: number): void {
+    const target = level?.letterboxTarget ?? 0;
+    const p = engine.post;
+    p.letterbox = damp(p.letterbox, target, 5, dtReal);
+    if (Math.abs(p.letterbox - target) < 0.002) p.letterbox = target;
+  }
+
+  // ── test hooks ────────────────────────────────────────────────────────────
+  function advanceSync(sec: number, stepSec = FIXED_STEP, render = true): void {
+    const n = Math.max(1, Math.round(sec / stepSec));
+    for (let i = 0; i < n; i++) {
+      frame(stepSec);
+      hud.update(stepSec);
+    }
+    hop = false;
+    if (render) deps.render(stepSec);
+  }
+
+  async function advance(sec: number, stepSec = FIXED_STEP, render = true): Promise<void> {
+    const n = Math.max(1, Math.round(sec / stepSec));
+    for (let i = 0; i < n; i++) {
+      frame(stepSec);
+      hud.update(stepSec);
+      if (hop) {
+        // a script continuation is waiting to run: unwind the stack so it does, then carry on
+        hop = false;
+        await yieldTask();
+      }
+    }
+    if (render) deps.render(stepSec);
+  }
+
+  function state(): Record<string, unknown> {
+    const p = ctx.player;
+    const r = (v: number) => Math.round(v * 100) / 100;
+    return {
+      mode,
+      chapter: chapter?.id ?? null,
+      checkpoint,
+      hp: r(p.hp),
+      maxHp: r(p.maxHp),
+      alive: p.alive,
+      enemies: level ? level.enemiesAlive() : 0,
+      kills: p.tally.kills,
+      shots: p.tally.shots,
+      hits: p.tally.hits,
+      headshots: p.tally.headshots,
+      damageTaken: r(p.tally.damageTaken),
+      playerPos: [r(p.position.x), r(p.position.y), r(p.position.z)],
+      t: r(time.t),
+      attempt: r(attemptTime),
+      timeScale: r(time.scale),
+      objective: lastObjective,
+      boss: level?.bossTarget ? { name: level.bossTarget.name, hp: Math.round(level.bossTarget.hp), alive: level.bossTarget.alive } : null,
+      rivalry: ctx.rivalry.active ? { legolas: ctx.rivalry.legolas, gimli: ctx.rivalry.gimli } : null,
+      cinematic: level?.inCinematic ?? false,
+      completing: completeT >= 0,
+      bot: bot.active,
+      allies: combatants.byTeam('ally').filter((a) => a.alive).length,
+      error,
+    };
+  }
+
+  // ── menu actions ──────────────────────────────────────────────────────────
+  const actions: MenuActions = {
+    startChapter: (id, cp) => void game.startChapter(id, cp ?? 0).catch(fatal),
+    resume,
+    restartCheckpoint: () => {
+      if (chapter) void loadChapter(chapter, checkpoint, true).catch(fatal);
+    },
+    restartChapter: () => {
+      if (chapter) void loadChapter(chapter, 0, false).catch(fatal);
+    },
+    quitToTitle: () => void toTitle().catch(fatal),
+    applySettings: (s) => applySettings(s, { ...progression.data.settings }),
+    buyUpgrade: (id) => progression.buy(id),
+  };
+
+  const game: Game = {
+    get mode() {
+      return mode;
+    },
+    get chapter() {
+      return chapter;
+    },
+    get checkpoint() {
+      return checkpoint;
+    },
+    get error() {
+      return error;
+    },
+    actions,
+    frame,
+    pause,
+    toTitle,
+    botHint: () => instance?.botHint?.() ?? null,
+    advance,
+    advanceAsync: advance,
+    advanceSync,
+    state,
+    async startChapter(id, cp = 0) {
+      const def = deps.chapters().find((c) => c.id === id);
+      if (!def) {
+        const e = new Error(`Unknown chapter "${id}". Known: ${deps.chapters().map((c) => c.id).join(', ')}`);
+        fatal(e);
+        throw e;
+      }
+      await loadChapter(def, cp, false);
+    },
+  };
+
+  // settings -> engine/audio/input on boot
+  applySettings(progression.data.settings);
+  return game;
+}

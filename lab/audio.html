@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Greenleaf Audio Lab</title>
+    <style>
+      html, body { margin: 0; background: #0b0d0b; color: #e8e4d8; font: 12px/1.35 ui-monospace, Menlo, Consolas, monospace; }
+      body { padding: 12px 14px 40px; }
+      h1 { font-size: 15px; margin: 0 0 6px; letter-spacing: .04em; }
+      h2 { font-size: 12px; margin: 16px 0 6px; color: #b9c98a; text-transform: uppercase; letter-spacing: .08em; }
+      #status { color: #9fb; margin-bottom: 8px; white-space: pre-wrap; }
+      .row { display: flex; flex-wrap: wrap; gap: 4px; }
+      button { background: #1b211a; color: #e8e4d8; border: 1px solid #3b4636; border-radius: 3px; padding: 3px 7px; font: inherit; cursor: pointer; }
+      button:hover { background: #2a3326; }
+      button.on { background: #4a6a2c; border-color: #8fbf55; }
+      label { margin-right: 10px; }
+      table { border-collapse: collapse; margin-top: 8px; }
+      td, th { padding: 1px 8px; text-align: right; border-bottom: 1px solid #1f241d; }
+      td:first-child, th:first-child { text-align: left; }
+      tr.fail td { color: #ff8a7a; }
+      #specs canvas { display: block; margin: 0 0 10px; image-rendering: pixelated; }
+      .ctl { margin: 4px 0; }
+    </style>
+  </head>
+  <body>
+    <h1>GREENLEAF audio lab</h1>
+    <div id="status">starting…</div>
+    <div id="ui"></div>
+    <div id="specs"></div>
+    <div id="table"></div>
+    <script type="module" src="./audio.ts"></script>
+  </body>
+</html>

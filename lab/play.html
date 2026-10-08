@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Greenleaf Gameplay Lab</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #101214; overflow: hidden; font: 12px/1.3 ui-monospace, Menlo, Consolas, monospace; color: #e8e4d8; }
+      #app { position: fixed; inset: 0; }
+      #app canvas { display: block; width: 100%; height: 100%; }
+      #ui { position: fixed; inset: 0; pointer-events: none; }
+      #dbg { position: fixed; left: 8px; bottom: 8px; background: rgba(0,0,0,.5); padding: 4px 8px; border-radius: 4px; white-space: pre; pointer-events: none; z-index: 50; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="ui"></div>
+    <div id="dbg"></div>
+    <script type="module" src="./play.ts"></script>
+  </body>
+</html>
