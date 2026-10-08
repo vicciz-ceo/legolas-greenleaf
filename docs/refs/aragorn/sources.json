@@ -1,0 +1,41 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-606bf618-545b-4d99-9330-ba3520d8bc2f.png",
+    "original_sha256": "b369fe7edc02750871d472ee9114d9407e4930b1b35a3837ec6ef36179b943dd",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "1d938d503b3fcc0b6f0157eb5cbfbee5cc579d4e3fb21c10238d458b76818462",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "worker": "aragorn_front",
+      "local_attempt": 2,
+      "kind": "front_repair",
+      "transparent_background": true,
+      "referenced_image_paths": [
+        "/workspace/generated_images/exec-5065e170-f054-480c-b78d-21344b97e4eb.png"
+      ],
+      "referenced_sha256": [
+        "af3034df46e1d64c9155ae91516764610b83a8b8cb08bb7b1a581e41a59b915e"
+      ]
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "identity": "Original weathered ranger face and same identity as initial candidate",
+      "anatomy": "Five visible digits on each empty hand; complete natural limbs",
+      "view": "Frontal relaxed A-pose, approximately 25-30 degrees",
+      "attachments": "Sword sheathed anatomical left hip (image right), scabbard above soles; both hands empty",
+      "framing": "Full crown, hands, gear and both boot soles framed; clear transparent margins",
+      "silhouette64": "Ranger hair, long coat and left sword readable",
+      "segmentation": "Existing alpha preserved; optimized retained cutout reviewed; fine hair and sword edges retained"
+    },
+    "minor_drift": "Repair preserves identity and costume with slight palm pose and belt buckle drift."
+  }
+}

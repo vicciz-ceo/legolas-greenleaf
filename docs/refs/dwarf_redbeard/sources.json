@@ -319,5 +319,132 @@
       ]
     },
     "review_status": "accepted"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-91443605-3e68-42e0-9ace-4a36ae864432.png",
+    "original_sha256": "b7f547296a9ea409005b03d9c993ff9db28605570c3721a9b3d7bb432a0d8c5c",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "2f1799a16502f07d65ca5806d342f350eff6a3460fe1695ff03018a28ba7a3a1",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "full_frame_material_rgb_intake",
+      "by_eye_review": "Accepted single continuous macro of the existing simple rectangular belt buckle and pin on worn brown leather belt with russet tunic and leather vest context. Pitted dark iron/brass-grey metal with rubbed warm pale edges, coherent brown leather grain, no weapon or armour invented, no text. Minor buckle detail/stitch drift permitted. Full-frame material composition; ordinary intake retains opaque RGB tile. Optimized tile visually reviewed."
+    },
+    "review_status": "accepted"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-930e0291-c5dd-4bdb-a558-c5a56ed2e90f.png",
+    "original_sha256": "f00aa969f347c118f323f15eb0885ddc9b7707b86bd00be65da54b6b8d82a4c4",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "1b1396b001dae2049ce34354bdc1faf10242166afa1eefc4eede337de38852f5",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/face_views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "face_views/front",
+      "reference_sha256": "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "full_frame_material_rgb_intake",
+      "by_eye_review": "Accepted single independently generated close facial macro matching original broad ruddy face, deep-set brown eye, thick red brow, rounded bulbous nose, natural pores/age lines and soft red beard/moustache boundary. Broad clear cheek patch available for skin sampling. No new scar/tattoo, no actor likeness, text or gear. Full-frame face materials; ordinary intake preserves opaque RGB tile. Optimized tile visually reviewed."
+    },
+    "review_status": "accepted"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-eca545ce-ea67-4e2c-ad25-0d10ef064649.png",
+    "original_sha256": "8b68ff04ed83aeec8e38e1ee734f0e604a975e0cb9a79e006c3f5794bb6055cd",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "50df8c5de67b2285335588052bf117194a2b308c6a53dea89a1ace11716215d4",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": false,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/face_views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "face_views/front",
+      "reference_sha256": "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "none_opaque_material_tile",
+      "by_eye_review": "By-eye accepted one continuous full-frame macro of the accepted portrait's enormous wild unbraided red beard and red-brown hair. Warm russet/auburn hue, coarse fibers, fine wiry flyaways and overlapping loose waves/curls match the reference. Dense hair fills every edge; no skin, background, ornaments, gear, braids, repeated grid or text. Fully opaque RGB original; ordinary detail intake produces 256x256 tile without segmentation/rembg. Minor strand arrangement and soft highlight/light drift permitted; no design change. Retained optimized tile visually reviewed: dense hair-only material and strand/curl readability preserved.",
+      "permitted_drift": [
+        "strand arrangement",
+        "soft highlights and mild light differences"
+      ],
+      "suggested_material_sampling": [
+        {
+          "name": "hair",
+          "source_image": "details/hair.png",
+          "rect_px": [
+            48,
+            48,
+            208,
+            208
+          ],
+          "author_reviewed": true,
+          "opaque_fraction": 1.0,
+          "review_reason": "Interior retained tile contains only dense loose red-brown hair fibers and curls, clear of other materials or backdrop; rendered and lit, not albedo."
+        }
+      ]
+    },
+    "review_status": "accepted"
   }
 }

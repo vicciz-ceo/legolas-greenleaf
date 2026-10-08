@@ -128,5 +128,142 @@
     "newly_authored_recovery": false,
     "by_eye_review": "Accepted: same original elderly wrinkled broad face, bushy white eyebrow, bulbous nose, thinning white scalp hair and flowing unbraided long white beard; exact right-facing profile with one visible eye and far eye hidden. Crown/hair/ear/whole shoulder silhouette and entire beard tip framed inside image; lower abdomen/upper arm terminate intentionally below beard. Same navy wool/brown stitched leather; no generated text. Original alpha and retained edges plus 64px silhouette reviewed. Minor allowed stitch/leather and lighting drift.",
     "segmentation_method": "existing_alpha"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8d8c175b-17f0-4b7f-8614-41ccffaa5bb2.png",
+    "original_sha256": "0875388ef0ab47f4c7af5cb09a0bf5e7c005799a66ebfa727c488bb0b4f49250",
+    "original_size_px": [
+      1326,
+      1187
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "ea68d26c5beb775f6d5fcf29a8cd216e7a38f41ea57badac16a2d0b680c2c1a2",
+    "generation": "image_gen.imagegen local call 1: accepted-front conditioned wide three-quarter upper-body portrait repair; global view attempt 2",
+    "reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/front.png"
+    ],
+    "provenance": "New original dwarf_company elder portrait from accepted face front; regenerated wide framing to preserve entire crown hair and long beard tip",
+    "classification": "newly_authored",
+    "newly_authored_recovery": false,
+    "by_eye_review": "Accepted: same original broad wrinkled elderly face, bulbous nose, brown eyes, bushy white brows, thinning white scalp hair and long flowing unbraided white beard; right-facing approximately 45-degree three-quarter portrait. Entire crown flyaways, shoulder silhouette, and lowest beard tip have clear original-frame margins; intentional torso/sleeve ends below beard. Same navy wool and worn stitched brown leather, no text/new gear. Original alpha preserved; retained 256-high subject source and 64px silhouette reviewed. Minor allowed stitch/leather and lighting drift.",
+    "segmentation_method": "existing_alpha"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-4d808844-a19c-429a-afaf-366e620111af.png",
+    "original_sha256": "e2104c05a7dcad1e186b222595124254e94aa54392e57f226de03d6ce880b24f",
+    "original_size_px": [
+      1326,
+      1187
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1326,
+      1187
+    ],
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "0dad637d4544f5cbc5407bdfc3d6d743eabf309857a0a627888ef53be5e4b2ee",
+    "generation": "image_gen.imagegen local call 2: accepted-front conditioned single cloth/leather macro",
+    "reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/front.png"
+    ],
+    "provenance": "New original dwarf_company elder costume material detail from accepted face front; single coherent navy wool / worn brown leather seam macro",
+    "classification": "newly_authored",
+    "newly_authored_recovery": false,
+    "by_eye_review": "Accepted: single coherent macro of dark navy wool weave beside worn warm brown leather vest edge with natural stitching, leather pores/scratches and edge wear; same accepted-front costume appearance, true materials, no skin/beard/new gear/text. Canvas filled with material; model supplied existing alpha (82..250), preserved without rembg. Retained 256x229 source reviewed. Suggested cloth [15,50,95,170] and leather [180,45,240,175] each have 100% alpha>127 opaque coverage.",
+    "segmentation_method": "existing_alpha"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a3e6e3d6-d71d-4c0b-8879-748a437406eb.png",
+    "original_sha256": "1fdcf9e398b8e90b4dc9a1fb53439f089e107244457aeedb74503139b8ae0fc5",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      54,
+      1254,
+      1208
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "a170bc9feeed57311ad991af2acb247e7f1f3034bedc073bc0902918bdff1685",
+    "generation": "image_gen.imagegen local call 1: accepted body front conditioned single belt-metal macro",
+    "reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_elder/views/front.png"
+    ],
+    "provenance": "New original dwarf_company elder metal fitting detail from accepted body front; empty-handed elder has only belt fittings, no invented weapon or armour",
+    "classification": "newly_authored",
+    "newly_authored_recovery": false,
+    "by_eye_review": "Accepted: one coherent enlarged simple rounded rectangular worn belt buckle and brown leather belt matching accepted front; muted tarnished brass/grey metal, rounded frame and pin, scratches/oxidation, leather grain/punched holes, no invented weapon/armour/body/text. Minor allowed buckle/light drift. Original alpha preserved without rembg; retained 256x236 tile reviewed.",
+    "segmentation_method": "existing_alpha"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-cfbbbf57-9354-49a0-861c-f46af72a40f6.png",
+    "original_sha256": "18fff29c7080ef5b8b1b4186ac5dc60ce2040c8f9aeb87c43984b65d1c3c21ee",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "58ab018e0299f73c1388e8d2515c5f31ab4f76284e26af9ef27dfc39c8f520df",
+    "generation": "image_gen.imagegen local call 2: accepted face front conditioned independently generated single elderly cheek/eye skin macro",
+    "reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/front.png"
+    ],
+    "provenance": "New original dwarf_company elder skin detail generated from accepted face front; not a crop or enlargement of portrait",
+    "classification": "newly_authored",
+    "newly_authored_recovery": false,
+    "by_eye_review": "Accepted: independently generated one-eye/cheek macro of same original elderly broad face, brown deep-set eye, white bushy eyebrow and white beard boundary; large exposed ruddy beige cheek with natural age lines, folds, pores and fine capillaries, no actor likeness/text/tattoos/new objects. Enough clearly visible uninterrupted cheek for sampling. Original supplied alpha 191..249 everywhere, retained existing alpha without rembg; reviewed 256x256 tile. Mild allowed lighting/ruddy variation.",
+    "segmentation_method": "existing_alpha"
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a02bbe76-5632-44d2-a11e-75b8167dc34e.png",
+    "original_sha256": "060401bc142a2c80d7535cea81df783cbfc8ddb0bb65f8a0c5cd992b0526f9b9",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "f4eaefceecdbaa4ae9b45964226338f4fa1e57045b80c8a825648d9e1dea8a20",
+    "generation": "image_gen.imagegen local call 1: accepted face front conditioned individual white flowing beard hair macro",
+    "reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/front.png"
+    ],
+    "provenance": "New original dwarf_company elder hair detail independently generated from accepted face front; not a crop or enlargement of portrait",
+    "classification": "newly_authored",
+    "newly_authored_recovery": false,
+    "by_eye_review": "Accepted: single coherent fully opaque edge-to-edge white flowing beard material macro, dense fine filaments and loose unbraided waves matching accepted elder beard; subtle silver/ivory lighting and grey strand shadows, no face/clothing/braids/ornaments/text. Original and retained 256x256 tile reviewed; minor allowed lighting/strand-arrangement drift.",
+    "segmentation_method": "not_needed_fully_opaque",
+    "minor_allowed_drift": "Lighting and individual strand arrangement vary mildly; white beard hue and loose unbraided style preserved.",
+    "suggested_sampling": {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        48,
+        48,
+        208,
+        208
+      ],
+      "opaque_fraction": 1.0
+    }
   }
 }

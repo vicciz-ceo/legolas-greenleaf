@@ -9,3 +9,5 @@
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
 - Lost-source recovery: current retained images are newly authored from the preserved original specification. Historical attempts remain in progress.json; replacements use a separate capped series.
+
+- face_views/side: accepted single-view body original reused with an author-reviewed head-and-shoulders crop; no new angle or identity generated. Portrait call history is preserved.

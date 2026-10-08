@@ -335,5 +335,72 @@
       "opaque_frame": true,
       "notes": "Plain rounded rectangular worn brass buckle and same brown leather belt over ochre tunic; minor buckle and stitch drift tolerated. Surface scratches, patina and leather grain readable."
     }
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-243581d0-742c-48b5-a8fb-5b4a72315ce3.png",
+    "original_sha256": "557683acb194b9d3d672693eb4ffe19366713e083124d66f5fa8949c26b1443c",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "347b4cdfbdb1bf29988f6eac005e3cbe4da053025da87080e2ef182415f12f9a",
+    "generation": "image_gen__imagegen; accepted-face-front-conditioned skin macro; worker call 2 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored detail source, not historical recovery. Conditioned only on accepted local face front. Opaque facial-material macro retained by ordinary 256px detail intake.",
+    "by_eye_review": {
+      "status": "accepted",
+      "same_original_face": true,
+      "visible_eye_nose_cheek_and_skin_pores": true,
+      "single_material_macro": true,
+      "clear_skin_sample_area": true,
+      "no_awkward_head_edge": true,
+      "no_text": true,
+      "opaque_frame": true,
+      "notes": "Coherent original-face skin macro with same brown eye, thick chestnut brow, ruddy full cheek and rounded nose. Natural pores and age lines readable; no head silhouette or beard tips clipped. Minor warm facial illumination drift tolerated."
+    }
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-daedbc3f-6906-4028-ac92-f56cd1f04ceb.png",
+    "original_sha256": "edde7d0e94ffcdd075ac4c90e29024f21a2e0aacaf9fb49280a90c7a2ad032fb",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "4b7ece1911f45bd519f4a19e442fb9590fde5a7d0a3eb7d7295b131cc0c59c81",
+    "generation": "image_gen__imagegen; accepted-front-portrait-conditioned material macro; worker call 1 of 2",
+    "generation_kind": "newly_authored",
+    "references": [
+      {
+        "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/face_views/front.png",
+        "sha256": "303ef1776a371d016869431cc042bebd3c1fee7f688194c028386b757712c171",
+        "key": "face_views/front",
+        "status": "accepted"
+      }
+    ],
+    "provenance": "New normal authored source, not historical recovery. One individual beard/hair macro conditioned only on accepted retained local front portrait. Fully opaque material-filled output; ordinary detail intake at 256 px without rembg.",
+    "by_eye_review": {
+      "status": "accepted",
+      "matches_accepted_chestnut_curly_beard": true,
+      "crisp_realistic_strands": true,
+      "fully_opaque_material_filled_tile": true,
+      "no_new_ornaments_tattoos_gear_or_text": true,
+      "notes": "Dense chestnut beard fibers and rounded curls match accepted portrait. Mild brighter strand highlights from macro illumination permitted; no design change."
+    }
   }
 }

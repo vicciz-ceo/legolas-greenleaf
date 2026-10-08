@@ -157,7 +157,7 @@
           }
         },
         "face_views/three_quarter": {
-          "status": "rejected",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -166,8 +166,8 @@
               "path": "/workspace/generated_images/exec-2f34a6bb-6341-45e2-8ec6-958a2a537453.png"
             }
           ],
-          "reason": "White quiver fletchings are clipped at image-left edge; side margin framing fails.",
-          "path": "/workspace/generated_images/exec-621a27e5-3b9c-414e-b8aa-ec1aa10d2687.png",
+          "reason": "Complete gear/head framing repairs earlier clipped fletchings; preserves accepted identity and anatomical sides.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/face_views/three_quarter.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
@@ -179,12 +179,20 @@
                 "path": "/workspace/generated_images/exec-621a27e5-3b9c-414e-b8aa-ec1aa10d2687.png",
                 "receipt_fingerprint": "bfdcc2b8391401704deceef523ad1a38e637745eda358a65d5d2f2c13e7dd244",
                 "receipt": "/workspace/greenleaf-receipts/legolas_faces.json"
+              },
+              {
+                "number": 2,
+                "status": "accepted",
+                "reason": "Complete gear/head framing repairs earlier clipped fletchings; preserves accepted identity and anatomical sides.",
+                "path": "/workspace/greenleaf-refs/docs/refs/legolas/face_views/three_quarter.png",
+                "receipt_fingerprint": "2e5fd6bef8cfee60441aeba6ea17703ff273ce063a8674e9340f73fa94635df7",
+                "receipt": "/workspace/greenleaf-receipts/legolas_faces_repair.json"
               }
             ]
           }
         },
         "face_views/side": {
-          "status": "rejected",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -193,8 +201,8 @@
               "path": "/workspace/generated_images/exec-f095ac0f-6b4c-46b4-9e82-5469b7f89bc6.png"
             }
           ],
-          "reason": "Two parallel temple braids appear on the near side instead of the accepted single braid per temple, changing the fixed two-braid hairstyle.",
-          "path": "/workspace/generated_images/exec-f8beab5d-2bdc-4ac3-b5d8-6fa25e3d1054.png",
+          "reason": "Accept portrait crop from the accepted exact right-profile body original, without any new synthesis or mirroring. Nose points image right and only one eye is visible. Entire crown, near pointed ear, single visible near-temple braid (the far braid is occluded), hairline and head hair, complete white-fletching bundle, and exactly two distinct ivory grips remain inside safe side margins. Near shoulder outline and upper chest are included; long back hair and torso continue through the intentional bottom portrait crop. Native original resolves the visible eye and both lid edges, brow, straight nose bridge and tip, neutral closed lips, ear cartilage, fine hair strands and braid structure adequately for portrait intake. Review used only retained views/side.png and its full-resolution original; previous rejected face-profile attempts remain unchanged. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/face_views/side.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
@@ -206,12 +214,34 @@
                 "path": "/workspace/generated_images/exec-f8beab5d-2bdc-4ac3-b5d8-6fa25e3d1054.png",
                 "receipt_fingerprint": "e779c4853b513889654fbd9a9f20f7b92845cffe97e61e9a6968ce10cb4a199b",
                 "receipt": "/workspace/greenleaf-receipts/legolas_faces.json"
+              },
+              {
+                "number": 2,
+                "status": "rejected",
+                "reason": "Not exact 90-degree profile and an additional visible braid near right ear violates one visible near-temple braid requirement.",
+                "path": "/workspace/generated_images/exec-5635dbb6-fe1a-425a-9126-d200eda63e7d.png",
+                "receipt_fingerprint": "1da9a8def6a4a9f43296f1f364fd39312bd92388ea4f1c15eb23f3fdcdbfce1b",
+                "receipt": "/workspace/greenleaf-receipts/legolas_faces_repair.json"
               }
             ]
+          },
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/side",
+            "original_sha256": "350520b377aaad38381019c59639431611406f149ff6520605a9fde6585b6ecd",
+            "crop_px": [
+              80,
+              0,
+              550,
+              565
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "6e63bb5ab2cdbca075bf20cf686170f338b823acafc555c6f17b20c84f305b38"
           }
         },
         "details/cloth_leather": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -220,16 +250,25 @@
               "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-55723eec-180d-4242-a8ec-9276030f3b8d.png",
+          "reason": "Accepted single continuous macro of existing muted green-grey diagonal wool twill and brown stitched leather jerkin with fine natural wear and matching leaf seam language. No text, new garment, gear or backdrop. Edge-to-edge materials; ordinary opaque intake converts nearly-opaque generated alpha to RGB without rembg. Minor allowed seam interpretation.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/cloth_leather.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted single continuous macro of existing muted green-grey diagonal wool twill and brown stitched leather jerkin with fine natural wear and matching leaf seam language. No text, new garment, gear or backdrop. Edge-to-edge materials; ordinary opaque intake converts nearly-opaque generated alpha to RGB without rembg. Minor allowed seam interpretation.",
+                "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/cloth_leather.png",
+                "receipt_fingerprint": "d39128edf515a44de0e118d991b198eab9c0486b39c31f523add6228a5e92b4d",
+                "receipt": "/workspace/greenleaf-receipts/legolas_cloth_metal.json"
+              }
+            ]
           }
         },
         "details/weapon_metal": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -238,12 +277,21 @@
               "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png"
             }
           ],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
-          "path": "/workspace/generated_images/exec-15822984-e233-4236-a03f-f249ff09e538.png",
+          "reason": "Accepted single equipment view: complete same slender golden-olive wooden Galadhrim recurve bow, both curled tips and fine continuous bowstring within frame, leather center grip; exactly the existing pair of ivory-handled sheathed knives with modest dull bronze collars. Natural materials, no human anatomy or text, no extra gear. Minor allowed elaboration of knife collar/leaf engraving. Existing alpha retained without rembg; optimized 53x256 source retains bow silhouette and both knife handles. 64px silhouette reviewed: complete upright recurve and paired knife grips remain distinct.",
+          "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/weapon_metal.png",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Accepted single equipment view: complete same slender golden-olive wooden Galadhrim recurve bow, both curled tips and fine continuous bowstring within frame, leather center grip; exactly the existing pair of ivory-handled sheathed knives with modest dull bronze collars. Natural materials, no human anatomy or text, no extra gear. Minor allowed elaboration of knife collar/leaf engraving. Existing alpha retained without rembg; optimized 53x256 source retains bow silhouette and both knife handles. 64px silhouette reviewed: complete upright recurve and paired knife grips remain distinct.",
+                "path": "/workspace/greenleaf-refs/docs/refs/legolas/details/weapon_metal.png",
+                "receipt_fingerprint": "e7606f95fcdcdabc11d63030d12ec8dbfcc0afcbb44553ccb52b9ec047ee67a1",
+                "receipt": "/workspace/greenleaf-receipts/legolas_cloth_metal.json"
+              }
+            ]
           }
         },
         "details/skin": {
@@ -510,24 +558,58 @@
           "path": "/workspace/greenleaf-refs/docs/refs/gimli/face_views/three_quarter.png"
         },
         "face_views/side": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Accept a half-open full-original upper-body crop [250,0,805,710]. It preserves the complete helmet apex, head, native cheek/ear-covering plate, both forked braided beard branches with bronze clasps and all loose tips, complete near pauldron, and upper chest. The lower torso boundary is intentional and below both beard tips. The accepted source remains an exact right profile with nose image right and only the near eye visible; cropping introduces no change of angle or appearance. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
+            "attempts": [
+              {
+                "number": 1,
+                "status": "rejected",
+                "reason": "Profile identity and gear match, but both tapered beard ends reach the bottom frame; full beard tips and bottom clearance required.",
+                "path": "/workspace/generated_images/exec-67cdf15c-3bb2-4e86-8d80-38c7cbd2be8e.png",
+                "receipt_fingerprint": "53d2fa6395094860b7621d018b0d9314efcc7a11bf758fbb87304c46365cc5a0",
+                "receipt": "/workspace/greenleaf-receipts/gimli_profile_cloth.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/gimli/face_views/side.png",
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/side",
+            "original_sha256": "7c4d3b43641c4284ec66a567479d2a13df9cdf3923d020383be3124e87a728af",
+            "crop_px": [
+              250,
+              0,
+              805,
+              710
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "5ad001f0eca72b6a745205065466c86e80f36666cc118ad1b33c867af7537cba"
           }
         },
         "details/cloth_leather": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved.",
+          "reason": "Single costume macro matches accepted crossed stitched brown leather and mail backing; opaque framing, no text, small stitching/ornament drift accepted.",
           "recovery": {
             "kind": "newly_authored_replacement",
             "max_attempts": 4,
-            "attempts": []
-          }
+            "attempts": [
+              {
+                "number": 1,
+                "status": "accepted",
+                "reason": "Single costume macro matches accepted crossed stitched brown leather and mail backing; opaque framing, no text, small stitching/ornament drift accepted.",
+                "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/cloth_leather.png",
+                "receipt_fingerprint": "ec49320a2f9bfecc448022fed7387d3e1c5bcc239a1ce5d789277395d2aab3a5",
+                "receipt": "/workspace/greenleaf-receipts/gimli_profile_cloth.json"
+              }
+            ]
+          },
+          "path": "/workspace/greenleaf-refs/docs/refs/gimli/details/cloth_leather.png"
         },
         "details/weapon_metal": {
           "status": "pending",
@@ -5349,7 +5431,7 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/face_views/three_quarter.png"
         },
         "face_views/side": {
-          "status": "rejected",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -5376,8 +5458,22 @@
               "receipt": "/workspace/greenleaf-receipts/dwarf_bald_profile_metal.json"
             }
           ],
-          "reason": "Transparent background improved, but face remains turned toward camera: separate far eyebrow visible at edge, broad open near-eye plane, and front plane of nose. Not exact 90-degree profile.",
-          "path": "/workspace/generated_images/exec-09373d68-a7ca-457c-b603-19ff1ff7a377.png"
+          "reason": "Author-reviewed head-and-shoulders crop of the accepted exact right-profile single view. Complete bald crown, near ear, scalp tattoos, moustache and all short beard braids remain visible; full near shoulder and upper chest are included. Nose points image-right and only one eye is visible. No regeneration, mirroring, rotation, warping or anatomy changes. Reviewed crop uses zero new generation calls; all prior failed attempts remain.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/face_views/side.png",
+          "accepted_reuse": {
+            "kind": "derivative_of_accepted_single_view",
+            "source_key": "views/side",
+            "original_sha256": "47b1a590c17549ff7faa4f92584ae25902e70be728e1fae7040af9ae1ddab6ad",
+            "crop_px": [
+              280,
+              0,
+              755,
+              610
+            ],
+            "generation_calls": 0,
+            "cap_reset": false,
+            "receipt_sha256": "90af57e2074e3b0a59ab9dfd25772ff5cce2c4964471ffde5738fb1a910214ce"
+          }
         },
         "details/cloth_leather": {
           "status": "accepted",
@@ -5395,16 +5491,49 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted single complete crescent single-bit axehead with matching worn iron/steel, wood haft and wrapped leather grip. Complete ends framed, no added weapon or text, original and retained alpha edges inspected.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/weapon_metal.png",
+              "receipt_fingerprint": "ef6197c194f11922fe795f7baeaaf655c4f86fcb1b1e880a67cb6944db485ef3",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_bald_metal_skin.json"
+            }
+          ],
+          "reason": "Accepted single complete crescent single-bit axehead with matching worn iron/steel, wood haft and wrapped leather grip. Complete ends framed, no added weapon or text, original and retained alpha edges inspected.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted one continuous bald scalp/eye/cheek macro of the same original broad weathered dwarf face: brown eye, heavy dark brow, ruddy pores/wrinkles, existing angular temple tattoo, no actor likeness, new tattoo design or text. Macro borders intentionally crop face; transparent outer edge retained and reviewed.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/skin.png",
+              "receipt_fingerprint": "9db77f7a6a609308bcfdb1544cd1af2b6aa880a701b1a5640d32746c17c3ddef",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_bald_metal_skin.json"
+            }
+          ],
+          "reason": "Accepted one continuous bald scalp/eye/cheek macro of the same original broad weathered dwarf face: brown eye, heavy dark brow, ruddy pores/wrinkles, existing angular temple tattoo, no actor likeness, new tattoo design or text. Macro borders intentionally crop face; transparent outer edge retained and reviewed.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted full-resolution and retained 256px macro: short dark-brown chunky beard braids, dense curls and visible natural individual fibers match the accepted front. One existing plain small bronze clasp, no extra ornaments/scalp hair/skin/clothing/text. Hair fills frame; completely opaque RGB material tile.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/hair.png",
+              "receipt_fingerprint": "0a4db30af8d278fbdeb358f8f717745e078d7b0edcefcead5a9d6664f9ad583f",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_bald_hair.json"
+            }
+          ],
+          "reason": "Accepted full-resolution and retained 256px macro: short dark-brown chunky beard braids, dense curls and visible natural individual fibers match the accepted front. One existing plain small bronze clasp, no extra ornaments/scalp hair/skin/clothing/text. Hair fills frame; completely opaque RGB material tile.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_bald/details/hair.png"
         },
         "turnaround": {
           "status": "pending",
@@ -5561,45 +5690,108 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Plain rounded rectangular worn brass buckle and same brown leather belt over ochre tunic; minor buckle and stitch drift tolerated. Surface scratches, patina and leather grain readable.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/weapon_metal.png",
+              "receipt_fingerprint": "95c8e71e536bb89054fc5c200e02e5df65a90ae710605e770003f611da94b703",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_hat_metal_skin.json"
+            }
+          ],
+          "reason": "Plain rounded rectangular worn brass buckle and same brown leather belt over ochre tunic; minor buckle and stitch drift tolerated. Surface scratches, patina and leather grain readable.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Coherent original-face skin macro with same brown eye, thick chestnut brow, ruddy full cheek and rounded nose. Natural pores and age lines readable; no head silhouette or beard tips clipped. Minor warm facial illumination drift tolerated.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/skin.png",
+              "receipt_fingerprint": "84dc119ffe8e37d0b8b7cb257ef04e48357ce1e8cd62bb83528acfc5502d87a8",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_hat_metal_skin.json"
+            }
+          ],
+          "reason": "Coherent original-face skin macro with same brown eye, thick chestnut brow, ruddy full cheek and rounded nose. Natural pores and age lines readable; no head silhouette or beard tips clipped. Minor warm facial illumination drift tolerated.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Matches accepted portrait chestnut curly beard; crisp realistic fiber macro fills frame.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/hair.png",
+              "receipt_fingerprint": "d40ae772fcb1f6de889ecf8576c99cfa286194ce1defaa3f1f490cffdf27a9c6",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_hat_hair.json"
+            }
+          ],
+          "reason": "Matches accepted portrait chestnut curly beard; crisp realistic fiber macro fills frame.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/details/hair.png"
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate. Construction, sampling, provenance and budget checks PASS."
         }
+      },
+      "final_visual_review": {
+        "status": "accepted",
+        "reason": "Final sheets retain the same original stocky dwarf, floppy wool hat, rounded ruddy face, curly chestnut beard, coarse ochre tunic, dark brown padded vest, belt and thick boots. Required body and portrait angles, empty hands, framing and material tiles pass the final visual gate.",
+        "receipt_sha256": "460747641ae5ef80d45392e7a3629ae44567c889ab45b383ca6476daf51dfafe",
+        "reviewed_sheet_sha256s": [
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/dwarf_hat_turnaround.jpg",
+            "sha256": "ae389ae9139c7a218cfcf6806381ba9fabc6ecc0bc1d9e875c7add47ef7d446f",
+            "matches_spec_sha256": true
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/dwarf_hat_face.jpg",
+            "sha256": "ac5cf5bf101d5aa8f04f8270779185b22105874a66be5cb9896e7f2e52750e32",
+            "matches_spec_sha256": true
+          },
+          {
+            "path": "/workspace/greenleaf-refs/docs/refs/dwarf_hat/dwarf_hat_details.jpg",
+            "sha256": "b229ec2f317b14b4072590dc6fb6f3e3ea9a71990d60102161b119cfd8c4d28e",
+            "matches_spec_sha256": true
+          }
+        ],
+        "defects": []
       }
     },
     "dwarf_elder": {
@@ -5690,7 +5882,7 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/front.png"
         },
         "face_views/three_quarter": {
-          "status": "rejected",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
@@ -5699,10 +5891,18 @@
               "path": "/workspace/generated_images/exec-ea5bd84b-d46f-4875-9b0d-b1a1d0eeba49.png",
               "receipt_fingerprint": "1e04d092789e4cac0bc3603feb707c791f452c9f8b6ed15cf5e8157a25167699",
               "receipt": "/workspace/greenleaf-receipts/dwarf_elder_faces.json"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Accepted: same original broad wrinkled elderly face, bulbous nose, brown eyes, bushy white brows, thinning white scalp hair and long flowing unbraided white beard; right-facing approximately 45-degree three-quarter portrait. Entire crown flyaways, shoulder silhouette, and lowest beard tip have clear original-frame margins; intentional torso/sleeve ends below beard. Same navy wool and worn stitched brown leather, no text/new gear. Original alpha preserved; retained 256-high subject source and 64px silhouette reviewed. Minor allowed stitch/leather and lighting drift.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/three_quarter.png",
+              "receipt_fingerprint": "a59c323e041067aae66c91c867dcb433a6732a89a4222615b9657717748fca7f",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_elder_face_cloth.json"
             }
           ],
-          "reason": "Three-quarter face/torso identity and complete beard are preserved, but a crown hair tuft touches the top image boundary, violating full hair margin requirement.",
-          "path": "/workspace/generated_images/exec-ea5bd84b-d46f-4875-9b0d-b1a1d0eeba49.png"
+          "reason": "Accepted: same original broad wrinkled elderly face, bulbous nose, brown eyes, bushy white brows, thinning white scalp hair and long flowing unbraided white beard; right-facing approximately 45-degree three-quarter portrait. Entire crown flyaways, shoulder silhouette, and lowest beard tip have clear original-frame margins; intentional torso/sleeve ends below beard. Same navy wool and worn stitched brown leather, no text/new gear. Original alpha preserved; retained 256-high subject source and 64px silhouette reviewed. Minor allowed stitch/leather and lighting drift.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/three_quarter.png"
         },
         "face_views/side": {
           "status": "accepted",
@@ -5720,8 +5920,19 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/face_views/side.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Accepted: single coherent macro of dark navy wool weave beside worn warm brown leather vest edge with natural stitching, leather pores/scratches and edge wear; same accepted-front costume appearance, true materials, no skin/beard/new gear/text. Canvas filled with material; model supplied existing alpha (82..250), preserved without rembg. Retained 256x229 source reviewed. Suggested cloth [15,50,95,170] and leather [180,45,240,175] each have 100% alpha>127 opaque coverage.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/cloth_leather.png",
+              "receipt_fingerprint": "6b392e9a086cc0b3dbca8531cb0dbbbe2626cd20ea3ccd18643068e856d40e07",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_elder_face_cloth.json"
+            }
+          ],
+          "reason": "Accepted: single coherent macro of dark navy wool weave beside worn warm brown leather vest edge with natural stitching, leather pores/scratches and edge wear; same accepted-front costume appearance, true materials, no skin/beard/new gear/text. Canvas filled with material; model supplied existing alpha (82..250), preserved without rembg. Retained 256x229 source reviewed. Suggested cloth [15,50,95,170] and leather [180,45,240,175] each have 100% alpha>127 opaque coverage.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_elder/details/cloth_leather.png"
         },
         "details/weapon_metal": {
           "status": "pending",
@@ -5890,16 +6101,49 @@
           "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/cloth_leather.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Existing belt metal fitting macro accepted; full-frame tile saved with ordinary RGB intake.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/weapon_metal.png",
+              "receipt_fingerprint": "e4893ed1994bbb55967650a84e8857366e482a6ac078921a2a6c04dad3a2cc81",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_redbeard_metal_skin.json"
+            }
+          ],
+          "reason": "Existing belt metal fitting macro accepted; full-frame tile saved with ordinary RGB intake.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/weapon_metal.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same-face ruddy skin macro with clear cheek patch accepted and saved with ordinary RGB intake.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/skin.png",
+              "receipt_fingerprint": "7d349d5faa5b0ee4092233831881cf68f1288a9d557a7fd456ac32eced504aac",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_redbeard_metal_skin.json"
+            }
+          ],
+          "reason": "Same-face ruddy skin macro with clear cheek patch accepted and saved with ordinary RGB intake.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/skin.png"
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Original-matched loose red-brown hair macro accepted; full-frame opaque material tile retained at 256x256.",
+              "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/hair.png",
+              "receipt_fingerprint": "f93ca4f30b7271b1092ee5fb3e4082b9caa952ab917f0441f778709ee9a6a730",
+              "receipt": "/workspace/greenleaf-receipts/dwarf_redbeard_hair.json"
+            }
+          ],
+          "reason": "Original-matched loose red-brown hair macro accepted; full-frame opaque material tile retained at 256x256.",
+          "path": "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/details/hair.png"
         },
         "turnaround": {
           "status": "pending",
@@ -6243,7 +6487,7 @@
   },
   "validation_summary": [
     "23 regression tests pass, including intake alpha handling, original concurrency/caps and separate recovery-history tests.",
-    "26 completed entries pass construction checks: 22 preserved character sets and four supplements. Ten individual full sets remain in progress.",
+    "27 completed entries pass construction checks; remaining entries are explicitly incomplete until retained sources and visual review pass.",
     "All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available."
   ]
 }

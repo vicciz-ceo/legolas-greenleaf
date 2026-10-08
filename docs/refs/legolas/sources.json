@@ -132,6 +132,137 @@
     "newly_authored_recovery": true,
     "classification": "newly_authored_replacement",
     "segmentation_method": "existing_alpha",
-    "by_eye_review": "Accepted: same original full-cheek elf identity, warm pale-gold hair and leaf-stitched brown jerkin/green-grey tunic; three-quarter toward image right; full crown, pointed near ear, hairline, complete white-fletching bundle and exactly two ivory grips below crown with safe side framing. Right-back gear remains image left. One small near-temple braid visible, far temple occluded. No text or clipping. Intentional lower upper-body crop. Minor permissible stitching, braid width and lighting drift. Existing-alpha retained edges reviewed."
+    "by_eye_review": "Accepted: same original full-cheek elf identity, warm pale-gold hair and leaf-stitched brown jerkin/green-grey tunic; three-quarter toward image right; full crown, pointed near ear, hairline, complete white-fletching bundle and exactly two ivory grips below crown with safe side framing. Right-back gear remains image left. One small near-temple braid visible, far temple occluded. No text or clipping. Intentional lower upper-body crop. Minor permissible stitching, braid width and lighting drift. Existing-alpha retained edges reviewed. 64px thumbnail has readable elf, hair and right-back quiver/knife silhouette."
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-50ed5ad8-ea4f-4613-8f82-a18608ea697d.png",
+    "original_sha256": "3ce049361417b91864e4cb334a1bcb39ae5f73609a15fae1654cf55d015803f7",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "844de096fb2269a48eff1a0814a16962659bce20997a59fde2f544d2bf3ff15a",
+    "generation": "image_gen__imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/legolas/views/front.png"
+    ],
+    "reference_sha256": "0f70ffa852cedd7ab277039687d6662cacc4b0e2eb5fe927b38390fc82c1379a",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "classification": "newly_authored_replacement",
+    "segmentation_method": "ordinary_opaque_material_intake",
+    "by_eye_review": "Accepted single continuous macro of existing muted green-grey diagonal wool twill and brown stitched leather jerkin with fine natural wear and matching leaf seam language. No text, new garment, gear or backdrop. Edge-to-edge materials; ordinary opaque intake converts nearly-opaque generated alpha to RGB without rembg. Minor allowed seam interpretation."
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-9ae239ac-66c0-4a9b-9432-4d8a239998ea.png",
+    "original_sha256": "00613143f214ae9027ac17dd507005fa6c3bd060dc9758b192fe0eb2ee06a324",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      367,
+      10,
+      678,
+      1516
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "850e4ce2a3bf9be7891b3831ffc1c036d4ee2747fa1940de760278ab2679653f",
+    "generation": "image_gen__imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/legolas/views/front.png"
+    ],
+    "reference_sha256": "0f70ffa852cedd7ab277039687d6662cacc4b0e2eb5fe927b38390fc82c1379a",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "classification": "newly_authored_replacement",
+    "segmentation_method": "existing_alpha",
+    "by_eye_review": "Accepted single equipment view: complete same slender golden-olive wooden Galadhrim recurve bow, both curled tips and fine continuous bowstring within frame, leather center grip; exactly the existing pair of ivory-handled sheathed knives with modest dull bronze collars. Natural materials, no human anatomy or text, no extra gear. Minor allowed elaboration of knife collar/leaf engraving. Existing alpha retained without rembg; optimized 53x256 source retains bow silhouette and both knife handles. 64px silhouette reviewed: complete upright recurve and paired knife grips remain distinct."
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d3cf8315-e272-4f28-b5d4-761f8529f02b.png",
+    "original_sha256": "350520b377aaad38381019c59639431611406f149ff6520605a9fde6585b6ecd",
+    "original_size_px": [
+      862,
+      1825
+    ],
+    "crop_px": [
+      80,
+      0,
+      550,
+      565
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "a5a3853ab5c2e222392a681297aae65275e9de940185a3eb69d4fc2c5ad62620",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "ac148ac066f42a46938c0856db032701566008cb90b465be23129d3852abcd68",
+    "imagegen_calls": 0,
+    "by_eye_review": "Accept portrait crop from the accepted exact right-profile body original, without any new synthesis or mirroring. Nose points image right and only one eye is visible. Entire crown, near pointed ear, single visible near-temple braid (the far braid is occluded), hairline and head hair, complete white-fletching bundle, and exactly two distinct ivory grips remain inside safe side margins. Near shoulder outline and upper chest are included; long back hair and torso continue through the intentional bottom portrait crop. Native original resolves the visible eye and both lid edges, brow, straight nose bridge and tip, neutral closed lips, ear cartilage, fine hair strands and braid structure adequately for portrait intake. Review used only retained views/side.png and its full-resolution original; previous rejected face-profile attempts remain unchanged.",
+    "reviewed_crop_receipt_sha256": "6e63bb5ab2cdbca075bf20cf686170f338b823acafc555c6f17b20c84f305b38"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8ef30b27-439d-4ffb-85ab-4c74b7cc753f.png",
+    "original_sha256": "381aea2d69ebbcc1637a42f79b379e93295340c0f568a17d1e7faf7a0e3c6a87",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      76,
+      0,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "daf41267137cd200ecb5b4289f597c1f25bdb3ab2de9da2a62c23bd347d15c3a",
+    "generation": "image_gen__imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/legolas/face_views/front.png"
+    ],
+    "reference_sha256": "a1fd29d0465607ab02e244aac5efd616f55bab9fd8a211f58f36d0bba5ec2e8d",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "classification": "newly_authored_replacement",
+    "segmentation_method": "existing_alpha",
+    "by_eye_review": "Accepted single continuous same-elf eye-and-full-cheek macro: natural almond blue iris, defined lids and pale-gold brow; warm pale smooth full cheek with fine pores and faint redness. Broad lower cheek provides pure skin sampling. No actor likeness, new accessories, text or backdrop. Slight lighting drift allowed. Existing alpha retained without rembg; all visible skin edges checked."
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1d1e3413-dcc5-476e-84bc-87e5e05d6a34.png",
+    "original_sha256": "46f8ee2e1dfd541de23466cea4e90336302ebbef976be7afb5671def14e43070",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      0,
+      0,
+      1254,
+      1254
+    ],
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "02685f8da1a07a9d281358f9480309a0fa71cb908b4991e33a3a1c6fc2336a78",
+    "generation": "image_gen__imagegen",
+    "reference_image_paths": [
+      "/workspace/greenleaf-refs/docs/refs/legolas/face_views/front.png"
+    ],
+    "reference_sha256": "a1fd29d0465607ab02e244aac5efd616f55bab9fd8a211f58f36d0bba5ec2e8d",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "classification": "newly_authored_replacement",
+    "segmentation_method": "existing_alpha",
+    "by_eye_review": "Accepted single continuous hair macro: same warm platinum pale-gold hair with darker warm roots, fine long straight loose strands and exactly one slim visible near-temple braid, opposite temple outside crop. No extra braids, ornaments, face, gear or text. Edge-to-edge material with broad loose-strand sampling area. Slight allowed braid-width and lighting drift. Existing alpha retained without rembg; retained tile reviewed."
   }
 }

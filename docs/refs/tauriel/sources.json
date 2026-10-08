@@ -1,0 +1,40 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png",
+    "original_sha256": "d9da8e8bc63a8ff9848ddd549ca81f7f6acc268d284a98a5c07e33c20faa162e",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "ab07ea2e4da064a6e2bb017923af5cc838a127a8537f4014c8170335966dd68e",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; fresh original full-body frontal view; no reference images",
+    "references": [],
+    "by_eye_review": "Accepted: original oval female elf identity; full frontal A-pose; correct bow in anatomical LEFT/image RIGHT hand with five-digit grip, natural empty right hand; curved knives sheathed on both hips; head and gear inside frame; transparent-alpha edges and 64px silhouette reviewed."
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-db30900f-d76c-45ce-9949-15bccd4d830d.png",
+    "original_sha256": "3d50ecacbbe0cf2cada1beb9b90fd79812a44d6ccfb8beac1ea7a598c86313f2",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "694ec658cf8bc2218510f08ef2470a4a71b2ddb0268be2bfc5c07a7cc5e4908c",
+    "provenance": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "generation": "image_gen.imagegen; conditioned full-body three-quarter front rotation toward image RIGHT, own anatomical right side near",
+    "references": [
+      "/workspace/generated_images/exec-0e6776d1-f728-439a-ae0c-23224f8834f5.png"
+    ],
+    "by_eye_review": "Accepted: same original identity/costume, front-three-quarter toward image RIGHT with empty right hand near and left bow hand far; paired knives remain sheathed at both hips; complete head/feet/bow; native alpha edges and 64px silhouette reviewed. Minor embroidery/buckle perspective and seam drift tolerated."
+  }
+}

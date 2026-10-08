@@ -247,5 +247,131 @@
     ],
     "by_eye_review": "accepted: single cloth/leather/mail macro, worn brown leather stitching/edge wear and brown coarse weave clear, no text or added gear",
     "newly_authored_recovery": true
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d3c7c6ac-98bb-442d-8a52-8fbc8192e811.png",
+    "original_sha256": "d3ae3e606b89759859521f4e2f28abfdcce677c3e5ca6cf5a36265e9b69d9315",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      30,
+      7,
+      1518,
+      1000
+    ],
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+    "generator": "image_gen.imagegen",
+    "generation_attempt": 1,
+    "generation_reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_bald/views/front.png"
+    ],
+    "generation_background": "transparent",
+    "segmentation_method": "existing_alpha",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": "Accepted single complete crescent single-bit axehead with matching worn iron/steel, wood haft and wrapped leather grip. Complete ends framed, no added weapon or text, original and retained alpha edges inspected."
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-98afd30b-86b3-48f9-af70-b7d3debf4916.png",
+    "original_sha256": "47b1a590c17549ff7faa4f92584ae25902e70be728e1fae7040af9ae1ddab6ad",
+    "original_size_px": [
+      1023,
+      1537
+    ],
+    "crop_px": [
+      280,
+      0,
+      755,
+      610
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "20127e5c11c28439d356d31666ee4e2af439ed221fa1ccd55f8b5b4593276a82",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "3e4eab431f8e9f7ce2ef093673550e360ffe2c8a1e2e78ad7c47a51849292203",
+    "imagegen_calls": 0,
+    "by_eye_review": "Author-reviewed head-and-shoulders crop of the accepted exact right-profile single view. Complete bald crown, near ear, scalp tattoos, moustache and all short beard braids remain visible; full near shoulder and upper chest are included. Nose points image-right and only one eye is visible. No regeneration, mirroring, rotation, warping or anatomy changes.",
+    "reviewed_crop_receipt_sha256": "90af57e2074e3b0a59ab9dfd25772ff5cce2c4964471ffde5738fb1a910214ce"
+  },
+  "details/skin": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-b7e21799-64cd-449c-80ec-c3e7b330261f.png",
+    "original_sha256": "dbfdba68e31e53373b63840aa3d4b6f9356dcc51cbf9a9e5a6354409d929e35b",
+    "original_size_px": [
+      1247,
+      1261
+    ],
+    "crop_px": null,
+    "detail_background_removed": true,
+    "detail_trim_box_in_cropped_source_px": [
+      51,
+      0,
+      1247,
+      1261
+    ],
+    "saved_cutout": "details/skin.png",
+    "cutout_sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+    "generator": "image_gen.imagegen",
+    "generation_attempt": 1,
+    "generation_reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_bald/face_views/front.png"
+    ],
+    "generation_background": "transparent",
+    "segmentation_method": "existing_alpha",
+    "classification": "newly_authored_recovery",
+    "newly_authored_recovery": true,
+    "by_eye_review": "Accepted one continuous bald scalp/eye/cheek macro of the same original broad weathered dwarf face: brown eye, heavy dark brow, ruddy pores/wrinkles, existing angular temple tattoo, no actor likeness, new tattoo design or text. Macro borders intentionally crop face; transparent outer edge retained and reviewed.",
+    "tolerated_variations": [
+      "Minor tattoo line-width and local pattern drift at enlarged macro scale."
+    ]
+  },
+  "details/hair": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a5287313-a1b1-4f2c-9d4c-7ab64937888d.png",
+    "original_sha256": "bea9d44485b0b3db559cdf768e72dcb9f843e983bd4e2806bdde3e5ec8de3c23",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/hair.png",
+    "cutout_sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+    "generator": "image_gen.imagegen",
+    "generation_attempt": 1,
+    "generation_reference_paths": [
+      "/workspace/greenleaf-refs/docs/refs/dwarf_bald/face_views/front.png"
+    ],
+    "generation_reference_sha256": "ddf6a8217b488523c6214dbdef8f42764a1571782436c25251f242316d190920",
+    "generation_background": "opaque material tile",
+    "segmentation_method": "none_opaque_detail",
+    "recovery_classification": "newly_authored_recovery",
+    "historic_original_bytes_available": false,
+    "retained_size_px": [
+      256,
+      256
+    ],
+    "by_eye_review": "Accepted full-resolution and retained 256px macro: short dark-brown chunky beard braids, dense curls and visible natural individual fibers match the accepted front. One existing plain small bronze clasp, no extra ornaments/scalp hair/skin/clothing/text. Hair fills frame; completely opaque RGB material tile.",
+    "tolerated_variations": [
+      "Minor permitted lighting highlight warmth and organic strand/curl arrangement drift; dark-brown identity and compact braid style preserved."
+    ],
+    "suggested_sampling": {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        16,
+        16,
+        88,
+        112
+      ],
+      "opaque_fraction": 1.0,
+      "rationale": "Upper-left short braid and surrounding fibers only; excludes bronze clasp; rendered and lit, not albedo."
+    }
   }
 }

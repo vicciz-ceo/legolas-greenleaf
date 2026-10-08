@@ -247,5 +247,83 @@
       "edges": "Existing transparent alpha retained",
       "minor_drift": "Small helmet/pauldron engraving and leather buckle/stitch drift within allowed tolerance"
     }
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d11dfdd8-6d68-4ccb-866a-031e1a51c8a3.png",
+    "original_sha256": "a7768d3dd90975980903f01abee2e91272da8f9fea56c83db482987a9b16c916",
+    "original_size_px": [
+      1448,
+      1086
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "67417cf5df9e24e9bd117562cf1dce5a3999b236ecd18da824538bca7728c024",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 2,
+      "kind": "conditioned_material_macro",
+      "transparent_background": false,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local body front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "consistency": "Same brown crossed stitched leather straps, diamond bronze crossing fitting and iron mail backing as accepted front. Small ornament and stitch drift accepted.",
+      "framing": "Single continuous opaque material macro fills entire frame; no background or extra costume.",
+      "surface": "Leather grain stitched edges scuffs and mail rings readable.",
+      "cloth_visibility": "No woven cloth is visible in this chest macro; accepted front torso is covered by leather and mail. Charcoal woven leggings are exposed below the hauberk in accepted body front and can be sampled there.",
+      "text": "No text or labels",
+      "edges": "RGB opaque tile retained without segmentation."
+    }
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-78333455-7afd-487b-9cc4-052f5b9529c9.png",
+    "original_sha256": "7c4d3b43641c4284ec66a567479d2a13df9cdf3923d020383be3124e87a728af",
+    "original_size_px": [
+      1072,
+      1467
+    ],
+    "crop_px": [
+      250,
+      0,
+      805,
+      710
+    ],
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "0cf4896a01b8933b1a80a8c9003d0abda8c213d7d5e56de1574f4e4fcb3b0a22",
+    "classification": "derivative_of_accepted_single_view",
+    "reused_accepted_key": "views/side",
+    "reused_source_sha256": "0a2b31da0e6866879b853b211868aff91b5ea88e9626c7deda0f95cdf09be2bf",
+    "imagegen_calls": 0,
+    "by_eye_review": "Accept a half-open full-original upper-body crop [250,0,805,710]. It preserves the complete helmet apex, head, native cheek/ear-covering plate, both forked braided beard branches with bronze clasps and all loose tips, complete near pauldron, and upper chest. The lower torso boundary is intentional and below both beard tips. The accepted source remains an exact right profile with nose image right and only the near eye visible; cropping introduces no change of angle or appearance.",
+    "reviewed_crop_receipt_sha256": "5ad001f0eca72b6a745205065466c86e80f36666cc118ad1b33c867af7537cba"
+  },
+  "details/weapon_metal": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-d63b4edf-8487-40b7-bcaf-8a41e24eab48.png",
+    "original_sha256": "241101d66f6e5f671dbb94eaf4727a40c78d9f6e664f0ede78dfe339fd4fa666",
+    "original_size_px": [
+      1072,
+      1467
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/weapon_metal.png",
+    "cutout_sha256": "86011041b4def96c24ff1c2f54144376080a31e92e6a5f97e2876c92a8788d05"
   }
 }

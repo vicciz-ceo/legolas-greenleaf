@@ -123,6 +123,9 @@
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; historical rejected portrait calls retained."
     }
   }
 }

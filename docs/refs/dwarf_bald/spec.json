@@ -123,6 +123,9 @@
     "source_heights": {
       "body": 440,
       "face": 256
+    },
+    "face_source_exceptions": {
+      "face_views/side": "Author-reviewed head-and-shoulders crop from accepted single-view full-resolution views/side; no new rotation/generation, no mirroring; historical rejected portrait calls retained."
     }
   },
   "measured": {
@@ -348,6 +351,319 @@
         ]
       },
       "interpretation": "Uniform image normalization to design overall height; not recovered 3D anatomy."
+    },
+    "face": {
+      "path": "dwarf_bald_face.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "c490631332ebde532f9c8fb8c079b20f3f9fec3200542f7871dd16816b9b20bc",
+      "size_bytes": 184764,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "494daf4e193683f7eaa8d6635d28bdeaceac5fd442b8edf6bc719c094343d8c8",
+      "decoded_background_tolerance": 3,
+      "views": [
+        {
+          "view": "front",
+          "source": "face_views/front.png",
+          "source_sha256": "ddf6a8217b488523c6214dbdef8f42764a1571782436c25251f242316d190920",
+          "source_bbox_px": [
+            4,
+            4,
+            392,
+            260
+          ],
+          "sheet_bbox_px": [
+            26,
+            616,
+            486,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "three_quarter",
+          "source": "face_views/three_quarter.png",
+          "source_sha256": "d98b492c6d348afdb0869f485e0c9a4edd329e7f03fb1ff73d8c04a602990d68",
+          "source_bbox_px": [
+            4,
+            4,
+            373,
+            260
+          ],
+          "sheet_bbox_px": [
+            530,
+            601,
+            990,
+            920
+          ],
+          "mirrored": false
+        },
+        {
+          "view": "side",
+          "source": "face_views/side.png",
+          "source_sha256": "20127e5c11c28439d356d31666ee4e2af439ed221fa1ccd55f8b5b4593276a82",
+          "source_bbox_px": [
+            4,
+            4,
+            181,
+            260
+          ],
+          "sheet_bbox_px": [
+            1034,
+            255,
+            1494,
+            920
+          ],
+          "mirrored": false
+        }
+      ],
+      "scale_requirement": "none; portraits fitted without mirroring or warping"
+    },
+    "details": {
+      "path": "dwarf_bald_details.jpg",
+      "canvas_px": [
+        1024,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "70e85c9bcb90bd8968104bef5e14a8a3f897ba7076b74cc6dc471b1d5c1907fc",
+      "size_bytes": 235639,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "aa3bddbfaccda06dcd4c8bd4a51e2da18ffa567ecc5bf7683e34994e165d6214",
+      "decoded_background_tolerance": 3,
+      "tiles": [
+        {
+          "name": "cloth_leather",
+          "label": "CLOTH / LEATHER",
+          "source": "details/cloth_leather.png",
+          "source_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+          "sheet_bbox_px": [
+            12,
+            67,
+            500,
+            401
+          ]
+        },
+        {
+          "name": "weapon_metal",
+          "label": "GEAR / METAL",
+          "source": "details/weapon_metal.png",
+          "source_sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+          "sheet_bbox_px": [
+            524,
+            71,
+            1012,
+            397
+          ]
+        },
+        {
+          "name": "skin",
+          "label": "SKIN / FACE",
+          "source": "details/skin.png",
+          "source_sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+          "sheet_bbox_px": [
+            45,
+            524,
+            466,
+            968
+          ]
+        },
+        {
+          "name": "hair",
+          "label": "HAIR / STRANDS",
+          "source": "details/hair.png",
+          "source_sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+          "sheet_bbox_px": [
+            546,
+            524,
+            990,
+            968
+          ]
+        }
+      ]
+    }
+  },
+  "sampling": [
+    {
+      "name": "cloth",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        167,
+        39,
+        212,
+        75
+      ]
+    },
+    {
+      "name": "leather",
+      "source_image": "details/cloth_leather.png",
+      "rect_px": [
+        88,
+        78,
+        118,
+        108
+      ]
+    },
+    {
+      "name": "metal",
+      "source_image": "details/weapon_metal.png",
+      "rect_px": [
+        32,
+        65,
+        66,
+        95
+      ]
+    },
+    {
+      "name": "skin",
+      "source_image": "details/skin.png",
+      "rect_px": [
+        120,
+        174,
+        146,
+        197
+      ]
+    },
+    {
+      "name": "hair",
+      "source_image": "details/hair.png",
+      "rect_px": [
+        16,
+        16,
+        88,
+        112
+      ]
+    }
+  ],
+  "observed": {
+    "source": "compose.py sample",
+    "interpretation": "rendered and lit, not albedo",
+    "samples": {
+      "cloth": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          167,
+          39,
+          212,
+          75
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          71,
+          51,
+          39
+        ],
+        "srgb_hex": "#473327",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "leather": {
+        "sheet": "details/cloth_leather.png",
+        "sheet_sha256": "919724f9577607b4604761f0bb6e175d796f5cf05312f48d7c3bd4765f2da7e8",
+        "source_image": "details/cloth_leather.png",
+        "rect_px": [
+          88,
+          78,
+          118,
+          108
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          91,
+          69,
+          59
+        ],
+        "srgb_hex": "#5b453b",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "metal": {
+        "sheet": "details/weapon_metal.png",
+        "sheet_sha256": "430f3c5fc5ac56bd2f5c0282596882e9200b340f7c4c8ed09ed43ca992a45ae4",
+        "source_image": "details/weapon_metal.png",
+        "rect_px": [
+          32,
+          65,
+          66,
+          95
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          83,
+          80,
+          81
+        ],
+        "srgb_hex": "#535051",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "skin": {
+        "sheet": "details/skin.png",
+        "sheet_sha256": "595122e795384c704ffd6e0564d3a7e135cddb69292810e7c31e69964e568c38",
+        "source_image": "details/skin.png",
+        "rect_px": [
+          120,
+          174,
+          146,
+          197
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          201,
+          126,
+          104
+        ],
+        "srgb_hex": "#c97e68",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      },
+      "hair": {
+        "sheet": "details/hair.png",
+        "sheet_sha256": "fe3e4b2cc3db31141621f31ff49e7f707ac8a1241fc9f40fb0597bb1888b6554",
+        "source_image": "details/hair.png",
+        "rect_px": [
+          16,
+          16,
+          88,
+          112
+        ],
+        "coordinate_space": "retained source pixels, top-left origin, half-open rectangle",
+        "rgb": [
+          49,
+          30,
+          22
+        ],
+        "srgb_hex": "#311e16",
+        "statistic": "per-channel median sRGB",
+        "interpretation": "rendered and lit, not albedo"
+      }
     }
   }
 }
