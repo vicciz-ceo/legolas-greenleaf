@@ -4,8 +4,8 @@
     "id": "brood_mother",
     "source": "design_target",
     "display_name": "Brood Mother",
-    "height_m": 6,
-    "overall_height_m": 6,
+    "height_m": 2.5,
+    "overall_height_m": 2.5,
     "proportions": {
       "head_height_m": 0,
       "shoulder_width_m": 0,
@@ -20,23 +20,23 @@
     "face": {
       "shape": "Brood Mother giant spider: exactly EIGHT jointed legs, massive bulbous black-brown patterned abdomen, coarse hair, old scars and pale markings, eight glossy clustered eyes, paired mandibles; 6 m leg span; no gear.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
-        "size_note": "natural adult scale, defined upper and lower lids"
+        "iris_hex": "#211b16",
+        "shape": "eight clustered glossy arachnid eyes",
+        "size_note": "Eight separate eyes, no human eyelids"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
-      "skin_base_hex": "#777064",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "brow": "Not applicable: arachnid carapace",
+      "nose": "Not applicable: paired arachnid mandibles",
+      "lips": "Not applicable: chelicerae",
+      "ears": "Not applicable: no external ears",
+      "skin_base_hex": "#302a23",
+      "skin_variation": "Dark scarred chitin with pale irregular markings"
     },
     "hair": {
-      "root_hex": "#5a4c38",
-      "tip_hex": "#5a4c38",
+      "root_hex": "#302b23",
+      "tip_hex": "#6d6253",
       "length_m": 0.04,
-      "style": "Brood Mother giant spider: exactly EIGHT jointed legs, massive bulbous black-brown patterned abdomen, coarse hair, old scars and pale markings, eight glossy clustered eyes, paired mandibles; 6 m leg span; no gear.",
-      "braids": "as described, no additional ornamental braids"
+      "style": "Coarse bristly hairs",
+      "braids": "Not applicable"
     },
     "outfit_layers": [],
     "armor": [],
@@ -59,29 +59,31 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Original creature scale target; humanoid-schema proportions are not applicable and are zero. Projected extents and palettes are authored design targets, not recovered 3D measurements.",
-    "description": "Brood Mother giant spider: exactly EIGHT jointed legs, massive bulbous black-brown patterned abdomen, coarse hair, old scars and pale markings, eight glossy clustered eyes, paired mandibles; 6 m leg span; no gear."
+    "description": "Brood Mother giant spider: exactly EIGHT jointed legs, massive bulbous black-brown patterned abdomen, coarse hair, old scars and pale markings, eight glossy clustered eyes, paired mandibles; 6 m leg span; no gear.",
+    "leg_span_m": 6.0,
+    "height_source_note": "Body height 2.5 m is authored intent; original and ARCHITECTURE prescribe approximately 6 m leg span, not body height."
   },
   "composition": {
     "fit_policy": "fit",
     "detail_tiles": [
       {
         "name": "cloth_leather",
-        "label": "CLOTH / LEATHER",
+        "label": "CHITIN / PALE MARKINGS",
         "source": "details/cloth_leather.png"
       },
       {
         "name": "weapon_metal",
-        "label": "GEAR / METAL",
+        "label": "MANDIBLES / EYES",
         "source": "details/weapon_metal.png"
       },
       {
         "name": "skin",
-        "label": "SKIN / FACE",
+        "label": "SCARRED CHITIN",
         "source": "details/skin.png"
       },
       {
         "name": "hair",
-        "label": "HAIR / STRANDS",
+        "label": "COARSE HAIR",
         "source": "details/hair.png"
       }
     ],
@@ -102,6 +104,10 @@
       "top": 6,
       "three_quarter": 6
     },
-    "measurement_note": "Span endpoint pair selected on accepted reference; perpendicular projections require authored projected extent before composing."
+    "measurement_note": "Side: fore-aft outer leg-tip span. Front and top: left-right outer tips; oblique span target is authored projected intent, not recovered 3D anatomy.",
+    "source_heights": {
+      "body": 320,
+      "face": 216
+    }
   }
 }

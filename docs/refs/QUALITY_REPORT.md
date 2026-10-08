@@ -434,24 +434,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | mirkwood_spider | views/side | accepted | 1 | Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text. |
 | mirkwood_spider | views/front | accepted | 1 | Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text. |
 | mirkwood_spider | views/top | accepted | 1 | Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen. |
-| mirkwood_spider | views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
-| mirkwood_spider | face_views/front | pending | 0 | Not yet attempted |
-| mirkwood_spider | face_views/three_quarter | pending | 0 | Not yet attempted |
-| mirkwood_spider | face_views/side | pending | 0 | Not yet attempted |
-| mirkwood_spider | details/cloth_leather | pending | 0 | Not yet attempted |
-| mirkwood_spider | details/weapon_metal | pending | 0 | Not yet attempted |
-| mirkwood_spider | details/skin | pending | 0 | Not yet attempted |
-| mirkwood_spider | details/hair | pending | 0 | Not yet attempted |
-| mirkwood_spider | turnaround | pending | 0 | Not yet attempted |
-| mirkwood_spider | spec | pending | 0 | Not yet attempted |
-| mirkwood_spider | notes | pending | 0 | Not yet attempted |
-| mirkwood_spider | check | pending | 0 | Not yet attempted |
-| mirkwood_spider | face | pending | 0 | Not yet attempted |
-| mirkwood_spider | details | pending | 0 | Not yet attempted |
-| mirkwood_spider | observed | pending | 0 | Not yet attempted |
-| brood_mother | views/side | pending | 0 | Not yet attempted |
-| brood_mother | views/front | pending | 0 | Not yet attempted |
-| brood_mother | views/top | pending | 0 | Not yet attempted |
+| mirkwood_spider | views/three_quarter | accepted | 2 | Distinct front-oblique body angle and eight articulated legs; matching patterned abdomen and bristly chitin. |
+| mirkwood_spider | views/three_quarter attempt 1 | rejected | — | Candidate repeats the lateral reference too closely; insufficient front-oblique rotation for distinct three-quarter view. |
+| mirkwood_spider | face_views/front | accepted | 2 | Eight distinct eyes in 2+4+2 rows, paired mandibles and matching hairy dark chitin, no text. |
+| mirkwood_spider | face_views/front attempt 1 | rejected | — | Close-up has six distinct visible eyes, not the required eight. |
+| mirkwood_spider | face_views/three_quarter | accepted | 1 | Clear oblique view, same eight-eye arrangement and paired mandibles, no text. |
+| mirkwood_spider | face_views/side | accepted | 1 | Profile with near eyes and mandible, far eyes naturally concealed, same chitin pattern and hair. |
+| mirkwood_spider | details/cloth_leather | accepted | 1 | Matching black-brown chitin with tan irregular abdomen pattern and coarse bristles; no textile or text. |
+| mirkwood_spider | details/weapon_metal | accepted | 1 | Natural paired hooked mandibles and matching bristles, no extra mouthparts or text. |
+| mirkwood_spider | details/skin | accepted | 0 | Reviewed close-up crop: chitin surface (skin field is an arachnid cuticle proxy). |
+| mirkwood_spider | details/hair | accepted | 0 | Reviewed close-up of coarse bristles; no humanoid hair. |
+| mirkwood_spider | turnaround | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | spec | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | notes | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | check | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | face | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | details | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| mirkwood_spider | observed | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| brood_mother | views/side | accepted | 1 | Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text. |
+| brood_mother | views/front | accepted | 1 | Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text. |
+| brood_mother | views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
 | brood_mother | views/three_quarter | pending | 0 | Not yet attempted |
 | brood_mother | face_views/front | pending | 0 | Not yet attempted |
 | brood_mother | face_views/three_quarter | pending | 0 | Not yet attempted |
@@ -635,6 +637,6 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 
 ## Validation
 
-- Sixteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
+- Seventeen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

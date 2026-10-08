@@ -3875,73 +3875,139 @@
           "path": "/workspace/generated_images/exec-5e202521-15a6-4efc-8364-a5a9753546ba.png"
         },
         "views/three_quarter": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "rejected",
+              "reason": "Candidate repeats the lateral reference too closely; insufficient front-oblique rotation for distinct three-quarter view.",
               "path": "/workspace/generated_images/exec-30ce70c2-2054-4885-b3c7-dfc85449153b.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Distinct front-oblique body angle and eight articulated legs; matching patterned abdomen and bristly chitin.",
+              "path": "/workspace/generated_images/exec-2c7694c1-aa95-4765-8dda-cd4f1572a48a.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
-          "path": "/workspace/generated_images/exec-30ce70c2-2054-4885-b3c7-dfc85449153b.png"
+          "reason": "Distinct front-oblique body angle and eight articulated legs; matching patterned abdomen and bristly chitin.",
+          "path": "/workspace/generated_images/exec-2c7694c1-aa95-4765-8dda-cd4f1572a48a.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Close-up has six distinct visible eyes, not the required eight.",
+              "path": "/workspace/generated_images/exec-dd6819eb-5112-4de8-933e-4142655a4cff.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Eight distinct eyes in 2+4+2 rows, paired mandibles and matching hairy dark chitin, no text.",
+              "path": "/workspace/generated_images/exec-cb58ee16-d4d8-4305-b43a-01320afeaedd.png"
+            }
+          ],
+          "reason": "Eight distinct eyes in 2+4+2 rows, paired mandibles and matching hairy dark chitin, no text.",
+          "path": "/workspace/generated_images/exec-cb58ee16-d4d8-4305-b43a-01320afeaedd.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique view, same eight-eye arrangement and paired mandibles, no text.",
+              "path": "/workspace/generated_images/exec-42a555e3-aba3-40cc-a3b4-f0c3dc38372f.png"
+            }
+          ],
+          "reason": "Clear oblique view, same eight-eye arrangement and paired mandibles, no text.",
+          "path": "/workspace/generated_images/exec-42a555e3-aba3-40cc-a3b4-f0c3dc38372f.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Profile with near eyes and mandible, far eyes naturally concealed, same chitin pattern and hair.",
+              "path": "/workspace/generated_images/exec-27470432-364b-45a9-858a-49871c00bc56.png"
+            }
+          ],
+          "reason": "Profile with near eyes and mandible, far eyes naturally concealed, same chitin pattern and hair.",
+          "path": "/workspace/generated_images/exec-27470432-364b-45a9-858a-49871c00bc56.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Matching black-brown chitin with tan irregular abdomen pattern and coarse bristles; no textile or text.",
+              "path": "/workspace/generated_images/exec-d102ee8d-1a4a-4992-83cf-d7abc985a95e.png"
+            }
+          ],
+          "reason": "Matching black-brown chitin with tan irregular abdomen pattern and coarse bristles; no textile or text.",
+          "path": "/workspace/generated_images/exec-d102ee8d-1a4a-4992-83cf-d7abc985a95e.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Natural paired hooked mandibles and matching bristles, no extra mouthparts or text.",
+              "path": "/workspace/generated_images/exec-de912e38-e8aa-4f31-a649-b1b2417a11b1.png"
+            }
+          ],
+          "reason": "Natural paired hooked mandibles and matching bristles, no extra mouthparts or text.",
+          "path": "/workspace/generated_images/exec-de912e38-e8aa-4f31-a649-b1b2417a11b1.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed close-up crop: chitin surface (skin field is an arachnid cuticle proxy)."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed close-up of coarse bristles; no humanoid hair."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass."
         }
       }
     },
@@ -3950,16 +4016,43 @@
       "design_extent_m": 6,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text.",
+              "path": "/workspace/generated_images/exec-39ebf69d-f420-4e21-b131-3ad845507340.png"
+            }
+          ],
+          "reason": "Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text.",
+          "path": "/workspace/generated_images/exec-39ebf69d-f420-4e21-b131-3ad845507340.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text.",
+              "path": "/workspace/generated_images/exec-50ff48da-a912-4b8e-8e42-c35d1fe53161.png"
+            }
+          ],
+          "reason": "Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text.",
+          "path": "/workspace/generated_images/exec-50ff48da-a912-4b8e-8e42-c35d1fe53161.png"
         },
         "views/top": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-1169d84e-2947-49c6-9384-ceb0bf99b845.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-1169d84e-2947-49c6-9384-ceb0bf99b845.png"
         },
         "views/three_quarter": {
           "status": "pending",

@@ -519,29 +519,29 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/side | accepted | 1 | Lateral body axis with exactly eight distinguishable jointed legs, hairy patterned abdomen and clustered eyes; complete tips, no text. |
 | views/front | accepted | 1 | Straight front, four jointed legs per side and matching abdomen/eyes; no extra limbs, no text. |
 | views/top | accepted | 1 | Vertical top-down view, eight separate legs with complete tips and same bulbous patterned abdomen. |
-| views/three_quarter | pending | 1 | Generated and saved; awaiting individual visual review. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/three_quarter | accepted | 2 | Distinct front-oblique body angle and eight articulated legs; matching patterned abdomen and bristly chitin. |
+| face_views/front | accepted | 2 | Eight distinct eyes in 2+4+2 rows, paired mandibles and matching hairy dark chitin, no text. |
+| face_views/three_quarter | accepted | 1 | Clear oblique view, same eight-eye arrangement and paired mandibles, no text. |
+| face_views/side | accepted | 1 | Profile with near eyes and mandible, far eyes naturally concealed, same chitin pattern and hair. |
+| details/cloth_leather | accepted | 1 | Matching black-brown chitin with tan irregular abdomen pattern and coarse bristles; no textile or text. |
+| details/weapon_metal | accepted | 1 | Natural paired hooked mandibles and matching bristles, no extra mouthparts or text. |
+| details/skin | accepted | 0 | Reviewed close-up crop: chitin surface (skin field is an arachnid cuticle proxy). |
+| details/hair | accepted | 0 | Reviewed close-up of coarse bristles; no humanoid hair. |
+| turnaround | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| spec | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| notes | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| check | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| face | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| details | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
+| observed | accepted | 0 | Four views, eight-eye portraits, creature details and 64 px silhouette strip reviewed; endpoint/human/ruler reconstruction and budget checks pass. |
 
 ## brood_mother
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
+| views/side | accepted | 1 | Lateral body axis, eight distinguishable articulated legs, pale scarred markings and large abdomen; complete tips, no text. |
+| views/front | accepted | 1 | Straight frontal body, four articulated legs each side, complete tips and same pale scarred abdomen; no text. |
+| views/top | pending | 1 | Generated and saved; awaiting individual visual review. |
 | views/three_quarter | pending | 0 |  |
 | face_views/front | pending | 0 |  |
 | face_views/three_quarter | pending | 0 |  |
