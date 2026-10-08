@@ -320,26 +320,26 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | uruk | views/three_quarter | accepted | 2 | Second candidate rotates head clearly to right with foreshortened far face, oblique torso and far left-arm shield; same right-hand falchion and gear. |
 | uruk | views/three_quarter attempt 1 | rejected | — | Body rotation is too shallow and face remains near frontal; needs clear45degree head/torso rotation with far shield foreshortened. |
 | uruk | views/side | accepted | 1 | Exact side profile and near-right low falchion; left shield naturally far/behind, same dark armor/hair/helm. All feet and weapon tip complete. |
-| uruk | views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| uruk | face_views/front | pending | 0 | Not yet attempted |
-| uruk | face_views/three_quarter | pending | 0 | Not yet attempted |
-| uruk | face_views/side | pending | 0 | Not yet attempted |
-| uruk | details/cloth_leather | pending | 0 | Not yet attempted |
-| uruk | details/weapon_metal | pending | 0 | Not yet attempted |
-| uruk | details/skin | pending | 0 | Not yet attempted |
-| uruk | details/hair | pending | 0 | Not yet attempted |
-| uruk | turnaround | pending | 0 | Not yet attempted |
-| uruk | spec | pending | 0 | Not yet attempted |
-| uruk | notes | pending | 0 | Not yet attempted |
-| uruk | check | pending | 0 | Not yet attempted |
-| uruk | face | pending | 0 | Not yet attempted |
-| uruk | details | pending | 0 | Not yet attempted |
-| uruk | observed | pending | 0 | Not yet attempted |
-| berserker | views/front | pending | 0 | Not yet attempted |
-| berserker | views/three_quarter | pending | 0 | Not yet attempted |
-| berserker | views/side | pending | 0 | Not yet attempted |
-| berserker | views/back | pending | 0 | Not yet attempted |
-| berserker | face_views/front | pending | 0 | Not yet attempted |
+| uruk | views/back | accepted | 1 | True rear, long loose back hair and matching armor/kilt; falchion own-right image right, left shield interior visible image left, full tips/feet. |
+| uruk | face_views/front | accepted | 1 | Same original broad dark fanged face, long black hair and helmet white hand; complete crown, no actor likeness. |
+| uruk | face_views/three_quarter | accepted | 1 | Clear oblique head/torso with foreshortened far face, same dark fanged identity, hair and white-hand helmet. |
+| uruk | face_views/side | accepted | 1 | Exact single-eye profile, same original dark fanged face, full helmet and long black hair; white hand remains on frontal helm surface. |
+| uruk | details/cloth_leather | accepted | 1 | Same scratched overlapping blackened chest/shoulder plates, belt and opaque black kilt; minor plate edge/strap drift tolerated. |
+| uruk | details/weapon_metal | accepted | 1 | Same angular serrated blackened iron shield, complete front object with prescribed white-hand paint and no body. |
+| uruk | details/skin | accepted | 0 | Reviewed original material crop from accepted independently generated front portrait. |
+| uruk | details/hair | accepted | 0 | Reviewed original material crop from accepted independently generated front portrait. |
+| uruk | turnaround | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | spec | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | notes | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | check | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | face | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | details | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| uruk | observed | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| berserker | views/front | accepted | 1 | Straight front, muscular bare torso with white handprints, full face-covering spiked helmet and visible back hair. Own-right huge low sword, opaque kilt, natural curled left hand (overlapping digits partly occluded). |
+| berserker | views/three_quarter | accepted | 1 | Oblique full body/helmet, same bare handprinted torso and black kilt, right low sword, complete silhouette and natural left hand. |
+| berserker | views/side | accepted | 1 | Exact side helmet/body, own-right near sword complete and low, white-hand shoulder bare torso, consistent black kilt/wraps, natural limbs. |
+| berserker | views/back | accepted | 1 | True back with loose black back hair, same spiked helmet/kilt/bare back; own-right low sword image right, complete tips/feet, natural hands. |
+| berserker | face_views/front | pending | 1 | Generated and saved; awaiting individual visual review. |
 | berserker | face_views/three_quarter | pending | 0 | Not yet attempted |
 | berserker | face_views/side | pending | 0 | Not yet attempted |
 | berserker | details/cloth_leather | pending | 0 | Not yet attempted |

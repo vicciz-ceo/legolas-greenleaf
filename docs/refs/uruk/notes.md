@@ -8,3 +8,5 @@
 - Design palette and roughness are targets; observed pixels are rendered and lit, not albedo.
 - Minor seams, buckle shapes, strap count and mild light differences may vary.
 - Maintain natural joints and all required limb and digit counts.
+
+All body views and portraits preserve own-right falchion/own-left shield and painted helmet/shield hand emblems. Three-quarter body attempt1 rejected for near-frontal face; attempt2 passes. Side hides part of shield on far left arm. Overall2.14m includes authored helmet allowance above2.00m nominal anatomy; code derives actual scale. Minor plate seams, kilt strips, strap counts and lighting drift tolerated.

@@ -381,31 +381,31 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/front | accepted | 1 | Square front muscular dark Uruk, long black hair, helm and shield white-hand emblems (helmet confirmed close crop), right falchion/left shield, complete relaxed A-pose. |
 | views/three_quarter | accepted | 2 | Second candidate rotates head clearly to right with foreshortened far face, oblique torso and far left-arm shield; same right-hand falchion and gear. |
 | views/side | accepted | 1 | Exact side profile and near-right low falchion; left shield naturally far/behind, same dark armor/hair/helm. All feet and weapon tip complete. |
-| views/back | pending | 1 | Generated and saved; awaiting individual visual review. |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
+| views/back | accepted | 1 | True rear, long loose back hair and matching armor/kilt; falchion own-right image right, left shield interior visible image left, full tips/feet. |
+| face_views/front | accepted | 1 | Same original broad dark fanged face, long black hair and helmet white hand; complete crown, no actor likeness. |
+| face_views/three_quarter | accepted | 1 | Clear oblique head/torso with foreshortened far face, same dark fanged identity, hair and white-hand helmet. |
+| face_views/side | accepted | 1 | Exact single-eye profile, same original dark fanged face, full helmet and long black hair; white hand remains on frontal helm surface. |
+| details/cloth_leather | accepted | 1 | Same scratched overlapping blackened chest/shoulder plates, belt and opaque black kilt; minor plate edge/strap drift tolerated. |
+| details/weapon_metal | accepted | 1 | Same angular serrated blackened iron shield, complete front object with prescribed white-hand paint and no body. |
+| details/skin | accepted | 0 | Reviewed original material crop from accepted independently generated front portrait. |
+| details/hair | accepted | 0 | Reviewed original material crop from accepted independently generated front portrait. |
+| turnaround | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| spec | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| notes | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| check | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| face | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| details | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
+| observed | accepted | 0 | Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass. |
 
 ## berserker
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/front | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
-| views/side | pending | 0 |  |
-| views/back | pending | 0 |  |
-| face_views/front | pending | 0 |  |
+| views/front | accepted | 1 | Straight front, muscular bare torso with white handprints, full face-covering spiked helmet and visible back hair. Own-right huge low sword, opaque kilt, natural curled left hand (overlapping digits partly occluded). |
+| views/three_quarter | accepted | 1 | Oblique full body/helmet, same bare handprinted torso and black kilt, right low sword, complete silhouette and natural left hand. |
+| views/side | accepted | 1 | Exact side helmet/body, own-right near sword complete and low, white-hand shoulder bare torso, consistent black kilt/wraps, natural limbs. |
+| views/back | accepted | 1 | True back with loose black back hair, same spiked helmet/kilt/bare back; own-right low sword image right, complete tips/feet, natural hands. |
+| face_views/front | pending | 1 | Generated and saved; awaiting individual visual review. |
 | face_views/three_quarter | pending | 0 |  |
 | face_views/side | pending | 0 |  |
 | details/cloth_leather | pending | 0 |  |

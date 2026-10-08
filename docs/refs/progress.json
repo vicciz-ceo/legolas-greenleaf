@@ -2831,73 +2831,127 @@
           "path": "/workspace/generated_images/exec-7ab11c37-76c9-4318-a53e-4abb637f5ad7.png"
         },
         "views/back": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [
             {
               "number": 1,
-              "status": "pending",
-              "reason": "Generated and saved; awaiting individual visual review.",
+              "status": "accepted",
+              "reason": "True rear, long loose back hair and matching armor/kilt; falchion own-right image right, left shield interior visible image left, full tips/feet.",
               "path": "/workspace/generated_images/exec-9673ebfc-ed3e-4bee-8b27-f1e3cb9c7135.png"
             }
           ],
-          "reason": "Generated and saved; awaiting individual visual review.",
+          "reason": "True rear, long loose back hair and matching armor/kilt; falchion own-right image right, left shield interior visible image left, full tips/feet.",
           "path": "/workspace/generated_images/exec-9673ebfc-ed3e-4bee-8b27-f1e3cb9c7135.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same original broad dark fanged face, long black hair and helmet white hand; complete crown, no actor likeness.",
+              "path": "/workspace/generated_images/exec-d0049470-d493-4e47-8b27-f24fbb7553a0.png"
+            }
+          ],
+          "reason": "Same original broad dark fanged face, long black hair and helmet white hand; complete crown, no actor likeness.",
+          "path": "/workspace/generated_images/exec-d0049470-d493-4e47-8b27-f24fbb7553a0.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear oblique head/torso with foreshortened far face, same dark fanged identity, hair and white-hand helmet.",
+              "path": "/workspace/generated_images/exec-c9385d1a-f177-4666-a975-cb1452dbaae5.png"
+            }
+          ],
+          "reason": "Clear oblique head/torso with foreshortened far face, same dark fanged identity, hair and white-hand helmet.",
+          "path": "/workspace/generated_images/exec-c9385d1a-f177-4666-a975-cb1452dbaae5.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact single-eye profile, same original dark fanged face, full helmet and long black hair; white hand remains on frontal helm surface.",
+              "path": "/workspace/generated_images/exec-95244327-14c6-4c77-aa9c-a3c205d0ca40.png"
+            }
+          ],
+          "reason": "Exact single-eye profile, same original dark fanged face, full helmet and long black hair; white hand remains on frontal helm surface.",
+          "path": "/workspace/generated_images/exec-95244327-14c6-4c77-aa9c-a3c205d0ca40.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same scratched overlapping blackened chest/shoulder plates, belt and opaque black kilt; minor plate edge/strap drift tolerated.",
+              "path": "/workspace/generated_images/exec-277e9744-71c1-471d-a68f-54ad26611be3.png"
+            }
+          ],
+          "reason": "Same scratched overlapping blackened chest/shoulder plates, belt and opaque black kilt; minor plate edge/strap drift tolerated.",
+          "path": "/workspace/generated_images/exec-277e9744-71c1-471d-a68f-54ad26611be3.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Same angular serrated blackened iron shield, complete front object with prescribed white-hand paint and no body.",
+              "path": "/workspace/generated_images/exec-304cbb56-aab0-4a5f-aea5-8283086dfa70.png"
+            }
+          ],
+          "reason": "Same angular serrated blackened iron shield, complete front object with prescribed white-hand paint and no body.",
+          "path": "/workspace/generated_images/exec-304cbb56-aab0-4a5f-aea5-8283086dfa70.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed original material crop from accepted independently generated front portrait."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed original material crop from accepted independently generated front portrait."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Individual sheets, material regions and64px silhouettes reviewed; all deterministic checks/budgets pass."
         }
       }
     },
@@ -2906,24 +2960,69 @@
       "design_extent_m": 2.1,
       "deliverables": {
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Straight front, muscular bare torso with white handprints, full face-covering spiked helmet and visible back hair. Own-right huge low sword, opaque kilt, natural curled left hand (overlapping digits partly occluded).",
+              "path": "/workspace/generated_images/exec-9d500f2c-8915-46d9-90c1-5c7d7c289bb9.png"
+            }
+          ],
+          "reason": "Straight front, muscular bare torso with white handprints, full face-covering spiked helmet and visible back hair. Own-right huge low sword, opaque kilt, natural curled left hand (overlapping digits partly occluded).",
+          "path": "/workspace/generated_images/exec-9d500f2c-8915-46d9-90c1-5c7d7c289bb9.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Oblique full body/helmet, same bare handprinted torso and black kilt, right low sword, complete silhouette and natural left hand.",
+              "path": "/workspace/generated_images/exec-d70ad78a-0daa-4020-9470-a883c6656982.png"
+            }
+          ],
+          "reason": "Oblique full body/helmet, same bare handprinted torso and black kilt, right low sword, complete silhouette and natural left hand.",
+          "path": "/workspace/generated_images/exec-d70ad78a-0daa-4020-9470-a883c6656982.png"
         },
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Exact side helmet/body, own-right near sword complete and low, white-hand shoulder bare torso, consistent black kilt/wraps, natural limbs.",
+              "path": "/workspace/generated_images/exec-fead87b5-d270-4c75-a619-571bcd93c201.png"
+            }
+          ],
+          "reason": "Exact side helmet/body, own-right near sword complete and low, white-hand shoulder bare torso, consistent black kilt/wraps, natural limbs.",
+          "path": "/workspace/generated_images/exec-fead87b5-d270-4c75-a619-571bcd93c201.png"
         },
         "views/back": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True back with loose black back hair, same spiked helmet/kilt/bare back; own-right low sword image right, complete tips/feet, natural hands.",
+              "path": "/workspace/generated_images/exec-3f639139-ac19-4c12-8c1f-9bbc12f7ac9e.png"
+            }
+          ],
+          "reason": "True back with loose black back hair, same spiked helmet/kilt/bare back; own-right low sword image right, complete tips/feet, natural hands.",
+          "path": "/workspace/generated_images/exec-3f639139-ac19-4c12-8c1f-9bbc12f7ac9e.png"
         },
         "face_views/front": {
           "status": "pending",
-          "attempts": []
+          "attempts": [
+            {
+              "number": 1,
+              "status": "pending",
+              "reason": "Generated and saved; awaiting individual visual review.",
+              "path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png"
+            }
+          ],
+          "reason": "Generated and saved; awaiting individual visual review.",
+          "path": "/workspace/generated_images/exec-481216b8-2767-4db9-8f4a-bde335a483b6.png"
         },
         "face_views/three_quarter": {
           "status": "pending",
