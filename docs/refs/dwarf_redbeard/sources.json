@@ -1,0 +1,323 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-75f34dfc-e06b-4be0-b8a2-6ea9974264bc.png",
+    "original_sha256": "8f21df5613f32be8b8e36ba8cfa793dd79838ce6d9e1c27945c269fdfab0341c",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": []
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": null,
+      "reference_sha256": null,
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted exact front full-body. Original broad ruddy adult dwarf face, enormous loose wild red beard and red-brown hair, massive shoulders, russet tunic, heavy stitched brown leather vest, thick belt and boots. Relaxed A-pose, shoulder-width feet, empty anatomically natural five-digit hands reviewed in enlarged crops; all hair/hands/soles within framing; no text or extra props. Retained cutout reviewed; silhouette recognizable at 64px."
+    },
+    "review_status": "accepted"
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-1c46ced2-7716-4673-9a5f-010af55b2d6c.png",
+    "original_sha256": "0fefbe40e2d07cfa659535a111c5dcaf9479ac16eb1164dedda13fa29f52fbc9",
+    "original_size_px": [
+      1199,
+      1312
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/generated_images/exec-75f34dfc-e06b-4be0-b8a2-6ea9974264bc.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "8f21df5613f32be8b8e36ba8cfa793dd79838ce6d9e1c27945c269fdfab0341c",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted exact frontal head-and-shoulders portrait conditioned on accepted full-resolution front. Same original facial identity, eyes/brows/nose, loose red-brown hair, enormous unbraided red beard, russet tunic and stitched worn brown leather vest. Complete hair crown and beard tip, normal portrait torso/arm cropping, no facial clipping or generated text. Minor stitch scale and beard strand changes accepted."
+    },
+    "review_status": "accepted"
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-29f3181c-9d49-4f63-96ae-bae01c4b2fec.png",
+    "original_sha256": "bcb03a54f0a9900a96f6b1c6ab1c398f71ed0d79dcf77e11479f1980aa12e91c",
+    "original_size_px": [
+      1011,
+      1556
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "08402f28e3c8a8a36e67b1d802943c9576e50e2ff6e5327bd6718a54353f434a",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted three-quarter front rotated toward image right. Same original full ruddy dwarf face, enormous loose unbraided red beard and red-brown back hair, stocky proportions, russet tunic, heavy stitched brown leather vest, belt, brown trousers and boots. Complete hair/beard/hands/soles, natural five-digit empty hands checked in enlarged crops. Relaxed A-pose and no generated text. Minor buckle/stitch/light drift accepted. Retained existing-alpha source edges and 64px silhouette reviewed and accepted."
+    },
+    "review_status": "accepted"
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-13722064-2fa0-47d1-bdf8-4aac619ffaf6.png",
+    "original_sha256": "1fbfbae812c94da9f37228d9dc7a2d407ca4d404fefb4ff8f2de208068cad576",
+    "original_size_px": [
+      1011,
+      1556
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "40bcc34b6b83d7402d9b7f0aeb9316abe51d8e2d9760b83491aa6c6a60725a0a",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted exact right profile, nose toward image right with one visible eye and shoulders/hips side-on. Same original full ruddy dwarf face, enormous loose unbraided red beard projecting in front and loose red-brown back hair, stocky body, russet tunic, heavy stitched brown leather vest, thick belt, brown trousers and boots. Complete hair/beard/hands/feet framing; five natural digits on near empty hand reviewed enlarged, far hand naturally occluded. Relaxed A-pose with projected arm overlap. No text, silhouette readable at 64px. Minor buckle/stitch/light drift accepted. Retained existing-alpha source edges and 64px silhouette reviewed and accepted."
+    },
+    "review_status": "accepted"
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c486ac54-36e0-4649-b05d-ad3887b5c523.png",
+    "original_sha256": "530ebc76fcec2116722ed101a2ea6a772899d66c2dfc12fbe55504f1b31fde3a",
+    "original_size_px": [
+      1011,
+      1556
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "4fb2ce25d08d2cc0e0e5388dcb8644963867895a7cffbaa8abd34d90d715bb45",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted exact rear full-body, square shoulders and hips, no visible face. Same stocky dwarf, russet tunic, worn stitched brown leather vest, thick belt, trousers and boots. Loose red-brown scalp hair falls over upper back with continuous crown-to-tip strands; no rear-facing face or beard braids. Both empty hands show four naturally curled fingers and thumbs in enlarged crops. All hair, hands and soles contained within frame; alpha>127 bbox has positive margins. Minor rear seam/belt-loop/stitch drift accepted. Existing-alpha cutout edges retained; no text. Retained optimized source and 64px preview reviewed; silhouette readable and alpha edges preserved."
+    },
+    "review_status": "accepted"
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-c412c4f7-148c-494b-8229-a5fc16816032.png",
+    "original_sha256": "bcc52c0dca26b04e2345458b51e365c170ee469441cb0a447d594442e929db1c",
+    "original_size_px": [
+      1536,
+      1024
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "4bad7938f4e206813410f2a650f9dabdf03e5fa800f0dc648668ec81e1810ebd",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png",
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/face_views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "additional_accepted_reference_keys": [
+        "face_views/front"
+      ],
+      "additional_reference_sha256": [
+        "f2182aefea25ffd801a57aac4fca4ac7b4ef8292145ed9d411b51373def1eb68"
+      ],
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted wide three-quarter portrait turned toward image right, far eye foreshortened and shoulders rotated consistently. Same original broad ruddy facial identity, rounded nose, thick red brows, huge loose wild unbraided beard and red-brown hair. Entire crown, side hair, near rounded ear, beard tips and shoulder silhouettes contained with transparent top/side margins; far ear naturally occluded by hair/rotation. Intentional lower chest and arm termination at bottom only. Same russet tunic and heavy worn stitched brown leather vest; minor stitch/light variation accepted. Existing alpha inspected on gray composite, clean hair/garment edges; no text. Retained optimized source and 64px preview reviewed; silhouette readable and alpha edges preserved."
+    },
+    "review_status": "accepted"
+  },
+  "face_views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-a55722d6-fc67-4fd7-a8d9-f98da0073502.png",
+    "original_sha256": "f065dfb0de11b6f9115b148c184ad0bb8e474f04ccb473f7dbf42fa405b861b4",
+    "original_size_px": [
+      1312,
+      1199
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/side.png",
+    "cutout_sha256": "e0b2d90dfe9b78e70df0cd8fdbd83892391dc819d9b42bb19ab6ef0f362a7aa0",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": true,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/side.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/side",
+      "reference_sha256": "40bcc34b6b83d7402d9b7f0aeb9316abe51d8e2d9760b83491aa6c6a60725a0a",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "existing_alpha",
+      "by_eye_review": "By-eye accepted exact 90-degree right profile with nose image right and exactly one visible eye; far eye hidden. Same original ruddy adult face, rounded nose, thick red brows, rounded near ear, loose red-brown back hair and enormous unbraided wild red beard as accepted side. Full crown, back hair, beard tip and shoulder shown; torso/arm ends at lower portrait boundary. Same russet tunic and heavy stitched worn brown leather vest. No generated text or new gear. Existing-alpha original and retained source reviewed; 64px silhouette readable. Minor stitch scale/light variation accepted."
+    },
+    "review_status": "accepted"
+  },
+  "details/cloth_leather": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-5ce6125b-db98-4fa1-a91a-7642838cf487.png",
+    "original_sha256": "39fa7ebbb3c09a1162dcc4c7f3ec4a5021408653dd4f3311904b42c124b70a17",
+    "original_size_px": [
+      1254,
+      1254
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "details/cloth_leather.png",
+    "cutout_sha256": "2b418819fe714122930f476ce38224d6e8686591b7b60be7779157dc216d3df3",
+    "generation": {
+      "tool": "image_gen.imagegen",
+      "local_attempt": 1,
+      "transparent_background_requested": false,
+      "one_view_per_call": true,
+      "reference_image_paths": [
+        "/workspace/greenleaf-refs/docs/refs/dwarf_redbeard/views/front.png"
+      ]
+    },
+    "provenance": {
+      "classification": "newly_authored_original",
+      "newly_authored_recovery": false,
+      "accepted_reference_key": "views/front",
+      "reference_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+      "original_design_sources": [
+        "spec.json",
+        "notes.md",
+        "../recovery/original-brief.txt"
+      ],
+      "segmentation_method": "none_opaque_material_tile",
+      "by_eye_review": "By-eye accepted single continuous full-frame macro of the accepted front costume: matte russet coarse woven cloth adjoining heavy worn brown leather vest edge, natural leather wrinkles and abrasion, heavy stitching. No background, skin, hair, new gear, collage or generated text. Fully opaque RGB original; ordinary detail intake retains full tile at 256x256 without rembg. Retained optimized tile reviewed; minor stitch scale variation accepted.",
+      "suggested_material_sampling": [
+        {
+          "name": "cloth",
+          "source_image": "details/cloth_leather.png",
+          "rect_px": [
+            24,
+            32,
+            100,
+            210
+          ],
+          "author_reviewed": true,
+          "opaque_fraction": 1.0,
+          "review_reason": "Plain retained material region clear of stitches, edges and backdrop; rendered and lit, not albedo."
+        },
+        {
+          "name": "leather",
+          "source_image": "details/cloth_leather.png",
+          "rect_px": [
+            190,
+            36,
+            240,
+            208
+          ],
+          "author_reviewed": true,
+          "opaque_fraction": 1.0,
+          "review_reason": "Plain retained material region clear of stitches, edges and backdrop; rendered and lit, not albedo."
+        }
+      ]
+    },
+    "review_status": "accepted"
+  }
+}

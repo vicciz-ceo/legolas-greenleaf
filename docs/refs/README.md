@@ -6,7 +6,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 | Character / group | Design height or span | Thumbnail | Spec | Notes | Delivery status |
 | --- | --- | --- | --- | --- | --- |
-| legolas | 1.85 | — | [spec](legolas/spec.json) | [notes](legolas/notes.md) | pending |
+| legolas | 1.85 | — | [spec](legolas/spec.json) | [notes](legolas/notes.md) | rejected / pending |
 | gimli | 1.37 | — | [spec](gimli/spec.json) | [notes](gimli/notes.md) | pending |
 | aragorn | 1.88 | — | [spec](aragorn/spec.json) | [notes](aragorn/notes.md) | pending |
 | tauriel | 1.78 | — | [spec](tauriel/spec.json) | [notes](tauriel/notes.md) | pending |
@@ -34,18 +34,18 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | gundabad_bat | 7 | <img src="gundabad_bat/gundabad_bat_turnaround.jpg" width="180" alt="gundabad_bat"> | [spec](gundabad_bat/spec.json) | [notes](gundabad_bat/notes.md) | accepted |
 | great_eagle | 10 | <img src="great_eagle/great_eagle_turnaround.jpg" width="180" alt="great_eagle"> | [spec](great_eagle/spec.json) | [notes](great_eagle/notes.md) | accepted |
 | fell_beast | 12 | <img src="fell_beast/fell_beast_turnaround.jpg" width="180" alt="fell_beast"> | [spec](fell_beast/spec.json) | [notes](fell_beast/notes.md) | accepted |
-| dwarf_bald | 1.35 | — | [spec](dwarf_bald/spec.json) | [notes](dwarf_bald/notes.md) | pending |
+| dwarf_bald | 1.35 | — | [spec](dwarf_bald/spec.json) | [notes](dwarf_bald/notes.md) | rejected / pending |
 | dwarf_hat | 1.3 | — | [spec](dwarf_hat/spec.json) | [notes](dwarf_hat/notes.md) | pending |
-| dwarf_elder | 1.37 | — | [spec](dwarf_elder/spec.json) | [notes](dwarf_elder/notes.md) | pending |
+| dwarf_elder | 1.37 | — | [spec](dwarf_elder/spec.json) | [notes](dwarf_elder/notes.md) | rejected / pending |
 | dwarf_redbeard | 1.4 | — | [spec](dwarf_redbeard/spec.json) | [notes](dwarf_redbeard/notes.md) | pending |
 | weapons | supplement | <img src="weapons/weapons.jpg" width="180" alt="weapons"> | [spec](weapons/spec.json) | [notes](weapons/notes.md) | accepted |
 | orc_variants | supplement | <img src="orc_variants/orc_variants.jpg" width="180" alt="orc_variants"> | [spec](orc_variants/spec.json) | [notes](orc_variants/notes.md) | accepted |
-| dwarf_company | supplement | — | — | — | pending |
+| dwarf_company | supplement | <img src="dwarf_company/dwarf_company.jpg" width="180" alt="dwarf_company"> | [spec](dwarf_company/spec.json) | [notes](dwarf_company/notes.md) | accepted |
 | mumak_howdah | supplement | <img src="mumak_howdah/mumak_howdah.jpg" width="180" alt="mumak_howdah"> | [spec](mumak_howdah/spec.json) | [notes](mumak_howdah/notes.md) | accepted |
 
 ## Composition and storage
 
-Retained library size: **47,190,090 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **54,773,536 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

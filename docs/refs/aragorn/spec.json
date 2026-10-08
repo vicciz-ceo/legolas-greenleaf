@@ -118,6 +118,10 @@
         "label": "HAIR / BRAID / BRISTLES",
         "source": "details/hair.png"
       }
-    ]
+    ],
+    "source_heights": {
+      "body": 440,
+      "face": 256
+    }
   }
 }

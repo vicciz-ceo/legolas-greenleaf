@@ -825,6 +825,7 @@ def check_all():
                 require(all(s=='accepted' for s in statuses), 'Supplement review remains incomplete')
             except (ValueError, KeyError, OSError, StopIteration) as error:
                 result = {'id':cid, 'status':'FAIL' if all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING', 'reason':str(error)}
+                result['incomplete_deliverables']=[key for key,item in entry['deliverables'].items() if item['status']!='accepted']
             results.append(result)
             continue
         try:
@@ -834,6 +835,8 @@ def check_all():
         except (ValueError,KeyError,OSError,StopIteration) as error:
             statuses=[d['status'] for d in entry.get('deliverables',{}).values()]
             result={'id':cid,'status':'FAIL' if statuses and all(s=='accepted' for s in statuses) else 'BLOCKED' if 'blocked' in statuses else 'REJECTED' if 'rejected' in statuses else 'PENDING','reason':str(error)}
+            result['incomplete_deliverables']=[key for key,item in entry.get('deliverables',{}).items() if item['status']!='accepted']
+            result['missing_source_files']=[key+'.png' for key in entry.get('deliverables',{}) if key.startswith(('views/','face_views/','details/')) and not (ROOT/cid/(key+'.png')).exists()]
         results.append(result)
     library=stored_bytes(ROOT)
     require(library<=LIB_BUDGET,f'Library exceeds 70 MB: {library}')

@@ -12,10 +12,10 @@ test_pre_encoding_hash_and_library_path (test_compose.ComposeTests.test_pre_enco
 test_projection_rules_derive_from_measured_reference (test_compose.ComposeTests.test_projection_rules_derive_from_measured_reference) ... ok
 test_real_composition_and_observed_median (test_compose.ComposeTests.test_real_composition_and_observed_median) ... ok
 test_resampled_alpha_bounds_define_calibrated_height (test_compose.ComposeTests.test_resampled_alpha_bounds_define_calibrated_height) ... ok
-test_source_sampling_and_missing_material_failure (test_compose.ComposeTests.test_source_sampling_and_missing_material_failure) ... /workspace/greenleaf-refs/docs/refs/tools/compose.py:583: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp4n3q0qix/fixture/views/front.png'>
+test_source_sampling_and_missing_material_failure (test_compose.ComposeTests.test_source_sampling_and_missing_material_failure) ... /workspace/greenleaf-refs/docs/refs/tools/compose.py:583: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmpyplpcr_i/fixture/views/front.png'>
   if retained and Image.open(path).mode == 'RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
-/workspace/greenleaf-refs/docs/refs/tools/compose.py:735: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmp4n3q0qix/fixture/views/front.png'>
+/workspace/greenleaf-refs/docs/refs/tools/compose.py:735: ResourceWarning: unclosed file <_io.BufferedReader name='/tmp/tmpyplpcr_i/fixture/views/front.png'>
   if s['coordinate_space'].startswith('retained source pixels') and Image.open(path).mode=='RGBA':
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
 ok
@@ -23,11 +23,12 @@ test_strict_layout_rejects_wide_subject (test_compose.ComposeTests.test_strict_l
 test_supplement_accepted_ledger_cannot_hide_missing_assets (test_compose.ComposeTests.test_supplement_accepted_ledger_cannot_hide_missing_assets) ... ok
 test_supplement_actual_scale_png_and_stale_files (test_compose.ComposeTests.test_supplement_actual_scale_png_and_stale_files) ... ok
 test_threshold_fallback_with_transparent_hole (test_compose.ComposeTests.test_threshold_fallback_with_transparent_hole) ... ok
+test_existing_detail_alpha_is_cropped_without_rembg (test_intake.IntakeTests.test_existing_detail_alpha_is_cropped_without_rembg) ... ok
 test_parallel_attempts_are_retained_and_cap_survives_reopen (test_progress.ProgressTests.test_parallel_attempts_are_retained_and_cap_survives_reopen) ... ok
 test_preserves_exhausted_history_and_caps_recovery (test_progress.RecoveryTests.test_preserves_exhausted_history_and_caps_recovery) ... ok
 test_review_updates_only_matching_pending_replacement (test_progress.RecoveryTests.test_review_updates_only_matching_pending_replacement) ... ok
 
 ----------------------------------------------------------------------
-Ran 22 tests in 5.079s
+Ran 23 tests in 5.364s
 
 OK

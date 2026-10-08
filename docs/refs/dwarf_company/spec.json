@@ -1,0 +1,204 @@
+{
+  "id": "dwarf_company",
+  "design": {
+    "source": "design_target",
+    "design_sources": [
+      "recovery/original-brief.txt: four distinct dwarves, upper bodies for waist-deep barrel scenes"
+    ],
+    "members": [
+      {
+        "id": "dwarf_bald",
+        "overall_height_m": 1.35,
+        "description": "Original stocky dwarf warrior: bald tattooed scalp, wide face, braided short dark beard; worn brown leather and mail, crossed straps, belt axes, thick boots; axe own RIGHT hand, left empty; upper-body tattoos clearly readable."
+      },
+      {
+        "id": "dwarf_hat",
+        "overall_height_m": 1.46,
+        "description": "Original stocky dwarf: soft floppy wool hat, broad face and curly chestnut beard; coarse ochre tunic, dark brown padded vest, belt, thick boots; both hands empty; distinctive floppy hat readable above barrel rim."
+      },
+      {
+        "id": "dwarf_elder",
+        "overall_height_m": 1.39,
+        "description": "Original elderly stocky dwarf: long white beard, bushy white brows, thinning white hair, wrinkled broad face; dark blue wool tunic and brown leather vest, belt and thick boots; both hands empty; flowing white beard clearly readable."
+      },
+      {
+        "id": "dwarf_redbeard",
+        "overall_height_m": 1.43,
+        "description": "Original huge stocky dwarf: enormous wild red beard and red-brown hair, broad full face; russet tunic, heavy brown leather vest, thick belt and boots; both hands empty; very broad shoulders and huge beard silhouette."
+      }
+    ]
+  },
+  "composition": {
+    "supplement": true,
+    "metric": false,
+    "columns": 4,
+    "rows": 1,
+    "canvas_px": [
+      1536,
+      1024
+    ],
+    "png_name": "dwarf_company.png",
+    "items": [
+      {
+        "name": "dwarf_bald",
+        "label": "BALD",
+        "source": "views/dwarf_bald.png"
+      },
+      {
+        "name": "dwarf_hat",
+        "label": "HAT",
+        "source": "views/dwarf_hat.png"
+      },
+      {
+        "name": "dwarf_elder",
+        "label": "ELDER",
+        "source": "views/dwarf_elder.png"
+      },
+      {
+        "name": "dwarf_redbeard",
+        "label": "REDBEARD",
+        "source": "views/dwarf_redbeard.png"
+      }
+    ],
+    "exception": "Upper-body comparison for waist-deep barrel scenes; cropped from accepted individual fronts, fitted uniformly within panels without a full-body height or metric claim."
+  },
+  "measured": {
+    "supplement": {
+      "path": "dwarf_company.jpg",
+      "canvas_px": [
+        1536,
+        1024
+      ],
+      "jpeg_quality": 88,
+      "jpeg_subsampling": 0,
+      "sha256": "d559ed5f5a5e013d4791eae231d5d6d46376ea5664eeeee2fe4ea2b864cce180",
+      "size_bytes": 121860,
+      "background_rgb": [
+        127,
+        127,
+        127
+      ],
+      "background_probe": [
+        0,
+        0,
+        16,
+        16
+      ],
+      "pre_jpeg_sha256": "613ca57c4110ea3cbdd275a84126e1bb0bd75e75a33e21fb154bfab3de9f394b",
+      "decoded_background_tolerance": 3,
+      "lossless_png": {
+        "path": "dwarf_company.png",
+        "sha256": "70a398d28e6d91d253dd858a306f768bf14f915148e99a01289566dc3db412b7"
+      },
+      "objects": [
+        {
+          "name": "dwarf_bald",
+          "source": "views/dwarf_bald.png",
+          "source_sha256": "1effe1de342af9958ef0b255a38c0f5b215950b6d9dd8bacf07abb95e4fbe20a",
+          "source_bbox_px": [
+            3,
+            3,
+            250,
+            206
+          ],
+          "sheet_bbox_px": [
+            20,
+            651,
+            364,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            1,
+            0,
+            344,
+            283
+          ],
+          "scale_axis": null
+        },
+        {
+          "name": "dwarf_hat",
+          "source": "views/dwarf_hat.png",
+          "source_sha256": "c318761cda8ffcf1a6ad4094caa28a0dbf2cf5cf4a2a4287a43c2e4310499abc",
+          "source_bbox_px": [
+            9,
+            4,
+            247,
+            219
+          ],
+          "sheet_bbox_px": [
+            404,
+            623,
+            748,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            344,
+            311
+          ],
+          "scale_axis": null
+        },
+        {
+          "name": "dwarf_elder",
+          "source": "views/dwarf_elder.png",
+          "source_sha256": "5db986483f2501c5d01ce6ded4cdac6a07cccbe19145990db4f5721637f4f4a7",
+          "source_bbox_px": [
+            5,
+            4,
+            252,
+            219
+          ],
+          "sheet_bbox_px": [
+            788,
+            635,
+            1132,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            344,
+            299
+          ],
+          "scale_axis": null
+        },
+        {
+          "name": "dwarf_redbeard",
+          "source": "views/dwarf_redbeard.png",
+          "source_sha256": "55b32c21b9e87b4a6835a4f6a14e9f9708fc73f22491ab9fb992d043923ebf72",
+          "source_bbox_px": [
+            4,
+            4,
+            252,
+            216
+          ],
+          "sheet_bbox_px": [
+            1172,
+            640,
+            1516,
+            934
+          ],
+          "mirrored": false,
+          "extent_m": null,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            344,
+            294
+          ],
+          "scale_axis": null
+        }
+      ],
+      "px_per_m": null,
+      "rulers": [],
+      "scale_requirement": "none; original supplemental close-up / upper-body exception"
+    }
+  }
+}

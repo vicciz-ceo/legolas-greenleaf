@@ -1,0 +1,90 @@
+{
+  "dwarf_bald": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-8c4d2e13-749f-4ef4-b691-f86c77cec289.png",
+    "original_sha256": "aba410c55b6d44ce55c2fa58b93abb50d27a936bda478acf36bd2a5859c99579",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "views/dwarf_bald.png",
+    "cutout_sha256": "1effe1de342af9958ef0b255a38c0f5b215950b6d9dd8bacf07abb95e4fbe20a",
+    "reused_accepted_source": "docs/refs/dwarf_bald/views/front.png",
+    "reused_source_sha256": "ca8ca87e3b9ba89bcc301b5b2df7c0a41aa118215e0c973bb30624ebe0f2153b",
+    "retained_front_crop_px": [
+      0,
+      0,
+      298,
+      240
+    ],
+    "crop_coordinate_space": "retained front pixels, top-left origin, half-open",
+    "transform": "crop near waist, uniform thumbnail fit256, never mirrored",
+    "by_eye_review": "Preserves the full bald tattooed scalp, broad face, three dark beard braids, shoulder and upper-arm tattoos, crossed leather straps, mail chest, belt buckle and upper belt-axe attachments. The horizontal edge lies just below the belt, making a useful waist-deep barrel reference.",
+    "classification": "reused_accepted_individual_source"
+  },
+  "dwarf_hat": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0d86b34a-b20d-40dd-afd5-fb663d291e20.png",
+    "original_sha256": "a18fa8189ba43e3308fba542db2e24f29968db4b9c2d752338488aaea5546c00",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "views/dwarf_hat.png",
+    "cutout_sha256": "c318761cda8ffcf1a6ad4094caa28a0dbf2cf5cf4a2a4287a43c2e4310499abc",
+    "reused_accepted_source": "docs/refs/dwarf_hat/views/front.png",
+    "reused_source_sha256": "3457c07b4f3461b3cd23c708018f5558aaf3b6b6f2a54c833aa931f662666e5a",
+    "retained_front_crop_px": [
+      0,
+      0,
+      286,
+      245
+    ],
+    "crop_coordinate_space": "retained front pixels, top-left origin, half-open",
+    "transform": "crop near waist, uniform thumbnail fit256, never mirrored",
+    "by_eye_review": "Preserves the complete floppy hat including the asymmetric hanging tip, broad face and curly chestnut beard, ochre tunic, padded dark vest, shoulder breadth and complete belt. The edge lies just below the belt.",
+    "classification": "reused_accepted_individual_source"
+  },
+  "dwarf_elder": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-473d7708-70cb-42c1-9dc3-b5a7f0245894.png",
+    "original_sha256": "421ce8435d8afcbdf692ec0ca259c934d25929ef64d9fd4a038a2052a85b1f2d",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "views/dwarf_elder.png",
+    "cutout_sha256": "5db986483f2501c5d01ce6ded4cdac6a07cccbe19145990db4f5721637f4f4a7",
+    "reused_accepted_source": "docs/refs/dwarf_elder/views/front.png",
+    "reused_source_sha256": "570ea6513dc30d821d918a37d273cf0247e72bf82d8790e14924835a967e9e70",
+    "retained_front_crop_px": [
+      0,
+      0,
+      280,
+      240
+    ],
+    "crop_coordinate_space": "retained front pixels, top-left origin, half-open",
+    "transform": "crop near waist, uniform thumbnail fit256, never mirrored",
+    "by_eye_review": "Preserves thinning white hair, bushy white brows, wrinkled face, the complete long white beard down to its tapered tip near the belt, dark blue sleeves and tunic, leather vest, shoulders and complete belt. The edge lies immediately below the waist belt.",
+    "classification": "reused_accepted_individual_source"
+  },
+  "dwarf_redbeard": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-75f34dfc-e06b-4be0-b8a2-6ea9974264bc.png",
+    "original_sha256": "8f21df5613f32be8b8e36ba8cfa793dd79838ce6d9e1c27945c269fdfab0341c",
+    "original_size_px": [
+      1024,
+      1536
+    ],
+    "saved_cutout": "views/dwarf_redbeard.png",
+    "cutout_sha256": "55b32c21b9e87b4a6835a4f6a14e9f9708fc73f22491ab9fb992d043923ebf72",
+    "reused_accepted_source": "docs/refs/dwarf_redbeard/views/front.png",
+    "reused_source_sha256": "02f5ef3cdffebc639d187944a02085b933858fb0d1727327fdd56ac63dcfb210",
+    "retained_front_crop_px": [
+      0,
+      0,
+      291,
+      245
+    ],
+    "crop_coordinate_space": "retained front pixels, top-left origin, half-open",
+    "transform": "crop near waist, uniform thumbnail fit256, never mirrored",
+    "by_eye_review": "Preserves the complete red-brown hair mass, broad full face, enormous wild red beard including its tapered lower strands, very broad shoulders, russet sleeves and tunic, heavy brown vest and complete thick belt. The edge lies just below the belt.",
+    "classification": "reused_accepted_individual_source"
+  }
+}

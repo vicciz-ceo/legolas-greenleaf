@@ -14,13 +14,21 @@ Historical generation and acceptance records are preserved. Newly authored repla
 
 | Character | Deliverable | Current status | Attempts | Specific evidence or defect |
 | --- | --- | --- | --- | --- |
-| legolas | views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | views/back | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | face_views/front | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | face_views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| legolas | face_views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| legolas | views/front | accepted | 2 historical + 1 recovery | Passes front identity, anatomical gear sides, full framing, natural hands, and alpha/silhouette review. |
+| legolas | views/front recovery attempt 1 | accepted | — | Passes front identity, anatomical gear sides, full framing, natural hands, and alpha/silhouette review. |
+| legolas | views/three_quarter | accepted | 1 historical + 2 recovery | Accepted: same original full-cheek elf and warm pale-gold hair; three-quarter front toward image right with anatomical right flank near camera. Empty right near hand and low bow in anatomical left far hand have five natural digits. Right-back quiver and exactly two ivory-handled upward sheathed knives appear image left below crown; full head, hands, feet and gear with no text/clipping. Existing-alpha retained edges and readable 64px silhouette reviewed. Minor allowable seam, braid and buckle drift; A-pose projection foreshortens near arm. |
+| legolas | views/three_quarter recovery attempt 1 | rejected | — | Three-quarter angle and bow handedness pass, but quiver and knife cluster has moved to the near own-left back shoulder instead of retaining own-right back attachment. |
+| legolas | views/three_quarter recovery attempt 2 | accepted | — | Accepted: same original full-cheek elf and warm pale-gold hair; three-quarter front toward image right with anatomical right flank near camera. Empty right near hand and low bow in anatomical left far hand have five natural digits. Right-back quiver and exactly two ivory-handled upward sheathed knives appear image left below crown; full head, hands, feet and gear with no text/clipping. Existing-alpha retained edges and readable 64px silhouette reviewed. Minor allowable seam, braid and buckle drift; A-pose projection foreshortens near arm. |
+| legolas | views/side | accepted | 1 historical + 1 recovery | Accepted: same original elf face and hair, exact right profile nose image right, full framing, right near hand empty with five natural digits and far own-left hand correctly gripping low bow. Right-back quiver and exactly two ivory grips remain below crown. No clipping/text. Existing-alpha retained edges and readable 64px silhouette checked. Minor allowed leaf seams/buckle drift. |
+| legolas | views/side recovery attempt 1 | accepted | — | Accepted: same original elf face and hair, exact right profile nose image right, full framing, right near hand empty with five natural digits and far own-left hand correctly gripping low bow. Right-back quiver and exactly two ivory grips remain below crown. No clipping/text. Existing-alpha retained edges and readable 64px silhouette checked. Minor allowed leaf seams/buckle drift. |
+| legolas | views/back | accepted | 1 historical + 1 recovery | Accepted: exact square back view, no face, same loose warm pale-gold long hair and joining temple braids; outfit identity preserved. Bow own left/image left held low, empty right/image right hand; natural five-digit anatomy/grip reviewed in original hand crops. Right-back/image-right quiver and exactly two ivory knife grips point up beside it below crown, sheaths down. Full framing and A-pose, no clipping/text, retained existing-alpha edges and readable 64px silhouette reviewed. Minor allowed braid wave/leaf stitch/buckle drift. |
+| legolas | views/back recovery attempt 1 | accepted | — | Accepted: exact square back view, no face, same loose warm pale-gold long hair and joining temple braids; outfit identity preserved. Bow own left/image left held low, empty right/image right hand; natural five-digit anatomy/grip reviewed in original hand crops. Right-back/image-right quiver and exactly two ivory knife grips point up beside it below crown, sheaths down. Full framing and A-pose, no clipping/text, retained existing-alpha edges and readable 64px silhouette reviewed. Minor allowed braid wave/leaf stitch/buckle drift. |
+| legolas | face_views/front | accepted | 1 historical + 1 recovery | Conditioned front head-and-shoulders portrait preserves identity, costume and anatomical attachment sides. |
+| legolas | face_views/front recovery attempt 1 | accepted | — | Conditioned front head-and-shoulders portrait preserves identity, costume and anatomical attachment sides. |
+| legolas | face_views/three_quarter | rejected | 1 historical + 1 recovery | White quiver fletchings are clipped at image-left edge; side margin framing fails. |
+| legolas | face_views/three_quarter recovery attempt 1 | rejected | — | White quiver fletchings are clipped at image-left edge; side margin framing fails. |
+| legolas | face_views/side | rejected | 1 historical + 1 recovery | Two parallel temple braids appear on the near side instead of the accepted single braid per temple, changing the fixed two-braid hairstyle. |
+| legolas | face_views/side recovery attempt 1 | rejected | — | Two parallel temple braids appear on the near side instead of the accepted single braid per temple, changing the fixed two-braid hairstyle. |
 | legolas | details/cloth_leather | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
 | legolas | details/weapon_metal | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
 | legolas | details/skin | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
@@ -32,12 +40,20 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | legolas | face | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 | legolas | details | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
 | legolas | observed | pending | 0 | Awaiting retained and visually accepted recovery sources, then composition and validation. |
-| gimli | views/front | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| gimli | views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| gimli | views/side | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| gimli | views/back | pending | 2 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| gimli | face_views/front | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| gimli | face_views/three_quarter | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
+| gimli | views/front | accepted | 2 historical + 1 recovery | Original full-body front design passes anatomy, exact angle, attachment sides, framing and 64px silhouette review. |
+| gimli | views/front recovery attempt 1 | accepted | — | Original full-body front design passes anatomy, exact angle, attachment sides, framing and 64px silhouette review. |
+| gimli | views/three_quarter | accepted | 1 historical + 1 recovery | Same accepted dwarf in front three-quarter rotation, correct anatomy and gear sides |
+| gimli | views/three_quarter recovery attempt 1 | accepted | — | Same accepted dwarf in front three-quarter rotation, correct anatomy and gear sides |
+| gimli | views/side | accepted | 1 historical + 1 recovery | Same accepted dwarf in right profile with correct natural anatomy and right-hand axe |
+| gimli | views/side recovery attempt 1 | accepted | — | Same accepted dwarf in right profile with correct natural anatomy and right-hand axe |
+| gimli | views/back | accepted | 2 historical + 2 recovery | Rear framing repair encloses all helmet, hands, axe and boots with meaningful blank margins; exact rear loose scalp hair and anatomical right axe preserved. |
+| gimli | views/back recovery attempt 1 | rejected | — | Pointed helmet apex reaches top image boundary; fails complete framing with margins. Loose rear hair correction and anatomical right battle axe are otherwise correct. |
+| gimli | views/back recovery attempt 2 | accepted | — | Rear framing repair encloses all helmet, hands, axe and boots with meaningful blank margins; exact rear loose scalp hair and anatomical right axe preserved. |
+| gimli | face_views/front | accepted | 0 historical + 2 recovery | Wide upper-body framing preserves full pointed helm, forked beard tips and both complete pauldrons; exact frontal original identity consistent with accepted front. |
+| gimli | face_views/front recovery attempt 1 | rejected | — | Same identity and exact front angle, but both shoulder pauldrons and both beard tips are clipped by frame boundaries; head-and-shoulders source fails required full framing. |
+| gimli | face_views/front recovery attempt 2 | accepted | — | Wide upper-body framing preserves full pointed helm, forked beard tips and both complete pauldrons; exact frontal original identity consistent with accepted front. |
+| gimli | face_views/three_quarter | accepted | 0 historical + 1 recovery | Three-quarter original identity preserves full pointed helm, both forked beard tips and pauldrons; nose image right, framing below beard. |
+| gimli | face_views/three_quarter recovery attempt 1 | accepted | — | Three-quarter original identity preserves full pointed helm, both forked beard tips and pauldrons; nose image right, framing below beard. |
 | gimli | face_views/side | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
 | gimli | details/cloth_leather | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
 | gimli | details/weapon_metal | pending | 0 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
@@ -534,13 +550,18 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | fell_beast | check | accepted | 0 | Flight-only roster exception; final sheet/64 px silhouette reviewed; check PASS (validation/fell_beast.json). |
 | dwarf_bald | views/front | accepted | 1 historical + 1 recovery | Newly authored recovery front: original tattooed wide face, short dark beard braids, correct own-right axe/belt axes, complete framing, natural hands, retained alpha and 64px silhouette reviewed; no defects. |
 | dwarf_bald | views/front recovery attempt 1 | accepted | — | Newly authored recovery front: original tattooed wide face, short dark beard braids, correct own-right axe/belt axes, complete framing, natural hands, retained alpha and 64px silhouette reviewed; no defects. |
-| dwarf_bald | views/three_quarter | pending | 1 historical + 0 recovery | Original bytes unavailable after bounded search; newly authored recovery replacement required. Historical attempts preserved. |
-| dwarf_bald | views/side | pending | 0 | Not yet attempted |
-| dwarf_bald | views/back | pending | 0 | Not yet attempted |
-| dwarf_bald | face_views/front | pending | 0 | Not yet attempted |
-| dwarf_bald | face_views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_bald | face_views/side | pending | 0 | Not yet attempted |
-| dwarf_bald | details/cloth_leather | pending | 0 | Not yet attempted |
+| dwarf_bald | views/three_quarter | accepted | 1 historical + 1 recovery | ["Three-quarter front faces image right with character right side near camera; rotated from accepted front, never mirrored.", "Same original bald tattooed face, short dark bead-bound beard braids, chain mail, crossed brown leather straps, belt axes and thick boots.", "Large single-bit axe in character own right hand; left hand empty.", "Thumb and four naturally curled fingers form right grip; left hand has thumb and curled fingers with natural overlap, no extra or fused digit structure seen.", "Full crown, both hands, complete axe and both boots framed; axe below crown and above sole baseline.", "Original and retained cutout reviewed; existing alpha preserved without rembg; 64px silhouette reads as bald stocky dwarf with low axe."] |
+| dwarf_bald | views/three_quarter recovery attempt 1 | accepted | — | ["Three-quarter front faces image right with character right side near camera; rotated from accepted front, never mirrored.", "Same original bald tattooed face, short dark bead-bound beard braids, chain mail, crossed brown leather straps, belt axes and thick boots.", "Large single-bit axe in character own right hand; left hand empty.", "Thumb and four naturally curled fingers form right grip; left hand has thumb and curled fingers with natural overlap, no extra or fused digit structure seen.", "Full crown, both hands, complete axe and both boots framed; axe below crown and above sole baseline.", "Original and retained cutout reviewed; existing alpha preserved without rembg; 64px silhouette reads as bald stocky dwarf with low axe."] |
+| dwarf_bald | views/side | accepted | 1 | ["Right side profile faces image right; one eye visible, right ear/shoulder/arm/hip nearest camera.", "Same original bald tattooed face, dark braided beard, mail and crossed brown leather outfit with same visible right hip belt axe and boots.", "Near-camera right hand holds large single-bit axe; empty left hand naturally occluded behind body.", "Four curled fingers visible on right grip with thumb on opposite side of handle; no extra or fused digit structure seen.", "Crown, axe and both boots complete, axe below crown and above sole baseline; relaxed A-pose projects correctly into profile.", "Original and retained cutout reviewed; existing alpha preserved without rembg; 64px silhouette reads as exact side stocky dwarf and axe."] |
+| dwarf_bald | views/back | accepted | 1 | Exact rear same bald tattooed dwarf, correct own-right axe/empty left, complete framing and natural hands; existing alpha intake and 64px review pass. |
+| dwarf_bald | face_views/front | accepted | 2 | Previous shoulder clipping repaired: complete crown, ears, beard and both rounded shoulder outlines visible; no side clipping, intentional lower chest/upper arm termination at bottom. Same original identity/outfit, correct front and no text; retained alpha and 64px review pass. |
+| dwarf_bald | face_views/front attempt 1 | rejected | — | Frontal identity and beard/scalp match, but both shoulder/upper-arm silhouettes cross the left and right canvas edges. Definite shoulder clipping fails requested complete shoulder framing. |
+| dwarf_bald | face_views/three_quarter | accepted | 1 | Right-facing three-quarter same original identity/outfit, complete crown, beard and rounded shoulders, no side clipping or text; retained alpha and 64px review pass. |
+| dwarf_bald | face_views/side | rejected | 3 | Transparent background improved, but face remains turned toward camera: separate far eyebrow visible at edge, broad open near-eye plane, and front plane of nose. Not exact 90-degree profile. |
+| dwarf_bald | face_views/side attempt 1 | rejected | — | Generated head-and-shoulders view is three-quarter rather than exact right profile. |
+| dwarf_bald | face_views/side attempt 2 | rejected | — | Profile is turned toward camera with far brow visible and nostril front plane; soft studio backdrop persists as semitransparent alpha. |
+| dwarf_bald | face_views/side attempt 3 | rejected | — | Transparent background improved, but face remains turned toward camera: separate far eyebrow visible at edge, broad open near-eye plane, and front plane of nose. Not exact 90-degree profile. |
+| dwarf_bald | details/cloth_leather | accepted | 1 | One material closeup with reference-consistent worn brown leather strap, stitching and edge wear, brown woven cloth and narrow mail edge. Existing alpha preserved by intake; thumbnail retains readable textures. |
 | dwarf_bald | details/weapon_metal | pending | 0 | Not yet attempted |
 | dwarf_bald | details/skin | pending | 0 | Not yet attempted |
 | dwarf_bald | details/hair | pending | 0 | Not yet attempted |
@@ -551,14 +572,14 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | dwarf_bald | face | pending | 0 | Not yet attempted |
 | dwarf_bald | details | pending | 0 | Not yet attempted |
 | dwarf_bald | observed | pending | 0 | Not yet attempted |
-| dwarf_hat | views/front | pending | 0 | Not yet attempted |
-| dwarf_hat | views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_hat | views/side | pending | 0 | Not yet attempted |
-| dwarf_hat | views/back | pending | 0 | Not yet attempted |
-| dwarf_hat | face_views/front | pending | 0 | Not yet attempted |
-| dwarf_hat | face_views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_hat | face_views/side | pending | 0 | Not yet attempted |
-| dwarf_hat | details/cloth_leather | pending | 0 | Not yet attempted |
+| dwarf_hat | views/front | accepted | 1 | Exact frontal stocky original dwarf with complete floppy wool hat, curly chestnut beard, ochre tunic, dark padded vest and thick boots. Relaxed A-pose, feet apart, both empty natural hands with four fingers plus thumb. No clipping or text; retained existing-alpha edges and 64 px silhouette reviewed. |
+| dwarf_hat | views/three_quarter | accepted | 1 | Same original dwarf and costume, correct three-quarter front toward image right, natural five-digit empty hands and complete framing. |
+| dwarf_hat | views/side | accepted | 1 | Same dwarf and costume, exact right profile nose image right, anatomically natural empty hands and full framing. |
+| dwarf_hat | views/back | accepted | 1 | Exact rear, consistent costume, full framing, correct visible anatomy; no definite defects. |
+| dwarf_hat | face_views/front | accepted | 1 | Frontal portrait preserves accepted original identity, asymmetric floppy hat, beard, tunic and padded vest. Complete hat, head, beard and shoulders; upper arms and lower chest terminate at portrait border. No text or definite visual defects; retained edges reviewed. |
+| dwarf_hat | face_views/three_quarter | accepted | 1 | Three-quarter nose-right portrait, original identity/costume consistent, full hat/beard/shoulders with side margins; no definite defects. |
+| dwarf_hat | face_views/side | accepted | 1 | Same original dwarf in lateral nose-right profile with full headgear, ear, beard and shoulder outline. |
+| dwarf_hat | details/cloth_leather | accepted | 1 | Single contiguous material macro matches ochre tunic and dark brown padded leather vest. |
 | dwarf_hat | details/weapon_metal | pending | 0 | Not yet attempted |
 | dwarf_hat | details/skin | pending | 0 | Not yet attempted |
 | dwarf_hat | details/hair | pending | 0 | Not yet attempted |
@@ -569,13 +590,15 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | dwarf_hat | face | pending | 0 | Not yet attempted |
 | dwarf_hat | details | pending | 0 | Not yet attempted |
 | dwarf_hat | observed | pending | 0 | Not yet attempted |
-| dwarf_elder | views/front | pending | 0 | Not yet attempted |
-| dwarf_elder | views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_elder | views/side | pending | 0 | Not yet attempted |
-| dwarf_elder | views/back | pending | 0 | Not yet attempted |
-| dwarf_elder | face_views/front | pending | 0 | Not yet attempted |
-| dwarf_elder | face_views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_elder | face_views/side | pending | 0 | Not yet attempted |
+| dwarf_elder | views/front | accepted | 1 | Full-body direct front accepted: original elderly dwarf, required costume and white hair/beard, empty anatomical hands, no clipping/text; retained alpha/edges and 64px silhouette pass. |
+| dwarf_elder | views/three_quarter | accepted | 1 | Accepted: same original elderly identity, navy wool/brown vest and boots, unbraided long white beard, natural empty five-digit hands, right-facing three-quarter angle, complete frame/no text; full-resolution hands, retained cutout edges and 64px silhouette reviewed. Minor allowed leather/buckle and lighting drift. |
+| dwarf_elder | views/side | accepted | 1 | Accepted: original elderly broad face and white hair/beard identity preserved, nose image right with one eye in side projection, same navy tunic/brown vest/belt/trousers/boots, five natural visible hand digits with far limbs naturally occluded, complete head/beard/hands/feet/no text. Retained alpha edges and 64px silhouette reviewed. Minor allowed stitch/leather and lighting drift. |
+| dwarf_elder | views/back | accepted | 1 | Accepted: exact rear full body, thinning bald crown with loose white nape scalp hair (no beard down back), navy wool tunic/brown leather vest/trousers/boots, natural empty five-digit hands, complete margins/no generated text. Minor allowed seam and leather drift. |
+| dwarf_elder | face_views/front | accepted | 2 | Accepted: exact frontal original elderly identity, broad wrinkled face/white brows/bulbous nose/thinning scalp hair, complete crown hair and both ears and shoulders, full flowing long white beard including lowest tip before lower torso termination. Navy wool/brown leather same costume, no text, preserved transparent edge. Intentional upper-body framing ends below beard; no beard clipping. Minor allowed leather stitch/light drift. |
+| dwarf_elder | face_views/front attempt 1 | rejected | — | Portrait clips the long white beard tip at the lower frame; signature beard silhouette must be complete for this job. Full crown/head/ears and face/costume identity otherwise pass. |
+| dwarf_elder | face_views/three_quarter | rejected | 1 | Three-quarter face/torso identity and complete beard are preserved, but a crown hair tuft touches the top image boundary, violating full hair margin requirement. |
+| dwarf_elder | face_views/three_quarter attempt 1 | rejected | — | Three-quarter face/torso identity and complete beard are preserved, but a crown hair tuft touches the top image boundary, violating full hair margin requirement. |
+| dwarf_elder | face_views/side | accepted | 1 | Complete exact right-facing profile upper-body portrait with one visible eye and entire hair/shoulder/beard silhouette retained. |
 | dwarf_elder | details/cloth_leather | pending | 0 | Not yet attempted |
 | dwarf_elder | details/weapon_metal | pending | 0 | Not yet attempted |
 | dwarf_elder | details/skin | pending | 0 | Not yet attempted |
@@ -587,14 +610,14 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | dwarf_elder | face | pending | 0 | Not yet attempted |
 | dwarf_elder | details | pending | 0 | Not yet attempted |
 | dwarf_elder | observed | pending | 0 | Not yet attempted |
-| dwarf_redbeard | views/front | pending | 0 | Not yet attempted |
-| dwarf_redbeard | views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_redbeard | views/side | pending | 0 | Not yet attempted |
-| dwarf_redbeard | views/back | pending | 0 | Not yet attempted |
-| dwarf_redbeard | face_views/front | pending | 0 | Not yet attempted |
-| dwarf_redbeard | face_views/three_quarter | pending | 0 | Not yet attempted |
-| dwarf_redbeard | face_views/side | pending | 0 | Not yet attempted |
-| dwarf_redbeard | details/cloth_leather | pending | 0 | Not yet attempted |
+| dwarf_redbeard | views/front | accepted | 1 | By-eye accepted exact front full-body. Original broad ruddy adult dwarf face, enormous loose wild red beard and red-brown hair, massive shoulders, russet tunic, heavy stitched brown leather vest, thick belt and boots. Relaxed A-pose, shoulder-width feet, empty anatomically natural five-digit hands reviewed in enlarged crops; all hair/hands/soles within framing; no text or extra props. Retained cutout reviewed; silhouette recognizable at 64px. |
+| dwarf_redbeard | views/three_quarter | accepted | 1 | By-eye accepted three-quarter front rotated toward image right. Same original full ruddy dwarf face, enormous loose unbraided red beard and red-brown back hair, stocky proportions, russet tunic, heavy stitched brown leather vest, belt, brown trousers and boots. Complete hair/beard/hands/soles, natural five-digit empty hands checked in enlarged crops. Relaxed A-pose and no generated text. Minor buckle/stitch/light drift accepted. |
+| dwarf_redbeard | views/side | accepted | 1 | By-eye accepted exact right profile, nose toward image right with one visible eye and shoulders/hips side-on. Same original full ruddy dwarf face, enormous loose unbraided red beard projecting in front and loose red-brown back hair, stocky body, russet tunic, heavy stitched brown leather vest, thick belt, brown trousers and boots. Complete hair/beard/hands/feet framing; five natural digits on near empty hand reviewed enlarged, far hand naturally occluded. Relaxed A-pose with projected arm overlap. No text, silhouette readable at 64px. Minor buckle/stitch/light drift accepted. |
+| dwarf_redbeard | views/back | accepted | 1 | Exact rear, consistent costume, empty natural hands and complete framing. |
+| dwarf_redbeard | face_views/front | accepted | 1 | By-eye accepted exact frontal head-and-shoulders portrait conditioned on accepted full-resolution front. Same original facial identity, eyes/brows/nose, loose red-brown hair, enormous unbraided red beard, russet tunic and stitched worn brown leather vest. Complete hair crown and beard tip, normal portrait torso/arm cropping, no facial clipping or generated text. Minor stitch scale and beard strand changes accepted. |
+| dwarf_redbeard | face_views/three_quarter | accepted | 1 | Consistent original identity in right-facing three-quarter view with complete hair, beard and shoulders. |
+| dwarf_redbeard | face_views/side | accepted | 1 | By-eye accepted exact 90-degree right profile with nose image right and exactly one visible eye; far eye hidden. Same original ruddy adult face, rounded nose, thick red brows, rounded near ear, loose red-brown back hair and enormous unbraided wild red beard as accepted side. Full crown, back hair, beard tip and shoulder shown; torso/arm ends at lower portrait boundary. Same russet tunic and heavy stitched worn brown leather vest. No generated text or new gear. Existing-alpha original and retained source reviewed; 64px silhouette readable. Minor stitch scale/light variation accepted. |
+| dwarf_redbeard | details/cloth_leather | accepted | 1 | By-eye accepted single continuous full-frame macro of the accepted front costume: matte russet coarse woven cloth adjoining heavy worn brown leather vest edge, natural leather wrinkles and abrasion, heavy stitching. No background, skin, hair, new gear, collage or generated text. Fully opaque RGB original; ordinary detail intake retains full tile at 256x256 without rembg. Retained optimized tile reviewed; minor stitch scale variation accepted. |
 | dwarf_redbeard | details/weapon_metal | pending | 0 | Not yet attempted |
 | dwarf_redbeard | details/skin | pending | 0 | Not yet attempted |
 | dwarf_redbeard | details/hair | pending | 0 | Not yet attempted |
@@ -631,14 +654,14 @@ Historical generation and acceptance records are preserved. Newly authored repla
 | orc_variants | spec | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
 | orc_variants | notes | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
 | orc_variants | check | accepted | 0 | Four distinct reviewed fronts: wiry/brown/scarred/matted; common measured scale, required PNG and quality88 JPEG; check PASS, 1.12 MB. |
-| dwarf_company | dwarf_bald | pending | 0 | Not yet attempted |
-| dwarf_company | dwarf_hat | pending | 0 | Not yet attempted |
-| dwarf_company | dwarf_elder | pending | 0 | Not yet attempted |
-| dwarf_company | dwarf_redbeard | pending | 0 | Not yet attempted |
-| dwarf_company | sheet | pending | 0 | Not yet attempted |
-| dwarf_company | spec | pending | 0 | Not yet attempted |
-| dwarf_company | notes | pending | 0 | Not yet attempted |
-| dwarf_company | check | pending | 0 | Not yet attempted |
+| dwarf_company | dwarf_bald | accepted | 0 | Preserves the full bald tattooed scalp, broad face, three dark beard braids, shoulder and upper-arm tattoos, crossed leather straps, mail chest, belt buckle and upper belt-axe attachments. The horizontal edge lies just below the belt, making a useful waist-deep barrel reference. Reused accepted individual front; zero generation calls. |
+| dwarf_company | dwarf_hat | accepted | 0 | Preserves the complete floppy hat including the asymmetric hanging tip, broad face and curly chestnut beard, ochre tunic, padded dark vest, shoulder breadth and complete belt. The edge lies just below the belt. Reused accepted individual front; zero generation calls. |
+| dwarf_company | dwarf_elder | accepted | 0 | Preserves thinning white hair, bushy white brows, wrinkled face, the complete long white beard down to its tapered tip near the belt, dark blue sleeves and tunic, leather vest, shoulders and complete belt. The edge lies immediately below the waist belt. Reused accepted individual front; zero generation calls. |
+| dwarf_company | dwarf_redbeard | accepted | 0 | Preserves the complete red-brown hair mass, broad full face, enormous wild red beard including its tapered lower strands, very broad shoulders, russet sleeves and tunic, heavy brown vest and complete thick belt. The edge lies just below the belt. Reused accepted individual front; zero generation calls. |
+| dwarf_company | sheet | accepted | 0 | Four distinct upper-body dwarf identities remain readable at full sheet size and in individual 64-pixel comparison. Complete scalp, hair, hat and beard silhouettes are retained. Labels are clean and clear of the figures. Intentional waist cropping is allowed by the explicit supplement exception. Construction and retained-source budget checks PASS. |
+| dwarf_company | spec | accepted | 0 | Four distinct upper-body dwarf identities remain readable at full sheet size and in individual 64-pixel comparison. Complete scalp, hair, hat and beard silhouettes are retained. Labels are clean and clear of the figures. Intentional waist cropping is allowed by the explicit supplement exception. Construction and retained-source budget checks PASS. |
+| dwarf_company | notes | accepted | 0 | Four distinct upper-body dwarf identities remain readable at full sheet size and in individual 64-pixel comparison. Complete scalp, hair, hat and beard silhouettes are retained. Labels are clean and clear of the figures. Intentional waist cropping is allowed by the explicit supplement exception. Construction and retained-source budget checks PASS. |
+| dwarf_company | check | accepted | 0 | Four distinct upper-body dwarf identities remain readable at full sheet size and in individual 64-pixel comparison. Complete scalp, hair, hat and beard silhouettes are retained. Labels are clean and clear of the figures. Intentional waist cropping is allowed by the explicit supplement exception. Construction and retained-source budget checks PASS. |
 | mumak_howdah | howdah | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
 | mumak_howdah | sheet | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
 | mumak_howdah | spec | accepted | 0 | Reuse of accepted howdah detail; complete tower/left ladder reviewed, JPEG/PNG reconstruction and budget checks pass. |
@@ -647,8 +670,8 @@ Historical generation and acceptance records are preserved. Newly authored repla
 
 ## Validation
 
-- 22 regression tests pass, including original concurrency/cap tests and two recovery-history tests.
-- 25 existing entries pass construction checks; ten full sets and dwarf comparison still require completion.
+- 23 regression tests pass, including intake alpha handling, original concurrency/caps and separate recovery-history tests.
+- 26 completed entries pass construction checks: 22 preserved character sets and four supplements. Ten individual full sets remain in progress.
 - All 246 initial retained reconstruction sources match their provenance hashes; weapons and orc comparison files are available.
 - Historical game build/smoke evidence is retained from the prior pass; this reference-only continuation does not change game files.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

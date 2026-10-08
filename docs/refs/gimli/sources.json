@@ -1,0 +1,251 @@
+{
+  "views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-e7307d87-cdf9-4247-aea9-e3b4668e8289.png",
+    "original_sha256": "1f078572243150d856ca7e651d1ebc30be8be639819d3db7a2b1b57228eaa0d4",
+    "original_size_px": [
+      1199,
+      1312
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/front.png",
+    "cutout_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 1,
+      "kind": "new_generation",
+      "transparent_background": true,
+      "reference_paths": []
+    },
+    "reference": {
+      "source": "spec.json, notes.md, revised original-brief.txt; no historical image bytes available"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "anatomy": "Natural five-digit hands; axe grip digits partially occluded normally; left thumb plus four curled fingers.",
+      "angle": "Exact front",
+      "gear": "Battle axe anatomical right/image left, two throwing axes at belt",
+      "silhouette_64px": "Readable short broad dwarf, pointed helm and forked beard",
+      "edges": "Existing alpha preserved, full helm boots hands and axe retained",
+      "minor_drift": "None to compare: recovery identity root"
+    }
+  },
+  "views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-dc427afe-365f-47a0-8892-c6b3ab353d46.png",
+    "original_sha256": "72eac5f1f8cd1f1d88cee197bdcab3b47c449c3d09c5216f49f5bd3f805f6b07",
+    "original_size_px": [
+      1072,
+      1467
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/three_quarter.png",
+    "cutout_sha256": "41924c42872973536c1c30c9a1766e45a4ed5ed61f7bad83a91b74344030d78f",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 1,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "angle": "Three-quarter front turned towards image right; right arm and axe nearest camera",
+      "anatomy": "Natural curled five-digit grip; empty left hand has thumb and four curled fingers, no fused or extra anatomy",
+      "gear": "Same right-hand engraved battle axe, two belt throwing axes, helmet mail leather pauldrons and bronze-clasp forked beard",
+      "framing": "Entire helm hands axe and boots retained; axe below helmet above soles",
+      "silhouette_64px": "Recognizable very stocky dwarf with helmet, forked beard and low axe",
+      "edges": "Transparent alpha with natural hair and armour edges preserved",
+      "minor_drift": "Small engraving and strap/stitch drift within allowed tolerance"
+    }
+  },
+  "views/side": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-78333455-7afd-487b-9cc4-052f5b9529c9.png",
+    "original_sha256": "7c4d3b43641c4284ec66a567479d2a13df9cdf3923d020383be3124e87a728af",
+    "original_size_px": [
+      1072,
+      1467
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/side.png",
+    "cutout_sha256": "0a2b31da0e6866879b853b211868aff91b5ea88e9626c7deda0f95cdf09be2bf",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 2,
+      "kind": "conditioned_rotation",
+      "transparent_background": true,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "angle": "Right profile with single eye visible and nose directed image right; right shoulder and axe arm nearest camera",
+      "anatomy": "Natural five-digit grip, thumb and four fingers; far empty hand naturally occluded",
+      "gear": "Same right-hand engraved battle axe, near belt throwing axe and far belt handle partly visible; same pointed helmet, mail leather pauldrons and bronze-clasp forked beard",
+      "framing": "Entire helm hands axe and boots retained; axe blade above soles and below helm",
+      "silhouette_64px": "Readable short broad dwarf profile and low axe",
+      "edges": "Existing transparent alpha retained with hair metal and blade edges intact",
+      "minor_drift": "Small engraving, buckle and strap/stitch drift within tolerance; overlapping forked beard branches in profile"
+    }
+  },
+  "face_views/front": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-53ab8d41-0ecf-47a6-ae63-34dad13f49e1.png",
+    "original_sha256": "5b352773570f90cc849d75606c784a181a94d028e632f98ada85c81d96cee5fe",
+    "original_size_px": [
+      1374,
+      1145
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/front.png",
+    "cutout_sha256": "e57d0e5e66ed425abcb9db49de9c8fa0d16328727904ef617ffd5ec3ac2e090f",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 2,
+      "kind": "conditioned_front_portrait",
+      "transparent_background": true,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "angle": "Exact dead-on front, neutral expression; same original dwarf identity",
+      "framing": "Complete pointed helm, cheek/ear-covering helmet plates, forked beard braids with both loose tips and both full layered pauldrons; lower torso edge below beard tips",
+      "anatomy": "Natural face symmetry; hands intentionally outside upper-body portrait",
+      "gear": "Same iron/bronze helmet, layered pauldrons, mail, quilted leather and crossed straps; forked red-brown beard with bronze clasps",
+      "silhouette_64px": "Pointed helmet, broad pauldrons and forked beard readable",
+      "edges": "Existing alpha preserved by intake; hair and armour edges retained",
+      "minor_drift": "Small helmet/pauldron engraving and stitching differences within allowed tolerance"
+    }
+  },
+  "views/back": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-0c3f13fa-4e66-4031-a1ae-62e69d6015ef.png",
+    "original_sha256": "5d906a4483b643213d69c19e1045ea5e6aee22447ff7b95381ade1e107d787c2",
+    "original_size_px": [
+      1072,
+      1467
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "views/back.png",
+    "cutout_sha256": "59b064fd6f74e452177762f063ec56b580dfd31a8e2b2ecb348044c7bcddc95a",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 1,
+      "kind": "conditioned_rear_repair",
+      "transparent_background": true,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front, spec.json, notes.md, revised original-brief.txt",
+      "front_sha256": "4d3ad0f6c6a74fa91fe5550b09513aa2de15fe75ebaab01a76755f1cbb770012"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "angle": "Exact rear with no face visible",
+      "hair": "Loose wavy red-brown scalp hair, no rear beard braids or bronze clasps",
+      "anatomy": "Empty left hand natural thumb and four curled fingers; right five-digit natural grip; complete hands and boots",
+      "gear": "Axe anatomical right/image right; two belt throwing axes, same helm layered pauldrons mail quilted leather crossed straps bracers and boots",
+      "framing": "Full helmet tip, both hands, full axe and soles enclosed; alpha>127 bbox [145,121,1020,1329] in 1072x1467 original. Model did not meet requested 10\u201315% margins everywhere but retains 52px right/121px top/138px bottom margins with no clipping",
+      "silhouette_64px": "Readable stocky dwarf pointed helm and low right axe",
+      "edges": "Existing alpha preserved; no thin blade helmet or hair edges lost",
+      "minor_drift": "Small engraving and belt/strap detail drift within tolerance"
+    }
+  },
+  "face_views/three_quarter": {
+    "original_full_resolution_path": "/workspace/generated_images/exec-ead28b97-f81f-4295-89d5-e8ede87f3265.png",
+    "original_sha256": "4369a6df0d9bc769d3a35db6d6c6756b78c0ce3d2957d9250cf28d1242ccded4",
+    "original_size_px": [
+      1383,
+      1137
+    ],
+    "crop_px": null,
+    "detail_background_removed": false,
+    "detail_trim_box_in_cropped_source_px": null,
+    "saved_cutout": "face_views/three_quarter.png",
+    "cutout_sha256": "f069143c9d4521fca971cdf860146a2f19c613abe46c097771f216c81137f2df",
+    "classification": "newly_authored_recovery",
+    "generation": {
+      "provider": "image_gen",
+      "local_call": 2,
+      "kind": "conditioned_three_quarter_portrait",
+      "transparent_background": true,
+      "reference_paths": [
+        "/workspace/greenleaf-refs/docs/refs/gimli/face_views/front.png"
+      ]
+    },
+    "reference": {
+      "source": "Accepted local front portrait, spec.json, notes.md, revised original-brief.txt",
+      "front_portrait_sha256": "e57d0e5e66ed425abcb9db49de9c8fa0d16328727904ef617ffd5ec3ac2e090f"
+    },
+    "provenance": {
+      "series": "recovery",
+      "kind": "newly_authored_replacement",
+      "historical_source_recovered": false
+    },
+    "by_eye_review": {
+      "accepted": true,
+      "angle": "Three-quarter front with nose directed image right and far eye narrower; same original identity",
+      "framing": "Complete helmet apex, both whole pauldrons, both beard braids with bronze clasps and all tapered tips enclosed; lower torso crop below beard tips. Helmet margin only 10px and right canvas clearance 7px around lower sleeve; requested abundant margins not fully followed but signature features do not clip",
+      "anatomy": "Natural facial anatomy; hands outside intentional upper-body portrait crop",
+      "gear": "Same iron bronze pointed helm cheek plates layered pauldrons chainmail quilted brown leather crossed straps and forked clasped red-brown beard",
+      "silhouette_64px": "Pointed helm broad shoulder armour and forked beard remain readable",
+      "edges": "Existing transparent alpha retained",
+      "minor_drift": "Small helmet/pauldron engraving and leather buckle/stitch drift within allowed tolerance"
+    }
+  }
+}

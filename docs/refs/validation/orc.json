@@ -4,7 +4,7 @@
   "checked": "schema, required files, reconstructed pre-JPEG canvas, JPEG tolerance, calibration, baseline, layout, source hashes, sample medians, no mirroring, budgets",
   "character_bytes": 2262454,
   "character_budget_bytes": 2500000,
-  "library_bytes": 47190045,
+  "library_bytes": 53709852,
   "library_budget_bytes": 70000000,
   "px_per_m": 281.1764705882353,
   "visual_review": "Separate by-eye gate; not certified by this command."
