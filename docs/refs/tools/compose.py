@@ -22,6 +22,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 BG = (127, 127, 127)
 TURN_SIZE = FACE_SIZE = (1536, 1024)
+POSE_SIZE = (768, 512)
 GRID_SIZE = (1024, 1024)
 QUALITY = 88
 CHAR_BUDGET = 2_500_000
@@ -387,7 +388,7 @@ def creature(cid, pose=None):
         extents[view] = pixels*extent/measurements[reference_view]['source_span_px']
     require(all(view in extents for view in views), 'Supply projected_extents_m for each creature view')
     require(float(extents[reference_view])==extent,'Reference extent differs from ruler target')
-    available_w, available_h = (1200, 850) if pose else (440, 360)
+    available_w, available_h = (440, 360)
     max_ppm = [available_h/1.85]
     for view, path, crop, srcbox in images:
         e = float(extents[view])
@@ -395,7 +396,7 @@ def creature(cid, pose=None):
         max_ppm += [available_w * base / (crop.width * e), available_h * base / (crop.height * e)]
     ppm = data['measured']['turnaround']['px_per_m'] if pose else min(max_ppm)
     require(ppm <= min(max_ppm), 'Additional pose does not fit at the main sheet scale')
-    canvas = Image.new('RGB', TURN_SIZE, BG)
+    canvas = Image.new('RGB', POSE_SIZE if pose else TURN_SIZE, BG)
     draw = ImageDraw.Draw(canvas)
     boxes = []
     for i, (view, path, crop, srcbox) in enumerate(images):
@@ -403,23 +404,45 @@ def creature(cid, pose=None):
         base = measurements[view]['source_span_px']
         factor = e * ppm / base
         w, h = round(crop.width*factor), round(crop.height*factor)
+        image = crop.resize((w, h), Image.Resampling.LANCZOS)
+        annotation = measurements[view]
+        region = cfg.get('landmark_regions_px',{}).get(view)
+        mapped_region = ([round((region[0]-srcbox[0])*w/crop.width), round((region[1]-srcbox[1])*h/crop.height),
+                          round((region[2]-srcbox[0])*w/crop.width), round((region[3]-srcbox[1])*h/crop.height)] if region else None)
+        actual = measurement_span(image,[0,0,w,h],annotation['axis'],mapped_region)
+        normalized = False
+        if abs(actual['source_span_px']-e*ppm)>1.1 and region is None:
+            # Share the tested extrema-preserving raster normalization. The
+            # quarter-turn and its inverse are only a scaling implementation;
+            # they restore the same view and never mirror a source.
+            target = round(e*ppm)
+            if annotation['axis']=='height':image,_,_=resize_silhouette(crop,target)
+            else:
+                rotated,_,_=resize_silhouette(crop.transpose(Image.Transpose.ROTATE_90),target)
+                image=rotated.transpose(Image.Transpose.ROTATE_270)
+            w,h=image.size
+            actual=measurement_span(image,[0,0,w,h],annotation['axis'])
+            normalized=True
+        require(abs(actual['source_span_px']-e*ppm)<=1.1, f'{view}: resampled landmark lost calibrated extent')
+        require(w<=available_w and h<=available_h, f'{view}: resampled cutout exceeds panel')
         panel_x = (i%2)*768
-        baseline = 940 if pose else 430 + (i//2)*512
+        baseline = 430 + (i//2)*512
         x = panel_x+205+(available_w-w)//2
         y = baseline-h
-        image = crop.resize((w, h), Image.Resampling.LANCZOS)
         canvas.paste(image, (x, y), image)
-        text(draw, (panel_x+(805 if pose else 420), baseline+(40 if pose else 50)), cfg.get('turnaround_labels',{}).get(view,LABELS.get(view, view.upper())), 18)
+        text(draw, (panel_x+420, baseline+50), cfg.get('turnaround_labels',{}).get(view,LABELS.get(view, view.upper())), 18)
         marker = human(draw, panel_x+100, baseline, ppm)
-        annotation = measurements[view]
-        points = [[x+round((p[0]-srcbox[0])*w/crop.width),y+round((p[1]-srcbox[1])*h/crop.height)]
-                  for p in annotation['source_endpoints_px']]
+        points = [[x+p[0],y+p[1]] for p in actual['source_endpoints_px']]
         coordinate = 0 if annotation['axis']=='width' else 1
         actual_span = points[1][coordinate]-points[0][coordinate]
         boxes.append({'view': view, 'source': str(path.relative_to(folder)), 'source_sha256': digest(path),
                       'source_bbox_px': list(srcbox), 'sheet_bbox_px': [x,y,x+w,baseline],
                       'projected_extent_m': e, 'scale_axis': annotation['axis'], 'mirrored': False,
+                      'resampled_alpha_bbox_px':list(bbox(image,require_transparency=False)),
+                      'extrema_preserved_after_resampling':normalized,
                       'measurement':dict(annotation,sheet_endpoints_px=points,sheet_span_px=actual_span,
+                                         resampled_endpoints_px=actual['source_endpoints_px'],
+                                         resampled_region_px=actual['source_region_px'],
                                          effective_px_per_m=actual_span/e),
                       'human': marker})
     # Calibrated quarter-metre ticks on the reference view's own extent.
@@ -615,7 +638,7 @@ def check(cid):
     expected={'turnaround':TURN_SIZE,'face':FACE_SIZE,'details':GRID_SIZE}
     if data.get('composition',{}).get('silhouette_only'):
         expected={'turnaround':TURN_SIZE}
-    expected.update({f'pose_{name}':TURN_SIZE for name in data.get('composition',{}).get('pose_targets',{})})
+    expected.update({f'pose_{name}':POSE_SIZE for name in data.get('composition',{}).get('pose_targets',{})})
     for sheet,size in expected.items():
         rec=measured[sheet]
         path=folder/rec['path']

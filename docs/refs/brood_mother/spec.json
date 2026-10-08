@@ -159,6 +159,13 @@
           "projected_extent_m": 6.0,
           "scale_axis": "width",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            1,
+            440,
+            280
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -182,14 +189,30 @@
             "sheet_endpoints_px": [
               [
                 205,
-                290
+                290.5
               ],
               [
                 645,
-                290
+                290.5
               ]
             ],
             "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                140.5
+              ],
+              [
+                440,
+                140.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              280
+            ],
             "effective_px_per_m": 73.33333333333333
           },
           "human": {
@@ -225,6 +248,13 @@
           "projected_extent_m": 6.0,
           "scale_axis": "width",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            266
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -248,14 +278,30 @@
             "sheet_endpoints_px": [
               [
                 973,
-                297
+                297.0
               ],
               [
                 1413,
-                297
+                297.0
               ]
             ],
             "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                133.0
+              ],
+              [
+                440,
+                133.0
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              266
+            ],
             "effective_px_per_m": 73.33333333333333
           },
           "human": {
@@ -291,6 +337,13 @@
           "projected_extent_m": 6.0,
           "scale_axis": "width",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            326
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -314,14 +367,30 @@
             "sheet_endpoints_px": [
               [
                 205,
-                779
+                779.0
               ],
               [
                 645,
-                779
+                779.0
               ]
             ],
             "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                163.0
+              ],
+              [
+                440,
+                163.0
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              326
+            ],
             "effective_px_per_m": 73.33333333333333
           },
           "human": {
@@ -357,6 +426,13 @@
           "projected_extent_m": 6.0,
           "scale_axis": "width",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            440,
+            273
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -380,14 +456,30 @@
             "sheet_endpoints_px": [
               [
                 973,
-                805
+                805.5
               ],
               [
                 1413,
-                805
+                805.5
               ]
             ],
             "sheet_span_px": 440,
+            "resampled_endpoints_px": [
+              [
+                0,
+                136.5
+              ],
+              [
+                440,
+                136.5
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              440,
+              273
+            ],
             "effective_px_per_m": 73.33333333333333
           },
           "human": {
@@ -569,6 +661,7 @@
       "scale_axis": "width",
       "reference_view": "side",
       "scale_extent_m": 6.0,
+      "extent_rules": {},
       "interpretation": "Projected extents are design targets; no 3D measurement inferred from generated views."
     },
     "face": {

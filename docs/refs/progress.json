@@ -4413,73 +4413,151 @@
           "path": "/workspace/generated_images/exec-5a526d29-d9ad-459f-8907-294078236ccb.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Candidate repeats lateral flight/reference angle; insufficient frontal oblique rotation.",
+              "path": "/workspace/generated_images/exec-f809601b-91b2-46ae-922e-5ad52cbbb337.png"
+            },
+            {
+              "number": 2,
+              "status": "accepted",
+              "reason": "Distinct front-oblique flight with both eyes, near broad wing/far foreshortened wing, two feet and natural anatomy.",
+              "path": "/workspace/generated_images/exec-4368405f-22bc-448f-bd94-b41536fd9431.png"
+            }
+          ],
+          "reason": "Distinct front-oblique flight with both eyes, near broad wing/far foreshortened wing, two feet and natural anatomy.",
+          "path": "/workspace/generated_images/exec-4368405f-22bc-448f-bd94-b41536fd9431.png"
         },
         "views/folded": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Natural hanging rest pose, two folded wings, two complete curled hind feet, matching original fur/rat-like head, no text.",
+              "path": "/workspace/generated_images/exec-22edc713-fdcc-42c3-83a2-b4a558ad3db7.png"
+            }
+          ],
+          "reason": "Natural hanging rest pose, two folded wings, two complete curled hind feet, matching original fur/rat-like head, no text.",
+          "path": "/workspace/generated_images/exec-22edc713-fdcc-42c3-83a2-b4a558ad3db7.png"
         },
         "face_views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Entire head and ears; frontal two-eye animal anatomy, rat-like muzzle and coarse fur; no text.",
+              "path": "/workspace/generated_images/exec-86bbe18b-07bd-425b-883c-d0cc20c5a979.png"
+            }
+          ],
+          "reason": "Entire head and ears; frontal two-eye animal anatomy, rat-like muzzle and coarse fur; no text.",
+          "path": "/workspace/generated_images/exec-86bbe18b-07bd-425b-883c-d0cc20c5a979.png"
         },
         "face_views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Clear muzzle foreshortening and both eyes; identity retained, whole ears; no text.",
+              "path": "/workspace/generated_images/exec-976a27cd-1785-434b-8486-cf0236baa8ee.png"
+            }
+          ],
+          "reason": "Clear muzzle foreshortening and both eyes; identity retained, whole ears; no text.",
+          "path": "/workspace/generated_images/exec-976a27cd-1785-434b-8486-cf0236baa8ee.png"
         },
         "face_views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "One-eye profile with left-pointing muzzle, ears complete and same coarse fur/face; far ear remains anatomically visible.",
+              "path": "/workspace/generated_images/exec-2e307d18-6d52-47b2-903e-342caa64483e.png"
+            }
+          ],
+          "reason": "One-eye profile with left-pointing muzzle, ears complete and same coarse fur/face; far ear remains anatomically visible.",
+          "path": "/workspace/generated_images/exec-2e307d18-6d52-47b2-903e-342caa64483e.png"
         },
         "details/cloth_leather": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Reviewed natural veined membrane and finger struts; creature material exception, no manufactured clothing.",
+              "path": "/workspace/generated_images/exec-90bdbba7-59d6-4262-9280-51db07d30292.png"
+            }
+          ],
+          "reason": "Reviewed natural veined membrane and finger struts; creature material exception, no manufactured clothing.",
+          "path": "/workspace/generated_images/exec-90bdbba7-59d6-4262-9280-51db07d30292.png"
         },
         "details/weapon_metal": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Complete single hooked natural thumb claw, finger strut and fur; keratin exception to weapon-metal tile.",
+              "path": "/workspace/generated_images/exec-abf6b5c5-052a-4f75-8b52-876a597cf519.png"
+            }
+          ],
+          "reason": "Complete single hooked natural thumb claw, finger strut and fur; keratin exception to weapon-metal tile.",
+          "path": "/workspace/generated_images/exec-abf6b5c5-052a-4f75-8b52-876a597cf519.png"
         },
         "details/skin": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed crop of accepted membrane source; natural skin/veins, no background. Reuse, zero generation attempts."
         },
         "details/hair": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Reviewed lower-left chest fur crop; no mouth or teeth; zero new generation attempts."
         },
         "turnaround": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "spec": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "notes": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "check": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "face": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "details": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "observed": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [],
+          "reason": "Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json."
         },
         "folded_sheet": {
-          "status": "pending",
+          "status": "accepted",
           "attempts": [],
-          "reason": "Additional folded-wing JPEG at main creature scale, drawn human and ruler."
+          "reason": "Reviewed folded-wing resting pose; dedicated 768\u00d7512 panel at the main sheet scale. Original pose exception, no mirrored view."
         }
       }
     },
@@ -4488,20 +4566,68 @@
       "design_extent_m": 10,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "True lateral golden-brown raptor; whole raised feathered wings, beak, fan tail and tucked feet, natural far-side occlusion; no text.",
+              "path": "/workspace/generated_images/exec-78556f9e-9a7d-49ba-95cd-cc24539103f9.png"
+            }
+          ],
+          "reason": "True lateral golden-brown raptor; whole raised feathered wings, beak, fan tail and tucked feet, natural far-side occlusion; no text.",
+          "path": "/workspace/generated_images/exec-78556f9e-9a7d-49ba-95cd-cc24539103f9.png"
         },
         "views/front": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Symmetric frontal spread-wing raptor; both wing tips complete (left edge crop inspected), two tucked feet, no text.",
+              "path": "/workspace/generated_images/exec-560ad61b-64dc-434b-9a17-5823113091f6.png"
+            }
+          ],
+          "reason": "Symmetric frontal spread-wing raptor; both wing tips complete (left edge crop inspected), two tucked feet, no text.",
+          "path": "/workspace/generated_images/exec-560ad61b-64dc-434b-9a17-5823113091f6.png"
         },
         "views/top": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Vertical dorsal overhead view, head down/tail up; two complete spread wings; no text.",
+              "path": "/workspace/generated_images/exec-b354cd58-c0d8-4e25-8146-ebbbc3e3136f.png"
+            }
+          ],
+          "reason": "Vertical dorsal overhead view, head down/tail up; two complete spread wings; no text.",
+          "path": "/workspace/generated_images/exec-b354cd58-c0d8-4e25-8146-ebbbc3e3136f.png"
         },
         "views/three_quarter": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "rejected",
+              "reason": "Repeated lateral flight angle; head and body insufficiently frontal-oblique.",
+              "path": "/workspace/generated_images/exec-0364108a-af8a-4305-b75d-4ab37d494afc.png"
+            },
+            {
+              "number": 2,
+              "status": "rejected",
+              "reason": "Second attempt still near lateral: chest and head do not provide the requested frontal-oblique angle.",
+              "path": "/workspace/generated_images/exec-55f536a4-da78-44e7-a33d-c6329eae9c17.png"
+            },
+            {
+              "number": 3,
+              "status": "accepted",
+              "reason": "Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips.",
+              "path": "/workspace/generated_images/exec-8ad78d7d-d702-47bc-a80d-10083eb84f89.png"
+            }
+          ],
+          "reason": "Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips.",
+          "path": "/workspace/generated_images/exec-8ad78d7d-d702-47bc-a80d-10083eb84f89.png"
         },
         "turnaround": {
           "status": "pending",
@@ -4534,8 +4660,17 @@
       "design_extent_m": 12,
       "deliverables": {
         "views/side": {
-          "status": "pending",
-          "attempts": []
+          "status": "accepted",
+          "attempts": [
+            {
+              "number": 1,
+              "status": "accepted",
+              "reason": "Strict side flight, serpentine neck/tail, two wing forelimbs and tucked hind feet; all tips complete, no rider/text.",
+              "path": "/workspace/generated_images/exec-187ac643-dd76-4a75-862f-3cc327bbedf2.png"
+            }
+          ],
+          "reason": "Strict side flight, serpentine neck/tail, two wing forelimbs and tucked hind feet; all tips complete, no rider/text.",
+          "path": "/workspace/generated_images/exec-187ac643-dd76-4a75-862f-3cc327bbedf2.png"
         },
         "views/front": {
           "status": "pending",

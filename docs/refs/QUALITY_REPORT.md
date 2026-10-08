@@ -495,32 +495,35 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 | gundabad_bat | views/side | accepted | 1 | Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text. |
 | gundabad_bat | views/front | accepted | 1 | Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text. |
 | gundabad_bat | views/top | accepted | 1 | Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips. |
-| gundabad_bat | views/three_quarter | pending | 0 | Not yet attempted |
-| gundabad_bat | views/folded | pending | 0 | Not yet attempted |
-| gundabad_bat | face_views/front | pending | 0 | Not yet attempted |
-| gundabad_bat | face_views/three_quarter | pending | 0 | Not yet attempted |
-| gundabad_bat | face_views/side | pending | 0 | Not yet attempted |
-| gundabad_bat | details/cloth_leather | pending | 0 | Not yet attempted |
-| gundabad_bat | details/weapon_metal | pending | 0 | Not yet attempted |
-| gundabad_bat | details/skin | pending | 0 | Not yet attempted |
-| gundabad_bat | details/hair | pending | 0 | Not yet attempted |
-| gundabad_bat | turnaround | pending | 0 | Not yet attempted |
-| gundabad_bat | spec | pending | 0 | Not yet attempted |
-| gundabad_bat | notes | pending | 0 | Not yet attempted |
-| gundabad_bat | check | pending | 0 | Not yet attempted |
-| gundabad_bat | face | pending | 0 | Not yet attempted |
-| gundabad_bat | details | pending | 0 | Not yet attempted |
-| gundabad_bat | observed | pending | 0 | Not yet attempted |
-| gundabad_bat | folded_sheet | pending | 0 | Additional folded-wing JPEG at main creature scale, drawn human and ruler. |
-| great_eagle | views/side | pending | 0 | Not yet attempted |
-| great_eagle | views/front | pending | 0 | Not yet attempted |
-| great_eagle | views/top | pending | 0 | Not yet attempted |
-| great_eagle | views/three_quarter | pending | 0 | Not yet attempted |
+| gundabad_bat | views/three_quarter | accepted | 2 | Distinct front-oblique flight with both eyes, near broad wing/far foreshortened wing, two feet and natural anatomy. |
+| gundabad_bat | views/three_quarter attempt 1 | rejected | — | Candidate repeats lateral flight/reference angle; insufficient frontal oblique rotation. |
+| gundabad_bat | views/folded | accepted | 1 | Natural hanging rest pose, two folded wings, two complete curled hind feet, matching original fur/rat-like head, no text. |
+| gundabad_bat | face_views/front | accepted | 1 | Entire head and ears; frontal two-eye animal anatomy, rat-like muzzle and coarse fur; no text. |
+| gundabad_bat | face_views/three_quarter | accepted | 1 | Clear muzzle foreshortening and both eyes; identity retained, whole ears; no text. |
+| gundabad_bat | face_views/side | accepted | 1 | One-eye profile with left-pointing muzzle, ears complete and same coarse fur/face; far ear remains anatomically visible. |
+| gundabad_bat | details/cloth_leather | accepted | 1 | Reviewed natural veined membrane and finger struts; creature material exception, no manufactured clothing. |
+| gundabad_bat | details/weapon_metal | accepted | 1 | Complete single hooked natural thumb claw, finger strut and fur; keratin exception to weapon-metal tile. |
+| gundabad_bat | details/skin | accepted | 0 | Reviewed crop of accepted membrane source; natural skin/veins, no background. Reuse, zero generation attempts. |
+| gundabad_bat | details/hair | accepted | 0 | Reviewed lower-left chest fur crop; no mouth or teeth; zero new generation attempts. |
+| gundabad_bat | turnaround | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | spec | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | notes | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | check | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | face | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | details | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | observed | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| gundabad_bat | folded_sheet | accepted | 0 | Reviewed folded-wing resting pose; dedicated 768×512 panel at the main sheet scale. Original pose exception, no mirrored view. |
+| great_eagle | views/side | accepted | 1 | True lateral golden-brown raptor; whole raised feathered wings, beak, fan tail and tucked feet, natural far-side occlusion; no text. |
+| great_eagle | views/front | accepted | 1 | Symmetric frontal spread-wing raptor; both wing tips complete (left edge crop inspected), two tucked feet, no text. |
+| great_eagle | views/top | accepted | 1 | Vertical dorsal overhead view, head down/tail up; two complete spread wings; no text. |
+| great_eagle | views/three_quarter | accepted | 3 | Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips. |
+| great_eagle | views/three_quarter attempt 1 | rejected | — | Repeated lateral flight angle; head and body insufficiently frontal-oblique. |
+| great_eagle | views/three_quarter attempt 2 | rejected | — | Second attempt still near lateral: chest and head do not provide the requested frontal-oblique angle. |
 | great_eagle | turnaround | pending | 0 | Not yet attempted |
 | great_eagle | spec | pending | 0 | Not yet attempted |
 | great_eagle | notes | pending | 0 | Not yet attempted |
 | great_eagle | check | pending | 0 | Not yet attempted |
-| fell_beast | views/side | pending | 0 | Not yet attempted |
+| fell_beast | views/side | pending | 1 | Generated and saved; awaiting individual visual review. |
 | fell_beast | views/front | pending | 0 | Not yet attempted |
 | fell_beast | views/top | pending | 0 | Not yet attempted |
 | fell_beast | views/three_quarter | pending | 0 | Not yet attempted |
@@ -642,6 +645,6 @@ Gimli loose-back-hair correction and the opaque-kilt troll framing correction bo
 
 ## Validation
 
-- Eighteen compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
+- Twenty compositor regression tests pass (scale, layout, source freshness, schema, budget, reconstruction, landmark regions, supplements, fallback segmentation and whole-library entrypoint).
 - Game build passed. Smoke passed four arena checkpoints with zero errors using `SNAP_CHROME=/usr/bin/chromium`. The default Chromium path was absent; no game files were changed.
 - Latest per-character and whole-library output is saved under `validation/` at each commit checkpoint.

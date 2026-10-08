@@ -31,7 +31,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 | mirkwood_spider | 2.75 | <img src="mirkwood_spider/mirkwood_spider_turnaround.jpg" width="180" alt="mirkwood_spider"> | [spec](mirkwood_spider/spec.json) | [notes](mirkwood_spider/notes.md) | accepted |
 | brood_mother | 6 | <img src="brood_mother/brood_mother_turnaround.jpg" width="180" alt="brood_mother"> | [spec](brood_mother/spec.json) | [notes](brood_mother/notes.md) | accepted |
 | mumak | 14 | <img src="mumak/mumak_turnaround.jpg" width="180" alt="mumak"> | [spec](mumak/spec.json) | [notes](mumak/notes.md) | accepted |
-| gundabad_bat | 7 | — | [spec](gundabad_bat/spec.json) | [notes](gundabad_bat/notes.md) | pending |
+| gundabad_bat | 7 | <img src="gundabad_bat/gundabad_bat_turnaround.jpg" width="180" alt="gundabad_bat"> | [spec](gundabad_bat/spec.json) | [notes](gundabad_bat/notes.md) | accepted |
 | great_eagle | 10 | — | [spec](great_eagle/spec.json) | [notes](great_eagle/notes.md) | pending |
 | fell_beast | 12 | — | [spec](fell_beast/spec.json) | [notes](fell_beast/notes.md) | pending |
 | dwarf_bald | 1.35 | — | [spec](dwarf_bald/spec.json) | [notes](dwarf_bald/notes.md) | pending |
@@ -45,7 +45,7 @@ Branch `reference/character-sheets`; [draft PR #1](https://github.com/vicciz-ceo
 
 ## Composition and storage
 
-Retained library size: **41,945,207 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
+Retained library size: **43,649,941 bytes / 70,000,000 bytes**. Per-character budget: 2,500,000 bytes including all retained sources, finals, JSON and notes. Full-resolution originals stay outside the committed reference library in `/workspace/generated_images`; `sources.json` records provenance. Temporary previews and Python bytecode are not retained assets.
 
 Commands: `python docs/refs/tools/compose.py check <id>` and `python docs/refs/tools/compose.py check --all`. A whole-library PARTIAL result lists missing, rejected or blocked sets rather than certifying them.
 

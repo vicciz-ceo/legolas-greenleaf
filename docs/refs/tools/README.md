@@ -53,3 +53,5 @@ Sampling can use final-sheet `sheet` rectangles or a `source_image` rectangle in
 Additional creature poses: configure composition.pose_targets with an explicit projected axis, extent_m and optional reviewed region_px, then run `compose.py poses <id>`. The additional pose uses the main turnaround scale, a code-drawn 1.85 m human and ruler; reconstruction checks detect scale/source changes. Gundabad bat requires a folded pose. Creature turnaround_labels can name flight poses without generated text.
 
 Creature extent_rules may select reference_overall_height or reference_overall_width for a non-reference view. compose.py derives that extent from the actual reference alpha bounds and landmark span, normalized to the brief target. This is an explicit 2D projection assumption, not inferred 3D anatomy; the main reference ruler still measures the original dimension.
+
+Additional creature resting poses use dedicated 768×512 panels at the main sheet scale; this is a documented roster-specific canvas exception. Creature span checks measure the resampled alpha mask itself and preserve thin extrema if raster reduction would erase them.

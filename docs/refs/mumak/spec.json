@@ -228,6 +228,13 @@
           "projected_extent_m": 17.0126582278481,
           "scale_axis": "height",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            149,
+            240
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -250,15 +257,31 @@
             "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
             "sheet_endpoints_px": [
               [
-                424,
+                424.5,
                 190
               ],
               [
-                424,
+                424.5,
                 430
               ]
             ],
             "sheet_span_px": 240,
+            "resampled_endpoints_px": [
+              [
+                74.5,
+                0
+              ],
+              [
+                74.5,
+                240
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              149,
+              240
+            ],
             "effective_px_per_m": 14.10714285714286
           },
           "human": {
@@ -294,6 +317,13 @@
           "projected_extent_m": 14.0,
           "scale_axis": "height",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            1,
+            360,
+            240
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -316,15 +346,31 @@
             "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
             "sheet_endpoints_px": [
               [
-                1197,
+                1197.0,
                 232
               ],
               [
-                1197,
+                1197.0,
                 430
               ]
             ],
             "sheet_span_px": 198,
+            "resampled_endpoints_px": [
+              [
+                184.0,
+                42
+              ],
+              [
+                184.0,
+                240
+              ]
+            ],
+            "resampled_region_px": [
+              172,
+              42,
+              196,
+              240
+            ],
             "effective_px_per_m": 14.142857142857142
           },
           "human": {
@@ -360,6 +406,13 @@
           "projected_extent_m": 25.518987341772153,
           "scale_axis": "height",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            135,
+            360
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -382,15 +435,31 @@
             "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
             "sheet_endpoints_px": [
               [
-                425,
+                424.5,
                 582
               ],
               [
-                425,
+                424.5,
                 942
               ]
             ],
             "sheet_span_px": 360,
+            "resampled_endpoints_px": [
+              [
+                67.5,
+                0
+              ],
+              [
+                67.5,
+                360
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              135,
+              360
+            ],
             "effective_px_per_m": 14.107142857142856
           },
           "human": {
@@ -426,6 +495,13 @@
           "projected_extent_m": 17.0126582278481,
           "scale_axis": "height",
           "mirrored": false,
+          "resampled_alpha_bbox_px": [
+            0,
+            0,
+            287,
+            240
+          ],
+          "extrema_preserved_after_resampling": false,
           "measurement": {
             "source_endpoints_px": [
               [
@@ -448,15 +524,31 @@
             "definition": "half-open alpha>127 projected extrema inside author-reviewed landmark region",
             "sheet_endpoints_px": [
               [
-                1193,
+                1192.5,
                 702
               ],
               [
-                1193,
+                1192.5,
                 942
               ]
             ],
             "sheet_span_px": 240,
+            "resampled_endpoints_px": [
+              [
+                143.5,
+                0
+              ],
+              [
+                143.5,
+                240
+              ]
+            ],
+            "resampled_region_px": [
+              0,
+              0,
+              288,
+              240
+            ],
             "effective_px_per_m": 14.10714285714286
           },
           "human": {

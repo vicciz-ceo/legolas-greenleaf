@@ -147,6 +147,29 @@ class ComposeTests(unittest.TestCase):
         self.data['composition']['extent_rules']['front']='invented_rule';self.store(self.data)
         with self.assertRaisesRegex(ValueError,'Unknown projected extent rule'):c.turnaround('fixture')
 
+    def test_creature_resampled_thin_tips_keep_actual_span(self):
+        im=Image.new('RGBA',(1600,1000),(0,0,0,0));draw=ImageDraw.Draw(im)
+        draw.polygon([(60,500),(750,50),(750,950)],fill=(90,70,50,255))
+        draw.polygon([(1539,500),(850,50),(850,950)],fill=(90,70,50,255))
+        draw.rectangle((750,450,850,600),fill=(90,70,50,255))
+        draw.line((0,500,60,500),fill=(90,70,50,129))
+        draw.line((1539,500,1599,500),fill=(90,70,50,129))
+        for v in c.VIEWS:im.save(self.folder/f'views/{v}.png')
+        crop,_=c.tight(im)
+        plain=crop.resize((440,round(crop.height*440/crop.width)),Image.Resampling.LANCZOS)
+        b=c.bbox(plain,require_transparency=False)
+        self.assertLess(b[2]-b[0],439)
+        self.data['composition'].update(creature=True,views=list(c.VIEWS),reference_view='side',
+                                        scale_axis='width',scale_extent_m=7.,
+                                        projected_extents_m={v:7. for v in c.VIEWS})
+        self.store(self.data);self.ready()
+        self.assertEqual(c.check('fixture')['status'],'PASS')
+        data=json.loads((self.folder/'spec.json').read_text())
+        for view in data['measured']['turnaround']['views']:
+            self.assertTrue(view['extrema_preserved_after_resampling'])
+            self.assertEqual(view['measurement']['sheet_span_px'],440)
+            b=view['resampled_alpha_bbox_px'];self.assertEqual(b[2]-b[0],440)
+
     def test_supplement_accepted_ledger_cannot_hide_missing_assets(self):
         (c.ROOT/'progress.json').write_text(json.dumps({'entries':{'fixture':{'kind':'supplement','deliverables':{'sheet':{'status':'accepted'}}}}}))
         report=c.check_all()

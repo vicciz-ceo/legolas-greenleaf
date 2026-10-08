@@ -588,23 +588,23 @@ Legacy sheet-call history (separate from individual-view calls): {"turnaround": 
 | views/side | accepted | 1 | Natural lateral flight, two wings with finger struts and thumbs, two clawed hind feet, original rat-like head and grey-brown fur; complete tips, no text. |
 | views/front | accepted | 1 | Front spread view, two wings with natural struts/thumbs, two clawed feet and same original rat-like furred head; complete tips, no text. |
 | views/top | accepted | 1 | Vertical overhead flight view, two spread wings, two tucked feet, matching fur/membranes and complete tips. |
-| views/three_quarter | pending | 0 |  |
-| views/folded | pending | 0 |  |
-| face_views/front | pending | 0 |  |
-| face_views/three_quarter | pending | 0 |  |
-| face_views/side | pending | 0 |  |
-| details/cloth_leather | pending | 0 |  |
-| details/weapon_metal | pending | 0 |  |
-| details/skin | pending | 0 |  |
-| details/hair | pending | 0 |  |
-| turnaround | pending | 0 |  |
-| spec | pending | 0 |  |
-| notes | pending | 0 |  |
-| check | pending | 0 |  |
-| face | pending | 0 |  |
-| details | pending | 0 |  |
-| observed | pending | 0 |  |
-| folded_sheet | pending | 0 | Additional folded-wing JPEG at main creature scale, drawn human and ruler. |
+| views/three_quarter | accepted | 2 | Distinct front-oblique flight with both eyes, near broad wing/far foreshortened wing, two feet and natural anatomy. |
+| views/folded | accepted | 1 | Natural hanging rest pose, two folded wings, two complete curled hind feet, matching original fur/rat-like head, no text. |
+| face_views/front | accepted | 1 | Entire head and ears; frontal two-eye animal anatomy, rat-like muzzle and coarse fur; no text. |
+| face_views/three_quarter | accepted | 1 | Clear muzzle foreshortening and both eyes; identity retained, whole ears; no text. |
+| face_views/side | accepted | 1 | One-eye profile with left-pointing muzzle, ears complete and same coarse fur/face; far ear remains anatomically visible. |
+| details/cloth_leather | accepted | 1 | Reviewed natural veined membrane and finger struts; creature material exception, no manufactured clothing. |
+| details/weapon_metal | accepted | 1 | Complete single hooked natural thumb claw, finger strut and fur; keratin exception to weapon-metal tile. |
+| details/skin | accepted | 0 | Reviewed crop of accepted membrane source; natural skin/veins, no background. Reuse, zero generation attempts. |
+| details/hair | accepted | 0 | Reviewed lower-left chest fur crop; no mouth or teeth; zero new generation attempts. |
+| turnaround | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| spec | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| notes | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| check | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| face | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| details | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| observed | accepted | 0 | Final sheets visually reviewed; geometry/source/sample/budget check PASS; 64 px wing silhouette readable. Validation: validation/gundabad_bat.json. |
+| folded_sheet | accepted | 0 | Reviewed folded-wing resting pose; dedicated 768×512 panel at the main sheet scale. Original pose exception, no mirrored view. |
 
 ## great_eagle
 
@@ -612,10 +612,10 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
-| views/front | pending | 0 |  |
-| views/top | pending | 0 |  |
-| views/three_quarter | pending | 0 |  |
+| views/side | accepted | 1 | True lateral golden-brown raptor; whole raised feathered wings, beak, fan tail and tucked feet, natural far-side occlusion; no text. |
+| views/front | accepted | 1 | Symmetric frontal spread-wing raptor; both wing tips complete (left edge crop inspected), two tucked feet, no text. |
+| views/top | accepted | 1 | Vertical dorsal overhead view, head down/tail up; two complete spread wings; no text. |
+| views/three_quarter | accepted | 3 | Attempt 3: front-oblique broad chest and rotated head; asymmetric wing projection, two feet, complete feather tips. |
 | turnaround | pending | 0 |  |
 | spec | pending | 0 |  |
 | notes | pending | 0 |  |
@@ -627,7 +627,7 @@ Legacy sheet-call history (separate from individual-view calls): {"flight_sheet"
 
 | Deliverable | Status | Attempts | Evidence / next action |
 | --- | --- | --- | --- |
-| views/side | pending | 0 |  |
+| views/side | pending | 1 | Generated and saved; awaiting individual visual review. |
 | views/front | pending | 0 |  |
 | views/top | pending | 0 |  |
 | views/three_quarter | pending | 0 |  |

@@ -20,23 +20,23 @@
     "face": {
       "shape": "Fell beast in FLIGHT: original dark reptilian winged creature, single serpentine neck and narrow toothy head, long tail, TWO bat-like membrane wings, TWO tucked hind legs; far-distance readable silhouette, 12 m wingspan, no rider or gear.",
       "eyes": {
-        "iris_hex": "#5d8bb5",
-        "shape": "almond",
-        "size_note": "natural adult scale, defined upper and lower lids"
+        "iris_hex": "#694523",
+        "shape": "Natural reptilian eye",
+        "size_note": "Original animal anatomy"
       },
-      "brow": "lightly arched pale gold brows",
-      "nose": "straight refined bridge and narrow tip",
-      "lips": "neutral closed, natural narrow upper lip",
-      "ears": "as described; original natural anatomy",
+      "brow": "Natural animal eye ridge",
+      "nose": "Narrow reptilian nostrils",
+      "lips": "Natural narrow toothy jaw",
+      "ears": "No external mammalian ears",
       "skin_base_hex": "#777064",
-      "skin_variation": "faint redness on cheeks, nose and ears"
+      "skin_variation": "Dark grey reptilian scales and bat-like wing membranes"
     },
     "hair": {
       "root_hex": "#5a4c38",
       "tip_hex": "#5a4c38",
-      "length_m": 0.04,
-      "style": "Fell beast in FLIGHT: original dark reptilian winged creature, single serpentine neck and narrow toothy head, long tail, TWO bat-like membrane wings, TWO tucked hind legs; far-distance readable silhouette, 12 m wingspan, no rider or gear.",
-      "braids": "as described, no additional ornamental braids"
+      "length_m": 0,
+      "style": "None; reptilian scales",
+      "braids": "None"
     },
     "outfit_layers": [],
     "armor": [],
@@ -58,7 +58,8 @@
       "ARCHITECTURE.md section 4: applicable scale list"
     ],
     "proportion_note": "Original creature scale target; humanoid-schema proportions are not applicable and are zero. Projected extents and palettes are authored design targets, not recovered 3D measurements.",
-    "description": "Fell beast in FLIGHT: original dark reptilian winged creature, single serpentine neck and narrow toothy head, long tail, TWO bat-like membrane wings, TWO tucked hind legs; far-distance readable silhouette, 12 m wingspan, no rider or gear."
+    "description": "Fell beast in FLIGHT: original dark reptilian winged creature, single serpentine neck and narrow toothy head, long tail, TWO bat-like membrane wings, TWO tucked hind legs; far-distance readable silhouette, 12 m wingspan, no rider or gear.",
+    "wingspan_m": 12
   },
   "composition": {
     "fit_policy": "fit",
@@ -92,15 +93,21 @@
       "top",
       "three_quarter"
     ],
-    "reference_view": "side",
+    "reference_view": "front",
     "scale_axis": "width",
     "scale_extent_m": 12,
     "projected_extents_m": {
       "front": 12,
-      "side": 12,
       "top": 12,
-      "three_quarter": 12
+      "three_quarter": 10.2,
+      "side": 6.0
     },
-    "measurement_note": "Span endpoint pair selected on accepted reference; perpendicular projections require authored projected extent before composing."
+    "measurement_note": "Front wing-tip to wing-tip span is the original target. Other projected extents are explicitly authored 2D assumptions; side generated first for identity. Flight silhouette-only exception: no portraits, detail tiles or albedo samples.",
+    "scale_axes": {
+      "side": "height"
+    },
+    "source_heights": {
+      "body": 256
+    }
   }
 }
