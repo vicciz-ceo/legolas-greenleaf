@@ -7,6 +7,8 @@ import type { EnvironmentPreset, Vec3Tuple } from '../../../core/types';
 import { ENVIRONMENTS } from '../../../core/environment';
 
 const BASE = ENVIRONMENTS.ravenhill_winter;
+/** the engine's preset also carries renderer-only extras (low ground mist, ...) */
+type Preset = EnvironmentPreset & { mist?: number };
 
 /**
  * The reference key: a pale overcast with a cold blue fill (sky #7e8c9d -> #c6d0d9, fog #bac7d2, key
@@ -21,7 +23,7 @@ const GRADE = {
   vignette: 0.32,
 };
 
-const KEY: EnvironmentPreset = {
+const KEY: Preset = {
   ...BASE,
   // key from the left/behind the player (the player faces north through the gorge): the crag, the
   // falls and the cliff faces turned towards him catch light instead of standing in shadow
@@ -38,15 +40,15 @@ const KEY: EnvironmentPreset = {
 const fog = (color: number, density: number) => ({ color, density });
 
 /** the gorge: thick snow haze, but the far falls still read */
-export const ENV_GORGE: EnvironmentPreset = { ...KEY, fog: fog(0xbac7d2, 0.0066), weatherIntensity: 0.55 };
+export const ENV_GORGE: Preset = { ...KEY, fog: fog(0xbac7d2, 0.0066), weatherIntensity: 0.55 };
 /** the bat ride and the tower: the air opens up on the heights */
-export const ENV_HEIGHTS: EnvironmentPreset = { ...KEY, fog: fog(0xbcc8d3, 0.0046), weatherIntensity: 0.55, sunIntensity: 1.9, mist: 0.5 };
+export const ENV_HEIGHTS: Preset = { ...KEY, fog: fog(0xbcc8d3, 0.0046), weatherIntensity: 0.55, sunIntensity: 1.9, mist: 0.5 };
 /** the establishing shot: a lull in the snow, so the tower on its crag reads from the gorge */
-export const ENV_CLEAR: EnvironmentPreset = { ...KEY, fog: fog(0xb6c3cf, 0.0032), weatherIntensity: 0.32, sunIntensity: 1.95, mist: 0.5 };
+export const ENV_CLEAR: Preset = { ...KEY, fog: fog(0xb6c3cf, 0.0032), weatherIntensity: 0.32, sunIntensity: 1.95, mist: 0.5 };
 /** the falling stones: the storm thins on the heights so the blocks hang dark against the abyss */
-export const ENV_SUMMIT: EnvironmentPreset = { ...KEY, fog: fog(0xb8c5d1, 0.0034), weatherIntensity: 0.42, sunIntensity: 1.95, mist: 0.5 };
+export const ENV_SUMMIT: Preset = { ...KEY, fog: fog(0xb8c5d1, 0.0034), weatherIntensity: 0.42, sunIntensity: 1.95, mist: 0.5 };
 /** the outro over the valley: clearer still, the armies visible below */
-export const ENV_VALLEY: EnvironmentPreset = { ...KEY, fog: fog(0xb4c0cc, 0.0021), weatherIntensity: 0.3, sunIntensity: 2.0, mist: 0.4 };
+export const ENV_VALLEY: Preset = { ...KEY, fog: fog(0xb4c0cc, 0.0021), weatherIntensity: 0.3, sunIntensity: 2.0, mist: 0.4 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Terrain finish

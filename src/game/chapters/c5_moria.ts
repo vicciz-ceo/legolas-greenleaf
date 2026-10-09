@@ -13,7 +13,7 @@
  */
 import * as THREE from 'three';
 import type { ChapterDef, ChapterInstance, Enemy, EnemySpec, LevelAPI } from '../../core/types';
-import { ENVIRONMENTS } from '../../core/environment';
+import { ENVIRONMENTS, type EnvironmentPresetEx } from '../../core/environment';
 import { clamp, lerp, smoothstep } from '../../core/math';
 import { buildMoria } from './moria/world';
 import { spawnCast, type Cast } from './moria/cast';
@@ -38,18 +38,29 @@ export const chapter: ChapterDef = {
     const { player, audio, fx, hud } = ctx;
     const quick = ctx.flags.skipIntro === '1';
 
-    // the Moria preset, a touch brighter so the carved pillars and the goblins read beyond the firelight
-    // (and a less violet grade: neutral cold stone, with the fires as the warm accents)
-    const E = ENVIRONMENTS.moria;
-    level.setEnvironment({
+    // the Moria preset, folded with the art key (docs/refs/scenes/moria/lighting.json): a cold, near-black
+    // cave with one blue key, wet slate and the fires as the only warm accents. The json's hemisphere
+    // fill (0.42) is tuned for a different light budget, so it is lifted until the carved pillars and
+    // the goblins still read beyond the firelight; everything else follows the target.
+    const E = ENVIRONMENTS.moria as EnvironmentPresetEx;
+    const moria: EnvironmentPresetEx = {
       ...E,
-      exposure: 2.15,
-      hemiIntensity: 3.7,
-      hemiSky: 0x8a93a2,
-      hemiGround: 0x3e3226,
-      fog: { color: 0x0b0b0d, density: E.fog.density },
-      grade: { ...E.grade, lift: [0.006, 0.005, 0.006], gamma: [1.0, 1.0, 1.0], gain: [1.03, 1.0, 0.97], saturation: 0.95 },
-    });
+      sunColor: 0x9db6d6,
+      sunIntensity: 1.75,
+      sunDirection: [0.25, 0.92, -0.2],
+      hemiSky: 0x2c3f5c,
+      hemiGround: 0x16110c,
+      hemiIntensity: 2.4,
+      envIntensity: 0.3,
+      fog: { color: 0x0a1119, density: 0.012 },
+      exposure: 1.8,
+      bloom: 0.2,
+      grade: { lift: [0.004, 0.006, 0.012], gamma: [0.99, 1.0, 1.02], gain: [0.99, 1.0, 1.05], saturation: 0.92, vignette: 0.34 },
+      contrast: 1.16,
+      mist: 0.5,
+      shafts: 0.55,
+    };
+    level.setEnvironment(moria);
     const world = buildMoria(level);
     /** ?balrog=0..1 pre-sets the glow (look-dev only) */
     if (ctx.flags.balrog) world.setBalrog(clamp(Number(ctx.flags.balrog) || 0, 0, 1));

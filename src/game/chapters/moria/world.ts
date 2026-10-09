@@ -12,8 +12,9 @@ import {
   skeleton, stoneBlock, torch, weaponRack, type Built, type ColliderDesc,
 } from '../../../world';
 import { MeshKit } from '../../../world/util';
-import { dustMotes, glowDisc, runeTexture, tickLook, volumeShaft, weatherStone } from './look';
-import { CH, HALL, HALL_CX, HALL_D, HALL_HZ, HALL_W, HALL_X0, HALL_X1, L, PILLARS } from './layout';
+import { dustMotes, glowDisc, runeTexture, tickLook, tintTextureSet, volumeShaft, weatherStone } from './look';
+import { debrisKit, fireHalos, firePools, flameField, overheadBeams, stoneBrazier, type FlameSpec, type PileSpec } from './dress';
+import { CH, HALL, HALL_CX, HALL_D, HALL_HZ, HALL_PED_Z, HALL_W, HALL_X0, HALL_X1, L, PILLARS } from './layout';
 
 export interface MoriaWorld {
   /** 0..1: how awake the Balrog's glow beyond the east corridor is */
@@ -208,6 +209,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     addColliders(physics, b.colliders, b.object);
     return b;
   };
+  /** every flame of the set: the glow sprites and floor pools are built from this list at the end */
+  const flamePts: { p: THREE.Vector3; size: number }[] = [];
   const lightFlame = (b: Lit, scale: number): FxHandle => {
     b.object.updateMatrixWorld(true);
     const h = fx.fire(b.flameAnchor.getWorldPosition(new THREE.Vector3()), scale);
@@ -225,12 +228,14 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     t.object.updateMatrixWorld(true);
     // the flame anchor of a wall torch is already positioned out from the wall by the builder
     if (lit) lightFlame(t, scale);
+    flamePts.push({ p: t.flameAnchor.getWorldPosition(new THREE.Vector3()), size: 1.4 + scale * 1.8 });
   };
   const stand = (x: number, z: number, scale: number, fire: number) => {
     const b = brazier({ lit: true, scale }) as Lit;
     place(b, x, 0, z, rng.float() * 6);
     b.object.updateMatrixWorld(true);
     lightFlame(b, fire);
+    flamePts.push({ p: b.flameAnchor.getWorldPosition(new THREE.Vector3()), size: 2.0 + scale * 1.6 });
   };
 
   // ── chamber dressing ────────────────────────────────────────────────────
@@ -272,6 +277,7 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     place(b, HALL_X1 - 3.4, 0, s * 8.5, 0);
     b.object.updateMatrixWorld(true);
     lightFlame(b, 2.2);
+    flamePts.push({ p: b.flameAnchor.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 1.6, 0)), size: 7 });
   }
   // wall torches along the hall's north and south walls, in the dark beyond the pillars
   for (let x = 24; x < HALL_X1 - 6; x += 22) {
@@ -312,20 +318,94 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     c.object.position.set(x, HALL.height + 1, z);
     root.add(c.object);
   }
-  // shafts of cold light through cracks in the roof, close enough to the aisle to be walked through
-  const shaftSpots: [number, number][] = [[33, 6.5], [47, -6], [61, 6], [75, -6.5], [89, 6], [103, -6]];
-  for (const [x, z] of shaftSpots) {
+  // two faint shafts of cold light through cracks in the roof, deep in the hall: the Chamber's window shaft is
+  // the one real key light of the chapter, the hall must not read as a field of blue searchlights
+  for (const [x, z] of [[75, 6.5], [103, -6.5]] as [number, number][]) {
     const h = 26.5;
-    const sh = volumeShaft(h, 1.3, 5.0, 0xb4cbf0, 0.5);
+    const sh = volumeShaft(h, 0.9, 3.2, 0xb4cbf0, 0.2);
     sh.position.set(x, h, z);
     root.add(sh);
-    const pool = glowDisc(4.4, 0xaec4e8, 0.34, 'up');
-    pool.position.set(x, 0.05, z);
-    root.add(pool);
-    root.add(dustMotes(new THREE.Vector3(x, 0.5, z), 3.6, 11, 70, 0xdde8ff, 0.055));
+    root.add(dustMotes(new THREE.Vector3(x, 0.5, z), 2.6, 11, 40, 0xdde8ff, 0.05));
   }
   // dust in the firelight along the aisle
   root.add(dustMotes(new THREE.Vector3(HALL_CX, 0.5, 0), 40, 7, 240, 0xd8c8a8, 0.045));
+
+  // ── pedestal braziers down the aisle, beams overhead, the well's windlass ────
+  const pedKit = new MeshKit();
+  const flames: FlameSpec[] = [];
+  const pools: { x: number; z: number; r: number }[] = [];
+  const aisleFires: THREE.Vector3[] = [];
+  const pedColliders: ColliderDesc[] = [];
+  const addPedestal = (x: number, z: number, sc: number, hFlame: number) => {
+    const top = stoneBrazier(pedKit, x, z, sc);
+    flames.push({ x: top.x, y: top.y - 0.02, z: top.z, h: hFlame, w: hFlame * 0.78 });
+    pools.push({ x: top.x, z: top.z, r: 5.2 * sc });
+    aisleFires.push(new THREE.Vector3(top.x, top.y + hFlame * 0.45, top.z));
+    pedColliders.push({ kind: 'cyl', x, z, r: 0.34 * sc, y0: 0, y1: 1.0 * sc, opts: { material: 'stone', walkable: false, tag: 'pedestal' } });
+  };
+  for (const pl of PILLARS) {
+    if (Math.abs(Math.abs(pl.z) - HALL_PED_Z) > 0.1) continue;
+    addPedestal(pl.x, Math.sign(pl.z) * 3.95, 1.15, 1.0);
+  }
+  // the chamber itself: a lit stand either side of the tomb dais and one by the barricade
+  addPedestal(-6.3, 5.0, 0.95, 0.85);
+  addPedestal(7.0, -2.4, 0.95, 0.85);
+  addColliders(physics, pedColliders);
+  root.add(pedKit.build({ name: 'moria_pedestals' }));
+  {
+    const ff = flameField(flames);
+    root.add(ff);
+    const aisleHalo = fireHalos(aisleFires, 3.4, 0xff8a3a, 0.5);
+    root.add(aisleHalo);
+    root.add(firePools(pools, 0xff7a2a, 0.24));
+  }
+  // the pillar tops are tied together by dark stone beams that vanish into the roof's black
+  {
+    const bk = new MeshKit();
+    overheadBeams(bk, Array.from({ length: HALL.cols }, (_, c) => HALL.firstX + c * HALL.spacing), Array.from({ length: HALL.rows }, (_, r) => (r - (HALL.rows - 1) / 2) * HALL.spacing), 21.4, 1.5);
+    root.add(bk.build({ name: 'hall_beams', castShadow: false }));
+  }
+  // the well's windlass: two posts, a beam, a bucket on a chain (the dwarves' last water)
+  {
+    const wk = new MeshKit();
+    const wood = mat('old_wood', { key: 'moriaWindlass', rgb: [0.7, 0.62, 0.55] });
+    const iron = mat('metal_dark', { key: 'moriaBowl', rgb: [0.8, 0.7, 0.62] });
+    const wx = CH.well.x;
+    const wz = CH.well.z;
+    for (const s of [-1, 1]) wk.box(wood, [0.2, 2.5, 0.2], [wx + s * 1.5, 1.25, wz], 0, { tile: 0.8 });
+    wk.box(wood, [3.5, 0.2, 0.24], [wx, 2.55, wz], 0, { tile: 0.8 });
+    for (const s of [-1, 1]) wk.box(wood, [0.16, 0.9, 0.12], [wx + s * 1.0, 2.1, wz], 0, { tile: 0.8 }, [0, s * 0.8]);
+    wk.cyl(wood, 0.2, 0.17, 0.3, 10, [wx + 0.15, 1.2, wz], 0.5);
+    wk.cyl(iron, 0.205, 0.205, 0.03, 10, [wx + 0.15, 1.28, wz], 0.5);
+    wk.cyl(iron, 0.175, 0.175, 0.03, 10, [wx + 0.15, 1.1, wz], 0.5);
+    root.add(wk.build({ name: 'well_windlass' }));
+    const ch = chain(1.3, { link: 0.1, thick: 0.014 });
+    ch.object.position.set(wx + 0.15, 2.45, wz);
+    root.add(ch.object);
+  }
+  // fallen gear and masonry: heaps at the barricade, around the tomb, the arch, the well and at the foot
+  // of every aisle pillar
+  {
+    const piles: PileSpec[] = [
+      { x: -7.3, z: 2.6, r: 2.0, n: 70, gear: 0.4 },
+      { x: -5.6, z: 0.6, r: 1.3, n: 22, gear: 0.7 },
+      { x: -4.2, z: -1.2, r: 1.8, n: 34, gear: 0.7 },
+      { x: 3.8, z: -0.9, r: 1.6, n: 28, gear: 0.7 },
+      { x: 5.6, z: -4.4, r: 1.5, n: 24, gear: 0.6 },
+      { x: -6.2, z: -6.4, r: 1.8, n: 30, gear: 0.6 },
+      { x: 6.4, z: 2.6, r: 1.7, n: 30, gear: 0.6 },
+      { x: 7.0, z: -2.0, r: 1.3, n: 16, gear: 0.5 },
+      { x: 2.2, z: 5.2, r: 1.8, n: 26, gear: 0.7 },
+      { x: 11.0, z: -4.4, r: 2.4, n: 34, gear: 0.4 },
+      { x: 11.0, z: 4.6, r: 2.4, n: 34, gear: 0.4 },
+      { x: 16, z: 0, r: 5.5, n: 36, gear: 0.5 },
+    ];
+    for (const pl of PILLARS) {
+      if (Math.abs(Math.abs(pl.z) - HALL_PED_Z) < 0.1) piles.push({ x: pl.x + (rng.float() - 0.5) * 3, z: Math.sign(pl.z) * 3.5, r: 2.4, n: 22, gear: 0.6 });
+      else piles.push({ x: pl.x + (rng.float() - 0.5) * 3, z: pl.z - Math.sign(pl.z) * 3.4, r: 2.4, n: 10, gear: 0.5 });
+    }
+    root.add(debrisKit(piles, 0x5eed));
+  }
 
   // ── Balin's tomb: carved rune panel (the stock rune bars are dashes) and the lid's inscription ──
   {
@@ -351,13 +431,13 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     lid.position.set(CH.tomb.x - 0.45, 2.112, CH.tomb.z);
     root.add(lid);
     // the shaft's light lands on the lid
-    const spot = glowDisc(1.9, 0xe6eeff, 0.34, 'up');
+    const spot = glowDisc(1.9, 0xdfe9ff, 0.16, 'up');
     spot.position.set(CH.tomb.x, 2.125, CH.tomb.z - 0.5);
     spot.scale.set(1.1, 1.0, 0.8);
     root.add(spot);
     // a stronger shaft than the builder's faint cone: same pose, dusty streaks
     chamber.shaft.visible = false;
-    const sh = volumeShaft(8.8, 0.62, 2.2, 0xd4e4ff, 0.7);
+    const sh = volumeShaft(8.8, 0.6, 1.9, 0xc4d8ff, 0.62);
     sh.position.copy(chamber.shaft.position);
     sh.rotation.copy(chamber.shaft.rotation);
     root.add(sh);
@@ -367,7 +447,7 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   // ── chamber ceiling: coffering ribs and a cornice, so it is not a flat black slab ──
   {
     const k = new MeshKit();
-    const cm = mat('dwarven_stone', { key: 'chamberRib', rgb: [1.0, 1.0, 1.05] });
+    const cm = mat('dwarven_stone', { key: 'chamberRib', rgb: [0.55, 0.55, 0.6] });
     const y = 8.55;
     for (const x of [-5.3, -1.8, 1.8, 5.3]) k.box(cm, [0.7, 0.6, 16], [x, y, 0], 0, { tile: 1.5 });
     for (const z of [-5.3, -1.8, 1.8, 5.3]) k.box(cm, [16, 0.6, 0.7], [0, y + 0.02, z], 0, { tile: 1.5 });
@@ -474,6 +554,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   };
   setBalrog(0);
   // finally: re-grade every dwarven stone material of the set (walls, floors, pillars, ledge, ribs)
+  // the tomb is the one pale thing in the dark: pearl, not paper
+  tintTextureSet([root], 'marble', [0.62, 0.66, 0.74]);
   if (level.ctx.flags.noweather !== '1') weatherStone([root]);
   void balrog;
   void _v;

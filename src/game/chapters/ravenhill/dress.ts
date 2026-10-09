@@ -11,6 +11,7 @@ import { brokenBridge, ruinedWatchtower, ruins, type Built, type HeightFn } from
 import { Rng, fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
 import { FALLS_Z, V, riverX } from './layout';
+import { farHeight } from './vista';
 
 const noShadow = (o: THREE.Object3D) => o.traverse((c) => (c.castShadow = false));
 
@@ -146,12 +147,26 @@ export function gorgeViaduct(level: LevelAPI, z: number, deckY: number, span: nu
   void ground;
 }
 
+/** the flattest x on a strip across the rim (|dx| from..to of the river line), for a building's footing */
+function flatSpot(ground: HeightFn, z: number, side: number, from: number, to: number): number {
+  let best = from;
+  let bs = Infinity;
+  for (let d = from; d <= to; d += 2) {
+    const x = riverX(z) + side * d;
+    const s = Math.abs(ground(x + 4.5, z) - ground(x - 4.5, z)) + Math.abs(ground(x, z + 4.5) - ground(x, z - 4.5)) + Math.abs(ground(x, z) - ground(riverX(z) + side * 30, z)) * 0.05;
+    if (s < bs) {
+      bs = s;
+      best = d;
+    }
+  }
+  return riverX(z) + side * best;
+}
+
 /** low turrets and wall stubs on the cliff tops (the east and west rims of the gorge) */
 export function rimStonework(level: LevelAPI, ground: HeightFn, rng: Rng): void {
-  const rimX = (z: number, side: number) => riverX(z) + side * 43;
   // two small dwarven watch towers per rim
   for (const [z, side, h, r] of [[16, -1, 17, 4.4], [44, 1, 21, 4.8], [60, -1, 15, 3.8], [-6, 1, 14, 4.0]] as [number, number, number, number][]) {
-    const x = rimX(z, side);
+    const x = flatSpot(ground, z, side, 34, 62);
     const t = ruinedWatchtower({ radius: r, height: h, thickness: 1.25, tallSide: side > 0 ? Math.PI : 0, seed: 20 + Math.round(z), snow: true });
     t.object.position.set(x, ground(x, z) - 0.8, z);
     t.object.rotation.y = side > 0 ? Math.PI / 2 : -Math.PI / 2;
@@ -185,7 +200,7 @@ export function farRuins(level: LevelAPI, ground: HeightFn): void {
   ];
   for (const [x, z, len, yaw] of bridges) {
     const b = brokenBridge(len, 7, { seed: Math.round(len), snow: true, depth: 18, gap: len > 60 ? [0.42, 0.58] : undefined });
-    b.object.position.set(x, ground(x, z) + 6.2, z);
+    b.object.position.set(x, farHeight(x, z) + 8.5, z);
     b.object.rotation.y = yaw;
     b.object.scale.setScalar(1.25);
     level.root.add(b.object);
@@ -200,7 +215,7 @@ export function farRuins(level: LevelAPI, ground: HeightFn): void {
   ];
   for (const [x, z, h, r] of towers) {
     const t = ruinedWatchtower({ radius: r, height: h, thickness: 1.4, seed: Math.round(x + z), snow: true });
-    t.object.position.set(x, ground(x, z) - 0.6, z);
+    t.object.position.set(x, (z < -150 || Math.hypot(x, z - 60) > 230 ? farHeight(x, z) : ground(x, z)) - 0.6, z);
     t.object.rotation.y = x * 0.01;
     level.root.add(t.object);
     noShadow(t.object);

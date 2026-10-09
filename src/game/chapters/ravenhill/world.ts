@@ -10,7 +10,9 @@ import {
   removeColliders, rock, ruins, ruinedWatchtower, skeleton, stoneBlock, weaponRack, type Built, type BridgeResult,
 } from '../../../world';
 import { Rng, fbm2 } from '../../../core/rng';
-import { smoothstep } from '../../../core/math';
+import { tuneTerrain } from './look';
+import { buildCloudBanks, buildFarGround, buildRanges } from './vista';
+import { battleSmoke, dressFalls, fallsSpray, farRuins, gorgeViaduct, rimStonework } from './dress';
 import {
   BRIDGE, BRIDGE_CX, BRIDGE_LEN, CRAG, FALLS_H, FALLS_Z, ICE_HALF, ICE_Z, L, PINNACLE, TERRAIN, TOWER, V, heightAt, riverX,
 } from './layout';
@@ -77,79 +79,12 @@ function iceRiver(level: LevelAPI): void {
   }
 }
 
-/** Erebor's flank: a huge hazy mountain north of Ravenhill, baked lighting and haze (no fog) */
-function ereborBackdrop(level: LevelAPI): void {
-  const nx = 110;
-  const nz = 60;
-  const x0 = -950;
-  const x1 = 750;
-  const zA = 330;
-  const zB = 1150;
-  const pos = new Float32Array((nx + 1) * (nz + 1) * 3);
-  const col = new Float32Array((nx + 1) * (nz + 1) * 3);
-  const H = (x: number, z: number): number => {
-    // the Lonely Mountain: one great massif with spurs, its peak far to the north-west
-    const d = Math.hypot((x + 120) * 0.85, z - 820);
-    const cone = Math.max(0, 640 - d * 0.95);
-    const ridges = (1 - Math.abs(fbm2(x * 0.004, z * 0.004, 5, 91))) * 150 * smoothstep(0, 300, cone);
-    const spur = Math.max(0, 260 - Math.hypot(x - 260, (z - 520) * 1.4) * 0.8);
-    const foot = 20 + fbm2(x * 0.01, z * 0.01, 3, 92) * 18;
-    return Math.max(foot, cone + ridges * 0.8, spur + ridges * 0.35);
-  };
-  const idx: number[] = [];
-  for (let j = 0; j <= nz; j++)
-    for (let i = 0; i <= nx; i++) {
-      const x = x0 + ((x1 - x0) * i) / nx;
-      const z = zA + ((zB - zA) * j) / nz;
-      const k = (j * (nx + 1) + i) * 3;
-      pos[k] = x;
-      pos[k + 1] = H(x, z) - 25;
-      pos[k + 2] = z;
-    }
-  for (let j = 0; j < nz; j++)
-    for (let i = 0; i < nx; i++) {
-      const a = j * (nx + 1) + i;
-      idx.push(a, a + nx + 1, a + 1, a + 1, a + nx + 1, a + nx + 2);
-    }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  g.setIndex(idx);
-  g.computeVertexNormals();
-  const nrm = g.getAttribute('normal') as THREE.BufferAttribute;
-  const sun = new THREE.Vector3(-0.45, 0.55, 0.5).normalize();
-  const rockC = new THREE.Color(0x4c5562);
-  const snowC = new THREE.Color(0xe6edf3);
-  const haze = new THREE.Color(0xc0ccd7);
-  const c = new THREE.Color();
-  for (let i = 0; i < nrm.count; i++) {
-    const ny = nrm.getY(i);
-    const x = pos[i * 3];
-    const y = pos[i * 3 + 1];
-    const z = pos[i * 3 + 2];
-    const snow = smoothstep(0.55, 0.78, ny + fbm2(x * 0.02, z * 0.02, 2, 93) * 0.18) * smoothstep(40, 120, y) + (y < 60 ? 0.6 : 0);
-    c.copy(rockC).lerp(snowC, Math.min(1, snow));
-    const lit = 0.55 + 0.6 * Math.max(0, nrm.getX(i) * sun.x + ny * sun.y + nrm.getZ(i) * sun.z);
-    c.multiplyScalar(lit);
-    // aerial perspective: distance and altitude haze (the snow storm swallows the far mountain)
-    const d = Math.hypot(x, z - 60);
-    const hz = Math.min(0.9, 1 - Math.exp(-Math.pow(d * 0.00145, 2)) + 0.25 - y * 0.00012);
-    c.lerp(haze, Math.max(0.35, hz));
-    col.set([c.r, c.g, c.b], i * 3);
-  }
-  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }));
-  m.name = 'erebor_backdrop';
-  m.castShadow = m.receiveShadow = false;
-  m.userData.noAO = true;
-  m.frustumCulled = false;
-  level.root.add(m);
-}
-
 export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   const { physics, fx } = level.ctx;
   const rng = new Rng(4404);
   const terrain = level.terrain({ size: TERRAIN.size, segments: TERRAIN.segments, height: heightAt, style: 'snow', material: 'snow', center: TERRAIN.center, patchiness: 0.25, cavity: 0.7 });
   const ground = terrain.heightAt;
+  tuneTerrain(terrain.mesh);
   const add = (b: Built, x: number, y: number, z: number, yaw = 0, colliders = true): Built => {
     b.object.position.set(x, y, z);
     b.object.rotation.y = yaw;
@@ -162,6 +97,8 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   iceRiver(level);
   const falls = frozenWaterfall(18, FALLS_H, { seed: 3 });
   add(falls, riverX(FALLS_Z), 0, FALLS_Z, Math.PI);
+  dressFalls(falls);
+  fallsSpray(level, rng);
   // break the curtain's straight edges: ice-bound boulders up both sides and along the lip
   {
     const fx0 = riverX(FALLS_Z);
@@ -356,7 +293,20 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   }
 
   // ── far away: Erebor, the battle in the valley, smoke, bat flocks ──────────
-  ereborBackdrop(level);
+  buildRanges(level);
+  buildFarGround(level);
+  buildCloudBanks(level);
+  battleSmoke(level, rng);
+  farRuins(level, ground);
+  rimStonework(level, ground, rng);
+  // a ruined viaduct over the gorge: the deck above both rims, its piers in the cliffs
+  {
+    const z = 36;
+    const span = 90;
+    const xl = riverX(z) - span / 2;
+    const xr = riverX(z) + span / 2;
+    gorgeViaduct(level, z, Math.max(ground(xl, z), ground(xr, z)) + 3.2, span, ground);
+  }
   const armies = {
     orcs: level.crowd({ center: V(L.battle.x - 20, 0, L.battle.z), halfSize: [70, 18], count: 320, kind: 'orc', facing: Math.PI * 0.1, speed: 0, props: true }),
     dwarves: level.crowd({ center: V(L.battle.x + 10, 0, L.battle.z - 28), halfSize: [55, 12], count: 130, kind: 'dwarf', facing: Math.PI, speed: 0, props: true }),

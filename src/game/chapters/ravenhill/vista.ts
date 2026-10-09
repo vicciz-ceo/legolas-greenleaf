@@ -161,6 +161,16 @@ export function buildRanges(level: LevelAPI): void {
 /** centre line of the far valley river (south of the gorge mouth) */
 const valleyRiverX = (z: number): number => 40 + 90 * Math.sin(z * 0.006 + 0.7) + 40 * Math.sin(z * 0.017);
 
+/** the far snow country's surface height (the real height function near the play space, blending to plains) */
+export function farHeight(x: number, z: number): number {
+  const hw = heightAt(x, z);
+  const far = smoothstep(260, 620, Math.hypot(x - TERRAIN.center[0], z - TERRAIN.center[1]));
+  const northPlain = 26 + fbm2(x * 0.004, z * 0.004, 4, 141) * 22;
+  const southPlain = 2 + fbm2(x * 0.005, z * 0.005, 4, 142) * 6;
+  const plain = z > 30 ? northPlain : southPlain;
+  return hw + (plain - hw) * far * 0.85 - 2.2;
+}
+
 /**
  * A coarse copy of the world's height function out to the horizon, sunk a little under the real terrain
  * (which hides it), coloured as snow with belts of dark forest and the pale ribbon of the valley river.
@@ -174,22 +184,14 @@ export function buildFarGround(level: LevelAPI): void {
   const hide = TERRAIN.size / 2 - 4; // cells wholly inside the real terrain are dropped
   const pos = new Float32Array((n + 1) * (n + 1) * 3);
   const col = new Float32Array((n + 1) * (n + 1) * 3);
-  const farH = (x: number, z: number): number => {
-    // the world's own height function near the play space, blending to the ranges' base level far away
-    const hw = heightAt(x, z);
-    const far = smoothstep(260, 620, Math.hypot(x - TERRAIN.center[0], z - TERRAIN.center[1]));
-    const northPlain = 26 + fbm2(x * 0.004, z * 0.004, 4, 141) * 22;
-    const southPlain = 2 + fbm2(x * 0.005, z * 0.005, 4, 142) * 6;
-    const plain = z > 30 ? northPlain : southPlain;
-    return hw + (plain - hw) * far * 0.85;
-  };
+  const farH = farHeight;
   for (let j = 0; j <= n; j++) {
     for (let i = 0; i <= n; i++) {
       const x = cx - half + i * cell;
       const z = cz - half + j * cell;
       const k = (j * (n + 1) + i) * 3;
       pos[k] = x;
-      pos[k + 1] = farH(x, z) - 2.2;
+      pos[k + 1] = farH(x, z);
       pos[k + 2] = z;
     }
   }

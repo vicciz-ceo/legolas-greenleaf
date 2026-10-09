@@ -19,7 +19,9 @@ import { patchShader } from '../../../world/shader';
 
 const NOISE_GLSL = /* glsl */ `
 varying vec3 vMW;
+varying vec3 vMN;
 float mHash(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float mHash2(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float mNoise(vec3 x){
   vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(mHash(i + vec3(0,0,0)), mHash(i + vec3(1,0,0)), f.x), mix(mHash(i + vec3(0,1,0)), mHash(i + vec3(1,1,0)), f.x), f.y),
@@ -31,20 +33,23 @@ float mFbm(vec3 p){ float a = 0.5; float s = 0.0; for (int i = 0; i < 3; i++) { 
 const variants = new Map<string, THREE.Material>();
 
 export interface WeatherOpts {
-  /** 0..1: how much of the carved albedo contrast is flattened (default 0.6) */
+  /** 0..1: how much of the carved albedo contrast is flattened (default 0.78) */
   flatten?: number;
-  /** warm multiplier for the flattened stone (linear rgb) */
+  /** tint of the flattened stone (linear rgb): cold slate by default, the fires supply the warmth */
   warm?: [number, number, number];
   /** grime strength 0..1 (default 0.8) */
   grime?: number;
+  /** mean linear albedo of the stone (default 0.062) */
+  base?: number;
 }
 
 /** a re-graded clone of a dwarven stone material (cached by source material + options) */
 function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
   const flatten = o.flatten ?? 0.78;
-  const warm = o.warm ?? [1.16, 1.0, 0.84];
+  const warm = o.warm ?? [0.94, 1.0, 1.1];
   const grime = o.grime ?? 0.8;
-  const key = `${src.uuid}|${flatten}|${warm.join(',')}|${grime}`;
+  const base = o.base ?? 0.062;
+  const key = `${src.uuid}|${flatten}|${warm.join(',')}|${grime}|${base}`;
   let m = variants.get(key);
   if (m) return m;
   m = src.clone();
@@ -52,9 +57,9 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
   // clone() drops the shader hooks (the macro anti-tiling patch): carry them over, then chain ours
   m.onBeforeCompile = src.onBeforeCompile;
   m.customProgramCacheKey = src.customProgramCacheKey;
-  patchShader(m, `moriaStone|${flatten}|${grime}`, (shader) => {
+  patchShader(m, `moriaStone2|${flatten}|${grime}|${base}`, (shader) => {
     shader.vertexShader = shader.vertexShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vMW;')
+      .replace('#include <common>', '#include <common>\nvarying vec3 vMW;\nvarying vec3 vMN;')
       .replace(
         '#include <project_vertex>',
         `#include <project_vertex>
@@ -62,19 +67,48 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
         #ifdef USE_INSTANCING
           mwp = instanceMatrix * mwp;
         #endif
-        vMW = (modelMatrix * mwp).xyz;`,
+        vMW = (modelMatrix * mwp).xyz;
+        vMN = normalize(mat3(modelMatrix) * objectNormal);`,
       );
     shader.fragmentShader = shader.fragmentShader
       .replace('#include <common>', `#include <common>\n${NOISE_GLSL}`)
       .replace(
         '#include <map_fragment>',
         `#include <map_fragment>
+        float mCarve = 1.0;
+        float mWet = 0.0;
+        float mMortar = 0.0;
+        float mBlockH = 0.5;
         {
-          float lum = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-          // squash the carved albedo toward the stone's mean, then warm it
-          float flatL = mix(lum, 0.075, ${flatten.toFixed(3)});
-          vec3 stoneC = vec3(flatL) * vec3(${warm[0].toFixed(3)}, ${warm[1].toFixed(3)}, ${warm[2].toFixed(3)});
-          diffuseColor.rgb = mix(diffuseColor.rgb, stoneC, ${Math.min(1, flatten + 0.15).toFixed(3)});
+          vec3 wn = normalize(vMN);
+          float isFloor = smoothstep(0.55, 0.88, wn.y);
+          float isCeil = smoothstep(0.55, 0.88, -wn.y);
+          float isFlat = max(isFloor, isCeil);
+          // masonry coordinates: big slabs on floors and ceilings, courses of blocks on walls and pillars
+          vec2 bp = isFlat > 0.5 ? vMW.xz : vec2(abs(wn.x) > abs(wn.z) ? vMW.z : vMW.x, vMW.y);
+          vec2 cell = isFlat > 0.5 ? vec2(2.7, 1.75) : vec2(1.3, 0.66);
+          float row = floor(bp.y / cell.y);
+          float cx = (bp.x + mHash2(vec2(row, 1.7)) * cell.x) / cell.x;
+          vec2 id = vec2(floor(cx), row);
+          float h1 = mHash2(id + 7.1);
+          mBlockH = h1;
+          vec2 fr = vec2(fract(cx) * cell.x, fract(bp.y / cell.y) * cell.y);
+          float e = min(min(fr.x, cell.x - fr.x), min(fr.y, cell.y - fr.y));
+          mMortar = 1.0 - smoothstep(0.014, 0.05, e);
+          float bevel = (1.0 - smoothstep(0.05, 0.2, e)) * (1.0 - mMortar);
+          // the carved diamonds survive on some blocks only (panels), not as wallpaper over everything
+          mCarve = isFlat > 0.5 ? 0.2 : (h1 > 0.56 ? 1.0 : 0.32);
+          // a hairline crack through a few slabs
+          float crack = isFlat > 0.5 ? (1.0 - smoothstep(0.004, 0.02, abs(mNoise(vec3(bp * 0.8, h1 * 9.0)) - 0.5))) * step(0.55, h1) : 0.0;
+
+          float flatL = ${base.toFixed(4)};
+          vec3 stoneC = vec3(flatL) * vec3(${warm[0].toFixed(3)}, ${warm[1].toFixed(3)}, ${warm[2].toFixed(3)}) * diffuse;
+          // carved trim and floor inlay (the builders tint them lighter) read as worn bronze-gold edging
+          float trimK = smoothstep(1.15, 1.45, diffuse.r);
+          stoneC *= mix(vec3(1.0), vec3(1.55, 1.12, 0.62), trimK * 0.8);
+          diffuseColor.rgb = mix(diffuseColor.rgb * 0.5, stoneC, ${Math.min(1, flatten + 0.15).toFixed(3)});
+          float tone = mix(0.7, 1.32, h1);
+          diffuseColor.rgb *= tone * (1.0 - mMortar * 0.62) * (1.0 + bevel * 0.2) * (1.0 - crack * 0.5);
           // grime and erosion: large blotches, finer stains, and damp darkening near the floor
           float n1 = mNoise(vMW * 0.17) * 0.65 + mNoise(vMW * 0.37 + 5.3) * 0.35;
           float n2 = mNoise(vMW * 1.1 + 3.7);
@@ -84,9 +118,20 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
           float g = ${grime.toFixed(3)};
           diffuseColor.rgb *= mix(1.0, mix(0.5, 1.4, blotch), g) * mix(1.0, mix(0.72, 1.18, n2), g);
           diffuseColor.rgb *= 1.0 - g * 0.32 * streak * (1.0 - smoothstep(0.0, 9.0, vMW.y));
-          diffuseColor.rgb *= mix(0.78, 1.0, smoothstep(0.0, 1.6, vMW.y));
+          diffuseColor.rgb *= mix(0.7, 1.0, smoothstep(0.0, 1.6, vMW.y));
+          // wet patches on the floor: darker, glossy, they pick the fires up as long streaks
+          float puddle = smoothstep(0.34, 0.6, mNoise(vec3(vMW.x * 0.21, 1.3, vMW.z * 0.21)) * 0.7 + mNoise(vec3(vMW.x * 0.7, 2.9, vMW.z * 0.7)) * 0.3);
+          mWet = isFloor * mix(0.35, 1.0, puddle);
+          diffuseColor.rgb *= 1.0 - 0.42 * mWet;
         }`,
-      );
+      )
+      .replace(
+        '#include <roughnessmap_fragment>',
+        `#include <roughnessmap_fragment>
+        roughnessFactor = clamp(roughnessFactor + mMortar * 0.3, 0.04, 1.0);
+        roughnessFactor = mix(roughnessFactor, 0.1 + 0.18 * mBlockH, mWet);`,
+      )
+      .replace('#include <normal_fragment_maps>', THREE.ShaderChunk.normal_fragment_maps.replace('mapN.xy *= normalScale;', 'mapN.xy *= normalScale * mCarve;'));
   });
   variants.set(key, m);
   return m;
@@ -112,7 +157,7 @@ export function weatherStone(roots: THREE.Object3D[], o: WeatherOpts = {}): void
 // ── light shafts, motes, pools ──────────────────────────────────────────────
 
 /** drifting shaft clock: one uniform object shared by every shaft and mote cloud */
-const clock = { value: 0 };
+export const clock = { value: 0 };
 export function tickLook(dt: number): void {
   clock.value += dt;
 }
@@ -298,4 +343,35 @@ export function runeTexture(w: number, h: number, cols: number, rows: number, se
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
   return tex;
+}
+
+// ── material tint ───────────────────────────────────────────────────────────
+
+const tinted = new Map<string, THREE.Material>();
+
+/** swap every material of texture set `name` under `roots` for a clone whose colour is multiplied by `rgb` */
+export function tintTextureSet(roots: THREE.Object3D[], name: Parameters<typeof getTextureSet>[0], rgb: [number, number, number]): void {
+  const source = getTextureSet(name).map.source;
+  const swap = (m: THREE.Material): THREE.Material => {
+    const std = m as THREE.MeshStandardMaterial;
+    if (!std.map || std.map.source !== source || m.userData.tinted) return m;
+    const key = `${m.uuid}|${rgb.join(',')}`;
+    let c = tinted.get(key);
+    if (!c) {
+      c = m.clone();
+      c.onBeforeCompile = m.onBeforeCompile;
+      c.customProgramCacheKey = m.customProgramCacheKey;
+      (c as THREE.MeshStandardMaterial).color.multiply(new THREE.Color(rgb[0], rgb[1], rgb[2]));
+      c.userData = { ...m.userData, shared: true, tinted: true };
+      tinted.set(key, c);
+    }
+    return c;
+  };
+  for (const root of roots) {
+    root.traverse((obj) => {
+      const mesh = obj as THREE.Mesh;
+      if (!mesh.isMesh || !mesh.material) return;
+      mesh.material = Array.isArray(mesh.material) ? mesh.material.map(swap) : swap(mesh.material);
+    });
+  }
 }

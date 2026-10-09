@@ -41,6 +41,8 @@ export const PILLARS: { x: number; z: number }[] = (() => {
   }
   return out;
 })();
+/** |z| of the two pillar rows that flank the central aisle */
+export const HALL_PED_Z = HALL.spacing / 2;
 /** half extent of a pillar's collider (see pillar(): size * 0.55) */
 export const PILLAR_HALF = HALL.size * 0.55;
 

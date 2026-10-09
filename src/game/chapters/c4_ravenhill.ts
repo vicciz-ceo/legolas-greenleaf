@@ -13,8 +13,7 @@
  * creature in src/creatures/bat.ts (lab: gundabad_bat, gundabad_bat_rider).
  */
 import * as THREE from 'three';
-import type { Ally, ChapterDef, ColliderHandle, Combatant, ChapterInstance, Enemy, EnvironmentPreset, LevelAPI } from '../../core/types';
-import { ENVIRONMENTS } from '../../core/environment';
+import type { Ally, ChapterDef, ColliderHandle, Combatant, ChapterInstance, Enemy, LevelAPI } from '../../core/types';
 import { Path, addColliders, ringColliders, stoneBlock } from '../../world';
 import { clamp, yawOf } from '../../core/math';
 import { BRIDGE, BRIDGE_CX, CRAG, GAP_X0, L, PINNACLE, TOP_FLOOR_Y, TOP_HOLE, TOP_HOLE_R, TOWER, V, riverX } from './ravenhill/layout';
@@ -24,6 +23,7 @@ import { GiantBat, MountBat, batRide, type BatRide } from './ravenhill/bats';
 import { spawnBolg, type BolgBoss } from './ravenhill/bolg';
 import { createFallingStones } from './ravenhill/stones';
 import { installIce } from './ravenhill/ice';
+import { ENV_CLEAR, ENV_GORGE, ENV_HEIGHTS, ENV_SUMMIT, ENV_VALLEY } from './ravenhill/look';
 
 const CHECKPOINTS = ['The Frozen Falls', 'The Bat Ride', 'The Tower', 'The Falling Stones'];
 const BOLG_HP = 3200;
@@ -40,18 +40,7 @@ function slay(c: Combatant, killer: Combatant | null): void {
   else c.takeDamage({ amount: c.hp + 1e4, type: 'scripted', source: killer });
 }
 
-/** the gorge keeps the preset's thick snow haze; up on the heights the air clears a little */
-const BASE = ENVIRONMENTS.ravenhill_winter;
-/** a touch more depth in the shadows than the stock preset: dark rock against the snow, as in the film */
-const GRADE = { ...BASE.grade, lift: [-0.012, -0.008, -0.002] as [number, number, number], saturation: 0.8 };
-const ENV_GORGE: EnvironmentPreset = { ...BASE, fog: { color: 0xbac7d2, density: 0.0068 }, weatherIntensity: 0.7, exposure: 0.97, grade: GRADE };
-const ENV_HEIGHTS: EnvironmentPreset = { ...BASE, fog: { color: 0xbcc8d3, density: 0.0056 }, weatherIntensity: 0.8, sunIntensity: 2.05, exposure: 0.97, grade: GRADE };
-/** the establishing shot: a lull in the snow, so the tower on its crag reads from the gorge */
-const ENV_CLEAR: EnvironmentPreset = { ...BASE, fog: { color: 0xb6c3cf, density: 0.0034 }, weatherIntensity: 0.4, sunIntensity: 2.1, exposure: 0.96, grade: GRADE };
-/** the falling stones: the storm thins on the heights so the blocks hang dark against the abyss */
-const ENV_SUMMIT: EnvironmentPreset = { ...BASE, fog: { color: 0xb8c5d1, density: 0.0036 }, weatherIntensity: 0.55, sunIntensity: 2.1, exposure: 0.96, grade: GRADE };
-/** the outro over the valley: clearer still, the armies visible below */
-const ENV_VALLEY: EnvironmentPreset = { ...BASE, fog: { color: 0xb4c0cc, density: 0.0022 }, weatherIntensity: 0.35, sunIntensity: 2.15, exposure: 0.96, grade: GRADE };
+/** the environment key per beat (lighting.json folded in): see ./ravenhill/look.ts */
 
 /**
  * The giant bat's root positions for the ride: from the falls up past the frozen curtain, over the
