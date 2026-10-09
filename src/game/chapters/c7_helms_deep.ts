@@ -41,8 +41,8 @@ const DAWN_LEAD = 50;
 const DAWN_SHOTS = {
   riderZ: 106,
   riderD: 50,
-  /** from the slope's southern flank: the riders massed on the shelf's edge, the dawn beyond */
-  ridge: { p: [165, 6, 86], p2: [166, 6.5, 88], l: [189, 4, 107], fov: 42 },
+  /** from above the slope's southern flank: the riders massed on the shelf, the White Rider in front */
+  ridge: { p: [170, 8, 84], p2: [172, 7.5, 86.5], l: [190, 4, 104], fov: 50 },
   /** on the shelf, low: the White Rider close, the host of riders behind him against the dawn */
   white: { p: [174, 1.3, 97], l: [187, 4, 111], fov: 44 },
   /** from the slope's southern flank: the charge pours down the slope toward the coomb */
@@ -857,7 +857,7 @@ export const chapter: ChapterDef = {
       }
       level.setEnvironment(lerpEnv(STORM, DAWN, 0.8));
       const at = (x: number, up: number, z: number) => V(x, world.ground(x, z) + up, z);
-      // from the slope's southern flank: the riders massing on the shelf against the dawn
+      // from above the southern flank: the riders massing on the shelf
       const A = DAWN_SHOTS.ridge;
       level.cameraShot({ position: at(A.p[0], A.p[1], A.p[2]), lookAt: at(A.l[0], A.l[1], A.l[2]), fov: A.fov, blend: 0 });
       await level.wait(0.1); // let the cut land before the slow push-in starts from it
