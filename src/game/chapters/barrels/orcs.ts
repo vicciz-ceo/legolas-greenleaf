@@ -45,6 +45,16 @@ interface Leaper {
   reach: [number, number];
 }
 
+/** an enemy walking a chain of waypoints (the gate stairs) */
+interface Route {
+  e: Enemy;
+  pts: THREE.Vector3[];
+  i: number;
+  /** best horizontal distance to the current waypoint so far, and the seconds since it improved */
+  best: number;
+  stall: number;
+}
+
 export interface LeaperOpts extends Partial<EnemySpec> {
   /** the leaper stands on something other than a bank (the log bridge) at world position `at` */
   at?: THREE.Vector3;
@@ -54,7 +64,7 @@ export interface LeaperOpts extends Partial<EnemySpec> {
 
 export class RiverFoes {
   private readonly leapers: Leaper[] = [];
-  private readonly routes: { e: Enemy; pts: THREE.Vector3[]; i: number }[] = [];
+  private readonly routes: Route[] = [];
   private readonly immune = new Set<Combatant>();
   private sweepT = 0;
   private rng: () => number;
@@ -128,13 +138,72 @@ export class RiverFoes {
 
   /** walk an enemy along waypoints (the stairs), then let its AI take over */
   route(e: Enemy, pts: THREE.Vector3[]): Enemy {
-    this.routes.push({ e, pts: pts.map((p) => p.clone()), i: 0 });
+    this.routes.push({ e, pts: pts.map((p) => p.clone()), i: 0, best: Infinity, stall: 0 });
     return e;
+  }
+
+  /**
+   * Waypoint follower. Arrival is judged on the HORIZONTAL distance (the engine's own 3-D test never
+   * fires when the stair tread is higher than the waypoint) and a walker that stops making progress
+   * (shoved off the stairs by his mates and wedged against the cheek wall) is put back on the chain.
+   */
+  private stepRoutes(dt: number): void {
+    for (let i = this.routes.length - 1; i >= 0; i--) {
+      const r = this.routes[i];
+      const e = r.e;
+      if (!e.alive || r.i >= r.pts.length) {
+        if (e.alive && r.i >= r.pts.length) e.moveTarget = null;
+        this.routes.splice(i, 1);
+        continue;
+      }
+      const wp = r.pts[r.i];
+      const dh = Math.hypot(wp.x - e.position.x, wp.z - e.position.z);
+      const last = r.i === r.pts.length - 1;
+      if (dh < (last ? 1.1 : 1.5) && Math.abs(wp.y - e.position.y) < 1.8) {
+        r.i++;
+        r.best = Infinity;
+        r.stall = 0;
+        e.moveTarget = r.i < r.pts.length ? r.pts[r.i].clone() : null;
+        continue;
+      }
+      if (!e.moveTarget) e.moveTarget = wp.clone();
+      if (dh < r.best - 0.25) {
+        r.best = dh;
+        r.stall = 0;
+      } else {
+        // a walker locked in a fight with the player is not stalled
+        const pd = Math.hypot(e.position.x - this.level.ctx.player.position.x, e.position.z - this.level.ctx.player.position.z);
+        r.stall = pd < 3.5 ? 0 : r.stall + dt;
+      }
+      if (r.stall > 2.6) {
+        e.position.copy(wp);
+        e.velocity.set(0, 0, 0);
+        r.stall = 0;
+        r.best = Infinity;
+      }
+    }
   }
 
   /** an enemy the water must not claim (the captain) */
   protect(c: Combatant): void {
     this.immune.add(c);
+  }
+
+  /** true while the enemy is still walking his waypoint chain */
+  onRoute(e: Enemy): boolean {
+    return this.routes.some((r) => r.e === e);
+  }
+
+  /** take an enemy out of play for good (he fell behind, or the story has moved on) */
+  drop(c: Enemy): void {
+    this.immune.delete(c);
+    const lp = this.leapers.find((x) => x.e === c);
+    if (lp) {
+      this.release(lp);
+      lp.state = 'done';
+    }
+    for (let i = this.routes.length - 1; i >= 0; i--) if (this.routes[i].e === c) this.routes.splice(i, 1);
+    this.level.removeCombatant(c);
   }
 
   /** orcs currently riding barrels */
@@ -153,23 +222,13 @@ export class RiverFoes {
   update(dt: number): void {
     const { player } = this.level.ctx;
     for (const l of this.leapers) this.step(l, dt);
-    for (let i = this.routes.length - 1; i >= 0; i--) {
-      const r = this.routes[i];
-      if (!r.e.alive || r.i >= r.pts.length + 1) {
-        this.routes.splice(i, 1);
-        continue;
-      }
-      if (!r.e.moveTarget) {
-        if (r.i < r.pts.length) r.e.moveTarget = r.pts[r.i].clone();
-        r.i++;
-      }
-    }
+    this.stepRoutes(dt);
     this.sweepT -= dt;
     if (this.sweepT > 0) return;
     this.sweepT = 0.25;
     const { fx, audio } = this.level.ctx;
     for (const c of this.level.ctx.combatants.byTeam('enemy')) {
-      if (!c.alive || this.immune.has(c)) continue;
+      if (!c.alive || this.immune.has(c) || c.name === 'Rope lashing') continue;
       const dx = c.position.x - player.position.x;
       const dz = c.position.z - player.position.z;
       if (dx * dx + dz * dz > 140 * 140 && !c.isBoss) {

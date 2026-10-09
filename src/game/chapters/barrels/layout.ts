@@ -30,7 +30,8 @@ export const terrainPath = new Path(RIVER_PTS, { step: 3 });
 export const RIVER_LEN = riverPath.length;
 
 /** terrain extent */
-export const TERRAIN = { size: 700, segments: 248, center: [0, 306] as [number, number] };
+// (reaches well past the river's end at z=640: the shingle bank must not sit on the terrain's edge)
+export const TERRAIN = { size: 780, segments: 276, center: [0, 336] as [number, number] };
 
 /** landmarks, metres downstream */
 export const S = {
@@ -71,8 +72,8 @@ export function widthAt(s: number): number {
 
 /** how fast the water (and the barrels) run, m/s, along the course */
 const SPEED: [number, number][] = [
-  [0, 3], [76, 5], [100, 6.5], [168, 7.5], [200, 8.8], [330, 9.6], [380, 10.2], [410, 8.6], [440, 7], [520, 7.6], [560, 9.2],
-  [650, 9.6], [690, 8.4], [720, 5], [770, 2.6], [813, 1.4],
+  [0, 3], [76, 5], [100, 6.5], [168, 7.2], [200, 7.4], [330, 8.0], [380, 8.4], [410, 7.2], [440, 6.2], [520, 6.4], [560, 7.5],
+  [650, 8.0], [690, 7.2], [720, 5.6], [770, 3.8], [813, 1.4],
 ];
 
 export function flowSpeedAt(s: number): number {

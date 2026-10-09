@@ -5,9 +5,9 @@
  *   along its facing until a sampled figure has covered `march` metres, then stands (idle sway).
  *   Crowds animate on the real-time clock, so the stop test reads a figure's actual position
  *   instead of integrating game time (slow-mo and pause cannot make a host overshoot).
- * - Each Mordor host has a hidden twin, built at its resting place facing away. `rout()` swaps the
- *   twin in (half of it falls on the spot, the rest runs): crowds cannot turn around, so this is
- *   how the host breaks and flees when Sauron falls.
+ * - Each Mordor host has a twin at its resting place facing away, built when the host breaks (not at
+ *   load). `rout()` swaps it in (half of it falls on the spot, the rest runs): crowds cannot turn
+ *   around, so this is how the host breaks and flees when Sauron falls.
  */
 import * as THREE from 'three';
 import type { CrowdHandle, LevelAPI } from '../../../core/types';
@@ -32,6 +32,35 @@ const noShadow = (c: CrowdHandle): void => {
   });
 };
 
+/**
+ * Frustum-cull a standing crowd with a hand-set sphere (the world crowd module never culls: its
+ * instance matrices move, and its animation clock ticks from onBeforeRender, so a crowd must only be
+ * culled while it stands still). Without this every figure of every host is drawn from every view.
+ */
+export function cullStanding(c: CrowdHandle, cx: number, cz: number, half: [number, number]): void {
+  const sphere = new THREE.Sphere(new THREE.Vector3(cx, 6, cz), Math.hypot(half[0], half[1]) + 14);
+  c.mesh.traverse((o) => {
+    const im = o as THREE.InstancedMesh;
+    if (!im.isInstancedMesh) return;
+    im.boundingSphere = sphere.clone();
+    im.frustumCulled = true;
+  });
+}
+
+/**
+ * Orc hosts are the darkest thing on a dark plain: lift their cloth tint so a host reads as a mass of
+ * figures (not as ground) from the hills. (The crowd module multiplies this tint into the cloth only.)
+ */
+function liftTint(c: CrowdHandle, k: number): void {
+  c.mesh.traverse((o) => {
+    const im = o as THREE.InstancedMesh;
+    if (!im.isInstancedMesh || !im.instanceColor) return;
+    const a = im.instanceColor.array as Float32Array;
+    for (let i = 0; i < a.length; i++) a[i] *= k;
+    im.instanceColor.needsUpdate = true;
+  });
+}
+
 function firstInstanced(c: CrowdHandle): THREE.InstancedMesh | null {
   let found: THREE.InstancedMesh | null = null;
   c.mesh.traverse((o) => {
@@ -50,28 +79,45 @@ export class HostSystem {
   private readonly fleeing: CrowdHandle[] = [];
   readonly hordes: HordeSystem;
 
-  constructor(private readonly level: LevelAPI, private readonly ground: (x: number, z: number) => number) {
+  private constructor(private readonly level: LevelAPI, private readonly ground: (x: number, z: number) => number, hordes: HordeSystem) {
+    this.hordes = hordes;
+  }
+
+  /**
+   * Build every host (detailed crowds in front, silhouette hordes behind, the Army of the West). The
+   * hidden twins are NOT built here: they are made when the host breaks (see rout()), so the loading
+   * screen does not pay for crowds that are only needed at the very end. `yieldFn` lets the loading UI
+   * repaint between hosts.
+   */
+  static async create(level: LevelAPI, ground: (x: number, z: number) => number, yieldFn: () => Promise<void>): Promise<HostSystem> {
+    const hs = new HostSystem(level, ground, new HordeSystem(level, ground, HORDES));
+    await yieldFn();
     for (const def of HOSTS) {
       const crowd = level.crowd({ center: new THREE.Vector3(def.center[0], 0, def.center[1]), halfSize: def.half, count: def.count, kind: def.kind, facing: def.facing, speed: 0, props: true });
       noShadow(crowd);
+      if (def.kind === 'orc') liftTint(crowd, 1.5);
       const sample = firstInstanced(crowd);
       const arr = sample?.instanceMatrix.array as Float32Array | undefined;
-      this.marchers.push({ def, crowd, twin: null, sample, startX: arr ? arr[12] : def.center[0], startZ: arr ? arr[14] : def.center[1], state: def.march > 0 ? 'wait' : 'stand', t: 0 });
+      hs.marchers.push({ def, crowd, twin: null, sample, startX: arr ? arr[12] : def.center[0], startZ: arr ? arr[14] : def.center[1], state: def.march > 0 ? 'wait' : 'stand', t: 0 });
+      if (def.march <= 0) cullStanding(crowd, def.center[0], def.center[1], def.half);
+      await yieldFn();
     }
-    this.hordes = new HordeSystem(level, ground, HORDES);
     for (const l of ARMY) {
       const c = level.crowd({ center: new THREE.Vector3(l.center[0], 0, l.center[1]), halfSize: l.half, count: l.count, kind: l.kind, facing: l.facing, speed: 0, props: true });
       noShadow(c);
-      this.army.push(c);
+      cullStanding(c, l.center[0], l.center[1], l.half);
+      hs.army.push(c);
     }
-    // hidden twins at the resting places, facing away
-    for (const m of this.marchers) {
-      const [ex, ez] = hostEnd(m.def);
-      const twin = level.crowd({ center: new THREE.Vector3(ex, 0, ez), halfSize: m.def.half, count: m.def.count, kind: m.def.kind, facing: m.def.facing + Math.PI, speed: 0, props: false });
-      noShadow(twin);
-      twin.mesh.visible = false;
-      m.twin = twin;
-    }
+    return hs;
+  }
+
+  /** the host's twin: a crowd at its resting place facing away (crowds cannot turn around) */
+  private makeTwin(m: Marcher): CrowdHandle {
+    const [ex, ez] = hostEnd(m.def);
+    const twin = this.level.crowd({ center: new THREE.Vector3(ex, 0, ez), halfSize: m.def.half, count: m.def.count, kind: m.def.kind, facing: m.def.facing + Math.PI, speed: 0, props: false });
+    noShadow(twin);
+    if (m.def.kind === 'orc') liftTint(twin, 1.5);
+    return twin;
   }
 
   /** the gate opens: the hosts begin to move after their delays */
@@ -89,6 +135,8 @@ export class HostSystem {
     for (const m of this.marchers) {
       if (m.def.march <= 0 || m.state === 'stand') continue;
       m.state = 'stand';
+      const [rx, rz] = hostEnd(m.def);
+      cullStanding(m.crowd, rx, rz, m.def.half);
       const dx = Math.sin(m.def.facing) * m.def.march;
       const dz = Math.cos(m.def.facing) * m.def.march;
       m.crowd.mesh.traverse((o) => {
@@ -124,6 +172,8 @@ export class HostSystem {
         if (d >= m.def.march) {
           m.state = 'stand';
           m.crowd.setSpeed(0);
+          const [rx, rz] = hostEnd(m.def);
+          cullStanding(m.crowd, rx, rz, m.def.half);
         }
       }
     }
@@ -149,12 +199,11 @@ export class HostSystem {
     this.hordes.rout();
     for (const m of this.marchers) {
       m.crowd.mesh.visible = false;
-      if (m.twin) {
-        m.twin.mesh.visible = true;
-        m.twin.thin(0.45);
-        m.twin.setSpeed(0);
-        this.fleeing.push(m.twin);
-      }
+      m.twin ??= this.makeTwin(m);
+      m.twin.mesh.visible = true;
+      m.twin.thin(0.45);
+      m.twin.setSpeed(0);
+      this.fleeing.push(m.twin);
     }
   }
 

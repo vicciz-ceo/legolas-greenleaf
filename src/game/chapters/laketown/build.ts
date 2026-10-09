@@ -33,6 +33,8 @@ function materialSignature(m: THREE.Material): string {
 }
 
 export interface BakeOpts {
+  /** swap a material for another before merging (return null to keep it) */
+  replace?: (m: THREE.Material) => THREE.Material | null;
   /** chunk edge in metres: one merged mesh per (chunk, material) so far chunks are culled */
   cell?: number;
   name?: string;
@@ -44,6 +46,11 @@ export interface BakeOpts {
  * the caller can add them as they are). Materials with the same look collapse into one (the lantern
  * glass the builders create per call), so a town of lanterns is a handful of draw calls.
  */
+/** the warm glass every lantern in the town shares (the builders' own glass reads nearly white) */
+export function warmGlass(): THREE.MeshStandardMaterial {
+  return plain(0xff9a40, { roughness: 0.3, emissive: 0xff7a1c, emissiveIntensity: 2.0, key: 'ltGlass' });
+}
+
 export function bakeStatic(objects: readonly THREE.Object3D[], o: BakeOpts = {}): { group: THREE.Group; left: THREE.Object3D[] } {
   const cell = o.cell ?? 70;
   const group = new THREE.Group();
@@ -64,8 +71,9 @@ export function bakeStatic(objects: readonly THREE.Object3D[], o: BakeOpts = {})
         return;
       }
       if (!m.visible || m.userData.collider || Array.isArray(m.material)) return;
-      const mt = m.material as THREE.Material;
+      let mt = m.material as THREE.Material;
       if (!mt || mt.visible === false) return;
+      mt = o.replace?.(mt) ?? mt;
       if ((mt as THREE.ShaderMaterial).isShaderMaterial) {
         keep.push(m);
         return;
@@ -243,7 +251,7 @@ export function railing(segs: { ax: number; az: number; bx: number; bz: number }
 export function lanternString(a: THREE.Vector3, b: THREE.Vector3, count: number, sag = 0.7, seed = 1): THREE.Group {
   const kit = new MeshKit();
   const rope = plain(0x2a2218, { roughness: 1, key: 'cord' });
-  const glass = plain(0xffb768, { roughness: 0.3, emissive: 0xff8a2c, emissiveIntensity: 2.6, key: 'strungGlass' });
+  const glass = plain(0xff9a40, { roughness: 0.3, emissive: 0xff7a1c, emissiveIntensity: 2.0, key: 'strungGlass' });
   const iron = mat('metal_dark', { key: 'lantern' });
   const rng = new Rng(seed);
   const n = 12;
@@ -273,23 +281,70 @@ export function lanternString(a: THREE.Vector3, b: THREE.Vector3, count: number,
 }
 
 let netTexture: THREE.CanvasTexture | null = null;
-/** a diamond-mesh fishing-net texture (alpha tested), built once */
+/**
+ * A hand-knotted fishing-net texture (alpha tested), built once: an irregular diamond mesh (every knot
+ * jittered, slightly different rope thickness, a knot dot at each crossing), tileable. Thin and soft, so it
+ * fades into a haze with distance instead of moire-ing like a chain-link fence.
+ */
 function netTex(): THREE.CanvasTexture {
   if (netTexture) return netTexture;
+  const N = 256;
   const c = document.createElement('canvas');
-  c.width = c.height = 128;
+  c.width = c.height = N;
   const g = c.getContext('2d')!;
-  g.clearRect(0, 0, 128, 128);
-  g.strokeStyle = '#d6cfb8';
-  g.lineWidth = 3.2;
+  g.clearRect(0, 0, N, N);
+  const rng = new Rng(917);
+  const cols = 7;
+  const rows = 14; // diamond rows: a knot every half cell, alternate rows offset
+  const cw = N / cols;
+  const rh = N / rows;
+  const knots: { x: number; y: number }[][] = [];
+  for (let j = 0; j < rows; j++) {
+    const row: { x: number; y: number }[] = [];
+    for (let i = 0; i < cols; i++) {
+      row.push({ x: (i + (j % 2 ? 0.5 : 0)) * cw + (rng.float() - 0.5) * cw * 0.28, y: j * rh + (rng.float() - 0.5) * rh * 0.5 });
+    }
+    knots.push(row);
+  }
   g.lineCap = 'round';
-  for (let i = -128; i <= 256; i += 32) {
+  const seg = (a: { x: number; y: number }, b: { x: number; y: number }, w: number, al: number) => {
+    g.strokeStyle = `rgba(214,200,168,${al})`;
+    g.lineWidth = w;
+    for (const ox of [-N, 0, N]) {
+      for (const oy of [-N, 0, N]) {
+        g.beginPath();
+        g.moveTo(a.x + ox, a.y + oy);
+        // a slack rope: the midpoint sags a little, differently per strand
+        g.quadraticCurveTo((a.x + b.x) / 2 + ox + (rng.float() - 0.5) * 3, (a.y + b.y) / 2 + oy + 1.5 + rng.float() * 2, b.x + ox, b.y + oy);
+        g.stroke();
+      }
+    }
+  }
+  for (let j = 0; j < rows; j++) {
+    const nj = (j + 1) % rows;
+    for (let i = 0; i < cols; i++) {
+      const a = knots[j][i];
+      const off = j % 2 ? 1 : 0;
+      // the two strands below: (i + off - 1) and (i + off) on the next row, wrapped
+      const l = knots[nj][(i + off - 1 + cols) % cols];
+      const r = knots[nj][(i + off) % cols];
+      const wrapFix = (p: { x: number; y: number }, base: { x: number; y: number }) => {
+        let x = p.x;
+        let y = p.y;
+        if (x - base.x > N / 2) x -= N;
+        if (x - base.x < -N / 2) x += N;
+        if (y - base.y < -N / 2) y += N;
+        return { x, y };
+      };
+      seg(a, wrapFix(l, a), 2.1 + rng.float() * 1.2, 0.8 + rng.float() * 0.2);
+      seg(a, wrapFix(r, a), 2.1 + rng.float() * 1.2, 0.8 + rng.float() * 0.2);
+    }
+  }
+  g.fillStyle = 'rgba(224,210,176,0.95)';
+  for (const row of knots) for (const k of row) for (const ox of [-N, 0, N]) for (const oy of [-N, 0, N]) {
     g.beginPath();
-    g.moveTo(i, 0);
-    g.lineTo(i + 128, 128);
-    g.moveTo(i + 128, 0);
-    g.lineTo(i, 128);
-    g.stroke();
+    g.arc(k.x + ox, k.y + oy, 2.6, 0, Math.PI * 2);
+    g.fill();
   }
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
@@ -300,28 +355,47 @@ function netTex(): THREE.CanvasTexture {
   return t;
 }
 
-/** a fishing net draped between two posts (curved sheet, alpha-tested mesh) */
-export function netSheet(a: THREE.Vector3, b: THREE.Vector3, height: number, sag = 0.5): THREE.Mesh {
-  const seg = 10;
+/**
+ * A fishing net hung from a rope between two posts: a slack irregular mesh with a ragged lower hem, a
+ * billow, corks along the top rope and lead weights on the hem. Returns one group (net + kit).
+ */
+export function netSheet(a: THREE.Vector3, b: THREE.Vector3, height: number, sag = 0.5): THREE.Group {
+  const seg = 14;
+  const rowsN = 6;
   const pos: number[] = [];
   const uv: number[] = [];
   const idx: number[] = [];
   const len = a.distanceTo(b);
+  const dx = (b.x - a.x) / Math.max(len, 1e-3);
+  const dz = (b.z - a.z) / Math.max(len, 1e-3);
+  const nx = -dz;
+  const nz = dx;
+  const rng = new Rng(Math.floor(a.x * 13 + a.z * 7 + 500));
+  const hem: number[] = [];
+  for (let i = 0; i <= seg; i++) hem.push(0.72 + rng.float() * 0.32);
+  const p = new THREE.Vector3();
+  const top = (t: number, out: THREE.Vector3) => {
+    out.lerpVectors(a, b, t);
+    out.y -= Math.sin(t * Math.PI) * sag;
+    return out;
+  };
   for (let i = 0; i <= seg; i++) {
     const t = i / seg;
-    for (let k = 0; k <= 4; k++) {
-      const v = k / 4;
-      const x = a.x + (b.x - a.x) * t;
-      const z = a.z + (b.z - a.z) * t;
-      const y = a.y + (b.y - a.y) * t - Math.sin(t * Math.PI) * sag * (1 - v * 0.5) - v * height;
-      pos.push(x, y, z);
-      uv.push((t * len) / 0.45, (v * height) / 0.45);
+    top(t, p);
+    for (let k = 0; k <= rowsN; k++) {
+      const v = k / rowsN;
+      const drop = v * height * hem[i];
+      // the net bellies out and swings: a gentle billow along its width, strongest at the bottom
+      const bil = Math.sin(t * Math.PI * 3 + v * 2.2) * 0.1 * v;
+      pos.push(p.x + nx * bil, p.y - drop, p.z + nz * bil);
+      uv.push((t * len) / 2.1, (v * height) / 2.1);
     }
   }
+  const row = rowsN + 1;
   for (let i = 0; i < seg; i++) {
-    for (let k = 0; k < 4; k++) {
-      const q = i * 5 + k;
-      idx.push(q, q + 5, q + 1, q + 1, q + 5, q + 6);
+    for (let k = 0; k < rowsN; k++) {
+      const q = i * row + k;
+      idx.push(q, q + row, q + 1, q + 1, q + row, q + row + 1);
     }
   }
   const geo = new THREE.BufferGeometry();
@@ -329,13 +403,41 @@ export function netSheet(a: THREE.Vector3, b: THREE.Vector3, height: number, sag
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.setIndex(idx);
   geo.computeVertexNormals();
-  const m = new THREE.MeshStandardMaterial({ map: netTex(), alphaTest: 0.45, side: THREE.DoubleSide, roughness: 1, color: 0x8a8272 });
-  m.userData.shared = false;
+  const m = new THREE.MeshStandardMaterial({ map: netTex(), alphaTest: 0.2, side: THREE.DoubleSide, roughness: 1, color: 0x8b7a58 });
   const mesh = new THREE.Mesh(geo, m);
   mesh.castShadow = false;
   mesh.userData.noAO = true;
-  mesh.name = 'net';
-  return mesh;
+  mesh.name = 'net_mesh';
+  // posts, the head rope, corks and weights
+  const kit = new MeshKit();
+  const wood = mat('old_wood', { key: 'ltBeam', rgb: [0.78, 0.75, 0.7] });
+  const rope = plain(0x5d4f34, { roughness: 1, key: 'rope' });
+  const cork = plain(0xb59c6a, { roughness: 0.9, key: 'netCork' });
+  const lead = plain(0x2a2a2c, { roughness: 0.7, metalness: 0.4, key: 'netLead' });
+  const q = new THREE.Vector3();
+  for (const e of [a, b]) kit.add(wood, limbGeo([e.x, D - 0.3, e.z], [e.x, e.y + 0.35, e.z], 0.065, 0.05, 6, 0.6));
+  let prev = top(0, new THREE.Vector3());
+  for (let i = 1; i <= seg; i++) {
+    top(i / seg, q);
+    kit.add(rope, limbGeo([prev.x, prev.y, prev.z], [q.x, q.y, q.z], 0.014, 0.014, 4, 0.3));
+    prev = prev.copy(q);
+  }
+  const floats = Math.max(3, Math.round(len / 0.7));
+  for (let i = 0; i <= floats; i++) {
+    top(i / floats, q);
+    kit.add(cork, new THREE.SphereGeometry(0.055, 6, 5), xf(q.x, q.y - 0.02, q.z));
+  }
+  const weights = Math.max(2, Math.round(len / 1.2));
+  for (let i = 0; i <= weights; i++) {
+    const t = i / weights;
+    const hi = hem[Math.min(seg, Math.round(t * seg))];
+    top(t, q);
+    kit.add(lead, new THREE.SphereGeometry(0.035, 5, 4), xf(q.x, q.y - height * hi, q.z));
+  }
+  const g = new THREE.Group();
+  g.name = 'net';
+  g.add(mesh, kit.build({ name: 'net_kit', castShadow: false }));
+  return g;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -357,6 +459,7 @@ function poolTex(): THREE.CanvasTexture {
   g.fillRect(0, 0, 128, 128);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
+  t.userData.shared = true; // cached across levels: never disposed with one
   poolTexture = t;
   return t;
 }
@@ -392,6 +495,114 @@ export function lightPools(spots: { x: number; z: number; r: number; a?: number;
   return mesh;
 }
 
+let glintTexture: THREE.CanvasTexture | null = null;
+/**
+ * A vertical streak of broken light for the water, written pixel by pixel (white, alpha only): a faint soft
+ * core that narrows toward the far end, and short bright dashes (a reflection on small ripples).
+ */
+function glintTex(): THREE.CanvasTexture {
+  if (glintTexture) return glintTexture;
+  const W = 64;
+  const H = 256;
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  const img = g.createImageData(W, H);
+  const rng = new Rng(2024);
+  const a = new Float32Array(W * H);
+  for (let y = 0; y < H; y++) {
+    const v = y / (H - 1); // 0 = under the light (canvas top), 1 = the far end
+    const along = Math.min(1, v / 0.08) * Math.pow(1 - v, 1.3);
+    const half = 0.08 + 0.2 * v;
+    for (let x = 0; x < W; x++) {
+      const u = (x + 0.5) / W - 0.5;
+      a[y * W + x] = 0.16 * along * Math.exp(-(u * u) / (half * half));
+    }
+  }
+  for (let i = 0; i < 140; i++) {
+    const v = Math.pow(rng.float(), 1.3);
+    const y = Math.floor(v * (H - 2));
+    const half = 0.08 + 0.2 * v;
+    const cx = 0.5 + (rng.float() + rng.float() - 1) * half * 1.4;
+    const len = 3 + rng.float() * 14 * (1 - v * 0.5);
+    const al = (0.3 + rng.float() * 0.6) * Math.min(1, v / 0.05) * Math.pow(1 - v, 0.9);
+    for (let x = 0; x < W; x++) {
+      const d = Math.abs(x + 0.5 - cx * W);
+      if (d < len) {
+        const k = 1 - d / len;
+        a[y * W + x] = Math.max(a[y * W + x], al * k);
+        if (rng.float() < 0.3 && y + 1 < H) a[(y + 1) * W + x] = Math.max(a[(y + 1) * W + x], al * k * 0.5);
+      }
+    }
+  }
+  for (let i = 0; i < W * H; i++) {
+    img.data[i * 4] = img.data[i * 4 + 1] = img.data[i * 4 + 2] = 255;
+    img.data[i * 4 + 3] = Math.round(Math.max(0, Math.min(1, a[i])) * 255);
+  }
+  g.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+  t.userData.shared = true;
+  glintTexture = t;
+  return t;
+}
+
+export interface Glint {
+  x: number;
+  z: number;
+  /** width and length (m); the streak runs along `yaw` (0 = along +z) */
+  w: number;
+  l: number;
+  yaw?: number;
+  a?: number;
+  /** tint, 0xrrggbb */
+  color?: number;
+}
+
+/** reflections on the lake: warm streaks under lit houses and lamps, a cold glitter toward the moon. One mesh, additive. */
+export function waterGlints(items: Glint[], y = 0.045): THREE.Mesh {
+  const pos: number[] = [];
+  const uv: number[] = [];
+  const col: number[] = [];
+  const idx: number[] = [];
+  const c = new THREE.Color();
+  items.forEach((s, i) => {
+    const yaw = s.yaw ?? 0;
+    const sx = Math.cos(yaw);
+    const sz = -Math.sin(yaw);
+    const fx = Math.sin(yaw);
+    const fz = Math.cos(yaw);
+    const hw = s.w / 2;
+    const corner = (u: number, v: number) => [s.x + sx * hw * u + fx * s.l * v, y, s.z + sz * hw * u + fz * s.l * v];
+    // v 0 at the near end (under the light), 1 the far end
+    const p = [corner(-1, 0), corner(1, 0), corner(1, 1), corner(-1, 1)];
+    for (const q of p) pos.push(q[0], q[1], q[2]);
+    uv.push(0, 1, 1, 1, 1, 0, 0, 0);
+    c.setHex(s.color ?? 0xffa860);
+    const a = s.a ?? 1;
+    for (let k = 0; k < 4; k++) col.push(c.r * a, c.g * a, c.b * a);
+    const o = i * 4;
+    idx.push(o, o + 2, o + 1, o, o + 3, o + 2);
+  });
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.setIndex(idx);
+  geo.computeBoundingSphere();
+  const m = new THREE.MeshBasicMaterial({ map: glintTex(), vertexColors: true, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.9, fog: true });
+  const mesh = new THREE.Mesh(geo, m);
+  mesh.renderOrder = 2;
+  mesh.userData.noAO = true;
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  mesh.frustumCulled = false;
+  mesh.name = 'water_glints';
+  return mesh;
+}
+
 /** a lamp post on the edge of a walkway: pole, bracket and a lit lantern */
 export function lampPost(x: number, z: number, side: number, alongZ: boolean): THREE.Group {
   const kit = new MeshKit();
@@ -421,14 +632,14 @@ function mistTex(seed: number): THREE.CanvasTexture {
   // alphaMap reads the green channel: grey blobs on black
   g.fillStyle = '#000';
   g.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 14; i++) {
     const x = rng.float() * 256;
     const y = rng.float() * 256;
-    const r = 24 + rng.float() * 54;
+    const r = 30 + rng.float() * 50;
     for (const ox of [-256, 0, 256]) {
       for (const oy of [-256, 0, 256]) {
         const grad = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r);
-        grad.addColorStop(0, `rgba(255,255,255,${0.14 + rng.float() * 0.2})`);
+        grad.addColorStop(0, `rgba(255,255,255,${0.55 + rng.float() * 0.4})`);
         grad.addColorStop(1, 'rgba(255,255,255,0)');
         g.fillStyle = grad;
         g.fillRect(x + ox - r, y + oy - r, r * 2, r * 2);
@@ -441,8 +652,10 @@ function mistTex(seed: number): THREE.CanvasTexture {
   return t;
 }
 
-/** a few big horizontal sheets of soft mist just above the water that drift slowly */
-export function mistLayers(center: THREE.Vector3, size = 360, layers = 3): { group: THREE.Group; update(dt: number): void } {
+const MIST_OPACITY = [0.3, 0.22, 0.15];
+
+/** a few big horizontal sheets of soft mist just above the water that drift slowly (thinner seen from the roofs) */
+export function mistLayers(center: THREE.Vector3, size = 360, layers = 3): { group: THREE.Group; update(dt: number, camY?: number): void } {
   const group = new THREE.Group();
   group.name = 'mist';
   const maps: THREE.CanvasTexture[] = [];
@@ -450,7 +663,8 @@ export function mistLayers(center: THREE.Vector3, size = 360, layers = 3): { gro
     const tex = mistTex(40 + i * 7);
     tex.repeat.set(size / 70, size / 70);
     maps.push(tex);
-    const m = new THREE.MeshBasicMaterial({ color: 0x8fa6c8, alphaMap: tex, transparent: true, opacity: 0.34 - i * 0.05, depthWrite: false, fog: true });
+    // unlit, so it must be dark: a pale unlit sheet over a night lake reads as a snow field
+    const m = new THREE.MeshBasicMaterial({ color: 0x232f47, alphaMap: tex, transparent: true, opacity: MIST_OPACITY[i] ?? 0.14, depthWrite: false, fog: true });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), m);
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set(center.x, 0.22 + i * 0.55, center.z);
@@ -460,10 +674,14 @@ export function mistLayers(center: THREE.Vector3, size = 360, layers = 3): { gro
     group.add(mesh);
   }
   let t = 0;
+  const mats = group.children.map((c) => (c as THREE.Mesh).material as THREE.MeshBasicMaterial);
   return {
     group,
-    update(dt: number) {
+    update(dt: number, camY = 3) {
       t += dt;
+      // from above the town the sheets would be seen flat-on: thin them out with height
+      const f = THREE.MathUtils.clamp(1 - (camY - 3.2) / 5, 0.3, 1);
+      mats.forEach((m, i) => (m.opacity = (MIST_OPACITY[i] ?? 0.14) * f));
       maps.forEach((m, i) => {
         m.offset.x = t * (0.004 + i * 0.002);
         m.offset.y = t * (0.002 - i * 0.0015);

@@ -12,13 +12,14 @@ import * as THREE from 'three';
 import type { CrowdHandle, LevelAPI, ColliderHandle } from '../../../core/types';
 import {
   addColliders, banner, barrel, boulderField, brazier, crate, createCrowd, helmsDeep, lake, mat, removeColliders, stairs, stoneWall, torch,
-  weaponRack, type Built, type ColliderDesc, type HelmsDeepResult, type WaterBody,
+  tower, weaponRack, type Built, type ColliderDesc, type HelmsDeepResult, type WaterBody,
 } from '../../../world';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createWeapon } from '../../../creatures/weapons';
 import { yawOf } from '../../../core/math';
-import { L, WALL_A_PTS, WALL_B_PTS, WALL_C_PTS, WALL_H, WALL_T, terrainHeight, walk, wallAt } from './layout';
+import { L, TOWERS, WALL_A_PTS, WALL_B_PTS, WALL_C_PTS, WALL_H, WALL_T, WATCH_STEP, terrainHeight, walk, wallAt } from './layout';
 
-const WALL_TAGS = new Set(['wall', 'parapet', 'merlon', 'buttress']);
+const WALL_TAGS = new Set(['wall', 'parapet', 'merlon', 'buttress', 'tower']);
 
 export interface HelmsWorld {
   hd: HelmsDeepResult;
@@ -41,11 +42,15 @@ export interface HelmsWorld {
   torchSea: { points: THREE.Points; setFraction(f: number): void };
   /** the Galadhrim lining the far battlements (not combatants) */
   elves: CrowdHandle[];
+  /** the beacon glow over the shield (hidden once it is taken) */
+  shieldBeacon: THREE.Object3D;
+  /** per-step upkeep (beacon pulse) */
+  update(dt: number): void;
   dispose(): void;
 }
 
 /** a box in the walls' stone with world-scale UVs (3 m per texture tile) */
-function stoneBox(w: number, h: number, d: number): THREE.Mesh {
+function stoneBox(w: number, h: number, d: number, name = 'stair_head'): THREE.Mesh {
   const g = new THREE.BoxGeometry(w, h, d);
   const uv = g.getAttribute('uv') as THREE.BufferAttribute;
   // face order px, nx, py, ny, pz, nz: (u, v) extents per face
@@ -56,7 +61,7 @@ function stoneBox(w: number, h: number, d: number): THREE.Mesh {
   }
   const m = new THREE.Mesh(g, mat('stone_blocks', { key: 'base' }));
   m.castShadow = m.receiveShadow = true;
-  m.name = 'stair_head';
+  m.name = name;
   return m;
 }
 
@@ -92,6 +97,66 @@ function fixWalls(hd: HelmsDeepResult): void {
   const bc = hd.breach.brokenColliders;
   for (let i = 0; i < bc.length; i++) {
     if (bc[i].opts?.tag === 'rubble') bc[i] = { kind: 'box', center: [5, 0.12, -6.5], half: [5.6, 0.24, 4.5], opts: { material: 'stone', tag: 'rubble' } };
+  }
+  // the wall runs meet at an angle and their walkway boxes leave a wedge-shaped slit at each
+  // junction (x -4 and 14): bridge each with a walkable slab (collider + a stone cap to hide the seam)
+  for (const jx of [-4, 14]) {
+    const l = wallAt(jx - 1.2);
+    const r = wallAt(jx + 1.2);
+    const c = wallAt(jx).c;
+    const yaw = Math.atan2(-(r.c.z - l.c.z), r.c.x - l.c.x);
+    hd.colliders.push({ kind: 'box', center: [c.x, WALL_H - 0.3, c.z], half: [1.3, 0.3, WALL_T / 2 - 0.02], yaw, opts: { material: 'stone', tag: 'walk_joint' } });
+    const cap = stoneBox(2.6, 0.12, WALL_T - 0.62, 'walk_joint');
+    cap.position.set(c.x, WALL_H - 0.055, c.z);
+    cap.rotation.y = yaw;
+    root.add(cap);
+  }
+  fixTowers(hd);
+}
+
+/**
+ * The builder's three projecting towers sit astride the wall centre line (axis-aligned 9 m blocks),
+ * so their solid colliders fill the walkway: at x 25..35 the walk is cut off entirely, at x -18 it
+ * pinches to a 1.3 m channel. Rebuild them turned square to the wall and set out against its outer
+ * face, so the walkway runs freely past their inner faces.
+ */
+function fixTowers(hd: HelmsDeepResult): void {
+  const root = hd.object;
+  // the builder's tower meshes and tower-top braziers
+  const drop: THREE.Object3D[] = [];
+  for (const c of root.children) {
+    for (const t of TOWERS) {
+      if (c.name === 'tower' && Math.abs(c.position.x - t.x) < 0.05 && Math.abs(c.position.z - (t.z + 3.8)) < 0.05) drop.push(c);
+      const bx = t.x + t.size * 0.55;
+      const bz = t.z + 3.8 - t.size * 0.55;
+      if (Math.abs(c.position.x - bx) < 0.05 && Math.abs(c.position.z - bz) < 0.05 && Math.abs(c.position.y - t.hgt) < 0.05) drop.push(c);
+    }
+  }
+  for (const o of drop) {
+    o.removeFromParent();
+    disposeTree(o);
+  }
+  for (const t of TOWERS) {
+    const tw = tower(t.size, t.hgt, { shape: 'square', slits: 2, seed: t.x, crenellated: true });
+    tw.object.position.copy(t.center).setY(0);
+    tw.object.rotation.y = t.yaw;
+    root.add(tw.object);
+    tw.object.updateMatrixWorld(true);
+    const cos = Math.cos(t.yaw);
+    const sin = Math.sin(t.yaw);
+    for (const c of tw.colliders) {
+      if (c.kind !== 'box') continue;
+      // local -> world: rotation.y = yaw maps local (x, z) to (x cos + z sin, -x sin + z cos)
+      const [lx, ly, lz] = c.center;
+      hd.colliders.push({
+        ...c,
+        center: [t.center.x + lx * cos + lz * sin, ly, t.center.z - lx * sin + lz * cos],
+        yaw: (c.yaw ?? 0) + t.yaw,
+      });
+    }
+    const br = brazier({ scale: 1.1 });
+    br.object.position.set(t.center.x + t.size * 0.5 * cos + t.size * 0.5 * sin, t.hgt, t.center.z - t.size * 0.5 * sin + t.size * 0.5 * cos);
+    root.add(br.object);
   }
 }
 
@@ -169,6 +234,49 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   guard(L.stairTop.x - 5.35, 0.8);
   guard(L.stairTop.x + 5.35, 0.8);
 
+  // the fighting step at the culvert watch: two stone treads against the parapet (see WATCH_STEP)
+  {
+    const geos: THREE.BufferGeometry[] = [];
+    const PIECE = 2.02;
+    const n = Math.ceil((WATCH_STEP.x1 - WATCH_STEP.x0) / 2);
+    const treads: [number, number, number][] = [
+      // inset from, inset to, height
+      [0.25, 1.95, WATCH_STEP.tread],
+      [0.85, 1.95, WATCH_STEP.top],
+    ];
+    for (let i = 0; i < n; i++) {
+      const x = WATCH_STEP.x0 + (i + 0.5) * ((WATCH_STEP.x1 - WATCH_STEP.x0) / n);
+      const l = wallAt(x - 1);
+      const r = wallAt(x + 1);
+      const yaw = Math.atan2(-(r.c.z - l.c.z), r.c.x - l.c.x);
+      const w = wallAt(x);
+      for (const [i0, i1, h] of treads) {
+        const p = w.c.clone().addScaledVector(w.n, (i0 + i1) / 2);
+        p.y = WALL_H + h / 2 - 0.02;
+        physics.addBox(p, [PIECE / 2, h / 2 + 0.02, (i1 - i0) / 2], yaw, { material: 'stone', tag: 'watch_step' });
+        const b = stoneBox(PIECE, h + 0.04, i1 - i0);
+        b.position.copy(p);
+        b.rotation.y = yaw;
+        b.updateMatrix();
+        const g = (b.geometry as THREE.BufferGeometry).clone().applyMatrix4(b.matrix);
+        b.geometry.dispose();
+        geos.push(g);
+      }
+      // nobody steps over the parapet from the step: an invisible fence above it (arrows and the camera pass)
+      const f = w.c.clone().addScaledVector(w.n, 2.2);
+      f.y = WALL_H + 1.1 + 1.6;
+      physics.addBox(f, [PIECE / 2, 1.6, 0.3], yaw, { solid: true, walkable: false, blocksArrows: false, blocksCamera: false, tag: 'step_fence' });
+    }
+    const merged = mergeGeometries(geos, false);
+    for (const g of geos) g.dispose();
+    if (merged) {
+      const m = new THREE.Mesh(merged, mat('stone_blocks', { key: 'base' }));
+      m.castShadow = m.receiveShadow = true;
+      m.name = 'watch_step';
+      level.root.add(m);
+    }
+  }
+
   // the causeway ramp up from the court (the builder's causeway stands 6 m proud of the court)
   const ramp = stairs([L.rampFoot.x, 0, L.rampFoot.z + 0.5], [L.causewayStart.x, 5.85, L.causewayStart.z + 0.4], 8, { riser: 0.2, material: 'light', ramp: true });
   level.root.add(ramp.object);
@@ -218,6 +326,8 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   const courtFires: [number, number, number][] = [
     [-36.5, 0.04, -70], [-23.5, 0.04, -70], [-36, 0.04, -40], [-24, 0.04, -24], [-10, 0.04, -24], [20, 0.04, -24],
     [70.5, 0.04, -97], [81.5, 0.04, -97], [72.6, 5.82, -45], [79.4, 5.82, -45], [72.6, 5.82, -60], [79.4, 5.82, -60],
+    // right at the gate: warm light on the hold (the ram and its bearers pass between them)
+    [72.55, 5.82, -29.2], [79.45, 5.82, -29.2],
   ];
   for (const [x, y, z] of courtFires) {
     const b = brazier({ scale: 1.1 }) as Built & { flameAnchor: THREE.Object3D };
@@ -265,6 +375,17 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   shield.position.set(L.shield.x, WALL_H + 0.1, L.shield.z);
   shield.traverse((o) => (o.castShadow = true));
   level.root.add(shield);
+  // a brazier beside it and a soft beacon glow over it: the shield reads from along the wall
+  {
+    const b = brazier({ scale: 1.0 }) as Built & { flameAnchor: THREE.Object3D };
+    place(b, L.stairTop.x + 3.4, WALL_H, L.stairTop.z + 1.6, 0);
+    b.object.updateMatrixWorld(true);
+    fx.fire(b.flameAnchor.getWorldPosition(new THREE.Vector3()), 0.45);
+  }
+  const shieldBeacon = makeBeacon();
+  shieldBeacon.position.set(L.shield.x, WALL_H + 0.9, L.shield.z);
+  level.root.add(shieldBeacon);
+  let beaconT = 0;
 
   // ── the Uruk host: thousands in the coomb, the front ranks with ladders and torches ─
   const host = level.crowd({ center: L.armyCenter, halfSize: [115, 32], count: 1900, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
@@ -307,6 +428,14 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     front,
     elves,
     torchSea,
+    shieldBeacon,
+    update(dt: number) {
+      if (!shieldBeacon.visible) return;
+      beaconT += dt;
+      const k = 0.75 + 0.25 * Math.sin(beaconT * 3.2);
+      shieldBeacon.scale.setScalar(k);
+      shieldBeacon.position.y = WALL_H + 0.9 + Math.sin(beaconT * 1.6) * 0.08;
+    },
     dispose() {
       for (const e of elves) e.dispose();
     },
@@ -314,6 +443,31 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
 }
 
 export type { ColliderDesc };
+
+/** a soft warm glow (additive sprite) marking an interactable */
+function makeBeacon(): THREE.Object3D {
+  const S = 64;
+  const data = new Uint8Array(S * S * 4);
+  for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
+    const d = Math.hypot(x + 0.5 - S / 2, y + 0.5 - S / 2) / (S / 2);
+    const v = Math.max(0, 1 - d);
+    const ring = Math.exp(-Math.pow((d - 0.62) / 0.06, 2)) * 0.55;
+    const a = Math.min(1, Math.pow(v, 3) * 0.9 + ring);
+    const o = (y * S + x) * 4;
+    data[o] = data[o + 1] = data[o + 2] = 255;
+    data[o + 3] = Math.round(a * 255);
+  }
+  const tex = new THREE.DataTexture(data, S, S, THREE.RGBAFormat);
+  tex.needsUpdate = true;
+  const m = new THREE.SpriteMaterial({ map: tex, color: 0xffc070, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
+  const s = new THREE.Sprite(m);
+  s.scale.set(1.6, 1.6, 1);
+  s.name = 'shield_beacon';
+  s.userData.noAO = true;
+  const g = new THREE.Group();
+  g.add(s);
+  return g;
+}
 
 /** additive glow sprites at torch height over the host: one draw call */
 function makeTorchSea(

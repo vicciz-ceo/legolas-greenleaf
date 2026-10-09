@@ -15,7 +15,7 @@ import { MeshBVH } from 'three-mesh-bvh';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LevelAPI } from '../../../core/types';
 import {
-  addColliders, boulderField, cocoon, fallenLog, ferns, forest, lightShaft, mushrooms, rock, skeleton, tree, webCluster,
+  addColliders, boulderField, cocoon, fallenLog, ferns, forest, mushrooms, rock, skeleton, tree, webCluster,
   type Built,
 } from '../../../world';
 import { Rng } from '../../../core/rng';
@@ -56,7 +56,7 @@ export interface MirkWorld {
   linePoint(line: number, t: number, out?: THREE.Vector3): THREE.Vector3;
   cocoons: CutCocoon[];
   /** the canopy web over the arena (falls when the anchors are cut) */
-  canopy: { sheet: THREE.Mesh; center: THREE.Vector3; anchors: THREE.Vector3[]; lines: THREE.Mesh };
+  canopy: { sheet: THREE.Mesh; center: THREE.Vector3; anchors: THREE.Vector3[]; lines: THREE.Mesh; hold: THREE.Vector3 };
   /** the low bough Legolas drops from */
   bough: THREE.Object3D;
 }
@@ -434,12 +434,13 @@ export function buildWorld(level: LevelAPI): MirkWorld {
 
   // ── light: green-gold shafts through the canopy ─────────────────────────
   const sun = V(-0.35, 0.82, 0.3).normalize();
+  // at the play areas' edges, not where Legolas fights (they fade out close to the camera anyway)
   const shaftSpots: [number, number, number, number][] = [
-    [2.5, 3, 2.6, 0.24], [-6, -6, 1.8, 0.16], [3, 20, 2.0, 0.18], [7, 35, 2.8, 0.24], [-2, 44, 1.6, 0.15], [-4, 72, 2.8, 0.22], [7, 79, 2.0, 0.16], [12, 12, 1.5, 0.12],
+    [8.5, 7, 2.1, 0.26], [-10, -4, 1.6, 0.2], [3, 20, 2.0, 0.22], [14, 33, 2.2, 0.26], [-4, 46, 1.5, 0.18], [-12, 69, 2.2, 0.26], [11, 83, 1.8, 0.2], [12, 12, 1.5, 0.15],
   ];
   for (const [x, z, r, k] of shaftSpots) {
     const len = 34;
-    const s = lightShaft(len, r * 0.3, r, 0xd2e8a4, k);
+    const s = softShaft(len, r * 0.3, r, 0xd2e8a4, k);
     s.position.set(x, ground(x, z) + 0.2, z).addScaledVector(sun, len);
     s.quaternion.setFromUnitVectors(V(0, 1, 0), sun);
     root.add(s);
@@ -475,9 +476,47 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     probe,
     linePoint,
     cocoons,
-    canopy: { sheet: canopySheet, center: canopyCenter, anchors, lines: canopyLines },
+    canopy: { sheet: canopySheet, center: canopyCenter, anchors, lines: canopyLines, hold: corners[cIdx.findIndex((hi) => !CANOPY.anchors.includes(hi))].clone() },
     bough: bough.object,
   };
+}
+
+/**
+ * A light shaft through the canopy (the chapter's own take on the shared `lightShaft`): the beam fades
+ * out over its last metres above the ground and whenever the camera comes within a few metres of it,
+ * with soft streaks round its girth, so it never reads as a flat pale panel up close.
+ */
+export function softShaft(height: number, topRadius: number, bottomRadius: number, color: number, intensity: number): THREE.Mesh {
+  const g = new THREE.CylinderGeometry(topRadius, bottomRadius, height, 32, 1, true);
+  g.translate(0, -height / 2, 0);
+  const m = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    side: THREE.DoubleSide,
+    uniforms: { uColor: { value: new THREE.Color(color) }, uI: { value: intensity } },
+    vertexShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist;
+      void main(){ vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vDist = length(mv.xyz); gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist; uniform vec3 uColor; uniform float uI;
+      void main(){
+        float edge = pow(abs(dot(normalize(vN), normalize(vV))), 2.4);
+        float h = vUv.y; // 1 at the canopy, 0 at the ground
+        float ends = smoothstep(0.0, 0.2, h) * (1.0 - smoothstep(0.82, 1.0, h));
+        float body = 0.6 + 0.4 * smoothstep(0.15, 0.6, 1.0 - h);
+        float streak = 0.72 + 0.28 * sin(vUv.x * 6.2832 * 5.0 + h * 4.0) * sin(vUv.x * 6.2832 * 3.0 - h * 2.0 + 1.3);
+        float near = smoothstep(3.0, 14.0, vDist);
+        float a = edge * ends * body * streak * near * uI;
+        gl_FragColor = vec4(uColor * a, a);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }`,
+  });
+  const mesh = new THREE.Mesh(g, m);
+  mesh.userData.noAO = true;
+  mesh.castShadow = false;
+  mesh.renderOrder = 2;
+  mesh.name = 'light_shaft';
+  return mesh;
 }
 
 /** merge a set of static objects into one mesh per material (draw-call saver for decor) */

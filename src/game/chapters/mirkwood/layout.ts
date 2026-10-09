@@ -137,4 +137,6 @@ export const STARTS = [
 ];
 
 export const TAURIEL_ENTRY = V(26, 0, 40);
+/** where Tauriel holds in the larder (its east side, clear of the cocoons and of the player camera) */
+export const TAURIEL_STAND = V(14, 0, 38);
 export const BROOD_EMERGE = V(0, 0, 95);

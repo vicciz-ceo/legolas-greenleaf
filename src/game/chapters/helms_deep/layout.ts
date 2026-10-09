@@ -72,6 +72,26 @@ export function stairY(z: number): number {
   return Math.max(0, Math.min(WALL_H, (WALL_H * (z + 67.5)) / 58.9));
 }
 
+/**
+ * The three towers projecting from the outer face (the helmsDeep() builder's x, z, size, height),
+ * re-seated square to the wall with their inner face 0.3 m into the parapet, clear of the walkway.
+ */
+export const TOWERS = [
+  { x: -42, z: 2.5, size: 4.6, hgt: WALL_H + 5 },
+  { x: -18, z: -2.5, size: 4.2, hgt: WALL_H + 3 },
+  { x: 30, z: -10, size: 4.6, hgt: WALL_H + 5 },
+].map((t) => {
+  const w = wallAt(t.x);
+  const center = w.c.clone().addScaledVector(w.n, WALL_T / 2 - 0.3 + t.size).setY(0);
+  return { ...t, center, yaw: Math.atan2(w.n.x, w.n.z) };
+});
+
+/**
+ * The fighting step at the culvert watch: a two-tread stone banquette against the parapet, so an
+ * archer standing on it sees (and shoots) over the parapet down to the coomb in front of the culvert.
+ */
+export const WATCH_STEP = { x0: -15.5, x1: -5.4, tread: 0.42, top: 0.84 };
+
 /** the six siege-ladder points (x along the wall), clear of the projecting towers (x -42, -18, 30) */
 export const LADDER_X = [-31, -24, -11, -1, 10, 21];
 /** the ladders rise in two sets of three */
@@ -83,7 +103,7 @@ export const L = {
   /** where the bot holds between ladders */
   wallHold: walk(-9, -0.5),
   /** cp1: watch spot on wall A, left of the culvert section that will blow */
-  culvertWatch: walk(-13, 0.4),
+  culvertWatch: walk(-9, 1.45).setY(WALL_H + WATCH_STEP.top),
   /** the culvert mouth (outer face of the middle wall, the ground) */
   culvert: V(5, 0, -2.2),
   /** the torch-runners start among the front ranks */

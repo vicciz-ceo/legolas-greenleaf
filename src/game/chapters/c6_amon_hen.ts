@@ -25,8 +25,8 @@ import { SeedPicker, spawnUruk, type UrukRole } from './amon_hen/uruks';
 import { makeBoromirBody, poseAlly, setAlly, spawnBoromir, spawnCast, walkAlly, type Cast } from './amon_hen/cast';
 import { spawnLurtz, type LurtzBoss } from './amon_hen/lurtz';
 
-/** Lurtz's health: the bow phase takes about a third, the shield phase the rest */
-const LURTZ_HP = 1300;
+/** Lurtz's health: the bow phase takes about a third (he holds at 68 % until the script moves on), the shield phase the rest */
+const LURTZ_HP = 1800;
 
 export const chapter: ChapterDef = {
   id: 'amon_hen',
@@ -52,7 +52,7 @@ export const chapter: ChapterDef = {
     // exposure and fill so the shadowed ground keeps its colour, and a slightly clearer haze
     const base = ENVIRONMENTS.amon_hen as EnvironmentPresetEx;
     const sky = base.sky.kind === 'physical' ? { ...base.sky, clouds: 0.62 } : base.sky;
-    level.setEnvironment({ ...base, sky, exposure: 1.08, hemiIntensity: 0.8, fog: { ...base.fog, density: 0.0105 } });
+    level.setEnvironment({ ...base, sky, exposure: 1.0, hemiIntensity: 0.72, fog: { color: 0xcdb99a, density: 0.0068 } });
     const world = buildAmonHen(level);
     // Boromir's helmetless body is not in the preload list: build it now, behind the loading screen
     let boromirBody: Humanoid | null = makeBoromirBody();
@@ -143,14 +143,14 @@ export const chapter: ChapterDef = {
       level.cinematic(true);
       level.music?.('tension');
       const s = L.spawn;
-      // the Seat of Seeing in haze above the ruined stair, then down to the fellowship in the woods
-      level.cameraShot({ position: V(-9, g(-9, 98) + 2.6, 98), lookAt: V(0, 39, 172), fov: 34, blend: 0 });
+      // the Seat of Seeing in the golden haze, from the top of the ruined stair; then down to the fellowship
+      level.cameraShot({ position: V(-14, g(-14, 134) + 2.2, 134), lookAt: V(0, 40.5, 172), fov: 38, blend: 0 });
       await level.wait(0.4);
-      level.cameraShot({ position: V(-4, g(-4, 104) + 3.4, 104), lookAt: V(0, 40, 172), fov: 32, blend: 3.6 });
-      await level.wait(3.0);
-      level.cameraShot({ position: V(s.x - 16, g(s.x - 16, s.z - 8) + 2.2, s.z - 8), lookAt: V(s.x + 2, g(s.x, s.z) + 3.5, s.z + 14), fov: 40, blend: 0 });
-      await level.wait(0.3);
-      level.cameraShot({ position: V(s.x - 7, g(s.x, s.z) + 1.9, s.z - 9), lookAt: V(s.x + 0.5, g(s.x, s.z) + 1.5, s.z + 2), fov: 40, blend: 6.5 });
+      level.cameraShot({ position: V(-7, g(-7, 141) + 2.6, 141), lookAt: V(0, 41, 172), fov: 34, blend: 3.8 });
+      await level.wait(3.2);
+      level.cameraShot({ position: V(s.x - 4.2, g(s.x - 4.2, s.z - 5.0) + 1.5, s.z - 5.0), lookAt: V(s.x + 0.5, g(s.x, s.z) + 1.55, s.z + 0.8), fov: 36, blend: 0 });
+      await level.wait(0.2);
+      level.cameraShot({ position: V(s.x - 3.0, g(s.x - 3.0, s.z - 3.2) + 1.5, s.z - 3.2), lookAt: V(s.x + 0.5, g(s.x, s.z) + 1.55, s.z + 0.8), fov: 36, blend: 7.0 });
       await level.say('Aragorn', 'Frodo has gone up to the Seat of Seeing. Boromir is somewhere in these woods.', 3.6);
       await level.say('Legolas', 'The birds have fallen silent. Something comes up the hill, Aragorn. Many of them.', 3.4);
       level.cameraShot({ position: V(s.x + 4.5, g(s.x + 4.5, s.z - 3) + 1.5, s.z - 3), lookAt: V(s.x + 2, g(s.x, s.z) + 1.3, s.z + 14), fov: 46, blend: 1.6 });
@@ -178,7 +178,7 @@ export const chapter: ChapterDef = {
 
       // second sweep: shield-bearers, shooting from the front is wasted: flank them or aim high
       void talk('Legolas', 'Shields. Their arrows are not the only thing that glances off.', 2.6);
-      hud.toast('Shields stop frontal arrows: aim for the head, or flank', 'info');
+      hud.toast('Shields block arrows: aim high or flank', 'info');
       const b = squad([
         { role: 'shield', x: -22, z: 14 }, { role: 'shield', x: -8, z: 18 }, { role: 'shield', x: 22, z: 16 },
         { role: 'blade', x: 32, z: -2 }, { role: 'blade', x: -32, z: 0 },
@@ -217,7 +217,7 @@ export const chapter: ChapterDef = {
       const w1 = squad([
         { role: 'shield', x: -9, z: 96 }, { role: 'shield', x: -3, z: 98 }, { role: 'shield', x: 4, z: 98 }, { role: 'shield', x: 10, z: 96 },
         { role: 'pike', x: -5, z: 104 }, { role: 'pike', x: 6, z: 104 },
-        { role: 'archer', x: -22, z: 84 }, { role: 'archer', x: 22, z: 82 },
+        { role: 'archer', x: -14, z: 84 }, { role: 'archer', x: 17, z: 83 },
       ]);
       await clear(w1, 1, 85);
 
@@ -232,7 +232,7 @@ export const chapter: ChapterDef = {
         { role: 'blade', x: 40, z: 62 }, { role: 'blade', x: 40, z: 70 }, { role: 'blade', x: -40, z: 64 }, { role: 'blade', x: -40, z: 72 },
         { role: 'shield', x: -4, z: 100 }, { role: 'shield', x: 6, z: 100 }, { role: 'shield', x: 0, z: 104 },
         { role: 'pike', x: -12, z: 100 }, { role: 'pike', x: 14, z: 98 },
-        { role: 'archer', x: -26, z: 76 }, { role: 'archer', x: 26, z: 74 }, { role: 'archer', x: 0, z: 108 },
+        { role: 'archer', x: -19, z: 75 }, { role: 'archer', x: 21, z: 73 }, { role: 'archer', x: 0, z: 108 },
       ]);
       void talk('Gimli', 'They come at us from every side!', 2.2);
       await clear(w2, 0, 95);
@@ -273,8 +273,13 @@ export const chapter: ChapterDef = {
     async function lurtzIntro(): Promise<void> {
       beat = 'clearing';
       level.objective(null);
+      // the run down the hill must not decide the boss fight: Legolas reaches the stream with at least three quarters of his health
+      if (player.hp < player.maxHp * 0.75) player.heal(player.maxHp * 0.75 - player.hp);
+      // the stream murmurs; across it the host of Isengard waits, a low murmur of its own (both stop with the level)
+      audio.loop('river', 0.3);
+      audio.loop('army', 0.14);
       // the host of Isengard on the far bank of the stream, idle in the haze (it scatters when Lurtz falls)
-      host = level.crowd({ center: V(8, 0, -132), halfSize: [58, 14], count: 90, kind: 'uruk', facing: 0, speed: 0, props: true });
+      host = level.crowd({ center: V(8, 0, -126), halfSize: [58, 9], count: 90, kind: 'uruk', facing: 0, speed: 0, props: true });
       const mark = markPos();
       const bPos = at(L.boromir.x, L.boromir.z);
       boromir = spawnBoromir(level, bPos, yawOf(mark.x - bPos.x, mark.z - bPos.z), boromirBody ?? undefined);
@@ -378,7 +383,9 @@ export const chapter: ChapterDef = {
         const d = Math.hypot(player.position.x - lz.enemy.position.x, player.position.z - lz.enemy.position.z);
         near = d < 6.5 ? near + dt : Math.max(0, near - dt * 0.5);
       });
-      await level.waitUntil(() => lz.hpFrac <= 0.685 || !lz.enemy.alive || near > 5 || ctx.time.t - t1 > 85, 200);
+      // (he holds at the floor and keeps shooting until the phase has lasted a while: a fast archer cannot skip it)
+      const minPhase = ctx.flags.lurtz ? 0 : 16;
+      await level.waitUntil(() => !lz.enemy.alive || (ctx.time.t - t1 >= minPhase && (lz.hpFrac <= 0.685 || near > 5)) || ctx.time.t - t1 > 85, 200);
       stopNear();
 
       // phase 2: sword and shield
@@ -394,10 +401,17 @@ export const chapter: ChapterDef = {
       lz.toBlade();
       lz.floor = 0.145;
       e.aiEnabled = true;
-      hud.toast('His shield stops frontal arrows: aim for the head, or get round him', 'info');
+      hud.toast('Shield blocks arrows: aim high or flank', 'info');
       // two of his guard come down from the woods to keep the others busy
       squad([{ role: 'blade', x: CLEARING.x - 26, z: -62 }, { role: 'shield', x: CLEARING.x + 24, z: -60 }]);
-      await level.waitUntil(() => lz.hpFrac <= 0.152 || !e.alive, 400);
+      // an idle or evasive player cannot stall the fight: after 90 s of phase 2 Aragorn and Gimli press him harder (a slow
+      // drain), so the finisher only ever comes at 15 %, never at 70 %
+      const t2 = ctx.time.t;
+      const stopDrain = level.onUpdate((dt) => {
+        if (e.alive && ctx.time.t - t2 > 90 && lz.hpFrac > 0.16) e.hp = Math.max(e.maxHp * 0.15, e.hp - e.maxHp * 0.0035 * dt);
+      });
+      await level.waitUntil(() => lz.hpFrac <= 0.152 || !e.alive, 600);
+      stopDrain();
     }
 
     /**
@@ -433,6 +447,67 @@ export const chapter: ChapterDef = {
       return h;
     }
 
+    // ── camera staging ─────────────────────────────────────────────────────
+    // Every cinematic camera is a list of candidate eyes. The first with a clear line to the subject (no trunk,
+    // boulder or hillside in between: a physics ray against everything that blocks the camera) wins; if none is
+    // clear the best one is pulled in along its ray. Aim points sit a little below the subject, so the figures
+    // ride in the upper two thirds of the frame and the subtitle bar never covers them.
+    const _cd = new THREE.Vector3();
+    const freeFrac = (eye: THREE.Vector3, target: THREE.Vector3): number => {
+      _cd.subVectors(eye, target);
+      const d = _cd.length();
+      if (d < 0.01) return 1;
+      _cd.divideScalar(d);
+      const hit = ctx.physics.raycast(target, _cd, d, 'camera');
+      return hit ? hit.t / d : 1;
+    };
+    /** eyes on a ring round `c` at `dist` and height `h` above the ground, at each yaw (radians, 0 = +z) */
+    const ring = (c: THREE.Vector3, dist: number, h: number, yaws: number[]): THREE.Vector3[] =>
+      yaws.map((a) => {
+        const x = c.x + Math.sin(a) * dist;
+        const z = c.z + Math.cos(a) * dist;
+        return V(x, g(x, z) + h, z);
+      });
+    function shotFrom(label: string, eyes: THREE.Vector3[], subject: THREE.Vector3, aim: THREE.Vector3, fov: number, blend = 0): void {
+      let best = eyes[0];
+      let bf = -1;
+      for (const e of eyes) {
+        const f = freeFrac(e, subject);
+        if (f > 0.97) {
+          best = e;
+          bf = 1;
+          break;
+        }
+        if (f > bf) {
+          bf = f;
+          best = e;
+        }
+      }
+      const eye = best.clone();
+      if (bf < 0.97) eye.copy(subject).lerp(best, Math.max(0.4, bf - 0.1));
+      const floor = g(eye.x, eye.z) + 0.55;
+      if (eye.y < floor) eye.y = floor;
+      trace(`cam ${label} free=${bf.toFixed(2)} eye=${eye.x.toFixed(1)},${eye.y.toFixed(1)},${eye.z.toFixed(1)}`);
+      level.cameraShot({ position: eye, lookAt: aim, fov, blend });
+    }
+    const yawFrom = (from: THREE.Vector3, to: THREE.Vector3): number => Math.atan2(to.x - from.x, to.z - from.z);
+
+    /** Gimli's banter must not run over a set-piece: the counter keeps counting, the lines are dropped */
+    let hushed: (() => void) | null = null;
+    function hushRivalry(): void {
+      if (hushed) return;
+      const rv = ctx.rivalry;
+      const was = { auto: rv.autoGimli, g: rv.addGimli, l: rv.addLegolas };
+      rv.autoGimli = false;
+      rv.addGimli = () => {};
+      rv.addLegolas = () => {};
+      hushed = () => {
+        rv.autoGimli = was.auto;
+        rv.addGimli = was.g;
+        rv.addLegolas = was.l;
+      };
+    }
+
     async function finisher(): Promise<void> {
       beat = 'finish';
       const lz = boss!;
@@ -446,6 +521,7 @@ export const chapter: ChapterDef = {
       hud.setPrompt(null);
       level.cinematic(true);
       level.music?.('epic');
+      hushRivalry();
       player.invulnerable = true; // nothing may touch Legolas until the clearing is quiet again
       // everyone stops: the rest of the Uruk-hai lose their nerve and run
       for (const c of ctx.combatants.byTeam('enemy')) {
@@ -463,13 +539,21 @@ export const chapter: ChapterDef = {
       ar.aiEnabled = false;
       const lp = e.position.clone();
       const lpy = lp.y + 1.2;
-      // Aragorn crosses the clearing from Boromir's tree
-      walkAlly(ar, V(lp.x - 1.7, lp.y, lp.z + 3.0));
-      level.cameraShot({ position: V(lp.x + 7, lp.y + 1.2, lp.z + 6), lookAt: V(lp.x, lpy, lp.z), fov: 40, blend: 0 });
+      const chest = V(lp.x, lpy, lp.z);
+      // Aragorn crosses the clearing from Boromir's tree to a spot just short of Lurtz, on the side he comes from
+      const bmp = boromir ? boromir.position : lp;
+      const comeFrom = yawFrom(lp, bmp);
+      const stand = V(lp.x + Math.sin(comeFrom + 0.5) * 2.6, lp.y, lp.z + Math.cos(comeFrom + 0.5) * 2.6);
+      walkAlly(ar, stand);
+      shotFrom('fin_wide', ring(lp, 8, 1.4, [comeFrom + 1.6, comeFrom - 1.6, comeFrom + 2.4, comeFrom - 2.4, comeFrom + 0.8, comeFrom - 0.8]), chest, V(lp.x, lp.y + 0.9, lp.z), 40);
       await level.wait(1.5);
       e.playPose?.('kneel', 8);
+      // Lurtz on his knees, from the front (he turns to Legolas); Aragorn is out of the frame, behind the camera's shoulder
+      const toLegolas = yawFrom(lp, player.position);
+      shotFrom('fin_lurtz_face', ring(lp, 4.2, 1.45, [toLegolas + 0.5, toLegolas - 0.5, toLegolas + 1.1, toLegolas - 1.1]), chest, V(lp.x, lp.y + 1.0, lp.z), 34);
       await level.say('Lurtz', 'You will not find them. The Halfling is Saruman\'s now.', 3.0);
-      level.cameraShot({ position: V(lp.x - 6.5, lp.y + 1.5, lp.z + 6.5), lookAt: V(lp.x - 1, lpy, lp.z + 1), fov: 38, blend: 0 });
+      // Aragorn and Lurtz in profile: the camera on the perpendicular of the line between them, not behind either
+      profile(6.2, 36);
       await level.say('Aragorn', 'You have shed enough blood on this hill.', 2.4);
 
       // Legolas turns and draws
@@ -480,10 +564,16 @@ export const chapter: ChapterDef = {
       audio.play('bow_draw', { pos: pp, volume: 0.9 });
       const fwd = V(Math.sin(toL), 0, Math.cos(toL));
       const side = V(fwd.z, 0, -fwd.x);
-      level.cameraShot({
-        position: V(pp.x - fwd.x * 2.4 + side.x * 0.9, pp.y + 1.85, pp.z - fwd.z * 2.4 + side.z * 0.9),
-        lookAt: V(lp.x, lpy, lp.z), fov: 32, blend: 0,
-      });
+      shotFrom('fin_draw', 
+        [
+          V(pp.x - fwd.x * 2.4 + side.x * 0.9, pp.y + 1.85, pp.z - fwd.z * 2.4 + side.z * 0.9),
+          V(pp.x - fwd.x * 2.4 - side.x * 0.9, pp.y + 1.85, pp.z - fwd.z * 2.4 - side.z * 0.9),
+          V(pp.x - fwd.x * 1.4 + side.x * 1.4, pp.y + 1.7, pp.z - fwd.z * 1.4 + side.z * 1.4),
+        ],
+        V(pp.x, pp.y + 1.5, pp.z),
+        V(lp.x, lpy, lp.z),
+        32,
+      );
       for (let t = 0; t <= 1; t += 0.1) {
         hold.set(t);
         await level.wait(0.09);
@@ -497,10 +587,10 @@ export const chapter: ChapterDef = {
       ctx.projectiles.fire({ origin: bow.clone().addScaledVector(dirTo, 0.3), dir: dirTo, speed: 58, damage: Math.max(1, e.hp - e.maxHp * 0.04) / 2.6, team: 'player', owner: player, style: 'elven' });
       audio.play('bow_release', { pos: bow, volume: 1 });
       hold.set(0);
-      const mid = V((pp.x + lp.x) / 2, (pp.y + lp.y) / 2 + 1.4, (pp.z + lp.z) / 2);
-      level.cameraShot({ position: V(mid.x + side.x * 5.5, mid.y + 0.3, mid.z + side.z * 5.5), lookAt: V(mid.x + fwd.x * 3, mid.y - 0.1, mid.z + fwd.z * 3), fov: 36, blend: 0 });
+      // the arrow leaves the string on the same camera (behind Legolas's shoulder, down the line to Lurtz): it flies away from the lens
       await level.wait(0.3);
-      level.cameraShot({ position: V(lp.x - fwd.x * 4.2 - side.x * 2.5, lp.y + 1.0, lp.z - fwd.z * 4.2 - side.z * 2.5), lookAt: V(lp.x, lpy, lp.z), fov: 34, blend: 0 });
+      // the arrow's end, from beside and ahead of Lurtz
+      shotFrom('fin_arrow_end', ring(lp, 4.6, 0.9, [toL + Math.PI - 0.9, toL + Math.PI + 0.9, toL + Math.PI / 2, toL - Math.PI / 2]), chest, V(lp.x, lp.y + 1.0, lp.z), 34);
       await level.wait(0.15);
       hold.stop();
       drawHold = null;
@@ -508,9 +598,11 @@ export const chapter: ChapterDef = {
       e.playPose?.('roar', 1.2);
       ar.aiEnabled = true;
       ar.anchor = lp.clone();
-      level.cameraShot({ position: V(lp.x - 3.4, lp.y + 1.3, lp.z + 3.6), lookAt: V(lp.x, lpy + 0.1, lp.z), fov: 34, blend: 0 });
       await level.waitUntil(() => ar.position.distanceTo(e.position) < 2.9, 6);
       ctx.time.setScale(0.45, 0.1);
+      // the blow, in profile: the camera stands on the perpendicular to the line from Aragorn to Lurtz, wherever he stopped,
+      // so neither back covers the other and the sword's whole arc is in the frame
+      profile(4.4, 36);
       // his sword comes down: the blow lands on the strike frame of Aragorn's own swing (or after 2 s regardless)
       const arAtk = (ar as unknown as { atk: { phase: string } }).atk;
       await level.waitUntil(() => arAtk.phase === 'strike', 2.2);
@@ -519,10 +611,21 @@ export const chapter: ChapterDef = {
       audio.play('sword_clash', { pos: lp, volume: 1, pitch: 0.8 });
       player.camera.shake(0.35, 0.5);
       host?.thin(0.85);
+      audio.loop('army', 0);
       await level.wait(0.7);
       ctx.time.setScale(1, 0.5);
       await level.wait(1.2);
       lz.stop();
+
+      /** Aragorn and Lurtz in profile, wherever Aragorn stands now */
+      function profile(dist: number, fov: number): void {
+        const dxa = ar.position.x - lp.x;
+        const dza = ar.position.z - lp.z;
+        const pa = Math.atan2(dxa, dza) + Math.PI / 2;
+        const midp = V((ar.position.x + lp.x) / 2, lp.y + 1.2, (ar.position.z + lp.z) / 2);
+        const eyes = ring(midp, dist, 0, [pa, pa + Math.PI, pa + 0.6, pa + Math.PI - 0.6]).map((c) => c.setY(lp.y + 1.45));
+        shotFrom(`profile${Math.round(dist)}`, eyes, midp, V(midp.x, lp.y + 1.0, midp.z), fov);
+      }
     }
 
     async function outro(): Promise<void> {
@@ -533,6 +636,7 @@ export const chapter: ChapterDef = {
       level.cinematic(true);
       level.music?.('epic');
       level.objective(null);
+      hushRivalry();
       const bp = bm.position.clone();
       // fixed axes (Boromir's live facing follows the player): "forward" is toward where Lurtz stood
       const mk = markPos();
@@ -544,39 +648,48 @@ export const chapter: ChapterDef = {
         const z = bp.z + fw.z * a + lf.z * b;
         return V(x, g(x, z), z);
       };
-      // while the camera is on the fallen Lurtz: Legolas and Gimli come to Boromir, Aragorn crosses the clearing
+      const fwYaw = Math.atan2(fw.x, fw.z);
+      // the stage: Aragorn kneels at Boromir's left hand, Gimli stands at his right, Legolas a step behind Aragorn; the
+      // camera works from the front (Boromir faces Lurtz's ground), so all four are in view with the body in the middle
+      const arAt = spot(0.5, 1.05);
+      const giAt = spot(0.7, -1.35);
+      const legolasAt = spot(-0.2, 2.5);
       ar.aiEnabled = false;
       gi.aiEnabled = false;
-      setAlly(gi, spot(2.3, 0.6), bp);
-      const legolasAt = spot(0.4, 2.7);
+      setAlly(gi, giAt, bp);
       player.teleport(legolasAt, yawOf(bp.x - legolasAt.x, bp.z - legolasAt.z));
-      walkAlly(ar, spot(1.0, 0.5));
+      walkAlly(ar, arAt);
       const lp = boss!.enemy.position;
       const mid = V((bp.x + lp.x) / 2, 0, (bp.z + lp.z) / 2);
-      level.cameraShot({ position: V(CLEARING.x + 18, g(CLEARING.x + 18, -60) + 2.6, -60), lookAt: V(mid.x, g(mid.x, mid.z) + 1.4, mid.z), fov: 40, blend: 0 });
+      // the clearing in one frame: Lurtz fallen, the four of them at the tree (17 m out, a little above the grass)
+      shotFrom('out_wide', ring(mid, 17, 3.4, [0.5, -0.5, 1.2, -1.2, 0, 1.9]), V(mid.x, g(mid.x, mid.z) + 1.4, mid.z), V(mid.x, g(mid.x, mid.z) + 0.8, mid.z), 40);
       await level.wait(4.6);
       poseAlly(ar, 'kneel', 1e9);
       ar.object.rotation.y = yawOf(bp.x - ar.position.x, bp.z - ar.position.z);
-      // the tableau, from the sunward side: Boromir's face lit gold
-      const c1 = spot(7.5, -2.5);
-      level.cameraShot({ position: V(c1.x, c1.y + 1.7, c1.z), lookAt: V(bp.x + fw.x * 0.5, bp.y + 1.1, bp.z + fw.z * 0.5), fov: 38, blend: 0 });
+      // the tableau: from the front, a low camera, Boromir's face and the three round him
+      const head = V(bp.x, bp.y + 0.9, bp.z);
+      const low = V(bp.x, bp.y + 0.45, bp.z);
+      shotFrom('out_tab_far', ring(bp, 7.5, 1.35, [fwYaw - 0.3, fwYaw + 0.3, fwYaw - 0.8, fwYaw + 0.8]), head, low, 36);
       await level.wait(0.4);
-      const c2 = spot(4.0, -1.2);
-      level.cameraShot({ position: V(c2.x, c2.y + 1.4, c2.z), lookAt: V(bp.x + fw.x * 0.4, bp.y + 1.0, bp.z + fw.z * 0.4), fov: 30, blend: 4.5 });
+      shotFrom('out_tab_near', ring(bp, 5.4, 1.15, [fwYaw - 0.3, fwYaw + 0.3, fwYaw - 0.9, fwYaw + 0.9]), head, V(bp.x, bp.y + 0.8, bp.z), 32, 4.5);
       await level.say('Boromir', 'They took the little ones. I tried to fight them all... I failed you.', 3.6);
       await level.say('Aragorn', 'No, Boromir. You kept your honour. Be at peace.', 3.2);
+      // his body stays where he fell for the rest of the scene (the stock corpse sinks away after six seconds)
+      (bm as unknown as { corpseTime: number }).corpseTime = -1;
       (bm as unknown as { kill(k: null): void }).kill(null);
       audio.play('bell', { volume: 0.5, pitch: 0.7 });
       await level.wait(1.8);
-      // Legolas, then the three of them against the low sun
-      const lc = spot(0.4, 5.6);
-      level.cameraShot({ position: V(lc.x, lc.y + 1.7, lc.z), lookAt: V(legolasAt.x, legolasAt.y + 1.6, legolasAt.z), fov: 30, blend: 1.4 });
+      // Legolas, in the light, the stream behind him; then the four of them
+      const lface = V(legolasAt.x, legolasAt.y + 1.6, legolasAt.z);
+      shotFrom('out_legolas', ring(legolasAt, 4.4, 1.55, [fwYaw + 0.5, fwYaw - 0.3, fwYaw + 1.0, fwYaw + 1.6, fwYaw - 1.0]), lface, V(legolasAt.x, legolasAt.y + 1.25, legolasAt.z), 30, 1.4);
       await level.say('Legolas', 'Frodo has gone. And the hobbits are taken.', 2.8);
-      const c3 = spot(10, -4);
-      level.cameraShot({ position: V(c3.x, c3.y + 1.3, c3.z), lookAt: V(bp.x, bp.y + 1.9, bp.z), fov: 36, blend: 2.0 });
+      const group = V(bp.x + lf.x * 0.5, bp.y + 0.8, bp.z + lf.z * 0.5);
+      shotFrom('out_group', ring(bp, 10.5, 1.45, [fwYaw - 0.15, fwYaw + 0.25, fwYaw - 0.6, fwYaw + 0.7, fwYaw - 1.1]), group, V(group.x, bp.y + 0.35, group.z), 36, 2.0);
       await level.say('Aragorn', 'We will not abandon Merry and Pippin.', 3.0);
       await level.say('Gimli', 'Not while there is an axe to swing.', 2.4);
       await level.wait(0.8);
+      hushed?.();
+      hushed = null;
       level.complete();
     }
 
@@ -600,7 +713,7 @@ export const chapter: ChapterDef = {
       await lurtzIntro();
       trace('lurtz fight');
       await lurtzFight();
-      trace('finisher');
+      trace(`finisher hp=${Math.round((boss?.hpFrac ?? 0) * 100)}%`);
       await finisher();
       trace('outro');
       await outro();
@@ -633,6 +746,8 @@ export const chapter: ChapterDef = {
         boromirBody = null;
         drawHold?.stop();
         drawHold = null;
+        hushed?.();
+        hushed = null;
         player.invulnerable = false;
         ctx.time.setScale(1, 0.1);
       },

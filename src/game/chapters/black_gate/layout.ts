@@ -127,26 +127,28 @@ export interface HostDef {
 /**
  * The host stands massed on the plain before the Gate; when the leaves open it surges toward the
  * hills while a column pours out of the gate behind it, and the flank and rear hosts close the ring.
- * (A crowd's area is axis aligned and it marches along `facing`.) Rest positions are chosen so the
+ * (A crowd's area is axis aligned and it marches along `facing`.) The three front hosts are thin on purpose:
+ * they stand 80+ m out, where the silhouette hordes right behind them carry the mass at a fraction of the
+ * triangles (a detailed figure is ~540 triangles, a horde figure 29). Rest positions are chosen so the
  * nearest figure stays at least ~52 m from the fight (crowds never mingle with the action).
  */
 export const HOSTS: HostDef[] = [
-  { id: 'colG', kind: 'orc', count: 60, center: [0, -42], half: [6.5, 14], facing: 0, march: 84, delay: 11 },
-  { id: 'hostL', kind: 'orc', count: 80, center: [-76, 60], half: [26, 12], facing: 0.255, march: 42, delay: 4 },
-  { id: 'hostM', kind: 'orc', count: 120, center: [0, 56], half: [30, 12], facing: 0, march: 40, delay: 3 },
-  { id: 'hostR', kind: 'easterling', count: 80, center: [76, 60], half: [26, 12], facing: -0.255, march: 42, delay: 5 },
-  { id: 'west', kind: 'orc', count: 70, center: [-210, 150], half: [14, 34], facing: 1.254, march: 128, delay: 6 },
-  { id: 'east', kind: 'easterling', count: 70, center: [214, 152], half: [14, 34], facing: -1.31, march: 126, delay: 7 },
-  { id: 'rear', kind: 'orc', count: 60, center: [0, 372], half: [46, 12], facing: Math.PI, march: 110, delay: 12 },
+  { id: 'colG', kind: 'orc', count: 44, center: [0, -42], half: [6.5, 14], facing: 0, march: 84, delay: 11 },
+  { id: 'hostL', kind: 'orc', count: 56, center: [-76, 60], half: [26, 12], facing: 0.255, march: 42, delay: 4 },
+  { id: 'hostM', kind: 'orc', count: 84, center: [0, 56], half: [30, 12], facing: 0, march: 40, delay: 3 },
+  { id: 'hostR', kind: 'easterling', count: 56, center: [76, 60], half: [26, 12], facing: -0.255, march: 42, delay: 5 },
+  { id: 'west', kind: 'orc', count: 96, center: [-210, 150], half: [13, 30], facing: 1.254, march: 128, delay: 6 },
+  { id: 'east', kind: 'easterling', count: 96, center: [214, 152], half: [13, 30], facing: -1.31, march: 126, delay: 7 },
+  { id: 'rear', kind: 'orc', count: 96, center: [0, 350], half: [44, 11], facing: Math.PI, march: 92, delay: 12 },
 ];
 
 /** the far ranks: thousands of silhouette figures (see horde.ts), counts at High quality */
 export const HORDES: HordeDef[] = [
   { id: 'plain', center: [0, 54], half: [118, 30], count: 2500, facing: 0, march: 8, delay: 4, tint: 'orc' },
   { id: 'gateflow', center: [0, -70], half: [6.5, 40], count: 300, facing: 0, march: 130, delay: 11.5, tint: 'orc', speed: 4.6 },
-  { id: 'flankW', center: [-250, 176], half: [40, 70], count: 1000, facing: 1.4, march: 44, delay: 7, tint: 'orc' },
-  { id: 'flankE', center: [252, 178], half: [40, 70], count: 1000, facing: -1.4, march: 44, delay: 8, tint: 'easterling' },
-  { id: 'rearAll', center: [0, 440], half: [110, 36], count: 600, facing: Math.PI, march: 64, delay: 12, tint: 'orc' },
+  { id: 'flankW', center: [-236, 176], half: [30, 58], count: 1100, facing: 1.4, march: 78, delay: 7, tint: 'orc' },
+  { id: 'flankE', center: [238, 178], half: [30, 58], count: 1100, facing: -1.4, march: 78, delay: 8, tint: 'easterling' },
+  { id: 'rearAll', center: [0, 408], half: [110, 34], count: 700, facing: Math.PI, march: 72, delay: 12, tint: 'orc' },
   { id: 'nw', center: [-165, 66], half: [48, 38], count: 450, facing: 0.9, march: 0, delay: 0, tint: 'orc' },
   { id: 'ne', center: [165, 68], half: [48, 38], count: 450, facing: -0.9, march: 0, delay: 0, tint: 'easterling' },
 ];

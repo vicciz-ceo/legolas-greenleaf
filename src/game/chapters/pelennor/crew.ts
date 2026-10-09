@@ -26,6 +26,8 @@ export interface CrewHost {
   playerAboard(): boolean;
   /** crew are alert (shoot) */
   alert(): boolean;
+  /** the player is on the rope ladder (archers shoot slower, lighter and without leading him) */
+  climbing(): boolean;
   /** ground height for corpses that fall off */
   groundAt(x: number, z: number): number;
 }
@@ -248,16 +250,20 @@ export class CrewMember extends BaseCombatant {
     this.drawT += dt;
     if (this.drawT < 1.0) return;
     this.drawT = -1;
-    this.shootT = 2.6 + this.rnd() * 1.6;
+    // On the ladder the archers loose at where he hangs NOW (no lead): a sideways swing dodges the
+    // shaft, holding still does not. Fewer, lighter arrows: the climb is a dodge, not a damage race.
+    const climbing = this.host.climbing();
+    this.shootT = climbing ? 4.4 + this.rnd() * 2.2 : 2.6 + this.rnd() * 1.6;
     this.aimPoint(_o);
     _o.y += 0.25;
     player.aimPoint(_t);
     const speed = 36;
-    leadTarget(_o, _t, player.velocity, speed, _w, 1.2);
+    if (climbing) _w.copy(_t);
+    else leadTarget(_o, _t, player.velocity, speed, _w, 1.2);
     ballisticDir(_o, _w, speed, ARROW_GRAVITY, _d);
     const spread = THREE.MathUtils.degToRad(1.4 + dist * 0.02);
     spreadDir(_d, spread, this.rnd(), this.rnd(), _d);
-    ctx.projectiles.fire({ origin: _o.clone(), dir: _d.clone(), speed, damage: 9, team: 'enemy', owner: this, style: 'orc' });
+    ctx.projectiles.fire({ origin: _o.clone(), dir: _d.clone(), speed, damage: climbing ? 5 : 9, team: 'enemy', owner: this, style: 'orc' });
     ctx.audio.play('bow_release', { pos: this.object.position, volume: 0.6, pitch: 0.9 });
   }
 

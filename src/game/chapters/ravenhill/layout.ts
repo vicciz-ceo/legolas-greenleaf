@@ -34,7 +34,9 @@ export const UPPER_Y = 24;
 export const CRAG = { x: -62, z: 112, y: 58, r: 22 };
 export const PINNACLE = { x: 24, z: 112, y: 67, r: 8 };
 /** the bridge: deck top y, from x0 (crag edge) to x1 (pinnacle foot), at z */
-export const BRIDGE = { x0: -40, x1: 16, z: 112, y: 58, width: 5.5, gap: [0.42, 0.6] as [number, number] };
+/** (the collapse takes out most of the span: only a short stub is left at the pinnacle end, so the
+ *  falling stones hang over the open abyss) */
+export const BRIDGE = { x0: -40, x1: 16, z: 112, y: 58, width: 5.5, gap: [0.42, 0.9] as [number, number] };
 export const BRIDGE_LEN = BRIDGE.x1 - BRIDGE.x0;
 export const BRIDGE_CX = (BRIDGE.x0 + BRIDGE.x1) / 2;
 /** world x where the deck breaks (start and end of the gap) */
@@ -73,14 +75,17 @@ export const L = {
   pickup: V(riverX(44), 0, 44),
   cp1Spawn: V(riverX(30), 0, 30),
   /** cp2: Legolas drops into the top floor of the tower; Bolg waits across the floor */
-  towerDrop: towerLocal(-2.0, TOP_FLOOR_Y, -3.0),
-  towerCenter: towerLocal(-2.5, TOP_FLOOR_Y, 1.5),
-  bolgTower: towerLocal(-3.2, TOP_FLOOR_Y, 2.6),
+  //  (the bat lets go over local (0.6, 5.2), on the far side of the floor from Bolg: ~9 m of room)
+  towerDrop: towerLocal(0.4, TOP_FLOOR_Y, 4.3),
+  towerCenter: towerLocal(-1.4, TOP_FLOOR_Y, 0.8),
+  bolgTower: towerLocal(-4.0, TOP_FLOOR_Y, -1.6), // (his path to the drop point clears the stair hole)
   /** cp3: the bridge's near end, the summit of the pinnacle, Bolg's last stand */
-  bridgeStart: V(BRIDGE.x0 + 3, BRIDGE.y, BRIDGE.z),
+  bridgeStart: V(BRIDGE.x0 + 14, BRIDGE.y, BRIDGE.z),
   summit: V(PINNACLE.x - 1, PINNACLE.y, PINNACLE.z),
   bolgSummit: V(PINNACLE.x + 3, PINNACLE.y, PINNACLE.z + 0.5),
   summitArchers: [V(PINNACLE.x + 5.5, PINNACLE.y, PINNACLE.z - 4.5), V(PINNACLE.x + 6, PINNACLE.y, PINNACLE.z + 4)],
+  /** the knife finisher is staged on a fixed, clear mark on the summit: Bolg kneels facing west */
+  finBolg: V(PINNACLE.x + 1.4, PINNACLE.y, PINNACLE.z + 0.2),
   /** distant battle in the valley */
   battle: V(30, 0, -135),
 };
@@ -138,7 +143,9 @@ export function heightAt(x: number, z: number): number {
   // ── the east pinnacle ──
   const dp = Math.hypot(x - PINNACLE.x, z - PINNACLE.z);
   if (dp < PINNACLE.r + 22) {
-    const pin = dp < PINNACLE.r ? PINNACLE.y + n2 * 0.15 : PINNACLE.y - (dp - PINNACLE.r) * (3.0 + n2 * 0.5);
+    // the west face, under the falling stones and the bridge's broken end, is a sheer drop
+    const west = smoothstep(-0.25, -0.8, (x - PINNACLE.x) / Math.max(dp, 1e-3));
+    const pin = dp < PINNACLE.r ? PINNACLE.y + n2 * 0.15 : PINNACLE.y - (dp - PINNACLE.r) * (3.0 + n2 * 0.5 + 7 * west);
     h = Math.max(h, pin);
   }
   return h;

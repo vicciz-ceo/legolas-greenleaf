@@ -12,6 +12,7 @@
  * leap slam, spiderling summons, climbing into the canopy web and being dropped out of it.
  */
 import * as THREE from 'three';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { Combatant, DamageInfo, LevelAPI } from '../../../core/types';
 import { BaseCombatant, ZONE_MULT, hostile } from '../../../actors/combatant';
 import { requestAttackToken, releaseAttackToken } from '../../../actors/npc';
@@ -65,47 +66,150 @@ function threadRes() {
 
 function blobRes() {
   if (!blobGeo) {
-    const g = new THREE.IcosahedronGeometry(0.2, 2);
-    const p = g.attributes.position;
+    // a smooth, lumpy ball of wet silk (indexed sphere: shared vertices give smooth normals)
+    const g = new THREE.SphereGeometry(0.17, 20, 14);
+    g.deleteAttribute('uv');
+    g.deleteAttribute('normal');
+    const ball = mergeVertices(g);
+    g.dispose();
+    const p = ball.attributes.position;
     for (let i = 0; i < p.count; i++) {
       _v.fromBufferAttribute(p, i);
-      const n = 1 + 0.22 * Math.sin(_v.x * 31 + _v.y * 17) * Math.cos(_v.z * 23 - _v.x * 11);
+      const n = 1 + 0.16 * Math.sin(_v.x * 29 + _v.y * 17) * Math.cos(_v.z * 23 - _v.x * 11) + 0.07 * Math.sin(_v.y * 61 + _v.z * 43);
       _v.multiplyScalar(n);
-      p.setXYZ(i, _v.x, _v.y, _v.z * 1.25);
+      p.setXYZ(i, _v.x * 0.92, _v.y * 0.92, _v.z * 1.3);
     }
-    g.computeVertexNormals();
-    // trailing strands
-    const tail = new THREE.ConeGeometry(0.09, 0.9, 6, 1, true).rotateX(-Math.PI / 2).translate(0, 0, -0.55);
-    const merged = mergeTwo(g.toNonIndexed(), tail.toNonIndexed());
-    g.dispose();
-    tail.dispose();
-    blobGeo = merged;
+    ball.computeVertexNormals();
+    // a few thin trailing strands behind it
+    const parts: THREE.BufferGeometry[] = [ball];
+    for (let k = 0; k < 4; k++) {
+      const a = (k / 4) * Math.PI * 2 + 0.4;
+      const pts: THREE.Vector3[] = [];
+      for (let j = 0; j <= 5; j++) {
+        const f = j / 5;
+        pts.push(new THREE.Vector3(Math.cos(a) * 0.07 * (1 - f * 0.6) + Math.sin(f * 5 + k) * 0.03, Math.sin(a) * 0.07 * (1 - f * 0.6), -0.12 - f * (0.55 + k * 0.12)));
+      }
+      const tube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 10, 0.012 - k * 0.002, 4, false);
+      tube.deleteAttribute('uv');
+      parts.push(tube);
+    }
+    blobGeo = mergeGeometries(parts, false)!;
+    parts.forEach((x) => x.dispose());
     blobGeo.userData.shared = true;
   }
   if (!blobMat) {
-    blobMat = new THREE.MeshPhysicalMaterial({ color: 0xe6e2d6, roughness: 0.45, sheen: 1, sheenColor: new THREE.Color(0xffffff), transparent: true, opacity: 0.92, emissive: 0x2a2a26 });
+    blobMat = new THREE.MeshPhysicalMaterial({ color: 0xd9d5c8, roughness: 0.38, sheen: 1, sheenRoughness: 0.4, sheenColor: new THREE.Color(0xf4f2ea), transparent: true, opacity: 0.9, emissive: 0x15140f });
     blobMat.userData.shared = true;
   }
   return { geo: blobGeo, mat: blobMat };
 }
 
-function mergeTwo(a: THREE.BufferGeometry, b: THREE.BufferGeometry): THREE.BufferGeometry {
-  const pa = a.attributes.position.array as Float32Array;
-  const pb = b.attributes.position.array as Float32Array;
-  const na = a.attributes.normal.array as Float32Array;
-  const nb = b.attributes.normal.array as Float32Array;
-  const pos = new Float32Array(pa.length + pb.length);
-  const nor = new Float32Array(na.length + nb.length);
-  pos.set(pa);
-  pos.set(pb, pa.length);
-  nor.set(na);
-  nor.set(nb, na.length);
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  g.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-  a.dispose();
-  b.dispose();
-  return g;
+let webAlpha: THREE.DataTexture | null = null;
+/** a tileable alpha mask of crossing silk threads over a faint gauze */
+function webAlphaTex(): THREE.DataTexture {
+  if (webAlpha) return webAlpha;
+  const W = 128;
+  const d = new Uint8Array(W * W * 4);
+  const acc = new Float32Array(W * W);
+  const r = new Rng(hashSeed('web_wrap', 1));
+  for (let i = 0; i < W * W; i++) acc[i] = 0.1 + 0.08 * r.float();
+  for (let k = 0; k < 70; k++) {
+    // a thread: a long, slightly curved line (wrapping around the tile)
+    let x = r.float() * W;
+    let y = r.float() * W;
+    let a = (r.float() - 0.5) * 1.2 + (k % 3 === 0 ? Math.PI / 2 : 0);
+    const len = 60 + r.float() * 120;
+    const bright = 0.45 + r.float() * 0.55;
+    for (let s = 0; s < len; s += 0.5) {
+      a += (r.float() - 0.5) * 0.04;
+      x += Math.cos(a) * 0.5;
+      y += Math.sin(a) * 0.5;
+      const xi = ((Math.floor(x) % W) + W) % W;
+      const yi = ((Math.floor(y) % W) + W) % W;
+      acc[yi * W + xi] = Math.max(acc[yi * W + xi], bright);
+      const xn = (xi + 1) % W;
+      acc[yi * W + xn] = Math.max(acc[yi * W + xn], bright * 0.45);
+    }
+  }
+  for (let i = 0; i < W * W; i++) {
+    const v = Math.round(clamp(acc[i], 0, 1) * 255);
+    d[i * 4] = d[i * 4 + 1] = d[i * 4 + 2] = v;
+    d[i * 4 + 3] = 255;
+  }
+  const t = new THREE.DataTexture(d, W, W, THREE.RGBAFormat);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.magFilter = THREE.LinearFilter;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true;
+  t.needsUpdate = true;
+  t.userData.shared = true;
+  webAlpha = t;
+  return t;
+}
+
+/**
+ * The web wrapped round Legolas's hips and thighs: a dozen fine silk strands looping round him
+ * (one merged tube mesh) over two torn, translucent bands of gauze (alpha-masked threads).
+ */
+function buildWrap(): { group: THREE.Group; mats: THREE.MeshPhysicalMaterial[] } {
+  const r = new Rng(hashSeed('web_wrap', 2));
+  const strands: THREE.BufferGeometry[] = [];
+  for (let k = 0; k < 20; k++) {
+    const y0 = -0.36 + r.float() * 0.42;
+    const tiltX = (r.float() - 0.5) * 0.7;
+    const tiltZ = (r.float() - 0.5) * 0.5;
+    const ph = r.float() * 6.28;
+    const span = 0.75 + r.float() * 0.35; // loops that do not quite close
+    const pts: THREE.Vector3[] = [];
+    const N = 22;
+    for (let j = 0; j <= N; j++) {
+      const a = ph + (j / N) * Math.PI * 2 * span;
+      const wob = 1 + 0.08 * Math.sin(a * 3 + k);
+      const x = Math.cos(a) * 0.205 * wob;
+      const z = Math.sin(a) * 0.16 * wob + 0.02;
+      const y = y0 + x * tiltZ + z * tiltX + Math.sin(a * 2 + k) * 0.02;
+      pts.push(new THREE.Vector3(x, y, z));
+    }
+    const tube = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, 0.0025 + r.float() * 0.003, 3, false);
+    tube.deleteAttribute('uv');
+    strands.push(tube);
+  }
+  const strandGeo = mergeGeometries(strands, false)!;
+  strands.forEach((g) => g.dispose());
+  const strandMat = new THREE.MeshPhysicalMaterial({ color: 0xe4e0d4, roughness: 0.35, sheen: 1, sheenColor: new THREE.Color(0xffffff), transparent: true, opacity: 0.9, emissive: 0x111110 });
+  const gauzeMat = new THREE.MeshPhysicalMaterial({
+    color: 0xdcd8cc, roughness: 0.6, sheen: 0.6, sheenColor: new THREE.Color(0xffffff), transparent: true, opacity: 0.6,
+    alphaMap: webAlphaTex(), side: THREE.DoubleSide, depthWrite: false,
+  });
+  const group = new THREE.Group();
+  group.name = 'web_wrap';
+  const sm = new THREE.Mesh(strandGeo, strandMat);
+  sm.castShadow = false;
+  sm.userData.noAO = true;
+  group.add(sm);
+  for (let b = 0; b < 2; b++) {
+    const h = 0.2 + b * 0.06;
+    const g = new THREE.CylinderGeometry(0.215 - b * 0.012, 0.2 - b * 0.02, h, 28, 4, true);
+    const p = g.attributes.position;
+    const uv = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) {
+      _v.fromBufferAttribute(p, i);
+      const a = Math.atan2(_v.z, _v.x);
+      const n = 1 + 0.07 * Math.sin(a * 5 + b * 2 + _v.y * 20) + 0.04 * Math.sin(a * 11 - b);
+      p.setXYZ(i, _v.x * n, _v.y + Math.sin(a * 2 + b) * 0.04, _v.z * n * 0.8 + 0.02);
+      uv.setXY(i, uv.getX(i) * 3, uv.getY(i) * 0.6 + b * 0.37);
+    }
+    g.computeVertexNormals();
+    const m = new THREE.Mesh(g, gauzeMat);
+    m.position.y = -0.2 + b * 0.13;
+    m.rotation.y = b * 1.3;
+    m.rotation.x = (b - 0.5) * 0.12;
+    m.castShadow = false;
+    m.userData.noAO = true;
+    m.renderOrder = 2;
+    group.add(m);
+  }
+  return { group, mats: [strandMat, gauzeMat] };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -126,7 +230,8 @@ export class WebSystem {
   private slowT = 0;
   private baseSpeed = 0;
   private slowStats: { moveSpeed: number } | null = null;
-  private wrap: THREE.Mesh | null = null;
+  private wrap: { group: THREE.Group; mats: THREE.MeshPhysicalMaterial[] } | null = null;
+  private wrapK = 0;
   private toastT = 0;
   /** total webbed seconds (diagnostics) */
   webbedFor = 0;
@@ -161,26 +266,31 @@ export class WebSystem {
   /** web Legolas: 50 % speed for 2 s */
   webPlayer(seconds = 2): void {
     const player = this.level.ctx.player;
-    const stats = player.stats as { moveSpeed: number };
-    if (this.slowT <= 0 || this.slowStats !== stats) {
-      this.restore();
-      this.slowStats = stats;
-      this.baseSpeed = stats.moveSpeed;
-      stats.moveSpeed = this.baseSpeed * 0.5;
-    }
     this.slowT = Math.max(this.slowT, seconds);
+    this.applySlow();
     if (!this.wrap) {
-      const { geo, mat } = blobRes();
-      this.wrap = new THREE.Mesh(geo, mat);
-      this.wrap.scale.set(2.2, 1.6, 1.4);
-      this.wrap.position.set(0, -0.1, 0.12);
-      player.humanoid.bones.hips.add(this.wrap);
+      this.wrap = buildWrap();
+      player.humanoid.bones.hips.add(this.wrap.group);
     }
-    this.wrap.visible = true;
+    if (this.wrap.group.parent !== player.humanoid.bones.hips) player.humanoid.bones.hips.add(this.wrap.group);
+    this.wrap.group.visible = true;
     if (this.toastT <= 0) {
       this.level.ctx.hud.toast('Webbed! Slowed', 'warning');
       this.toastT = 5;
     }
+  }
+
+  /**
+   * Halve the player's move speed. The player rebuilds its stats object from progression every
+   * second, so this is re-checked every frame while webbed: a fresh stats object gets slowed too.
+   */
+  private applySlow(): void {
+    const stats = this.level.ctx.player.stats as { moveSpeed: number };
+    if (this.slowStats === stats) return;
+    this.restore();
+    this.slowStats = stats;
+    this.baseSpeed = stats.moveSpeed;
+    stats.moveSpeed = this.baseSpeed * 0.5;
   }
 
   private restore(): void {
@@ -194,10 +304,18 @@ export class WebSystem {
     if (this.slowT > 0) {
       this.slowT -= dt;
       this.webbedFor += dt;
-      if (this.slowT <= 0) {
-        this.restore();
-        if (this.wrap) this.wrap.visible = false;
-      }
+      if (this.slowT <= 0) this.restore();
+      else this.applySlow();
+    }
+    // the wrap snaps on, then tears away as the slow ends
+    if (this.wrap) {
+      const want = this.slowT > 0.25 ? 1 : this.slowT > 0 ? this.slowT / 0.25 : 0;
+      this.wrapK = want > this.wrapK ? Math.min(want, this.wrapK + dt * 8) : Math.max(want, this.wrapK - dt * 5);
+      const k = this.wrapK;
+      this.wrap.group.visible = k > 0.01;
+      this.wrap.group.scale.set(0.85 + 0.15 * k, 0.9 + 0.1 * k, 0.85 + 0.15 * k);
+      this.wrap.mats[0].opacity = 0.9 * k;
+      this.wrap.mats[1].opacity = 0.6 * k;
     }
     for (let i = this.blobs.length - 1; i >= 0; i--) {
       const b = this.blobs[i];
@@ -218,7 +336,7 @@ export class WebSystem {
         if (dx * dx + dz * dz > (c.radius + 0.35) ** 2 || dy < -0.2 || dy > c.height + 0.2) continue;
         c.takeDamage({ amount: b.damage, type: 'blunt', source: b.owner, point: b.pos.clone(), dir: _v3.copy(b.vel).normalize().clone(), knockback: 1.5 });
         if (c === ctx.player) this.webPlayer(2);
-        ctx.fx.dust(b.pos, 6, 0xe8e4d8);
+        ctx.fx.dust(b.pos, 0.3, 0x9c998e);
         ctx.audio.play('web_tear', { pos: b.pos, volume: 0.8, pitch: 0.9 });
         done = true;
         break;
@@ -231,7 +349,7 @@ export class WebSystem {
           _v3.divideScalar(len);
           const hit = ctx.physics.raycast(_v2, _v3, len, 'arrows');
           if (hit || b.pos.y < ctx.physics.heightAt(b.pos.x, b.pos.z) + 0.05) {
-            ctx.fx.dust(hit ? hit.point : b.pos, 5, 0xe0dccf);
+            ctx.fx.dust(hit ? hit.point : b.pos, 0.35, 0x8e8b80);
             done = true;
           }
         }
@@ -245,7 +363,12 @@ export class WebSystem {
 
   dispose(): void {
     this.restore();
-    this.wrap?.removeFromParent();
+    if (this.wrap) {
+      this.wrap.group.removeFromParent();
+      this.wrap.group.traverse((o) => (o as THREE.Mesh).geometry?.dispose());
+      this.wrap.mats.forEach((m) => m.dispose());
+      this.wrap = null;
+    }
     for (const b of this.blobs) b.mesh.removeFromParent();
     this.blobs.length = 0;
   }
@@ -302,6 +425,8 @@ export class Spider extends BaseCombatant {
   private spitCd = 3;
   private token = false;
   protected flashT = 0;
+  /** peak emissive of the hit flash: a faint sheen only, so the chitin keeps its shading under fire */
+  protected flashPeak = 0.07;
   private sinkY = 0;
   private animSkip = 0;
   // hang
@@ -310,6 +435,7 @@ export class Spider extends BaseCombatant {
   private threadRetract = -1;
   private hangSpeed = 5;
   private flipT = -1;
+  private hangSpat = false;
   private readonly flipFrom = new THREE.Quaternion();
   // climb
   private path: ClimbPoint[] = [];
@@ -415,8 +541,13 @@ export class Spider extends BaseCombatant {
   }
 
   // ── damage ─────────────────────────────────────────────────────────────────
+  /** start the hit flash (rate-limited: sustained fire must not hold the model lit) */
+  protected flash(): void {
+    if (this.flashT < 0.3) this.flashT = 1;
+  }
+
   protected onDamaged(d: DamageInfo, amount: number): void {
-    this.flashT = 1;
+    this.flash();
     if (this.mode !== 'ground' || !this.alive) return;
     if ((d.stagger || amount > this.maxHp * 0.4) && this.act !== 'lunge' && this.size >= 0.8) this.setAct('stagger', 0.45);
     else if (this.act === 'hunt' && this.rng.chance(0.3)) this.setAct('dart', 0.35 + this.rng.float() * 0.2);
@@ -441,10 +572,10 @@ export class Spider extends BaseCombatant {
     const p = this.pose;
     p.t += dt;
     if (this.flashT > 0) {
-      this.flashT = Math.max(0, this.flashT - dt * 8);
+      this.flashT = Math.max(0, this.flashT - dt * 9);
       const m = this.model.creature.material;
       m.emissive.setHex(this.flashColor);
-      m.emissiveIntensity = this.flashT * 0.22;
+      m.emissiveIntensity = this.flashT * this.flashT * this.flashPeak;
     }
     this.hitReact = Math.max(0, this.hitReact - dt * 4);
     p.hit = this.hitReact;
@@ -533,6 +664,11 @@ export class Spider extends BaseCombatant {
       this.object.quaternion.slerp(_q, 1 - Math.exp(-6 * dt));
       p.hang = damp(p.hang, 1, 6, dt);
       p.phase += dt * 0.6;
+      // a spitter on its thread spits once on the way down
+      if (this.spitter && !this.hangSpat && this.alive && this.aiEnabled && above > 3 && above < 8 && player.alive && pos.distanceTo(player.position) < 22) {
+        this.hangSpat = true;
+        this.spitAt(player);
+      }
       if (above < 1.15 * this.S) {
         this.flipT = 0;
         this.flipFrom.copy(this.object.quaternion);
@@ -548,7 +684,7 @@ export class Spider extends BaseCombatant {
       p.hang = 1 - u;
       if (u >= 1) {
         pos.y = g;
-        this.level.ctx.fx.dust(pos, 4 * this.size);
+        this.level.ctx.fx.dust(pos, 0.5 * this.size);
         this.mode = 'ground';
         this.upN.set(0, 1, 0);
         this.setAct('hunt', 0);
@@ -652,7 +788,7 @@ export class Spider extends BaseCombatant {
       pos.y = g;
       const impact = -this.airVel.y;
       this.airVel.set(0, 0, 0);
-      this.level.ctx.fx.dust(pos, Math.min(14, 3 + impact * 0.5) * this.size);
+      this.level.ctx.fx.dust(pos, Math.min(2.2, 0.4 + impact * 0.06) * this.size);
       this.mode = 'ground';
       this.upN.set(0, 1, 0);
       p.air = 0;
@@ -996,14 +1132,14 @@ export class WebAnchor extends BaseCombatant {
 
   protected onDamaged(): void {
     this.knotMat.emissiveIntensity = 2;
-    this.level.ctx.fx.dust(this.helper.getWorldPosition(_v), 3, 0xeeeedd);
+    this.level.ctx.fx.dust(this.helper.getWorldPosition(_v), 0.4, 0xb8b6aa);
   }
 
   protected onDied(): void {
     const { ctx } = this.level;
     this.helper.getWorldPosition(_v);
-    ctx.fx.debris(_v, 10, 0xe6e2d0);
-    ctx.fx.dust(_v, 12, 0xe6e2d0);
+    ctx.fx.debris(_v, 1.2, 0xe6e2d0);
+    ctx.fx.dust(_v, 1.2, 0xc8c4b6);
     ctx.audio.play('web_tear', { pos: _v, volume: 1, pitch: 0.7 });
     this.knot.visible = false;
     this.halo.visible = false;
@@ -1025,6 +1161,15 @@ export class WebAnchor extends BaseCombatant {
 // ─────────────────────────────────────────────────────────────────────────────
 // The Brood Mother
 // ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Her hit points. The brief's "10x a spider" is read as 10x a spider's toughness against what
+ * actually hits her: arrows into the eyes (x3) at a fight's pace. 760 (11x the hp) died in ~6 s of
+ * phase 1 and ~1 s of stun; 2100 gives a phase 1 of ~30-45 s, a stun window and a real enraged phase.
+ */
+export const BROOD_HP = 2100;
+/** share of max hp the 4 s stun window takes at full rate (past it, hits do 20 %): the enraged phase is always fought */
+const STUN_CAP = 0.1;
 
 type BossMove = 'none' | 'stab' | 'volley' | 'leap' | 'summon' | 'stun' | 'roar';
 
@@ -1048,6 +1193,7 @@ export class BroodMother extends Spider {
   private summoned75 = false;
   private summoned25 = false;
   private ceilingSpitT = 2;
+  private stunDealt = 0;
   private readonly hooks: BroodHooks;
   /** set while scripted (climbing up, hanging, falling): the brain is off */
   scripted = false;
@@ -1055,7 +1201,8 @@ export class BroodMother extends Spider {
   goal: THREE.Vector3 | null = null;
 
   constructor(level: LevelAPI, webs: WebSystem, hooks: BroodHooks) {
-    super(level, webs, { variant: 'brood', hp: 760, damage: 18, speed: 4.6, name: 'The Brood Mother' });
+    super(level, webs, { variant: 'brood', hp: BROOD_HP, damage: 18, speed: 4.6, name: 'The Brood Mother' });
+    this.flashPeak = 0.035;
     this.hooks = hooks;
     this.isBoss = true;
     this.corpseTime = -1;
@@ -1079,8 +1226,16 @@ export class BroodMother extends Spider {
 
   protected filterDamage(d: DamageInfo): number {
     if (this.invulnerable) return 0;
-    // the stunned mother takes more
-    const a = d.amount * (this.move === 'stun' ? 1.5 : 1);
+    let a = d.amount;
+    // the archers chip at her; Legolas does the killing
+    if (d.source && d.source.team === 'ally') a *= 0.5;
+    if (this.move === 'stun' && d.type !== 'fall') {
+      // the stunned mother takes a little more, up to a cap for the whole window
+      const full = a * 1.15;
+      const room = Math.max(0, this.maxHp * STUN_CAP - this.stunDealt);
+      a = full <= room ? full : room + (full - room) * 0.2;
+      this.stunDealt += a;
+    }
     // phase 1 ends at exactly 50 %: a big volley cannot skip the canopy phase
     if (this.phase === 1) return Math.min(a, Math.max(0, this.hp - this.maxHp * 0.5));
     return a;
@@ -1089,14 +1244,15 @@ export class BroodMother extends Spider {
   protected onDamaged(d: DamageInfo, amount: number): void {
     void d;
     void amount;
-    // no stagger on her; just the flash
-    this.flashT = 1;
+    // no stagger on her; just a faint flash
+    this.flash();
   }
 
   /** knock her down: fall from the canopy, stunned for `sec` */
   stun(sec: number): void {
     this.move = 'stun';
     this.moveT = sec;
+    this.stunDealt = 0;
     this.releaseMoveVisuals();
   }
 
@@ -1115,7 +1271,8 @@ export class BroodMother extends Spider {
     this.onLand = () => {
       this.level.ctx.player.camera.shake(0.7, 0.9);
       this.level.ctx.audio.play('troll_hit', { pos: this.object.position, volume: 1, pitch: 0.6 });
-      this.level.ctx.fx.debris(this.object.position, 18, 0x3a3226);
+      this.level.ctx.fx.debris(this.object.position, 2, 0x3a3226);
+      this.level.ctx.fx.dust(this.object.position, 2.2);
       onLand();
     };
   }
@@ -1362,7 +1519,7 @@ export class BroodMother extends Spider {
     const hx = pos.x + Math.sin(f) * 3.6 + Math.cos(f) * side * 0.9;
     const hz = pos.z + Math.cos(f) * 3.6 - Math.sin(f) * side * 0.9;
     _v.set(hx, ctx.physics.heightAt(hx, hz), hz);
-    ctx.fx.dust(_v, 5);
+    ctx.fx.dust(_v, 0.6);
     ctx.audio.play('arrow_hit_wood', { pos: _v, volume: 0.9, pitch: 0.5 });
     for (const c of ctx.combatants.query(_v, 2.2)) {
       if (!c.alive || !hostile(this.team, c.team)) continue;
@@ -1376,8 +1533,8 @@ export class BroodMother extends Spider {
     const { ctx } = this.level;
     const pos = this.object.position;
     if (this.ring) this.ring.visible = false;
-    ctx.fx.dust(pos, 16);
-    ctx.fx.debris(pos, 10, 0x3a3226);
+    ctx.fx.dust(pos, 2);
+    ctx.fx.debris(pos, 1.3, 0x3a3226);
     ctx.audio.play('troll_hit', { pos, volume: 1, pitch: 0.7 });
     const pd = ctx.player.position.distanceTo(pos);
     if (pd < 18) ctx.player.camera.shake(0.5 * (1 - pd / 18), 0.5);

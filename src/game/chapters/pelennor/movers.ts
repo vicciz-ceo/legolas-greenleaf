@@ -43,10 +43,15 @@ function wish(player: PlayerAPI, input: InputState, out: THREE.Vector3): number 
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function climbMover(m: MumakActor, onTop: () => void): PlayerMover & { s: number } {
+/**
+ * `auto` (the smoke-test bot, which cannot steer a mover): climb at full speed and sway left/right
+ * the way a player dodging the archers would.
+ */
+export function climbMover(m: MumakActor, onTop: () => void, auto: () => boolean = () => false): PlayerMover & { s: number } {
   const ladder = m.model.ladder!;
   let lateral = 0;
   let done = false;
+  let t = 0;
   const mover: PlayerMover & { s: number } = {
     s: 0.2,
     pose: 'climb',
@@ -57,10 +62,14 @@ export function climbMover(m: MumakActor, onTop: () => void): PlayerMover & { s:
     allowDash: false,
     camera: { distance: 4.6, height: 0.9, fov: 64, shoulder: 0.5 },
     update(dt, player, input) {
-      // the bot (and a hesitant player) still inch upward; pushing forward climbs fast
-      const up = Math.max(0.42, input.moveY);
+      // a hesitant player still inches upward; pushing forward climbs fast
+      t += dt;
+      const bot = auto();
+      const up = bot ? 1 : Math.max(0.42, input.moveY);
       mover.s = Math.min(ladder.length, mover.s + up * 2.3 * dt);
-      lateral = clamp(lateral - input.moveX * 1.8 * dt, -0.75, 0.75);
+      // the dodge: a swing along the flank, wide and quick enough to slip an arrow already loosed
+      const side = bot ? clamp(Math.sin(t * 1.7) * 1.6, -1, 1) : input.moveX;
+      lateral = clamp(lateral - side * 3.0 * dt, -1.15, 1.15);
       ladder.pointAt(mover.s, _w);
       // hang just outside the ladder, slid along the flank by the dodge
       const yaw = m.yaw;

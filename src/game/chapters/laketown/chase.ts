@@ -8,8 +8,8 @@
 import * as THREE from 'three';
 import type { Humanoid, LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
 import { createHumanoid } from '../../../creatures/humanoid';
-import { clamp, damp, smoothstep } from '../../../core/math';
-import { CHASE_ROOFS, CHASE_X, D, JETTY, roofLen } from './layout';
+import { clamp, damp } from '../../../core/math';
+import { CHASE_LANE, CHASE_ROOFS, CHASE_START_Z, D, JETTY, roofLen } from './layout';
 
 export interface Seg {
   kind: 'run' | 'leap';
@@ -29,7 +29,7 @@ export interface Course {
 /** build the course from the roof list: stage, nine roofs, the jetty */
 export function buildCourse(): Course {
   const segs: Seg[] = [];
-  const zStart = 40.2;
+  const zStart = CHASE_START_Z;
   let z = zStart;
   // the stage deck, then a short hop to the first roof
   const first = CHASE_ROOFS[0];
@@ -62,14 +62,21 @@ export interface ChaseMover extends PlayerMover {
   readonly slow: number;
   /** distance to the next leap edge (m), Infinity on the last run */
   readonly toEdge: number;
+  /** the last leap's numbers (diagnostics) */
+  readonly lastLeap: { x: number; fromY: number; toY: number; toZ: number; good: boolean } | null;
 }
 
 const _g = new THREE.Vector3();
+/** how long a Jump press stays valid (s), how far ahead of an edge the prompt shows (m), speed factor while stumbling */
+const JUMP_BUF = 0.9;
+const PROMPT_DIST = 7.5;
+const STUMBLE_SLOW = 0.45;
 
 export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: number; onEnd: () => void }): ChaseMover {
   const { ctx } = level;
   const physics = ctx.physics;
   const speed = o.speed ?? 7.6;
+  const autoLeap = ctx.flags.bot === '1';
   let z = course.zStart;
   let lateral = 0;
   let y = D;
@@ -83,11 +90,13 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
   let leapToZ = 0;
   let stumble = 0;
   let stumbleT = 0;
+  let boostT = 0;
   let slow = 1;
   let doneFlag = false;
   let hint = false;
   let segIndex = 0;
   let stepT = 0;
+  let lastLeap: { x: number; fromY: number; toY: number; toZ: number; good: boolean } | null = null;
   const m: ChaseMover = {
     pose: undefined,
     allowShoot: true,
@@ -109,17 +118,23 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
     get slow() {
       return slow;
     },
+    get lastLeap() {
+      return lastLeap;
+    },
     get toEdge() {
       const seg = course.segs[segIndex];
       return seg && seg.kind === 'run' && course.edges.includes(seg.z1) ? seg.z1 - z : Infinity;
     },
     update(dt, player: PlayerAPI, input) {
-      if (input.jump) jumpBuf = 0.7;
+      if (input.jump) jumpBuf = JUMP_BUF;
+      // the autopilot (smoke test) cannot press Jump on a mover: it leaps by itself near an edge
+      if (autoLeap && m.toEdge < 3.4) jumpBuf = JUMP_BUF;
       jumpBuf = Math.max(0, jumpBuf - dt);
       stumbleT = Math.max(0, stumbleT - dt);
-      lateral = clamp(lateral + input.moveX * -4.2 * dt, -1.7, 1.7);
+      boostT = Math.max(0, boostT - dt);
+      lateral = clamp(lateral + input.moveX * -4.2 * dt, -1.3, 1.3);
       // `moveX` > 0 is the player's right; heading north (+z) that is -x, hence the sign above
-      const x = CHASE_X + lateral;
+      const x = CHASE_LANE + lateral;
 
       if (doneFlag) {
         player.velocity.set(0, 0, 0);
@@ -152,9 +167,10 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
           }
         }
         if (blocked) slow = 0.3;
-        if (stumbleT > 0) slow = Math.min(slow, 0.6);
+        // a mistimed leap costs real ground (about 1.3 s against Bolg, who does not wait); a clean one carries speed
+        if (stumbleT > 0) slow = Math.min(slow, STUMBLE_SLOW);
         const seg = course.segs[segIndex];
-        const v = speed * slow;
+        const v = speed * slow * (boostT > 0 && slow >= 1 ? 1.12 : 1);
         z += v * dt;
         if (seg.kind === 'run') {
           if (z >= seg.z1) {
@@ -167,13 +183,15 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
           } else {
             // the roof surface under his feet (the jetty deck on the last run)
             const g = physics.ground(x, z, y + 0.6, 1.0);
-            const ty = segIndex + 1 < course.segs.length ? (g ? g.y : D) : D;
+            let ty = segIndex + 1 < course.segs.length ? (g ? g.y : y) : D;
+            // never follow a drop (the end of a deck or a roof): hold the height, the leap takes it from here
+            if (ty < y - 1.0) ty = y;
             y = damp(y, ty, 30, dt);
           }
         }
         // prompt before each gap
         const te = m.toEdge;
-        const want = te < 6.5 && te > 0.4 && leapT < 0;
+        const want = te < PROMPT_DIST && te > 0.4 && leapT < 0;
         if (want !== hint) {
           hint = want;
           ctx.hud.setPrompt(want ? 'jump' : null, 'Leap the gap!');
@@ -203,16 +221,19 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
     leapToY = g ? g.y : D;
     const gap = leapToZ - leapFromZ;
     const good = jumpBuf > 0;
+    lastLeap = { x, fromY: leapFromY, toY: leapToY, toZ: leapToZ, good };
     hint = false;
     ctx.hud.setPrompt(null);
     if (good) {
       leapDur = Math.max(0.55, gap / 8.2 + 0.18);
       leapH = 1.1 + gap * 0.12;
       ctx.audio.play('jump', { pos: player.position, volume: 0.7 });
+      boostT = 1.4;
     } else {
       // mistimed: a scrambling hop, hurt and slowed
       stumble++;
-      stumbleT = 1.6;
+      stumbleT = 2.2;
+      boostT = 0;
       leapDur = Math.max(0.75, gap / 5 + 0.25);
       leapH = 0.45;
       ctx.audio.play('hurt', { volume: 0.5 });
@@ -222,7 +243,6 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
     }
     leapT = 0;
     jumpBuf = 0;
-    void smoothstep;
   }
 
   return m;
@@ -268,9 +288,10 @@ export function makeBolgRunner(level: LevelAPI, course: Course, startZ: number, 
       z = v;
     },
     update(dt, playerZ) {
-      // run at a pace that keeps him ~15 m ahead
+      // he runs at his own pace and does not wait: a mistimed leap loses ground for good. Only a lead that
+      // gets out of sight (or a runner caught up) is eased.
       const lead = z - playerZ;
-      const pace = 7.6 * clamp(1 + (15 - lead) * 0.05, 0.75, 1.3);
+      const pace = 7.6 * (lead > 34 ? 0.85 : lead < 6 ? 1.2 : 1);
       let vy = 0;
       if (leapT >= 0) {
         leapT += dt;
@@ -288,6 +309,7 @@ export function makeBolgRunner(level: LevelAPI, course: Course, startZ: number, 
         const seg = course.segs[segIndex];
         z += pace * dt;
         if (seg.kind === 'run') {
+          if (segIndex >= course.segs.length - 1) z = Math.min(z, course.zEnd + 0.8);
           if (z >= seg.z1 && segIndex < course.segs.length - 1) {
             z = seg.z1;
             const next = course.segs[segIndex + 1];
@@ -300,7 +322,9 @@ export function makeBolgRunner(level: LevelAPI, course: Course, startZ: number, 
             leapT = 0;
           } else if (segIndex < course.segs.length - 1) {
             const g = physics.ground(x, z, y + 0.6, 1.0);
-            y = damp(y, g ? g.y : D, 30, dt);
+            let ty = g ? g.y : y;
+            if (ty < y - 1.0) ty = y;
+            y = damp(y, ty, 30, dt);
           } else {
             // the last run: the jetty
             y = D;
@@ -321,6 +345,5 @@ export function makeBolgRunner(level: LevelAPI, course: Course, startZ: number, 
       body.dispose();
     },
   };
-  void anim;
   return r;
 }

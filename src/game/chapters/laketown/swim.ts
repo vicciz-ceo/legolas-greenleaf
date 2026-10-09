@@ -7,13 +7,18 @@ import * as THREE from 'three';
 import type { Combatant, LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
 import { clamp, damp, smoothstep, yawOf } from '../../../core/math';
 import { D, DECKS, WATER_Y, edgePoints, segHitsRect, type EdgePoint, type Rect } from './layout';
+import type { QuayDeck } from './quay';
 
 const _v = new THREE.Vector3();
 const _e = new THREE.Vector3();
 const _in = new THREE.Vector3();
+const _hole = new THREE.Vector3();
+const _h2 = new THREE.Vector3();
 
 /** minimum time in the water before climbing out (the "slow respawn") */
 const MIN_SWIM = 2.8;
+/** under a hole in the planks he only treads water this long before hauling himself up through it */
+const HOLE_SWIM = 1.5;
 const SWIM_SPEED = 2.9;
 const CLIMB_TIME = 0.9;
 const WATERLINE = -0.88;
@@ -61,24 +66,33 @@ export interface Swim {
   update(): void;
 }
 
-export function createSwim(level: LevelAPI, o: { enabled: () => boolean; allies: () => Combatant[]; obstacles?: Rect[] }): Swim {
+export function createSwim(level: LevelAPI, o: { enabled: () => boolean; allies: () => Combatant[]; obstacles?: Rect[]; quay?: QuayDeck }): Swim {
   const { ctx } = level;
   const player: PlayerAPI = ctx.player;
-  let mover: (PlayerMover & { t: number }) | null = null;
+  let mover: (PlayerMover & { t: number; release(): void }) | null = null;
   let dunks = 0;
   const splashed = new WeakSet<Combatant>();
 
-  function makeMover(): PlayerMover & { t: number } {
+  function makeMover(): PlayerMover & { t: number; release(): void } {
     const edge = new THREE.Vector3();
     const inward = new THREE.Vector3();
     const vel = new THREE.Vector3();
     const want = new THREE.Vector3();
     let climbT = -1;
     let splashT = 0;
+    let shotOn = false;
+    const setShot = (on: boolean, p?: PlayerAPI) => {
+      if (on && p) {
+        // looking down through the hole from above the planks: the swimmer, the fight, never the black underside
+        level.cameraShot({ position: new THREE.Vector3(p.position.x - 2.2, D + 3.3, p.position.z - 3.4), lookAt: new THREE.Vector3(p.position.x, D - 0.7, p.position.z + 0.3), fov: 52, blend: shotOn ? 0.2 : 0.5 });
+      } else if (shotOn) level.cameraShot(null);
+      shotOn = on;
+    };
     const climbFrom = new THREE.Vector3();
     const climbTo = new THREE.Vector3();
-    const m: PlayerMover & { t: number } = {
+    const m: PlayerMover & { t: number; release(): void } = {
       t: 0,
+      release: () => setShot(false),
       pose: 'barrel',
       poseT: () => (m.t * 0.35) % 1,
       allowShoot: false,
@@ -98,7 +112,10 @@ export function createSwim(level: LevelAPI, o: { enabled: () => boolean; allies:
           _v.y = THREE.MathUtils.lerp(climbFrom.y, climbTo.y, smoothstep(0, 0.7, k));
           p.velocity.subVectors(_v, p.position).divideScalar(Math.max(dt, 1e-4));
           p.position.copy(_v);
-          if (k >= 1) finish(p);
+          if (k >= 1) {
+            setShot(false);
+            finish(p);
+          }
           return;
         }
         // free swim, then more and more help toward the nearest edge
@@ -111,11 +128,33 @@ export function createSwim(level: LevelAPI, o: { enabled: () => boolean; allies:
         if (want.lengthSq() > 1) want.normalize();
         want.multiplyScalar(SWIM_SPEED);
         nearestEdge(p.position.x, p.position.z, edge, inward, o.obstacles ?? []);
+        // a hole in the planks above (Bolg's slam) is the way back up: no long swim under the deck
+        const viaHole = !!o.quay && o.quay.exitAt(p.position.x, p.position.z, 0.5, _hole);
+        if (o.quay && !viaHole && o.quay.nearestHole(p.position.x, p.position.z, 9, _in)) {
+          // swimming under the deck: head back to the hole if it is nearer than the open edge
+          const dh = Math.hypot(_in.x - p.position.x, _in.z - p.position.z);
+          const de = Math.hypot(edge.x - inward.x * 0.55 - p.position.x, edge.z - inward.z * 0.55 - p.position.z);
+          if (dh < de && o.quay.exitAt(_in.x, _in.z, 0.5, _h2)) {
+            edge.set(_in.x, D, _in.z);
+            inward.set(0, 0, 0);
+          }
+        }
+        if (viaHole !== shotOn) setShot(viaHole, p);
         // the point just outside the deck edge, where a swimmer can reach the planks
         _e.copy(edge).addScaledVector(inward, -0.55);
         const toX = _e.x - p.position.x;
         const toZ = _e.z - p.position.z;
         const dist = Math.hypot(toX, toZ);
+        if (viaHole && m.t >= HOLE_SWIM) {
+          climbT = 0;
+          climbFrom.copy(p.position);
+          climbTo.copy(_hole);
+          p.facing = yawOf(_hole.x - p.position.x + 1e-3, _hole.z - p.position.z + 1e-3);
+          m.pose = 'climb';
+          m.poseT = () => clamp(climbT / CLIMB_TIME, 0, 1);
+          ctx.audio.play('splash', { pos: p.position, volume: 0.6, pitch: 1.1 });
+          return;
+        }
         const assist = smoothstep(MIN_SWIM * 0.4, MIN_SWIM + 1.4, m.t);
         if (dist > 0.05) {
           want.x = THREE.MathUtils.lerp(want.x, (toX / dist) * SWIM_SPEED * 0.8, assist);
@@ -180,6 +219,7 @@ export function createSwim(level: LevelAPI, o: { enabled: () => boolean; allies:
       if (!mover && player.alive && !player.mover && o.enabled() && player.position.y < WATER_Y - 0.12 && player.velocity.y <= 0.5) dunk();
       // a mover that was replaced from outside (cinematic reset, chase) must not leave us "swimming"
       if (mover && player.mover !== mover) {
+        mover.release();
         mover = null;
         ctx.hud.setProgress(null);
       }

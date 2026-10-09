@@ -29,6 +29,11 @@ import { createLogBridge } from './barrels/logbridge';
 
 const CHECKPOINTS = ['The River Gate', 'Along the Banks', 'Riding the Rapids'];
 
+/** the gorge's mist: thick enough to read as a misty morning, thin enough that the far bank and the log bridge are seen */
+const FOG_BASE = 0.0086;
+/** at the log bridge the mist lifts a little more so the captain and his crew can be read from 90 m */
+const FOG_LOG = 0.0066;
+
 type Beat = 'intro' | 'gate' | 'saboteur' | 'lever' | 'cinema' | 'run' | 'leap' | 'ride' | 'pool' | 'outro';
 
 /** the forest river on a bright, misty overcast morning, with the sun low ahead of the camera for rim light */
@@ -38,7 +43,7 @@ function riverEnvironment(): EnvironmentPreset {
     ...base,
     sky: base.sky.kind === 'physical' ? { ...base.sky, elevation: 27, azimuth: 28, clouds: 0.9 } : base.sky,
     sunIntensity: 2.9,
-    fog: { color: 0xb6cdc6, density: 0.0105 },
+    fog: { color: 0xb6cdc6, density: FOG_BASE },
     weather: 'dust',
     weatherIntensity: 0.35,
   };
@@ -100,6 +105,7 @@ export const chapter: ChapterDef = {
     level.onUpdate((dt) => {
       train.update(dt);
       foes.update(dt);
+      easeFog(dt);
       logBridge.update(dt);
       controlConvoy(dt);
       updateTauriel();
@@ -114,6 +120,18 @@ export const chapter: ChapterDef = {
       }
       if (run && (beat === 'run' || beat === 'leap')) runPrompts();
     });
+
+    // the mist lifts toward the log bridge (the engine's exponential fog is read every frame by the post and fx passes)
+    let fogNow = FOG_BASE;
+    function easeFog(dt: number): void {
+      const f = ctx.engine.scene.fog as THREE.FogExp2 | null;
+      if (!f || !f.isFogExp2) return;
+      const lead = train.sLead;
+      const k = train.running ? smoothstep(S.log - 150, S.log - 100, lead) * (1 - smoothstep(S.log + 30, S.log + 90, lead)) : 0;
+      const want = beat === 'outro' ? 0.0052 : beat === 'pool' ? 0.0066 : FOG_BASE + (FOG_LOG - FOG_BASE) * k;
+      fogNow += (want - fogNow) * Math.min(1, dt * 1.5);
+      f.density = fogNow;
+    }
 
     /** the convoy follows the runner on the bank, the log bridge slows it, the pool eases it */
     function controlConvoy(dt: number): void {
@@ -137,7 +155,7 @@ export const chapter: ChapterDef = {
         train.speedMul = 1 - k * 0.48;
       } else if (beat === 'pool') {
         const ease = smoothstep(S.pool - 20, S.end - 20, train.sLead);
-        train.speedMul = 1 - ease * 0.55;
+        train.speedMul = 1 - ease * 0.3;
         train.endBias = smoothstep(S.pool, S.end - 30, train.sLead);
       }
     }
@@ -202,9 +220,10 @@ export const chapter: ChapterDef = {
       level.cameraShot({ position: worldAtGate(0, -29, wl + 5.6), lookAt: worldAtGate(0, -4, gate.topY - 1.2), fov: 54, blend: 3.2 });
       await level.wait(2.4);
       // cut: among the barrels, the dwarves bobbing in their barrels
-      level.cameraShot({ position: worldAtGate(2.5, -13, wl + 2.6), lookAt: worldAtGate(-1, -27, wl + 1.2), fov: 46, blend: 0 });
+      // (seen from the closed doors, looking back up the line of barrels: heads and hats, the cellar arch beyond)
+      level.cameraShot({ position: worldAtGate(1.4, -3.4, wl + 2.2), lookAt: worldAtGate(-0.6, -15, wl + 1.0), fov: 48, blend: 0 });
       await level.wait(0.08);
-      level.cameraShot({ position: worldAtGate(2.0, -16, wl + 2.3), lookAt: worldAtGate(-1, -27, wl + 1.3), fov: 44, blend: 4 });
+      level.cameraShot({ position: worldAtGate(0.4, -4.6, wl + 1.9), lookAt: worldAtGate(-0.6, -15, wl + 1.1), fov: 42, blend: 4 });
       await level.say('Legolas', 'Bolg\'s hunters have found the river. The dwarves are in the barrels, below the gate.', 3.6);
       // cut: Tauriel on the walkway, seen from the stairs
       level.cameraShot({ position: worldAtGate(9.6, 11.5, gate.topY - 2.2), lookAt: worldAtGate(3.2, 0.3, gate.topY + 1.4), fov: 42, blend: 0 });
@@ -218,7 +237,7 @@ export const chapter: ChapterDef = {
 
     /** an orc that has to climb the stairs: walk to the stair head first, then fight */
     function stairOrc(e: Enemy): Enemy {
-      return foes.route(e, [gate.stairBottom, gate.stairTop]);
+      return foes.route(e, gate.stairRoute);
     }
 
     async function gateWaves(): Promise<void> {
@@ -228,20 +247,29 @@ export const chapter: ChapterDef = {
       const foot = (k: number) => ({ s: 100 + k * 2.2, e: 3.4 + (k % 2) * 1.6 });
       // wave 1: three orcs up the stairs, two archers on the far ledge
       const first: Enemy[] = [];
-      for (let k = 0; k < 3; k++) {
-        const f = foot(k);
-        first.push(stairOrc(foes.bankOrc('L', f.s, f.e, 'orc')));
-      }
+      void (async () => {
+        for (let k = 0; k < 3; k++) {
+          if (k) await level.wait(2.4);
+          const f = foot(k);
+          first.push(stairOrc(foes.bankOrc('L', f.s, f.e, 'orc')));
+        }
+      })();
       // the archers across the water keep shooting; the stair orcs are what has to fall
       for (let i = 0; i < 2; i++) foes.archer('R', 94 + i * 5, 2.6 + i, {});
-      await level.waitUntil(() => first.every((e) => !e.alive), 70);
+      await level.waitUntil(() => first.length === 3 && first.every((e) => !e.alive), 70);
       // the saboteur
       beat = 'saboteur';
       level.objective('Stop the orc at the lever');
       await level.say('Tauriel', 'That one means to cut the chain! Stop him!', 2.4);
       const sab = foes.bankOrc('L', 100, 4.2, 'gundabad', { name: 'Chain-cutter', hp: 170, target: gate.leverStand.clone() });
       saboteur = sab;
-      foes.route(sab, [gate.stairBottom, gate.stairTop, gate.leverStand.clone().add(V3(0.4, 0, 0.6))]);
+      // a hovering red diamond over his head, so he can be picked out among the crowd on the stairs
+      const mark = new THREE.Mesh(new THREE.OctahedronGeometry(0.16, 0), new THREE.MeshBasicMaterial({ color: 0xff4b2a, fog: false, depthTest: false, transparent: true, opacity: 0.9 }));
+      mark.scale.y = 1.6;
+      mark.renderOrder = 6;
+      mark.userData.noAO = true;
+      sab.object.add(mark);
+      foes.route(sab, [...gate.stairRoute, gate.leverStand.clone().add(V3(0.4, 0, 0.6))]);
       for (let i = 0; i < 2; i++) {
         const e = foes.bankOrc('L', 104 + i * 2.4, 3.2 + i * 1.4, 'orc');
         stairOrc(e);
@@ -249,7 +277,14 @@ export const chapter: ChapterDef = {
       foes.archer('R', 100, 3, {});
       // march him: stair head, then the lever
       const stop = level.onUpdate((dt) => {
+        mark.visible = sab.alive;
+        mark.position.set(0, sab.height + 0.55 + Math.sin(ctx.time.t * 4) * 0.06, 0);
+        mark.rotation.y += dt * 2.2;
         if (!sab.alive) return;
+        // once up the stairs he goes for the chain and stays on it; only a foe within arm's reach (the engine's own rule) draws him off
+        if (!foes.onRoute(sab) && !sab.moveTarget && Math.hypot(sab.position.x - gate.leverPos.x, sab.position.z - gate.leverPos.z) > 1.6) {
+          sab.moveTarget = gate.leverStand.clone().add(V3(0.4, 0, 0.5));
+        }
         // sabotage progress while he stands at the lever
         const d = Math.hypot(sab.position.x - gate.leverPos.x, sab.position.z - gate.leverPos.z);
         if (d < 3.2 && Math.abs(sab.position.y - gate.topY) < 1.2) saboteurNear += dt;
@@ -263,6 +298,9 @@ export const chapter: ChapterDef = {
       });
       await level.waitUntil(() => !sab.alive, 90);
       stop();
+      sab.object.remove(mark);
+      mark.geometry.dispose();
+      (mark.material as THREE.Material).dispose();
       hud.setProgress(null);
       saboteurNear = 0;
       // anyone left on the walkway or the stairs
@@ -351,7 +389,7 @@ export const chapter: ChapterDef = {
 
     function runPrompts(): void {
       if (!run) return;
-      if (run.wantsJump) hint('jump', 'Jump the cleft!');
+      if (run.cleftSoon) hint('jump', run.falls >= 2 ? 'Jump now: over the cleft!' : 'Jump the cleft!');
       else if (run.state === 'wait') hint('jump', 'Leap onto a barrel!');
       else if (beat === 'run') hint(null);
     }
@@ -364,7 +402,8 @@ export const chapter: ChapterDef = {
       run = makeBankRun(level, S.gate);
       player.mover = run;
       runEnemies();
-      await level.waitUntil(() => run!.state === 'wait', 80);
+      // (no timeout: a runner who keeps dropping into a cleft is helped over it, see riders.ts; he must never be skipped ahead)
+      await level.waitUntil(() => run!.state === 'wait', 900);
       // at the launch rock
       beat = 'leap';
       level.objective('Leap onto the barrels');
@@ -389,7 +428,7 @@ export const chapter: ChapterDef = {
         onLand: () => {
           if (!taughtHop) {
             taughtHop = true;
-            hud.toast('Left/right + Jump hops to the next barrel', 'info');
+            hud.toast('Left/right + Jump hops to that barrel. Jump alone: ahead, or in place', 'info');
             return;
           }
           // the dwarves have opinions about being used as stepping stones (rarely, so it stays a joke)
@@ -485,6 +524,12 @@ export const chapter: ChapterDef = {
         archersRight(692, 2);
         void level.say('Legolas', 'The river widens. Nearly through.', 2.4);
       });
+      // the pool is not a rest: the last of the hunters have run the shingle to catch the convoy
+      ev(S.pool + 4, () => {
+        archersLeft(726, 3);
+        for (let i = 0; i < 2; i++) foes.bankOrc('L', 736 + i * 5, 0.9 + i, 'orc');
+        void level.say('Tauriel', 'More of them on the shingle. Do not slow down.', 2.4);
+      });
     }
 
     function runEvents(): void {
@@ -540,7 +585,9 @@ export const chapter: ChapterDef = {
       beat = 'pool';
       level.objective('Reach the shingle bank');
       audio.loop('rapids', 0.2);
-      await level.waitUntil(() => train.sLead >= S.end - 30 && train.speed < 1.8, 70);
+      await level.waitUntil(() => train.sLead >= S.end - 50, 70);
+      // the last hunters on the strand are dealt with before the barrels touch the shingle (but he is never held up for long)
+      await level.waitUntil(() => level.enemiesAlive((c) => c.name !== 'Rope lashing') === 0, 6);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -554,23 +601,29 @@ export const chapter: ChapterDef = {
       level.objective(null);
       hint(null);
       level.cinematic(true);
-      // ashore: Legolas and Tauriel on the shingle, the survivor dragging himself out of the shallows
-      const shore = bankPos(S.end - 27, 9);
-      shore.y = h(shore.x, shore.z);
-      const sv = bankPos(S.end - 15, 6.5);
-      sv.y = h(sv.x, sv.z);
+      level.boss(null);
+      // nothing left of the fight follows him ashore
+      for (const c of Array.from(ctx.combatants.byTeam('enemy'))) if (c.alive) foes.drop(c as Enemy);
+      // ashore: Legolas and Tauriel on the wet shingle, the survivor dragging himself out of the shallows
+      const at = (s: number, e: number): THREE.Vector3 => {
+        const p = bankPos(s, e);
+        p.y = h(p.x, p.z);
+        return p;
+      };
+      const SC = S.end - 24; // the scene's s
+      const shore = at(SC - 6, 6.2);
+      const sv = at(SC + 4, 0.9);
+      const tpos = at(SC - 8.5, 8.0);
       player.mover = null;
       if (ride) ride.ring.visible = false;
       const faceSv = yawOf(sv.x - shore.x, sv.z - shore.z);
       player.teleport(shore, faceSv);
-      const survivor = level.spawnEnemy({ archetype: 'orc', name: 'Orc survivor', hp: 30 }, sv, yawOf(shore.x - sv.x, shore.z - sv.z));
+      const survivor = level.spawnEnemy({ archetype: 'orc', name: 'Orc survivor', hp: 30, weapon: 'none' }, sv, yawOf(shore.x - sv.x, shore.z - sv.z));
       survivor.aiEnabled = false;
       survivor.team = 'neutral';
       survivor.targetable = false;
       survivor.hp = 12;
       survivor.playPose?.('kneel', 90);
-      const tpos = bankPos(S.end - 29, 11.5);
-      tpos.y = h(tpos.x, tpos.z);
       if (!tauriel) spawnTauriel(tpos, faceSv);
       else {
         tauriBarrel = -1;
@@ -579,17 +632,26 @@ export const chapter: ChapterDef = {
         tauriel.velocity.set(0, 0, 0);
       }
       tauriel!.aiEnabled = false;
-      const mid = V3((shore.x + sv.x) / 2, 0, (shore.z + sv.z) / 2);
-      mid.y = h(mid.x, mid.z);
-      const wc = riverPos(S.end - 20, 0);
-      const toWater = V3(wc.x - mid.x, 0, wc.z - mid.z).normalize();
-      level.cameraShot({ position: V3(mid.x + toWater.x * 15, mid.y + 2.0, mid.z + toWater.z * 15), lookAt: V3(mid.x, mid.y + 1.1, mid.z), fov: 40, blend: 0 });
+      const wl = waterY(SC);
+      // the camera works from the water: wet gravel in the foreground, the group on the strand, the forest behind
+      const cam = (s: number, e: number, dy: number): THREE.Vector3 => {
+        const p = bankPos(s, e);
+        p.y = Math.max(h(p.x, p.z), wl) + dy;
+        return p;
+      };
+      const look = (v: THREE.Vector3, dy: number): THREE.Vector3 => v.clone().add(V3(0, dy, 0));
+      const mid = at(SC - 1, 4);
+      level.cameraShot({ position: cam(SC - 2, -12, 2.1), lookAt: look(mid, 0.9), fov: 36, blend: 0 });
       await level.wait(0.8);
-      level.cameraShot({ position: V3(sv.x + toWater.x * 3.4 + 0.6, sv.y + 1.15, sv.z + toWater.z * 3.4), lookAt: V3(sv.x, sv.y + 0.9, sv.z), fov: 36, blend: 1.2 });
+      level.cameraShot({ position: cam(SC - 1, -8.5, 1.6), lookAt: look(mid, 1.0), fov: 34, blend: 3.0 });
+      await level.wait(0.9);
+      // the survivor: from over Legolas' shoulder, the water at his back
+      level.cameraShot({ position: cam(SC - 3.4, 7.6, 1.3), lookAt: look(sv, 0.85), fov: 33, blend: 1.2 });
       await level.say('Orc', 'Run, elf. The mountain wakes, and the war comes down with it.', 3.4);
-      level.cameraShot({ position: V3(shore.x + toWater.x * 3.2 + 0.8, shore.y + 1.5, shore.z + toWater.z * 3.2), lookAt: V3(shore.x, shore.y + 1.5, shore.z), fov: 34, blend: 1.0 });
+      // Legolas: low from the water, the trees and Tauriel behind him
+      level.cameraShot({ position: cam(SC + 0.4, 2.0, 1.45), lookAt: look(shore, 1.5), fov: 32, blend: 1.0 });
       await level.say('Legolas', 'Then it will find us on the lake, and not on the road.', 3.0);
-      level.cameraShot({ position: V3(mid.x + toWater.x * 17, mid.y + 2.6, mid.z + toWater.z * 17), lookAt: V3(mid.x, mid.y + 1.1, mid.z), fov: 42, blend: 1.2 });
+      level.cameraShot({ position: cam(SC - 2, -13, 2.8), lookAt: look(mid, 1.3), fov: 42, blend: 1.4 });
       await level.say('Tauriel', 'The dwarves go to Lake-town. So do we.', 2.6);
       level.cameraShot(null);
       level.cinematic(false);
@@ -602,6 +664,12 @@ export const chapter: ChapterDef = {
 
     async function runScript(from: number): Promise<void> {
       buildEvents();
+      // dev shortcut: ?cp=2&outro=1 jumps straight to the shingle bank
+      if (from >= 2 && ctx.flags.outro === '1') {
+        train.jumpTo(S.end - 40);
+        await outro();
+        return;
+      }
       if (from <= 0) {
         await intro();
         await gateWaves();
@@ -655,7 +723,7 @@ export const chapter: ChapterDef = {
       const mid = train.barrels[Math.min(train.barrels.length - 1, 4)];
       beginRide(mid, false);
       spawnTaurielOnBarrel();
-      hud.toast('Left/right + Jump hops to the next barrel', 'info');
+      hud.toast('Left/right + Jump hops to that barrel. Jump alone: ahead, or in place', 'info');
     }
 
     // ─────────────────────────────────────────────────────────────────────────

@@ -56,9 +56,10 @@ export function pelennorHeight(x: number, z: number): number {
   return h;
 }
 
-/** cp0: the first mûmak tramples across the field from the south-east, then joins its loop */
+/** cp0: the first mûmak tramples straight through the fight from the south-east (over L.fight),
+ *  then joins its loop on the north-west */
 export function tramplePath(): Path {
-  return new Path([[150, 120], [92, 70], [44, 30], [6, 14], [-30, 6], [-62, -14], [-80, -46]], { step: 2 });
+  return new Path([[150, 120], [92, 70], [48, 32], [20, 8], [-10, -12], [-44, -24], [-80, -46]], { step: 2 });
 }
 
 /** cp1: the first mûmak circles the battleground (clockwise seen from above, left flank inward) */
@@ -86,3 +87,16 @@ export const HERD: { cx: number; cz: number; rx: number; rz: number; phase: numb
   { cx: 250, cz: -100, rx: 60, rz: 36, phase: 0.55, speed: 1.8 },
   { cx: 70, cz: 240, rx: 70, rz: 30, phase: 0.3, speed: 2.3 },
 ];
+
+/**
+ * Distance (m) from (x, z) to the nearest route any mûmak walks (cp0 trample, cp1 loop, cp2 entry and
+ * loop). Wrecks, crates and rubble keep out of this corridor so the beasts never walk through them.
+ */
+export function beastCorridor(): (x: number, z: number) => number {
+  const paths = [tramplePath(), loopPath(), charge2Entry(), charge2Loop()];
+  return (x, z) => {
+    let d = Infinity;
+    for (const p of paths) d = Math.min(d, p.nearest(x, z).dist);
+    return d;
+  };
+}

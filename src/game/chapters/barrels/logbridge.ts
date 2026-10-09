@@ -150,6 +150,8 @@ export function createLogBridge(level: LevelAPI, gorge: Gorge, train: BarrelTrai
     const l = new Lashing(p.clone().setY(surfaceY - 0.9), () => onLashingBroken(), level);
     lashings.push(l);
     level.addCombatant(l);
+    // the river's housekeeping sweeps far-away enemies: the lashings sit 100 m+ ahead of the player from the start
+    foes.protect(l);
   }
   // orient each end bundle: the torus axis along the log (log axis = across the river)
   lashRoot.children.forEach((c) => (c.rotation.y = yaw));
@@ -170,6 +172,8 @@ export function createLogBridge(level: LevelAPI, gorge: Gorge, train: BarrelTrai
   let boardT = -1;
   let glowT = 0;
   let resolved = false;
+  let bossShown = false;
+  let windowClosed = false;
   const crew: Enemy[] = [];
   const colPos = new THREE.Vector3();
 
@@ -206,7 +210,6 @@ export function createLogBridge(level: LevelAPI, gorge: Gorge, train: BarrelTrai
       const o = foes.leaper('log', sLog, 0, { at: at(u), archetype: 'orc_archer', behavior: 'hold', waitAi: true, minLeadS: sLog - 2.0 });
       crew.push(o);
     }
-    level.boss(captain, 'Orc Captain');
   }
 
   function throwAxe(): void {
@@ -282,8 +285,29 @@ export function createLogBridge(level: LevelAPI, gorge: Gorge, train: BarrelTrai
       const live = phase === 'crew' || phase === 'sagging';
       const safe = train.leader().s < sLog - 4;
       for (const l of lashings) if (!l.broken) l.targetable = live && safe;
-      setGlow(live ? 1.2 + Math.sin(glowT * 5) * 0.8 : 0);
+      setGlow(live && safe ? 1.2 + Math.sin(glowT * 5) * 0.8 : 0);
+      if (live && !safe && !windowClosed) {
+        // the convoy is under the log: too late to drop it, the crew will come down onto the barrels instead
+        windowClosed = true;
+        level.objective('Hold the barrels: the crew is dropping in');
+      }
       if (phase === 'idle') return;
+      // ── the boss bar: only while the fight is near ──
+      if (captain && captain.alive) {
+        const lead = train.leader().s;
+        const riding = foes.riders().includes(captain);
+        if (!bossShown && lead > sLog - 78) {
+          bossShown = true;
+          level.boss(captain, 'Orc Captain');
+        } else if (bossShown && !riding && !boarded && lead > sLog + 62) {
+          // the convoy is through and he stayed on his log: he is out of the story
+          bossShown = false;
+          level.boss(null);
+          foes.drop(captain);
+          captain = null;
+          resolved = true;
+        }
+      }
       // ── the captain's axe ──
       if (captain && captain.alive && (phase === 'crew' || phase === 'sagging')) {
         throwCd -= dt;

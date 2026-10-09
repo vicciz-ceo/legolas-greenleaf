@@ -11,7 +11,7 @@ import { createWeapon } from '../../../creatures/weapons';
 import { Rng } from '../../../core/rng';
 import { fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
-import { HostSystem } from './hosts';
+import { HostSystem, cullStanding } from './hosts';
 import { buildLandmarks, type Landmarks } from './landmarks';
 import { FIGHT, HILL_E, HILL_W, L, V, blackGateHeight } from './layout';
 
@@ -104,7 +104,7 @@ function lavaCracks(level: LevelAPI, ground: (x: number, z: number) => number, r
   level.root.add(mesh);
 }
 
-export function buildBlackGate(level: LevelAPI): BlackGateWorld {
+export async function buildBlackGate(level: LevelAPI, yieldFn: () => Promise<void> = async () => {}, stamp: (n: string) => void = () => {}): Promise<BlackGateWorld> {
   const { physics, fx } = level.ctx;
   const rng = new Rng(909);
 
@@ -151,6 +151,9 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
   apron.mesh.userData.noAO = true;
   level.root.add(apron.mesh);
 
+  stamp('terrain');
+  await yieldFn();
+
   // ── the Black Gate ────────────────────────────────────────────────────────
   const gate = blackGate({ scale: 1, seed: 3 });
   gate.object.position.set(0, 0, 0);
@@ -160,6 +163,9 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
   });
   level.root.add(gate.object);
   // no colliders: the field is closed off 110 m out, the Gate is a backdrop
+
+  stamp('gate');
+  await yieldFn();
 
   // ── rock: boulders on the flanks of the hills, a crown of crags on each summit ──
   const keepClear = (x: number, z: number): boolean => {
@@ -228,38 +234,50 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
     place(b, x, z, rng.float() * 6);
   }
 
+  stamp('rocks');
+  await yieldFn();
+
   // ── banners and fires ────────────────────────────────────────────────────
   const summitW = V(HILL_W.x + 4, ground(HILL_W.x + 4, HILL_W.z - 6), HILL_W.z - 6);
   const summitE = V(HILL_E.x - 4, ground(HILL_E.x - 4, HILL_E.z - 4), HILL_E.z - 4);
   place(banner(0x0e0e12, 'white_tree', { height: 11, clothW: 2.8, clothH: 5.4 }), summitW.x, summitW.z, 0.2);
   place(banner(0x2e5a2e, 'horse', { height: 10, clothW: 2.6, clothH: 5 }), summitE.x, summitE.z, -0.3);
+  // the small standards: two designs, built once and cloned (clones share geometry and materials)
+  const smallStd = new Map<string, Built>();
   for (const [x, z, c, e, yaw] of [
     [-30, 168, 0x0e0e12, 'white_tree', 0.5], [30, 166, 0x2e5a2e, 'horse', -0.4], [-62, 186, 0x0e0e12, 'white_tree', 1.1], [66, 168, 0x2e5a2e, 'horse', -1.2], [2, 208, 0x0e0e12, 'white_tree', 3.1],
   ] as [number, number, number, 'white_tree' | 'horse', number][]) {
-    place(banner(c, e, { height: 6.4, clothW: 1.6, clothH: 3.1 }), x, z, yaw);
+    let t = smallStd.get(e);
+    if (!t) {
+      t = banner(c, e, { height: 6.4, clothW: 1.6, clothH: 3.1 });
+      smallStd.set(e, t);
+    }
+    const b: Built = { ...t, object: t.object.clone(true) };
+    place(b, x, z, yaw);
   }
-  // Mordor's banners along the wing walls (red eyes on black), and braziers burning on the battlements
+  // Mordor's banners along the wing walls (red eyes on black), and braziers burning on the battlements:
+  // one of each, cloned
+  const eyeBanner = banner(0x6a1410, 'eye', { height: 14, clothW: 3.4, clothH: 7 });
+  const wallBrazier = brazier({ lit: true, scale: 3 });
   for (const s of [-1, 1]) {
     for (let i = 0; i < 4; i++) {
       const x = s * (66 + i * 17);
-      const b = banner(0x6a1410, 'eye', { height: 14, clothW: 3.4, clothH: 7 });
-      b.object.position.set(x, 24, -1.6);
-      b.object.rotation.y = Math.PI + s * 0.12;
-      level.root.add(b.object);
-      b.object.traverse((o) => (o.castShadow = false));
-      const br = brazier({ lit: true, scale: 3 });
-      br.object.position.set(x + s * 5, 24, -2.6);
-      level.root.add(br.object);
-      br.object.traverse((o) => (o.castShadow = false));
+      const bo = eyeBanner.object.clone(true);
+      bo.position.set(x, 24, -1.6);
+      bo.rotation.y = Math.PI + s * 0.12;
+      level.root.add(bo);
+      bo.traverse((o) => (o.castShadow = false));
+      const bro = wallBrazier.object.clone(true);
+      bro.position.set(x + s * 5, 24, -2.6);
+      level.root.add(bro);
+      bro.traverse((o) => (o.castShadow = false));
     }
   }
+  stamp('banners');
+  await yieldFn();
   // firelight for the Army of the West on both summits (lights come from the fx budget)
   fx.fire(V(summitW.x - 5, summitW.y + 0.6, summitW.z + 3), 0.8);
   fx.fire(V(summitE.x + 5, summitE.y + 0.6, summitE.z + 3), 0.8);
-  const lowQ = level.ctx.settings.quality === 'low';
-  const columns: [number, number, number][] = [[-210, 70, 5.5], [220, 80, 5], [-150, 300, 4.5], [190, 310, 4.5]];
-  for (const [x, z, s] of columns.slice(0, lowQ ? 2 : 4)) fx.smoke(V(x, ground(x, z) + 2, z), s);
-
   // ── the aftermath of earlier fighting: weapons, shields, skeletons ──────────
   const scatter = (kind: WeaponKind, n: number, stuck: boolean, r0: number, r1: number) => {
     const mats: THREE.Matrix4[] = [];
@@ -282,6 +300,8 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
   scatter('scimitar', 16, false, 22, 80);
   scatter('sword', 8, false, 22, 80);
   scatter('axe', 8, false, 22, 80);
+  stamp('weapons');
+  await yieldFn();
   for (let i = 0; i < 5; i++) {
     const a = rng.float() * Math.PI * 2;
     const r = 30 + rng.float() * 60;
@@ -292,6 +312,8 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
     sk.object.traverse((o) => (o.castShadow = false));
     place(sk, x, z, rng.float() * 6.28);
   }
+  stamp('skeletons');
+  await yieldFn();
   // the fallen of both sides, lying where they fell (crowds thinned to nothing but corpses)
   const dead: CrowdHandle[] = [];
   for (const [x, z, hx, hz, n, kind] of ([
@@ -300,6 +322,7 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
   ] as [number, number, number, number, number, 'orc' | 'easterling' | 'gondor' | 'rohirrim'][]).slice(0, 5)) {
     const d = level.crowd({ center: V(x, 0, z), halfSize: [hx, hz], count: n, kind, facing: rng.float() * 6.28, speed: 0 });
     d.thin(1);
+    cullStanding(d, x, z, [hx, hz]);
     d.mesh.traverse((o) => {
       o.castShadow = false;
       o.userData.noAO = true;
@@ -308,14 +331,18 @@ export function buildBlackGate(level: LevelAPI): BlackGateWorld {
   }
 
   lavaCracks(level, ground, rng);
+  stamp('props');
+  await yieldFn();
 
   // ── the edge of the field: an invisible wall behind the enemy lines (never the Gate) ──
   addColliders(physics, ringColliders(FIGHT.x, FIGHT.z, 112, 120, -40, 140, 28, { solid: true, walkable: false, blocksArrows: false, blocksCamera: false, tag: 'bounds' }));
 
   // ── the hosts and the far landmarks ─────────────────────────────────────────
-  const hosts = new HostSystem(level, ground);
+  const hosts = await HostSystem.create(level, ground, yieldFn);
+  stamp('hosts');
   level.onUpdate((dt) => hosts.update(dt));
   const landmarks = buildLandmarks(level, ground);
+  stamp('landmarks');
   level.onUpdate((dt) => landmarks.update(dt));
 
   void fbm2;

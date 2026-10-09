@@ -7,8 +7,10 @@
  *   cp0 The Gate Opens  the Black Gate grinds open (shake, sound, dust), the hosts surge out and
  *                       encircle the hills (thousands: detailed crowds in front, silhouette hordes
  *                       behind). "For Frodo." Four waves of orcs and Easterlings (spears, shields).
- *   cp1 The Trolls      three armoured war trolls wade in. One pins Gimli: bring it down within 30 s
- *                       or Gimli is wounded and the bonus is lost.
+ *   cp1 The Trolls      a crane shot shows the ring of hosts closed about the hills, then three armoured
+ *                       war trolls wade in. One goes for Gimli and pins him (the script takes over when
+ *                       it is close, wherever Gimli wandered): bring it down within 30 s or Gimli is
+ *                       wounded and the bonus is lost.
  *   cp2 The Last Stand  hold the hill for 120 s against escalating waves while Fell Beasts wheel
  *                       overhead and dive. "The Eagles are coming!": the Great Eagles bring down the
  *                       Nazgul, Sauron falls (a flash on the horizon, the ground shakes, Barad-dur
@@ -26,10 +28,11 @@ import { clamp, dirFromYaw, smoothstep } from '../../core/math';
 import { FellBeast } from '../../creatures/fellbeast';
 import { WAR } from './black_gate/env';
 import { buildBlackGate } from './black_gate/world';
-import { Sky, type BeastCtl } from './black_gate/air';
+import { Sky, premeshSky, type BeastCtl } from './black_gate/air';
 import { easterling, orc, orcArcher, spawnSoldiers, warTroll } from './black_gate/cast';
 import { eaglesArrive, eaglesStrike, finalTally, sauronFalls, type FinaleCtx } from './black_gate/finale';
 import { FIGHT, L, NORTH, V } from './black_gate/layout';
+import { makeStamp, yieldFrame } from './black_gate/util';
 
 const CHECKPOINTS = ['The Gate Opens', 'The Trolls', 'The Last Stand'];
 /** seconds to hold the hill in the last stand */
@@ -54,14 +57,17 @@ export const chapter: ChapterDef = {
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1' && ctx.flags.bgslow !== '1';
 
+    const stamp = makeStamp(!!ctx.flags.bgdebug);
     level.setEnvironment(WAR);
-    const world = buildBlackGate(level);
+    const world = await buildBlackGate(level, yieldFrame, stamp);
     const ground = world.ground;
+    await premeshSky(yieldFrame);
+    stamp('premeshSky');
     const sky = new Sky(level, ground);
     if (ctx.flags.bgdebug) (globalThis as unknown as { __bg: unknown }).__bg = { world, level, sky, beat: () => beat };
 
     // ── script state, read by botHint() ──
-    type Beat = 'intro' | 'gate' | 'waves' | 'trolls' | 'pin' | 'stand' | 'eagles' | 'fall' | 'outro';
+    type Beat = 'intro' | 'gate' | 'waves' | 'ring' | 'trolls' | 'pin' | 'stand' | 'eagles' | 'fall' | 'outro';
     let beat: Beat = 'intro';
     let gimli: Ally | null = null;
     let aragorn: Ally | null = null;
@@ -155,7 +161,8 @@ export const chapter: ChapterDef = {
       await level.wait(0.8);
       level.cameraShot({ position: V(12, fy + 6, 214), lookAt: V(0, 34, 0), fov: 34, blend: 9 });
       const opening = openGate(14);
-      await level.wait(1.5);
+      // the shell's wager line from Gimli ("A friendly wager, laddie?") lands in the first seconds: let it finish
+      await level.wait(3.6);
       await level.say('Legolas', 'The Gate. They are opening the Gate.', 2.8);
       // low among the soldiers: the leaves swing back
       level.cameraShot({ position: V(-14, ground(-14, 150) + 2.4, 150), lookAt: V(0, 12, 0), fov: 42, blend: 2.4 });
@@ -219,29 +226,58 @@ export const chapter: ChapterDef = {
 
     // ── cp1: the war trolls ──────────────────────────────────────────────
 
-    /** Gimli is pinned under a war troll; returns true when it falls in time */
+    /**
+     * A war troll goes for Gimli. It marches on the pin spot; as soon as it is close (or after a few
+     * seconds, whatever it is doing) the script takes over: Gimli is set on his knee under it, the 30 s
+     * bar starts, and the troll hammers at his raised axe. It never depends on where Gimli wandered.
+     * Returns true when the troll falls in time (a smaller bonus if it dies on the approach).
+     */
     async function pinFight(troll: Enemy): Promise<boolean> {
       const g = gimli;
       if (!g) return true;
       beat = 'pin';
-      // Gimli has run on ahead to meet it
+      // Gimli runs on ahead to meet it
       g.anchor = G(L.pin);
-      level.objective('Free Gimli: kill the war troll');
-      await level.waitUntil(() => !troll.alive || troll.position.distanceTo(g.position) < 8, 70);
-      if (!troll.alive) return true;
-      // the troll stands over him
-      const pinPos = g.position.clone();
+      level.objective('A war troll is going for Gimli: bring it down');
+      let approach = 0;
+      const timer = level.onUpdate((dt) => (approach += dt));
+      // (Gimli goes to meet it, so "close" is either the troll near the pin spot or the troll within reach of him)
+      await level.waitUntil(
+        () => !troll.alive || approach > 22 || Math.hypot(troll.position.x - L.pin.x, troll.position.z - L.pin.z) < 13 || Math.hypot(troll.position.x - g.position.x, troll.position.z - g.position.z) < 6,
+        40,
+      );
+      timer();
+      if (!troll.alive) {
+        // felled before it reached him: a smaller reward
+        ctx.rivalry.addLegolas(1);
+        ctx.hud.toast('Gimli is safe (+1 Legolas)', 'reward');
+        g.anchor = 'player';
+        g.gesture('cheer');
+        void level.say('Gimli', 'Hmph! I had the measure of him.', 2.4);
+        return true;
+      }
+      // the troll stands over him: Gimli is set a couple of metres from it, on the side of the army
+      const tp = troll.position;
+      const toArmy = V(FIGHT.x - tp.x, 0, FIGHT.z - tp.z).normalize();
+      const pinPos = G(V(tp.x + toArmy.x * 2.3, 0, tp.z + toArmy.z * 2.3));
       g.aiEnabled = false;
       troll.aiEnabled = false;
-      troll.moveTarget = pinPos.clone().add(V(1.2, 0, 1.4));
-      hold(g, 'kneel', PIN_SECONDS + 2);
-      void level.say('Gimli', 'Legolas! A little help here, elf!', 2.4);
+      troll.moveTarget = G(V(pinPos.x - toArmy.x * 1.8, 0, pinPos.z - toArmy.z * 1.8));
+      let cut = false;
       if (!quick) {
-        // a short cut so the moment is seen
-        ctx.player.controlsEnabled = true;
-        level.cameraShot({ position: V(pinPos.x + 9, pinPos.y + 4.5, pinPos.z + 12), lookAt: V(pinPos.x, pinPos.y + 1.8, pinPos.z), fov: 42, blend: 0.7 });
-        await level.wait(2.2);
+        // a short cut so the moment is seen: controls are off while the camera is away
+        cut = true;
+        ctx.player.controlsEnabled = false;
+        level.cameraShot({ position: V(pinPos.x + 9, pinPos.y + 4.5, pinPos.z + 12), lookAt: V(pinPos.x, pinPos.y + 1.8, pinPos.z), fov: 42, blend: 0 });
+      }
+      warp(g, pinPos, Math.atan2(tp.x - pinPos.x, tp.z - pinPos.z));
+      hold(g, 'kneel', PIN_SECONDS + 2);
+      level.objective('Free Gimli: kill the war troll');
+      void level.say('Gimli', 'Legolas! A little help here, elf!', 2.4);
+      if (cut) {
+        await level.wait(1.4);
         level.cameraShot(null);
+        ctx.player.controlsEnabled = true;
       }
       hintFor('draw', 'Shoot the troll: aim for its head', 7);
       let t = PIN_SECONDS;
@@ -264,6 +300,7 @@ export const chapter: ChapterDef = {
       if (!troll.alive) {
         hold(g, null, 0);
         g.aiEnabled = true;
+        g.anchor = 'player';
         g.gesture('roar');
         ctx.rivalry.addLegolas(2);
         ctx.hud.toast('Gimli is free (+2 Legolas)', 'reward');
@@ -286,7 +323,35 @@ export const chapter: ChapterDef = {
       return false;
     }
 
+    /**
+     * The ring is closed: a crane shot over the hills shows the hosts of Mordor standing on every side
+     * (from the saddle the hills hide the flanks), then the war trolls come. Skipped in quick mode.
+     */
+    async function ringShot(): Promise<void> {
+      if (quick) return;
+      beat = 'ring';
+      const fy = FIGHT.y;
+      level.cinematic(true);
+      level.music?.('tension');
+      ctx.audio.play('drums', { volume: 1 });
+      level.cameraShot({ position: V(FIGHT.x - 4, fy + 34, FIGHT.z + 44), lookAt: V(-100, 4, 190), fov: 56, blend: 0 });
+      // (a beat first: the shell's tie/lead banter from the last kill of the waves, if one is queued, plays out before ours)
+      await level.wait(0.9);
+      void level.say('Aragorn', 'They have closed the ring about us.', 2.6);
+      await level.wait(1.9);
+      level.cameraShot({ position: V(FIGHT.x + 4, fy + 62, FIGHT.z + 30), lookAt: V(100, 4, 176), fov: 56, blend: 3.2 });
+      await level.wait(2.2);
+      void level.say('Gimli', 'Surrounded on every side? Then none of them can run from us.', 3.2);
+      // and a pull-back over the saddle: the whole host between us and the Gate
+      level.cameraShot({ position: V(FIGHT.x, fy + 44, FIGHT.z + 70), lookAt: V(0, 20, 40), fov: 64, blend: 3.6 });
+      await level.wait(3.6);
+      level.cameraShot(null);
+      await level.wait(0.8);
+      level.cinematic(false);
+    }
+
     async function trollsBeat(): Promise<void> {
+      await ringShot();
       beat = 'trolls';
       level.objective('War trolls are wading in');
       level.music?.('tension');
@@ -377,7 +442,7 @@ export const chapter: ChapterDef = {
         }
         // spawn waves while the cap allows
         spawnT -= dt;
-        const cap = Math.round(12 + phase * 12);
+        const cap = Math.round(12 + phase * 10);
         if (spawnT <= 0 && t < STAND_SECONDS - 4) {
           spawnT = 3.2 - phase * 1.2;
           if (alive() < cap) {
@@ -410,7 +475,7 @@ export const chapter: ChapterDef = {
           }
         });
       });
-      await level.waitUntil(() => t >= STAND_SECONDS, STAND_SECONDS + 30);
+      await level.waitUntil(() => t >= STAND_SECONDS || !player.alive, STAND_SECONDS + 30);
       stop();
       ctx.hud.setProgress(null);
     }
@@ -448,6 +513,8 @@ export const chapter: ChapterDef = {
         level.checkpoint(2);
       }
       if (ctx.flags.bgfinale !== '1') await lastStand();
+      // the shell's defeat screen owns the end of a lost stand: never start the finale over a dead player
+      if (!player.alive) return;
       await ending();
     }
 

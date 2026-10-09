@@ -25,9 +25,24 @@ function ladderMesh(): THREE.Object3D {
   if (!template) {
     const b = ladder(LEN / 2, { width: 0.66, hooks: true, rungGap: 0.23 });
     b.object.scale.setScalar(2);
+    // raw, pale-hewn timber (lighter than the prop's weathered wood) with a faint warm sheen, so the
+    // ladder reads against the dark, wet wall at night
+    const lit = new Map<THREE.Material, THREE.Material>();
     b.object.traverse((o) => {
       o.castShadow = true;
       o.receiveShadow = true;
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || Array.isArray(m.material)) return;
+      let nm = lit.get(m.material);
+      if (!nm) {
+        const c = (m.material as THREE.MeshStandardMaterial).clone();
+        if (c.color) c.color.multiplyScalar(1.9);
+        if (c.emissive) c.emissive.setHex(0x2a1a0c);
+        c.emissiveIntensity = 0.55;
+        nm = c;
+        lit.set(m.material, c);
+      }
+      m.material = nm;
     });
     template = b.object;
   }
@@ -202,6 +217,15 @@ export class SiegeLadder {
           ctx.fx.dust(tip, 18, 0x5a5048);
           ctx.fx.splash(tip, 10);
           ctx.audio.play('barrel_bump', { pos: tip, volume: 1, pitch: 0.5 });
+          // the climbers still waiting at the foot are under it when it comes down
+          const dir = this.out.clone().setY(0.4).normalize();
+          for (const e of this.climbers) {
+            if (!e.alive || e.position.y > 3) continue;
+            const along = (e.position.x - this.foot.x) * this.out.x + (e.position.z - this.foot.z) * this.out.z;
+            const side = (e.position.x - this.foot.x) * this.out.z - (e.position.z - this.foot.z) * this.out.x;
+            if (along < -1.5 || along > LEN + 1 || Math.abs(side) > 2.6) continue;
+            e.takeDamage({ amount: 1e5, type: 'crush', source: this.pushedBy === 'player' ? ctx.player : null, dir, knockback: 4, point: e.position.clone().setY(e.position.y + 1) });
+          }
         }
         this.apply();
         break;

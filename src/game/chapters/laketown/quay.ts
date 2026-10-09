@@ -119,6 +119,60 @@ export class QuayDeck {
     if (i % 2 === 0) audio.play('stone_crumble', { pos: _p, volume: 0.55, pitch: 1.4 });
   }
 
+  /** the nearest hole (a broken panel) to (x, z) within `range` m: its centre in `out` */
+  nearestHole(x: number, z: number, range: number, out: THREE.Vector3): boolean {
+    let best = range;
+    let found = false;
+    for (const p of this.panels) {
+      if (!p.broken) continue;
+      const d = Math.hypot(p.cx - x, p.cz - z);
+      if (d < best) {
+        best = d;
+        out.set(p.cx, D, p.cz);
+        found = true;
+      }
+    }
+    return found;
+  }
+
+  /**
+   * A swimmer right under a hole (within `reach` m of its edge) can pull himself up through it: the point
+   * on the nearest intact plank beside the hole, a little inside its edge. False when there is no hole here.
+   */
+  exitAt(x: number, z: number, reach: number, out: THREE.Vector3): boolean {
+    let under: Panel | null = null;
+    let bd = Infinity;
+    for (const p of this.panels) {
+      if (!p.broken) continue;
+      const dx = Math.max(0, Math.abs(x - p.cx) - p.hx);
+      const dz = Math.max(0, Math.abs(z - p.cz) - p.hz);
+      const d = Math.hypot(dx, dz);
+      if (d <= reach && d < bd) {
+        bd = d;
+        under = p;
+      }
+    }
+    if (!under) return false;
+    let best = Infinity;
+    let pick: Panel | null = null;
+    for (const p of this.panels) {
+      if (p.broken) continue;
+      const d = Math.hypot(p.cx - under.cx, p.cz - under.cz);
+      if (d < 4.2 && d < best) {
+        best = d;
+        pick = p;
+      }
+    }
+    if (!pick) return false;
+    const inset = 0.5;
+    out.set(
+      Math.max(pick.cx - pick.hx + inset, Math.min(pick.cx + pick.hx - inset, under.cx)),
+      D,
+      Math.max(pick.cz - pick.hz + inset, Math.min(pick.cz + pick.hz - inset, under.cz)),
+    );
+    return true;
+  }
+
   /** put every plank back (a respawn builds the chapter again anyway; this is for scripted resets) */
   restoreAll(): void {
     this.panels.forEach((p, i) => {

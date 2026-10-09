@@ -12,8 +12,16 @@ import * as THREE from 'three';
 import type { LevelAPI } from '../../../core/types';
 import { onIce } from './layout';
 
-/** how fast the velocity may follow the input on ice (1/s; lower = slipperier). 12 ≈ a fifth of the normal grip */
-const GRIP = 12;
+/**
+ * The share of each step's velocity change the ice lets through (0..1; lower = slipperier).
+ *
+ * The motor's per-step change is already `accel * dt` (capped), so scaling that change by a
+ * CONSTANT fraction scales the acceleration itself: the grip is the same at 30, 60 or 144 Hz. (An
+ * exponential blend `1 - exp(-k dt)` on top of it made the effective acceleration ∝ dt, i.e. the
+ * ice got slipperier the higher the frame rate.) 0.22 ≈ 10 m/s² to get going, ~2.8 m to stop
+ * from a run.
+ */
+const GRIP = 0.22;
 
 export function installIce(level: LevelAPI): { enabled: boolean } {
   const { player } = level.ctx;
@@ -25,7 +33,7 @@ export function installIce(level: LevelAPI): { enabled: boolean } {
     const on = state.enabled && !player.mover && player.grounded && player.alive && onIce(p.x, p.z, p.y);
     if (on && had && dt > 0) {
       const v = player.velocity;
-      const k = 1 - Math.exp(-GRIP * dt);
+      const k = GRIP;
       // keep most of last step's horizontal momentum, but never exceed the run speed
       const nx = prev.x + (v.x - prev.x) * k;
       const nz = prev.z + (v.z - prev.z) * k;

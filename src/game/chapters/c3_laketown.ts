@@ -23,7 +23,7 @@ import { spawnBolg, type BolgBoss } from './laketown/bolg';
 import { buildCourse, makeBolgRunner, makeChaseMover, type BolgRunner, type ChaseMover } from './laketown/chase';
 import { createHorse, type HorseRig } from './laketown/horse';
 import {
-  BARD, BOT_ROUTE_1, CHASE_COVER, CHASE_ROOFS, CHASE_X, D, JETTY, L, PLATFORMS, V, platformRect, roofSpot, type HouseDef,
+  BARD, BOT_ROUTE_1, CHASE_COVER, CHASE_LANE, CHASE_ROOFS, CHASE_X, D, JETTY, L, PLATFORMS, V, nearestDeckPoint, platformRect, roofSpot, type HouseDef,
 } from './laketown/layout';
 
 const CHECKPOINTS = ['The Walkways', "Bard's House", 'Bolg'];
@@ -51,7 +51,9 @@ export const chapter: ChapterDef = {
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
     // the preset, a little brighter: the moon and sky fill so the planks read
-    level.setEnvironment({ ...ENVIRONMENTS.laketown_night, sunIntensity: 1.5, hemiIntensity: 0.9, envIntensity: 0.9, exposure: 1.4 });
+    // (fewer drifting embers than the preset: one big ember next to the camera read as a floating orange orb;
+    // a slightly deeper fog colour so the far lake is not a milky plane)
+    level.setEnvironment({ ...ENVIRONMENTS.laketown_night, sunIntensity: 1.5, hemiIntensity: 1.0, envIntensity: 0.9, exposure: 1.4, weatherIntensity: 0.3, fog: { color: 0x0d1727, density: 0.0115 } });
     const world: TownWorld = buildTown(level);
     const course = buildCourse();
 
@@ -68,18 +70,17 @@ export const chapter: ChapterDef = {
 
     // water lapping at the piles under the wind of the preset
     ctx.audio.loop('river', 0.09);
-    const swim = createSwim(level, { enabled: () => !cineOn, allies: () => (tauriel ? [tauriel] : []), obstacles: world.houseRects });
+    const swim = createSwim(level, { enabled: () => !cineOn, allies: () => (tauriel ? [tauriel] : []), obstacles: world.houseRects, quay: world.quay });
     level.onUpdate((dt) => {
       world.update(dt);
       swim.update();
     });
 
     // ── helpers ────────────────────────────────────────────────────────────
-    const groundY = (x: number, z: number) => ctx.physics.heightAt(x, z);
-    void groundY;
     /** top surface (deck or roof) at x, z */
     const topY = (x: number, z: number): number => ctx.physics.ground(x, z, D + 10, 0)?.y ?? D;
 
+    const botGoal = new THREE.Vector3();
     const cine = (on: boolean) => {
       cineOn = on;
       if (!quick || !on) level.cinematic(on);
@@ -108,10 +109,22 @@ export const chapter: ChapterDef = {
       if (kili) return;
       kili = level.spawnAlly({ kind: 'dwarf', name: 'Kíli', anchor: L.kili.clone() }, L.kili.clone(), Math.PI);
       kili.aiEnabled = false;
-      (kili as unknown as { playSpecial(p: string, s: number): void }).playSpecial('sit', 1e9);
+      // spawning settles onto the highest floor in reach (the upper storey): put him back on the ground floor
+      kili.object.position.set(L.kili.x - 0.6, D + 0.3, L.kili.z);
+      kili.velocity.set(0, 0, 0);
+      // he lies on his back on the sickbed, head toward +x (the humanoid root is laid flat; the
+      // ally AI turns the object toward the player each step, so the root cancels that turn)
+      const lying = kili;
+      const root = lying.humanoid.root;
+      root.rotation.order = 'YXZ';
+      level.onUpdate(() => {
+        root.rotation.set(-Math.PI / 2, -Math.PI / 2 - lying.object.rotation.y, 0);
+        root.position.set(0, 0.14, 0);
+      });
       const names = ['Fíli', 'Óin'];
       L.dwarves.forEach((p, i) => {
         const d = level.spawnAlly({ kind: 'dwarf', name: names[i], anchor: p.clone() }, p.clone(), Math.PI);
+        d.object.position.y = D;
         dwarves.push(d);
       });
     }
@@ -128,13 +141,21 @@ export const chapter: ChapterDef = {
       beat = 'intro';
       if (quick) return;
       cine(true);
-      // the town from the water, the moon behind us
+      ctx.fx.setWeather('none'); // no stray ember in the first frames
+      // 1. the town from the water, the moon behind us: the title card plays over this shot
       level.cameraShot({ position: V(-34, 9.5, -92), lookAt: V(0, 3, -48), fov: 52, blend: 0 });
-      await level.wait(0.5);
-      level.cameraShot({ position: V(-16, 5.2, -80), lookAt: V(0, 2.4, -56), fov: 44, blend: 4.2 });
-      await cinematicLine('Legolas', 'The orcs have crossed the water. They are already on the rooftops.', 3.4);
-      level.cameraShot({ position: V(3.4, 2.1, -64), lookAt: V(0, 1.7, -70), fov: 40, blend: 1.4 });
+      await level.wait(0.4);
+      // 2. then up the main walk, low between the rows of houses: the lookouts creeping along the ridges ahead
+      level.cameraShot({ position: V(-1.4, D + 3.2, -68), lookAt: V(2.5, 7.4, -32), fov: 44, blend: 4.2 });
+      await level.wait(3.4);
+      ctx.fx.setWeather('embers', 0.3);
+      void level.say('Legolas', 'The orcs have crossed the water. They are already on the rooftops.', 3.2);
+      level.cameraShot({ position: V(0.4, D + 2.7, -57), lookAt: V(-2.5, 7.6, -30), fov: 36, blend: 3.4 });
+      await level.wait(3.4);
+      // 3. close-ups, faces lit by the dock braziers (Tauriel is framed relative to herself: she moves about)
+      if (tauriel) level.cameraShot({ position: V(0.5, 1.6, 2.1), lookAt: V(0, 1.62, 0), fov: 30, follow: tauriel.object, blend: 0 });
       await cinematicLine('Tauriel', "They will go for Bard's house. Kíli is lying there.", 3.0);
+      level.cameraShot({ position: V(-1.3, D + 1.72, -64.9), lookAt: V(0, D + 1.68, -68.5), fov: 30, blend: 0 });
       await cinematicLine('Legolas', 'Then we reach it first.', 2.0);
       level.cameraShot(null);
       await level.wait(0.8);
@@ -144,10 +165,37 @@ export const chapter: ChapterDef = {
     // ═══════════════════════════════════════════════════════════════════════
     // beat 1: the walkways
     // ═══════════════════════════════════════════════════════════════════════
+    /** orcs creeping along the ridges toward Bard's house; they drop in when the player draws near */
+    const lookouts: Enemy[] = [];
+    function spawnLookouts(): void {
+      const hs = housesWhere((h) => h.run === 'A' && h.z > -48 && h.z < -18).sort((a, b) => a.z - b.z);
+      const picks = [hs.find((h) => h.x > 0), hs.find((h) => h.x < 0), hs.filter((h) => h.x > 0)[1], hs.filter((h) => h.x < 0)[1]].filter((h): h is HouseDef => !!h);
+      for (const h of picks) {
+        // walk the ridge toward the front of the town (north): along the ridge direction
+        const a = roofAt(h, -0.95, 0.1);
+        const b = roofAt(h, 0.95, 0.1);
+        const e = level.spawnEnemy({ archetype: 'goblin', countsForRivalry: false }, a, yawOf(b.x - a.x, b.z - a.z));
+        e.aiEnabled = false;
+        (e as unknown as { speedMax: number }).speedMax = 0.8;
+        e.moveTarget = b.clone();
+        lookouts.push(e);
+      }
+    }
+    function releaseLookouts(): void {
+      for (const e of lookouts) {
+        if (!e.alive) continue;
+        e.aiEnabled = true;
+        e.moveTarget = null;
+        (e as unknown as { speedMax: number }).speedMax = 5.4;
+      }
+      lookouts.length = 0;
+    }
+
     async function beatWalkways(): Promise<void> {
       beat = 'walk';
       level.objective('Follow the main walkway north');
       await level.waitUntil(() => player.position.z > -57, 60);
+      releaseLookouts();
       level.objective('Clear the walkway');
       ctx.hud.toast('Orcs on the rooftops', 'warning');
       // first contact: archers on the roofs either side, raiders dropping onto the planks
@@ -191,18 +239,23 @@ export const chapter: ChapterDef = {
       beat = 'market';
       level.objective('Clear the market square');
       level.say('Tauriel', 'Take the high ground, I will cover you.', 2.6);
-      const corners = housesWhere((h) => (h.run === 'SW' || h.run === 'SE') && Math.abs(h.z) < 26);
+      // groups are placed relative to where the player is NOW: a player who ran ahead of the beat must not have a wave
+      // land on top of him, so what normally comes from ahead (the south walk) comes from behind instead
+      const pz = player.position.z;
+      const centre = (h: HouseDef) => Math.hypot(h.x, h.z);
+      const corners = housesWhere((h) => (h.run === 'SW' || h.run === 'SE') && Math.abs(h.z) < 26).sort((a, b) => centre(a) - centre(b));
       const archers = corners.slice(0, 5).map((h) => roofAt(h, 0, 0.5));
       const droppers = housesWhere((h) => h.run === 'A' && h.z > -34 && h.z < -16).slice(0, 4).map((h) => roofAt(h, 0, 0.9));
       const flank = [V(-24.5, D, 0), V(24.5, D, 0)];
+      const goblinSpot = pz < 6 ? V(0, D, 24) : V(0, D, -14);
       await fight(
         [
           { spec: ARCHER, count: Math.min(4, archers.length), at: archers, spread: 0.4 },
           { spec: GUNDABAD, count: 4, at: flank, spread: 1.6 },
           { spec: ORC, count: 3, at: droppers.length ? droppers : [V(0, D, -16)], spread: 1 },
-          { spec: GOBLIN, count: 3, at: V(0, D, 24), spread: 2 },
+          { spec: GOBLIN, count: 3, at: goblinSpot, spread: 2 },
         ],
-        { stagger: 3, until: 1, timeout: 95 },
+        { stagger: 3, until: 2, timeout: 75 },
       );
       level.objective("Reach Bard's house");
       await level.waitUntil(() => player.position.z > 25, 120);
@@ -241,7 +294,7 @@ export const chapter: ChapterDef = {
         [
           { spec: GUNDABAD, count: 3, at: L.southWalk, spread: 1.4 },
           { spec: GOBLIN, count: 4, at: roofsFor(4, 0.95), spread: 0.8 },
-          { spec: ARCHER, count: 3, at: roofsFor(3, 0.3).reverse(), spread: 0.5 },
+          { spec: ARCHER, count: 2, at: roofsFor(2, 0.3).reverse(), spread: 0.5 },
         ],
         { stagger: 3.5, until: 1, timeout: 85 },
       );
@@ -255,7 +308,7 @@ export const chapter: ChapterDef = {
           { spec: GUNDABAD, count: 3, at: [L.westLink, L.eastLink], spread: 1.6 },
           { spec: ORC, count: 4, at: L.southWalk, spread: 2 },
           { spec: GOBLIN, count: 3, at: roofsFor(3, 0.95).reverse(), spread: 0.8 },
-          { spec: ARCHER, count: 3, at: roofsFor(3, 0.3), spread: 0.5 },
+          { spec: ARCHER, count: 2, at: roofsFor(2, 0.3), spread: 0.5 },
         ],
         { stagger: 3, until: 0, timeout: 100 },
       );
@@ -280,7 +333,7 @@ export const chapter: ChapterDef = {
       boss = spawnBolg(level, L.bolgFrom, 0, { maxHp: 3400, quay: world.quay, arena: { x0: arena.x0 + 0.4, x1: arena.x1 - 0.4, z0: arena.z0 + 0.4, z1: arena.z1 - 0.4 } });
       boss.freeze();
       const bolg = boss.enemy;
-      bolg.moveTarget = V(0, D, 27);
+      bolg.moveTarget = V(0, D, 27.3);
       bolg.aiEnabled = false;
       boss.onPhase2 = () => {
         void level.say('Bolg', 'Kill them! Kill them all!', 2.4);
@@ -296,11 +349,14 @@ export const chapter: ChapterDef = {
       };
       if (!quick) {
         cine(true);
-        level.cameraShot({ position: V(-5, 2.6, 25), lookAt: V(0, 2.2, 16), fov: 46, blend: 0.0 });
+        // from the quay mouth, low, the torches at the mouth lighting his face as he comes up the walk
+        level.cameraShot({ position: V(-3.9, D + 1.0, 31.6), lookAt: V(0.2, D + 2.4, 23.5), fov: 40, blend: 0.0 });
         await level.wait(0.4);
-        level.cameraShot({ position: V(-3.2, 1.7, 27.5), lookAt: V(0, 2.6, 22), fov: 36, blend: 4.5 });
+        level.cameraShot({ position: V(-2.3, D + 1.45, 30.4), lookAt: V(0.2, D + 2.85, 27.0), fov: 32, blend: 4.0 });
         await level.wait(3.2);
         await cinematicLine('Bolg', "The dwarf's blood is mine. Stand aside, elf.", 3.0);
+        // over his shoulder: Legolas, facing him, the quay and the house glow behind
+        level.cameraShot({ position: V(1.6, D + 2.15, 25.2), lookAt: V(-0.1, D + 1.65, 33), fov: 34, blend: 0.0 });
         await cinematicLine('Legolas', 'You will have to come through me.', 2.4);
         level.cameraShot(null);
         await level.wait(0.6);
@@ -331,11 +387,17 @@ export const chapter: ChapterDef = {
       ctx.hud.setProgress(null);
       player.invulnerable = true;
       cine(true);
+      // let the last hit's flash clear before the first cinematic frame (it showed him flat orange)
+      await level.wait(0.45);
       const at = bolg.position.clone();
       // clear the quay so nothing else interrupts the moment
       for (const c of ctx.combatants.byTeam('enemy')) if (c !== bolg && c.alive) c.takeDamage({ amount: 1e5, type: 'scripted', source: null });
       if (!quick) {
-        level.cameraShot({ position: V(at.x + 4.5, 2.2, at.z - 5.5), lookAt: V(at.x, 2.3, at.z), fov: 40, blend: 0.5 });
+        // from the front and a little to the side: his face, the elf behind
+        const f = (bolg as unknown as { facing: number }).facing;
+        const fxd = Math.sin(f);
+        const fzd = Math.cos(f);
+        level.cameraShot({ position: V(at.x + fxd * 5.0 + fzd * 2.4, 1.9, at.z + fzd * 5.0 - fxd * 2.4), lookAt: V(at.x, 2.5, at.z), fov: 38, blend: 0.5 });
       }
       bolg.playPose?.('kneel', 1.6);
       await level.wait(1.0);
@@ -352,13 +414,15 @@ export const chapter: ChapterDef = {
       boss.stop();
       level.removeCombatant(bolg);
       boss = null;
-      runner = makeBolgRunner(level, course, course.zStart + 0.5, CHASE_X);
+      runner = makeBolgRunner(level, course, course.zStart + 0.5, CHASE_LANE);
       runner.body.root.position.set(pos.x, D, pos.z);
       // run him along the west link to the stage: a short scripted dash
       await runPuppetTo(pos, V(CHASE_X, D, 37.5));
-      await runPuppetTo(V(CHASE_X, D, 37.5), V(CHASE_X, D, course.zStart + 4));
+      await runPuppetTo(V(CHASE_X, D, 37.5), V(CHASE_X, D, 44));
+      // Legolas is already at the foot of the stage: both in one wide shot from the water side
+      player.teleport(V(CHASE_LANE, D, course.zStart), 0);
       if (!quick) {
-        level.cameraShot({ position: V(CHASE_X + 3, D + 2.6, 34), lookAt: V(CHASE_X, D + 1.6, 44), fov: 48, blend: 0.8 });
+        level.cameraShot({ position: V(CHASE_X + 11.5, D + 2.3, 37.8), lookAt: V(CHASE_X, D + 1.6, 37.8), fov: 46, blend: 0.8 });
       }
       await cinematicLine('Legolas', 'Not this time.', 1.8);
       level.cameraShot(null);
@@ -394,12 +458,13 @@ export const chapter: ChapterDef = {
       cine(false);
       level.music?.('combat');
       level.objective('Chase Bolg across the rooftops');
-      player.teleport(V(CHASE_X, D, course.zStart), 0);
+      player.teleport(V(CHASE_LANE, D, course.zStart), 0);
       let ended = false;
       chase = makeChaseMover(level, course, { onEnd: () => (ended = true) });
       player.mover = chase;
-      // the puppet already stands a few metres ahead
-      if (runner) runner.z = course.zStart + 5;
+      // the puppet already stands a dozen metres ahead, on the stage
+      if (runner) runner.z = course.zStart + 12.5;
+      let warned = false;
       player.camera.yaw = 0;
       level.cameraShot(null);
 
@@ -423,15 +488,23 @@ export const chapter: ChapterDef = {
           const w = waves[next++];
           void level.wave({ groups: w.groups.map((g) => ({ ...g })), stagger: 0.8, timeout: 40 });
         }
-        if (runner) runner.update(dt, chase.z);
+        if (runner) {
+          runner.update(dt, chase.z);
+          // he does not wait: every stumble shows as ground lost
+          if (!warned && runner.z - chase.z > 26) {
+            warned = true;
+            ctx.hud.toast('Bolg is pulling away!', 'warning');
+          }
+        }
         const span = course.zEnd - course.zStart;
         ctx.hud.setProgress('Chase Bolg', clamp((chase.z - course.zStart) / span, 0, 1));
       });
       await level.waitUntil(() => ended, 150);
       stop();
+      const stumbles = chase?.stumbles ?? 0;
       ctx.hud.setProgress(null);
       ctx.hud.setPrompt(null);
-      await outro();
+      await outro(stumbles);
     }
 
     function routeSpot(i: number, across: number): THREE.Vector3 {
@@ -454,44 +527,55 @@ export const chapter: ChapterDef = {
     }
 
     // ── outro: the horse ──────────────────────────────────────────────────
-    async function outro(): Promise<void> {
+    async function outro(stumbles = 0): Promise<void> {
       beat = 'outro';
       player.mover = null;
       chase = null;
+      level.objective(null);
+      ctx.hud.setPrompt(null);
       cine(true);
-      player.teleport(V(CHASE_X, D, JETTY.b[1] - 8), 0);
       const jz = JETTY.b[1];
-      // a horse waits at the shore end of the jetty; Bolg is already there
+      player.teleport(V(CHASE_X, D, jz - 8), 0);
+      // a horse waits at the shore end of the jetty between the two torches; Bolg is already on his way to it
       horse = createHorse(level, V(CHASE_X, D, jz - 1.2));
       if (runner) runner.update(0.016, jz);
-      level.cameraShot({ position: V(CHASE_X + 3.4, D + 1.7, jz - 11), lookAt: V(CHASE_X, D + 1.8, jz - 1), fov: 40, blend: 0.7 });
+      // too many stumbles: he is already in the saddle when Legolas arrives
+      const early = stumbles >= 3;
+      // from the shore, low, looking back down the jetty: the torches on his face, the moon rim on his armour
+      level.cameraShot({ position: V(CHASE_X - 2.6, D + 1.35, jz + 6.5), lookAt: V(CHASE_X, D + 1.9, jz - 3.5), fov: 40, blend: 0 });
       await level.wait(0.8);
       if (runner) {
-        // Bolg reaches the horse and mounts
-        runner.z = jz - 7;
         const body = runner.body;
-        const anim = { speed: 8, moveDir: { x: 0, z: 1 }, grounded: true, vy: 0, aim: 0, draw: 0, aimPitch: 0, attack: null, hit: 0, dead: 0, deathVariant: 0, special: null, specialT: 0, lookAt: null } as Parameters<typeof body.animate>[1];
-        let t = 0;
-        const stop = level.onUpdate((dt) => {
-          t += dt;
-          if (t < 1.4) {
-            body.root.position.set(CHASE_X, D, THREE.MathUtils.lerp(jz - 7, jz - 1.8, t / 1.4));
-            body.root.rotation.y = 0;
-            body.animate(dt, anim);
-          }
-        });
-        await level.wait(1.5);
-        stop();
-        horse.mount(body);
+        if (early) {
+          horse.mount(body);
+        } else {
+          // Bolg reaches the horse and mounts
+          runner.z = jz - 7;
+          const anim = { speed: 8, moveDir: { x: 0, z: 1 }, grounded: true, vy: 0, aim: 0, draw: 0, aimPitch: 0, attack: null, hit: 0, dead: 0, deathVariant: 0, special: null, specialT: 0, lookAt: null } as Parameters<typeof body.animate>[1];
+          let t = 0;
+          const stop = level.onUpdate((dt) => {
+            t += dt;
+            if (t < 1.4) {
+              body.root.position.set(CHASE_X, D, THREE.MathUtils.lerp(jz - 7, jz - 1.8, t / 1.4));
+              body.root.rotation.y = 0;
+              body.animate(dt, anim);
+            }
+          });
+          await level.wait(1.5);
+          stop();
+          horse.mount(body);
+        }
         ctx.audio.play('horse_neigh', { pos: horse.object.position, volume: 1 });
       }
       await level.wait(0.6);
       horse.gallop(V(CHASE_X, D, jz + 120), 13);
-      level.cameraShot({ position: V(CHASE_X + 2.6, D + 1.5, jz - 6), lookAt: V(CHASE_X, D + 1.6, jz + 6), fov: 44, blend: 0.6 });
+      // ride along behind him as he rears and sets off: the moon is at our back
+      level.cameraShot({ position: V(3.1, 1.7, -5.4), lookAt: V(0, 2.2, 1.6), fov: 44, follow: horse.object, blend: 0.7 });
       ctx.audio.play('horse_neigh', { pos: horse.object.position, volume: 1, pitch: 0.9 });
-      await level.wait(2.4);
-      level.cameraShot({ position: V(CHASE_X + 2.2, D + 1.7, jz - 3.5), lookAt: V(CHASE_X, D + 1.6, jz + 12), fov: 48, blend: 2.4 });
-      await level.wait(2.2);
+      await level.wait(3.0);
+      // and let him go: a wide, static view north, the rider small against the dark
+      level.cameraShot({ position: V(CHASE_X + 6, D + 3.0, jz + 8), lookAt: V(CHASE_X, D + 2.4, jz + 80), fov: 40, blend: 1.6 });
+      await level.wait(1.6);
       await cinematicLine('Legolas', "He's going north. I'll follow.", 3.0);
       level.cameraShot(null);
       await level.wait(0.4);
@@ -506,6 +590,7 @@ export const chapter: ChapterDef = {
     // ═══════════════════════════════════════════════════════════════════════
     async function run(from: number): Promise<void> {
       if (from <= 0) {
+        spawnLookouts();
         await intro();
         await beatWalkways();
       }
@@ -517,7 +602,7 @@ export const chapter: ChapterDef = {
     }
 
     // debug hook for the test drivers (state of the script and the boss)
-    (globalThis as unknown as { __laketown?: unknown }).__laketown = {
+    const hook = {
       get beat() {
         return beat;
       },
@@ -527,9 +612,14 @@ export const chapter: ChapterDef = {
       get chase() {
         return chase;
       },
+      get runnerZ() {
+        return runner ? runner.z : null;
+      },
       world,
       swim,
+      level,
     };
+    (globalThis as unknown as { __laketown?: unknown }).__laketown = hook;
 
     return {
       start(cp: number): void {
@@ -540,7 +630,8 @@ export const chapter: ChapterDef = {
           // the dock fires (set in the world) light the moment: nothing else to place
         } else {
           setupHouse();
-          player.teleport(V(0, D, c === 1 ? 31 : 33), 0);
+          // (before Bolg he faces south, toward the walk the boss comes up)
+          player.teleport(V(0, D, c === 1 ? 31 : 33), c === 1 ? 0 : Math.PI);
           spawnTauriel(V(-2.4, D, c === 1 ? 29.4 : 31.4), 0);
         }
         if (c === 0) {
@@ -553,6 +644,9 @@ export const chapter: ChapterDef = {
       update(): void {},
 
       dispose(): void {
+        // the debug hook must not keep the level, the world and the boss alive after the chapter ends
+        const g = globalThis as unknown as { __laketown?: unknown };
+        if (g.__laketown === hook) delete g.__laketown;
         // the player outlives the level: never leave him invulnerable, riding a mover or filmed
         player.mover = null;
         player.invulnerable = false;
@@ -562,8 +656,23 @@ export const chapter: ChapterDef = {
       botHint() {
         const p = player.position;
         switch (beat) {
+          case 'market': {
+            // hunt down what is left (archers on the rooftops): walk to the deck nearest the closest foe
+            let best: THREE.Vector3 | null = null;
+            let bd = 1e9;
+            for (const c of ctx.combatants.byTeam('enemy')) {
+              if (!c.alive) continue;
+              const d = Math.hypot(c.position.x - p.x, c.position.z - p.z);
+              if (d < bd) {
+                bd = d;
+                best = c.position;
+              }
+            }
+            if (best && bd > 13) return { moveTo: nearestDeckPoint(best.x, best.z, 1.2, botGoal) };
+            for (const w of BOT_ROUTE_1) if (w.z > p.z + 4) return { moveTo: w };
+            return { moveTo: V(0, D, 31) };
+          }
           case 'walk':
-          case 'market':
           case 'quay': {
             // follow the centre line of the walkways
             for (const w of BOT_ROUTE_1) if (w.z > p.z + 4) return { moveTo: w };
@@ -574,7 +683,7 @@ export const chapter: ChapterDef = {
           case 'bolgIntro':
             return { moveTo: V(0, D, 33.5) };
           case 'chase':
-            if (chase) return { moveTo: V(CHASE_X, D, p.z + 12), jump: chase.toEdge < 5.5 };
+            if (chase) return { moveTo: V(CHASE_LANE, D, p.z + 12), jump: chase.toEdge < 5.5 };
             return null;
           default:
             return null;
@@ -584,5 +693,3 @@ export const chapter: ChapterDef = {
   },
 };
 
-void BARD;
-void yawOf;

@@ -154,6 +154,8 @@ interface Tier {
   delay: number;
   tiltX: number;
   tiltZ: number;
+  /** sideways slip as the tier gives way (m at full collapse) */
+  slide: number;
 }
 
 export interface Landmarks {
@@ -308,7 +310,7 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
     group.position.y = y;
     group.traverse((o) => (o.userData.noAO = true));
     tower.add(group);
-    tiers.push({ group, y0: y, h: td.h, delay: td.delay, tiltX: (rng.float() - 0.5) * 0.7, tiltZ: (rng.float() - 0.5) * 0.7 });
+    tiers.push({ group, y0: y, h: td.h, delay: td.delay, tiltX: (rng.float() - 0.5) * 0.9, tiltZ: (i % 2 ? 1 : -1) * (0.28 + rng.float() * 0.3), slide: (i % 2 ? 1 : -1) * (30 + rng.float() * 50) });
     y += td.h * 0.94;
   });
   // the crown: a great forked head and the Eye
@@ -364,14 +366,14 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
   ring.userData.noAO = true;
   ring.frustumCulled = false;
   root.add(ring);
-  const dust: { s: THREE.Sprite; x: number; z: number; v: number; life: number; t: number; size: number }[] = [];
+  const dust: { s: THREE.Sprite; x: number; z: number; v: number; life: number; t: number; size: number; y: number }[] = [];
   for (let i = 0; i < 46; i++) {
     const m = new THREE.SpriteMaterial({ map: puff, color: i % 4 === 0 ? 0x8a3a1a : 0x3a2418, depthWrite: false, fog: false, transparent: true, opacity: 0 });
     const s = new THREE.Sprite(m);
     s.visible = false;
     s.userData.noAO = true;
     root.add(s);
-    dust.push({ s, x: 0, z: 0, v: 0, life: 1, t: 99, size: 100 });
+    dust.push({ s, x: 0, z: 0, v: 0, life: 1, t: 99, size: 100, y: -1 });
   }
 
   // ── state ────────────────────────────────────────────────────────────────
@@ -399,15 +401,18 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
       if (collapsing) return;
       collapsing = true;
       collapseT = 0;
-      // the crown breaks from the tower and the dust starts to roll
+      // dust billows off every tier at the moment it lets go (4 puffs a tier, the rest from the crown)
       for (let i = 0; i < 18; i++) {
         const d = dust[i];
-        d.t = -rng.float() * 3;
-        d.x = FAR.tower.x + (rng.float() - 0.5) * 220;
-        d.z = FAR.tower.z + (rng.float() - 0.5) * 140;
-        d.v = 6 + rng.float() * 18;
-        d.life = 7 + rng.float() * 4;
-        d.size = 120 + rng.float() * 200;
+        const ti = Math.min(tiers.length - 1, Math.floor(i / 4));
+        const T = tiers[ti];
+        d.t = -(i < 16 ? T.delay : 0.2) - rng.float() * 1.4;
+        d.x = FAR.tower.x + (rng.float() - 0.5) * T.h * 1.2;
+        d.z = FAR.tower.z + 90 + (rng.float() - 0.2) * 70;
+        d.y = tower.position.y + T.y0 + T.h * (0.2 + 0.7 * rng.float());
+        d.v = 3 + rng.float() * 6;
+        d.life = 6 + rng.float() * 3;
+        d.size = 90 + rng.float() * 120;
       }
     },
     blackout() {
@@ -430,6 +435,7 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
         d.x = FAR.tower.x + (a - 0.5) * 900;
         d.z = FAR.tower.z + 120 + rng.float() * 60;
         d.v = 70 + rng.float() * 40;
+        d.y = -1;
         d.t = -rng.float() * 1.2;
         d.life = 9 + rng.float() * 3;
         d.size = 160 + rng.float() * 220;
@@ -472,6 +478,7 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
           const e = k * k * (3 - 2 * k);
           T.group.rotation.x = T.tiltX * e;
           T.group.rotation.z = T.tiltZ * e;
+          T.group.position.x = T.slide * e;
           T.group.scale.y = 1 - 0.78 * e * (i === 0 ? 0.7 : 1);
           T.group.position.y = T.y0 - e * T.h * 0.35 - (i > 0 ? e * T.h * 0.2 : 0);
         }
@@ -488,9 +495,9 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
       if (flashT < 4) {
         flashT += dt;
         const k = flashT;
-        const a = k < 0.12 ? k / 0.12 : Math.exp(-(k - 0.12) * 1.15);
+        const a = k < 0.1 ? k / 0.1 : Math.exp(-(k - 0.1) * 2.3);
         flashMat.opacity = clamp(a, 0, 1);
-        const s = 160 + k * 900;
+        const s = 140 + k * 380;
         flashSprite.scale.set(s * 1.5, s, 1);
         if (flashT >= 4) flashSprite.visible = false;
       }
@@ -514,7 +521,7 @@ export function buildLandmarks(level: LevelAPI, ground: (x: number, z: number) =
         d.s.scale.set(sz * 1.6, sz, 1);
         tmp.set(d.x, 0, d.z);
         const dz = d.v * d.t;
-        d.s.position.set(d.x, ground(d.x, d.z + dz) + sz * 0.32, d.z + dz);
+        d.s.position.set(d.x, d.y >= 0 ? d.y - k * 30 : ground(d.x, d.z + dz) + sz * 0.32, d.z + dz);
         (d.s.material as THREE.SpriteMaterial).opacity = 0.62 * smoothstep(0, 0.08, k) * (1 - smoothstep(0.6, 1, k));
         if (k >= 1) d.s.visible = false;
       }

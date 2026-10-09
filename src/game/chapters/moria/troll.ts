@@ -20,7 +20,7 @@
  */
 import * as THREE from 'three';
 import type { Combatant, DamageInfo, Enemy, LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
-import { clamp, dirFromYaw, smoothstep, wrapAngle, yawOf } from '../../../core/math';
+import { clamp, damp, dirFromYaw, smoothstep, wrapAngle, yawOf } from '../../../core/math';
 import { seedForBucket } from '../../../creatures/humanoid/kinds/uruks_bosses';
 import { PILLARS, PILLAR_HALF } from './layout';
 import { RopeChain } from './chain';
@@ -89,6 +89,38 @@ function headOf(c: Combatant, out: THREE.Vector3): THREE.Vector3 {
   return h ? h.call(c, out) : c.aimPoint(out);
 }
 
+/** a code-drawn target ring with a cross, additive, always on top */
+function makeTargetSprite(): THREE.Sprite {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  g.clearRect(0, 0, 128, 128);
+  g.lineCap = 'round';
+  g.strokeStyle = 'rgba(255,214,140,0.95)';
+  g.lineWidth = 6;
+  g.beginPath();
+  g.arc(64, 64, 46, 0, Math.PI * 2);
+  g.stroke();
+  g.lineWidth = 4;
+  g.beginPath();
+  for (const [x0, y0, x1, y1] of [[64, 6, 64, 30], [64, 98, 64, 122], [6, 64, 30, 64], [98, 64, 122, 64]]) {
+    g.moveTo(x0, y0);
+    g.lineTo(x1, y1);
+  }
+  g.stroke();
+  g.fillStyle = 'rgba(255,240,200,0.95)';
+  g.beginPath();
+  g.arc(64, 64, 4, 0, Math.PI * 2);
+  g.fill();
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending }));
+  sp.renderOrder = 20;
+  sp.scale.setScalar(0.9);
+  sp.userData.noAO = true;
+  return sp;
+}
+
 interface ChargeAct {
   kind: 'charge';
   t: number;
@@ -118,7 +150,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
   const { fx, audio } = ctx;
 
   const enemy = level.spawnEnemy(
-    { archetype: 'troll', boss: true, name: 'Cave Troll', hp: opts.hp ?? 1400, seed: seedForBucket(0), countsForRivalry: true },
+    { archetype: 'troll', boss: true, name: 'Cave Troll', hp: opts.hp ?? 3800, seed: seedForBucket(0), countsForRivalry: true },
     opts.spawn,
     Math.PI * 1.5,
   );
@@ -134,7 +166,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
   let act: Act = null;
   let specialCd = 7;
   let headHits = 0;
-  /** seconds of open fight so far: the head-hit stun only arms after it has shown its charge and throw */
+  /** seconds of open fight so far: the head-hit stun only arms after a short opening (6 s) */
   let fightT = 0;
   let pendingStun: 'pillar' | 'hits' | 'health' | null = null;
   let pendingFinal = false;
@@ -166,12 +198,25 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
   B.neck.add(collarMesh);
   /** the glow that marks the chain tip while it can be climbed */
   const marker = new THREE.Mesh(
-    new THREE.SphereGeometry(0.18, 10, 8),
+    new THREE.SphereGeometry(0.3, 12, 10),
     new THREE.MeshBasicMaterial({ color: 0xffcf7a, transparent: true, opacity: 0.0, depthWrite: false, blending: THREE.AdditiveBlending }),
   );
   marker.userData.noAO = true;
   marker.visible = false;
   level.root.add(marker);
+  /** a tall pale beam over the chain tip: readable from across the hall */
+  const beam = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.08, 0.2, 7, 10, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xffd48a, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide }),
+  );
+  beam.userData.noAO = true;
+  beam.castShadow = false;
+  beam.visible = false;
+  level.root.add(beam);
+  /** the skull target: a ring-and-cross sprite drawn over everything while the aim phase runs */
+  const skullMark = makeTargetSprite();
+  skullMark.visible = false;
+  level.root.add(skullMark);
 
   // ── leash chains and handlers (the entrance) ──
   const leashes: { chain: RopeChain; handler: Enemy; anchor: THREE.Object3D }[] = [];
@@ -265,7 +310,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
     player.camera.shake(0.25, 0.9);
     if (!hintedCharge) {
       hintedCharge = true;
-      ctx.hud.toast('It charges: sidestep, or let it hit a pillar', 'warning');
+      ctx.hud.toast('It charges! Sidestep it', 'warning');
     }
   }
 
@@ -367,7 +412,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
     }
     act = null;
     if (mode === 'fight') enemy.aiEnabled = true;
-    specialCd = (enraged ? 5.5 : 8.5) + level.rng() * 3;
+    specialCd = (enraged ? 4.5 : 6.5) + level.rng() * 2.5;
   }
 
   function startThrow(g: Enemy): void {
@@ -483,10 +528,10 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
     player.camera.shake(0.45, 0.6);
     opts.onStun?.(true);
     marker.visible = true;
-    level.objective('The troll is down: climb the chain onto its shoulders');
+    level.objective('Climb the troll\'s chain');
     if (!hintedChain) {
       hintedChain = true;
-      ctx.hud.toast(reason === 'pillar' ? 'It hit the pillar! Grab the collar chain' : 'It is dazed! Grab the collar chain', 'info');
+      ctx.hud.toast(reason === 'pillar' ? 'It hit the pillar!' : 'It is dazed!', 'info');
     }
     void opts.say?.('Gimli', 'Now, laddie! Get on its back!', 2.4);
   }
@@ -494,6 +539,8 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
   function endStun(): void {
     enemy.playPose?.('roar', 0.01);
     marker.visible = false;
+    beam.visible = false;
+    skullMark.visible = false;
     enemy.targetable = true;
     opts.onStun?.(false);
     ctx.hud.setPrompt(null);
@@ -571,7 +618,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
             t = 0;
             mover.pose = 'crouch';
             mover.allowShoot = false;
-            mover.camera = { distance: 3.4, height: 1.9, shoulder: 1.25, fov: 58 };
+            mover.camera = { distance: 3.8, height: 1.5, shoulder: 1.1, fov: 56 };
             mode = 'skull';
             log('skull');
             level.objective('Two arrows into the skull');
@@ -588,7 +635,10 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
         const h = Math.hypot(_b.x, _b.z);
         p.facing = yawOf(_b.x, _b.z);
         p.camera.yaw = p.facing;
-        p.camera.pitch = clamp(Math.atan2(_b.y, Math.max(h, 0.3)), -1.1, 1.0);
+        // a gentle look-down from behind the shoulder (the skull is below the eye, but a steep view of the
+        // floor hides it): the arrows themselves fly straight at the skull, see loosePointBlank
+        p.camera.pitch = damp(p.camera.pitch, -0.58 + clamp(Math.atan2(_b.y, Math.max(h, 0.3)) * 0.15, -0.1, 0.1), 6, dt);
+        void h;
         shotCd -= dt;
         if (pendingShot >= 0) {
           pendingShot -= dt;
@@ -648,7 +698,9 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
     if (!clearFloor(_b)) _b.set(enemy.position.x, 0, enemy.position.z + 6);
     player.mover = null;
     player.teleport(new THREE.Vector3(_b.x, ctx.physics.heightAt(_b.x, _b.z), _b.z), yawOf(enemy.position.x - _b.x, enemy.position.z - _b.z));
-    fx.dust(_b, 14);
+    // a few puffs where it threw us from and a couple at our feet, none close to the camera
+    fx.dust(_c.copy(enemy.position), 8);
+    fx.dust(_d.copy(_b).addScaledVector(_a, -1.5), 3);
     ctx.time.hitStop(0.1);
     stage = 2;
     enraged = true;
@@ -699,7 +751,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
     ctx.time.setScale(0.22, 0.08);
     audio.play('troll_roar', { pos: enemy.position, volume: 1, pitch: 0.6 });
     level.cinematic(true);
-    level.cameraShot({ position: new THREE.Vector3(1.9, 3.1, 3.3), lookAt: new THREE.Vector3(0, 3.3, 0.1), fov: 38, blend: 0.15, follow: enemy.object });
+    level.cameraShot({ position: new THREE.Vector3(3.1, 4.0, 5.6), lookAt: new THREE.Vector3(0, 3.2, 0.2), fov: 40, blend: 0.15, follow: enemy.object });
     await level.wait(0.42);
     level.cameraShot({ position: new THREE.Vector3(5.5, 2.2, 7.5), lookAt: new THREE.Vector3(0, 1.8, 0), fov: 48, blend: 0.9, follow: enemy.object });
     await level.wait(0.5);
@@ -726,11 +778,24 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
       l.chain.floorY = enemy.position.y;
       l.chain.update(dt);
     }
-    if (marker.visible) {
+    // the climbable chain is marked by a glowing bead and a tall beam
+    const showMarker = mode === 'stunned';
+    marker.visible = showMarker;
+    beam.visible = showMarker;
+    if (showMarker) {
       collar.tip(marker.position);
-      marker.position.y = enemy.position.y + 0.55 + Math.sin(ctx.time.t * 4) * 0.08;
-      (marker.material as THREE.MeshBasicMaterial).opacity = 0.55 + 0.35 * Math.sin(ctx.time.t * 6);
-      marker.scale.setScalar(1.0 + 0.25 * Math.sin(ctx.time.t * 6));
+      const pulse = Math.sin(ctx.time.t * 6);
+      beam.position.set(marker.position.x, enemy.position.y + 3.4, marker.position.z);
+      (beam.material as THREE.MeshBasicMaterial).opacity = 0.32 + 0.14 * pulse;
+      marker.position.y = enemy.position.y + 0.6 + Math.sin(ctx.time.t * 4) * 0.08;
+      (marker.material as THREE.MeshBasicMaterial).opacity = 0.75 + 0.2 * pulse;
+      marker.scale.setScalar(1.0 + 0.25 * pulse);
+    }
+    // the skull target (aim phase only)
+    skullMark.visible = mode === 'skull';
+    if (skullMark.visible) {
+      headOf(enemy, skullMark.position);
+      skullMark.scale.setScalar(0.85 + 0.12 * Math.sin(ctx.time.t * 8));
     }
     if (!enemy.alive && mode !== 'dying' && mode !== 'dead' && !killed) {
       // killed by something unexpected (a scripted kill): still finish cleanly
@@ -753,7 +818,7 @@ export function createTrollFight(level: LevelAPI, opts: TrollOpts): TrollFight {
       }
       // half health forces the stun if the player never gave it a reason
       fightT += dt;
-      if (stage === 1 && !pendingStun && headHits >= 3 && fightT > 16) pendingStun = 'hits';
+      if (stage === 1 && !pendingStun && headHits >= 3 && fightT > 6) pendingStun = 'hits';
       if (stage === 1 && !pendingStun && mode === 'fight' && fightT > 8 && enemy.hp <= enemy.maxHp * 0.52) pendingStun = 'health';
       if (stage === 2 && !pendingFinal && enemy.hp <= enemy.maxHp * 0.14 && finalCd <= 0) pendingFinal = true;
       if (pendingFinal && !act && mode === 'fight') startFinal();

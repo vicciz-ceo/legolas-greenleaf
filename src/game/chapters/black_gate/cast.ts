@@ -18,7 +18,8 @@ export function warSeed(n: number): number {
 }
 
 export const orc = (o: Partial<EnemySpec> = {}): EnemySpec => ({ archetype: 'orc', ...o });
-export const orcArcher = (): EnemySpec => ({ archetype: 'orc_archer', behavior: 'hold' });
+/** archers close to bow range and kite; ('hold' would leave them idling out of range at their spawn) */
+export const orcArcher = (): EnemySpec => ({ archetype: 'orc_archer' });
 /** Easterlings carry shield and sword, and some a spear */
 export const easterling = (spear = false): EnemySpec => (spear ? { archetype: 'easterling', weapon: 'spear' } : { archetype: 'easterling' });
 export const warTroll = (n: number, hp: number, name = 'War Troll'): EnemySpec => ({ archetype: 'troll', seed: warSeed(n), hp, name, boss: true, scale: 1 });

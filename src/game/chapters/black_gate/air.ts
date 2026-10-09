@@ -6,8 +6,8 @@
  */
 import * as THREE from 'three';
 import type { LevelAPI } from '../../../core/types';
-import { FellBeast } from '../../../creatures/fellbeast';
-import { Eagle } from '../../../creatures/eagle';
+import { FellBeast, createFellBeast } from '../../../creatures/fellbeast';
+import { Eagle, createEagle } from '../../../creatures/eagle';
 import { clamp, damp, dampAngle, smoothstep, wrapAngle } from '../../../core/math';
 
 const _v = new THREE.Vector3();
@@ -340,7 +340,7 @@ export class Sky {
   }
 
   /** an eagle intercepts a Fell Beast: swoops in, the Nazgul falls, the eagle sweeps on */
-  strike(e: EagleCtl, c: BeastCtl, then: THREE.Vector3): void {
+  strike(e: EagleCtl, c: BeastCtl, then: THREE.Vector3, onHit?: () => void): void {
     if (!c.beast.alive) return;
     const p = e.eagle.object.position.clone();
     const target = c.beast.object.position.clone().addScaledVector(c.beast.momentum, 2.2);
@@ -360,6 +360,7 @@ export class Sky {
           this.level.ctx.audio.play('bat_screech', { pos: target, volume: 1.2, pitch: 0.6 });
           c.beast.countsForRivalry = false;
           c.beast.kill(null);
+          onHit?.();
         }
         e.anim = 'glide';
       }
@@ -368,5 +369,23 @@ export class Sky {
 
   dispose(): void {
     for (const f of this.offs) f();
+  }
+}
+
+/**
+ * Mesh every creature variant the ending needs while the loading screen is up (the kit caches the
+ * geometry per definition): a Fell Beast, the grey-white leader Eagle, a golden and a dark Eagle.
+ * Without this the first spawn would freeze the game for a second or two mid-fight.
+ */
+export async function premeshSky(yieldFn: () => Promise<void> = async () => {}): Promise<void> {
+  const jobs: (() => void)[] = [
+    () => createFellBeast(0, 0.7, true).dispose(),
+    () => createEagle(1, 1.5).dispose(),
+    () => createEagle(3, 1.15).dispose(),
+    () => createEagle(2, 1.15).dispose(),
+  ];
+  for (const j of jobs) {
+    j();
+    await yieldFn();
   }
 }

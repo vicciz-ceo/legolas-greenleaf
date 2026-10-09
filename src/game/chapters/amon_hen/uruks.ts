@@ -84,6 +84,27 @@ function guardFront(e: Enemy): void {
   (e as unknown as BaseCombatant).addZoneDisc(g, 0.46 * s, new THREE.Vector3(0, 0, 1), 'armor', 0.3);
 }
 
+/**
+ * Loadout probe: after dressing, each role must hold what it is named for (archer: bow in the left hand; pike: a weapon in
+ * the right and nothing in the left; blade: no shield; shield: a shield). A mismatch means the stock archetype loadouts
+ * changed under `dress`; it is reported once per kind of mismatch, never thrown.
+ */
+const reported = new Set<string>();
+export function loadoutOf(e: Enemy): { left: string | null; right: string | null } {
+  const h = e.humanoid;
+  return { left: (h.weaponObject('hand_l')?.userData.kind as string | undefined) ?? null, right: (h.weaponObject('hand_r')?.userData.kind as string | undefined) ?? null };
+}
+function verifyLoadout(e: Enemy, role: UrukRole): void {
+  const { left, right } = loadoutOf(e);
+  const ok =
+    role === 'archer' ? left === 'uruk_bow' : role === 'pike' ? left === null && right !== null : role === 'blade' ? left !== 'shield' && right !== null : left === 'shield';
+  const key = `${role}:${left}:${right}`;
+  if (!ok && !reported.has(key)) {
+    reported.add(key);
+    console.warn(`[amon_hen] ${role} loadout is ${left ?? 'nothing'} / ${right ?? 'nothing'}: the stock Uruk loadouts changed, re-check dress() in amon_hen/uruks.ts`);
+  }
+}
+
 const NAMES: Record<UrukRole, string> = { shield: 'Uruk-hai', blade: 'Uruk-hai', pike: 'Uruk pikeman', archer: 'Uruk archer' };
 
 export function spawnUruk(level: LevelAPI, seeds: SeedPicker, role: UrukRole, pos: THREE.Vector3, o: UrukOpts = {}): Enemy {
@@ -99,6 +120,7 @@ export function spawnUruk(level: LevelAPI, seeds: SeedPicker, role: UrukRole, po
   };
   const e = level.spawnEnemy(spec, pos, o.facing);
   dress(e, role);
+  verifyLoadout(e, role);
   if (role === 'shield') guardFront(e);
   return e;
 }

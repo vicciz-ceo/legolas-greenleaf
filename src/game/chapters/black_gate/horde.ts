@@ -2,9 +2,10 @@
  * Silhouette hordes: thousands of cheap instanced figures for the far ranks of Mordor (100 m and
  * beyond), where the detailed crowds of the world module would cost too many triangles.
  *
- * One InstancedMesh holds every figure of every horde (a ~24 triangle orc: a tapering body, a head,
- * a spear and a round shield), a second holds the torch glints. Figures bob in the vertex shader
- * while a horde marches; positions are rewritten on the CPU only for hordes that are moving.
+ * Every horde is one InstancedMesh (a ~29 triangle orc: a tapering body, a head, a spear and a round
+ * shield) with a hand-set bounding sphere, so a horde behind the camera is frustum culled and costs
+ * nothing; one more InstancedMesh holds the torch glints. Figures bob in the vertex shader while a
+ * horde marches; positions are rewritten on the CPU only for hordes that are moving.
  * A horde can march (`begin`), stand, fall (`thin`), and turn and run (`rout`).
  */
 import * as THREE from 'three';
@@ -31,6 +32,7 @@ interface Group {
   def: HordeDef;
   first: number;
   n: number;
+  mesh: THREE.InstancedMesh;
   dirX: number;
   dirZ: number;
   dist: number;
@@ -71,7 +73,7 @@ function figureGeometry(): THREE.BufferGeometry {
   }
   // shoulders: a short wide wedge so the silhouette has a yoke
   const sh = [push(-0.36, 1.2, 0, 0x4e443c), push(0.36, 1.2, 0, 0x4e443c), push(0, 1.46, 0.0, 0x4a4038)];
-  idx.push(sh[0], sh[1], sh[2], sh[1], sh[0], sh[2]);
+  idx.push(sh[0], sh[1], sh[2]);
   // head: a square bipyramid with a sloped brow
   const hc = 1.62;
   const h = [push(-0.14, hc, -0.12, 0x52483c), push(0.14, hc, -0.12, 0x52483c), push(0.14, hc, 0.14, 0x52483c), push(-0.14, hc, 0.14, 0x52483c)];
@@ -87,14 +89,14 @@ function figureGeometry(): THREE.BufferGeometry {
     const b = push(x + 0.012, 0.2, z, 0x6a5a48);
     const c2 = push(x + 0.012, 2.3, z, 0x6a5a48);
     const d = push(x - 0.012, 2.3, z, 0x6a5a48);
-    idx.push(a, b, c2, a, c2, d, a, c2, b, a, d, c2);
+    idx.push(a, b, c2, a, c2, d);
   };
   sp(-0.4, 0.08);
   // spear head
   const t0 = push(-0.43, 2.3, 0.08, 0x9a9a98);
   const t1 = push(-0.37, 2.3, 0.08, 0x9a9a98);
   const t2 = push(-0.4, 2.58, 0.08, 0xb8b8b4);
-  idx.push(t0, t1, t2, t1, t0, t2);
+  idx.push(t0, t1, t2);
   // shield: a round disc on the left arm, facing forward (+z)
   const sc = push(0.4, 0.95, 0.2, 0x3a2a24);
   const ring: number[] = [];
@@ -102,7 +104,7 @@ function figureGeometry(): THREE.BufferGeometry {
     const a = (i / 7) * Math.PI * 2;
     ring.push(push(0.4 + Math.cos(a) * 0.3, 0.95 + Math.sin(a) * 0.3, 0.24, 0x2a2018));
   }
-  for (let i = 0; i < 7; i++) idx.push(sc, ring[i], ring[(i + 1) % 7], sc, ring[(i + 1) % 7], ring[i]);
+  for (let i = 0; i < 7; i++) idx.push(sc, ring[i], ring[(i + 1) % 7]);
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
@@ -136,10 +138,11 @@ function figureMaterial(uniforms: { uTime: { value: number }; uMove: { value: nu
 }
 
 export class HordeSystem {
-  readonly mesh: THREE.InstancedMesh;
+  readonly meshes: THREE.InstancedMesh[] = [];
   readonly torches: THREE.InstancedMesh;
   private readonly groups: Group[] = [];
   private readonly total: number;
+  private readonly gOf: Uint8Array; // instance -> group index
   private readonly yaw: Float32Array;
   private readonly scl: Float32Array;
   private readonly cur: Float32Array; // current x,y,z per instance
@@ -169,13 +172,7 @@ export class HordeSystem {
     this.total = counts.reduce((a, b) => a + b, 0);
     const geo = figureGeometry();
     const mat = figureMaterial(this.uniforms);
-    this.mesh = new THREE.InstancedMesh(geo, mat, Math.max(1, this.total));
-    this.mesh.name = 'horde';
-    this.mesh.frustumCulled = false;
-    this.mesh.castShadow = false;
-    this.mesh.receiveShadow = false;
-    this.mesh.userData.noAO = true;
-    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    this.gOf = new Uint8Array(Math.max(1, this.total));
     this.yaw = new Float32Array(this.total);
     this.scl = new Float32Array(this.total);
     this.cur = new Float32Array(this.total * 3);
@@ -205,7 +202,21 @@ export class HordeSystem {
       const n = counts[gi];
       const dirX = Math.sin(d.facing);
       const dirZ = Math.cos(d.facing);
-      const g: Group = { def: d, first, n, dirX, dirZ, dist: 0, state: d.march > 0 ? 'wait' : 'stand', speed: d.speed ?? 3.6, bx: new Float32Array(n), bz: new Float32Array(n), y0: new Float32Array(n), y1: new Float32Array(n) };
+      const mesh = new THREE.InstancedMesh(geo, mat, Math.max(1, n));
+      mesh.name = `horde:${d.id}`;
+      mesh.count = n;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
+      mesh.userData.noAO = true;
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      // culled by a hand-set sphere that covers the whole march (the figures move, so the default
+      // sphere from the first matrices would be wrong)
+      const mx = d.center[0] + (dirX * d.march) / 2;
+      const mz = d.center[1] + (dirZ * d.march) / 2;
+      mesh.boundingSphere = new THREE.Sphere(new THREE.Vector3(mx, 8, mz), Math.hypot(d.half[0], d.half[1]) + d.march / 2 + 16);
+      mesh.frustumCulled = true;
+      this.meshes.push(mesh);
+      const g: Group = { def: d, first, n, mesh, dirX, dirZ, dist: 0, state: d.march > 0 ? 'wait' : 'stand', speed: d.speed ?? 3.6, bx: new Float32Array(n), bz: new Float32Array(n), y0: new Float32Array(n), y1: new Float32Array(n) };
       // ranks: a jittered grid inside the rectangle, rows facing the march direction
       const [hx, hz] = d.half;
       const area = 4 * hx * hz;
@@ -234,7 +245,8 @@ export class HordeSystem {
         const b = 0.7 + this.rng.float() * 0.5;
         if (d.tint === 'easterling') color.setRGB(b * 1.25, b * 0.78, b * 0.7);
         else color.setRGB(b * 0.95, b * 0.92, b * 0.9);
-        this.mesh.setColorAt(k, color);
+        mesh.setColorAt(i, color);
+        this.gOf[k] = gi;
         if (this.rng.float() < 0.09) hasTorch.push(k);
       }
       this.groups.push(g);
@@ -252,8 +264,8 @@ export class HordeSystem {
       this.torchIdx.push(k);
     });
     for (const g of this.groups) this.writeGroup(g);
-    if (this.mesh.instanceColor) this.mesh.instanceColor.needsUpdate = true;
-    level.root.add(this.mesh, this.torches);
+    for (const m of this.meshes) if (m.instanceColor) m.instanceColor.needsUpdate = true;
+    level.root.add(...this.meshes, this.torches);
   }
 
   get count(): number {
@@ -261,12 +273,13 @@ export class HordeSystem {
   }
 
   private writeOne(k: number, x: number, y: number, z: number): void {
-    const arr = this.mesh.instanceMatrix.array as Float32Array;
+    const gi = this.gOf[k];
+    const arr = this.meshes[gi].instanceMatrix.array as Float32Array;
     const sc = this.scl[k];
     const yaw = this.yaw[k];
     const c = Math.cos(yaw) * sc;
     const s = Math.sin(yaw) * sc;
-    const o = k * 16;
+    const o = (k - this.groups[gi].first) * 16;
     arr[o] = c;
     arr[o + 1] = 0;
     arr[o + 2] = -s;
@@ -322,7 +335,7 @@ export class HordeSystem {
       const z = g.bz[i] + g.dirZ * g.dist;
       this.writeOne(id, x, g.y0[i] + (g.y1[i] - g.y0[i]) * k, z);
     }
-    this.mesh.instanceMatrix.needsUpdate = true;
+    g.mesh.instanceMatrix.needsUpdate = true;
     this.torches.instanceMatrix.needsUpdate = true;
   }
 
@@ -358,6 +371,8 @@ export class HordeSystem {
   rout(speed = 6.5, fallFrac = 0.35): void {
     if (this.routed) return;
     this.routed = true;
+    // the routed figures run far outside their march spheres: stop culling
+    for (const m of this.meshes) m.frustumCulled = false;
     this.fleeSpeed = speed;
     this.thin(fallFrac);
     for (const g of this.groups) {
@@ -400,7 +415,7 @@ export class HordeSystem {
           if (this.state[id] !== 0) continue;
           this.writeOne(id, g.bx[i] + g.dirX * g.dist, g.y0[i], g.bz[i] + g.dirZ * g.dist);
         }
-        this.mesh.instanceMatrix.needsUpdate = true;
+        g.mesh.instanceMatrix.needsUpdate = true;
         this.torches.instanceMatrix.needsUpdate = true;
       }
     }
@@ -410,7 +425,6 @@ export class HordeSystem {
   }
 
   private updateDying(dt: number): void {
-    const arr = this.mesh.instanceMatrix.array as Float32Array;
     let left = 0;
     for (let k = 0; k < this.total; k++) {
       if (this.state[k] !== 1) continue;
@@ -420,6 +434,9 @@ export class HordeSystem {
         left++;
         continue;
       }
+      const gi = this.gOf[k];
+      const arr = this.meshes[gi].instanceMatrix.array as Float32Array;
+      const lo = (k - this.groups[gi].first) * 16;
       const tilt = Math.min(1, t / 0.55);
       const ang = tilt * tilt * 1.5;
       const sc = this.scl[k] * (t > 5 ? Math.max(0, 1 - (t - 5) / 1.2) : 1);
@@ -428,7 +445,7 @@ export class HordeSystem {
       this.tmpV.set(this.cur[k * 3], this.cur[k * 3 + 1] - tilt * 0.12, this.cur[k * 3 + 2]);
       this.tmpS.set(sc, sc, sc);
       this.tmpM.compose(this.tmpV, this.tmpQ, this.tmpS);
-      this.tmpM.toArray(arr, k * 16);
+      this.tmpM.toArray(arr, lo);
       const ti = this.torchOf[k];
       if (ti >= 0) {
         const ta = this.torches.instanceMatrix.array as Float32Array;
@@ -442,10 +459,10 @@ export class HordeSystem {
         this.dying--;
         const ta = this.torches.instanceMatrix.array as Float32Array;
         if (ti >= 0) ta[ti * 16] = ta[ti * 16 + 5] = ta[ti * 16 + 10] = 0;
-        arr.fill(0, k * 16, k * 16 + 12);
+        arr.fill(0, lo, lo + 12);
       } else left++;
     }
-    this.mesh.instanceMatrix.needsUpdate = true;
+    for (const m of this.meshes) m.instanceMatrix.needsUpdate = true;
     this.torches.instanceMatrix.needsUpdate = true;
     this.dying = left;
   }

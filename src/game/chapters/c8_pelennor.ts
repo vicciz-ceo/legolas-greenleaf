@@ -49,13 +49,30 @@ export const chapter: ChapterDef = {
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
 
-    // the beasts are meshed in the kit worker pool while the loading screen is up
-    await Promise.all([premeshMumak('hero'), premeshMumak('far')]);
-    // the preset, with the battlefield haze thinned a little so the hosts and the herd read at range
-    level.setEnvironment({ ...ENVIRONMENTS.pelennor, fog: { color: 0xc8a68c, density: 0.0027 } });
+    // the beasts are meshed in the kit worker pool while the main thread builds the field
+    const premesh = Promise.all([premeshMumak('hero'), premeshMumak('far')]);
+    // the preset, with the haze thinned so the hosts and the herd read at range, and cooled toward
+    // the film's grey-green smoke-hung morning (the stock haze turns the whole field sepia backlit)
+    const env = ENVIRONMENTS.pelennor;
+    const tuned = {
+      ...env,
+      fog: { color: 0xa69e8e, density: 0.0026 },
+      hemiGround: 0x3e3a2e,
+      // the sun sits low in the east, straight down the field: less veiling glare across the fight
+      mist: 0.22,
+      shafts: 0.22,
+      bloom: 0.34,
+      grade: { ...env.grade!, gain: [1.03, 1.0, 0.95] as [number, number, number], saturation: 1.02 },
+    };
+    level.setEnvironment(tuned);
     const world = buildPelennor(level);
     const ground = world.ground;
+    await premesh;
     const herd = HERD.map((h, i) => new FarMumak(level, loopPath(h.cx, h.cz, h.rx, h.rz), h.speed, h.phase, 11 + i, ground));
+    // both hero beasts are built now, while the loading screen is still up and the workers mesh the
+    // cast; start() only mans their howdahs (crew humanoids are preload cache hits by then)
+    const m1Pre = new MumakActor({ level, name: 'Mûmak', seed: 1, ground, crew: false });
+    const m2Pre = new MumakActor({ level, name: 'Mûmak', seed: 2, ground, crew: false });
     level.onUpdate((dt) => {
       for (const f of herd) f.update(dt);
     });
@@ -63,9 +80,12 @@ export const chapter: ChapterDef = {
     const loop1 = loopPath();
     const entry2 = charge2Entry();
     const loop2 = charge2Loop();
+    /** cp0: where the trample path crosses the fight */
+    const sFight = trample.nearest(L.fight.x, L.fight.z).s;
+    const tramplePassed = (m: MumakActor) => m.legIndex > 0 || m.s > sFight + 28;
 
     // ── script state, read by botHint() ──
-    type Beat = 'intro' | 'fight' | 'girths' | 'rope' | 'climb' | 'deck' | 'ropes' | 'neck' | 'skull' | 'fall' | 'charge' | 'outro';
+    type Beat = 'intro' | 'fight' | 'trample' | 'girths' | 'rope' | 'climb' | 'deck' | 'ropes' | 'neck' | 'skull' | 'fall' | 'charge' | 'outro';
     let beat: Beat = 'intro';
     let m1: MumakActor | null = null;
     let m2: MumakActor | null = null;
@@ -81,8 +101,9 @@ export const chapter: ChapterDef = {
     const infantry = (c: Combatant) => !(c instanceof WeakPoint) && !(c instanceof CrewMember);
 
     function spawnAllies(at: THREE.Vector3): void {
-      gimli = level.spawnAlly({ kind: 'gimli', rivalry: true, anchor: 'player' }, G(V(at.x - 2.5, 0, at.z + 2)), EAST);
-      aragorn = level.spawnAlly({ kind: 'aragorn', name: 'Aragorn', anchor: 'player' }, G(V(at.x - 2, 0, at.z - 2.5)), EAST);
+      // ahead of Legolas and to the sides: never between him and the follow camera
+      gimli = level.spawnAlly({ kind: 'gimli', rivalry: true, anchor: 'player' }, G(V(at.x + 2.5, 0, at.z + 3.5)), EAST);
+      aragorn = level.spawnAlly({ kind: 'aragorn', name: 'Aragorn', anchor: 'player' }, G(V(at.x + 3, 0, at.z - 4)), EAST);
       ctx.rivalry.autoGimli = true;
       for (const p of L.riders) riders.push(level.spawnAlly({ kind: 'rohirrim', name: 'Rider of Rohan', anchor: p.clone() }, G(p), EAST));
     }
@@ -90,8 +111,10 @@ export const chapter: ChapterDef = {
       if (gimli) gimli.anchor = p === 'player' ? 'player' : p.clone();
       if (aragorn) aragorn.anchor = p === 'player' ? 'player' : V(p.x + 3, 0, p.z - 2);
     }
-    function makeMumak(seed: number, crew: boolean): MumakActor {
-      const m = new MumakActor({ level, name: 'Mûmak', seed, ground, crew });
+    /** the prebuilt beast for this seed, its howdah manned when `crew` */
+    function makeMumak(seed: 1 | 2, crew: boolean): MumakActor {
+      const m = seed === 1 ? m1Pre : m2Pre;
+      if (crew) m.spawnCrew();
       return m;
     }
     /** infantry nearby scatter from the beast (keeps the climb about the climb) */
@@ -155,14 +178,16 @@ export const chapter: ChapterDef = {
         until: 2,
         timeout: 70,
       });
-      // the trample: a mûmak comes through the fight from the south-east
+      // the trample: a mûmak comes straight through the fight from the south-east, crushing
+      // Haradrim and orcs underfoot; the objective holds until it has gone by
       const m = m1!;
       m.halted = false;
       m.cruise = 4.2;
+      beat = 'trample';
       ctx.hud.toast('A mûmak! Keep clear of its feet!', 'warning');
       level.objective('A mûmak tramples the field: stay out of its path!');
       void level.say('Aragorn', 'Mûmak! Clear the way!', 2.4);
-      await level.wave({
+      const wave2 = level.wave({
         groups: [
           { spec: { archetype: 'orc_archer', behavior: 'hold' }, count: 3, at: L.waveSE, spread: 3 },
           { spec: { archetype: 'haradrim' }, count: 5, at: L.waveE, spread: 4 },
@@ -171,7 +196,11 @@ export const chapter: ChapterDef = {
         until: 2,
         timeout: 80,
       });
+      await level.waitUntil(() => tramplePassed(m), 70);
+      beat = 'fight';
+      void level.say('Gimli', 'Ha! It missed us. Mostly.', 2.2);
       level.objective('Drive back the Haradrim');
+      await wave2;
       await level.wave({
         groups: [
           { spec: { archetype: 'haradrim' }, count: 4, at: L.waveNE, spread: 4 },
@@ -243,7 +272,7 @@ export const chapter: ChapterDef = {
       m.mounted = true;
       for (const c of m.crew) c.targetable = true;
       let top = false;
-      const climb = climbMover(m, () => (top = true));
+      const climb = climbMover(m, () => (top = true), () => ctx.flags.bot === '1');
       player.mover = climb;
       ctx.audio.play('chain_rattle', { pos: player.position, volume: 0.6, pitch: 0.6 });
       level.objective('Climb! Move left and right to dodge the arrows');
@@ -398,12 +427,13 @@ export const chapter: ChapterDef = {
       let reinforcing = true;
       void (async () => {
         const waves = [
-          { groups: [{ spec: { archetype: 'haradrim' as const }, count: 5, at: L.waveE, spread: 5 }, { spec: { archetype: 'orc_archer' as const, behavior: 'hold' as const }, count: 2, at: L.waveSE, spread: 3 }], stagger: 2, timeout: 60, until: 2 },
-          { groups: [{ spec: { archetype: 'haradrim' as const }, count: 6, at: L.waveSE, spread: 5 }, { spec: { archetype: 'orc' as const }, count: 3, at: L.waveNE, spread: 4 }], stagger: 2, timeout: 60, until: 2 },
+          { groups: [{ spec: { archetype: 'haradrim' as const }, count: 4, at: L.waveE, spread: 5 }, { spec: { archetype: 'orc_archer' as const, behavior: 'hold' as const }, count: 2, at: L.waveSE, spread: 3 }], stagger: 2, timeout: 60, until: 2 },
+          { groups: [{ spec: { archetype: 'haradrim' as const }, count: 5, at: L.waveSE, spread: 5 }, { spec: { archetype: 'orc' as const }, count: 2, at: L.waveNE, spread: 4 }], stagger: 2, timeout: 60, until: 2 },
         ];
         // a handful of companies, not an endless stream: the beast is the fight
         for (let k = 0; k < 5 && reinforcing; ) {
-          if (level.enemiesAlive(infantry) < (m.skull.armed ? 3 : 5)) {
+          // (at most ~10 infantry at once: with the beast and its crew that is the triangle budget)
+          if (level.enemiesAlive(infantry) < (m.skull.armed ? 3 : 4)) {
             await level.wave(waves[k++ % waves.length]);
             await level.wait(8);
           } else await level.wait(3);
@@ -439,6 +469,16 @@ export const chapter: ChapterDef = {
       reinforcing = false;
     }
 
+    /** counts are spoken: "forty-two", not "42" */
+    function spell(n: number): string {
+      const ones = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+      const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+      if (n < 0 || n > 99) return String(n);
+      if (n < 20) return ones[n];
+      return tens[Math.floor(n / 10)] + (n % 10 ? `-${ones[n % 10]}` : '');
+    }
+    const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
+
     async function outro(): Promise<void> {
       beat = 'outro';
       level.objective(null);
@@ -463,19 +503,36 @@ export const chapter: ChapterDef = {
       }
       level.music?.('epic');
       if (!quick) {
+        // the charge, from in front of it: the riders of Rohan pour toward the camera across the
+        // field with the White City and Mindolluin behind them, then the camera turns with them
+        // onto the breaking host of Mordor
         level.cinematic(true);
-        level.cameraShot({ position: V(-20, 6, -60), lookAt: V(60, 4, -150), fov: 50, blend: 0 });
+        level.cameraShot({ position: V(150, ground(150, -128) + 3.2, -128), lookAt: V(-260, 26, -146), fov: 38, blend: 0 });
         await level.wait(0.3);
-        level.cameraShot({ position: V(10, 4, -70), lookAt: V(120, 4, -140), fov: 46, blend: 4 });
+        level.cameraShot({ position: V(132, ground(132, -112) + 4.2, -112), lookAt: V(-120, 14, -150), fov: 44, blend: 5.5 });
       }
-      await level.wait(1.5);
+      await level.wait(2.2);
       cr.orcs.thin(0.6);
       cr.harad.thin(0.6);
+      cr.orcsNorth.thin(0.6);
+      // then turn with the riders as they crash into the breaking host of Mordor (clear of the burnt
+      // tower at (120, -90))
+      if (!quick) level.cameraShot({ position: V(96, ground(96, -100) + 6, -100), lookAt: V(190, ground(190, -160) + 3, -160), fov: 48, blend: 4 });
       await level.say('Aragorn', 'The field is won.', 2.2);
       const g = ctx.rivalry.gimli;
       const l = ctx.rivalry.legolas;
-      await level.say('Gimli', `${g}! Beat that, laddie.`, 2.4);
-      await level.say('Legolas', `${l}. And two of them were mûmakil.`, 2.6);
+      // the first beast is Legolas's only when the mûmak checkpoint was played in this run
+      const beasts = from0 <= 1 ? 'two of them were mûmakil' : 'one of them was a mûmak';
+      if (g > l) {
+        await level.say('Gimli', `${cap(spell(g))}! Beat that, laddie.`, 2.4);
+        await level.say('Legolas', `${cap(spell(l))}. But ${beasts}.`, 2.6);
+      } else if (g === l) {
+        await level.say('Gimli', `${cap(spell(g))}, and you'll not be counting those great beasts as more than one apiece.`, 3.0);
+        await level.say('Legolas', `${cap(spell(l))}, then. Level, Master Dwarf.`, 2.4);
+      } else {
+        await level.say('Gimli', `${cap(spell(g))}... and those great beasts still only count as one apiece!`, 3.0);
+        await level.say('Legolas', `${cap(spell(l))}. Even so.`, 2.0);
+      }
       if (!quick) {
         level.cameraShot(null);
         await level.wait(0.4);
@@ -484,7 +541,9 @@ export const chapter: ChapterDef = {
       level.complete();
     }
 
+    let from0 = 0;
     async function run(from: number): Promise<void> {
+      from0 = from;
       if (from <= 0) {
         await intro();
         await theField();
@@ -506,7 +565,7 @@ export const chapter: ChapterDef = {
         spawnAllies(at);
         if (c === 0) {
           m1 = makeMumak(1, true);
-          m1.setRoute([{ path: trample, loop: false }, { path: loop1, loop: true }], 40);
+          m1.setRoute([{ path: trample, loop: false }, { path: loop1, loop: true }], 70);
           m1.halted = true;
           m1.register();
         } else if (c === 1) {
@@ -528,11 +587,29 @@ export const chapter: ChapterDef = {
         void run(c);
       },
       update(): void {},
+      dispose(): void {
+        // a prebuilt beast this run never brought onto the field is not the level's to dispose
+        for (const m of [m1Pre, m2Pre]) if (!m.registered) m.dispose();
+      },
       botHint() {
         const m = m1;
         switch (beat) {
           case 'fight':
             return { moveTo: L.fight };
+          case 'trample': {
+            // dodge sideways out of the beast's path, as a player would
+            if (m && !m.halted) {
+              tmp.copy(player.position);
+              m.object.worldToLocal(tmp);
+              if (tmp.z > -14 && tmp.z < 55 && Math.abs(tmp.x) < 18) {
+                hint.set(tmp.x >= 0 ? 24 : -24, 0, clamp(tmp.z, -6, 30));
+                m.object.localToWorld(hint);
+                hint.y = ground(hint.x, hint.z);
+                return { moveTo: hint };
+              }
+            }
+            return { moveTo: L.fight };
+          }
           case 'girths': {
             if (!m) return null;
             hint.set(24, 0, -1.2).applyMatrix4(m.object.matrixWorld);

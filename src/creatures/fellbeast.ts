@@ -263,7 +263,7 @@ export function createFellBeast(seed = 0, scale = 1, rider = true): FellBeastMod
   const skinBare = surface('skin_troll', { rough: 0.7, pat: { wrinkles: 1.4, pores: 0.8 } });
   const c = buildCreature({
     key,
-    seed,
+    seed: 0, // the sculpt does not vary by seed: every beast shares one geometry (and one meshing)
     rig,
     sculpt: (sc) => {
       sc.with({ mat: hide, color: 0x1d1d1b, color2: 0x2e2c28, colorNoise: 0.5, colorFreq: 3 / s, noise: { amp: 0.03 * s, freq: 7 / s, type: 'ridged' } }, () => {

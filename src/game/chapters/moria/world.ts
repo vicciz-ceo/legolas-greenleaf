@@ -8,11 +8,12 @@ import * as THREE from 'three';
 import type { FxHandle, LevelAPI } from '../../../core/types';
 import { Rng } from '../../../core/rng';
 import {
-  addColliders, banner, boulderField, brazier, chain, chamberOfMazarbul, crate, dwarvenHall, lightShaft, mat, plain,
+  addColliders, banner, boulderField, brazier, chain, chamberOfMazarbul, crate, dwarvenHall, mat, plain,
   skeleton, stoneBlock, torch, weaponRack, type Built, type ColliderDesc,
 } from '../../../world';
 import { MeshKit } from '../../../world/util';
-import { HALL, HALL_CX, HALL_D, HALL_HZ, HALL_W, HALL_X0, HALL_X1, L, PILLARS } from './layout';
+import { dustMotes, glowDisc, runeTexture, tickLook, volumeShaft, weatherStone } from './look';
+import { CH, HALL, HALL_CX, HALL_D, HALL_HZ, HALL_W, HALL_X0, HALL_X1, L, PILLARS } from './layout';
 
 export interface MoriaWorld {
   /** 0..1: how awake the Balrog's glow beyond the east corridor is */
@@ -77,6 +78,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   const rng = new Rng(0x6d6f72);
   const fires: FxHandle[] = [];
   const root = level.root;
+  let chasmDepth: THREE.Mesh | null = null;
+  const curtains: THREE.Mesh[] = [];
 
   // ── the Chamber of Mazarbul ─────────────────────────────────────────────
   const chamber = chamberOfMazarbul({ seed: 3 });
@@ -132,6 +135,17 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   wall(HALL_X1 + 2, HALL_X1 + CL, 16, 18, -GW - 2, GW + 2, wallM, false);
   // an invisible stop before the edge
   cols.push({ kind: 'box', center: [HALL_X1 + CL - 1, 3, 0], half: [0.6, 6, GW], opts: { material: 'stone', tag: 'chasm_stop', walkable: false } });
+  // the chasm cavern: a roof and side walls continue the corridor past the lip. They cast shadows, so the
+  // sun's volumetric shafts do not light the haze beyond the end (it would show as a flat grey-blue panel),
+  // and a black far wall stands behind the Balrog's glow
+  {
+    const ex0 = HALL_X1 + CL;
+    const far = 56;
+    wall(ex0, ex0 + far, 44, 48, -22, 22, wallM, false);
+    wall(ex0, ex0 + far, -34, 44, -22, -20, wallM, false);
+    wall(ex0, ex0 + far, -34, 44, 20, 22, wallM, false);
+    wall(ex0 + far - 1, ex0 + far, -34, 44, -22, 22, plain(0x040302, { roughness: 1, key: 'chasmFar' }), false);
+  }
   // low carved parapet along the corridor sides (lit by the glow)
   const built = kit.build({ name: 'moria_shell' });
   root.add(built);
@@ -162,16 +176,20 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
 
   // ── the hole in the chamber ceiling (goblins drop through it) ────────────
   {
-    const holeM = new THREE.MeshBasicMaterial({ color: 0x1c2638, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
+    const holeM = new THREE.MeshBasicMaterial({ color: 0x03050a, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
     const hole = new THREE.Mesh(new THREE.CircleGeometry(1.35, 14), holeM);
     hole.rotation.x = Math.PI / 2;
     hole.position.set(L.ceilingHole.x, 8.97, L.ceilingHole.z - 0.9);
     hole.scale.set(1, 1.15, 1);
     root.add(hole);
     // a faint cold light falls through it: the hole reads as an opening to the dark above
-    const hs = lightShaft(8.5, 1.1, 2.6, 0x9db6e0, 0.1);
+    const hs = volumeShaft(8.5, 1.0, 2.5, 0x9db6e0, 0.34);
     hs.position.set(L.ceilingHole.x, 8.95, L.ceilingHole.z - 0.9);
     root.add(hs);
+    // the opening itself is a faint pale glow in the dark, not a flat disc
+    const hg = glowDisc(2.0, 0x7f93b8, 0.32, 'down');
+    hg.position.set(L.ceilingHole.x, 8.93, L.ceilingHole.z - 0.9);
+    root.add(hg);
     const k = new MeshKit();
     const rm = mat('dwarven_stone', { key: 'rubbleHole', rgb: [0.75, 0.75, 0.8] });
     for (let i = 0; i < 11; i++) {
@@ -196,12 +214,17 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     fires.push(h);
     return h;
   };
-  const wallTorch = (x: number, y: number, z: number, yaw: number, scale = 0.5) => {
+  /**
+   * `lit` torches carry a fire emitter (a point light from the pool, flame sprites and a smoke plume);
+   * the rest burn as the builder's animated flame mesh alone: no smoke cotton, and nothing is lost in the
+   * dark far from the player, where the pool lights would not be assigned anyway.
+   */
+  const wallTorch = (x: number, y: number, z: number, yaw: number, scale = 0.5, lit = false) => {
     const t = torch({ lit: true, wall: true, length: 0.9 }) as Lit;
     place(t, x, y, z, yaw);
     t.object.updateMatrixWorld(true);
     // the flame anchor of a wall torch is already positioned out from the wall by the builder
-    lightFlame(t, scale);
+    if (lit) lightFlame(t, scale);
   };
   const stand = (x: number, z: number, scale: number, fire: number) => {
     const b = brazier({ lit: true, scale }) as Lit;
@@ -254,6 +277,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   for (let x = 24; x < HALL_X1 - 6; x += 22) {
     wallTorch(x, 3.4, -HALL_HZ + 0.1, 0, 0.7);
     wallTorch(x + 11, 3.4, HALL_HZ - 0.1, Math.PI, 0.7);
+    // a second, brighter pair every other bay: these two carry the real fires
+    if (((x - 24) / 22) % 2 === 0) wallTorch(x + 5.5, 3.4, -HALL_HZ + 0.1, 0, 0.8, true);
   }
   // banners hanging among the pillars
   for (const [x, z] of [[19, -12], [47, 13], [75, -14], [103, 12]] as [number, number][]) {
@@ -281,31 +306,150 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     const poses = ['lying', 'sprawled', 'slumped', 'sitting'] as const;
     place(skeleton(poses[i % 4], 20 + i, 0.85), x, 0, z, rng.float() * 6);
   }
-  // chains hanging out of the dark above the aisle
-  for (const [x, z, len] of [[44, -3, 14], [72, 4, 18], [97, -5, 12]] as [number, number, number][]) {
-    const c = chain(len, { link: 0.24, thick: 0.04 });
+  // heavy chains hanging out of the dark above the aisle, thick enough to read in the haze
+  for (const [x, z, len] of [[40, -4.5, 15], [54, 4.5, 17], [68, -4, 14], [82, 4, 18], [96, -4.5, 13], [108, 4.5, 16]] as [number, number, number][]) {
+    const c = chain(len, { link: 0.5, thick: 0.085 });
     c.object.position.set(x, HALL.height + 1, z);
     root.add(c.object);
   }
-  // shafts of cold light through cracks in the roof
-  for (const [x, z, h] of [[33, 11, 26.5], [54, -12, 26.5], [89, 10, 26.5]] as [number, number, number][]) {
-    const s = lightShaft(h, 1.2, 5.2, 0xa9c2ea, 0.11);
-    s.position.set(x, h, z);
-    root.add(s);
+  // shafts of cold light through cracks in the roof, close enough to the aisle to be walked through
+  const shaftSpots: [number, number][] = [[33, 6.5], [47, -6], [61, 6], [75, -6.5], [89, 6], [103, -6]];
+  for (const [x, z] of shaftSpots) {
+    const h = 26.5;
+    const sh = volumeShaft(h, 1.3, 5.0, 0xb4cbf0, 0.5);
+    sh.position.set(x, h, z);
+    root.add(sh);
+    const pool = glowDisc(4.4, 0xaec4e8, 0.34, 'up');
+    pool.position.set(x, 0.05, z);
+    root.add(pool);
+    root.add(dustMotes(new THREE.Vector3(x, 0.5, z), 3.6, 11, 70, 0xdde8ff, 0.055));
+  }
+  // dust in the firelight along the aisle
+  root.add(dustMotes(new THREE.Vector3(HALL_CX, 0.5, 0), 40, 7, 240, 0xd8c8a8, 0.045));
+
+  // ── Balin's tomb: carved rune panel (the stock rune bars are dashes) and the lid's inscription ──
+  {
+    const k = new MeshKit();
+    const pm = mat('marble', { key: 'tombPanel', rgb: [0.95, 0.93, 0.9] });
+    // a proud panel over the front, a slab over the lid (covering the stock black dashes)
+    k.box(pm, [3.02, 0.82, 0.05], [CH.tomb.x, 1.3, CH.tomb.z + 0.745], 0, { tile: 1.5 });
+    k.box(pm, [3.0, 0.045, 1.32], [CH.tomb.x, 2.085, CH.tomb.z], 0, { tile: 1.5 });
+    root.add(k.build({ name: 'tomb_panels' }));
+    const frontTex = runeTexture(768, 192, 14, 3, 77);
+    const front = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.8, 0.7),
+      new THREE.MeshStandardMaterial({ map: frontTex, transparent: true, roughness: 0.9, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+    );
+    front.position.set(CH.tomb.x, 1.3, CH.tomb.z + 0.775);
+    root.add(front);
+    const lidTex = runeTexture(768, 288, 12, 4, 211);
+    const lid = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.0, 0.78),
+      new THREE.MeshStandardMaterial({ map: lidTex, transparent: true, roughness: 0.9, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }),
+    );
+    lid.rotation.x = -Math.PI / 2;
+    lid.position.set(CH.tomb.x - 0.45, 2.112, CH.tomb.z);
+    root.add(lid);
+    // the shaft's light lands on the lid
+    const spot = glowDisc(1.9, 0xe6eeff, 0.34, 'up');
+    spot.position.set(CH.tomb.x, 2.125, CH.tomb.z - 0.5);
+    spot.scale.set(1.1, 1.0, 0.8);
+    root.add(spot);
+    // a stronger shaft than the builder's faint cone: same pose, dusty streaks
+    chamber.shaft.visible = false;
+    const sh = volumeShaft(8.8, 0.62, 2.2, 0xd4e4ff, 0.7);
+    sh.position.copy(chamber.shaft.position);
+    sh.rotation.copy(chamber.shaft.rotation);
+    root.add(sh);
+    root.add(dustMotes(new THREE.Vector3(0, 0.6, -4.6), 2.2, 7.4, 90, 0xeaf0ff, 0.05));
+  }
+
+  // ── chamber ceiling: coffering ribs and a cornice, so it is not a flat black slab ──
+  {
+    const k = new MeshKit();
+    const cm = mat('dwarven_stone', { key: 'chamberRib', rgb: [1.0, 1.0, 1.05] });
+    const y = 8.55;
+    for (const x of [-5.3, -1.8, 1.8, 5.3]) k.box(cm, [0.7, 0.6, 16], [x, y, 0], 0, { tile: 1.5 });
+    for (const z of [-5.3, -1.8, 1.8, 5.3]) k.box(cm, [16, 0.6, 0.7], [0, y + 0.02, z], 0, { tile: 1.5 });
+    for (const s of [-1, 1]) {
+      k.box(trimM, [16.2, 0.55, 0.45], [0, 8.7, s * 7.78], 0, { tile: 1.2 });
+      k.box(trimM, [0.45, 0.55, 16.2], [s * 7.78, 8.7, 0], 0, { tile: 1.2 });
+    }
+    root.add(k.build({ name: 'chamber_ribs' }));
   }
 
   // ── the Balrog's glow beyond the corridor ───────────────────────────────
-  const glowA = glowPlane(0xff3a08, 150, 90, 0);
-  glowA.position.set(HALL_X1 + CL + 46, 33, 0);
+  const glowA = glowPlane(0xff3a08, 150, 60, 0);
+  glowA.position.set(HALL_X1 + CL + 46, 18, 0);
   glowA.rotation.y = -Math.PI / 2;
   root.add(glowA);
   const glowB = glowPlane(0xff6a18, 60, 34, 0);
   glowB.position.set(HALL_X1 + CL + 24, 9, 0);
   glowB.rotation.y = -Math.PI / 2;
   root.add(glowB);
+  // a roof over the great hall: black rock high above the pillars (otherwise the open top shows the sky colour as a lit panel)
+  {
+    const roof = new THREE.Mesh(new THREE.PlaneGeometry(HALL_X1 + 2 - 8, HALL_HZ * 2 + 4), new THREE.MeshBasicMaterial({ color: 0x030304 }));
+    roof.rotation.x = Math.PI / 2;
+    roof.position.set((HALL_X1 + 2 + 8) / 2, HALL.height + 1.2, 0);
+    roof.castShadow = false;
+    roof.userData.noAO = true;
+    root.add(roof);
+  }
+  // the chasm itself: a broken stone lip, a wall of glowing depth below it, and tongues of flame
+  {
+    const k = new MeshKit();
+    const lipM = mat('rock', { key: 'chasmLip', rgb: [0.45, 0.4, 0.38] });
+    const ex = HALL_X1 + CL;
+    for (let i = 0; i < 9; i++) {
+      const z = -GW + 0.6 + i * ((GW * 2 - 1.2) / 8);
+      const w = 0.9 + rng.float() * 1.1;
+      const dx = rng.float() * 1.2;
+      k.box(lipM, [w + 0.8, 0.55 + rng.float() * 0.5, 0.9 + rng.float() * 0.7], [ex - 0.6 + dx * 0.5, -0.2 - rng.float() * 0.2, z], rng.float() * 0.6, { tile: 1.2 }, [rng.float() * 0.25, rng.float() * 0.25]);
+    }
+    root.add(k.build({ name: 'chasm_lip' }));
+    const depth = new THREE.Mesh(
+      new THREE.PlaneGeometry(GW * 2 + 6, 40),
+      new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        side: THREE.DoubleSide,
+        fog: false,
+        uniforms: { uI: { value: 0 } },
+        vertexShader: /* glsl */ `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+        fragmentShader: /* glsl */ `varying vec2 vUv; uniform float uI;
+          void main(){
+            float y = vUv.y;                                  // 1 at the lip, 0 far below
+            float g = pow(y, 3.2);
+            vec3 c = mix(vec3(0.5, 0.06, 0.01), vec3(1.0, 0.5, 0.12), pow(y, 6.0));
+            float side = 1.0 - smoothstep(0.55, 1.0, abs(vUv.x - 0.5) * 2.0);
+            float a = g * side * uI;
+            gl_FragColor = vec4(c * a, a);
+            #include <tonemapping_fragment>
+            #include <colorspace_fragment>
+          }`,
+      }),
+    );
+    depth.rotation.y = -Math.PI / 2;
+    depth.position.set(ex + 0.3, -20, 0);
+    depth.userData.noAO = true;
+    depth.renderOrder = 3;
+    depth.frustumCulled = false;
+    root.add(depth);
+    chasmDepth = depth;
+    // curtains of fire rising out of the dark (the same noisy flame shader as the far glow, closer and lower)
+    for (const [dx, w, h, dz, col] of [[3.5, 12, 18, -3, 0xff4a0a], [6.5, 10, 22, 4, 0xff6a14], [10, 15, 16, 0, 0xff3a06], [13.5, 9, 20, -5, 0xff7a1c], [8, 8, 14, 6, 0xff5a10]] as [number, number, number, number, number][]) {
+      const c = glowPlane(col, w, h, 0);
+      c.position.set(ex + dx, -7 + h / 2, dz);
+      c.rotation.y = -Math.PI / 2;
+      root.add(c);
+      curtains.push(c);
+    }
+  }
   // distant fires in the chasm (their point lights tint the corridor red when they are the nearest)
   const chasmFires: FxHandle[] = [];
-  for (const [dx, y, z, s] of [[10, -3, -6, 4.0], [14, -4, 7, 5.0], [22, -5, 0, 7.0], [7, -2, 2, 3.0]] as [number, number, number, number][]) {
+  for (const [dx, y, z, s] of [[8, -1, -5, 1.8], [12, -2, 5, 2.2], [18, -2, 0, 2.6]] as [number, number, number, number][]) {
     const f = fx.fire(new THREE.Vector3(HALL_X1 + CL + dx, y, z), s);
     f.setIntensity(0);
     chasmFires.push(f);
@@ -315,16 +459,22 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   let t = 0;
   const stopTick = level.onUpdate((dt) => {
     t += dt;
+    tickLook(dt);
     (glowA.material as THREE.ShaderMaterial).uniforms.uT.value = t;
     (glowB.material as THREE.ShaderMaterial).uniforms.uT.value = t;
+    for (const c of curtains) (c.material as THREE.ShaderMaterial).uniforms.uT.value = t;
   });
   const setBalrog = (v: number) => {
     balrog = v;
     (glowA.material as THREE.ShaderMaterial).uniforms.uI.value = 0.08 + v * 0.3;
     (glowB.material as THREE.ShaderMaterial).uniforms.uI.value = 0.03 + v * 0.26;
-    for (const f of chasmFires) f.setIntensity(0.3 + v * 0.9);
+    for (const f of chasmFires) f.setIntensity(v * 1.1);
+    if (chasmDepth) (chasmDepth.material as THREE.ShaderMaterial).uniforms.uI.value = 0.25 + v * 0.9;
+    for (const c of curtains) (c.material as THREE.ShaderMaterial).uniforms.uI.value = v < 0.02 ? 0 : 0.18 + v * 0.55;
   };
   setBalrog(0);
+  // finally: re-grade every dwarven stone material of the set (walls, floors, pillars, ledge, ribs)
+  if (level.ctx.flags.noweather !== '1') weatherStone([root]);
   void balrog;
   void _v;
 

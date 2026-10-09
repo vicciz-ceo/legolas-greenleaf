@@ -29,6 +29,8 @@ export interface WaterGate {
   walkRight: THREE.Vector3;
   stairTop: THREE.Vector3;
   stairBottom: THREE.Vector3;
+  /** waypoints up the stair axis, a tread or so apart: a walker steered along them cannot wander off the stairs */
+  stairRoute: THREE.Vector3[];
   /** the foot of the stairs: where the bank run begins */
   landing: THREE.Vector3;
   /** gate frame -> world */
@@ -84,8 +86,9 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   const iron = mat('metal_dark', { key: 'lever' });
   const wood = mat('old_wood', { key: 'lever' });
   // low parapet over the opening
-  kit.box(stone, [8.0, 1.1, 0.5], [0, topY + 0.55, 1.75], 0, { tile: 2 });
-  kit.box(trim, [8.2, 0.16, 0.7], [0, topY + 1.16, 1.75], 0, { tile: 2 });
+  // (waist high: arrows fired down at the bank must clear it, and so must the archers' answer)
+  kit.box(stone, [8.0, 0.8, 0.5], [0, topY + 0.4, 1.75], 0, { tile: 2 });
+  kit.box(trim, [8.2, 0.14, 0.7], [0, topY + 0.87, 1.75], 0, { tile: 2 });
   // upstream parapet
   kit.box(stone, [8.0, 1.1, 0.5], [0, topY + 0.55, -1.75], 0, { tile: 2 });
   kit.box(trim, [8.2, 0.16, 0.7], [0, topY + 1.16, -1.75], 0, { tile: 2 });
@@ -97,7 +100,7 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   const geo = kit.build({ name: 'gatehouse-top' });
   level.root.add(geo);
   const topCols: Built['colliders'] = [
-    { kind: 'box', center: [0, topY + 0.55, 1.75], half: [4.0, 0.55, 0.25], opts: { material: 'stone', walkable: false, tag: 'parapet' } },
+    { kind: 'box', center: [0, topY + 0.4, 1.75], half: [4.0, 0.4, 0.25], opts: { material: 'stone', walkable: false, tag: 'parapet' } },
     { kind: 'box', center: [0, topY + 0.55, -1.75], half: [4.0, 0.55, 0.25], opts: { material: 'stone', walkable: false, tag: 'parapet' } },
     { kind: 'box', center: [LX, topY + 0.575, -0.95], half: [0.8, 0.575, 0.5], opts: { material: 'stone', walkable: false, tag: 'lever_house' } },
   ];
@@ -153,7 +156,7 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   // elven banners on the downstream parapet
   for (const u of [-2.6, 2.6]) {
     const b = banner(0x2f5a34, 'none', { height: 2.8 });
-    const p = at(u, 1.75, topY + 1.2);
+    const p = at(u, 1.75, topY + 0.9);
     b.object.position.copy(p);
     b.object.rotation.y = yaw + Math.PI;
     level.root.add(b.object);
@@ -177,9 +180,9 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   outlet.setOpen(1);
   level.root.add(outlet.object);
   // dark interior behind the arch so the opening reads as a hall
-  const dark = new THREE.Mesh(new THREE.PlaneGeometry(13, 10), new THREE.MeshBasicMaterial({ color: 0x020403 }));
+  const dark = new THREE.Mesh(new THREE.PlaneGeometry(13, 10), new THREE.MeshBasicMaterial({ color: 0x020403, side: THREE.DoubleSide }));
+  // the hall behind the arch: the river runs out of it toward +v, so the plane sits upstream (-v) of the opening
   dark.position.set(0, 4.8, -3.0);
-  dark.rotation.y = Math.PI;
   const oframe = new THREE.Group();
   oframe.position.set(co.x, yo, co.z);
   oframe.rotation.y = yawO;
@@ -197,6 +200,16 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   };
 
   const leverStand = at(LX, 0.9, topY);
+  // dense waypoints along the stair axis (the treads rise linearly; each point sits on its tread)
+  const stairTopP = at(stairX, 2.6, topY);
+  const stairRoute: THREE.Vector3[] = [];
+  {
+    const n = 8;
+    for (let i = 0; i <= n; i++) {
+      const t = i / n;
+      stairRoute.push(new THREE.Vector3(bx.x + (stairTopP.x - bx.x) * t, bx.y + (topY - bx.y) * t, bx.z + (stairTopP.z - bx.z) * t));
+    }
+  }
   const out: WaterGate = {
     setOpen,
     setLever,
@@ -210,6 +223,7 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
     walkRight: at(-5.4, 0.4, topY),
     stairTop: at(stairX, 2.6, topY),
     stairBottom: bx.clone(),
+    stairRoute,
     landing: at(stairX - 2.2, bottomV + 3.0, 0),
     at,
     yaw,

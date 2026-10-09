@@ -21,8 +21,8 @@ import * as THREE from 'three';
 import type { DamageInfo, Enemy, Humanoid, LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
 import type { BaseCombatant } from '../../../actors/combatant';
 import { createHumanoid } from '../../../creatures/humanoid';
-import { clamp, dirFromYaw, smoothstep, yawOf } from '../../../core/math';
-import { D, DECKS, PLATFORMS, platformRect } from './layout';
+import { clamp, dirFromYaw, smoothstep } from '../../../core/math';
+import { D, onDeck } from './layout';
 import type { QuayDeck } from './quay';
 
 const _a = new THREE.Vector3();
@@ -52,6 +52,8 @@ export interface BolgBoss {
   readonly phase: 1 | 2;
   /** fires once when phase 2 begins */
   onPhase2: (() => void) | null;
+  /** how often each move has been started (diagnostics) */
+  readonly stats: { combo: number; slam: number; grab: number; grabbed: number; freed: number; charge: number; stun: number };
   /** the grab mover is installed on the player */
   readonly grabbing: boolean;
   /** start a move now (test drivers and scripted moments); ignored while he is busy */
@@ -74,7 +76,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   const { ctx } = level;
   const player = ctx.player;
   const e = level.spawnEnemy(
-    { archetype: 'gundabad', boss: true, name: 'Bolg', hp: o.maxHp, damage: 17, speed: 4.5, weapon: 'mace', scale: 1.3, countsForRivalry: false, seed: 77 },
+    { archetype: 'gundabad', boss: true, name: 'Bolg', hp: o.maxHp, damage: 12, speed: 4.5, weapon: 'mace', scale: 1.3, countsForRivalry: false, seed: 77 },
     pos,
     facing,
   );
@@ -117,6 +119,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   lane.userData.noAO = true;
   level.root.add(ring, disc, lane);
 
+  const stats = { combo: 0, slam: 0, grab: 0, grabbed: 0, freed: 0, charge: 0, stun: 0 };
   const boss: BolgBoss = {
     enemy: e,
     floor: 0,
@@ -130,6 +133,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
       return phase;
     },
     onPhase2: null,
+    stats,
     get grabbing() {
       return grab !== null;
     },
@@ -167,7 +171,6 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   let swung = false;
   let prevAtkPhase: 'none' | 'windup' | 'strike' | 'recover' = 'none';
   let struck = false;
-  let stunMul = 1;
   let hitPlayerThisCharge = false;
   let grab: (PlayerMover & { t: number; breaks: number; ticks: number }) | null = null;
   const impact = new THREE.Vector3();
@@ -175,6 +178,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   const chargeEnd = new THREE.Vector3();
   let chargeLen = 0;
   let chargeBlocked = false;
+  const chargeFrom = new THREE.Vector3();
   let roarT = 0;
 
   const arena = o.arena;
@@ -185,6 +189,9 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   e.takeDamage = (d: DamageInfo) => {
     if (e.alive && d.type !== 'scripted') {
       if (state === 'stunned') d = { ...d, amount: d.amount * 1.5 };
+      // super armour while a move is telegraphed: a dwarf's axe or Tauriel's knife must not cancel
+      // the slam (the stock AI would drop the wind-up on a staggering hit)
+      if (state === 'combo' || state === 'slam' || state === 'grabWind' || state === 'chargeWind' || state === 'charge') d = { ...d, stagger: false, knockback: 0 };
       if (boss.floor > 0) {
         const min = boss.floor * e.maxHp;
         const room = e.hp - min;
@@ -197,7 +204,11 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
     }
     takeDamage(d);
   };
-  void stunMul;
+
+  /** gameplay prompts and toasts only while the player is on his feet (not in the water or in a fist) */
+  function prompt(action: 'jump' | 'melee', text: string): void {
+    if (!player.mover) ctx.hud.setPrompt(action, text);
+  }
 
   function flat(a: THREE.Vector3, b: THREE.Vector3): number {
     return Math.hypot(a.x - b.x, a.z - b.z);
@@ -214,8 +225,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
     disc.position.set(x, D + 0.035, z);
     ring.scale.set(radius, radius, 1);
     disc.scale.set(radius * k, radius * k, 1);
-    (ring.material as THREE.MeshBasicMaterial).opacity = 0.55 + 0.3 * Math.sin(t * 22);
-    (disc.material as THREE.MeshBasicMaterial).opacity = 0.12 + 0.3 * k;
+    (ring.material as THREE.MeshBasicMaterial).opacity = 0.7 + 0.25 * Math.sin(t * 22);
+    (disc.material as THREE.MeshBasicMaterial).opacity = 0.05 + 0.2 * k;
   }
 
   function setLane(on: boolean, k = 0): void {
@@ -243,7 +254,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
 
   // ── the grab ────────────────────────────────────────────────────────────
   function startGrab(): void {
-    const breaksNeeded = 7;
+    const breaksNeeded = 6;
     const g: PlayerMover & { t: number; breaks: number; ticks: number } = {
       t: 0,
       breaks: 0,
@@ -259,13 +270,17 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
       update(dt, p, input) {
         g.t += dt;
         if (input.melee) g.breaks += 1;
-        g.breaks = Math.max(0, g.breaks - dt * 0.9);
+        g.breaks = Math.max(0, g.breaks - dt * 0.6);
         // dangling in his fist, in front of him
         const f = dirFromYaw(sw.facing, _a);
         _b.set(e.position.x + f.x * 1.15, e.position.y + 0.55 + Math.sin(g.t * 9) * 0.04, e.position.z + f.z * 1.15);
         p.velocity.set(0, 0, 0);
         p.position.copy(_b);
         p.facing = sw.facing + Math.PI;
+        // the camera stays on the player's side of the fist, three-quarters on: never inside his body
+        const want = Math.atan2(e.position.x - p.position.x, e.position.z - p.position.z) - 0.55;
+        const dy = Math.atan2(Math.sin(want - p.camera.yaw), Math.cos(want - p.camera.yaw));
+        p.camera.yaw += dy * Math.min(1, dt * 7);
         // the squeeze
         g.ticks += dt;
         if (g.ticks > 0.7) {
@@ -278,6 +293,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
       },
     };
     grab = g;
+    stats.grabbed++;
     state = 'grabbed';
     t = 0;
     ctx.hud.setPrompt('melee', 'Mash to break free!');
@@ -299,6 +315,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
     if (!inArena(_b.x, _b.z, 1.2)) _b.set(e.position.x - f.x * 2.6, D, e.position.z - f.z * 2.6);
     player.teleport(_b, sw.facing + Math.PI);
     if (freed) {
+      stats.freed++;
       // the knife in his wrist: he reels
       ctx.audio.play('knife_hit', { pos: e.position, volume: 1 });
       ctx.fx.blood(_c.copy(e.position).setY(e.position.y + 1.6), f, 'dark', 1.4);
@@ -323,8 +340,9 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
     const r = level.rng();
     if (dist > 6.5 && phase === 2 && r < 0.6) return beginCharge();
     if (dist > 5.4) return; // walk closer first
-    if (dist > 3.6) {
-      return r < 0.55 ? beginSlam() : void 0;
+    if (dist > 4.2) {
+      // too far for the mace but near enough for the slam: sometimes
+      return r < 0.45 ? beginSlam() : void 0;
     }
     if (r < (phase === 1 ? 0.62 : 0.46)) return beginCombo();
     if (r < (phase === 1 ? 0.84 : 0.7)) return beginSlam();
@@ -332,6 +350,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   }
 
   function beginCombo(): void {
+    stats.combo++;
     state = 'combo';
     comboIdx = 0;
     swung = false;
@@ -339,35 +358,43 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   }
 
   function beginSlam(): void {
+    stats.slam++;
     state = 'slam';
     t = 0;
     struck = false;
     e.moveTarget = null;
     // the impact point is locked at the end of the wind-up from where he faces; track the player meanwhile
     e.attack?.('overhead', { windup: phase === 1 ? 1.25 : 1.0, target: null });
-    ctx.hud.setPrompt('jump', 'Jump the shockwave!');
+    prompt('jump', 'Jump the shockwave!');
     ctx.audio.play('orc_roar', { pos: e.position, volume: 1, pitch: 0.62 });
   }
 
   function beginGrab(): void {
+    stats.grab++;
     state = 'grabWind';
     t = 0;
     struck = false;
     e.moveTarget = null;
     e.attack?.('thrust', { windup: 0.8, target: null });
-    ctx.hud.setPrompt('jump', 'He reaches for you: leap clear!');
+    prompt('jump', 'He reaches for you: leap clear!');
     ctx.audio.play('orc_roar', { pos: e.position, volume: 0.9, pitch: 0.8 });
   }
 
   function beginCharge(): void {
+    stats.charge++;
     state = 'chargeWind';
     t = 0;
     hitPlayerThisCharge = false;
     e.moveTarget = null;
+    aimCharge();
+    // no run-up (the player is at his feet or against a wall): a swing instead of a charge that cannot go anywhere
+    if (chargeLen < 4.5) {
+      stats.charge--;
+      return beginCombo();
+    }
     e.playPose?.('roar', 1.2);
     ctx.audio.play('uruk_roar', { pos: e.position, volume: 1, pitch: 0.6 });
-    ctx.hud.setPrompt('jump', 'He charges: sidestep!');
-    aimCharge();
+    prompt('jump', 'He charges: sidestep!');
   }
 
   /** lock the lane toward the player, stopping at a solid obstacle or the arena edge */
@@ -451,7 +478,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
         // stop at mace range from the player
         _a.set(player.position.x - e.position.x, 0, player.position.z - e.position.z).normalize();
         e.moveTarget = _b.set(player.position.x - _a.x * 2.3, e.position.y, player.position.z - _a.z * 2.3);
-        if (!inArena(_b.x, _b.z, 1.0)) e.moveTarget = null;
+        // follow onto any deck (the walks and links too), never toward open water
+        if (!onDeck(_b.x, _b.z)) e.moveTarget = null;
         cd -= dt * rate;
         if (cd <= 0 && !e.attacking && player.mover === null) {
           chooseAction(dist);
@@ -472,8 +500,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
             cd = phase === 1 ? 1.5 : 1.0;
             break;
           }
-          if (dist > 4.6) {
-            // too far: the combo fizzles into a lunge
+          if (dist > 5.4) {
+            // too far: the combo fizzles
             state = 'approach';
             cd = 0.2;
             break;
@@ -508,7 +536,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
           struck = true;
           slamHit();
         }
-        if (struck && !e.attacking) {
+        if ((struck || t > 0.3) && !e.attacking) {
+          // done, or the wind-up was cancelled from outside
           state = 'recover';
           t = 0;
           cd = 1.2;
@@ -529,7 +558,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
           ctx.hud.setPrompt(null);
           if (reach < 3.6 && cone < 0.9 && !airborne && player.alive && !player.mover) startGrab();
         }
-        if (struck && !e.attacking && state === 'grabWind') {
+        if ((struck || t > 0.3) && !e.attacking && state === 'grabWind') {
+          ctx.hud.setPrompt(null);
           // missed: he overreaches, a free opening
           state = 'recover';
           t = 0;
@@ -551,6 +581,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
         if (t >= 1.15) {
           state = 'charge';
           t = 0;
+          chargeFrom.copy(e.position);
           sw.faceToward(null);
           ctx.hud.setPrompt(null);
           ctx.audio.play('orc_roar', { pos: e.position, volume: 1, pitch: 0.9 });
@@ -570,13 +601,17 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
           player.camera.shake(0.5, 0.5);
         }
         const arrived = flat(e.position, chargeEnd) < 0.9;
-        const crashed = chargeBlocked && sw.wallT < 0.12 && t > 0.3;
-        if (crashed || arrived || t > 2.2) {
+        // a stun needs a real crash: he ran at least 3 m and hit something solid (never a standing timeout)
+        const travelled = flat(e.position, chargeFrom);
+        const crashed = chargeBlocked && sw.wallT < 0.12 && t > 0.3 && travelled > 3;
+        const stuck = t > 0.9 && travelled < 1;
+        if (crashed || arrived || stuck || t > 2.2) {
           sw.speedMax = baseSpeed;
           e.moveTarget = null;
           setLane(false);
-          if (crashed || (chargeBlocked && flat(e.position, chargeEnd) < 2.5)) {
+          if (crashed || (chargeBlocked && travelled > 3 && flat(e.position, chargeEnd) < 2.5)) {
             // into the post: stunned
+            stats.stun++;
             state = 'stunned';
             t = 0;
             e.playPose?.('stagger', 2.6);
@@ -584,7 +619,7 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
             ctx.audio.play('stone_crumble', { pos: e.position, volume: 0.8 });
             ctx.fx.debris(_a.copy(e.position).setY(e.position.y + 1.4), 12, 0x7a6a58);
             player.camera.shake(0.45, 0.6);
-            ctx.hud.toast('He is stunned: shoot him!', 'info');
+            if (!player.mover) ctx.hud.toast('He is stunned: shoot him!', 'info');
           } else {
             state = 'recover';
             t = 0;
@@ -627,7 +662,3 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
   return boss;
 }
 
-void DECKS;
-void PLATFORMS;
-void platformRect;
-void yawOf;

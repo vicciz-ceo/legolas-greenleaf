@@ -11,7 +11,7 @@ import type { LevelAPI } from '../../../core/types';
 import { fbm2, Rng } from '../../../core/rng';
 import { clamp, lerp, smoothstep } from '../../../core/math';
 import {
-  TILE_METERS, addColliders, boulderField, carveRiver, fallenLog, ferns, forest, grassField, mat, mushrooms, river, rock, torch,
+  TILE_METERS, addColliders, barrel, boulderField, carveRiver, fallenLog, ferns, forest, grassField, mat, mushrooms, river, rock, torch,
   type Built, type WaterBody,
 } from '../../../world';
 import {
@@ -58,6 +58,19 @@ function plateauAt(x: number, z: number): number {
 
 /** height above the water at distance `e` from the water's edge (e < 0 inside the channel) */
 function profile(left: boolean, e: number, s: number, x: number, z: number): number {
+  const beachK = left ? smoothstep(688, 726, s) : 0;
+  if (beachK > 0) {
+    // the shingle bank: the shore lies at the water's level and climbs in low shingle ridges (storm berms)
+    const ee = Math.max(e, 0);
+    // (long ridges only: the terrain mesh is 2.8 m a cell, anything finer would alias against the gravel sheet)
+    const berm = 0.2 * Math.sin(ee * 0.46 + fbm2(x * 0.05, z * 0.05, 2, 41) * 4) * smoothstep(1.5, 5, ee);
+    const beach = -0.03 + 0.05 * Math.min(ee, 12) + (ee > 12 ? 0.05 * (ee - 12) * 1.3 : 0) + berm + fbm2(x * 0.3, z * 0.3, 2, 47) * 0.08 * Math.min(1, ee * 0.4);
+    const plain = e <= 0 ? 0.4 : (() => {
+      const swp = shelfLeft(s);
+      return e < swp ? 0.4 + 0.045 * e : 0.4 + 0.045 * swp + (e - swp) * 1.2;
+    })();
+    return lerp(plain, beach, beachK);
+  }
   const sw = left ? shelfLeft(s) : shelfRight(s);
   const k = left ? 1.2 : 2.0;
   if (e <= 0) return 0.4;
@@ -173,7 +186,7 @@ export function buildGorge(level: LevelAPI): Gorge {
     style: 'riverbank',
     theme: 'wet',
     center: TERRAIN.center,
-    layers: ['grass', 'forest_floor', 'cliff'],
+    layers: ['grass', 'forest_floor', 'rock'],
     patchiness: 0.5,
     material: 'grass',
   });
@@ -201,9 +214,9 @@ export function buildGorge(level: LevelAPI): Gorge {
   const shallow = 0x56603f;
   zone(0, S.gate + 1, { speed: 0.9, foam: 0.12, color: deep, shallow, depth: 2.2, ripple: 0.8 });
   zone(S.gate, 170, { speed: 4.5, foam: 0.35, color: deep, shallow, depth: 2.0, ripple: 1.0 });
-  zone(168, 430, { speed: 9, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
-  zone(428, 522, { speed: 6, foam: 0.45, color: deep, shallow, depth: 2.2, ripple: 1.0, wave: 0.03 });
-  zone(520, 706, { speed: 9.5, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
+  zone(168, 430, { speed: 7.6, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
+  zone(428, 522, { speed: 5.2, foam: 0.45, color: deep, shallow, depth: 2.2, ripple: 1.0, wave: 0.03 });
+  zone(520, 706, { speed: 7.9, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
   zone(704, RIVER_LEN, { speed: 1.2, foam: 0.16, color: 0x1d4540, shallow: 0x6b6a4c, depth: 2.4, ripple: 0.7 });
 
   // side streams in the clefts (tiny waterfalls into the river)
@@ -320,50 +333,207 @@ export function buildGorge(level: LevelAPI): Gorge {
     lowLogs.push({ s: ll.s, object: b.object });
   }
 
-  // ── the shingle bank at the end of the pool: a pebble patch laid over the terrain, plus loose stones ──
+  // ── the shingle bank at the end of the pool: wet grey gravel meeting the water, ridges of loose stones,
+  //    driftwood, a few beached barrels and boulders standing in the shallows ──
   {
-    const c0 = bankPos(S.end - 20, 12);
-    const GX = 44;
-    const GZ = 30;
+    const S0 = 692;
+    const S1 = RIVER_LEN + 4;
+    const NS = 72;
+    const NE = 24;
+    const E0 = -1.6;
+    const E1 = 27;
     const pos: number[] = [];
     const uv: number[] = [];
+    const col: number[] = [];
     const idx: number[] = [];
-    const tile = TILE_METERS.sand * 0.55;
-    for (let j = 0; j <= GZ; j++) {
-      for (let i = 0; i <= GX; i++) {
-        const u = (i / GX) * 2 - 1;
-        const v = (j / GZ) * 2 - 1;
-        // an irregular blob, long along the shore
-        const rr = Math.hypot(u, v);
-        const edge = 0.78 + fbm2(u * 2.2 + 5, v * 2.2 - 3, 2, 61) * 0.2;
-        const x = c0.x + u * 22;
-        const z = c0.z + v * 20;
-        const f = smoothstep(edge - 0.18, edge, rr);
-        pos.push(x, h(x, z) + 0.05 - f * 0.4, z);
+    const tile = TILE_METERS.cobble * 0.2;
+    const tmp = V(0, 0, 0);
+    for (let j = 0; j <= NS; j++) {
+      const sj = lerp(S0, S1, j / NS);
+      const upstream = 1 - smoothstep(S0, S0 + 26, sj);
+      for (let i = 0; i <= NE; i++) {
+        const e = lerp(E0, E1, i / NE);
+        bankPos(sj, e, tmp);
+        const x = tmp.x;
+        const z = tmp.z;
+        const nz = fbm2(x * 0.09, z * 0.09, 2, 71);
+        // the gravel gives way to turf inland and thins out at the upstream end
+        const inland = smoothstep(11 + nz * 7, 21 + nz * 7, e);
+        const f = Math.max(inland, upstream);
+        pos.push(x, h(x, z) + 0.11 - f * 0.5, z);
         uv.push(x / tile, z / tile);
+        const n = fbm2(x * 0.33, z * 0.33, 2, 83);
+        const wet = 1 - smoothstep(0.1, 3.4 + n * 1.6, e);
+        // broad dark and pale patches break up the texture's regularity (wet gravel, dry gravel, a little sand)
+        const patchN = fbm2(x * 0.045, z * 0.045, 3, 97);
+        const v = lerp(0.84, 0.46, wet) * (0.82 + n * 0.28 + patchN * 0.5);
+        const sand = smoothstep(0.1, 0.45, patchN) * (1 - wet) * 0.25;
+        col.push(v * (0.95 + sand), v * (0.98 + sand * 0.7), v * (0.93 + sand * 0.1));
       }
     }
-    for (let j = 0; j < GZ; j++) {
-      for (let i = 0; i < GX; i++) {
-        const a = j * (GX + 1) + i;
-        idx.push(a, a + GX + 1, a + 1, a + 1, a + GX + 1, a + GX + 2);
+    for (let j = 0; j < NS; j++) {
+      for (let i = 0; i < NE; i++) {
+        const a = j * (NE + 1) + i;
+        const b2 = (j + 1) * (NE + 1) + i;
+        idx.push(a, b2, a + 1, a + 1, b2, b2 + 1);
       }
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
     geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
     geo.setIndex(idx);
     geo.computeVertexNormals();
-    const patch = new THREE.Mesh(geo, mat('sand', { key: 'shingle', rgb: [0.42, 0.42, 0.4] }));
+    // make sure the sheet faces up whatever way the river bends there
+    const nrm = geo.getAttribute('normal');
+    let up = 0;
+    for (let k = 0; k < nrm.count; k++) up += nrm.getY(k);
+    if (up < 0) {
+      const ix = geo.getIndex()!;
+      for (let k = 0; k < ix.count; k += 3) {
+        const t = ix.getX(k + 1);
+        ix.setX(k + 1, ix.getX(k + 2));
+        ix.setX(k + 2, t);
+      }
+      geo.computeVertexNormals();
+    }
+    const patch = new THREE.Mesh(geo, mat('cobble', { key: 'shingle2', vertexColors: true, rgb: [1.05, 1.05, 1.0] }));
     patch.receiveShadow = true;
     patch.name = 'shingle';
     level.root.add(patch);
-    // loose stones
-    const stones = boulderField({ center: V(c0.x, 0, c0.z), halfSize: [22, 16] }, 260, [0.1, 0.34], h, {
-      seed: 17, moss: 0.1, colliderMin: 99, clump: 0.5, sink: 0.35,
-      exclude: (x, z) => terrainPath.nearest(x, z).dist < widthAt(terrainPath.nearest(x, z).s) / 2 + 0.8,
+
+    const onBeach = (x: number, z: number, e0: number, e1: number): boolean => {
+      const n = terrainPath.nearest(x, z);
+      if (n.s < 696 || n.signed >= 0) return false;
+      const e = n.dist - widthAt(n.s) / 2;
+      return e > e0 && e < e1;
+    };
+    // the outro's stage (s 767..797 near the water) is kept clear of reeds, rocks and wreckage
+    const stage = (x: number, z: number): boolean => {
+      const n = terrainPath.nearest(x, z);
+      return n.s > S.end - 40 && n.s < S.end - 12 && n.signed < 0 && n.dist - widthAt(n.s) / 2 < 12;
+    };
+    // loose stones: low-poly pebbles (an 80-triangle lump each), dense at the waterline and thinning inland
+    const c0 = bankPos(S.end - 34, 8);
+    {
+      const geo = new THREE.IcosahedronGeometry(1, 1);
+      const pp = geo.getAttribute('position');
+      for (let k = 0; k < pp.count; k++) {
+        const bump = 1 + (fbm2(pp.getX(k) * 2.1 + 3, pp.getZ(k) * 2.1 + pp.getY(k) * 1.7, 2, 19) - 0.5) * 0.5;
+        pp.setXYZ(k, pp.getX(k) * bump, pp.getY(k) * bump, pp.getZ(k) * bump);
+      }
+      geo.computeVertexNormals();
+      const PEB = 760;
+      const pm = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, metalness: 0, flatShading: true, envMapIntensity: 0.35 });
+      const inst = new THREE.InstancedMesh(geo, pm, PEB);
+      const prng = new Rng(1717);
+      const m4 = new THREE.Matrix4();
+      const q4 = new THREE.Quaternion();
+      const eu = new THREE.Euler();
+      const col = new THREE.Color();
+      for (let k = 0; k < PEB; k++) {
+        const sj = lerp(698, S.end + 2, prng.float());
+        const e = -0.9 + prng.float() * prng.float() * 18;
+        const p = bankPos(sj, e);
+        const r = 0.04 + prng.float() * prng.float() * 0.2;
+        eu.set(prng.float() * 0.5, prng.float() * 6.28, prng.float() * 0.5);
+        q4.setFromEuler(eu);
+        m4.compose(V(p.x, h(p.x, p.z) + r * 0.2, p.z), q4, V(r, r * 0.62, r * (0.8 + prng.float() * 0.5)));
+        inst.setMatrixAt(k, m4);
+        const v = 0.22 + prng.float() * 0.3;
+        inst.setColorAt(k, col.setRGB(v * 0.98, v, v * 0.94));
+      }
+      inst.instanceMatrix.needsUpdate = true;
+      if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
+      inst.castShadow = false;
+      inst.receiveShadow = true;
+      inst.name = 'pebbles';
+      level.root.add(inst);
+    }
+    // boulders standing in the shallows and on the strand
+    const pr: RockSpec[] = [];
+    const brng = new Rng(5151);
+    for (let k = 0; k < 15; k++) {
+      const sj = 700 + k * 7.6 + brng.float() * 4;
+      const e = k % 3 === 0 ? 4 + brng.float() * 6 : -0.9 + brng.float() * 2.6;
+      const p = bankPos(sj, e);
+      if (stage(p.x, p.z)) continue;
+      pr.push({ x: p.x, z: p.z, y: h(p.x, p.z) - 0.1, size: 0.5 + brng.float() * 0.95, yaw: brng.float() * 6, squash: 0.8 });
+    }
+    const shoreRocks = placeRocks(pr, 29, 0.25);
+    level.root.add(shoreRocks.object);
+    // driftwood along the tide line and a few barrels beached from earlier convoys
+    const lay = (b: Built, sj: number, e: number, yaw: number, tilt = 0) => {
+      const p = bankPos(sj, e);
+      b.object.position.set(p.x, h(p.x, p.z) + tilt * 0.0, p.z);
+      b.object.rotation.y = yaw;
+      level.root.add(b.object);
+      addColliders(physics, b.colliders, b.object);
+    };
+    const wood = [
+      [712, 1.4, 0.25, 5, 0.2], [728, 0.6, -0.4, 4, 0.16], [744, 2.4, 0.5, 6.4, 0.24], [757, 1.0, -0.15, 3.6, 0.15],
+      [764, 4.2, 0.35, 5.2, 0.2], [803, 1.1, 0.2, 4.4, 0.18], [809, 3.0, -0.5, 3.2, 0.14], [718, 5.5, 1.2, 4.5, 0.17],
+    ] as const;
+    wood.forEach(([sj, e, dy, len, r], k) => lay(fallenLog(len, r, 61 + k, { mossy: false }), sj, e, flowYaw(sj) + dy + (k % 2 ? 0.3 : 0)));
+    const barrels: [number, number, number][] = [[736, 1.7, 0.7], [758, 2.6, 2.1], [802, 0.8, 4.0], [807, 2.6, 5.3]];
+    barrels.forEach(([sj, e, yw], k) => lay(barrel({ height: 0.95, open: k % 2 === 0, seed: 90 + k, lying: true }), sj, e, yw));
+    // reeds and tall grass at the water's edge
+    level.root.add(
+      grassField({ center: V(c0.x, 0, c0.z), halfSize: [18, 66] }, 1.6, h, {
+        seed: 12, height: [0.7, 1.5], dry: 0.35, fade: [26, 60], color: 0x5a6a30, tipColor: 0xa4a860,
+        exclude: (x, z) => !onBeach(x, z, 0.1, 3.4) || stage(x, z),
+      }),
+    );
+    level.root.add(
+      grassField({ center: V(c0.x, 0, c0.z), halfSize: [22, 66] }, 0.8, h, {
+        seed: 13, height: [0.3, 0.7], dry: 0.5, fade: [20, 44],
+        exclude: (x, z) => !onBeach(x, z, 11, 26),
+      }),
+    );
+  }
+
+  // ── the country beyond the river's end and the banks of the pool: trees on the far side and behind the strand ──
+  {
+    const kinds = [{ kind: 'beech' as const, weight: 3 }, { kind: 'mirkwood_oak' as const, weight: 1.2 }, { kind: 'birch' as const, weight: 0.6 }, { kind: 'pine' as const, weight: 0.5 }];
+    const tail = forest(
+      { center: V(120, 0, 640), halfSize: [260, 120] },
+      150,
+      kinds,
+      h,
+      {
+        seed: 23, scale: [0.95, 1.4], spacing: 1.2, lodNear: 52, lodFar: 300, chunk: 64, variants: 3,
+        exclude: (x, z) => {
+          if (z < 620) return true;
+          const n = terrainPath.nearest(x, z);
+          const hw = widthAt(n.s) / 2;
+          if (n.s < 696 && n.dist < hw + 3) return true;
+          // keep the strand clear: left bank, within ~26 m of the water
+          if (n.signed < 0 && n.dist < hw + 27 && n.s > 690) return true;
+          if (n.dist < hw + 2.5) return true;
+          return !slopeOk(x, z, 0.62);
+        },
+      },
+    );
+    level.root.add(tail.object);
+    addColliders(physics, tail.colliders);
+  }
+
+  // ── cliff faces: big mossy outcrops break up the stretched cliff texture (the gorge walls, both sides) ──
+  {
+    const outcrops = boulderField({ center: V(0, 0, 330), halfSize: [260, 300] }, 170, [1.5, 5.4], h, {
+      seed: 77, moss: 0.65, colliderMin: 99, clump: 0.5, sink: 0.35,
+      exclude: (x, z) => {
+        const n = terrainPath.nearest(x, z);
+        const e = n.dist - widthAt(n.s) / 2;
+        if (e < 2.5 || e > 20 || n.s > 690 || n.s < 20) return true;
+        if (n.s > S.gate - 16 && n.s < S.gate + 26) return true;
+        // the run's shelf and the archers' ledges stay clear
+        if (n.signed < 0 && e < shelfLeft(n.s) + 1.5) return true;
+        if (n.signed >= 0 && e < shelfRight(n.s) + 1.0) return true;
+        return !(Math.hypot(h(x + 1.5, z) - h(x - 1.5, z), h(x, z + 1.5) - h(x, z - 1.5)) / 3 > 0.35);
+      },
     });
-    level.root.add(stones.object);
+    level.root.add(outcrops.object);
   }
 
   // far dressing: leave a few torches at the gate (lit by fx lights, budgeted)

@@ -91,6 +91,8 @@ export const roofLen = (r: { w: number }) => r.w + ROOF_OV * 1.6;
  */
 export const CHASE_GAPS = [2.8, 3.2, 3.6, 2.6, 3.4, 3.8, 3.0, 3.4];
 export const CHASE_X = -22;
+/** the lane Legolas runs along: a little off the ridge, clear of the chimneys */
+export const CHASE_LANE = CHASE_X - 0.8;
 export const CHASE_ROOFS: RoofDef[] = (() => {
   const dims: [number, number, number][] = [
     [6.6, 5.2, 0.62], [6.2, 5.0, 0.7], [6.8, 5.4, 0.58], [7.0, 5.0, 0.66], [6.0, 5.2, 0.74],
@@ -120,7 +122,12 @@ export const CHASE_COVER: RoofDef[] = (() => {
 /** the northern jetty the chase ends on (and its causeway to the shore) */
 const lastRoof = CHASE_ROOFS[CHASE_ROOFS.length - 1];
 const jettyStart = lastRoof.z + roofLen(lastRoof) / 2 + 3.2;
-export const JETTY = { a: [CHASE_X, jettyStart] as [number, number], b: [CHASE_X, jettyStart + 55] as [number, number], width: 3.0 };
+/**
+ * The jetty ends where the shore rises to the deck (the lake bed crosses y = 1.2 near z = 182 at this x): the
+ * old 55 m jetty ran 14 m into the land and its last stretch was buried in the dirt.
+ */
+export const JETTY_END_Z = 181.5;
+export const JETTY = { a: [CHASE_X, jettyStart] as [number, number], b: [CHASE_X, JETTY_END_Z] as [number, number], width: 3.0 };
 
 export function walkRect(w: Walk): Rect {
   const width = w.width ?? WALK_W;
@@ -139,7 +146,9 @@ export function platformRect(p: Platform): Rect {
 }
 
 /** the stage the chase starts from, on the west link */
-export const STAGE: Platform = { name: 'stage', cx: CHASE_X, cz: 41.4, hx: 3.3, hz: 2.9 };
+export const STAGE: Platform = { name: 'stage', cx: CHASE_X, cz: 37.75, hx: 3.3, hz: 7.25 };
+/** where the chase starts: the south end of the stage, 14 m of run-up before the first leap */
+export const CHASE_START_Z = 31.2;
 /** Bard's deck and apron, joined to the quay */
 export const BARD_DECK: Rect = { x0: -5.1, x1: 5.1, z0: 46.4, z1: 56 };
 /** the shore at the end of the jetty (no rail there) */
@@ -374,7 +383,7 @@ export function planHouses(): HouseDef[] {
     // Bard's house and the open water in front of it
     { name: 'bard', r: { x0: -8, x1: 8, z0: 46, z1: 60 } },
     // the chase stage and the roof highway start
-    { name: 'stage', r: { x0: -26, x1: -18, z0: 36, z1: 46 } },
+    { name: 'stage', r: { x0: -26, x1: -18, z0: 29.5, z1: 46 } },
   ];
   for (const f of FRONTAGES) {
     const walk = walkByName(f.walk);
@@ -452,7 +461,7 @@ export const L = {
   ambush: V(0, D, -50),
   /** chase */
   chaseStart: V(-14, D, 38),
-  horse: V(CHASE_X, D, jettyStart + 46),
+  horse: V(CHASE_X, D, JETTY_END_Z - 1.5),
 };
 
 /** the waypoints the bot follows through the beats (all on decks, in order) */

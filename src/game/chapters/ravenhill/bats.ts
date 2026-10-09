@@ -47,12 +47,17 @@ export interface GiantBatOpts {
   swoopEvery?: [number, number];
   /** only swoop when the player is within this distance */
   swoopRange?: number;
+  /** called when a dive starts (HUD cue) */
+  onSwoop?: (bat: GiantBat) => void;
 }
 
 /** a hostile Gundabad bat */
 export class GiantBat extends BaseCombatant {
   readonly bat: GundabadBat;
   readonly center = new THREE.Vector3();
+  /** velocity of a moving orbit centre (an escort keeps pace with the bat ride) */
+  readonly centerVel = new THREE.Vector3();
+  private readonly onSwoop?: (bat: GiantBat) => void;
   private readonly s: number;
   private t: number;
   private angle: number;
@@ -69,7 +74,7 @@ export class GiantBat extends BaseCombatant {
   private hitAnim = 0;
   private fallVy = 0;
   private landed = false;
-  private readonly o: Required<Omit<GiantBatOpts, 'center' | 'seed' | 'scale' | 'hp'>>;
+  private readonly o: Required<Omit<GiantBatOpts, 'center' | 'seed' | 'scale' | 'hp' | 'onSwoop'>>;
 
   constructor(private readonly level: LevelAPI, o: GiantBatOpts) {
     const scale = o.scale ?? 0.8;
@@ -78,6 +83,7 @@ export class GiantBat extends BaseCombatant {
     this.bat = createGundabadBat(o.seed % 3, scale);
     this.object.add(this.bat.object);
     this.center.copy(o.center);
+    this.onSwoop = o.onSwoop;
     this.o = { radius: o.radius, altitude: o.altitude ?? 0, damage: o.damage ?? 10, swoopEvery: o.swoopEvery ?? [5, 9], swoopRange: o.swoopRange ?? 40 };
     const r = Math.sin(o.seed * 12.9898) * 43758.5453;
     const rnd = r - Math.floor(r);
@@ -161,6 +167,7 @@ export class GiantBat extends BaseCombatant {
         this.aim.copy(player.position).addScaledVector(player.velocity, 0.7);
         this.aim.y += 1.3;
         ctx.audio.play('bat_screech', { pos, volume: 1, pitch: 0.9 + Math.random() * 0.2 });
+        this.onSwoop?.(this);
       }
     } else if (this.mode === 'swoop') {
       speed = 19;
@@ -182,6 +189,7 @@ export class GiantBat extends BaseCombatant {
         this.startClimb();
       }
     } else {
+      this.climbTo.addScaledVector(this.centerVel, dt);
       target.copy(this.climbTo);
       if (this.modeT > 2.4) {
         this.mode = 'circle';
@@ -194,6 +202,8 @@ export class GiantBat extends BaseCombatant {
     _d.copy(target).sub(pos);
     const dist = _d.length();
     if (dist > 1e-3) _d.multiplyScalar(Math.min(speed, dist * 2.2) / dist);
+    // keep pace with a moving orbit (the swoop chases the player directly)
+    if (this.mode !== 'swoop') _d.add(this.centerVel);
     this.velocity.lerp(_d, 1 - Math.exp(-dt * (this.mode === 'swoop' ? 2.6 : 1.6)));
     // never fly into the ground
     const gy = ctx.physics.heightAt(pos.x, pos.z);
@@ -293,7 +303,8 @@ export function batRide(level: LevelAPI, mount: MountBat, path: Path, cruise: nu
     allowJump: false,
     allowDash: false,
     lockCameraYaw: false,
-    camera: { distance: 7.6, height: 1.0, shoulder: 0.3, fov: 66 },
+    // pulled well back: the hanging Legolas must not fill the frame, the ledges and bats must read
+    camera: { distance: 10.5, height: 1.7, shoulder: 0.6, fov: 64 },
     update(dt: number, player: PlayerAPI, input) {
       t += dt;
       // lift off gently, cruise, slow down over the release point

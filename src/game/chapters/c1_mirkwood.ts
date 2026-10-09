@@ -17,11 +17,11 @@
 import * as THREE from 'three';
 import type { Ally, ChapterDef, ChapterInstance, EnvironmentPreset, LevelAPI, PlayerMover } from '../../core/types';
 import { ENVIRONMENTS } from '../../core/environment';
-import { clamp, yawOf } from '../../core/math';
+import { clamp, wrapAngle, yawOf } from '../../core/math';
 import { Rng } from '../../core/rng';
 import { buildWorld, type CutCocoon } from './mirkwood/world';
 import {
-  BRANCH, BROOD_EMERGE, C1, C2, C3, CANOPY, CLIMBERS, DROPS, HOLLOW, STARTS, TAURIEL_ENTRY, V,
+  BRANCH, BROOD_EMERGE, C1, C2, C3, CANOPY, CLIMBERS, DROPS, HOLLOW, STARTS, TAURIEL_ENTRY, TAURIEL_STAND, V,
 } from './mirkwood/layout';
 import { BroodMother, Spider, WebAnchor, WebSystem, type ClimbPoint, type SpiderOpts } from './mirkwood/spiders';
 import { createSpiderModel, preloadSpiders } from '../../creatures/spider';
@@ -104,6 +104,29 @@ export const chapter: ChapterDef = {
 
     const alive = () => spiders.filter((s) => s.alive).length;
 
+    // ── the four low cocoons glow faintly (pale silk catching the light) until cut ──
+    const glowTex = makeGlowTexture();
+    const cocoonGlow = world.cocoons.map((c) => {
+      const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xd6eaa8, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+      const L = (c.object.userData.bodyHeight as number) ?? 1.5;
+      const drop = (c.object.userData.hangDrop as number) ?? 2;
+      m.position.set(c.hang.x, c.hang.y - drop - L * 0.55, c.hang.z);
+      m.scale.set(1.5, 2.4, 1);
+      m.userData.noAO = true;
+      m.renderOrder = 3;
+      m.visible = false;
+      level.root.add(m);
+      return m;
+    });
+    level.onUpdate(() => {
+      const on = beat === 'cocoons' || (beat === 'travel' && travelTo === C2);
+      const pulse = 0.5 + 0.5 * Math.sin(ctx.time.t * 2.4);
+      cocoonGlow.forEach((m, i) => {
+        m.visible = on && !world.cocoons[i].cut;
+        (m.material as THREE.SpriteMaterial).opacity = 0.16 + 0.14 * pulse;
+      });
+    });
+
     const LINES_OF: Record<Area, number[]> = { c1: [0, 1, 2], c2: [3, 4, 5], c3: [6, 7] };
     function spawnSpider(area: Area, how: 'drop' | 'climb' | 'line', o: SpiderOpts = {}): Spider {
       const s = new Spider(level, webs, { seed: spiders.length % 2, ...o });
@@ -136,7 +159,8 @@ export const chapter: ChapterDef = {
         lastDrop = k;
         const [x, z] = pts[k];
         const g = ground(x, z);
-        s.descendFrom(V(x, g + 19, z), g + 13 + rng.float() * 3, 5 + rng.float() * 1.5);
+        // they come down fast and low: a spider on its thread is a target for a moment, not a turkey shoot
+        s.descendFrom(V(x, g + 19, z), g + 10 + rng.float() * 2.5, 7 + rng.float() * 2);
       }
       level.addCombatant(s);
       spiders.push(s);
@@ -144,11 +168,12 @@ export const chapter: ChapterDef = {
     }
 
     /** a group of spiders arriving a beat apart; resolves when `until` remain (or on timeout) */
-    async function spiderWave(area: Area, list: { how: 'drop' | 'climb' | 'line'; o?: SpiderOpts }[], until: number, timeout: number): Promise<void> {
+    async function spiderWave(area: Area, list: { how: 'drop' | 'climb' | 'line'; o?: SpiderOpts; pair?: boolean }[], until: number, timeout: number): Promise<void> {
       const mine: Spider[] = [];
       for (const it of list) {
         mine.push(spawnSpider(area, it.how, it.o));
-        await level.wait(0.7 + rng.float() * 0.6);
+        // `pair`: the next one arrives together with this one
+        await level.wait(it.pair ? 0.15 : 0.7 + rng.float() * 0.6);
       }
       await level.waitUntil(() => mine.filter((s) => s.alive).length <= until, timeout);
     }
@@ -161,12 +186,22 @@ export const chapter: ChapterDef = {
     };
 
     // ── allies ──────────────────────────────────────────────────────────
-    function spawnTauriel(at: THREE.Vector3, withElves = true): void {
+    /** Tauriel (and two archers) at `at`; with `stand` they hold that spot (clear of the camera) instead of following */
+    function spawnTauriel(at: THREE.Vector3, withElves = true, stand?: THREE.Vector3): void {
       if (tauriel) return;
-      tauriel = level.spawnAlly({ kind: 'tauriel', name: 'Tauriel', anchor: 'player' }, at);
+      const spot = (dx: number, dz: number) => {
+        const q = stand!.clone().add(V(dx, 0, dz));
+        q.y = ground(q.x, q.z);
+        return q;
+      };
+      tauriel = level.spawnAlly({ kind: 'tauriel', name: 'Tauriel', anchor: stand ? spot(0, 0) : 'player' }, at);
       if (withElves) {
-        for (let i = 0; i < 2; i++) elves.push(level.spawnAlly({ kind: 'elf_archer', name: 'Elf of the Woodland Realm', anchor: 'player' }, at.clone().add(V(-1.5 + i * 3, 0, 2))));
+        for (let i = 0; i < 2; i++) elves.push(level.spawnAlly({ kind: 'elf_archer', name: 'Elf of the Woodland Realm', anchor: stand ? spot(1.2, -2.6 + i * 5.2) : 'player' }, at.clone().add(V(-1.5 + i * 3, 0, 2))));
       }
+    }
+    /** the allies fall in behind Legolas again */
+    function alliesFollow(): void {
+      for (const a of [tauriel, ...elves]) if (a) a.anchor = 'player';
     }
 
     function freeDwarf(c: CutCocoon, instant: boolean): void {
@@ -202,11 +237,11 @@ export const chapter: ChapterDef = {
         return;
       }
       ctx.audio.play('web_tear', { pos: c.spot, volume: 1 });
-      ctx.fx.dust(c.spot, 8, 0xe0dccc);
+      ctx.fx.dust(c.spot, 0.8, 0xb8b4a6);
       const stop = level.onUpdate((dt) => {
         if (step(dt)) {
           stop();
-          ctx.fx.dust(c.spot, 10);
+          ctx.fx.dust(c.spot, 1);
           done();
         }
       });
@@ -350,7 +385,7 @@ export const chapter: ChapterDef = {
       await level.wait(0.95);
       player.mover = null;
       player.teleport(land, 0.1);
-      ctx.fx.dust(land, 5);
+      ctx.fx.dust(land, 0.6);
       ctx.audio.play('land', { pos: land, volume: 0.8 });
       level.cameraShot(null);
       await level.wait(0.5);
@@ -364,10 +399,10 @@ export const chapter: ChapterDef = {
       await spiderWave('c1', [{ how: 'drop' }, { how: 'drop' }, { how: 'drop' }], 0, 75);
       await say('Legolas', 'More in the branches.', 1.8);
       void prompt('melee', 'Close in? Use your knives', 7);
-      await spiderWave('c1', [{ how: 'climb' }, { how: 'line' }, { how: 'climb' }, { how: 'drop' }], 0, 85);
+      await spiderWave('c1', [{ how: 'climb', pair: true }, { how: 'line' }, { how: 'climb', pair: true }, { how: 'drop' }], 0, 85);
       ctx.hud.toast('Dash to slip a spider\'s lunge', 'info');
       void prompt('focus', 'Focus: slow time and mark several spiders', 8);
-      await spiderWave('c1', [{ how: 'climb' }, { how: 'drop', o: { spitter: true } }, { how: 'line' }, { how: 'climb' }, { how: 'drop' }], 0, 95);
+      await spiderWave('c1', [{ how: 'climb', pair: true }, { how: 'drop', o: { spitter: true } }, { how: 'line', pair: true }, { how: 'drop', pair: true }, { how: 'climb' }], 0, 95);
       ctx.hud.setPrompt(null);
     }
 
@@ -382,7 +417,7 @@ export const chapter: ChapterDef = {
     async function freeTheDwarves(): Promise<void> {
       beat = 'cocoons';
       level.objective('Cut the dwarves free (0/4)');
-      void prompt('interact', 'Stand under a cocoon to cut it down', 5);
+      void prompt('interact', 'Stand beside a glowing cocoon and press interact to cut it down', 7);
       let spawned = 0;
       let nextSpawn = 2;
       const t0 = ctx.time.t;
@@ -396,10 +431,28 @@ export const chapter: ChapterDef = {
           spawnSpider('c2', rng.chance(0.4) ? 'climb' : rng.chance(0.4) ? 'line' : 'drop', { spitter: spawned % 5 === 3 });
         }
       });
-      // Tauriel arrives halfway (after two cuts, or a minute in)
+      // no cut for a while and nowhere near one: say where the nearest hangs
+      let lastCut = ctx.time.t;
+      let cutsSeen = 0;
+      const stopGuide = level.onUpdate(() => {
+        const n = world.cocoons.filter((c) => c.cut).length;
+        if (n !== cutsSeen || cutting) {
+          cutsSeen = n;
+          lastCut = ctx.time.t;
+          return;
+        }
+        if (ctx.time.t - lastCut < 18) return;
+        const near = nearestCocoon();
+        if (!near || near.d < 6) return;
+        lastCut = ctx.time.t;
+        const rel = wrapAngle(yawOf(near.c.spot.x - player.position.x, near.c.spot.z - player.position.z) - player.camera.yaw);
+        const where = Math.abs(rel) < 0.7 ? 'ahead of you' : Math.abs(rel) > 2.4 ? 'behind you' : rel > 0 ? 'to your left' : 'to your right';
+        ctx.hud.toast(`A dwarf hangs low ${where}, ${Math.round(near.d)} m`, 'info');
+      });
+      // Tauriel arrives halfway (after two cuts, or a minute in) and holds the larder's east side
       void (async () => {
         await level.waitUntil(() => world.cocoons.filter((c) => c.cut).length >= 2 || ctx.time.t - t0 > 60, 120);
-        spawnTauriel(TAURIEL_ENTRY);
+        spawnTauriel(TAURIEL_ENTRY, true, TAURIEL_STAND);
         await level.wait(1.2);
         await level.say('Legolas', 'Tauriel.', 1.4);
         await level.say('Tauriel', 'Lord Legolas, the nest is beyond the hollow.', 2.8);
@@ -411,6 +464,7 @@ export const chapter: ChapterDef = {
       ctx.hud.setPrompt(null);
       ctx.input.setInteractLabel(null);
       stopSpawner();
+      stopGuide();
       level.objective('Clear the spiders from the larder');
       await level.waitUntil(() => alive() === 0, 45);
       await say('Legolas', 'They came from the hollow. We end this there.', 2.6);
@@ -442,7 +496,7 @@ export const chapter: ChapterDef = {
         level.cameraShot({ position: V(-5, ground(-5, 64) + 1.4, 64), lookAt: V(0, ground(0, 88) + 2.5, 88), fov: 44, blend: 0 });
       }
       ctx.audio.play('web_tear', { pos: emerge, volume: 1, pitch: 0.5 });
-      ctx.fx.dust(emerge, 16, 0xd8d4c4);
+      ctx.fx.dust(emerge, 2.2, 0xa8a496);
       ctx.player.camera.shake(0.35, 1);
       b.leapTo(out, 1.1, () => b.roar(1.6));
       await level.wait(quick ? 1.2 : 2.0);
@@ -465,6 +519,11 @@ export const chapter: ChapterDef = {
         await level.waitUntil(() => b.move !== 'stun' || !b.alive, 6);
       }
       b.phase = 3;
+      if (b.alive) {
+        // back on her feet, enraged
+        b.roar(1.3);
+        ctx.audio.play('spider_hiss', { pos: b.position, volume: 1, pitch: 0.38 });
+      }
       level.objective('Kill the Brood Mother — she is enraged');
       await level.waitUntil(() => !b.alive);
       ctx.time.setScale(0.25, 0.12);
@@ -514,6 +573,25 @@ export const chapter: ChapterDef = {
       // (level waits, not bare promises: the script resumes on the same step in headless runs too)
       let climbed = false;
       b.climbAlong(up, -1, () => (climbed = true));
+      // a short cut to her going up the trunk (the spiders hold still for it)
+      {
+        const paused = spiders.filter((x) => x.alive && x.aiEnabled && x !== b);
+        for (const x of paused) x.aiEnabled = false;
+        const tr = V(h.x, ground(h.x, h.z), h.z);
+        const toP = V(player.position.x - tr.x, 0, player.position.z - tr.z);
+        const dl = Math.max(1, toP.length());
+        toP.multiplyScalar(1 / dl);
+        const camAt = tr.clone().addScaledVector(toP, Math.min(16, dl * 0.8)).add(V(-toP.z * 3, 1.6, toP.x * 3));
+        camAt.y = Math.max(camAt.y, ground(camAt.x, camAt.z) + 1.6);
+        level.cinematic(true);
+        level.cameraShot({ position: camAt, lookAt: tr.clone().add(V(0, 5, 0)), fov: 46, blend: 0.5 });
+        await level.wait(1.2);
+        level.cameraShot({ position: camAt.clone().add(V(0, 0.6, 0)), lookAt: tr.clone().add(V(0, 9, 0)), fov: 44, blend: 1.4 });
+        await level.wait(1.3);
+        level.cameraShot(null);
+        level.cinematic(false);
+        for (const x of paused) if (x.alive) x.aiEnabled = true;
+      }
       await level.waitUntil(() => climbed || !b.alive, 20);
       // ...then under the web to its centre
       const from = b.position.clone();
@@ -533,7 +611,8 @@ export const chapter: ChapterDef = {
       b.hangUnder(to);
       b.targetable = false;
       b.scripted = false;
-      // the anchors glow
+      // the anchors glow (they only exist, as enemies, from now on)
+      placeAnchors();
       for (const an of anchors) an.setActive(true);
       level.objective('Shoot the glowing web anchors (0/3)');
       void prompt('draw', 'Shoot the three glowing anchors holding the web', 7);
@@ -541,10 +620,11 @@ export const chapter: ChapterDef = {
         let tl = 4;
         return level.onUpdate((dt) => {
           tl -= dt;
-          if (tl <= 0 && alive() < 5) {
+          // at most three spiderlings at once (budget, and the anchors stay the focus)
+          if (tl <= 0 && alive() < 3) {
             tl = 8 + rng.float() * 3;
             spawnLing(C3);
-            spawnLing(C3);
+            if (alive() < 3) spawnLing(C3);
           }
         });
       })();
@@ -564,7 +644,7 @@ export const chapter: ChapterDef = {
       let landed = false;
       b.fall(() => {
         b.invulnerable = false;
-        b.takeDamage({ amount: b.maxHp * 0.12, type: 'fall', source: null });
+        b.takeDamage({ amount: b.maxHp * 0.1, type: 'fall', source: null });
         b.stun(4);
         landed = true;
       });
@@ -581,21 +661,75 @@ export const chapter: ChapterDef = {
       void prompt('draw', 'Stunned! Strike her eyes', 4);
     }
 
+    /**
+     * The canopy web gives way: three of its four moorings are cut, so it swings down from the one
+     * still holding (hero 11), the far side first, sagging and rippling, and lies on the floor a few
+     * seconds before it sinks into the litter. Per-vertex on the merged strand meshes (smooth in
+     * space, so threads bend rather than shatter).
+     */
     function dropCanopy(): void {
-      const sheet = world.canopy.sheet;
-      const lines = world.canopy.lines;
-      let vy = 0;
-      let y = 0;
+      const hold = world.canopy.hold;
+      const meshes = [world.canopy.sheet, world.canopy.lines];
+      const sets = meshes.map((m) => {
+        const pos = m.geometry.attributes.position as THREE.BufferAttribute;
+        const base = Float32Array.from(pos.array as Float32Array);
+        const n = pos.count;
+        const w = new Float32Array(n);
+        const floor = new Float32Array(n);
+        let maxD = 1;
+        for (let i = 0; i < n; i++) maxD = Math.max(maxD, Math.hypot(base[i * 3] - hold.x, base[i * 3 + 2] - hold.z));
+        for (let i = 0; i < n; i++) {
+          const x = base[i * 3];
+          const z = base[i * 3 + 2];
+          w[i] = Math.min(1, Math.hypot(x - hold.x, z - hold.z) / maxD);
+          floor[i] = ground(x, z) + 0.04 + 0.12 * (0.5 + 0.5 * Math.sin(x * 1.7 + z * 2.3));
+        }
+        if (m.geometry.boundingSphere) m.geometry.boundingSphere.radius += 14;
+        m.frustumCulled = false;
+        return { pos, base, w, floor, n };
+      });
+      let t = 0;
+      let landed = -1;
+      const G = 16;
       const stop = level.onUpdate((dt) => {
-        vy -= 18 * dt;
-        y += vy * dt;
-        sheet.position.y = y;
-        lines.position.y = y;
-        if (y < -world.canopy.center.y + ground(C3.x, C3.z) - 1.5) {
-          stop();
-          sheet.visible = false;
-          lines.visible = false;
-          ctx.fx.dust(V(C3.x, ground(C3.x, C3.z), C3.z), 20, 0xd8d4c4);
+        t += dt;
+        for (const S of sets) {
+          const a = S.pos.array as Float32Array;
+          for (let i = 0; i < S.n; i++) {
+            const k = i * 3;
+            const x = S.base[k];
+            const y = S.base[k + 1];
+            const z = S.base[k + 2];
+            const w = S.w[i];
+            // smooth tear noise: some sectors let go a little earlier
+            const nz = 0.5 + 0.5 * Math.sin(x * 0.55 + z * 0.8) * Math.cos(z * 0.45 - x * 0.3);
+            const tt = Math.max(0, t - (1 - w) * 0.55 - nz * 0.25);
+            // only right by the hold does the web hang on as a torn curtain: the rest reaches the floor
+            const hw = Math.min(1, w / 0.22);
+            const reach = (y - S.floor[i]) * (0.15 + 0.85 * hw * hw * (3 - 2 * hw));
+            const drop = Math.min(reach, 0.5 * G * tt * tt);
+            const f = reach > 1e-3 ? drop / reach : 1;
+            const ripple = Math.sin(Math.hypot(x - hold.x, z - hold.z) * 0.9 - t * 7) * 0.45 * w * Math.sin(Math.PI * f);
+            // as it falls it is pulled toward the mooring a little
+            const pull = 0.07 * f * w;
+            a[k] = x + (hold.x - x) * pull;
+            a[k + 1] = Math.max(S.floor[i], y - drop + ripple);
+            a[k + 2] = z + (hold.z - z) * pull;
+          }
+          S.pos.needsUpdate = true;
+        }
+        if (landed < 0 && t > 1.6) {
+          landed = t;
+          ctx.fx.dust(V(C3.x, ground(C3.x, C3.z), C3.z), 2.5, 0xa8a496);
+        }
+        if (landed >= 0 && t > landed + 3.5) {
+          // sink into the litter, then go
+          const u = t - landed - 3.5;
+          for (const m of meshes) m.position.y = -u * 0.25;
+          if (u > 1.6) {
+            stop();
+            for (const m of meshes) m.visible = false;
+          }
         }
       });
     }
@@ -629,6 +763,15 @@ export const chapter: ChapterDef = {
         e.object.rotation.y = yawOf(gp.x - p.x, gp.z - p.z);
       });
       if (!tauriel) spawnTauriel(gp.clone().add(V(3, 0, 3)), false);
+      // a pale shaft of light breaks through the torn canopy onto the prisoners
+      const key = new THREE.SpotLight(0xe6efc8, 130, 28, 0.45, 0.7, 1.5);
+      key.position.copy(gp).add(V(-3, 14, -4));
+      key.target.position.copy(gp).add(V(0, 0.8, 0));
+      key.castShadow = false;
+      level.root.add(key, key.target);
+      const fill = new THREE.PointLight(0x9fb48a, 14, 14, 1.6);
+      fill.position.copy(gp).add(V(-2, 3, -7));
+      level.root.add(fill);
       if (tauriel) {
         const tp = gp.clone().add(V(2.6, 0, -3.4));
         tp.y = ground(tp.x, tp.z);
@@ -664,6 +807,7 @@ export const chapter: ChapterDef = {
         if (from === 1 && !quick) await level.say('Legolas', 'The larder. They keep their prey alive.', 2.4);
         await freeTheDwarves();
         level.checkpoint(2);
+        alliesFollow();
         await travel(V(C3.x, 0, C3.z - 12), 'Go into the hollow', 8);
       }
       await broodMother();
@@ -672,6 +816,7 @@ export const chapter: ChapterDef = {
 
     // ── canopy anchors (inactive until the canopy phase) ────────────────
     function placeAnchors(): void {
+      if (anchors.length) return;
       CANOPY.anchors.forEach((hi) => {
         const h = world.heroes[hi];
         const a = Math.atan2(world.canopy.center.z - h.z, world.canopy.center.x - h.x);
@@ -691,6 +836,8 @@ export const chapter: ChapterDef = {
         anchors: anchors.map((a) => a.alive),
         cocoons: world.cocoons.map((c) => c.cut),
       });
+      // inspect the web wrap on Legolas (snap --eval "__mirkWeb(30)")
+      (window as unknown as { __mirkWeb: unknown }).__mirkWeb = (sec = 30) => webs.webPlayer(sec);
     }
 
     return {
@@ -698,7 +845,6 @@ export const chapter: ChapterDef = {
         const c = clamp(cp, 0, 2);
         const s = STARTS[c];
         player.teleport(V(s.pos.x, ground(s.pos.x, s.pos.z), s.pos.z), s.facing);
-        placeAnchors();
         if (c >= 2) {
           // the dwarves are free, Tauriel and her archers are with us
           for (const k of world.cocoons) freeDwarf(k, true);
@@ -737,3 +883,30 @@ export const chapter: ChapterDef = {
 };
 
 void HOLLOW;
+
+/** a soft radial glow (generated, cached for the session) */
+let glowTexture: THREE.DataTexture | null = null;
+function makeGlowTexture(): THREE.DataTexture {
+  if (glowTexture) return glowTexture;
+  const W = 64;
+  const d = new Uint8Array(W * W * 4);
+  for (let y = 0; y < W; y++) {
+    for (let x = 0; x < W; x++) {
+      const dx = (x + 0.5) / W * 2 - 1;
+      const dy = (y + 0.5) / W * 2 - 1;
+      const r = Math.min(1, Math.hypot(dx, dy));
+      const a = Math.pow(1 - r, 2.2);
+      const i = (y * W + x) * 4;
+      d[i] = d[i + 1] = d[i + 2] = 255;
+      d[i + 3] = Math.round(a * 255);
+    }
+  }
+  const t = new THREE.DataTexture(d, W, W, THREE.RGBAFormat);
+  t.magFilter = THREE.LinearFilter;
+  t.minFilter = THREE.LinearMipmapLinearFilter;
+  t.generateMipmaps = true;
+  t.needsUpdate = true;
+  t.userData.shared = true;
+  glowTexture = t;
+  return t;
+}

@@ -12,7 +12,7 @@
  */
 import * as THREE from 'three';
 import type { LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
-import { clamp, damp, dampAngle, lerp, wrapAngle, yawOf } from '../../../core/math';
+import { clamp, damp, dampAngle, lerp, smoothstep, wrapAngle, yawOf } from '../../../core/math';
 import { CLEFTS, CLEFT_WIDTH, LOW_LOGS, S, RIVER_LEN, flowSpeedAt, flowYaw, riverPath, shelfLeft, tangentAt, waterY, widthAt, RUN_OFFSET } from './layout';
 import { STAND_H, type Barrel, type BarrelTrain } from './train';
 
@@ -40,6 +40,10 @@ export interface BankRun extends PlayerMover {
   nextCleft: number;
   /** true while the next obstacle ahead wants a jump (bot hint) */
   wantsJump: boolean;
+  /** a cleft is coming within about 1.2 s: the prompt shows (earlier than wantsJump, which is the jump window) */
+  cleftSoon: boolean;
+  /** how many times the runner has dropped into a cleft */
+  falls: number;
 }
 
 export function makeBankRun(level: LevelAPI, startS: number): BankRun {
@@ -66,6 +70,8 @@ export function makeBankRun(level: LevelAPI, startS: number): BankRun {
     leapRequested: false,
     nextCleft: -1,
     wantsJump: false,
+    cleftSoon: false,
+    falls: 0,
     pose: null,
     allowShoot: true,
     allowMelee: true,
@@ -83,6 +89,12 @@ export function makeBankRun(level: LevelAPI, startS: number): BankRun {
       const pos = player.position;
       const nr = riverPath.nearest(pos.x, pos.z);
       run.s = nr.s;
+      // on the stairs the camera rides high and dead-centre (the cheek walls would swallow a shoulder camera), then settles over his shoulder
+      const cam = run.camera!;
+      const settle = smoothstep(S.runStart + 3, S.runStart + 14, nr.s);
+      cam.shoulder = 0.7 * settle;
+      cam.height = lerp(2.5, 1.7, settle);
+      cam.distance = lerp(3.0, 3.8, settle);
       const hw = widthAt(nr.s) / 2;
       tangentAt(nr.s, _t);
       _r.set(-_t.z, 0, _t.x); // right of travel = toward the water on the left bank
@@ -124,7 +136,9 @@ export function makeBankRun(level: LevelAPI, startS: number): BankRun {
       void hw;
       // ── vertical: gravity over the terrain and anything walkable ──
       coyote -= dt;
-      const wantJump = input.jump || (assist && run.wantsJump && run.grounded);
+      // after a few drops into the same cleft the runner is helped over it (a real player's way out of a fall loop)
+      const helped = run.falls >= 3 && run.wantsJump && run.grounded;
+      const wantJump = input.jump || ((assist || helped) && run.wantsJump && run.grounded);
       if (wantJump && (run.grounded || coyote > 0 || jumps < 2)) {
         const second = !(run.grounded || coyote > 0);
         if (!second || jumps < 2) {
@@ -157,6 +171,7 @@ export function makeBankRun(level: LevelAPI, startS: number): BankRun {
         splashCd = 1.0;
         fx.splash(pos, 1.6);
         audio.play('splash', { pos, volume: 0.9 });
+        run.falls++;
         player.takeDamage({ amount: 8, type: 'fall', source: null });
         player.camera.shake(0.2, 0.3);
         if (safeSet) pos.copy(safe);
@@ -183,11 +198,13 @@ export function makeBankRun(level: LevelAPI, startS: number): BankRun {
       // what is ahead (bot and prompts)
       run.nextCleft = -1;
       run.wantsJump = false;
+      run.cleftSoon = false;
       for (const c of CLEFTS) {
         const ahead = c - run.s;
         if (ahead > -1 && ahead < 40) {
           run.nextCleft = ahead;
           if (ahead < 4.6 && ahead > 0.4) run.wantsJump = true;
+          if (ahead < 11 && ahead > 0.4) run.cleftSoon = true;
           break;
         }
       }

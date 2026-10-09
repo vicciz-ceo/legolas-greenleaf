@@ -4,7 +4,7 @@
  * set dressing, Erebor's flank in the snow haze, and the distant battle in the valley.
  */
 import * as THREE from 'three';
-import type { ColliderHandle, LevelAPI } from '../../../core/types';
+import type { ColliderHandle, CrowdHandle, LevelAPI } from '../../../core/types';
 import {
   addColliders, banner, batFlock, boulderField, brazier, brokenBridge, forest, frozenWaterfall, iceSheet, mat,
   removeColliders, rock, ruins, ruinedWatchtower, skeleton, stoneBlock, weaponRack, type Built, type BridgeResult,
@@ -24,6 +24,10 @@ export interface RavenhillWorld {
   crown: { object: THREE.Object3D; vel: THREE.Vector3; spin: THREE.Vector3 }[];
   /** bridge segments in the gap that fall when it breaks */
   gapChunks: { object: THREE.Object3D; vel: THREE.Vector3; spin: THREE.Vector3 }[];
+  /** the tower's snow caps (hidden while the camera fights inside the top floor: white slabs at eye level) */
+  towerSnow: THREE.Object3D[];
+  /** the distant armies: orcs, dwarves, elves */
+  armies: { orcs: CrowdHandle; dwarves: CrowdHandle; elves: CrowdHandle };
 }
 
 const noShadow = (o: THREE.Object3D) => o.traverse((c) => (c.castShadow = false));
@@ -253,6 +257,13 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   // ── Ravenhill: the crag and its ruined watchtower ─────────────────────────
   const tower = ruinedWatchtower({ radius: TOWER.r, height: TOWER.h, thickness: 1.7, tallSide: -Math.PI / 2, seed: 5, snow: true });
   add(tower, CRAG.x, CRAG.y, CRAG.z, TOWER.yaw);
+  const towerSnow: THREE.Object3D[] = [];
+  {
+    const snowMat = mat('snow', { key: 'ruinsnow' });
+    tower.object.traverse((o) => {
+      if ((o as THREE.Mesh).isMesh && (o as THREE.Mesh).material === snowMat) towerSnow.push(o);
+    });
+  }
   // dwarven columns and wall stubs round the plateau rim
   const rim = ruins({ center: V(CRAG.x, 0, CRAG.z), halfSize: [CRAG.r, CRAG.r] }, 12, ground, {
     seed: 31,
@@ -300,9 +311,9 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   const gapChunks: RavenhillWorld['gapChunks'] = [];
   const gx0 = BRIDGE.x0 + BRIDGE.gap[0] * BRIDGE_LEN;
   const gx1 = BRIDGE.x0 + BRIDGE.gap[1] * BRIDGE_LEN;
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 14; i++) {
     const b = stoneBlock([1.8 + rng.float(), 1.0, 1.6 + rng.float()], 60 + i, { kind: 'dark' });
-    b.object.position.set(gx0 + ((i + 0.5) / 8) * (gx1 - gx0), BRIDGE.y - 1.1, BRIDGE.z + (rng.float() - 0.5) * 3);
+    b.object.position.set(gx0 + ((i + 0.5) / 14) * (gx1 - gx0), BRIDGE.y - 1.1, BRIDGE.z + (rng.float() - 0.5) * 3);
     b.object.visible = false;
     level.root.add(b.object);
     gapChunks.push({ object: b.object, vel: new THREE.Vector3(), spin: new THREE.Vector3() });
@@ -314,7 +325,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     kind: 'cliff',
     exclude: (x, z) => {
       const d = Math.hypot(x - PINNACLE.x, z - PINNACLE.z);
-      return d < PINNACLE.r + 0.5 || (Math.abs(z - BRIDGE.z) < 5 && x < PINNACLE.x);
+      return d < PINNACLE.r + 0.5 || (Math.abs(z - BRIDGE.z) < 9 && x < PINNACLE.x + 2);
     },
   });
   level.root.add(summitRocks.object);
@@ -338,7 +349,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     const a = (i / (onCrag ? 12 : 6)) * Math.PI * 2 + rng.float() * 0.3;
     const x = cx + Math.cos(a) * r0;
     const z = cz + Math.sin(a) * r0;
-    if (Math.abs(z - BRIDGE.z) < 5 && x > CRAG.x && x < PINNACLE.x) continue;
+    if (Math.abs(z - BRIDGE.z) < (onCrag ? 5 : 10) && x > CRAG.x && x < PINNACLE.x + 2) continue;
     const r = rock(5 + rng.float() * 4, 100 + i, { kind: 'cliff', flat: 1.3, rough: 0.9 });
     add(r, x, ground(x, z) - 3, z, rng.float() * 6, false);
     noShadow(r.object);
@@ -346,15 +357,17 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
 
   // ── far away: Erebor, the battle in the valley, smoke, bat flocks ──────────
   ereborBackdrop(level);
-  for (const c of [
-    level.crowd({ center: V(L.battle.x - 20, 0, L.battle.z), halfSize: [70, 18], count: 420, kind: 'orc', facing: Math.PI * 0.1, speed: 0, props: true }),
-    level.crowd({ center: V(L.battle.x + 10, 0, L.battle.z - 28), halfSize: [55, 12], count: 170, kind: 'dwarf', facing: Math.PI, speed: 0, props: true }),
-    level.crowd({ center: V(L.battle.x + 70, 0, L.battle.z - 6), halfSize: [30, 20], count: 140, kind: 'elf', facing: -Math.PI / 2, speed: 0, props: true }),
-  ])
-    noShadow(c.mesh);
+  const armies = {
+    orcs: level.crowd({ center: V(L.battle.x - 20, 0, L.battle.z), halfSize: [70, 18], count: 320, kind: 'orc', facing: Math.PI * 0.1, speed: 0, props: true }),
+    dwarves: level.crowd({ center: V(L.battle.x + 10, 0, L.battle.z - 28), halfSize: [55, 12], count: 130, kind: 'dwarf', facing: Math.PI, speed: 0, props: true }),
+    elves: level.crowd({ center: V(L.battle.x + 70, 0, L.battle.z - 6), halfSize: [30, 20], count: 110, kind: 'elf', facing: -Math.PI / 2, speed: 0, props: true }),
+  };
+  for (const c of [armies.orcs, armies.dwarves, armies.elves]) noShadow(c.mesh);
   for (const [x, z, s] of [[-40, -128, 4], [20, -150, 5], [80, -120, 3.5], [110, -150, 4.5], [-90, -140, 3]] as [number, number, number][]) fx.smoke(V(x, ground(x, z), z), s);
-  for (const [x, y, z, n, r] of [[40, 70, -110, 28, 60], [-120, 110, 320, 24, 80], [120, 90, 260, 18, 50]] as [number, number, number, number, number][]) {
-    const f = batFlock(n, V(x, y, z), r, { size: 2.6, seed: Math.round(x + z), height: 18 });
+  // (one flock, wheeling over the battle in the valley: the ones that hung in the northern sky read
+  // as torn white paper against the haze from the gorge)
+  for (const [x, y, z, n, r] of [[40, 70, -110, 28, 60]] as [number, number, number, number, number][]) {
+    const f = batFlock(n, V(x, y, z), r, { size: 1.5, seed: Math.round(x + z), height: 18 });
     level.root.add(f.object);
   }
 
@@ -362,6 +375,8 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     ground,
     crown,
     gapChunks,
+    towerSnow,
+    armies,
     get bridgeBroken() {
       return bridgeBroken;
     },

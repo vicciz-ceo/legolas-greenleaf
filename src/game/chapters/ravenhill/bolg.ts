@@ -42,6 +42,9 @@ export interface BolgBoss {
   readonly hpFrac: number;
   /** cancel any special (cinematics) */
   cancel(): void;
+  /** phase 2 rage: faster, more specials, steaming breath */
+  enrage(): void;
+  readonly enraged: boolean;
   stop(): void;
 }
 
@@ -95,6 +98,16 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
     get hpFrac() {
       return e.hp / e.maxHp;
     },
+    get enraged() {
+      return enraged;
+    },
+    enrage() {
+      if (enraged) return;
+      enraged = true;
+      sw.speedMax *= 1.3;
+      boss.specialEvery = [2.8, 4.5];
+      next = Math.min(next, 1.5);
+    },
     cancel() {
       if (state !== 'none') endSpecial();
       // drop a stock attack mid-swing too (cinematics, the finisher): NpcBase.cancelAttack is protected
@@ -124,6 +137,10 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
 
   type State = 'none' | 'chainWind' | 'chainLash' | 'slamWind';
   let state: State = 'none';
+  let enraged = false;
+  let breath = 0;
+  /** the last special: up close he alternates the slam with the chain, so both always show */
+  let last: 'chain' | 'slam' = 'chain';
   let stT = 0;
   let next = 3.5;
   let whirl = 0;
@@ -152,6 +169,17 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
       chainObj.visible = false;
       return;
     }
+    if (enraged && boss.specials) {
+      // steaming breath in the cold, a snort every second or so
+      breath -= dt;
+      if (breath <= 0) {
+        breath = 0.9 + level.rng() * 0.6;
+        e.humanoid.bones.head.getWorldPosition(_c);
+        _c.x += Math.sin(sw.facing) * 0.35;
+        _c.z += Math.cos(sw.facing) * 0.35;
+        ctx.fx.dust(_c, 3, 0xe9eef2);
+      }
+    }
     // chain follows his left hand
     hand.getWorldPosition(_a);
     chainObj.position.copy(_a);
@@ -172,7 +200,9 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
         if (!boss.specials || !e.aiEnabled || !player.alive || e.attacking) break;
         next -= dt;
         if (next > 0 || !sameLevel) break;
-        if (dist > 4 && dist < 11) {
+        if ((dist > 4 && dist < 11) || (dist <= 4.5 && last === 'slam')) {
+          last = 'chain';
+          if (ctx.flags.bot === '1') console.info(`[ravenhill] bolg chain lash t=${ctx.time.t.toFixed(1)} d=${dist.toFixed(1)}`);
           state = 'chainWind';
           stT = 0;
           e.aiEnabled = false;
@@ -181,6 +211,8 @@ export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o
           ctx.audio.play('chain_rattle', { pos: e.position, volume: 1 });
           ctx.audio.play('orc_roar', { pos: e.position, volume: 0.9, pitch: 0.7 });
         } else if (dist <= 4.5) {
+          last = 'slam';
+          if (ctx.flags.bot === '1') console.info(`[ravenhill] bolg slam t=${ctx.time.t.toFixed(1)} d=${dist.toFixed(1)}`);
           state = 'slamWind';
           stT = 0;
           e.aiEnabled = false;

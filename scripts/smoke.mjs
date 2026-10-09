@@ -36,7 +36,9 @@ const CHUNK = Number(opt('chunk', 0.5));
 const [W, H] = String(opt('size', '960x540')).split('x').map(Number);
 const JOBS = Math.max(1, Number(opt('jobs', 1)));
 const REUSE = args.includes('--reuse');
-const READY_TIMEOUT = Number(opt('timeout', 120000));
+const READY_TIMEOUT = Number(opt('timeout', 300000));
+// screenshots under SwiftShader on a loaded machine can take minutes; never let Playwright's 30 s default fail a run
+const SHOT_TIMEOUT = Number(opt('shot-timeout', 180000));
 const CHROME = process.env.SNAP_CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const shotDir = resolve(root, 'shots/smoke');
 mkdirSync(shotDir, { recursive: true });
@@ -119,7 +121,7 @@ async function runOne(base, info, cp) {
         if (shoot) {
           await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))));
           const file = resolve(shotDir, `${id}-cp${cp}-${i + 1 === half ? 0 : 1}.png`);
-          await page.screenshot({ path: file });
+          await page.screenshot({ path: file, timeout: SHOT_TIMEOUT });
           row.shots.push(file);
         }
         if (errors.length > 8) break;

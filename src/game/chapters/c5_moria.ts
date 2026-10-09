@@ -39,8 +39,20 @@ export const chapter: ChapterDef = {
     const quick = ctx.flags.skipIntro === '1';
 
     // the Moria preset, a touch brighter so the carved pillars and the goblins read beyond the firelight
-    level.setEnvironment({ ...ENVIRONMENTS.moria, exposure: 2.15, hemiIntensity: 3.7 });
+    // (and a less violet grade: neutral cold stone, with the fires as the warm accents)
+    const E = ENVIRONMENTS.moria;
+    level.setEnvironment({
+      ...E,
+      exposure: 2.15,
+      hemiIntensity: 3.7,
+      hemiSky: 0x8a93a2,
+      hemiGround: 0x3e3226,
+      fog: { color: 0x0b0b0d, density: E.fog.density },
+      grade: { ...E.grade, lift: [0.006, 0.005, 0.006], gamma: [1.0, 1.0, 1.0], gain: [1.03, 1.0, 0.97], saturation: 0.95 },
+    });
     const world = buildMoria(level);
+    /** ?balrog=0..1 pre-sets the glow (look-dev only) */
+    if (ctx.flags.balrog) world.setBalrog(clamp(Number(ctx.flags.balrog) || 0, 0, 1));
     /** ?trace=1 logs the script's beats to the console (debugging only) */
     const trace = (msg: string): void => {
       if (ctx.flags.trace === '1') console.log(`[moria] t=${ctx.time.t.toFixed(1)} ${msg}`);
@@ -80,8 +92,9 @@ export const chapter: ChapterDef = {
       }
     });
 
+    /** Moria goblins: a little tougher and quicker than the stock goblin (the allies would otherwise clear the room alone) */
     const goblin = (pos: THREE.Vector3, spec: Partial<EnemySpec> = {}): Enemy =>
-      level.spawnEnemy({ archetype: 'goblin', name: 'Goblin', ...spec }, pos);
+      level.spawnEnemy({ archetype: 'goblin', name: 'Goblin', hp: 48, damage: 10, speed: 5.9, ...spec }, pos);
 
     /** goblins pouring through the east arch out of the dark */
     function archRush(n: number): Enemy[] {
@@ -158,8 +171,11 @@ export const chapter: ChapterDef = {
       level.cinematic(true);
       level.music?.('tension');
       level.cameraShot({ position: V(-6.9, 2.1, 5.8), lookAt: V(0.4, 1.9, -3.4), fov: 52, blend: 0 });
+      // a silent establishing push-in: the shell's rivalry line ("A friendly wager, laddie?") speaks at
+      // 1.2 s for 2 s, and the scripted dialogue must not queue behind it
       await level.wait(0.5);
-      level.cameraShot({ position: V(-4.4, 1.7, 3.0), lookAt: V(0.3, 2.0, -3.4), fov: 42, blend: 6.5 });
+      level.cameraShot({ position: V(-4.4, 1.7, 3.0), lookAt: V(0.3, 2.0, -3.4), fov: 42, blend: 7.5 });
+      await level.wait(3.1);
       await level.say('Gimli', 'Balin, son of Fundin... Lord of Moria. Then it is true.', 3.4);
       await level.say('Legolas', 'This is no mine. It is a tomb.', 2.6);
       audio.play('drums', { volume: 0.8 });
@@ -182,20 +198,29 @@ export const chapter: ChapterDef = {
       void talk('Aragorn', 'Hold the arch! Legolas, the high ground is yours.', 2.8);
       ctx.hud.toast('Headshots do triple damage', 'info');
 
-      // wave 1: a rush through the arch and two scuttlers on the south wall
-      const w1 = [...archRush(4), ...climbers(2)];
+      // wave 1: a rush through the arch and three scuttlers on the south wall
+      const w1 = [...archRush(6), ...climbers(3)];
       await level.waitUntil(allDead(w1), 80);
 
-      // wave 2: more through the arch, goblins dropping out of the ceiling, two archers take the ledge
+      // wave 2: more through the arch, goblins dropping out of the ceiling, three archers take the ledge
       level.objective('More are coming: hold the chamber');
       void talk('Gimli', 'Let them come! I have an axe for every one!', 2.4);
-      const w2 = [...archRush(3), ...ceilingDrop(3), ...ledgeArchers(2)];
-      await level.waitUntil(allDead(w2), 90);
+      const w2 = [...archRush(5), ...ceilingDrop(4), ...ledgeArchers(3)];
+      await level.waitUntil(allDead(w2, 1), 90);
+      // stragglers pour in behind them: there is no breather
+      const w2b = [...archRush(3), ...climbers(2)];
+      await level.waitUntil(allDead([...w2, ...w2b]), 60);
 
-      // wave 3: the biggest rush, with scuttlers and a second drop
+      // wave 3: the biggest rush, with scuttlers, two drops and a pair of heavies at the arch
       void talk('Boromir', 'They keep coming!', 1.8);
-      const w3 = [...archRush(5), ...climbers(2), ...ceilingDrop(2), ...ledgeArchers(1)];
-      await level.waitUntil(allDead(w3), 100);
+      const w3 = [
+        ...archRush(7), ...climbers(3), ...ceilingDrop(3), ...ledgeArchers(2),
+        ...[0, 1].map((i) => level.spawnEnemy({ archetype: 'orc', name: 'Moria orc', hp: 120, damage: 14 }, V(16 + i * 1.4, 0, -1.2 + i * 2.4))),
+      ];
+      await level.waitUntil(allDead(w3, 1), 100);
+      // a last drop out of the dark as the room goes quiet
+      const w3b = ceilingDrop(3);
+      await level.waitUntil(allDead([...w3, ...w3b]), 40);
 
       drumGap = 3.2;
       level.checkpoint(1);
@@ -205,7 +230,7 @@ export const chapter: ChapterDef = {
     async function leaveBeat(): Promise<void> {
       beat = 'leave';
       level.objective('Through the arch into the great hall');
-      void talk('Aragorn', 'The drums have stopped. That is worse. Into the hall!', 2.8);
+      void talk('Aragorn', 'The drums are louder now. Into the hall!', 2.8);
       if (cast) {
         cast.aragorn.anchor = 'player';
         cast.boromir.anchor = 'player';
@@ -247,6 +272,8 @@ export const chapter: ChapterDef = {
 
     async function trollBeat(): Promise<void> {
       beat = 'troll';
+      // the drums go on through the fight (a restart at cp1 comes here with drumGap still 0)
+      drumGap = 3.2;
       level.objective(null);
       const frozen = new Set<Enemy>();
       fight = createTrollFight(level, {
@@ -308,7 +335,9 @@ export const chapter: ChapterDef = {
         await level.wait(1.0);
         audio.play('troll_roar', { pos: troll.position, volume: 1, pitch: 0.85 });
         player.camera.shake(0.25, 1.2);
-        level.cameraShot({ position: V(27.5, 1.5, -2.5), lookAt: V(46, 3.0, 1.5), fov: 40, blend: 5.5 });
+        level.cameraShot({ position: V(27.5, 1.5, -2.5), lookAt: V(46, 3.0, 1.5), fov: 40, blend: 7.5 });
+        // the shell's rivalry line is still on screen: let it finish (a cp1 restart speaks it at 1.2 s)
+        await level.wait(2.4);
         await level.say('Boromir', 'A cave troll.', 2.0);
         await level.say('Legolas', 'It is bound. Goblins have it on chains.', 2.6);
       }
@@ -351,68 +380,112 @@ export const chapter: ChapterDef = {
     }
 
     // ── beat 2: flight to the Bridge ──────────────────────────────────────
-    /** the horde's clock: the Balrog stirs when it runs out and the player is deep in the hall */
-    const RUN_SECONDS = 110;
+    /** the horde's clock (s): the Balrog cannot stir before it runs out */
+    const RUN_SECONDS = 60;
+    /** the player counts as "at the gate" east of this x; there the horde presses in from every side */
+    const GATE_X = HALL_X1 - 10;
+    /** seconds the player must hold the gate (the clock must also have run out) */
+    const HOLD_SECONDS = 14;
+    const _spot = new THREE.Vector3();
+    /** a free floor point in a belt around the player, ahead, behind or on the flanks: valid anywhere in the hall, gate included */
+    function beltSpot(out: THREE.Vector3): boolean {
+      for (let tries = 0; tries < 16; tries++) {
+        const a = level.rng() * Math.PI * 2;
+        const r = 14 + level.rng() * 16;
+        const x = player.position.x + Math.cos(a) * r;
+        const z = player.position.z + Math.sin(a) * r;
+        if (inHall(x, z, 4) && x < HALL_X1 - 3 && x > 20 && !nearPillar(x, z, 2)) {
+          out.set(x, 0, z);
+          return true;
+        }
+      }
+      return false;
+    }
     async function flightBeat(): Promise<void> {
       beat = 'flight';
       drumGap = 2.6;
       level.music?.('combat');
       level.objective('Run for the Bridge of Khazad-dum');
-      // the horde creeps in from the flanks of the hall: two instanced crowds that close in a little
-      const north = level.crowd({ center: V(82, 0, -27), halfSize: [30, 2.5], count: 90, kind: 'goblin', facing: 0, speed: 2.4, props: true });
-      const south = level.crowd({ center: V(82, 0, 27), halfSize: [30, 2.5], count: 90, kind: 'goblin', facing: Math.PI, speed: 2.4, props: true });
-      void level.wait(5).then(() => {
-        north.setSpeed(0);
-        south.setSpeed(0);
-      });
+      // the horde gathers on both flanks of the hall; as the player passes, each pack surges in to the
+      // edge of the aisle and holds there, a wall of torches and blades (instanced, so cheap)
+      const north = level.crowd({ center: V(84, 0, -30), halfSize: [30, 2.5], count: 110, kind: 'goblin', facing: 0, speed: 0, props: true });
+      const south = level.crowd({ center: V(84, 0, 30), halfSize: [30, 2.5], count: 110, kind: 'goblin', facing: Math.PI, speed: 0, props: true });
+      let marchT = -1;
       runStart = ctx.time.t;
-      let waveCd = 3;
+      let waveCd = 2;
       let spawned = 0;
       let surged = false;
+      let gateT = 0;
+      let atGate = false;
       const stopWaves = level.onUpdate((dt) => {
         if (beat !== 'flight') return;
         const t = ctx.time.t - runStart;
-        hud.setProgress(t < RUN_SECONDS ? 'The horde closes in' : 'Reach the east gate', clamp(1 - t / RUN_SECONDS, 0, 1));
+        // the packs close in once the player is past the first third of the hall
+        if (marchT < 0 && player.position.x > 56) {
+          marchT = 0;
+          north.setSpeed(2.6);
+          south.setSpeed(2.6);
+          audio.play('goblin_screech', { pos: V(player.position.x + 20, 4, 0), volume: 0.9, pitch: 0.9 });
+        }
+        if (marchT >= 0 && marchT < 5) {
+          marchT += dt;
+          if (marchT >= 5) {
+            north.setSpeed(0);
+            south.setSpeed(0);
+          }
+        }
+        if (player.position.x > GATE_X) {
+          if (!atGate) {
+            atGate = true;
+            level.objective('Hold the gate!');
+            void talk('Aragorn', 'Hold them here! Gandalf is coming!', 2.4);
+          }
+          gateT += dt;
+        }
+        const frac = clamp(1 - t / RUN_SECONDS, 0, 1);
+        hud.setProgress(atGate ? 'Hold the gate' : 'The horde closes in', atGate ? clamp(1 - gateT / HOLD_SECONDS, 0, 1) * 0.5 + frac * 0.5 : frac);
         waveCd -= dt;
-        if (waveCd > 0 || spawned > 90) return;
+        if (waveCd > 0 || spawned > 160) return;
         const alive = level.enemiesAlive();
-        if (alive >= 16) {
-          waveCd = 1.5;
+        const cap = atGate ? 28 : 10;
+        if (alive >= cap) {
+          waveCd = 1.2;
           return;
         }
-        waveCd = lerp(6, 4, clamp(t / RUN_SECONDS, 0, 1));
-        const n = 3 + Math.floor(clamp(t / 30, 0, 3));
+        waveCd = atGate ? 3.0 : lerp(5.5, 3.5, clamp(t / RUN_SECONDS, 0, 1));
+        const n = atGate ? 8 : 3 + Math.floor(clamp(t / 25, 0, 2));
         if (t > RUN_SECONDS && !surged) {
           surged = true;
           void talk('Aragorn', 'They are on us! To the gate!', 2.2);
         }
         for (let i = 0; i < n; i++) {
-          // a ring around the player, mostly ahead of it
-          let tries = 0;
-          let x = 0;
-          let z = 0;
-          do {
-            const a = (level.rng() < 0.65 ? (level.rng() - 0.5) * 2.2 : level.rng() * Math.PI * 2) ;
-            const r = 20 + level.rng() * 10;
-            x = player.position.x + Math.cos(a) * r;
-            z = player.position.z + Math.sin(a) * r;
-            tries++;
-          } while (tries < 8 && (!inHall(x, z, 4) || nearPillar(x, z, 2) || x < player.position.x - 14));
-          if (tries >= 8) continue;
+          if (!beltSpot(_spot)) continue;
           spawned++;
-          const drop = level.rng() < 0.4;
-          const spec: Partial<EnemySpec> = level.rng() < 0.18 ? { archetype: 'orc', name: 'Orc' } : {};
-          const g = goblin(V(x, 0, z), spec);
-          if (drop) {
+          const drop = level.rng() < (atGate ? 0.5 : 0.35);
+          const roll = level.rng();
+          let g: Enemy;
+          if (atGate && roll < 0.2) {
+            // archers on the flanks: pressure at range
+            g = level.spawnEnemy({ archetype: 'orc_archer', behavior: 'hold', scale: 0.86, name: 'Goblin archer', target: 'player' }, V(_spot.x, 0, _spot.z));
+          } else if (roll < (atGate ? 0.32 : 0.2)) {
+            g = goblin(V(_spot.x, 0, _spot.z), { archetype: 'orc', name: 'Moria orc', hp: 100, damage: 12, speed: undefined });
+          } else {
+            g = goblin(V(_spot.x, 0, _spot.z));
+          }
+          if (drop && g.spec?.behavior !== 'hold') {
             g.position.y = 9 + level.rng() * 4;
             g.velocity.set(0, -1, 0);
-            fx.dust(V(x, 8, z), 6, 0x4a4540);
+            fx.dust(V(_spot.x, 8, _spot.z), 6, 0x4a4540);
           }
         }
         audio.play('goblin_screech', { pos: player.position, volume: 0.7, pitch: 1.1 });
       });
-      // run until the Balrog stirs: the player reaches the end of the hall, or the horde's time runs out
-      await level.waitUntil(() => (ctx.time.t - runStart >= RUN_SECONDS && player.position.x > HALL_X1 - 42) || ctx.time.t - runStart > RUN_SECONDS + 90, 600);
+      // run until the Balrog stirs: the clock has run out and the player has held the gate for a while
+      // (or, if the player dawdles, a generous limit)
+      await level.waitUntil(
+        () => (ctx.time.t - runStart >= RUN_SECONDS && gateT >= HOLD_SECONDS) || ctx.time.t - runStart > RUN_SECONDS + 120,
+        600,
+      );
       stopWaves();
       hud.setProgress(null);
       north.setSpeed(0);

@@ -9,9 +9,12 @@ import {
   addColliders, barrel, boat, brazier, crate, forest, lake, lantern, pier, torch, woodenHouse, bardsHouse,
   type Built, type ColliderDesc, type WaterBody,
 } from '../../../world';
-import { clamp, smoothstep } from '../../../core/math';
+import { smoothstep } from '../../../core/math';
+import { MeshKit } from '../../../world/util';
+import { mat } from '../../../world';
 import { Rng, fbm2 } from '../../../core/rng';
-import { bakeStatic, farTown, lampPost, lanternString, lightPools, mistLayers, netSheet, platform, railing } from './build';
+import { bakeStatic, warmGlass, farTown, lampPost, lanternString, lightPools, mistLayers, netSheet, platform, railing, waterGlints, type Glint } from './build';
+import { lightDirectionOf } from '../../../core/environment';
 import {
   BARD, CHASE_COVER, CHASE_ROOFS, D, JETTY, L, PLATFORMS, STAGE, WALKS, WALK_W, WATER_Y, computeRails, houseRect, onDeck, planHouses, walkByName,
   type HouseDef, type RoofDef, type Rect,
@@ -38,13 +41,11 @@ export function bedHeight(x: number, z: number): number {
   const ez = (z - 18) / 166;
   const e = Math.sqrt(ex * ex + ez * ez);
   const noise = fbm2(x * 0.02, z * 0.02, 3, 11) - 0.5;
-  const bowl = -5.2 + noise * 1.2 + smoothstep(0.55, 0.96, e) * 3.6;
-  const shore = smoothstep(0.95, 1.12, e);
-  const land = 1.4 + Math.max(0, e - 1.04) * 7 + noise * 7 * smoothstep(1.1, 1.6, e) + Math.max(0, e - 1.5) * 70;
+  const bowl = -5.2 + noise * 1.2 + smoothstep(0.55, 0.94, e) * 3.4;
+  const shore = smoothstep(0.94, 1.0, e);
+  const land = 1.7 + Math.max(0, e - 1.0) * 6 + noise * 7 * smoothstep(1.1, 1.6, e) + Math.max(0, e - 1.5) * 70;
   return THREE.MathUtils.lerp(bowl, Math.max(bowl, land), shore);
 }
-
-const FRONT_CRATE_OFFSET = 1.05;
 
 export function buildTown(level: LevelAPI): TownWorld {
   const { physics, fx } = level.ctx;
@@ -54,16 +55,15 @@ export function buildTown(level: LevelAPI): TownWorld {
   const high = quality === 'high' || quality === 'ultra';
 
   // ── ground and water ───────────────────────────────────────────────────────
-  const terrain = level.terrain({ size: 640, segments: high ? 168 : 128, height: bedHeight, style: 'mud', material: 'dirt', center: [0, 18], theme: 'wet', tint: 0x3a4048, patchiness: 0.5, cavity: 0.3 });
+  const terrain = level.terrain({ size: 640, segments: high ? 144 : 112, height: bedHeight, style: 'mud', material: 'dirt', center: [0, 18], theme: 'wet', tint: 0x3a4048, patchiness: 0.5, cavity: 0.3 });
   const ground = terrain.heightAt;
   physics.killY = WATER_Y - 1.1;
 
-  const water = lake({ center: [0, 18], halfSize: [300, 230], y: WATER_Y, color: 0x070e16, shallow: 0x142228, depth: 7, speed: 0.04, wave: 0.05, ripple: 0.8, foam: 0.5, terrain: ground, opacity: 0.97 });
+  const water = lake({ center: [0, 18], halfSize: [300, 230], y: WATER_Y, color: 0x070e16, shallow: 0x142228, depth: 7, speed: 0.04, wave: 0.06, ripple: 1.5, foam: 0.5, terrain: ground, opacity: 0.97 });
   root.add(water.object);
 
   const bake: THREE.Object3D[] = [];
   const pools: { x: number; z: number; r: number; a?: number }[] = [];
-  const staticColliders: ColliderDesc[] = [];
   /** wooden-walkway colliders without the (invisible to gameplay) piles */
   const noPiles = (cs: ColliderDesc[]) => cs.filter((c) => !(c.kind === 'cyl' && c.opts?.tag === 'pile'));
   const placeBuilt = (b: Built, x: number, y: number, z: number, yaw = 0, colliders = true): Built => {
@@ -124,6 +124,21 @@ export function buildTown(level: LevelAPI): TownWorld {
   const jetty = pier([[JETTY.a[0], JETTY.a[1]], [JETTY.b[0], JETTY.b[1]]], JETTY.width, { y: D, lamps: 0, lit: true, seed: 99, rails: false });
   addColliders(physics, noPiles(jetty.colliders));
   bake.push(jetty.object);
+  // the shore end of the jetty: a lamp post on each side and two torches (their fire lights the outro: Bolg and his horse)
+  for (const [k, sd] of [[0, -1], [1, 1]] as const) {
+    const z = JETTY.b[1] - 3 - k * 6.5;
+    bake.push(lampPost(JETTY.a[0] + sd * (JETTY.width / 2 - 0.18), z, sd, true));
+    pools.push({ x: JETTY.a[0] + sd * (JETTY.width / 2 - 0.18), z, r: 3.0, a: 0.9 });
+  }
+  const jettyTorches: THREE.Vector3[] = [];
+  for (const sd of [-1, 1]) {
+    const x = JETTY.a[0] + sd * (JETTY.width / 2 - 0.25);
+    const z = JETTY.b[1] - 0.9;
+    const t = torch({ lit: true, length: 1.7 });
+    placeBuilt(t, x, D, z, 0);
+    jettyTorches.push(new THREE.Vector3(x, D + 1.75, z));
+    pools.push({ x, z: z - 1.2, r: 3.6, a: 1 });
+  }
   // the stage the chase starts from, joined to the west link
   const stage = platform(STAGE, { seed: 4, rails: noRails });
   addColliders(physics, noPiles(stage.colliders));
@@ -144,12 +159,17 @@ export function buildTown(level: LevelAPI): TownWorld {
     placeBuilt(crate([0.85, 0.8, 0.85], { seed: h.seed + 1 }), x, D + 1.05, z, h.yaw - 0.1);
   };
   const houseDoors: THREE.Vector3[] = [];
+  const chimneys: THREE.Vector3[] = [];
   for (const h of houses) {
     const hb = woodenHouse({ w: h.w, d: h.d, floors: h.floors, lit: h.lit, seed: h.seed, doorOpen: rng.chance(0.3) });
     placeBuilt(hb, h.x, D, h.z, h.yaw);
     houseDoors.push(hb.object.localToWorld(new THREE.Vector3(...hb.anchors.door)));
+    if (h.lit) chimneys.push(hb.object.localToWorld(new THREE.Vector3(h.w / 2 - 1.1, hb.anchors.ridge[1] + 1.1, -h.d * 0.12)));
     if (h.steps) crateAt(h);
   }
+  // smoke from the chimneys of the houses along the main walk and the market
+  chimneys.sort((a, b) => Math.hypot(a.x, a.z + 24) - Math.hypot(b.x, b.z + 24));
+  for (const c of chimneys.slice(0, high ? 9 : 5)) fx.smoke(c, 0.55);
   const roofHouses: { def: RoofDef; built: Built }[] = [];
   for (const def of [...CHASE_ROOFS, ...CHASE_COVER]) {
     const hb = woodenHouse({ w: def.w, d: def.d, floors: def.floors, pitch: def.pitch, lit: def.seed % 3 !== 0, seed: def.seed });
@@ -217,6 +237,14 @@ export function buildTown(level: LevelAPI): TownWorld {
     fires.push(fx.fire(new THREE.Vector3(x, D + 1.0, z), 0.8));
     pools.push({ x, z, r: 5.2, a: 1 });
   }
+  for (const p of jettyTorches) fires.push(fx.fire(p, 0.5));
+  // torches where the main walk meets the quay: they light Bolg's entrance and the start of the duel
+  for (const sx of [-1, 1]) {
+    const t = torch({ lit: true, length: 1.7 });
+    placeBuilt(t, sx * 3.1, D, 28.3, 0);
+    fires.push(fx.fire(new THREE.Vector3(sx * 3.1, D + 1.75, 28.3), 0.45));
+    pools.push({ x: sx * 3.1, z: 27.3, r: 3.8, a: 1 });
+  }
   // torches at Bard's door
   for (const sx of [-1, 1]) {
     const t = torch({ lit: true, length: 1.7 });
@@ -224,9 +252,25 @@ export function buildTown(level: LevelAPI): TownWorld {
     fires.push(fx.fire(new THREE.Vector3(sx * 4.9, D + 1.75, 47.4), 0.4));
     pools.push({ x: sx * 4.9, z: 46.2, r: 3.6, a: 0.9 });
   }
+  // a sickbed by the hearth for Kili: a low wooden frame, a wool blanket and a bolster
+  {
+    const kit = new MeshKit();
+    const wood = mat('old_wood', { key: 'ltBeam', rgb: [0.78, 0.75, 0.7] });
+    const wool = mat('cloth_wool', { key: 'sickbed', rgb: [0.62, 0.34, 0.26] });
+    const linen = mat('cloth_linen', { key: 'sickbed', rgb: [0.85, 0.8, 0.7] });
+    const bx = L.kili.x;
+    const bz = L.kili.z;
+    kit.box(wood, [1.9, 0.16, 0.95], [bx, D + 0.08, bz], 0, { tile: 0.8 });
+    kit.box(wool, [1.78, 0.14, 0.86], [bx, D + 0.23, bz], 0, { tile: 0.5 });
+    kit.box(linen, [0.5, 0.16, 0.7], [bx + 0.62, D + 0.38, bz], 0, { tile: 0.4 });
+    const g = kit.build({ name: 'sickbed' });
+    g.updateMatrixWorld(true);
+    physics.addBox(new THREE.Vector3(bx, D + 0.15, bz), [0.95, 0.15, 0.48], 0, { material: 'wood', tag: 'bed' });
+    bake.push(g);
+  }
   // the hearth in Bard's front room, and the glow that spills out of the open front
   fires.push(fx.fire(new THREE.Vector3(3.0, D + 0.5, 54.2), 0.5));
-  pools.push({ x: 0, z: 49.6, r: 5.5, a: 0.8 }, { x: 0.4, z: 52.6, r: 4, a: 0.7 });
+  pools.push({ x: 0, z: 49.6, r: 5.5, a: 0.8 }, { x: 0.4, z: 52.6, r: 4, a: 0.7 }, { x: L.kili.x, z: L.kili.z, r: 2.8, a: 1.0 });
 
   // lantern posts at the platform corners (the platform builder hands back their positions)
   for (const pf of [dock, market, quay, stage]) {
@@ -256,18 +300,43 @@ export function buildTown(level: LevelAPI): TownWorld {
   // nets on poles at the market's edge and the dock
   const netObjs: THREE.Object3D[] = [];
   for (const [ax, az, bx, bz] of [[-14.6, -4, -14.6, 4], [14.6, -5, 14.6, 3], [-8, -74.4, 0, -74.4], [3, -74.4, 8.4, -74.4]] as const) {
-    const n = netSheet(new THREE.Vector3(ax, D + 2.4, az), new THREE.Vector3(bx, D + 2.4, bz), 1.8, 0.35);
+    const n = netSheet(new THREE.Vector3(ax, D + 2.5, az), new THREE.Vector3(bx, D + 2.5, bz), 1.7, 0.3);
     netObjs.push(n);
     root.add(n);
   }
 
+  // ── reflections on the lake: warm streaks behind the lit houses and under the jetty torches, a cold glitter toward the moon
+  const glints: Glint[] = [];
+  for (const h of houses) {
+    if (!h.lit) continue;
+    const fxd = Math.sin(h.yaw);
+    const fzd = Math.cos(h.yaw);
+    // the back of the house (away from its walkway) is open water
+    const off = h.d / 2 + 1.6;
+    glints.push({ x: h.x - fxd * off, z: h.z - fzd * off + 0.5, w: 1.5 + rng.float() * 1.2, l: 4.5 + rng.float() * 2.5, yaw: Math.PI, a: 0.55, color: 0xff9a50 });
+  }
+  for (const p of jettyTorches) glints.push({ x: p.x, z: p.z - 0.5, w: 1.1, l: 4.5, yaw: Math.PI, a: 0.7, color: 0xff9448 });
+  const moon = lightDirectionOf(level.ctx.engine.env as Parameters<typeof lightDirectionOf>[0], new THREE.Vector3());
+  const moonYaw = Math.atan2(moon.x, moon.z);
+  glints.push({ x: -2, z: -12, w: 16, l: 110, yaw: moonYaw, a: 0.5, color: 0x9fbaf0 }, { x: -2 + moon.x * 100, z: -12 + moon.z * 100, w: 34, l: 140, yaw: moonYaw, a: 0.38, color: 0x8fb0ec });
+  root.add(waterGlints(glints));
+
   // ── bake everything static into a few merged meshes ───────────────────────
-  const baked = bakeStatic(bake, { name: 'lt', cell: 90 });
+  const glass = warmGlass();
+  const baked = bakeStatic(bake, {
+    name: 'lt',
+    cell: 60,
+    // lantern glass: the builders' transparent pale-amber cylinders become one warm emissive material
+    replace: (m) => {
+      const s = m as THREE.MeshStandardMaterial;
+      return s.transparent && s.emissive && s.emissive.getHex() === 0xffa94a ? glass : null;
+    },
+  });
   root.add(baked.group);
   for (const k of baked.left) root.add(k);
 
   // ── the far town, the shore and its trees ─────────────────────────────────
-  root.add(farTown((x, z) => Math.abs(x) < 58 && z > -92 && z < 150, 5, high ? 110 : 70));
+  root.add(farTown((x, z) => Math.abs(x) < 58 && z > -92 && z < 150, 5, high ? 90 : 60));
   const shoreWoods = forest(
     { center: new THREE.Vector3(0, 0, 215), halfSize: [230, 70] },
     high ? 150 : 90,
@@ -286,11 +355,9 @@ export function buildTown(level: LevelAPI): TownWorld {
   const update = (dt: number) => {
     t += dt;
     quayDeck.update(dt);
-    mist.update(dt);
+    mist.update(dt, level.ctx.engine.camera.position.y);
     for (const n of netObjs) n.position.y = Math.sin(t * 0.7 + n.id) * 0.015;
   };
-  void clamp;
-  void FRONT_CRATE_OFFSET;
   const houseRects: Rect[] = [...houses.map((h) => houseRect(h)), houseRect({ x: BARD.x, z: BARD.z, yaw: BARD.yaw, w: 9, d: 6.6 })];
   return { ground, water, houses, houseRects, quay: quayDeck, bardAnchors, fires, update };
 }

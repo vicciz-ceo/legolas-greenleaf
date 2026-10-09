@@ -30,9 +30,37 @@ import { RamTeam } from './helms_deep/ram';
 
 const CHECKPOINTS = ['The Deeping Wall', 'The Culvert', 'The Shield Stair', 'The Hornburg'];
 /** seconds the gate must hold until dawn */
-const HOLD_SECONDS = 150;
-/** the dawn ramp runs over the last part of the hold */
-const DAWN_FROM = 100;
+const HOLD_SECONDS_DEFAULT = 150;
+/** the dawn ramp starts this many seconds before the end of the hold */
+const DAWN_LEAD = 50;
+
+/**
+ * The dawn charge framing: [x, metres above the ground, z]. The riders mass on the shelf ~50 m up
+ * the eastern slope (d = 39..61 m out from the gorge toe at z 106), the White Rider at their head.
+ */
+const DAWN_SHOTS = {
+  riderZ: 106,
+  riderD: 50,
+  /** from the slope's southern flank: the riders massed on the shelf's edge, the dawn beyond */
+  ridge: { p: [165, 6, 86], p2: [166, 6.5, 88], l: [189, 4, 107], fov: 42 },
+  /** on the shelf, low: the White Rider close, the host of riders behind him against the dawn */
+  white: { p: [174, 1.3, 97], l: [187, 4, 111], fov: 44 },
+  /** from the slope's southern flank: the charge pours down the slope toward the coomb */
+  charge: { p: [150, 8, 84], l: [165, 8, 104], p2: [148, 8, 86], l2: [163, 6, 106], fov: 50 },
+  /** over the coomb: the host breaks and flees for the back of the Deep */
+  flee: { p: [40, 22, 40], l: [-20, 2, 125], fov: 50 },
+};
+
+/** tint a crowd's instances (the masked coat, e.g. a horse) */
+function paintCrowd(c: CrowdHandle, hex: number, k: number): void {
+  const col = new THREE.Color(hex).multiplyScalar(k);
+  c.mesh.traverse((o) => {
+    const m = o as THREE.InstancedMesh;
+    if (!m.isInstancedMesh) return;
+    for (let i = 0; i < m.count; i++) m.setColorAt(i, col);
+    if (m.instanceColor) m.instanceColor.needsUpdate = true;
+  });
+}
 
 type Beat =
   | 'intro' | 'volley' | 'ladders' | 'toCulvert' | 'culvert' | 'blast' | 'toStair' | 'surf' | 'breach'
@@ -54,10 +82,27 @@ export const chapter: ChapterDef = {
     const { ctx } = level;
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
+    // dev: ?hdHold=<s> shortens the gate hold (to look at the dawn without playing 150 s)
+    const HOLD_SECONDS = Number(ctx.flags.hdHold) > 0 ? Number(ctx.flags.hdHold) : HOLD_SECONDS_DEFAULT;
+    const DAWN_FROM = Math.max(0, HOLD_SECONDS - DAWN_LEAD);
 
     level.setEnvironment(STORM);
     setWetness(0.85);
     const world = buildWorld(level, false);
+    world.shieldBeacon.visible = false;
+    // pre-warm the blast's shaders and pools off-screen (the first explosion otherwise hitches)
+    ctx.fx.explosion(V(0, -400, 0), 0.2);
+    ctx.fx.debris(V(0, -400, 0), 4, 0x8a8478);
+    {
+      const dummy = new THREE.Object3D();
+      dummy.position.set(0, -400, 0);
+      level.root.add(dummy);
+      const h = ctx.fx.torch(dummy);
+      void level.wait(0.5).then(() => {
+        h.stop();
+        dummy.removeFromParent();
+      });
+    }
     const ladders = LADDER_X.map((x, i) => new SiegeLadder(level, x, i < 3 ? { maxAlive: 2, quota: 3, interval: 3.6 } : { maxAlive: 2, quota: 4, interval: 3.2 }));
 
     // ── script state (read by botHint) ─────────────────────────────────────
@@ -166,6 +211,7 @@ export const chapter: ChapterDef = {
     let splashT = 0;
     level.onUpdate((dt) => {
       for (const l of ladders) l.update(dt);
+      world.update(dt);
       followOnWall();
       if (world.breached) {
         world.pool.update(dt);
@@ -242,15 +288,23 @@ export const chapter: ChapterDef = {
       beat = 'intro';
       if (quick) return;
       level.cinematic(true);
-      // high over the coomb: the torches of the host, the wall and the Hornburg beyond
-      level.cameraShot({ position: V(-46, 34, 92), lookAt: V(20, 6, 0), fov: 50, blend: 0 });
+      // behind the host, low over its rear ranks: the sea of torches fills the foreground and runs
+      // up to the wall, a dark line in the storm with the Hornburg beyond. The shell's wager line
+      // ("A friendly wager, laddie?") speaks over this silent establishing shot, before the two-shot.
+      level.cameraShot({ position: V(30, 15, 152), lookAt: V(-4, 8, 0), fov: 42, blend: 0 });
       ctx.audio.play('drums', { volume: 0.9 });
-      await level.wait(0.4);
-      level.cameraShot({ position: V(-38, 24, 46), lookAt: V(-6, 13, -4), fov: 44, blend: 5.5 });
-      await level.wait(2.4);
+      await level.wait(0.3);
+      level.cameraShot({ position: V(16, 17, 108), lookAt: V(-6, 10, 0), fov: 42, blend: 4.4 });
+      await level.wait(2.7);
       ctx.fx.lightning();
-      await level.wait(0.6);
+      await level.wait(0.5);
       ctx.audio.play('thunder', { volume: 1.1 });
+      await level.wait(0.9);
+      // over the front ranks to the battlements
+      level.cameraShot({ position: V(-30, 20, 44), lookAt: V(-10, 13.5, -3), fov: 44, blend: 0 });
+      await level.wait(0.1);
+      level.cameraShot({ position: V(-25, 18.5, 30), lookAt: V(-11, 14, -3), fov: 44, blend: 2.6 });
+      await level.wait(2.4);
       // on the battlements: a two-shot of Gimli and Legolas, the storm and the host's torches beyond
       const cam = walk(-9.6, -1.9);
       const look = walk(-15.2, 0.2);
@@ -269,6 +323,11 @@ export const chapter: ChapterDef = {
       level.objective('Hold the Deeping Wall');
       level.music?.('tension');
       await line('Aragorn', 'Give them a volley!', 1.8);
+      // a short cut over the archers' shoulders: the arrows arc out over the coomb in slow motion
+      // and the front ranks go down under them
+      level.cinematic(true);
+      const cam = walk(-21, -1.7);
+      level.cameraShot({ position: V(cam.x, WALL_H + 3.1, cam.z), lookAt: V(4, 1.5, 54), fov: 46, blend: 0 });
       const from = new THREE.Vector3();
       const to = new THREE.Vector3();
       const dir = new THREE.Vector3();
@@ -284,17 +343,25 @@ export const chapter: ChapterDef = {
         }
         ctx.audio.play('bow_release', { volume: 1, pitch: 0.9 + k * 0.05 });
         ctx.audio.play('arrow_whoosh', { volume: 0.8 });
+        if (k === 0) ctx.time.setScale(0.45, 0.15);
         await level.wait(0.12);
       }
-      await level.wait(1.3);
-      world.front.thin(0.22);
-      world.host.thin(0.04);
-      world.torchSea.setFraction(0.94);
+      level.cameraShot({ position: V(cam.x + 2.5, WALL_H + 2.6, cam.z + 1.5), lookAt: V(6, 0.5, 58), fov: 40, blend: 1.6 });
+      await level.wait(1.15);
+      // the arrows land: the front ranks fall, the torch sea gutters
+      world.front.thin(0.4);
+      world.host.thin(0.06);
+      world.torchSea.setFraction(0.9);
       ctx.audio.play('orc_die', { pos: V(0, 0, 58), volume: 1, pitch: 0.8 });
-      await level.wait(0.8);
+      ctx.audio.play('orc_die', { pos: V(-20, 0, 56), volume: 0.9, pitch: 0.95 });
+      await level.wait(0.6);
+      ctx.time.setScale(1, 0.4);
+      await level.wait(0.4);
+      level.cameraShot(null);
+      level.cinematic(false);
       ctx.audio.play('horn_orc', { volume: 1 });
       ctx.audio.play('uruk_roar', { pos: V(0, 0, 70), volume: 1, pitch: 0.75 });
-      await level.wait(quick ? 0.5 : 1.4);
+      await level.wait(quick ? 0.5 : 1.2);
     }
 
     function laddersDone(): number {
@@ -338,8 +405,17 @@ export const chapter: ChapterDef = {
             banter = true;
             void (async () => {
               await line('Gimli', `${numberWord(countG())} already!`, 1.8);
-              await line('Legolas', `I'm on ${numberWord(Math.max(countL(), countG() + 1)).toLowerCase()}!`, 1.8);
-              await line('Gimli', "I'll have no pointy-eared elf outscoring me!", 2.2);
+              // the real counts, as they stand when he answers
+              const l = countL();
+              const g = countG();
+              if (l === 0) {
+                await line('Legolas', 'The night is young, Master Dwarf.', 1.8);
+                await line('Gimli', 'Ha! Keep up, laddie!', 1.6);
+              } else {
+                await line('Legolas', `I'm on ${numberWord(l).toLowerCase()}!`, 1.8);
+                if (l > g) await line('Gimli', "I'll have no pointy-eared elf outscoring me!", 2.2);
+                else await line('Gimli', `${numberWord(l)}? Ha! You'll have to do better than that.`, 2.2);
+              }
             })();
           }
           return LADDER_SETS[set].every((i) => ladders[i].finished);
@@ -355,8 +431,9 @@ export const chapter: ChapterDef = {
     }
 
     /** a berserker torch-bearer sprinting for the culvert */
-    function spawnRunner(at: THREE.Vector3, hp: number): { e: Enemy; flame: FxHandle | null } {
-      const e = level.spawnEnemy({ archetype: 'berserker', weapon: 'torch', hp, speed: 8.4, name: 'Torch-bearer' }, at, Math.PI);
+    function spawnRunner(at: THREE.Vector3, hp: number, pace = 7.2): { e: Enemy; flame: FxHandle | null } {
+      // with the AI off an enemy walks its moveTarget at 0.6 x its top speed: `pace` is the real m/s
+      const e = level.spawnEnemy({ archetype: 'berserker', weapon: 'torch', hp, speed: pace / 0.6, name: 'Torch-bearer' }, at, Math.PI);
       e.aiEnabled = false;
       e.moveTarget = L.culvert.clone();
       const anchor = e.humanoid.weaponObject('hand_r')?.userData.fireAnchor as THREE.Object3D | undefined;
@@ -364,19 +441,31 @@ export const chapter: ChapterDef = {
       return { e, flame };
     }
 
+    /** most torch-bearers that come before the blast, stopped or not (the beat cannot stall) */
+    const MAX_RUNNERS = 7;
     async function culvert(fromCheckpoint: boolean): Promise<void> {
       beat = 'toCulvert';
-      level.objective('Watch the culvert');
-      if (!fromCheckpoint) await level.waitUntil(() => player.position.distanceTo(L.culvertWatch) < 6, 12);
+      level.objective('Watch the culvert: take the fighting step above it');
+      if (!fromCheckpoint) {
+        await level.waitUntil(() => Math.hypot(player.position.x - L.culvertWatch.x, player.position.z - L.culvertWatch.z) < 5, 12);
+      }
       beat = 'culvert';
-      spawnArchers(L.archerSpots.slice(1), 4);
+      // two crossbowmen out on the flanks keep heads down (well behind the runners' lane)
+      spawnArchers([V(-36, 0, 40), V(42, 0, 36)], 2);
       await line('Legolas', 'Torches! They are making for the culvert!', 2.2);
       await line('Aragorn', 'Bring them down! Do not let them reach the wall!', 2.2);
       ctx.hud.setPrompt('focus', 'Hold Focus to slow time and mark the torch-bearers');
       let stopped = 0;
-      level.objective('Stop the torch-bearers (0/3)');
-      for (let i = 0; i < 3; i++) {
-        const r = spawnRunner(L.runnerStarts[i], 120);
+      let through = 0;
+      let spawned = 0;
+      const objective = () => level.objective(`Stop the torch-bearers (${stopped}/3)`);
+      objective();
+      while (stopped < 3 && spawned < MAX_RUNNERS) {
+        const k = spawned++;
+        const at = L.runnerStarts[k % L.runnerStarts.length].clone();
+        at.x += (level.rng() - 0.5) * 6;
+        // the first comes at a jog; the later ones sprint
+        const r = spawnRunner(at, 120, k === 0 ? 6.2 : 7.4);
         runner = r.e;
         ctx.audio.play('uruk_roar', { pos: r.e.position, volume: 1, pitch: 0.7 });
         let reached = false;
@@ -389,19 +478,27 @@ export const chapter: ChapterDef = {
           return false;
         }, 40);
         r.flame?.stop();
-        if (i === 0) ctx.hud.setPrompt(null);
+        if (k === 0) ctx.hud.setPrompt(null);
         if (r.e.alive) {
-          // a Rohan defender drops a block on him at the last moment (no credit)
+          // he made it to the wall: a Rohan defender drops a block on him at the last moment. It
+          // does not count, the grate is scorched, and another runner comes
+          through++;
           ctx.fx.debris(r.e.position.clone().setY(1.5), 24, 0x8a8478);
+          if (through === 1) ctx.fx.fire(L.culvert.clone().setY(0.4), 0.6);
           ctx.audio.play('stone_crumble', { pos: r.e.position, volume: 1 });
           r.e.takeDamage({ amount: 1e5, type: 'crush', source: null, dir: V(0, -1, 0) });
-          ctx.hud.toast(reached ? 'Too close: a defender crushed him with a stone' : 'A defender stopped him', 'warning');
+          ctx.hud.toast(reached ? 'He reached the culvert: a defender crushed him. It does not count' : 'A defender stopped him', 'warning');
+          if (through === 1) void line('Aragorn', 'Too close! Do not let them reach the wall!', 2);
+          else if (through === 2) void line('Gimli', 'Another one at the wall! Shoot, elf, shoot!', 2);
+        } else {
+          stopped++;
+          ctx.hud.toast(`Torch-bearer down (${stopped}/3)`, 'reward');
         }
-        stopped++;
-        level.objective(`Stop the torch-bearers (${stopped}/3)`);
+        objective();
         runner = null;
-        await level.wait(i < 2 ? 2.5 : 1.5);
+        await level.wait(stopped >= 3 ? 1.2 : 1.6);
       }
+      if (stopped < 3) ctx.hud.toast('Too many reached the wall', 'warning');
     }
 
     async function blast(): Promise<void> {
@@ -432,8 +529,8 @@ export const chapter: ChapterDef = {
         ctx.audio.play('bow_release', { volume: 1 });
         await level.wait(0.75);
       }
-      // the dive into the culvert
-      level.cameraShot({ position: V(13, 1.3, 9), lookAt: V(5, 1.6, -2.5), fov: 46, blend: 0 });
+      // the dive into the culvert: wide from the coomb side, the whole culvert section in frame
+      level.cameraShot({ position: V(17, 3.4, 22), lookAt: V(4.5, 4.5, -3), fov: 50, blend: 0 });
       await level.waitUntil(() => r.e.position.distanceTo(L.culvert) < 2.2, 9);
       r.e.playPose?.('crouch', 1);
       await level.wait(0.35);
@@ -451,14 +548,19 @@ export const chapter: ChapterDef = {
       ctx.input.rumble(1, 700);
       level.removeCombatant(r.e);
       runner = null;
+      ctx.time.setScale(0.3, 0.05);
+      // hold on the fireball from outside; the wall section gives way under the flash and the dust
+      await level.wait(0.12);
       world.setBreached(true);
+      ctx.fx.debris(V(5, 9, -5), 90, 0x8a8478);
+      ctx.fx.dust(V(5, 6, -5), 50, 0x7a7068);
       // the crossbowmen in the field have done their work: the fight moves inside
       for (const e of [...ctx.combatants.byTeam('enemy')]) if (e.position.z > 4) level.removeCombatant(e);
       breachFires();
-      ctx.time.setScale(0.35, 0.05);
-      // from inside the court: the wall is gone, the Deep floods
-      level.cameraShot({ position: V(-14, 9, -38), lookAt: V(5, 4, -6), fov: 50, blend: 0 });
-      await level.wait(0.9);
+      await level.wait(0.42);
+      // from high in the court: the wall is gone, the Deep floods through the gap
+      level.cameraShot({ position: V(-17, 13, -42), lookAt: V(5, 3, -6), fov: 48, blend: 0 });
+      await level.wait(0.3);
       ctx.time.setScale(1, 0.8);
       ctx.audio.play('uruk_roar', { pos: V(5, 0, 6), volume: 1, pitch: 0.7 });
       ctx.audio.play('horn_orc', { volume: 0.9 });
@@ -482,6 +584,18 @@ export const chapter: ChapterDef = {
       landing = level.spawnEnemy({ archetype: 'uruk', name: 'Uruk-hai', hp: 160 }, L.landingUruk.clone(), 0);
       landing.aiEnabled = false;
       landing.playPose?.('roar', 30);
+      // he is the leap's target: not to be shot dead (or locked onto) before the landing kill
+      const lander = landing;
+      lander.targetable = false;
+      const guardLanding = level.onUpdate(() => {
+        if (!lander.alive) return;
+        if (surf && surf.phase !== 'slide') {
+          lander.targetable = true;
+          return;
+        }
+        lander.hp = lander.maxHp;
+      });
+      world.shieldBeacon.visible = true;
       const stop = level.onUpdate(() => {
         const near = player.position.distanceTo(world.shield.position) < 3.2 && !surfRequested;
         if (near) {
@@ -496,6 +610,7 @@ export const chapter: ChapterDef = {
       beat = 'surf';
       level.objective(null);
       world.shield.visible = false;
+      world.shieldBeacon.visible = false;
       level.music?.('epic');
       player.teleport(V(L.stairTop.x, WALL_H, L.stairTop.z - 0.4), Math.PI);
       surf = makeShieldSurf(level, landing, () => (surfDone = true));
@@ -504,7 +619,11 @@ export const chapter: ChapterDef = {
       await level.waitUntil(() => surfDone, 16);
       player.mover = null; // always release, also on the timeout
       ctx.time.setScale(1, 0.3);
-      if (landing?.alive) landing.aiEnabled = true;
+      guardLanding();
+      if (landing?.alive) {
+        landing.aiEnabled = true;
+        landing.targetable = true;
+      }
       level.music?.(null);
       const n = surf.bowled.length;
       if (n > 0) await line('Gimli', 'That still only counts as one!', 2.2);
@@ -573,8 +692,17 @@ export const chapter: ChapterDef = {
       level.cinematic(false);
     }
 
+    /** the host in the coomb and the elves on the far wall: out of sight from the gate (and ~0.3 M triangles) */
+    const showArmies = (on: boolean) => {
+      world.host.mesh.visible = on;
+      world.front.mesh.visible = on;
+      world.torchSea.points.visible = on;
+      for (const e of world.elves) e.mesh.visible = on;
+    };
+
     async function hornburg(): Promise<void> {
       beat = 'gate';
+      showArmies(false);
       level.objective('Hold the Hornburg gate until dawn');
       await line('Aragorn', 'Hold the gate! Hold it until the sun is up!', 2.2);
       spawnArchers([V(66, 0, -58), V(88, 0, -60)]);
@@ -657,34 +785,51 @@ export const chapter: ChapterDef = {
         en.moveTarget = L.courtRear.clone();
       }
       ctx.audio.play('horn_rohan', { volume: 1.2 });
+      showArmies(true);
       level.cinematic(true);
-      // the riders appear on the long slope to the east
-      const rz = 108;
-      const riderC = V(rightToe(rz) + 58, 0, rz);
-      const charge = createCrowd({ center: riderC, halfSize: [26, 36], count: 460, kind: 'rohirrim', facing: -Math.PI / 2, speed: 0, props: true }, (x, z) => world.ground(x, z));
-      charge.mesh.userData.noAO = true;
-      level.root.add(charge.mesh);
-      crowds.push(charge);
+      // the riders appear on the shelf high on the eastern slope, the White Rider out in front
+      const rz = DAWN_SHOTS.riderZ;
+      const toe = rightToe(rz);
+      const riderC = V(toe + DAWN_SHOTS.riderD, 0, rz);
+      const ground = (x: number, z: number) => world.ground(x, z);
+      const charge = createCrowd({ center: riderC, halfSize: [11, 14], count: 260, kind: 'rohirrim', facing: -Math.PI / 2, speed: 0, props: true }, ground);
+      const whiteC = V(riderC.x - 14, 0, rz - 2);
+      const white = createCrowd({ center: whiteC, halfSize: [0.6, 0.6], count: 2, kind: 'rohirrim', facing: -Math.PI / 2, speed: 0 }, ground);
+      paintCrowd(white, 0xf6f4ee, 1.9);
+      for (const c of [charge, white]) {
+        c.mesh.userData.noAO = true;
+        level.root.add(c.mesh);
+        crowds.push(c);
+      }
       level.setEnvironment(lerpEnv(STORM, DAWN, 0.8));
-      // a long lens from the coomb floor up the eastern slope: the riders massing against the dawn
-      level.cameraShot({ position: V(58, 14, 36), lookAt: V(riderC.x - 12, 52, riderC.z - 4), fov: 24, blend: 0 });
+      const at = (x: number, up: number, z: number) => V(x, world.ground(x, z) + up, z);
+      // from down the slope: the riders massing on the shelf against the dawn sky
+      const A = DAWN_SHOTS.ridge;
+      level.cameraShot({ position: at(A.p[0], A.p[1], A.p[2]), lookAt: at(A.l[0], A.l[1], A.l[2]), fov: A.fov, blend: 0 });
       await level.wait(0.1); // let the cut land before the slow push-in starts from it
-      level.cameraShot({ position: V(58, 15, 38), lookAt: V(riderC.x - 18, 48, riderC.z - 6), fov: 22, blend: 5 });
+      level.cameraShot({ position: at(A.p2[0], A.p2[1], A.p2[2]), lookAt: at(A.l[0], A.l[1], A.l[2]), fov: A.fov, blend: 5 });
       await Promise.all([line('Legolas', 'Look to the east. Riders on the ridge!', 2.4), level.wait(2.6)]);
       level.setEnvironment(DAWN);
+      // the White Rider, close: the sun at his back
+      const W = DAWN_SHOTS.white;
+      level.cameraShot({ position: at(W.p[0], W.p[1], W.p[2]), lookAt: at(W.l[0], W.l[1], W.l[2]), fov: W.fov, blend: 0 });
       ctx.audio.play('horn_rohan', { volume: 1.2, pitch: 0.9 });
       await Promise.all([line('Aragorn', 'Gandalf. The White Rider!', 2), level.wait(2.2)]);
+      // he spurs off, the host of riders behind him
       charge.setSpeed(11);
+      white.setSpeed(11.5);
       ctx.audio.play('horse_neigh', { volume: 1 });
-      // the charge sweeps the coomb: the host thins and flees
-      level.cameraShot({ position: V(104, 5, 80), lookAt: V(152, 22, 110), fov: 46, blend: 0 });
+      await level.wait(1.2);
+      // the charge pours down the slope past the camera and into the host, which breaks and flees
+      const C = DAWN_SHOTS.charge;
+      level.cameraShot({ position: at(C.p[0], C.p[1], C.p[2]), lookAt: at(C.l[0], C.l[1], C.l[2]), fov: C.fov, blend: 0 });
       await level.wait(0.1);
-      level.cameraShot({ position: V(98, 6, 86), lookAt: V(140, 12, 110), fov: 50, blend: 6 });
-      const flee = createCrowd({ center: V(-30, 0, 125), halfSize: [70, 22], count: 700, kind: 'uruk', facing: -Math.PI / 2 - 0.3, speed: 0 }, (x, z) => world.ground(x, z));
+      level.cameraShot({ position: at(C.p2[0], C.p2[1], C.p2[2]), lookAt: at(C.l2[0], C.l2[1], C.l2[2]), fov: C.fov, blend: 4 });
+      const flee = createCrowd({ center: V(-30, 0, 125), halfSize: [70, 22], count: 700, kind: 'uruk', facing: -Math.PI / 2 - 0.3, speed: 0 }, ground);
       flee.mesh.userData.noAO = true;
       level.root.add(flee.mesh);
       crowds.push(flee);
-      let frac = 0.94;
+      let frac = 0.9;
       for (let i = 0; i < 5; i++) {
         await level.wait(1.1);
         world.host.thin(0.28);
@@ -693,6 +838,11 @@ export const chapter: ChapterDef = {
         world.torchSea.setFraction(frac);
         if (i === 1) flee.setSpeed(5.5);
         if (i === 2) ctx.audio.play('uruk_roar', { pos: V(60, 0, 100), volume: 1, pitch: 1.2 });
+        if (i === 3) {
+          // over the host's rear as it breaks toward the far end of the coomb
+          const F = DAWN_SHOTS.flee;
+          level.cameraShot({ position: V(F.p[0], F.p[1], F.p[2]), lookAt: V(F.l[0], F.l[1], F.l[2]), fov: F.fov, blend: 0 });
+        }
       }
       for (const e of [...ctx.combatants.byTeam('enemy')]) level.removeCombatant(e);
       // the abandoned ram is hauled clear of the gate while the camera is on the charge
@@ -750,15 +900,16 @@ export const chapter: ChapterDef = {
     const hintStairWalk = walk(L.stairTop.x, -0.8);
     const hintStairHead = V(L.stairTop.x, WALL_H, L.stairTop.z + 2);
     const hintStairFoot = V(L.stairBottom.x, 0, L.stairBottom.z - 3);
+    const hintBreachTurn = V(-17, 0, -76);
 
     return {
       start(cp: number): void {
         const c = clamp(cp, 0, 3);
         if (c >= 1) {
           for (const l of ladders) l.hide();
-          world.front.thin(0.22);
-          world.host.thin(0.04);
-          world.torchSea.setFraction(0.94);
+          world.front.thin(0.4);
+          world.host.thin(0.06);
+          world.torchSea.setFraction(0.9);
         }
         if (c >= 2) {
           world.setBreached(true);
@@ -818,8 +969,13 @@ export const chapter: ChapterDef = {
           }
           case 'surf':
             return { moveTo: L.landingUruk };
-          case 'breach':
+          case 'breach': {
+            // from the stair foot, round the east side of the stair (a straight line runs up its cheek)
+            const p = player.position;
+            if (p.y > 1.2 && Math.abs(p.x - L.stairTop.x) < 6 && p.z > L.stairBottom.z) return { moveTo: hintStairFoot };
+            if (p.x < -18.5 && p.z < -48) return { moveTo: hintBreachTurn };
             return { moveTo: L.breachFight };
+          }
           case 'gate':
           case 'fallback':
             return { moveTo: L.gateHold, lookAt: L.causewayStart };

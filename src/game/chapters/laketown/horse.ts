@@ -17,6 +17,7 @@ import { paintGeometry } from '../../../creatures/kit/geometry';
 import { surface } from '../../../creatures/kit/surfaces';
 import { mulberry32 } from '../../../core/rng';
 import { yawOf } from '../../../core/math';
+import { BaseCombatant } from '../../../actors/combatant';
 import { D } from './layout';
 
 export function horseRig(s = 1): RigDef {
@@ -139,9 +140,11 @@ export function createHorseCreature(seed = 0, scale = 1): HorseDemo {
     hair: (r) => mane(r, scale),
     hairMaterial: { roughness: 0.7, anisotropy: 0.5, sheen: 0.4, sheenColor: 0x2a2420, alphaTest: 0.4 },
     extra: (ctx) => {
-      // a simple saddle blanket and strap so the rider has something to sit on
-      const blanket = new THREE.BoxGeometry(0.64 * scale, 0.05 * scale, 0.62 * scale);
-      ctx.add(paintGeometry(blanket, { bone: rig.boneIndex('spine'), color: 0x4a2a1c, mat: 'wool', matrix: new THREE.Matrix4().makeTranslation(0, 1.5 * scale, -0.04 * scale) }));
+      // a saddle blanket draped over the back: a low hump that hugs the barrel, dark wool (the old flat
+      // box stuck out beside the horse and lit up orange)
+      const blanket = new THREE.SphereGeometry(1, 14, 6, 0, Math.PI * 2, 0, Math.PI / 2);
+      blanket.scale(0.3 * scale, 0.1 * scale, 0.27 * scale);
+      ctx.add(paintGeometry(blanket, { bone: rig.boneIndex('spine'), color: 0x2a1812, mat: 'wool', matrix: new THREE.Matrix4().makeTranslation(0, 1.31 * scale, -0.04 * scale) }));
     },
   });
   const ps = c.pose;
@@ -241,75 +244,96 @@ export interface HorseRig {
   readonly galloping: boolean;
 }
 
-export function createHorse(level: LevelAPI, pos: THREE.Vector3, facing = 0): HorseRig {
-  const SCALE = 1.2;
-  const demo = createHorseCreature(1, SCALE);
-  const group = new THREE.Group();
-  group.name = 'horse';
-  group.add(demo.object);
-  group.position.copy(pos);
-  group.position.y = D;
-  group.rotation.y = facing;
-  level.root.add(group);
-  demo.object.traverse((o) => ((o as THREE.Mesh).isMesh ? ((o as THREE.Mesh).castShadow = true) : undefined));
-  let rider: Humanoid | null = null;
-  let speed = 0;
-  let phase = 0;
-  let t = 0;
-  let rearT = -1;
-  let target: THREE.Vector3 | null = null;
-  let top = 12;
-  const riderAnim = { speed: 0, moveDir: { x: 0, z: 1 }, grounded: true, vy: 0, aim: 0, draw: 0, aimPitch: 0, attack: null, hit: 0, dead: 0, deathVariant: 0, special: 'ride', specialT: 0, lookAt: null } as Parameters<Humanoid['animate']>[1];
-  const stop = level.onUpdate((dt) => {
-    t += dt;
+const HORSE_SCALE = 1.2;
+
+/**
+ * The horse as a Combatant (a neutral one: never targeted, never hostile) with hit zones on its
+ * bones, so arrows that cross it stick like they should. It drives its own pose each step.
+ */
+export class Horse extends BaseCombatant implements HorseRig {
+  private readonly demo: HorseDemo;
+  private rider: Humanoid | null = null;
+  private speed = 0;
+  private phase = 0;
+  private t = 0;
+  private rearT = -1;
+  private target: THREE.Vector3 | null = null;
+  private top = 12;
+  private readonly riderAnim = { speed: 0, moveDir: { x: 0, z: 1 }, grounded: true, vy: 0, aim: 0, draw: 0, aimPitch: 0, attack: null, hit: 0, dead: 0, deathVariant: 0, special: 'ride', specialT: 0, lookAt: null } as Parameters<Humanoid['animate']>[1];
+
+  constructor(private readonly level: LevelAPI, pos: THREE.Vector3, facing = 0) {
+    super({ team: 'neutral', name: 'Horse', maxHp: 400, radius: 0.7, height: 1.9, bloodKind: 'red' });
+    this.demo = createHorseCreature(1, HORSE_SCALE);
+    this.object.name = 'horse';
+    this.object.add(this.demo.object);
+    this.object.position.copy(pos);
+    this.object.position.y = D;
+    this.object.rotation.y = facing;
+    this.demo.object.traverse((o) => ((o as THREE.Mesh).isMesh ? ((o as THREE.Mesh).castShadow = true) : undefined));
+    const b = this.demo.creature.rig.byName;
+    this.addZoneSphere(b.chest, 0.38 * HORSE_SCALE, 'body', 1, new THREE.Vector3(0, -0.1, 0));
+    this.addZoneSphere(b.pelvis, 0.36 * HORSE_SCALE, 'body');
+    this.addZoneSphere(b.head, 0.16 * HORSE_SCALE, 'head', 2, new THREE.Vector3(0, -0.12, 0.2));
+    this.aimBone = b.chest;
+    this.targetable = false;
+  }
+
+  mount(r: Humanoid): void {
+    this.rider = r;
+    r.root.removeFromParent();
+    this.object.add(r.root);
+    r.root.position.copy(this.demo.seat);
+    r.root.position.y -= 0.55;
+    r.root.rotation.set(0, 0, 0);
+  }
+
+  gallop(to: THREE.Vector3, v: number): void {
+    this.target = to.clone();
+    this.top = v;
+    this.rearT = 0;
+  }
+
+  get galloping(): boolean {
+    return this.speed > 2;
+  }
+
+  update(dt: number): void {
+    if (dt <= 0) return;
+    if (!this.alive) {
+      this.updateDeath(dt);
+      return;
+    }
+    const g = this.object;
+    this.t += dt;
     let rear = 0;
-    if (rearT >= 0) {
-      rearT += dt;
-      rear = Math.min(1, rearT / 0.45) * (rearT < 1.0 ? 1 : Math.max(0, 1 - (rearT - 1.0) / 0.4));
-      if (rearT > 1.4) {
-        rearT = -1;
-        speed = 0.1;
+    if (this.rearT >= 0) {
+      this.rearT += dt;
+      rear = Math.min(1, this.rearT / 0.45) * (this.rearT < 1.0 ? 1 : Math.max(0, 1 - (this.rearT - 1.0) / 0.4));
+      if (this.rearT > 1.4) {
+        this.rearT = -1;
+        this.speed = 0.1;
       }
-    } else if (target) {
-      speed = Math.min(top, speed + 9 * dt);
-      const dx = target.x - group.position.x;
-      const dz = target.z - group.position.z;
+    } else if (this.target) {
+      this.speed = Math.min(this.top, this.speed + 9 * dt);
+      const dx = this.target.x - g.position.x;
+      const dz = this.target.z - g.position.z;
       const d = Math.hypot(dx, dz);
-      group.rotation.y = yawOf(dx, dz);
-      group.position.x += (dx / Math.max(d, 1e-3)) * speed * dt;
-      group.position.z += (dz / Math.max(d, 1e-3)) * speed * dt;
-      group.position.y = Math.max(D, level.ctx.physics.heightAt(group.position.x, group.position.z));
-      // gallop on, then fade (the dark takes him)
-      if (d < 1) target = null;
+      g.rotation.y = yawOf(dx, dz);
+      g.position.x += (dx / Math.max(d, 1e-3)) * this.speed * dt;
+      g.position.z += (dz / Math.max(d, 1e-3)) * this.speed * dt;
+      g.position.y = Math.max(D, this.level.ctx.physics.heightAt(g.position.x, g.position.z));
+      if (d < 1) this.target = null;
     }
-    const freq = quadGait(0, speed, 1.05 * SCALE).freq;
-    phase += freq * dt;
-    demo.drive(speed, phase, rear);
-    demo.creature.update(dt);
-    if (rider) {
-      riderAnim.speed = 0;
-      rider.animate(dt, riderAnim);
-    }
-  });
-  void stop;
-  return {
-    object: group,
-    mount(r: Humanoid) {
-      rider = r;
-      r.root.removeFromParent();
-      group.add(r.root);
-      r.root.position.copy(demo.seat);
-      r.root.position.y -= 0.42;
-      r.root.rotation.set(0, 0, 0);
-    },
-    gallop(to: THREE.Vector3, v: number) {
-      target = to.clone();
-      top = v;
-      rearT = 0;
-    },
-    get galloping() {
-      return speed > 2;
-    },
-  };
+    this.phase += quadGait(0, this.speed, 1.05 * HORSE_SCALE).freq * dt;
+    this.demo.drive(this.speed, this.phase, rear);
+    this.demo.creature.update(dt);
+    if (this.rider) this.rider.animate(dt, this.riderAnim);
+    this.afterAnimate();
+  }
 }
 
+export function createHorse(level: LevelAPI, pos: THREE.Vector3, facing = 0): Horse {
+  const h = new Horse(level, pos, facing);
+  level.addCombatant(h);
+  return h;
+}

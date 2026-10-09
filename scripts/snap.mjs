@@ -46,6 +46,7 @@ const opt = (name, def) => {
 const out = resolve(root, opt('out', 'shots/snap.png'));
 const [W, H] = String(opt('size', '1280x720')).split('x').map(Number);
 const timeout = Number(opt('timeout', 60000));
+const SHOT_TIMEOUT = Number(opt('shot-timeout', 180000));
 const delay = Number(opt('delay', 300));
 const advance = Number(opt('advance', 0));
 const frames = Number(opt('frames', 1));
@@ -153,7 +154,7 @@ try {
       () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null)))),
     );
     const file = frames > 1 ? out.replace(/\.png$/, `-${i}.png`) : out;
-    await page.screenshot({ path: file });
+    await page.screenshot({ path: file, timeout: SHOT_TIMEOUT });
     result.shots.push(file);
   }
   if (evalExpr) {

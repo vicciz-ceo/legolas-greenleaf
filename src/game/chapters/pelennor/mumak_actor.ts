@@ -42,12 +42,48 @@ function wrapS(path: Path, s: number, loop: boolean): number {
 // Weak points and the boss-bar proxy
 // ─────────────────────────────────────────────────────────────────────────────
 
+let markTex: THREE.CanvasTexture | null = null;
+/** a reticle: ring, four ticks and a centre dot, with a dark rim so it reads on pale hide and sky */
+function markTexture(): THREE.CanvasTexture {
+  if (markTex) return markTex;
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  g.lineCap = 'round';
+  for (const [w, col] of [[11, 'rgba(20,8,0,0.55)'], [5, 'rgba(255,255,255,1)']] as [number, string][]) {
+    g.strokeStyle = col;
+    g.lineWidth = w;
+    g.beginPath();
+    g.arc(64, 64, 38, 0, Math.PI * 2);
+    g.stroke();
+    for (let k = 0; k < 4; k++) {
+      const a = (k * Math.PI) / 2 + Math.PI / 4;
+      g.beginPath();
+      g.moveTo(64 + Math.cos(a) * 46, 64 + Math.sin(a) * 46);
+      g.lineTo(64 + Math.cos(a) * 58, 64 + Math.sin(a) * 58);
+      g.stroke();
+    }
+  }
+  g.fillStyle = 'rgba(255,255,255,1)';
+  g.beginPath();
+  g.arc(64, 64, 7, 0, Math.PI * 2);
+  g.fill();
+  markTex = new THREE.CanvasTexture(c);
+  markTex.colorSpace = THREE.SRGBColorSpace;
+  markTex.userData.shared = true;
+  return markTex;
+}
+
 export class WeakPoint extends BaseCombatant {
   /** hits only count while armed */
   armed = false;
   /** girth side (+1 left, -1 right) for the "can I see it" test; 0 = always */
   side = 0;
   onHit: ((wp: WeakPoint) => void) | null = null;
+  /** the pulsing reticle shown while armed (girths: on the near flank only; skull: through the hide) */
+  private readonly mark: THREE.Sprite;
+  private markT = 0;
+  private flash = 0;
   constructor(
     private readonly level: LevelAPI,
     readonly anchor: THREE.Object3D,
@@ -61,7 +97,18 @@ export class WeakPoint extends BaseCombatant {
     this.aimBone = anchor;
     this.targetable = false;
     this.corpseTime = -1;
+    const skull = hits >= 3;
+    this.mark = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: markTexture(), color: skull ? 0xffb43c : 0xffd060, transparent: true, depthTest: !skull, depthWrite: false, fog: false, opacity: 0 }),
+    );
+    this.mark.name = `mark:${name}`;
+    this.mark.renderOrder = 6;
+    this.mark.visible = false;
+    this.mark.userData.noAO = true;
+    this.markSize = skull ? 2.4 : 1.25;
+    level.root.add(this.mark);
   }
+  private readonly markSize: number;
   protected filterDamage(d: DamageInfo): number {
     if (!this.armed || d.type !== 'arrow') return 0;
     return 1;
@@ -73,13 +120,15 @@ export class WeakPoint extends BaseCombatant {
       fx.dust(d.point, 2, 0x6a5040);
     }
     this.level.ctx.audio.play('arrow_hit_wood', { pos: d.point ?? this.position, volume: 1, pitch: 0.8 });
+    this.flash = 1;
     this.onHit?.(this);
   }
-  update(): void {
+  update(dt = 0): void {
     this.anchor.getWorldPosition(this.object.position);
     this.object.position.y -= 0.6;
+    let see = false;
     if (this.alive) {
-      let see = this.armed;
+      see = this.armed;
       if (see && this.side !== 0) {
         // left of the beast in world = its +X axis
         _v.set(this.side, 0, 0).applyQuaternion(this.owner.object.quaternion);
@@ -88,7 +137,31 @@ export class WeakPoint extends BaseCombatant {
       }
       this.targetable = see;
     }
+    // the reticle: pulses while armed, flares on a hit
+    const mk = this.mark;
+    mk.visible = see && !this.owner.dead;
+    if (mk.visible) {
+      this.markT += dt;
+      this.flash = Math.max(0, this.flash - dt * 2.5);
+      this.anchor.getWorldPosition(mk.position);
+      if (this.side !== 0) {
+        // just proud of the strap, on the flank it is seen from
+        _v.set(this.side * 0.45, 0, 0).applyQuaternion(this.owner.object.quaternion);
+        mk.position.add(_v);
+      } else mk.position.y += 0.9;
+      const pulse = 0.5 + 0.5 * Math.sin(this.markT * 5.5);
+      mk.scale.setScalar(this.markSize * (1 + 0.12 * pulse + 0.5 * this.flash));
+      (mk.material as THREE.SpriteMaterial).opacity = 0.55 + 0.3 * pulse + 0.15 * this.flash;
+    }
     this.afterAnimate();
+  }
+  protected onDied(): void {
+    this.mark.visible = false;
+  }
+  dispose(): void {
+    this.mark.removeFromParent();
+    this.mark.material.dispose();
+    super.dispose();
   }
 }
 
@@ -112,10 +185,11 @@ function decalTexture(): THREE.CanvasTexture {
   c.width = c.height = 128;
   const g = c.getContext('2d')!;
   const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
-  grad.addColorStop(0, 'rgba(255,255,255,0.16)');
-  grad.addColorStop(0.62, 'rgba(255,255,255,0.22)');
-  grad.addColorStop(0.8, 'rgba(255,255,255,0.95)');
-  grad.addColorStop(0.9, 'rgba(255,255,255,0.55)');
+  // a broad, solid band (it is seen at a grazing angle from 40 m+) around a faint fill
+  grad.addColorStop(0, 'rgba(255,255,255,0.22)');
+  grad.addColorStop(0.5, 'rgba(255,255,255,0.3)');
+  grad.addColorStop(0.62, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.9, 'rgba(255,255,255,1)');
   grad.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = grad;
   g.fillRect(0, 0, 128, 128);
@@ -152,6 +226,8 @@ export interface MumakActorOpts {
   /** walking speed (m/s) */
   cruise?: number;
 }
+
+const _cam = new THREE.Vector3();
 
 export class MumakActor extends BaseCombatant implements CrewHost {
   readonly model: MumakModel;
@@ -206,6 +282,12 @@ export class MumakActor extends BaseCombatant implements CrewHost {
   private readonly ringFlash = [0, 0, 0, 0];
   private readonly zoneDecals: Record<'sweep' | 'gore' | 'stomp', THREE.Mesh>;
   private readonly rnd: () => number;
+  private passT = 0;
+  /** added to the level (the level then owns its disposal) */
+  registered = false;
+  private castsShadow = true;
+  /** the meshes that cast a shadow by design (toggled together by distance) */
+  private readonly casters: THREE.Object3D[] = [];
   /** called on every footfall (world position, foot index) */
   onFootfall: ((pos: THREE.Vector3, i: number) => void) | null = null;
   /** called when a girth is cut */
@@ -255,18 +337,24 @@ export class MumakActor extends BaseCombatant implements CrewHost {
       stomp: decalMesh(new THREE.CircleGeometry(10, 40).rotateX(-Math.PI / 2), 0xff4a1a),
     };
     for (const d of Object.values(this.zoneDecals)) this.level.root.add(d);
+    this.model.object.traverse((ob) => {
+      if ((ob as THREE.Mesh).isMesh && ob.castShadow) this.casters.push(ob);
+    });
     if (o.crew !== false) this.spawnCrew();
   }
 
   /** register with the level: the beast, its weak points and its crew */
   register(): void {
+    this.registered = true;
     this.level.addCombatant(this);
     for (const g of this.girths) this.level.addCombatant(g);
     this.level.addCombatant(this.skull);
     for (const c of this.crew) this.level.addCombatant(c);
   }
 
-  private spawnCrew(): void {
+  /** man the howdah (once): built at start() so the crew humanoids are cache hits after preload */
+  spawnCrew(): void {
+    if (this.crew.length) return;
     const h = this.model.howdah!;
     const roles: ('archer' | 'spear')[] = ['archer', 'archer', 'archer', 'spear'];
     h.slots.forEach((slot, i) => {
@@ -285,6 +373,9 @@ export class MumakActor extends BaseCombatant implements CrewHost {
   }
   alert(): boolean {
     return this.crewAlert;
+  }
+  climbing(): boolean {
+    return this.mounted && !this.onDeck && this.howdahState === 'on';
   }
   groundAt(x: number, z: number): number {
     return this.ground(x, z);
@@ -325,6 +416,10 @@ export class MumakActor extends BaseCombatant implements CrewHost {
     r.path.at(wrapS(r.path, s - 3, r.loop), _a);
     r.path.at(wrapS(r.path, s + 6, r.loop), _b);
     return out.subVectors(_b, _a).setY(0).normalize();
+  }
+  /** index of the route leg being walked */
+  get legIndex(): number {
+    return this.leg;
   }
   /** the end of a non-looping leg was reached */
   get routeDone(): boolean {
@@ -514,6 +609,20 @@ export class MumakActor extends BaseCombatant implements CrewHost {
       }
     }
 
+    // ── render passes: the hero mesh (~65 k triangles) only casts into the shadow box and joins
+    // the ambient-occlusion pre-pass when it is close enough for either to show ──
+    this.passT -= dt;
+    if (this.passT <= 0) {
+      this.passT = 0.25;
+      const dp = Math.hypot(player.position.x - this.object.position.x, player.position.z - this.object.position.z);
+      const dc = ctx.engine.camera.getWorldPosition(_cam).distanceTo(this.object.position);
+      const cast = dp < 60;
+      if (cast !== this.castsShadow) {
+        this.castsShadow = cast;
+        for (const o of this.casters) o.castShadow = cast;
+      }
+      this.model.object.userData.noAO = dc > 70;
+    }
     // ── animate ──
     an.speed = this.speed;
     an.turn = clamp(turn, -0.3, 0.3);
@@ -716,7 +825,7 @@ export class MumakActor extends BaseCombatant implements CrewHost {
     const show = !this.dead && !this.mounted && this.speed > 0.2;
     const player = this.level.ctx.player;
     const pd = player.position.distanceTo(this.object.position);
-    const near = pd < 90;
+    const near = pd < 110;
     for (let i = 0; i < 4; i++) {
       const ring = this.rings[i];
       const f = g.legs[i];
@@ -739,12 +848,13 @@ export class MumakActor extends BaseCombatant implements CrewHost {
         _a.y = this.ground(_a.x, _a.z) + 0.25;
         ring.position.copy(_a);
         const k = THREE.MathUtils.smoothstep(f.u, 0.1, 0.85);
-        ring.scale.setScalar(5.2 - k * 0.8);
-        mat.opacity = 0.18 + k * 0.6;
+        // a little larger with distance so the ring still reads from across the field
+        ring.scale.setScalar((6 - k * 0.9) * (1 + clamp((pd - 30) / 60, 0, 1) * 0.35));
+        mat.opacity = 0.4 + k * 0.55;
         ring.visible = true;
       } else if (this.ringFlash[i] > 0) {
-        ring.scale.setScalar(4.4 + (1 - this.ringFlash[i]) * 2.5);
-        mat.opacity = this.ringFlash[i] * 0.7;
+        ring.scale.setScalar(5 + (1 - this.ringFlash[i]) * 3);
+        mat.opacity = this.ringFlash[i] * 0.9;
         ring.visible = true;
       } else ring.visible = false;
     }
