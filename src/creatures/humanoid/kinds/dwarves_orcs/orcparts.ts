@@ -216,7 +216,7 @@ export function skinMottle(ctx: KindContext, rng: Rng, tones: number[], o: { n?:
  * mottled paint. Call it FIRST in the extras so garments, teeth and markings added afterwards
  * keep their own colours. `torso: false` leaves the body under garments alone.
  */
-export function skinTint(ctx: KindContext, o: { color: number; color2: number; noise?: number; strength?: number; torso?: boolean; legs?: boolean; mat?: SurfaceName; freq?: number; dim?: number }) {
+export function skinTint(ctx: KindContext, o: { color: number; color2: number; noise?: number; strength?: number; torso?: boolean; legs?: boolean; mat?: SurfaceName; freq?: number; dim?: number; /** upper-arm tint starts this far down the arm (clear of a sleeve) */ sleeve?: number; /** leg tint only over this stretch of hip → foot (clear of a kilt and wraps) */ legRange?: [number, number] }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const u = P.headH;
@@ -229,7 +229,9 @@ export function skinTint(ctx: KindContext, o: { color: number; color2: number; n
     const a = P.j[`upperarm_${sd}`];
     const e = P.j[`forearm_${sd}`];
     const w = P.j[`hand_${sd}`];
-    s.cone(a, e, 0.075 * sc, 0.065 * sc, { ...base, bone: `upperarm_${sd}`, k: 0.03 * sc });
+    const f = o.sleeve ?? 0;
+    const a0: [number, number, number] = [a[0] + (e[0] - a[0]) * f, a[1] + (e[1] - a[1]) * f, a[2] + (e[2] - a[2]) * f];
+    s.cone(a0, e, 0.075 * sc, 0.065 * sc, { ...base, bone: `upperarm_${sd}`, k: (f > 0 ? 0.012 : 0.03) * sc });
     s.cone(e, [w[0] + (w[0] - e[0]) * 0.5, w[1] + (w[1] - e[1]) * 0.5, w[2]], 0.06 * sc, 0.05 * sc, { ...base, bone: `forearm_${sd}`, k: 0.03 * sc });
   }
   if (o.torso !== false && !devSkip('torsotint')) {
@@ -238,6 +240,11 @@ export function skinTint(ctx: KindContext, o: { color: number; color2: number; n
     s.ellipsoid([0, (hipY + shY) / 2 + 0.05 * sc, 0], [0.24 * sc * P.build.shoulders, (shY - hipY) / 2 + 0.02 * sc, 0.2 * sc * P.build.bulk], { ...base, bone: 'chest', k: 0.11 * sc, strength: str * 0.9 });
   }
   if (o.legs) {
-    for (const sd of ['l', 'r'] as const) s.cone(P.j[`thigh_${sd}`], P.j[`foot_${sd}`], 0.1 * sc, 0.06 * sc, { ...base, bone: `shin_${sd}`, k: 0.03 * sc });
+    const [r0, r1] = o.legRange ?? [0, 1];
+    for (const sd of ['l', 'r'] as const) {
+      const t = P.j[`thigh_${sd}`], f = P.j[`foot_${sd}`];
+      const at = (k: number): [number, number, number] => [t[0] + (f[0] - t[0]) * k, t[1] + (f[1] - t[1]) * k, t[2] + (f[2] - t[2]) * k];
+      s.cone(at(r0), at(r1), 0.1 * sc * (1 - 0.3 * r0), 0.06 * sc + 0.04 * sc * (1 - r1), { ...base, bone: `shin_${sd}`, k: (o.legRange ? 0.012 : 0.03) * sc });
+    }
   }
 }

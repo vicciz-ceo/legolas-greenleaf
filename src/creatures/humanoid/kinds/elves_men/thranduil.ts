@@ -19,18 +19,18 @@ import { sculptTorso } from './garments';
 import { twigCrown } from './headgear';
 
 const PAL = {
-  hair: 0xe5dcc4,
-  hairTip: 0xf2ece0,
-  skin: 0xe9d3c1,
-  skin2: 0xdcc0ac,
+  hair: 0xcfcdc3, // sheet: platinum-silver, root #bdbcb4 → tip #e1e0d8
+  hairTip: 0xe6e4dc,
+  skin: 0xe8cbbb, // #e7c7b7
+  skin2: 0xdbb8a6,
   lips: 0xa9706a,
   brows: 0x8b7b64,
-  eyes: 0x93b3cf,
+  eyes: 0x5d8bb5,
   leggings: 0x34343a,
-  boots: 0x2b2825,
-  robe: 0x797a87,
+  boots: 0x5a4a3e, // worn brown leather #665447
+  robe: 0xb0aca2, // silver brocade #c2beb4
   robeTrim: 0xb9ad92,
-  cloak: 0x3b101a,
+  cloak: 0x58141f, // wine-red velvet #6c192e (velvet sheen lifts it)
   cloakTrim: 0x9d7f48,
   belt: 0x6e5d3c,
   silver: 0xc4c4cc,
@@ -50,7 +50,7 @@ function thranduilExtras(ctx: KindContext) {
 
   withHair(ctx, () => {
     // long hair that hangs over the cloak
-    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.22), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.45 });
+    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.55), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.45 });
   });
 
   // ── the crown ──
@@ -170,6 +170,7 @@ export const thranduilDef: KindDef = {
   sfx: { voice: 'elf', hurt: 'hurt', die: 'player_death', footstep: 'footstep', weight: 0.4 },
   anim: { grace: 1, swagger: 0.12, aggression: 0.2, stance: 1.0, armSwing: 0.7, cadence: 0.95 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { detailScale: 1, res: devNum('res', 0.05), headRes: devNum('headRes', 0.0095), faceRes: 0 },
+  // named character: a fine face region within the 45k budget
+  detail: { detailScale: 1, res: devNum('res', 0.05), headRes: devNum('headRes', 0.0085), faceRes: devNum('faceRes', 0.0056), refine: 1, hands: false },
   extras: thranduilExtras,
 };

@@ -80,6 +80,8 @@ export interface SkirtOpts {
   flare?: number;
   /** ragged hem amplitude (m) */
   ragged?: number;
+  /** extra clearance all round (m): for bodies sculpted bigger than the anatomy (trolls) */
+  grow?: number;
   seed?: number;
 }
 
@@ -98,12 +100,13 @@ export function skirtGeometry(P: Proportions, rig: RigDef, o: SkirtOpts): THREE.
   const n2 = noise2(o.seed ?? 3);
   const base = new THREE.Color().setHex(o.color, THREE.SRGBColorSpace);
   const trim = new THREE.Color().setHex(o.color2 ?? o.color, THREE.SRGBColorSpace);
-  const rx0 = 0.158 * s * hips * Math.sqrt(g) + 0.012 * s;
-  const rz0 = 0.112 * s * Math.sqrt(g) + 0.012 * s;
+  const grow = o.grow ?? 0;
+  const rx0 = 0.158 * s * hips * Math.sqrt(g) + 0.012 * s + grow;
+  const rz0 = 0.112 * s * Math.sqrt(g) + 0.012 * s + grow;
   // leg envelope at the hem height: legs at ±hipX with thigh radius
   const legR = 0.08 * s * g;
-  const rx1 = Math.max(rx0, P.hipX + legR + 0.03 * s) + (o.flare ?? 0.04 * s);
-  const rz1 = Math.max(rz0, legR + 0.035 * s) + (o.flare ?? 0.04 * s) * 0.8;
+  const rx1 = Math.max(rx0, P.hipX + legR + 0.03 * s + grow) + (o.flare ?? 0.04 * s);
+  const rz1 = Math.max(rz0, legR + 0.035 * s + grow) + (o.flare ?? 0.04 * s) * 0.8;
   const H = o.top - o.bottom;
   const nv = Math.max(4, Math.round(H / (0.045 * s)));
   const w: [number, number][] = [];

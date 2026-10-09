@@ -404,6 +404,13 @@ export interface SpringOpts {
   /** gravity (m/s², model/world down) default 6 */
   gravity?: number;
   colliders?: SpringCollider[];
+  /**
+   * Orientation reference (optional): the chain's rest targets and twist follow this bone
+   * (blended by `weight`) instead of only the chain's parent. Long hair hangs from the head but
+   * lies on the back: with the chest as reference, a turned head no longer swings the hair
+   * around the neck onto the shoulders.
+   */
+  frame?: { bone: number; weight: number };
 }
 
 /**
@@ -421,7 +428,7 @@ export class SpringChain {
   private acc = 0;
   private lens: number[];
   private colOff: THREE.Vector3[];
-  readonly opts: Required<Omit<SpringOpts, 'colliders'>> & { colliders: SpringCollider[] };
+  readonly opts: Required<Omit<SpringOpts, 'colliders' | 'frame'>> & { colliders: SpringCollider[]; frame?: SpringOpts['frame'] };
 
   constructor(ps: PoseSolver, bones: number[], lastTail: V3, o: SpringOpts = {}) {
     this.bones = bones;
@@ -432,13 +439,20 @@ export class SpringChain {
       this.cur.push(new THREE.Vector3());
       this.prev.push(new THREE.Vector3());
     }
-    this.opts = { stiffness: o.stiffness ?? 0.08, drag: o.drag ?? 0.12, gravity: o.gravity ?? 6, colliders: o.colliders ?? [] };
+    this.opts = { stiffness: o.stiffness ?? 0.08, drag: o.drag ?? 0.12, gravity: o.gravity ?? 6, colliders: o.colliders ?? [], frame: o.frame };
     this.lens = this.tails.map((t) => t.length());
     this.colOff = this.opts.colliders.map((c) => new THREE.Vector3(c.offset[0], c.offset[1], c.offset[2]));
   }
   reset() {
     this.init = false;
     this.acc = 0;
+  }
+  private _ref = new THREE.Quaternion();
+  /** the bone's reference orientation: its animated one, blended toward the frame bone */
+  private refQ(ps: PoseSolver, b: number): THREE.Quaternion {
+    const f = this.opts.frame;
+    if (!f || f.weight <= 0) return this._ref.copy(ps.modelQ[b]);
+    return this._ref.copy(ps.modelQ[b]).slerp(ps.modelQ[f.bone], Math.min(1, f.weight));
   }
   /** root: the object whose matrixWorld maps model → world (the creature's root group) */
   update(ps: PoseSolver, dt: number, rootMatrix: THREE.Matrix4) {
@@ -449,7 +463,7 @@ export class SpringChain {
     if (!this.init) {
       for (let k = 0; k < n; k++) {
         const b = this.bones[k];
-        this.cur[k].copy(this.tails[k]).applyQuaternion(ps.modelQ[b]).add(ps.modelP[b]).applyMatrix4(rootMatrix);
+        this.cur[k].copy(this.tails[k]).applyQuaternion(this.refQ(ps, b)).add(ps.modelP[b]).applyMatrix4(rootMatrix);
         this.prev[k].copy(this.cur[k]);
       }
       this.init = true;
@@ -462,7 +476,8 @@ export class SpringChain {
         const b = this.bones[k];
         // head of this bone in world (from the current solved chain)
         const head = _va.copy(ps.modelP[b]).applyMatrix4(rootMatrix);
-        const target = _vb.copy(this.tails[k]).applyQuaternion(ps.modelQ[b]).add(ps.modelP[b]).applyMatrix4(rootMatrix);
+        const refQ = this.refQ(ps, b);
+        const target = _vb.copy(this.tails[k]).applyQuaternion(refQ).add(ps.modelP[b]).applyMatrix4(rootMatrix);
         const c = this.cur[k];
         const p = this.prev[k];
         const vx = (c.x - p.x) * (1 - this.opts.drag), vy = (c.y - p.y) * (1 - this.opts.drag), vz = (c.z - p.z) * (1 - this.opts.drag);
@@ -492,9 +507,9 @@ export class SpringChain {
         const dir = tailModel.sub(ps.modelP[b]).normalize();
         const restDir = _vb.copy(this.tails[k]).normalize();
         // minimal rotation from the bone's current animated direction to the simulated one
-        const curDir = _va.copy(restDir).applyQuaternion(ps.modelQ[b]);
+        const curDir = _va.copy(restDir).applyQuaternion(refQ);
         _qa.setFromUnitVectors(curDir, dir);
-        _qb.copy(_qa).multiply(ps.modelQ[b]);
+        _qb.copy(_qa).multiply(refQ);
         ps.setModelRotation(b, _qb);
         ps.fkFrom(b);
       }

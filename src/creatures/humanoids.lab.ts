@@ -191,8 +191,28 @@ const CATEGORY: Partial<Record<HumanoidKind, LabSubject['category']>> = {
   tauriel: 'ally', elf: 'ally', thranduil: 'ally', aragorn: 'ally', man: 'ally', rohirrim: 'ally', gondor: 'ally', gimli: 'ally', dwarf: 'ally',
 };
 
+/**
+ * The player camera's view of Legolas: turned so the lab's `single` view (yaw 35°, pitch 12°)
+ * looks at his back over the right shoulder, as in the game. `&yaw=<deg>` adds a turn.
+ */
+function shoulderSubject(): LabSubject {
+  return {
+    name: 'legolas_shoulder',
+    category: 'hero',
+    async create(): Promise<LabInstance> {
+      const inst = await humanoidSubject('legolas_shoulder', 'legolas', 'hero', LEGOLAS_ANIMS).create();
+      const yaw = Number(new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('yaw') ?? 0);
+      const turn = new THREE.Group();
+      turn.rotation.y = Math.PI + THREE.MathUtils.degToRad(yaw);
+      turn.add(inst.object);
+      return { ...inst, object: turn };
+    },
+  };
+}
+
 export const subjects: LabSubject[] = [
   humanoidSubject('legolas', 'legolas', 'hero', LEGOLAS_ANIMS),
+  shoulderSubject(),
   ...ALL_KINDS.filter((k) => k !== 'legolas').map((k) => humanoidSubject(`humanoid_${k}`, k, CATEGORY[k] ?? 'enemy', NPC_ANIMS)),
   // the kit's fallback kinds (the dressers' definitions replace them in the game)
   ...(['troll', 'orc', 'gimli'] as HumanoidKind[]).map(

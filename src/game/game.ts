@@ -460,6 +460,8 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     hud.setPrompt(null);
     hud.setProgress(null);
     hud.setFocusMarks([]);
+    hud.clearSubtitles?.();
+    hud.clearToasts?.();
     backdrop = null;
     mood = 'none';
     moodHold = 0;

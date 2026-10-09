@@ -139,8 +139,11 @@ export interface OutfitLayer {
   /** trim / secondary colour */
   color2?: number;
   mat?: SurfaceName | SurfaceSpec;
-  /** 0..1 length (tunic/robe/cloak hem, sleeve length…) */
+  /** 0..1 length (tunic/robe/cloak hem, sleeve length…; bracers: fraction of the forearm
+   *  covered from the wrist, default 0.7) */
   length?: number;
+  /** belt/sash: height offset (m at 1.85 m scale) from the default just above the hip joints */
+  offset?: number;
   /** extra thickness (m) */
   thickness?: number;
   /** probability this layer appears (seed-varied crowds) */
@@ -218,6 +221,11 @@ export interface DetailDef {
   faceRes?: number;
   /** procedural detail scale (1 human, 2.5 troll) */
   detailScale?: number;
+  /** seam-refinement levels (default: 2 with a face region, else 1). Named NPCs with a face
+   *  region use 1 to stay within their budget. */
+  refine?: number;
+  /** fine hand regions (default: on with a face region) */
+  hands?: boolean;
 }
 
 /** Everything an `extras` hook may use to add custom sculpt primitives and attachments. */
@@ -281,7 +289,7 @@ export interface ResolvedKind {
   sfx: SfxHints;
   anim: AnimStyle;
   variation: Required<VariationDef>;
-  detail: Required<DetailDef>;
+  detail: Required<Omit<DetailDef, 'refine' | 'hands'>> & Pick<DetailDef, 'refine' | 'hands'>;
   extras: ((ctx: KindContext) => void)[];
 }
 

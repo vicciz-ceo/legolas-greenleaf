@@ -181,6 +181,19 @@ wound so their front face points along the card normal (outward). `hairGeometry`
 first `rootLength` metres (`rootShade`) for depth. To put cards on a sculpted surface (lashes,
 brows, decals), use `sdfProbe(sculpt.compile(), boxMin, boxMax)` → `project(p)` / `normal(p)`.
 
+For long hair that reads as hair rather than a sheet:
+* `hugGravity: 0.12` combs strands along the scalp (gravity only takes over once they leave it);
+  a root's `toward`/`steer` pulls it to a gathering point (half-up hair at the back of the crown).
+* `adaptive: 0.12` spends the card segments where the strand bends over the skull.
+* give each card its own `lift` so overlapping cards are never coplanar (z-fighting).
+* `clumpStrands(strands, { locks, strength, radial, tone, lockLength, taperTips, colliders })`
+  after growing: k-means locks that converge toward their tips from where each strand leaves the
+  scalp (`Strand.free`), per-lock tone, cards turned around the lock, outer members trimmed
+  shorter so every lock ends in one soft point.
+* Braid tubes are shaded as plaits (chevrons) and sampled finely enough not to alias.
+* Skin long hair to the head on the scalp, then to a spring chain whose twist follows the chest:
+  `new SpringChain(ps, bones, tail, { frame: { bone: chest, weight: 0.85 } })`.
+
 ## 7. Animation
 
 ```ts

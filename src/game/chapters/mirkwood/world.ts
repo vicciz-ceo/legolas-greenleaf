@@ -351,7 +351,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     125,
     [{ kind: 'mirkwood_oak', weight: 4 }, { kind: 'dead', weight: 0.7 }],
     ground,
-    { seed: 11, exclude: (x, z) => (corridor(x, z) && !(Math.abs(x - centerX(z)) > 21 && rng.float() < 0.5)) || nearHero(x, z, 8), scale: [0.95, 1.25], variants: 2, chunk: 80, lodNear: 26, lodFar: 110, spacing: 1.5, leafTint: [0.82, 0.95, 0.8] },
+    { seed: 11, exclude: (x, z) => (corridor(x, z) && !(Math.abs(x - centerX(z)) > 21 && rng.float() < 0.5)) || nearHero(x, z, 8), scale: [0.95, 1.25], variants: 2, chunk: 80, lodNear: 22, lodFar: 110, spacing: 1.5, leafTint: [0.82, 0.95, 0.8] },
   );
   woods.object.traverse((o) => {
     if ((o as THREE.Mesh).isMesh && o.renderOrder === 2) o.visible = false;
@@ -360,9 +360,9 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   addColliders(physics, woods.colliders);
 
   const area = { center: V(0, 0, 40), halfSize: [44, 72] as [number, number] };
-  root.add(ferns(area, 880, ground, { seed: 3, exclude: (x, z) => inClearing(x, z, -4) || nearHero(x, z, 0.5), tint: [0.42, 0.62, 0.4], clump: 0.7, scale: [0.7, 1.6] }));
-  root.add(ferns({ center: V(0, 0, 38), halfSize: [16, 60] }, 200, ground, { seed: 5, exclude: (x, z) => inClearing(x, z, -7) || nearHero(x, z, 0.3), tint: [0.4, 0.58, 0.38], clump: 0.85, scale: [0.5, 1.1] }));
-  root.add(mushrooms(area, 160, ground, { seed: 7, glow: true, capTint: [0.75, 1.0, 1.05], exclude: (x, z) => nearHero(x, z, -0.5) }));
+  root.add(ferns(area, 720, ground, { seed: 3, exclude: (x, z) => inClearing(x, z, -4) || nearHero(x, z, 0.5), tint: [0.42, 0.62, 0.4], clump: 0.7, scale: [0.7, 1.6] }));
+  root.add(ferns({ center: V(0, 0, 38), halfSize: [16, 60] }, 150, ground, { seed: 5, exclude: (x, z) => inClearing(x, z, -7) || nearHero(x, z, 0.3), tint: [0.4, 0.58, 0.38], clump: 0.85, scale: [0.5, 1.1] }));
+  root.add(mushrooms(area, 120, ground, { seed: 7, glow: true, capTint: [0.75, 1.0, 1.05], exclude: (x, z) => nearHero(x, z, -0.5) }));
 
 
   const rocks = boulderField({ center: V(0, 0, 40), halfSize: [34, 66] }, 34, [0.35, 1.5], ground, { seed: 9, kind: 'dark', moss: 0.85, exclude: (x, z) => inClearing(x, z, -3) || nearHero(x, z, 0.5), clump: 0.5 });

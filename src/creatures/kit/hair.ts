@@ -34,6 +34,11 @@ export interface GrowRoot {
   minY?: number;
   /** rigidly skin this strand to one bone (overrides the weight function) */
   bone?: number;
+  /** steer toward this model-space point while above it (hair combed to a gathering point,
+   *  e.g. half-up elven hair meeting at the back of the crown) */
+  toward?: V3;
+  /** steering strength per 3 cm of growth (default 0.35) */
+  steer?: number;
 }
 
 export interface Strand {
@@ -45,6 +50,11 @@ export interface Strand {
   width: number;
   tipWidth: number;
   color?: number;
+  /** brightness multiplier of the whole strand (lock tone, set by clumpStrands) */
+  tone?: number;
+  /** arc fraction where the strand leaves the scalp (end of the hug); clumping and card turning
+   *  start there, so cards lying on the head stay flat */
+  free?: number;
 }
 
 export interface GrowOpts {
@@ -69,6 +79,13 @@ export interface GrowOpts {
   /** collider indices used for card normals (default: all). Leave out face/ear colliders so
    *  cards near the hairline lie flat on the scalp instead of twisting toward the face. */
   normalColliders?: number[];
+  /** gravity multiplier while a strand lies on the hug collider (combed hair follows the comb,
+   *  not gravity, until it leaves the scalp; default 1). Steering is kept tangential there. */
+  hugGravity?: number;
+  /** curvature-adaptive sampling (m of extra "length" per radian of bend): the card's segments
+   *  gather where the strand bends (over the back of the skull) and thin out along the straight
+   *  fall, so long cards don't crease at the same triangle count. Default 0 (even spacing). */
+  adaptive?: number;
 }
 
 /** signed-ish distance to an ellipsoid and its outward normal */
@@ -85,10 +102,12 @@ function ellipsoidPush(p: THREE.Vector3, e: EllipsoidCollider, margin: number, o
 
 const _n = new THREE.Vector3();
 const _best = new THREE.Vector3();
+const _st = new THREE.Vector3();
 
 export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
   const segs = o.segments ?? 10;
   const grav = o.gravity ?? 9;
+  const hugC0 = o.hug !== undefined;
   const cols = o.colliders ?? [];
   const rnd = mulberry32(o.seed ?? 1);
   const out: Strand[] = [];
@@ -110,12 +129,29 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
     const phase = rnd() * Math.PI * 2;
     rawPush(p);
     let travelled = 0;
+    let hugging = typeof o.hug === 'number';
+    let freeAt = -1;
+    const hugG = o.hugGravity ?? 1;
     for (let i = 0; i < nSteps; i++) {
       const f = i / nSteps;
-      // bend toward gravity, more as the strand leaves the scalp
-      dir.y -= grav * step * (0.35 + 0.65 * f);
+      // bend toward gravity, more as the strand leaves the scalp (less while combed on it)
+      dir.y -= grav * step * (0.35 + 0.65 * f) * (hugging ? hugG : 1);
       dir.x += (rnd() - 0.5) * (o.jitter ?? 0.08) * (step / 0.03);
       dir.z += (rnd() - 0.5) * (o.jitter ?? 0.08) * (step / 0.03);
+      if (r.toward) {
+        const last = rawAt(rawN - 1);
+        if (last.y > r.toward[1]) {
+          _st.set(r.toward[0] - last.x, r.toward[1] - last.y, r.toward[2] - last.z);
+          if (hugging && typeof o.hug === 'number' && cols[o.hug]) {
+            // along the scalp: drop the part of the pull that points into the head
+            const c = cols[o.hug];
+            _n.set((last.x - c.c[0]) / (c.r[0] * c.r[0]), (last.y - c.c[1]) / (c.r[1] * c.r[1]), (last.z - c.c[2]) / (c.r[2] * c.r[2])).normalize();
+            _st.addScaledVector(_n, -_st.dot(_n));
+          }
+          const dl = _st.length();
+          if (dl > 0.004) dir.addScaledVector(_st, ((r.steer ?? 0.35) * (step / 0.03)) / dl);
+        }
+      }
       dir.normalize();
       const prev = rawAt(rawN - 1);
       p.copy(prev).addScaledVector(dir, step);
@@ -143,6 +179,8 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
         const kk = Math.sqrt(lx * lx + ly * ly + lz * lz);
         _n.set(lx / (c.r[0] + lift), ly / (c.r[1] + lift), lz / (c.r[2] + lift)).normalize();
         if (kk > 1 && _n.y > (o.hugUntil ?? -0.2)) p.set(c.c[0] + (lx / kk) * (c.r[0] + lift), c.c[1] + (ly / kk) * (c.r[1] + lift), c.c[2] + (lz / kk) * (c.r[2] + lift));
+        hugging = _n.y > (o.hugUntil ?? -0.2) && kk < 1.15;
+        if (!hugging && freeAt < 0) freeAt = travelled;
       }
       dir.subVectors(p, prev).normalize();
       p.copy(prev).addScaledVector(dir, step);
@@ -150,10 +188,20 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
       travelled += step;
       if (r.minY !== undefined && p.y < r.minY) break;
     }
-    // resample to segs+1 points evenly along the arc
+    // resample to segs+1 points evenly along the arc (or along arc + bend when adaptive)
     cum.length = rawN;
     cum[0] = 0;
-    for (let i = 1; i < rawN; i++) cum[i] = cum[i - 1] + raw[i].distanceTo(raw[i - 1]);
+    const ad = o.adaptive ?? 0;
+    for (let i = 1; i < rawN; i++) {
+      let c = raw[i].distanceTo(raw[i - 1]);
+      if (ad > 0 && i < rawN - 1) {
+        _st.subVectors(raw[i], raw[i - 1]);
+        _n.subVectors(raw[i + 1], raw[i]);
+        const l1 = _st.length(), l2 = _n.length();
+        if (l1 > 1e-7 && l2 > 1e-7) c += ad * Math.acos(Math.max(-1, Math.min(1, _st.dot(_n) / (l1 * l2))));
+      }
+      cum[i] = cum[i - 1] + c;
+    }
     const total = cum[rawN - 1];
     const pts: THREE.Vector3[] = [];
     let k = 0;
@@ -183,9 +231,234 @@ export function growStrands(roots: GrowRoot[], o: GrowOpts = {}): Strand[] {
     for (let pass = 0; pass < 2; pass++)
       for (let i = 1; i < nrm.length - 1; i++) nrm[i].add(nrm[i - 1]).add(nrm[i + 1]).normalize();
     const width = r.width ?? o.width ?? 0.022;
-    out.push({ points: pts, normals: nrm, width, tipWidth: width * (o.taper ?? 0.45), color: r.color, bone: r.bone });
+    out.push({ points: pts, normals: nrm, width, tipWidth: width * (o.taper ?? 0.45), color: r.color, bone: r.bone, free: hugC0 ? (freeAt < 0 ? 1 : freeAt / Math.max(1e-6, travelled)) : 0 });
   }
   return out;
+}
+
+export interface ClumpOpts {
+  /** number of locks the strands are grouped into */
+  locks: number;
+  /** 0..1 how far each strand converges onto its lock's axis at its tip */
+  strength: number;
+  /** along-fraction where the convergence begins (default 0.2) */
+  start?: number;
+  /** along-fraction whose positions group the strands into locks (default 0.65) */
+  groupAt?: number;
+  /** 0..1 card normals turned sideways around the lock axis (rounded locks with their own
+   *  highlight instead of one flat sheet) */
+  radial?: number;
+  /** ± brightness variation per lock */
+  tone?: number;
+  /** per-lock length variation (0..1): each lock is shortened by up to this fraction, and its
+   *  outer members end up to `taperTips` earlier, so every lock ends in one soft point and the
+   *  hem is irregular lock by lock instead of a comb of equal strand tips */
+  lockLength?: number;
+  taperTips?: number;
+  /** push the clumped points back out of these colliders (margin in m) */
+  colliders?: EllipsoidCollider[];
+  margin?: number;
+  seed?: number;
+  /** strands that take part (default all) */
+  filter?: (s: Strand, i: number) => boolean;
+}
+
+const _ca = new THREE.Vector3();
+const _cb = new THREE.Vector3();
+const _cr = new THREE.Vector3();
+const _ct = new THREE.Vector3();
+
+function cumLengths(pts: THREE.Vector3[]): number[] {
+  const c = [0];
+  for (let i = 1; i < pts.length; i++) c.push(c[i - 1] + pts[i].distanceTo(pts[i - 1]));
+  return c;
+}
+
+/** point at arc distance d along an evenly sampled polyline (extrapolated past the tip) */
+function pointAtDist(pts: THREE.Vector3[], cum: number[], d: number, out: THREE.Vector3): THREE.Vector3 {
+  const n = pts.length;
+  const L = cum[n - 1];
+  if (d <= 0) return out.copy(pts[0]);
+  if (d >= L) {
+    const seg = Math.max(1e-6, cum[n - 1] - cum[n - 2]);
+    return out.copy(pts[n - 1]).addScaledVector(_ct.subVectors(pts[n - 1], pts[n - 2]), (d - L) / seg);
+  }
+  let k = Math.min(n - 2, Math.floor((d / L) * (n - 1)));
+  while (k > 0 && cum[k] > d) k--;
+  while (k < n - 2 && cum[k + 1] < d) k++;
+  const t = (d - cum[k]) / Math.max(1e-9, cum[k + 1] - cum[k]);
+  return out.copy(pts[k]).lerp(pts[k + 1], t);
+}
+
+/** cut a strand to `len` (m) keeping its point count (points/normals resampled along the arc) */
+function trimStrand(s: Strand, cum: number[], len: number) {
+  const n = s.points.length;
+  const L = cum[n - 1];
+  if (len >= L * 0.999 || len <= 0) return;
+  const pts = s.points.map((p) => p.clone());
+  const nrm = s.normals.map((v) => v.clone());
+  let k = 0;
+  for (let i = 0; i < n; i++) {
+    const d = (len * i) / (n - 1);
+    while (k < n - 2 && cum[k + 1] < d) k++;
+    const t = Math.min(1, Math.max(0, (d - cum[k]) / Math.max(1e-9, cum[k + 1] - cum[k])));
+    s.points[i].copy(pts[k]).lerp(pts[k + 1], t);
+    s.normals[i].copy(nrm[k]).lerp(nrm[k + 1], t).normalize();
+  }
+  // the card's taper is relative to its length: keep the tip width
+  if (s.free !== undefined) s.free = Math.min(1, (s.free * L) / len);
+  for (let i = 1; i < n; i++) cum[i] = cum[i - 1] + s.points[i].distanceTo(s.points[i - 1]);
+}
+
+/**
+ * Natural clumping: group strands into locks (k-means on their positions part-way down) and
+ * pull each strand toward its lock's mean curve, more toward the tip. Locks taper to soft points
+ * (shorter members end inside the lock), each lock gets its own tone, and card normals turn
+ * around the lock axis so every lock catches its own highlight. Returns the lock index per
+ * strand (-1 for strands left out).
+ */
+export function clumpStrands(strands: Strand[], o: ClumpOpts): Int32Array {
+  const lockOf = new Int32Array(strands.length).fill(-1);
+  const ids = strands.map((_, i) => i).filter((i) => !o.filter || o.filter(strands[i], i));
+  const K = Math.min(Math.max(1, Math.round(o.locks)), ids.length);
+  if (ids.length < 2 || K < 1) return lockOf;
+  const rnd = mulberry32(o.seed ?? 3);
+  const ga = o.groupAt ?? 0.65;
+  const key = ids.map((i) => {
+    const p = strands[i].points;
+    return p[Math.round(ga * (p.length - 1))];
+  });
+  // farthest-point seeds, then a few Lloyd iterations
+  const cent: THREE.Vector3[] = [key[Math.floor(rnd() * key.length)].clone()];
+  const dmin = key.map((k) => k.distanceToSquared(cent[0]));
+  while (cent.length < K) {
+    let best = 0;
+    for (let j = 1; j < key.length; j++) if (dmin[j] > dmin[best]) best = j;
+    cent.push(key[best].clone());
+    for (let j = 0; j < key.length; j++) dmin[j] = Math.min(dmin[j], key[j].distanceToSquared(key[best]));
+  }
+  const assign = new Int32Array(ids.length);
+  for (let it = 0; it < 5; it++) {
+    for (let j = 0; j < key.length; j++) {
+      let b = 0, bd = Infinity;
+      for (let c = 0; c < K; c++) {
+        const d = key[j].distanceToSquared(cent[c]);
+        if (d < bd) {
+          bd = d;
+          b = c;
+        }
+      }
+      assign[j] = b;
+    }
+    if (it === 4) break;
+    const cnt = new Array(K).fill(0);
+    for (const c of cent) c.set(0, 0, 0);
+    for (let j = 0; j < key.length; j++) {
+      cent[assign[j]].add(key[j]);
+      cnt[assign[j]]++;
+    }
+    for (let c = 0; c < K; c++) if (cnt[c]) cent[c].divideScalar(cnt[c]);
+  }
+  const cums = new Map<number, number[]>();
+  for (const i of ids) cums.set(i, cumLengths(strands[i].points));
+  const start = o.start ?? 0.2;
+  const radial = o.radial ?? 0;
+  const margin = o.margin ?? 0.003;
+  const smooth = (e0: number, e1: number, x: number) => {
+    // (a strand that never leaves the scalp has e0 = e1 = 1: no clumping, no 0/0)
+    if (e1 - e0 < 1e-6) return x > e1 ? 1 : 0;
+    const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+    return t * t * (3 - 2 * t);
+  };
+  for (let c = 0; c < K; c++) {
+    const members = ids.filter((_, j) => assign[j] === c);
+    if (!members.length) continue;
+    const tone = 1 + (rnd() * 2 - 1) * (o.tone ?? 0);
+    for (const i of members) {
+      lockOf[i] = c;
+      strands[i].tone = (strands[i].tone ?? 1) * tone;
+    }
+    if (members.length < 2) continue;
+    // lock length & pointed lock tips: trim the members (outer ones more) before converging
+    if (o.lockLength || o.taperTips) {
+      const lockK = 1 - rnd() * (o.lockLength ?? 0);
+      const mid = members.map((i) => {
+        const p = strands[i].points;
+        return p[Math.round(0.6 * (p.length - 1))];
+      });
+      const c0 = mid.reduce((a, p) => a.add(p), new THREE.Vector3()).divideScalar(mid.length);
+      const offs = mid.map((p) => p.distanceTo(c0));
+      const maxOff = Math.max(1e-4, ...offs);
+      members.forEach((i, m) => {
+        const cu = cums.get(i)!;
+        const Ls = cu[cu.length - 1];
+        const free = (strands[i].free ?? 0) * Ls;
+        // never trim into the part lying on the scalp
+        const want = Ls * lockK * (1 - (o.taperTips ?? 0) * (offs[m] / maxOff) * (0.6 + 0.4 * rnd()));
+        trimStrand(strands[i], cu, Math.max(free + 0.05 * Ls, want));
+      });
+    }
+    // lock axis: mean curve by arc distance (members that reach that far), lightly smoothed
+    const Lmax = Math.max(...members.map((i) => cums.get(i)![cums.get(i)!.length - 1]));
+    const M = 20;
+    const axis: THREE.Vector3[] = [];
+    for (let k = 0; k <= M; k++) {
+      const d = (Lmax * k) / M;
+      const acc = new THREE.Vector3();
+      let n = 0;
+      for (const i of members) {
+        const cu = cums.get(i)!;
+        if (cu[cu.length - 1] < d * 0.999 && k > 0) continue;
+        acc.add(pointAtDist(strands[i].points, cu, d, _ca));
+        n++;
+      }
+      axis.push(n ? acc.divideScalar(n) : axis[axis.length - 1].clone());
+    }
+    for (let pass = 0; pass < 2; pass++)
+      for (let k = 1; k < M; k++) axis[k].multiplyScalar(0.5).addScaledVector(axis[k - 1], 0.25).addScaledVector(axis[k + 1], 0.25);
+    const axisCum = cumLengths(axis);
+    for (const i of members) {
+      const s = strands[i];
+      const cu = cums.get(i)!;
+      const Ls = cu[cu.length - 1] || 1;
+      const n = s.points.length;
+      // which side of the lock this card lies on (measured once, part-way down, along the card's
+      // own side vector): the card is turned by a CONSTANT angle about its strand, so it never
+      // twists back and forth along its length
+      let sideSign = 0;
+      if (radial > 0) {
+        const km = Math.round(Math.min(0.85, Math.max(0.45, (s.free ?? 0) + 0.2)) * (n - 1));
+        pointAtDist(axis, axisCum, (cu[km] / Lmax) * axisCum[axisCum.length - 1], _cb);
+        _cr.subVectors(s.points[km], _cb);
+        _ct.subVectors(s.points[Math.min(n - 1, km + 1)], s.points[Math.max(0, km - 1)]).normalize();
+        const side = _ca.crossVectors(_ct, s.normals[km]).normalize();
+        sideSign = Math.max(-1, Math.min(1, _cr.dot(side) / Math.max(1e-4, s.width * 0.8)));
+      }
+      // clumping starts where the strand leaves the scalp (or at `start` if later)
+      const f0 = Math.max(start, s.free ?? 0);
+      for (let k = 0; k < n; k++) {
+        const f = cu[k] / Ls;
+        const w = o.strength * smooth(f0, 1, f);
+        const p = s.points[k];
+        if (w > 0) {
+          // axis point at the same arc distance (axis re-parametrised by its own length)
+          pointAtDist(axis, axisCum, (cu[k] / Lmax) * axisCum[axisCum.length - 1], _cb);
+          _cr.subVectors(p, _cb); // offset from the lock axis
+          p.addScaledVector(_cr, -w);
+          if (o.colliders) for (let it = 0; it < 2; it++) for (const col of o.colliders) ellipsoidPush(p, col, margin, _n);
+        }
+      }
+      if (sideSign !== 0)
+        for (let k = 0; k < n; k++) {
+          const f = cu[k] / Ls;
+          const nm = s.normals[k];
+          _ct.subVectors(s.points[Math.min(n - 1, k + 1)], s.points[Math.max(0, k - 1)]).normalize();
+          const side = _ca.crossVectors(_ct, nm).normalize();
+          nm.addScaledVector(side, sideSign * radial * smooth(f0, Math.min(1, f0 + 0.3), f)).normalize();
+        }
+    }
+  }
+  return lockOf;
 }
 
 export type WeightFn = (p: THREE.Vector3, along: number, out: [number, number][]) => void;
@@ -271,6 +544,7 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
       const rs0 = o.rootShade ?? 0.72;
       _c.copy(sc ?? root).multiplyScalar(rs0 + (1 - rs0) * Math.min(1, along / rootFrac));
       if (o.tipColor !== undefined) _c.lerp(tip, along * along * 0.8);
+      if (s.tone !== undefined) _c.multiplyScalar(s.tone);
       // three verts across (centre raised along the normal for a curved card)
       for (let k = -1; k <= 1; k++) {
         const q = p.clone().addScaledVector(_side, k * w).addScaledVector(nm, (k === 0 ? 1 : 0) * w * curl);
@@ -287,16 +561,17 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
     }
   }
   rigidBone = -1;
-  // braids: tubes with lumpy radius (3-strand look)
+  // braids: tubes whose radius and shade follow a plait (chevrons of three crossing strands)
   for (const br of braids) {
     const curve = new THREE.CatmullRomCurve3(br.points.map((p) => new THREE.Vector3(...p)));
     const len = curve.getLength();
-    const segs = Math.max(8, Math.round(len / 0.012));
-    const radial = 5;
+    const twist = br.twist ?? 60;
+    // enough rings per crossing that the plait does not alias into noise
+    const segs = Math.max(8, Math.round(Math.max(len / 0.012, len * twist * 2.5)));
+    const radial = 6;
     const frames = curve.computeFrenetFrames(segs, false);
     const base = pos.length / 3;
     const bc = br.color !== undefined ? new THREE.Color().setHex(br.color, THREE.SRGBColorSpace) : root;
-    const twist = br.twist ?? 60;
     for (let i = 0; i <= segs; i++) {
       const t = i / segs;
       const p = curve.getPointAt(t);
@@ -305,12 +580,13 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
       const taper = 1 - 0.45 * t * t;
       for (let j = 0; j <= radial; j++) {
         const a = (j / radial) * Math.PI * 2;
-        // lumps: three interleaved strands twisting along the braid
-        const lump = 0.75 + 0.25 * Math.abs(Math.sin(a * 1.5 + t * len * twist));
-        const r = br.radius * taper * lump;
+        // symmetric around the frame normal → interlocking chevrons along the braid
+        const aa = Math.abs(((a + Math.PI) % (Math.PI * 2)) - Math.PI);
+        const g = 0.5 + 0.5 * Math.cos(Math.PI * 2 * t * len * twist + aa * 1.6);
+        const r = br.radius * taper * (0.78 + 0.22 * g);
         const nrm = N.clone().multiplyScalar(Math.cos(a)).addScaledVector(B, Math.sin(a));
         const q = p.clone().addScaledVector(nrm, r);
-        _c.copy(bc).multiplyScalar(0.8 + 0.2 * lump);
+        _c.copy(bc).multiplyScalar(0.66 + 0.4 * g);
         pushVert(q, nrm, j / radial, t, _c, 0.5 + 0.5 * t);
       }
     }
@@ -334,31 +610,50 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
 }
 
 let strandTex: THREE.DataTexture | null = null;
-/** RGBA strand texture: dense fibres, wispy edges and tips. Shared (do not dispose). */
+/**
+ * RGBA strand texture (4 card tiles across): fibres grouped in bundles with darker gaps between
+ * them, sparse wispy edges, and a TAPERED tip — centre fibres run to the end of the card, edge
+ * fibres stop earlier — so cards (and the locks they form) end in soft points instead of a blunt,
+ * straw-like fringe. Brightness is smooth along the length (no banding). Shared (do not dispose).
+ */
 export function strandTexture(): THREE.DataTexture {
   if (strandTex) return strandTex;
   const W = 256, H = 256;
   const data = new Uint8Array(W * H * 4);
   const rnd = mulberry32(777);
   // fibre table per column
-  const fib: { b: number; end: number; a: number }[] = [];
+  const fib: { b: number; end: number; a: number; ph: number }[] = [];
+  let bundleB = 1, bundleLeft = 0, bundlePh = 0;
   for (let x = 0; x < W; x++) {
     const u = (x % 64) / 64; // 4 tiles across (cards pick one)
     const edge = Math.min(u, 1 - u) * 2; // 0 at card edge, 1 at centre
+    if (bundleLeft <= 0 || x % 64 === 0) {
+      bundleLeft = 3 + Math.floor(rnd() * 6);
+      bundleB = 0.86 + rnd() * 0.16;
+      bundlePh = rnd() * 6.28;
+    }
+    bundleLeft--;
+    // a slightly darker fibre between bundles (opaque: holes inside a card read as wool once
+    // cards cross at different angles)
+    const gap = bundleLeft === 0;
     // brightness is a LINEAR multiplier on the vertex colour (texture is not sRGB-decoded)
-    fib.push({ b: 0.74 + rnd() * 0.3, end: 0.72 + rnd() * 0.28 * (0.4 + edge), a: edge < 0.25 ? (rnd() < edge * 3.2 ? 1 : 0) : rnd() < 0.94 ? 1 : 0.35 });
+    const b = bundleB * (0.95 + rnd() * 0.07) * (gap ? 0.84 : 1);
+    // tapered tip: the centre reaches the end, the edges stop ~22 % earlier (+ jitter)
+    const end = 1 - 0.22 * Math.pow(1 - edge, 1.3) - rnd() * 0.05;
+    const a = edge < 0.2 ? (rnd() < edge * 4 ? 1 : 0) : 1;
+    fib.push({ b, end, a, ph: bundlePh });
   }
   for (let y = 0; y < H; y++) {
     const v = y / (H - 1);
     for (let x = 0; x < W; x++) {
       const f = fib[x];
       const i = (y * W + x) * 4;
-      // subtle lengthwise variation
-      const vary = 0.92 + 0.08 * Math.sin(v * 37 + x * 0.7);
+      // very gentle lengthwise variation per bundle (one slow wave over the card)
+      const vary = 0.96 + 0.04 * Math.sin(v * 5.5 + f.ph);
       const b = Math.min(1, f.b * vary);
       data[i] = data[i + 1] = data[i + 2] = Math.round(b * 255);
-      // tips end at different lengths; roots fade in over the first few % (no square card starts)
-      const tipFade = v > f.end ? 0 : v < 0.012 ? (v / 0.012 > (x % 7) / 7 ? 1 : 0) : 1;
+      // fibres thin out just before their end; roots fade in over the first 1.5 % (no square starts)
+      const tipFade = v > f.end ? 0 : v > f.end - 0.05 ? (rnd() < 0.75 ? 1 : 0) : v < 0.015 ? (v / 0.015 > (x % 7) / 7 ? 1 : 0) : 1;
       data[i + 3] = Math.round(f.a * tipFade * 255);
     }
   }

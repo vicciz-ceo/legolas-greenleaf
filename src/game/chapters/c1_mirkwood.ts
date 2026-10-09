@@ -872,8 +872,17 @@ export const chapter: ChapterDef = {
             if (!n) return { moveTo: C2 };
             return { moveTo: n.c.spot, interact: n.d < 2.0 };
           }
-          case 'boss':
-            return { moveTo: brood && brood.mode === 'ceiling' ? V(C3.x, 0, C3.z - 3) : V(C3.x, 0, C3.z - 6) };
+          case 'boss': {
+            if (!brood || !brood.alive || brood.mode === 'ceiling') return { moveTo: V(C3.x, 0, C3.z - 3) };
+            // keep ~10 m from her, as a player would (out of reach of the leg stabs)
+            const away = V(player.position.x - brood.position.x, 0, player.position.z - brood.position.z);
+            if (away.lengthSq() < 1e-3) away.set(0, 0, -1);
+            away.normalize();
+            const at = brood.position.clone().addScaledVector(away, 10);
+            at.x = clamp(at.x, C3.x - 11, C3.x + 11);
+            at.z = clamp(at.z, C3.z - 11, C3.z + 9);
+            return { moveTo: at };
+          }
           default:
             return null;
         }

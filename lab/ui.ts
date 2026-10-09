@@ -12,6 +12,8 @@ import type {
 import { createInput } from '../src/core/input';
 import { createHud } from '../src/ui/hud';
 import { createMenus } from '../src/ui/menus';
+import { BANNER_ENVIRONMENTS, chapterBanner } from '../src/ui/banners';
+import { icon, REF_PATHS, wordmark, type IconName } from '../src/ui/icons';
 import { setDevice, type Device } from '../src/ui/bus';
 
 declare global {
@@ -174,7 +176,9 @@ function setupHud(): void {
   if (params.get('rival') !== '0') hud.setRivalry(14, 11);
   if (params.get('boss') !== '0') hud.setBoss('Bolg, Scourge of Gundabad', 0.62);
   hud.setProgress('Hold the wall', 0.55);
-  hud.toast('Checkpoint reached', 'checkpoint');
+  hud.toast('Quiver restocked', 'reward');
+  hud.toast('Reinforcements arrive', 'info');
+  hud.toast('Checkpoint reached', 'checkpoint'); // third toast: the oldest is replaced (max 2)
   hud.subtitle('Legolas', 'They come from the north, Gimli. Count them well.', 600);
   hud.setPrompt('interact', 'Grab the shield');
   hud.setFps(60);
@@ -230,6 +234,31 @@ switch (screen) {
       if (c) c.style.animationDelay = `-${params.get('t') ?? 14}s`;
     }
     break;
+  case 'banners': {
+    // contact sheet of every code-drawn chapter banner (2:1), to compare against docs/refs/ui/chapter_cards
+    const sheet = document.createElement('div');
+    sheet.style.cssText = 'position:fixed;inset:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:6px;background:#0b0f0d;pointer-events:none;overflow:hidden';
+    for (const env of BANNER_ENVIRONMENTS) {
+      const c = document.createElement('div');
+      c.style.cssText = 'position:relative;aspect-ratio:2/1;overflow:hidden';
+      c.innerHTML = chapterBanner(env);
+      const svg = c.firstElementChild as SVGElement;
+      svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+      sheet.append(c);
+    }
+    uiRoot.append(sheet);
+    break;
+  }
+  case 'icons': {
+    // every reference glyph plus the wordmark
+    const sheet = document.createElement('div');
+    sheet.style.cssText = 'position:fixed;inset:0;padding:24px;background:#0e1514;color:#c9b57b;overflow:auto;pointer-events:none;font:12px Georgia,serif';
+    sheet.innerHTML = `<div style="width:min(720px,90vw);margin-bottom:18px">${wordmark()}</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:12px">${(Object.keys(REF_PATHS) as IconName[])
+      .map((n) => `<div style="text-align:center"><div style="font-size:34px;display:flex;justify-content:center">${icon(n)}</div><div style="margin-top:4px;color:#aab6ae">${n}</div></div>`)
+      .join('')}</div>`;
+    uiRoot.append(sheet);
+    break;
+  }
   default:
     window.__snapError = `unknown screen ${screen}`;
 }

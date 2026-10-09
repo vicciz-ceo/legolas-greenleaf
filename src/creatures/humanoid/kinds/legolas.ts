@@ -11,30 +11,34 @@ import { emitParts, anatomyParts } from '../anatomy';
 import { quiverGear, quiverSheathMatrix, type QuiverOpts } from '../gear';
 import { createWeapon } from '../../weapons';
 
+// sRGB design colours from docs/refs/legolas/spec.json (outfit_layers, armor, hair, face)
 const PALETTE = {
-  hair: 0xd2b984,
-  hairTip: 0xe6d3a2,
-  brows: 0x9e8460,
-  skin: 0xdfb497,
-  skin2: 0xd3a286,
+  hair: 0xc9ae80, // between the sheet's root #9f8866 and tip: the crown reads warm platinum
+  hairTip: 0xe1d4af,
+  brows: 0xa08a64,
+  skin: 0xe6c5ac, // #e9c9b1
+  skin2: 0xd9b398,
   lips: 0xc58d82,
-  eyes: 0x4f7fae,
-  tunic: 0x4b5546,
-  tunicTrim: 0x3c4638,
-  leggings: 0x5b5446,
-  jerkin: 0x6e4c32,
-  jerkinTrim: 0x5a3c26,
-  bracers: 0x5c4129,
-  bracersTrim: 0x3e2c1c,
-  boots: 0x4a3626,
-  bootsTrim: 0x3a2a1c,
-  belt: 0x3a2a1c,
-  quiver: 0x5a3e28,
+  eyes: 0x5d8bb5,
+  tunic: 0x5f6b55, // wool twill, muted green-grey
+  tunicTrim: 0x4c5744,
+  leggings: 0x484a3d, // olive charcoal
+  jerkin: 0x69513b, // stitched brown leather
+  jerkinTrim: 0x7e6044, // lighter tooling / wear mottle
+  bracers: 0x49392c, // dark brown leather (bracers, belt, boots)
+  bracersTrim: 0x35291f,
+  boots: 0x49392c,
+  bootsTrim: 0x35291f,
+  belt: 0x3f3126,
+  buckle: 0x997b4a, // bronze
+  quiver: 0x5a4330,
   quiverTrim: 0x8a6a44,
   fletch: 0xf4f2ec,
   knifeHandle: 0xeee8da,
   knifeGuard: 0xd8d4c8,
 };
+/** belt raised to the waist (sheet: belt at ~1.14 m, jerkin hem ~0.94 m, tunic hem ~0.73 m) */
+const BELT_RAISE = 0.055;
 
 function legolasExtras(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
@@ -51,10 +55,30 @@ function legolasExtras(ctx: KindContext) {
     s.plane([n.x, n.y, n.z], c + hw, { op: 'intersect', k: 0.003 * sc });
     s.plane([-n.x, -n.y, -n.z], -(c - hw), { op: 'intersect', k: 0.003 * sc });
   });
-  // ── quiver on the back, top over the right shoulder ──
+  // ── the jerkin's skirt: tooled leather from the belt flaring over the hips to mid-hip, split
+  // at the back and open at the front over the tunic (sheet back view) ──
+  const hipY = j.thigh_l[1];
+  const beltY = hipY + (0.07 + BELT_RAISE) * sc;
+  const hemY = hipY - 0.045 * sc;
+  const g = Math.sqrt(P.build.bulk);
+  s.group('union', 0.003 * sc, () => {
+    const leather = { color: PALETTE.jerkin, color2: PALETTE.jerkinTrim, colorNoise: 0.4, colorFreq: 34 / sc, mat: 'suede' as const };
+    emitParts(s, parts, ['pelvis', 'glutes', 'waist'], { ...leather, inflate: 0.019 * sc, k: 0.05 * sc });
+    // hangs straight from the hips (a flat-backed panel, clear of the thighs when they swing)
+    const top = hipY + 0.04 * sc;
+    s.box([0, (top + hemY) / 2, -0.01 * sc], [P.hipX + 0.088 * sc * g, (top - hemY) / 2 + 0.02 * sc, 0.122 * sc * g], 0.07 * sc, { ...leather, bone: 'hips', k: 0.05 * sc });
+    s.plane([0, 1, 0], beltY, { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, -1, 0], -hemY, { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, -1, 0], -hemY, { op: 'paint', seam: 0, k: 0.002 });
+    // back split and front opening
+    s.box([0, hemY + 0.035 * sc, -0.2 * sc], [0.005 * sc, 0.045 * sc, 0.12 * sc], 0.003 * sc, { op: 'subtract', k: 0.004 * sc });
+    s.box([0, hemY + 0.05 * sc, 0.2 * sc], [0.016 * sc, 0.06 * sc, 0.12 * sc], 0.004 * sc, { op: 'subtract', k: 0.005 * sc });
+  });
+  // ── quiver on the right back (sheet: bottom at the belt just right of the spine, mouth over
+  // the right shoulder blade, fletchings above the right shoulder), knives on its spine side ──
   const q: QuiverOpts = {
-    center: [-0.035 * sc, j.chest[1] + 0.035 * sc, -0.165 * sc * P.build.chest],
-    axis: new THREE.Vector3(-0.34, 1, -0.06).normalize(),
+    center: [-0.135 * sc, j.chest[1] + 0.035 * sc, -0.152 * sc * P.build.chest],
+    axis: new THREE.Vector3(-0.3, 1, -0.07).normalize(),
     length: 0.56 * sc,
     radius: 0.046 * sc,
     color: PALETTE.quiver,
@@ -65,6 +89,7 @@ function legolasExtras(ctx: KindContext) {
     bone: 'quiver',
     knives: null,
     sheathsOnly: true,
+    sheathSide: -1,
     seed: 7,
   };
   quiverGear({ add: (geo, o) => ctx.gear(geo, o) }, q);
@@ -133,15 +158,16 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
       surface: 'skin',
     },
     eyes: { color: PALETTE.eyes, sclera: 0xeee9e0 },
-    hair: { style: 'long_straight', color: PALETTE.hair, tipColor: PALETTE.hairTip, braids: 'temple', length: 1.0, density: 1.0, bounce: 0.8 },
+    hair: { style: 'long_straight', color: PALETTE.hair, tipColor: PALETTE.hairTip, braids: 'temple', length: 0.88, density: 1.0, bounce: 0.8 },
     beard: null,
     outfit: [
       { type: 'leggings', color: PALETTE.leggings },
       { type: 'boots', color: PALETTE.boots, color2: PALETTE.bootsTrim, length: 0.86 },
       { type: 'tunic', color: PALETTE.tunic, color2: PALETTE.tunicTrim, length: 0.5 },
       { type: 'jerkin', color: PALETTE.jerkin, color2: PALETTE.jerkinTrim },
-      { type: 'bracers', color: PALETTE.bracers, color2: PALETTE.bracersTrim },
-      { type: 'belt', color: PALETTE.belt },
+      // bracers from the wrist almost to the elbow
+      { type: 'bracers', color: PALETTE.bracers, color2: PALETTE.bracersTrim, length: 0.9 },
+      { type: 'belt', color: PALETTE.belt, offset: BELT_RAISE },
     ],
     armor: [],
     weapons: { right: 'none', left: 'elven_bow' },

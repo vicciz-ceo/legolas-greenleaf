@@ -17,21 +17,21 @@ import { sculptPouch, sculptShoulderCap, sculptTorso } from './garments';
 import { limbGuards } from './armor';
 
 const PAL = {
-  hair: 0x2a1b13,
-  hairTip: 0x34241a,
-  skin: 0xc99f82,
-  skin2: 0xb48667,
+  hair: 0x30261f, // sheet: root #30261f → tip #49372b
+  hairTip: 0x49372b,
+  skin: 0xbf9478, // #b98e73 weathered
+  skin2: 0xa87d62,
   lips: 0xa06860,
   brows: 0x33241a,
-  eyes: 0x66757f,
+  eyes: 0x778077,
   trousers: 0x38332b,
   boots: 0x3b2b1f,
   bootsTrim: 0x2a1e15,
   shirt: 0x403f38,
-  jerkin: 0x4a3524,
-  jerkinTrim: 0x362518,
-  coat: 0x2b2e27,
-  coatTrim: 0x20231c,
+  jerkin: 0x513c2d, // worn leather #513c2d
+  jerkinTrim: 0x3c2c20,
+  coat: 0x4c5141, // faded green-grey wool #565b4b
+  coatTrim: 0x3a3e31,
   bracers: 0x2a2018,
   belt: 0x2c2018,
   steel: 0x9a9ca0,
@@ -52,7 +52,7 @@ function aragornExtras(ctx: KindContext) {
   sculptBeard(ctx, { color: 0x2c1f16, color2: 0x3d2b1e, thick: devNum('beard', 0.05), cheeks: 0.3, chin: 0.012 });
 
   withHair(ctx, () => {
-    if (!devSkip('hair')) addHair(ctx, { hair: { style: 'shoulder', color: PAL.hair, tipColor: PAL.hairTip, length: 0.95, density: devNum('density', 0.34), braids: 'none' }, rng: new Rng(hashSeed('aragorn', 'hair')), backClear: 1.3 });
+    if (!devSkip('hair')) addHair(ctx, { hair: { style: 'shoulder', color: PAL.hair, tipColor: PAL.hairTip, length: 0.95, density: devNum('density', 0.7), braids: 'none' }, rng: new Rng(hashSeed('aragorn', 'hair')), backClear: 1.3 });
   });
 
   // ── the shirt: dark linen, long sleeves, laced at the throat ──
@@ -139,6 +139,7 @@ export const aragornDef: KindDef = {
   sfx: { voice: 'man', hurt: 'hurt', die: 'orc_die', footstep: 'footstep', weight: 0.55 },
   anim: { grace: 0.35, swagger: 0.15, aggression: 0.45, stance: 1.05, armSwing: 1.0, cadence: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { detailScale: 1, res: devNum('res', 0.05), headRes: devNum('headRes', 0.0095), faceRes: 0 },
+  // named character: a fine face region within the 45k budget
+  detail: { detailScale: 1, res: devNum('res', 0.05), headRes: devNum('headRes', 0.0085), faceRes: devNum('faceRes', 0.0056), refine: 1, hands: false },
   extras: aragornExtras,
 };

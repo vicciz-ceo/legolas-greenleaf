@@ -331,8 +331,14 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
     },
     say(speaker: Speaker, text: string, duration?: number) {
       const dur = duration ?? defaultSubtitleSeconds(text);
-      if (!disposed && ctx.settings.subtitles) ctx.hud.subtitle(speaker, text, dur);
-      return waitFor(dur, null);
+      let total = dur;
+      if (!disposed && ctx.settings.subtitles) {
+        // lines are shown strictly one after another (HUD queue): a line that has to wait behind the
+        // one on screen (chapter dialogue, rivalry banter) resolves after its own turn, not before it
+        total += ctx.hud.subtitleBacklog?.() ?? 0;
+        ctx.hud.subtitle(speaker, text, dur);
+      }
+      return waitFor(total, null);
     },
 
     spawnEnemy(spec: EnemySpec, pos: THREE.Vector3, facing?: number): Enemy {
@@ -529,6 +535,8 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
       ctx.hud.setPrompt(null);
       ctx.hud.setProgress(null);
       ctx.hud.setFocusMarks([]);
+      ctx.hud.clearSubtitles?.(); // a stale line must not survive into the next chapter
+      ctx.hud.clearToasts?.();
       ctx.hud.show(true);
       ctx.input.setTouchVisible(true);
       ctx.input.setInteractLabel(null);

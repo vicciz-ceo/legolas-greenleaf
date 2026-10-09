@@ -24,15 +24,17 @@ const IRON_RUSTY = surface('metal_rusty', { rough: 0.7 });
 const LEATHER = surface('leather_worn', { rough: 0.72 });
 const HIDE = surface('hide', { rough: 0.8 });
 
+// sheets: cave troll olive-grey warty hide #717866 (lit), woven kilt #605044, belt #503c2a;
+// war troll soot-dark hide #45473c, battered iron #57594e, leather kilt #4b392b
 export const TROLL_PAL = {
-  skin: 0x66705c,
-  skin2: 0x464e3e,
-  belly: 0x8a8d78,
+  skin: 0x4e4c3c,
+  skin2: 0x36342a,
+  belly: 0x7a7866,
   lips: 0x4a4a3e,
-  scatter: 0x6a7a5a,
+  scatter: 0x7a6a50,
   eyes: 0xb8a64a,
   wart: 0x5a644e,
-  iron: 0x26262a,
+  iron: 0x45463e,
   rust: 0x4a3828,
   leather: 0x2c2118,
   chain: 0x3c3a36,
@@ -343,7 +345,7 @@ function trollExtras(ctx: KindContext) {
   trollFace(ctx, variant);
   if (variant === 'war') {
     // soot-dark hide: tint the skin of the whole body (rigid gear is unaffected)
-    s.ellipsoid([0, P.H / 2, 0], [2.5 * sc, P.H * 0.7, 2.5 * sc], { op: 'paint', color: bucket === 3 ? 0x3a3832 : 0x45443c, color2: 0x24221e, colorNoise: 0.45, colorFreq: 2.5 / sc, mat: 'skin_troll', strength: 0.85, k: 0.2 * sc });
+    s.ellipsoid([0, P.H / 2, 0], [2.5 * sc, P.H * 0.7, 2.5 * sc], { op: 'paint', color: bucket === 3 ? 0x2e2d28 : 0x34342c, color2: 0x1e1d1a, colorNoise: 0.45, colorFreq: 2.5 / sc, mat: 'skin_troll', strength: 1, k: 0.2 * sc });
   }
 
   const proj = makeProjector(s, box);
@@ -379,9 +381,10 @@ export const trollKind: KindDef = {
   skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.6, blemish: 0.6, scars: 3, warts: 0.5, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3e30, surface: 'skin_troll', scatter: TROLL_PAL.scatter },
   eyes: { color: TROLL_PAL.eyes, glow: 0.25, sclera: 0xa8a070 },
   hair: { style: 'bald', color: 0x1a1a14 },
+  // a full knee-length ragged kilt on a broad leather belt (both sheets)
   outfit: [
-    { type: 'loincloth', color: 0x3a3026, length: 0.95, mat: 'rags' },
-    { type: 'belt', color: 0x2a221a },
+    { type: 'skirt', color: 0x5a4a3e, color2: 0x45382e, length: 0.95, mat: 'rags', thickness: 0.075 },
+    { type: 'belt', color: 0x4a3828, thickness: 0.012 },
   ],
   armor: [],
   weapons: { right: 'club' },

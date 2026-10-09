@@ -481,7 +481,8 @@ export class Spider extends BaseCombatant {
     model.object.scale.setScalar(size);
     this.object.add(model.object);
     this.flashColor = 0x8ab060;
-    this.corpseTime = 7;
+    // corpses go quickly (each is a full sculpt mesh): spiderlings sooner still
+    this.corpseTime = size < 0.8 ? 2.5 : 5;
     this.orbitA = this.rng.float() * Math.PI * 2;
     this.orbitR = this.spitter ? 10 + this.rng.float() * 4 : 2.2 + this.rng.float() * 1.2;
     this.spitCd = 2 + this.rng.float() * 3;
@@ -617,7 +618,8 @@ export class Spider extends BaseCombatant {
     cam.getWorldDirection(_v2);
     if (_v.dot(_v2) < -2) every = Math.max(every, 4);
     this.model.setShadows(this.sinkY <= 0.05 && d2 < 34 * 34);
-    this.model.setDetail(d2 < (this.size < 0.8 ? 8 * 8 : 22 * 22));
+    // bristle cards: close up only (the Brood Mother's are 28k alpha-tested triangles, drawn in every pre-pass)
+    this.model.setDetail(d2 < (this.size < 0.8 ? 8 * 8 : this.model.variant === 'brood' ? 13 * 13 : 22 * 22));
     if (this.animSkip % every !== 0) return;
     this.model.apply(this.pose, dt * every);
     this.afterAnimate();
@@ -1186,6 +1188,8 @@ export class BroodMother extends Spider {
   private moveT = 0;
   private stabN = 0;
   private stabHit = [false, false, false];
+  /** stab landings per target this combo (a target is hit at most twice by one combo) */
+  private readonly stabTaken = new Map<Combatant, number>();
   private cd = { stab: 0, volley: 3, leap: 6, summon: 0 };
   private readonly leapTarget = new THREE.Vector3();
   private ring: THREE.Mesh | null = null;
@@ -1489,6 +1493,7 @@ export class BroodMother extends Spider {
     this.move = m;
     this.moveT = t;
     this.stabHit[0] = this.stabHit[1] = this.stabHit[2] = false;
+    this.stabTaken.clear();
     const pos = this.object.position;
     const a = this.level.ctx.audio;
     if (m === 'stab' || m === 'volley') a.play('spider_hiss', { pos, volume: 1, pitch: 0.6 });
@@ -1523,8 +1528,11 @@ export class BroodMother extends Spider {
     ctx.audio.play('arrow_hit_wood', { pos: _v, volume: 0.9, pitch: 0.5 });
     for (const c of ctx.combatants.query(_v, 2.2)) {
       if (!c.alive || !hostile(this.team, c.team)) continue;
+      const n = this.stabTaken.get(c) ?? 0;
+      if (n >= 2) continue;
+      this.stabTaken.set(c, n + 1);
       _v2.copy(c.position).sub(pos).setY(0).normalize();
-      c.takeDamage({ amount: this.damage * 0.9, type: 'melee', source: this, point: c.position.clone().setY(c.position.y + 1), dir: _v2.clone(), knockback: 4, stagger: true });
+      c.takeDamage({ amount: this.damage * 0.75, type: 'melee', source: this, point: c.position.clone().setY(c.position.y + 1), dir: _v2.clone(), knockback: 4, stagger: true });
     }
     ctx.player.camera.shake(0.12, 0.2);
   }

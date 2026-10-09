@@ -722,9 +722,96 @@ function torch(seed: number): THREE.Object3D {
   return withTip(m, 0.47);
 }
 
-function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
+/**
+ * Kite shields: a tall plate with an arched top, straight sides tapering to a point, curved back at
+ * the edges, a raised rim. 'hand' — Uruk-hai black iron with Saruman's white hand (sheets: uruk,
+ * lurtz); 'tree' — Gondor black with the white tree and a bright steel rim (sheet: gondor).
+ */
+function kiteShield(seed: number, emblem: 'hand' | 'tree'): THREE.Object3D {
   const k = new Kit();
-  const R = style === 'uruk' ? 0.46 : style === 'dwarf' ? 0.36 : 0.42;
+  const W = 0.25, top = 0.4, side = -0.12, tip = -0.5;
+  const outline = (inset: number) => {
+    const sh = new THREE.Shape();
+    const w = W - inset;
+    sh.moveTo(-w, top - 0.03 - inset);
+    sh.quadraticCurveTo(0, top + 0.03 - inset, w, top - 0.03 - inset);
+    sh.lineTo(w * 0.97, side);
+    sh.quadraticCurveTo(w * 0.86, tip * 0.72, 0, tip + inset * 1.6);
+    sh.quadraticCurveTo(-w * 0.86, tip * 0.72, -w * 0.97, side);
+    sh.closePath();
+    return sh;
+  };
+  // shape in XY (x across, y up) extruded along +Z, then turned about Y so the face points +X and
+  // bent back at the edges
+  const shape = (sh: THREE.Shape, depth: number, x0: number) => {
+    const g = new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelThickness: 0.004, bevelSize: 0.006, bevelSegments: 1, curveSegments: 10, steps: 1 });
+    const pos = g.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i);
+      pos.setXYZ(i, x0 + z - 0.85 * x * x, y, -x);
+    }
+    g.computeVertexNormals();
+    return g;
+  };
+  const n2 = noise2(seed);
+  const tree = emblem === 'tree';
+  const iron = lin(tree ? 0x161616 : 0x2a2826);
+  k.add(shape(outline(0), 0.014, 0.05), {
+    color: 0x3c3a36,
+    mat: tree ? surface('metal', { rough: 0.3 }) : 'metal_dark',
+    colorFn: (p, _n, c) => {
+      // the rim is the uncovered edge of this back plate: battered dark iron / bright steel
+      c.copy(lin(tree ? 0x9a9a98 : 0x4a4640)).multiplyScalar(0.85 + 0.25 * n2(p.y * 20, p.z * 20));
+    },
+  });
+  const face = outline(0.022);
+  k.add(shape(face, 0.012, 0.062), {
+    color: 0x1e1c1a,
+    mat: tree ? surface('wood', { rough: 0.55 }) : surface('metal_rusty', { rough: 0.62 }),
+    colorFn: (p, _n, c) => {
+      c.copy(iron).multiplyScalar(0.7 + 0.35 * n2(p.y * 9, p.z * 9));
+      if (p.x < 0.07) return; // back of the face plate
+      if (tree) {
+        // the white tree: trunk, roots, and a crown of branches spreading up and out
+        const tx = p.z / 0.24, ty = (p.y + 0.02) / 0.24;
+        const trunk = Math.abs(tx) < 0.05 + 0.03 * Math.max(0, -ty - 0.9) && ty > -1.35 && ty < 0.45;
+        const ang = Math.atan2(ty - 0.05, tx);
+        const r = Math.hypot(tx * 1.15, ty - 0.05);
+        const branch = ty > 0.05 && r < 0.95 && r > 0.12 && Math.abs(Math.sin(ang * 7)) < 0.12 + 0.05 * (1 - r);
+        const twig = ty > 0.3 && r < 1.0 && r > 0.55 && Math.abs(Math.sin(ang * 15)) < 0.1;
+        const root = ty < -1.0 && ty > -1.45 && Math.abs(Math.sin(Math.atan2(ty + 1.0, tx) * 4)) < 0.15 && Math.hypot(tx, ty + 1.0) < 0.45;
+        if (trunk || branch || twig || root) c.setRGB(0.66, 0.66, 0.64);
+        return;
+      }
+      // Saruman's white hand, palm a little above the centre
+      const hx = p.z / 0.24, hz = (p.y - 0.02) / 0.24;
+      const palm = Math.hypot(hx * 1.1, hz + 0.12) < 0.3;
+      let finger = false;
+      for (let f = 0; f < 5; f++) {
+        const ang = -0.95 + f * 0.44;
+        const fx = Math.sin(ang), fz = Math.cos(ang);
+        const t = hx * fx + (hz + 0.12) * fz;
+        const d = Math.abs(hx * fz - (hz + 0.12) * fx);
+        if (t > 0.15 && t < 0.7 - Math.abs(f - 2) * 0.07 && d < 0.06 + 0.02 * n2(p.y * 40, p.z * 40)) finger = true;
+      }
+      if (palm || finger) {
+        // smeared white paint, worn through in places
+        const smear = 0.65 + 0.3 * n2(p.y * 30, p.z * 6);
+        c.setRGB(0.72 * smear, 0.7 * smear, 0.66 * smear);
+      }
+    },
+  });
+  // grip bar and strap behind
+  k.add(new THREE.CylinderGeometry(0.014, 0.014, 0.13, 8), { color: 0x2a2018, mat: 'leather' });
+  k.add(new THREE.BoxGeometry(0.03, 0.16, 0.03).translate(0.03, 0, 0), { color: 0x3a2e22, mat: 'wood' });
+  return withTip(k.mesh('shield'), 0.42);
+}
+
+function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
+  if (style === 'uruk') return kiteShield(seed, 'hand');
+  if (style === 'gondor') return kiteShield(seed, 'tree');
+  const k = new Kit();
+  const R = style === 'dwarf' ? 0.36 : 0.42;
   // slightly domed wooden disc: built around +Y then turned so the face points +X
   const prof: [number, number][] = [[0, 0.03], [R * 0.3, 0.027], [R * 0.7, 0.016], [R * 0.98, 0.0], [R, -0.012], [R * 0.97, -0.018], [0.0, -0.01]];
   const disc = lathe(prof, 36);
@@ -744,28 +831,7 @@ function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
         c.copy(wood).multiplyScalar(0.8 + 0.2 * n2(p.y * 30, p.z * 4));
         return;
       }
-      if (style === 'uruk') {
-        // black shield with Saruman's white hand
-        c.setRGB(0.02, 0.02, 0.02);
-        const hx = p.y / R, hz = p.z / R;
-        const palm = Math.hypot(hx * 1.1, hz + 0.1) < 0.28;
-        let finger = false;
-        for (let f = 0; f < 5; f++) {
-          const ang = -0.9 + f * 0.42;
-          const fx = Math.sin(ang), fz = Math.cos(ang);
-          const t = hx * fx + (hz + 0.1) * fz;
-          const d = Math.abs(hx * fz - (hz + 0.1) * fx);
-          if (t > 0.15 && t < 0.62 - Math.abs(f - 2) * 0.06 && d < 0.055) finger = true;
-        }
-        if (palm || finger) c.setRGB(0.75, 0.72, 0.68);
-      } else if (style === 'gondor') {
-        c.setRGB(0.015, 0.015, 0.018);
-        const tx = Math.abs(p.z / R), ty = p.y / R;
-        const trunk = tx < 0.04 && ty > -0.55 && ty < 0.3;
-        const crown = Math.hypot(tx * 1.3, ty - 0.35) < 0.3 && Math.sin(Math.atan2(ty - 0.35, tx) * 7) > -0.2;
-        if (trunk || crown) c.setRGB(0.7, 0.7, 0.68);
-        if (r > 0.9) c.setRGB(0.4, 0.4, 0.42);
-      } else if (style === 'dwarf' || style === 'easterling') {
+      if (style === 'dwarf' || style === 'easterling') {
         c.copy(style === 'dwarf' ? lin(0x5a5248) : lin(0x8a6a30));
         if (Math.abs(Math.sin(r * 18)) > 0.92) c.multiplyScalar(0.6);
       } else {

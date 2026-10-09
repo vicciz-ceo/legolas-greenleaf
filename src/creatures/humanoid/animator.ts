@@ -128,6 +128,9 @@ export class HumanoidAnimator {
           drag: 0.14,
           gravity: 3,
           colliders: [backCol, { bone: this.idx.neck, offset: [0, 0.03 * s, -0.01 * s], radius: 0.07 * s }],
+          // the hair lies on the back: a turned head (aiming, look-at) must not swing it around
+          // the neck onto the shoulders
+          frame: { bone: this.idx.chest, weight: 0.85 },
         }),
       );
     }

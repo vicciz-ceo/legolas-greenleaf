@@ -302,6 +302,15 @@ export interface Hud {
   update(dtReal: number): void;
   /** honour Settings.subtitles */
   setSubtitlesEnabled?(v: boolean): void;
+  /** drop the line on screen and everything queued behind it (level dispose) */
+  clearSubtitles?(): void;
+  /** remove every toast on screen (level dispose) */
+  clearToasts?(): void;
+  /**
+   * seconds until a subtitle queued right now would start showing (current line's remainder plus the queue).
+   * Subtitles are strictly sequential; level.say() adds this so its promise still resolves after its own line.
+   */
+  subtitleBacklog?(): number;
 }
 
 export interface ChapterResult {

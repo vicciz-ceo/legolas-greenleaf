@@ -51,6 +51,34 @@ const DAWN_SHOTS = {
   flee: { p: [40, 22, 40], l: [-20, 2, 125], fov: 50 },
 };
 
+/**
+ * Workaround (shared creature code): the berserker's generated hair geometry carries a few NaN
+ * vertex positions, which makes three.js log computeBoundingSphere() errors. Zero them in place
+ * (the geometry is cached and shared, so this runs once per geometry).
+ */
+const _sanitized = new WeakSet<object>();
+function sanitizeGeometry(root: THREE.Object3D): void {
+  root.traverse((o) => {
+    const geo = (o as THREE.Mesh).geometry as THREE.BufferGeometry | undefined;
+    const pos = geo?.getAttribute('position') as THREE.BufferAttribute | undefined;
+    if (!geo || !pos || _sanitized.has(pos)) return;
+    _sanitized.add(pos);
+    const a = pos.array as Float32Array;
+    let bad = false;
+    for (let i = 0; i < a.length; i++) {
+      if (!Number.isFinite(a[i])) {
+        a[i] = 0;
+        bad = true;
+      }
+    }
+    if (bad) {
+      pos.needsUpdate = true;
+      geo.computeBoundingSphere();
+      geo.computeBoundingBox();
+    }
+  });
+}
+
 /** tint a crowd's instances (the masked coat, e.g. a horse) */
 function paintCrowd(c: CrowdHandle, hex: number, k: number): void {
   const col = new THREE.Color(hex).multiplyScalar(k);
@@ -90,6 +118,13 @@ export const chapter: ChapterDef = {
     setWetness(0.85);
     const world = buildWorld(level, false);
     world.shieldBeacon.visible = false;
+    // (workaround, see sanitizeGeometry) clean every enemy's new geometry before the frame culls it
+    const scene = ctx.engine.scene;
+    const prevBeforeRender = scene.onBeforeRender;
+    scene.onBeforeRender = function (...a: Parameters<THREE.Object3D['onBeforeRender']>) {
+      for (const c of ctx.combatants.byTeam('enemy')) sanitizeGeometry(c.object);
+      prevBeforeRender.apply(this, a);
+    };
     // pre-warm the blast's shaders and pools off-screen (the first explosion otherwise hitches)
     ctx.fx.explosion(V(0, -400, 0), 0.2);
     ctx.fx.debris(V(0, -400, 0), 4, 0x8a8478);
@@ -326,8 +361,9 @@ export const chapter: ChapterDef = {
       // a short cut over the archers' shoulders: the arrows arc out over the coomb in slow motion
       // and the front ranks go down under them
       level.cinematic(true);
-      const cam = walk(-21, -1.7);
-      level.cameraShot({ position: V(cam.x, WALL_H + 3.1, cam.z), lookAt: V(4, 1.5, 54), fov: 46, blend: 0 });
+      // (left of the x -18 tower, which would fill the frame)
+      const cam = walk(-25.5, -1.7);
+      level.cameraShot({ position: V(cam.x, WALL_H + 4.4, cam.z + 0.6), lookAt: V(-6, 0, 52), fov: 48, blend: 0 });
       const from = new THREE.Vector3();
       const to = new THREE.Vector3();
       const dir = new THREE.Vector3();
@@ -346,7 +382,7 @@ export const chapter: ChapterDef = {
         if (k === 0) ctx.time.setScale(0.45, 0.15);
         await level.wait(0.12);
       }
-      level.cameraShot({ position: V(cam.x + 2.5, WALL_H + 2.6, cam.z + 1.5), lookAt: V(6, 0.5, 58), fov: 40, blend: 1.6 });
+      level.cameraShot({ position: V(cam.x - 2, WALL_H + 4.0, cam.z + 1.4), lookAt: V(-8, 0, 56), fov: 40, blend: 1.6 });
       await level.wait(1.15);
       // the arrows land: the front ranks fall, the torch sea gutters
       world.front.thin(0.4);
@@ -436,6 +472,7 @@ export const chapter: ChapterDef = {
       const e = level.spawnEnemy({ archetype: 'berserker', weapon: 'torch', hp, speed: pace / 0.6, name: 'Torch-bearer' }, at, Math.PI);
       e.aiEnabled = false;
       e.moveTarget = L.culvert.clone();
+      sanitizeGeometry(e.object);
       const anchor = e.humanoid.weaponObject('hand_r')?.userData.fireAnchor as THREE.Object3D | undefined;
       const flame = anchor ? ctx.fx.torch(anchor) : null;
       return { e, flame };
@@ -465,9 +502,24 @@ export const chapter: ChapterDef = {
         const at = L.runnerStarts[k % L.runnerStarts.length].clone();
         at.x += (level.rng() - 0.5) * 6;
         // the first comes at a jog; the later ones sprint
-        const r = spawnRunner(at, 120, k === 0 ? 6.2 : 7.4);
+        const r = spawnRunner(at, 60, k === 0 ? 6.2 : 7.4);
         runner = r.e;
         ctx.audio.play('uruk_roar', { pos: r.e.position, volume: 1, pitch: 0.7 });
+        // ~30 m out he checks at the drainage ditch, raises the torch and bellows, then sprints the
+        // last stretch: the clean shot (he is in plain view of the fighting step there)
+        let halt = -1;
+        const stopHalt = level.onUpdate((dt) => {
+          if (!r.e.alive) return;
+          if (halt < 0 && Math.hypot(r.e.position.x - L.culvert.x, r.e.position.z - L.culvert.z) < 30) {
+            halt = 0;
+            r.e.moveTarget = null;
+            r.e.playPose?.('roar', 1.8);
+            ctx.audio.play('uruk_roar', { pos: r.e.position, volume: 1, pitch: 0.75 });
+          } else if (halt >= 0 && halt < 1.9) {
+            halt += dt;
+            if (halt >= 1.9) r.e.moveTarget = L.culvert.clone();
+          }
+        });
         let reached = false;
         await level.waitUntil(() => {
           if (!r.e.alive) return true;
@@ -477,6 +529,7 @@ export const chapter: ChapterDef = {
           }
           return false;
         }, 40);
+        stopHalt();
         r.flame?.stop();
         if (k === 0) ctx.hud.setPrompt(null);
         if (r.e.alive) {
@@ -516,8 +569,9 @@ export const chapter: ChapterDef = {
       // nobody may be standing on the culvert section when it goes up
       if (player.position.y > 8 && player.position.x > -5 && player.position.x < 15) player.teleport(L.culvertWatch.clone(), Math.PI * 0.1);
       for (const a of [gimli, aragorn, ...elves]) if (a && a.position.y > 8 && a.position.x > -5 && a.position.x < 15) moveNpc(a, walk(-10 - level.rng() * 6, -0.8));
-      const s = walk(-13, -1.2);
-      level.cameraShot({ position: V(s.x - 1.6, WALL_H + 2.2, s.z - 1.8), lookAt: V(5, 1.5, 18), fov: 40, blend: 0.4 });
+      // over Legolas's shoulder on the fighting step, down to the berserker in the coomb
+      const s = walk(-12.6, 0.3);
+      level.cameraShot({ position: V(s.x, WALL_H + 3.5, s.z), lookAt: V(5, 0.5, 22), fov: 42, blend: 0.4 });
       await line('Aragorn', 'Bring him down! Legolas, kill him!', 1.8);
       // Legolas looses twice: the arrows strike home, the berserker does not even slow
       for (let k = 0; k < 2; k++) {
@@ -558,8 +612,8 @@ export const chapter: ChapterDef = {
       for (const e of [...ctx.combatants.byTeam('enemy')]) if (e.position.z > 4) level.removeCombatant(e);
       breachFires();
       await level.wait(0.42);
-      // from high in the court: the wall is gone, the Deep floods through the gap
-      level.cameraShot({ position: V(-17, 13, -42), lookAt: V(5, 3, -6), fov: 48, blend: 0 });
+      // pull back and up in the coomb: the smoking gap where the culvert was, the debris still falling
+      level.cameraShot({ position: V(24, 10, 34), lookAt: V(4, 5, -5), fov: 46, blend: 0 });
       await level.wait(0.3);
       ctx.time.setScale(1, 0.8);
       ctx.audio.play('uruk_roar', { pos: V(5, 0, 6), volume: 1, pitch: 0.7 });
@@ -803,7 +857,7 @@ export const chapter: ChapterDef = {
       }
       level.setEnvironment(lerpEnv(STORM, DAWN, 0.8));
       const at = (x: number, up: number, z: number) => V(x, world.ground(x, z) + up, z);
-      // from down the slope: the riders massing on the shelf against the dawn sky
+      // from the slope's southern flank: the riders massing on the shelf against the dawn
       const A = DAWN_SHOTS.ridge;
       level.cameraShot({ position: at(A.p[0], A.p[1], A.p[2]), lookAt: at(A.l[0], A.l[1], A.l[2]), fov: A.fov, blend: 0 });
       await level.wait(0.1); // let the cut land before the slow push-in starts from it
@@ -830,9 +884,9 @@ export const chapter: ChapterDef = {
       level.root.add(flee.mesh);
       crowds.push(flee);
       let frac = 0.9;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 6; i++) {
         await level.wait(1.1);
-        world.host.thin(0.28);
+        world.host.thin(0.25);
         world.front.thin(0.4);
         frac *= 0.6;
         world.torchSea.setFraction(frac);
@@ -924,6 +978,7 @@ export const chapter: ChapterDef = {
       },
       update(): void {},
       dispose(): void {
+        scene.onBeforeRender = prevBeforeRender;
         offKill();
         ram?.dispose();
         for (const cr of crowds) cr.dispose();

@@ -10,8 +10,13 @@
  *   cp2 Bolg           the duel on the quay (combo, grab, slam that breaks planks, charge); at 35 %
  *                      he breaks away: a cinematic, then the rooftop chase and the horse
  *
- * Falling in the lake is not death: Legolas swims back (swim.ts). The world is built in
- * laketown/world.ts, the boss in laketown/bolg.ts, the chase in laketown/chase.ts.
+ * Falling in the lake is not death: Legolas swims back (swim.ts), or hauls himself up through a hole in the
+ * planks. The world is built in laketown/world.ts, the boss in laketown/bolg.ts, the chase in
+ * laketown/chase.ts, the horse of the outro in laketown/horse.ts.
+ *
+ * Lighting note: the moon is to the south, so the cinematics put the camera on the moon side of the actors and
+ * let the quay-mouth torches, the dock braziers and the jetty torches (fx.fire lights, nearest to the camera)
+ * model the faces; an actor seen against the moon is a silhouette.
  */
 import * as THREE from 'three';
 import type { Ally, ChapterDef, ChapterInstance, Enemy, EnemySpec, LevelAPI } from '../../core/types';
@@ -67,6 +72,8 @@ export const chapter: ChapterDef = {
     let runner: BolgRunner | null = null;
     let horse: HorseRig | null = null;
     let cineOn = false;
+    /** the market fight is over (what is left is out of reach on the roofs): the autopilot moves on */
+    let marketDone = false;
 
     // water lapping at the piles under the wind of the preset
     ctx.audio.loop('river', 0.09);
@@ -146,8 +153,8 @@ export const chapter: ChapterDef = {
       level.cameraShot({ position: V(-34, 9.5, -92), lookAt: V(0, 3, -48), fov: 52, blend: 0 });
       await level.wait(0.4);
       // 2. then up the main walk, low between the rows of houses: the lookouts creeping along the ridges ahead
-      level.cameraShot({ position: V(-1.4, D + 3.2, -68), lookAt: V(2.5, 7.4, -32), fov: 44, blend: 4.2 });
-      await level.wait(3.4);
+      level.cameraShot({ position: V(-1.4, D + 3.2, -68), lookAt: V(2.5, 7.4, -32), fov: 44, blend: 4.6 });
+      await level.wait(4.0);
       ctx.fx.setWeather('embers', 0.3);
       void level.say('Legolas', 'The orcs have crossed the water. They are already on the rooftops.', 3.2);
       level.cameraShot({ position: V(0.4, D + 2.7, -57), lookAt: V(-2.5, 7.6, -30), fov: 36, blend: 3.4 });
@@ -168,18 +175,21 @@ export const chapter: ChapterDef = {
     /** orcs creeping along the ridges toward Bard's house; they drop in when the player draws near */
     const lookouts: Enemy[] = [];
     function spawnLookouts(): void {
-      const hs = housesWhere((h) => h.run === 'A' && h.z > -48 && h.z < -18).sort((a, b) => a.z - b.z);
-      const picks = [hs.find((h) => h.x > 0), hs.find((h) => h.x < 0), hs.filter((h) => h.x > 0)[1], hs.filter((h) => h.x < 0)[1]].filter((h): h is HouseDef => !!h);
-      for (const h of picks) {
+      // the two nearest houses either side of the main walk, just beyond the dock: close enough to read in the intro shots
+      const hs = housesWhere((h) => h.run === 'A' && h.z > -62 && h.z < -34).sort((a, b) => a.z - b.z);
+      const east = hs.filter((h) => h.x > 0);
+      const west = hs.filter((h) => h.x < 0);
+      const picks = [east[0], west[0], east[1], west[1]].filter((h): h is HouseDef => !!h);
+      picks.forEach((h, i) => {
         // walk the ridge toward the front of the town (north): along the ridge direction
-        const a = roofAt(h, -0.95, 0.1);
-        const b = roofAt(h, 0.95, 0.1);
-        const e = level.spawnEnemy({ archetype: 'goblin', countsForRivalry: false }, a, yawOf(b.x - a.x, b.z - a.z));
+        const a = roofAt(h, -0.95, 0);
+        const b = roofAt(h, 0.95, 0);
+        const e = level.spawnEnemy({ archetype: i % 3 === 0 ? 'orc' : 'goblin', countsForRivalry: false }, a, yawOf(b.x - a.x, b.z - a.z));
         e.aiEnabled = false;
         (e as unknown as { speedMax: number }).speedMax = 0.8;
         e.moveTarget = b.clone();
         lookouts.push(e);
-      }
+      });
     }
     function releaseLookouts(): void {
       for (const e of lookouts) {
@@ -257,6 +267,7 @@ export const chapter: ChapterDef = {
         ],
         { stagger: 3, until: 2, timeout: 75 },
       );
+      marketDone = true;
       level.objective("Reach Bard's house");
       await level.waitUntil(() => player.position.z > 25, 120);
       await level.say('Bard', 'Over here! The dwarves are inside. Hold the door!', 2.8);
@@ -352,7 +363,7 @@ export const chapter: ChapterDef = {
         // from the quay mouth, low, the torches at the mouth lighting his face as he comes up the walk
         level.cameraShot({ position: V(-3.9, D + 1.0, 31.6), lookAt: V(0.2, D + 2.4, 23.5), fov: 40, blend: 0.0 });
         await level.wait(0.4);
-        level.cameraShot({ position: V(-2.3, D + 1.45, 30.4), lookAt: V(0.2, D + 2.85, 27.0), fov: 32, blend: 4.0 });
+        level.cameraShot({ position: V(-2.3, D + 1.3, 30.4), lookAt: V(0.2, D + 2.2, 27.0), fov: 32, blend: 4.0 });
         await level.wait(3.2);
         await cinematicLine('Bolg', "The dwarf's blood is mine. Stand aside, elf.", 3.0);
         // over his shoulder: Legolas, facing him, the quay and the house glow behind
@@ -657,6 +668,7 @@ export const chapter: ChapterDef = {
         const p = player.position;
         switch (beat) {
           case 'market': {
+            if (marketDone) return { moveTo: V(0, D, 31) };
             // hunt down what is left (archers on the rooftops): walk to the deck nearest the closest foe
             let best: THREE.Vector3 | null = null;
             let bd = 1e9;

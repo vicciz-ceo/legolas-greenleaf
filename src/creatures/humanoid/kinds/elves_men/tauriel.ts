@@ -12,13 +12,13 @@ import { devNum, shade } from './common';
 import { laceFront, sheathed } from './detail';
 
 const PAL = {
-  hair: 0x8f3216,
-  hairTip: 0xa8431f,
+  hair: 0x7c3a1d, // sheet: root #703820 → tip #a35730 (auburn, not orange)
+  hairTip: 0xa35730,
   skin: 0xe6bfa6,
   skin2: 0xdcae95,
   lips: 0xb86c66,
   brows: 0x6b2814,
-  eyes: 0x4f7c45,
+  eyes: 0x66806a, // sheet #738277 grey-green
   leggings: 0x363a30,
   boots: 0x5a4128,
   bootsTrim: 0x3c2a1a,
@@ -114,7 +114,8 @@ export const taurielDef: KindDef = {
   },
   skin: { color: PAL.skin, color2: PAL.skin2, blotch: 0.08, blemish: 0.02, wrinkles: 0, lips: PAL.lips, brows: PAL.brows, scatter: 0xc87a68, surface: 'skin' },
   eyes: { color: PAL.eyes, sclera: 0xefeae2 },
-  hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, braids: 'temple', length: 1.0, density: devNum('density', 0.32), bounce: 0.8 },
+  // long enough to reach the small of the back (sheet), dense enough for clumped locks
+  hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, braids: 'temple', length: 1.22, density: devNum('density', 0.6), bounce: 0.8 },
   beard: null,
   outfit: [
     { type: 'leggings', color: PAL.leggings },
@@ -130,6 +131,7 @@ export const taurielDef: KindDef = {
   sfx: { voice: 'elf', hurt: 'hurt', die: 'player_death', footstep: 'footstep', weight: 0.3 },
   anim: { grace: 1, swagger: 0.05, aggression: 0.3, stance: 0.95, armSwing: 0.85, cadence: 1.02 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { detailScale: 1, res: devNum('res', 0.034), headRes: devNum('headRes', 0.0072), faceRes: 0 },
+  // named character: a fine face region (hero quality) within the 45k budget
+  detail: { detailScale: 1, res: devNum('res', 0.034), headRes: devNum('headRes', 0.0072), faceRes: devNum('faceRes', 0.0056), refine: 1, hands: false },
   extras: tauriExtras,
 };

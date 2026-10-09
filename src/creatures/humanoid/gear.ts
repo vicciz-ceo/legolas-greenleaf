@@ -69,23 +69,36 @@ export interface QuiverOpts {
   knives?: { handle: number; guard: number } | null;
   /** add only the knife sheaths (the knives are separate objects, e.g. hidden when drawn) */
   sheathsOnly?: boolean;
+  /** both sheaths side by side on ONE side of the quiver (quiver-local ±x; −1 = toward the spine
+   *  for a quiver on the right back), grips raised above the quiver mouth. Default: one each side. */
+  sheathSide?: 1 | -1;
   seed: number;
+}
+
+/** quiver-local offset + splay of knife sheath `side` (±1) */
+function sheathLocal(o: QuiverOpts, side: number): THREE.Matrix4 {
+  if (o.sheathSide) {
+    // side 1 next to the quiver, side −1 beside it; staggered so both grips read
+    const k = side > 0 ? 0 : 1;
+    const off = new THREE.Matrix4().makeTranslation(o.sheathSide * (o.radius + 0.014 + k * 0.034), o.length * (0.2 - k * 0.04), 0.008 + k * 0.006);
+    return off.multiply(new THREE.Matrix4().makeRotationZ(o.sheathSide * (0.03 + k * 0.03)));
+  }
+  const off = new THREE.Matrix4().makeTranslation(side * (o.radius + 0.016), o.length * 0.08, -0.004);
+  return off.multiply(new THREE.Matrix4().makeRotationZ(side * -0.08));
 }
 
 /** model matrix of a knife sheath on the quiver (side ±1); knife grip origin = matrix × (0, 0.11, 0) */
 export function quiverSheathMatrix(o: QuiverOpts, side: number): THREE.Matrix4 {
   const base = placeAlong(o.center, o.axis, new THREE.Vector3(0, 0, -1));
-  const off = new THREE.Matrix4().makeTranslation(side * (o.radius + 0.016), o.length * 0.08, -0.004);
-  const tilt = new THREE.Matrix4().makeRotationZ(side * -0.08);
-  return base.multiply(off).multiply(tilt);
+  return base.multiply(sheathLocal(o, side));
 }
 
 /** an arrow sticking out of a quiver (local: +Y up the shaft, nock at y=0) */
 export function arrowGeometryParts(len: number, fletchColor: number, shaftColor: number, sink: GearSink, matrix: THREE.Matrix4, bone: string, small: boolean) {
   const shaft = new THREE.CylinderGeometry(0.0042, 0.0042, len, 5, 1, true).translate(0, len / 2, 0);
   sink.add(shaft, { bone, color: shaftColor, mat: 'wood', matrix, small });
-  const nock = new THREE.CylinderGeometry(0.005, 0.0045, 0.014, 5).translate(0, 0.004, 0);
-  sink.add(nock, { bone, color: 0x2a2420, mat: 'horn', matrix, small: true });
+  const nock = new THREE.CylinderGeometry(0.0046, 0.0043, 0.009, 5).translate(0, 0.003, 0);
+  sink.add(nock, { bone, color: 0x4a3a2c, mat: 'horn', matrix, small: true });
   // three vanes
   for (let i = 0; i < 3; i++) {
     const vane = new THREE.BufferGeometry();
@@ -132,18 +145,17 @@ export function quiverGear(sink: GearSink, o: QuiverOpts) {
     const a = (i / o.arrows) * Math.PI * 2 * 2.618;
     const rr = r * 0.62 * Math.sqrt((i + 0.5) / o.arrows);
     rnd.set(Math.cos(a) * rr, Math.sin(a) * rr);
-    const out = 0.17 + ((i * 37) % 11) * 0.006;
-    const m = placeAlong([0, 0, 0], new THREE.Vector3(rnd.x * 0.8, 1, rnd.y * 0.8), new THREE.Vector3(Math.cos(a * 1.7), 0, Math.sin(a * 1.7)));
-    m.setPosition(rnd.x, L / 2 + out - 0.62, rnd.y);
+    // nock UP: the white fletchings stand out of the quiver mouth, the shaft points down into it
+    const out = 0.135 + ((i * 37) % 11) * 0.005;
+    const m = placeAlong([0, 0, 0], new THREE.Vector3(-rnd.x * 0.8, -1, -rnd.y * 0.8), new THREE.Vector3(Math.cos(a * 1.7), 0, Math.sin(a * 1.7)));
+    m.setPosition(rnd.x, L / 2 + out, rnd.y);
     const mm = base.clone().multiply(m);
     arrowGeometryParts(0.62, o.fletch, o.shaft ?? 0xb8a07a, sink, mm, o.bone, true);
   }
   // knife sheaths with white handles on both sides
   if (o.knives || o.sheathsOnly) {
     for (const side of [1, -1]) {
-      const off = new THREE.Matrix4().makeTranslation(side * (r + 0.016), L * 0.08, -0.004);
-      const tilt = new THREE.Matrix4().makeRotationZ(side * -0.08);
-      const mm = base.clone().multiply(off).multiply(tilt);
+      const mm = base.clone().multiply(sheathLocal(o, side));
       // sheath: flattened tapered tube
       const sheath = lathe([[0.0, -0.17], [0.006, -0.17], [0.016, -0.12], [0.019, 0.02], [0.02, 0.1], [0.018, 0.105], [0.0, 0.105]], 8).scale(1, 1, 0.55);
       sink.add(sheath, { bone: o.bone, color: o.color, mat: 'leather', matrix: mm });

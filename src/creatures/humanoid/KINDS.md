@@ -48,16 +48,16 @@ Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dress
 | `face` | `jaw jawLength chin brow cheekbones cranium foreheadSlope`, `nose{length width bridge hook tip flat}`, `lips{width fullness}`, `ears: 'round'│'pointed'│'long'│'small'│'orc'│'bat'`, `earSize`, `eyeSize eyeSpacing eyeTilt eyeOpen`, `tusks underbite asym` |
 | `skin` | `color color2 blotch blemish scars warts wrinkles lips brows surface scatter` — `surface` is a kit preset (`skin`, `skin_weathered`, `skin_orc`, `skin_troll`), `scatter` the subsurface tint |
 | `eyes` | `color glow sclera` (`glow` > 0 makes the irises emissive) |
-| `hair` | `style` (`long_straight long_wavy shoulder short cropped mohawk topknot bald mane wild tied_back stringy`), `color tipColor length density braids('temple'│'side'│'many')` |
+| `hair` | `style` (`long_straight long_wavy shoulder short cropped mohawk topknot bald mane wild tied_back stringy`), `color tipColor length density braids('temple'│'side'│'many')`. `length` also moves the end height of long styles |
 | `beard` | `style` (`full braided forked stubble goatee mustache`), `color`, `length` (m) |
-| `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, chance?}`; types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
+| `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, offset?, chance?}` (bracers: `length` = fraction of the forearm from the wrist, default 0.7; belt/sash: `offset` raises it (m); skirt: `thickness` adds clearance for bodies bigger than the anatomy, `mat: 'rags'` tears the hem; jerkin/vest: `color2` mottles the leather); types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
 | `armor` | pieces `{type, style, color?, minArmor?, chance?}`; types `helmet pauldrons breastplate vambraces greaves gorget tassets shoulder_spikes plates crown circlet gauntlets mask`; styles `elven orc uruk rohan gondor dwarf easterling haradrim gundabad goblin ranger king`. A piece appears when `spec.armor ≥ minArmor`; helmets only when `spec.helmet !== false` |
 | `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look (`'uruk'` → falchion + white-hand shield, `'gondor'`, `'dwarf'`, `'easterling'` shields…). Bows always go to the left hand; a default bow not in hand is shown stowed on the back |
 | `palette` | named colours for your own extras |
 | `sfx` | hints for gameplay/audio: `voice grunt hurt die roar footstep weight` |
 | `anim` | `hunch swagger aggression stance armSwing cadence grace` — posture and gait character |
 | `variation` | `height bulk skin` (± fractions) across the ≤4 seed buckets (bucket 0 is canonical) |
-| `detail` | `res headRes faceRes detailScale` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region, fine ear and hand regions and two seam-refinement levels; crowds leave it unset (one refinement level, ≤ ~12k tris) |
+| `detail` | `res headRes faceRes detailScale refine hands` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region, fine ear and hand regions and two seam-refinement levels; crowds leave it unset (one refinement level, ≤ ~12k tris). Named NPCs take a face region within ~45k with `faceRes ≈ 0.0056, refine: 1, hands: false` (Tauriel, Thranduil, Aragorn, Gimli) |
 | `extras(ctx)` | your hook: add sculpt primitives and attachments (below) |
 
 How clothing works: garments re-emit the body's anatomy parts slightly inflated with their own
@@ -109,29 +109,40 @@ that hand holds that weapon (Legolas' sheathed knives do this).
    `cheekbones 1.1`, soft `brow 0.82`, fine straight nose (`length 0.98, width 0.84,
    bridge 1.1`), thin lips, almond eyes with a slight upward tilt `eyeTilt 0.1`, `ears: 'pointed'`.
    Fair skin with little blotching, warm scatter, blue eyes, dark-blond brows.
-3. **Hair** — `long_straight` warm pale gold (`color 0xd2b984`, `tipColor 0xe6d3a2`) with
-   `braids: 'temple'` (two thin braids from the temples lying on top of the hair, joining at the
-   back of the head). Long styles get a sculpted scalp cap (a shade darker than the strands, with a
-   soft hairline that leaves the temples covered and only clears the ears), ~300 strand cards in
-   three layers combed back over the scalp and falling down the back behind the ears (lengths
-   vary for tapered ends, roots darker), a row of fine cards along the hairline, and the
-   `hair1..3` spring chain.
+3. **Hair** — `long_straight` warm platinum (`color 0xc9ae80`, `tipColor 0xe1d4af`, sheet colours)
+   with `braids: 'temple'`: half-up elven hair. Long styles get a sculpted scalp cap and ~280
+   strand cards in two layers so no card start or tip lies on the crown: **A**, the outer sweep,
+   rooted in rows along the hairline and combed up and back over the top (with temple braids it
+   is steered to the braids' meeting point at the back of the crown, then falls), and **B**, the
+   back layer behind the ears and below the braid line. Cards hug the scalp with little gravity,
+   are sampled densely where they bend over the skull (`adaptive`), and every card has its own
+   lift (no coplanar z-fighting). Below the scalp the strands **clump into locks**
+   (`clumpStrands`: per-lock tone, cards turned around the lock, outer members trimmed shorter)
+   so the ends are soft tapered points in a gentle V, not a straw fringe. Skinning: head on the
+   scalp, then the `hair1..3` spring chain behind the neck — whose twist follows the chest
+   (`SpringChain` `frame`), so a turned head (aiming) no longer swings the hair through the
+   shoulder — and the chest bone for side locks. `shoulder` hair has a centre part and waves
+   (Aragorn). Lab: `?kitdebug=hairlayers` tints A/B, `noclump` skips the clumping; subject
+   `legolas_shoulder` shows him from behind as the game camera does (`&yaw=` turns him).
 4. **Outfit** (order matters only for readability; layers are sorted inner → outer):
    leggings → boots (`length 0.86`, folded cuff) → tunic (green-grey, `length 0.5` → four skirt
    panels to mid-thigh) → suede jerkin (sleeveless: wraps the ribs and opens only at the shoulder
-   joint) → bracers → belt (with buckle). Every edge is stitched and worn (see above).
+   joint; `color2` mottles it) → bracers (`length 0.9`, wrist to elbow) → belt (`offset` raises it
+   to the waist, with buckle). The jerkin's skirt below the belt (flat-backed, split at the back,
+   open at the front) is sculpted in `extras`. Every edge is stitched and worn (see above).
 5. **Weapons** — `left: 'elven_bow'`, `right: 'none'` (the right hand draws the string). The bow
    string follows the right hand while aiming; the arrow is shown nocked. During the `climb`,
    `hang`, `swing` and `barrel` special poses the bow is stowed on the back automatically and
    returned to the hand afterwards (any kind holding a bow).
 6. **Extras** — a leather baldric (torso parts inflated and cut by two planes into a diagonal
-   band), the quiver on the back (`quiverGear`: tooled leather lathe, 16 white-fletched arrows)
-   on the springy `quiver` bone, two sheaths, and the two white-handled knives as separate objects
-   with `stowFor`, so they vanish from the back when the knives are drawn.
+   band), the quiver on the right back (`quiverGear`: tooled leather lathe, 16 arrows standing
+   nock-up so the white fletchings show) on the springy `quiver` bone, two sheaths side by side on
+   its spine side (`sheathSide: -1`), and the two white-handled knives as separate objects with
+   `stowFor`, so they vanish from the back when the knives are drawn.
 7. **Detail** — `faceRes: 0.0048` gives Legolas a fine face region (hero quality).
 
-Result: ~57k triangles at LOD0 (body + clothing + gear ≈ 37k in one draw call, hair + lashes +
-brows ≈ 18k, eyes), ~12.6k at LOD1, ~5.8k at LOD2.
+Result: ~61k triangles at LOD0 (body + clothing + gear ≈ 39k in one draw call, hair + braids +
+lashes + brows ≈ 18k, eyes), ~13.6k at LOD1, ~6.2k at LOD2.
 
 ## Performance rules of thumb
 

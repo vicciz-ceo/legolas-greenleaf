@@ -184,6 +184,8 @@ export function resolveKind(kind: HumanoidKind): ResolvedKind {
       headRes: def.detail?.headRes ?? 0,
       faceRes: def.detail?.faceRes ?? -1,
       detailScale: def.detail?.detailScale ?? Math.max(0.8, def.height / 1.85),
+      refine: def.detail?.refine,
+      hands: def.detail?.hands,
     },
     extras: extras as ResolvedKind['extras'],
   };

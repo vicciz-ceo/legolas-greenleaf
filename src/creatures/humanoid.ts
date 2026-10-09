@@ -186,6 +186,12 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
       if (BOWS.includes(k)) {
         obj.position.set(0, 0.0, 0);
         obj.rotation.set(0, Math.PI / 2, 0);
+      } else if (k === 'shield') {
+        // shields hang upright and flat on the back, face out (the socket leans for blades):
+        // undo the socket's lean, then turn the face (+X) to the back (−Z)
+        const sr = sockets.back.rotation;
+        obj.quaternion.setFromEuler(new THREE.Euler(-sr.x, -sr.y, -sr.z, 'ZYX')).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2));
+        obj.position.set(0, -0.06, -0.01);
       }
       sockets.back.add(obj);
       stowed.push({ kind: k, obj });

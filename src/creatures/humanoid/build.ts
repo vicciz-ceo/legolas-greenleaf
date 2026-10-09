@@ -222,7 +222,7 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
           return { min: [Math.min(a[0], b[0]), a[1], a[2]] as [number, number, number], max: [Math.max(a[0], b[0]), b[1], b[2]] as [number, number, number], res: faceRes * 1.2, band: headRes * 2, aoScale: 0.4 };
         })
       : []),
-    ...(hero ? (['l', 'r'] as const) : []).map((sd) => {
+    ...(hero && def.detail.hands !== false ? (['l', 'r'] as const) : []).map((sd) => {
       const w = P.j[`hand_${sd}`];
       const r = (P.palm + P.finger) * 1.15;
       // starts just past the wrist so the region seam never crosses a bracer/glove/sleeve edge
@@ -233,7 +233,7 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
   ];
   const ao = DEBUG.has('noao') ? (false as const) : { dist: 0.07 * s, strength: 1 };
   // heroes: the face cells (≈ 5 mm) are refined too, so lips/brows/lid colour edges stay clean
-  const refine = DEBUG.has('norefine') ? undefined : { levels: hero ? 2 : 1, threshold: 0.07, minEdge: (hero ? 0.0038 : 0.0065) * s };
+  const refine = DEBUG.has('norefine') ? undefined : { levels: def.detail.refine ?? (hero ? 2 : 1), threshold: 0.07, minEdge: (hero ? 0.0038 : 0.0065) * s };
   const opts0: MeshOpts = DEBUG.has('uniform') ? { res: headRes, ao } : { res, regions: DEBUG.has('noregions') ? [] : regions, ao, refine };
   const opts1: MeshOpts = { res: res * 1.5, regions: [{ min: headMin, max: headMax, res: headRes * 1.9, band: res * 2.2, aoScale: 0.7 }], ao: ao ? { dist: ao.dist, strength: 1 } : false, smooth: 2 };
   const prep: Prepared = { key, spec, def, vdef, bucket, P, rig, sc, head, out, gear, objects, helmet: arm.helmet, hooded, armor, opts0, opts1, ms: performance.now() - t0 };

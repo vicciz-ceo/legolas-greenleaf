@@ -8,7 +8,8 @@ import type {
   SfxName, UpgradeDef, UpgradeId,
 } from '../core/types';
 import { BINDINGS, MENU_HINTS } from './glyphs';
-import { emblem, icon, ornament, type IconName } from './icons';
+import { emblem, icon, ornament, wordmark, type IconName } from './icons';
+import { chapterBanner } from './banners';
 import { esc, fmtTime, h } from './dom';
 import { getDevice, onDevice, setDevice } from './bus';
 import { NAV_SELECTOR, PadNav, spatialNext, navItems, type Dir } from './nav';
@@ -27,20 +28,6 @@ export interface MenuDeps {
 export const DISCLAIMER =
   'Non-commercial fan project. Not affiliated with or endorsed by the Tolkien Estate, Middle-earth Enterprises, New Line Cinema or Warner Bros.';
 
-const BANNER: Record<string, string> = {
-  mirkwood: 'linear-gradient(135deg,#0d2a1d 0%,#1d4a30 55%,#0a1a12 100%)',
-  forest_river: 'linear-gradient(135deg,#17391f 0%,#2a6a52 55%,#0d2b2d 100%)',
-  laketown_night: 'linear-gradient(135deg,#0b1430 0%,#233a63 55%,#5a3a1a 100%)',
-  ravenhill_winter: 'linear-gradient(135deg,#27384a 0%,#6d8aa6 55%,#d7e3ee 100%)',
-  moria: 'linear-gradient(135deg,#1a110b 0%,#4a2a14 55%,#a2561f 100%)',
-  amon_hen: 'linear-gradient(135deg,#2a3a16 0%,#6a7a2a 55%,#b98a2c 100%)',
-  helms_deep_storm: 'linear-gradient(135deg,#171c26 0%,#2f3a52 55%,#5b4a6e 100%)',
-  pelennor: 'linear-gradient(135deg,#40281a 0%,#a2622b 55%,#e1b062 100%)',
-  black_gate: 'linear-gradient(135deg,#150d0c 0%,#3a1a14 55%,#8c2a18 100%)',
-  arena: 'linear-gradient(135deg,#1c2124 0%,#37424a 100%)',
-  menu: 'linear-gradient(135deg,#1c2a20 0%,#0b100d 100%)',
-};
-
 const LORE = [
   'A bowstring sings before the arrow does.',
   'The old paths of the wood remember every footfall.',
@@ -54,18 +41,20 @@ const LORE = [
 ];
 
 const UPGRADE_ICON: Record<UpgradeId, IconName> = {
-  draw_speed: 'draw',
-  arrow_damage: 'arrow_standard',
-  knife_mastery: 'knives',
-  agility: 'dash',
+  draw_speed: 'draw_speed',
+  arrow_damage: 'arrow_damage',
+  knife_mastery: 'knife_mastery',
+  agility: 'agility',
   focus: 'focus',
-  vitality: 'leaf',
-  piercing_arrows: 'arrow_piercing',
-  triple_shot: 'arrow_triple',
+  vitality: 'vitality',
+  piercing_arrows: 'piercing_arrows',
+  triple_shot: 'triple_shot',
 };
 
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+
 const CREDITS: [string, string[]][] = [
-  ['', ['<h1>GREENLEAF</h1>', '<p class="sm">A tale of Legolas Thranduilion</p>']],
+  ['', ['<div class="gl-cred-mark">' + wordmark() + '</div>', '<p class="sm">A tale of Legolas Thranduilion</p>']],
   ['A fan tribute to', ['<p>The Lord of the Rings</p><p>The Hobbit</p>', '<p class="sm">Characters and world created by J.R.R. Tolkien.<br>Films directed by Peter Jackson.</p>']],
   ['Built entirely in code', ['<p>Every mesh, texture and sound</p><p>is generated at runtime</p>', '<p class="sm">No image, model, audio or font files were harmed.</p>']],
   ['Craft', ['<p>Game design and engineering</p><p>Rendering and post-processing</p><p>Procedural creatures and worlds</p><p>Procedural audio and music</p><p>Interface and controls</p>']],
@@ -390,13 +379,21 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
     return b;
   }
 
-  function panel(title: string, lede?: string): { p: HTMLElement; body: HTMLElement } {
+  /** kicker + title (+ lede) header, left aligned, with an optional element on the right */
+  function header(kicker: string, title: string, lede?: string, right?: HTMLElement): HTMLElement {
+    const hd = h('div', 'gl-head');
+    const l = h('div', 'gl-head-l');
+    if (kicker) l.append(h('div', 'gl-kicker', null, kicker));
+    l.append(h('h1', 'gl-h1', null, title));
+    if (lede) l.append(h('p', 'gl-lede', null, lede));
+    hd.append(l);
+    if (right) hd.append(right);
+    return hd;
+  }
+
+  function panel(title: string, lede?: string, kicker = '', right?: HTMLElement): { p: HTMLElement; body: HTMLElement } {
     const p = h('div', 'gl-panel');
-    p.append(h('h1', 'gl-h1', null, title));
-    if (lede) p.append(h('p', 'gl-lede', null, lede));
-    const orn = h('div');
-    orn.innerHTML = ornament();
-    p.append(orn.firstElementChild!);
+    p.append(header(kicker, title, lede, right), h('div', 'gl-rule'));
     const body = h('div', 'gl-scroll');
     p.append(body);
     return { p, body };
@@ -418,10 +415,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
 
     const el = h('div');
     const wrap = h('div', 'gl-title-wrap');
-    wrap.innerHTML = `${emblem()}
-      <h1 class="gl-logo">Greenleaf</h1>
-      <div class="gl-tag">A tale of Legolas Thranduilion</div>
-      ${ornament()}`;
+    wrap.innerHTML = wordmark('gl-logo');
     const menu = h('div', 'gl-tmenu');
     const item = (label: string, fn: () => void, sound: SfxName = 'ui_click', sub?: string, dflt = false): HTMLButtonElement => {
       const b = h('button', 'gl-tm', { type: 'button', 'data-nav': '' });
@@ -452,7 +446,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
         });
       }),
     );
-    wrap.append(menu);
+    wrap.append(menu, h('div', 'gl-tag', null, 'An archer’s journey through Middle-earth'));
     el.append(wrap, h('div', 'gl-foot', null, 'Non-commercial fan project'));
     mount('title', el);
   }
@@ -465,21 +459,28 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
   function showChapterSelect(back: () => void = showTitle): void {
     const chapters = deps.chapters().slice().sort((a, b) => a.number - b.number);
     const el = h('div');
-    const { p, body } = panel('Chapters', 'Choose where the tale resumes');
+    const { p, body } = panel('Chapters', undefined, 'The journey');
     p.classList.add('gl-chapters');
     const grid = h('div', 'gl-chgrid');
+    const detail = h('div', 'gl-chdetail');
     if (!chapters.length) body.append(h('p', 'gl-lede', null, 'No chapters are available yet.'));
+    const describe = (c: ChapterDef): void => {
+      detail.innerHTML = `<b>${esc(c.film)}</b><span>${esc(c.blurb)}</span>`;
+    };
     chapters.forEach((c, idx) => {
       const unlocked = isUnlocked(c);
       const best = deps.progression.data.best[c.id];
-      const card = h('div', `gl-ch${unlocked ? '' : ' locked'}`);
-      const roman = c.number > 0 ? String(c.number) : '0';
-      const ban = h('div', 'ban');
-      ban.style.setProperty('--ban', BANNER[c.environment] ?? BANNER.menu);
-      ban.innerHTML = `<span class="num">${roman}</span>${c.dev ? '<span class="dev">DEV</span>' : ''}<div class="rank ${best ? best.rank : 'none'}">${best ? best.rank : '&ndash;'}</div>`;
+      const card = h('div', `gl-ch${unlocked ? '' : ' locked'}`, { 'data-chapter': c.id });
+      const num = c.number > 0 ? String(c.number).padStart(2, '0') : '00';
+      // the banner is code-drawn art (src/ui/banners.ts); the left ~40% stays dark for the label
+      const art = h('div', 'art');
+      art.innerHTML = chapterBanner(c.environment);
       const bd = h('div', 'bd');
-      bd.innerHTML = `<div class="ti">${esc(c.title)}</div><div class="fm">${esc(c.film)}</div><div class="bl">${esc(c.blurb)}</div>`;
-      card.append(ban, bd);
+      const status = unlocked ? 'Unlocked' : 'Locked';
+      bd.innerHTML = `<div class="kk">${num} <span>${status}</span>${c.dev ? '<em>Dev</em>' : ''}</div>
+        <div class="ti">${esc(c.title)}</div>
+        ${unlocked ? `<div class="rk">${icon('rank_laurel')}Best rank <b class="${best ? best.rank : 'none'}">${best ? best.rank : '&mdash;'}</b></div>` : ''}`;
+      card.append(art, bd);
       if (unlocked) {
         const ft = h('div', 'ft');
         const play = btn(best ? 'Replay' : 'Play', 'primary small', () => {
@@ -491,7 +492,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
         c.checkpoints.forEach((label, i) => {
           if (i === 0) return;
           const chip = h('button', 'gl-chip', { type: 'button', 'data-nav': '', title: label });
-          chip.textContent = `◆ ${label}`;
+          chip.innerHTML = `${icon('checkpoint')}<span>${esc(label)}</span>`;
           onAct(chip, () => {
             hideAll();
             deps.actions.startChapter(c.id, i);
@@ -501,36 +502,40 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
         card.append(ft);
       } else {
         const prev = chapters[idx - 1];
-        const lk = h('button', 'gl-btn small locked wide', { type: 'button', 'data-nav': '', 'aria-disabled': 'true' });
-        lk.innerHTML = `${icon('lock')}<span>${prev ? 'Complete ' + esc(prev.title) : 'Locked'}</span>`;
+        const lk = h('button', 'gl-lockrow', { type: 'button', 'data-nav': '', 'aria-disabled': 'true' });
+        lk.innerHTML = `${icon('lock')}<span>${prev ? 'Complete ' + esc(prev.title) : 'Complete prior chapter'}</span>`;
         onAct(lk, () => undefined);
         const w = h('div', 'ft');
         w.append(lk);
         card.append(w);
       }
+      card.addEventListener('focusin', () => describe(c));
+      card.addEventListener('pointerenter', () => describe(c));
       grid.append(card);
     });
     body.append(grid);
-    p.append(backButton(back));
+    p.append(detail, backButton(back));
     el.append(p);
     mount('chapters', el, { back });
     // prefer the first playable card
     const dflt = el.querySelector<HTMLElement>('[data-default]');
     if (dflt) focusEl(dflt);
+    const first = chapters.find((c) => dflt && dflt.closest('.gl-ch')?.getAttribute('data-chapter') === c.id) ?? chapters[0];
+    if (first) describe(first);
   }
 
   // ── UPGRADES ─────────────────────────────────────────────────────────────────
   function showUpgrades(back: () => void = showTitle): void {
     const el = h('div');
-    const { p, body } = panel('Upgrades', 'Spend your points between chapters');
-    p.classList.add('gl-upwrap');
     const pts = h('div', 'gl-points');
+    const { p, body } = panel('Upgrades', 'Spend your points between chapters', 'Skill and resolve', pts);
+    p.classList.add('gl-upwrap');
     const grid = h('div', 'gl-upgrid');
-    body.append(pts, grid);
+    body.append(grid);
 
     const render = (focusKey?: string): void => {
       const data = deps.progression.data;
-      pts.innerHTML = `${icon('gem')}<span>Points</span><b>${data.points}</b>`;
+      pts.innerHTML = `${icon('gem')}<b>${data.points}</b><span>${data.points === 1 ? 'Point' : 'Points'} available</span>`;
       grid.textContent = '';
       deps.progression.upgrades.forEach((u: UpgradeDef) => {
         const lvl = deps.progression.level(u.id);
@@ -544,7 +549,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
           <div class="ds">${esc(u.description)}</div>`;
         const buy = h('div', 'buy');
         const costEl = h('div', `cost${maxed ? ' max' : ''}`);
-        costEl.innerHTML = maxed ? 'Mastered' : `${icon('gem')}${cost}`;
+        costEl.innerHTML = maxed ? 'Mastered' : `${cost} ${cost === 1 ? 'point' : 'points'}`;
         const b = btn(maxed ? 'Max' : 'Learn', `small ${can ? 'primary' : ''}`, () => {
           if (!maxed && !can) return;
           const ok = deps.actions.buyUpgrade(u.id);
@@ -582,7 +587,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
       });
     };
     const el = h('div');
-    const { p, body } = panel('Settings');
+    const { p, body } = panel('Settings', undefined, 'Preferences');
     p.classList.add('gl-setwrap');
 
     const row = (label: string, control: HTMLElement): HTMLElement => {
@@ -689,12 +694,12 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
   // ── CONTROLS ─────────────────────────────────────────────────────────────────
   function showControls(back: () => void = homeScreen): void {
     const el = h('div');
-    const { p, body } = panel('Controls', 'Three ways to take up the bow');
+    const { p, body } = panel('Controls', 'Three ways to take up the bow', 'Input');
     p.classList.add('gl-ctlwrap');
     const dev0 = getDevice();
     const cols: { id: 'kbm' | 'gamepad' | 'touch'; title: string; ic: IconName; key: 'kbm' | 'pad' | 'touch' }[] = [
-      { id: 'kbm', title: 'Keyboard & Mouse', ic: 'mouse', key: 'kbm' },
-      { id: 'gamepad', title: 'Gamepad', ic: 'dpad', key: 'pad' },
+      { id: 'kbm', title: 'Keyboard & Mouse', ic: 'key_cap', key: 'kbm' },
+      { id: 'gamepad', title: 'Gamepad', ic: 'controls', key: 'pad' },
       { id: 'touch', title: 'Touch', ic: 'touch', key: 'touch' },
     ];
     const tabs = h('div', 'gl-tabs gl-seg');
@@ -736,10 +741,12 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
   function showPause(): void {
     const el = h('div');
     const p = h('div', 'gl-panel gl-pausewrap');
-    p.append(h('h1', 'gl-h1', null, 'Paused'), h('p', 'gl-sub-ch', null, 'The tale waits for you'));
-    const orn = h('div');
-    orn.innerHTML = ornament();
-    p.append(orn.firstElementChild!);
+    const lastCh = deps.progression.data.last;
+    const curCh = lastCh ? deps.chapters().find((c) => c.id === lastCh.chapterId) : undefined;
+    p.append(
+      header(curCh ? curCh.title : 'Greenleaf', 'Paused', curCh ? (curCh.checkpoints[lastCh!.checkpoint] ?? 'The tale waits for you') : 'The tale waits for you'),
+      h('div', 'gl-rule'),
+    );
     const pscroll = h('div', 'gl-scroll');
     const actions = h('div', 'gl-actions col');
     const resume = btn('Resume', 'primary', () => {
@@ -752,13 +759,13 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
       btn('Restart Checkpoint', '', () => {
         hideAll();
         deps.actions.restartCheckpoint();
-      }, 'ui_confirm'),
+      }, 'ui_confirm', 'checkpoint'),
       confirmBtn('Restart Chapter', 'danger', () => {
         hideAll();
         deps.actions.restartChapter();
       }, 'ui_confirm'),
-      btn('Settings', '', () => showSettings(showPause)),
-      btn('Controls', '', () => showControls(showPause)),
+      btn('Settings', '', () => showSettings(showPause), 'ui_click', 'settings'),
+      btn('Controls', '', () => showControls(showPause), 'ui_click', 'controls'),
       confirmBtn('Quit to Title', 'danger', () => {
         hideAll();
         deps.actions.quitToTitle();
@@ -781,7 +788,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
   function showLoading(text: string, frac: number): void {
     if (!loadingEl) {
       loadingEl = h('div', 'gl-loading');
-      loadingEl.innerHTML = `${emblem()}<div class="kk">Journeying to</div><div class="nm"></div>${ornament()}<div class="bar"><i></i></div><div class="pc"></div><div class="lore"></div>`;
+      loadingEl.innerHTML = `<div class="art"></div><div class="blk"><div class="kk">Journeying to</div><div class="nm"></div><div class="bar"><i></i></div><div class="pc"></div><div class="lore"></div></div>`;
       loadFill = loadingEl.querySelector('.bar i');
       loadPct = loadingEl.querySelector('.pc');
       host.appendChild(loadingEl);
@@ -791,6 +798,10 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
     if (text !== loadingText) {
       loadingText = text;
       loadingEl.querySelector('.nm')!.textContent = text;
+      // the chapter's own banner (code-drawn) is the backdrop, with "Chapter V" as the kicker
+      const ch = deps.chapters().find((c) => c.title === text);
+      loadingEl.querySelector('.art')!.innerHTML = ch ? chapterBanner(ch.environment) : '';
+      loadingEl.querySelector('.kk')!.textContent = ch && ch.number > 0 ? `Chapter ${ROMAN[ch.number] ?? ch.number}` : 'Journeying to';
       let hash = 0;
       for (let i = 0; i < text.length; i++) hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
       loadingEl.querySelector('.lore')!.textContent = `“${LORE[hash % LORE.length]}”`;
@@ -837,10 +848,7 @@ export function createMenus(root: HTMLElement, deps: MenuDeps): Menus {
       };
       const el = h('div');
       const p = h('div', 'gl-panel gl-donewrap');
-      p.append(h('h1', 'gl-h1', null, 'Chapter Complete'), h('p', 'gl-lede', null, r.title));
-      const orn = h('div');
-      orn.innerHTML = ornament();
-      p.append(orn.firstElementChild!);
+      p.append(header('Chapter complete', r.title), h('div', 'gl-rule'));
       const acc = r.shots > 0 ? Math.round((r.hits / r.shots) * 100) : 0;
       const cscroll = h('div', 'gl-scroll');
       const top = h('div', 'gl-done-top');

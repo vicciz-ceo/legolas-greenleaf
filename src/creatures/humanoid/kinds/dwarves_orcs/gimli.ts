@@ -16,15 +16,16 @@ import { sculptStrap, sculptTorsoGarment } from './garments';
 import { sculptHairCap } from '../../hairstyles';
 
 export const GIMLI = {
-  hair: 0x62301a,
-  hairTip: 0x84481f,
-  hairLight: 0x9a5a28,
-  beard: 0x74381a,
-  beardTip: 0x96521f,
-  skin: 0xa86a4c,
-  skin2: 0x8a4a38,
+  // sheet: deep red-brown, root #62351f → tip #875033 (not orange)
+  hair: 0x4c2413,
+  hairTip: 0x6c3820,
+  hairLight: 0x7e4628,
+  beard: 0x522614,
+  beardTip: 0x6e3a20,
+  skin: 0xb07c60, // #bd896c weathered
+  skin2: 0x935e46,
   lips: 0xa85c52,
-  eyes: 0x3a2a1c,
+  eyes: 0x5e4e36, // #756346
   trousers: 0x4a3a2c,
   boots: 0x33241a,
   bootsTrim: 0x4a3626,
@@ -52,12 +53,13 @@ function pauldrons(ctx: KindContext) {
   for (const side of ['l', 'r'] as const) {
     const sx = side === 'l' ? 1 : -1;
     const sh = P.j[`upperarm_${side}`];
-    for (let k = 0; k < 2; k++) {
-      const R = (0.098 - k * 0.006) * s * 1.2 * g;
-      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: Math.PI * (0.4 - k * 0.03), w: 12, h: 5 });
+    // layered lames (sheet: three overlapping steel plates, each with a bronze edge)
+    for (let k = 0; k < 3; k++) {
+      const R = (0.094 - k * 0.004) * s * 1.2 * g;
+      const geo = shell(R, R * 0.72, R * 1.05, { th0: 0, th1: Math.PI * (0.4 - k * 0.03), w: 12, h: 5 });
       const m = new THREE.Matrix4()
-        .makeTranslation(sh[0] + sx * 0.02 * s, sh[1] + (0.035 - k * 0.032) * s, sh[2])
-        .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.62 + k * 0.1)));
+        .makeTranslation(sh[0] + sx * (0.02 + k * 0.012) * s, sh[1] + (0.035 - k * 0.04) * s, sh[2])
+        .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.62 + k * 0.16)));
       put(ctx, geo, { bone: `upperarm_${side}`, color: k === 2 ? C.steelDark : C.steel, mat: STEEL, matrix: m });
       // bronze edge ring on each lamella
       const ring = new THREE.TorusGeometry(R * 0.985, 0.0045 * s * 1.3, 3, 16).rotateX(Math.PI / 2).scale(1, 1, 1.02);
@@ -65,8 +67,7 @@ function pauldrons(ctx: KindContext) {
       ring.scale(Math.sin(th), 1, Math.sin(th)).translate(0, Math.cos(th) * R * 0.62, 0);
       put(ctx, ring, { bone: `upperarm_${side}`, color: C.bronze, mat: 'gold', matrix: m, small: true });
     }
-    // a short spike on top
-    put(ctx, spike([sh[0] + sx * 0.05 * s, sh[1] + 0.085 * s, sh[2]], [sx * 0.35, 1, 0], 0.07 * s, 0.014 * s, 6), { bone: `upperarm_${side}`, color: C.steel, mat: 'metal', small: true });
+    void spike;
   }
 }
 
@@ -195,7 +196,8 @@ export const gimliDef: KindDef = {
   palette: GIMLI,
   anim: { swagger: 0.5, aggression: 0.55, stance: 1.2, cadence: 1.05, armSwing: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
-  detail: { res: devNum('res', 0.034), headRes: devNum('headRes', 0.0105), faceRes: devNum('faceRes', 0), detailScale: 1.3 },
+  // named character: a fine face region within the 45k budget
+  detail: { res: devNum('res', 0.034), headRes: devNum('headRes', 0.0095), faceRes: devNum('faceRes', 0.0062), refine: 1, hands: false, detailScale: 1.3 },
   sfx: { voice: 'dwarf', weight: 0.7 },
   extras: gimliExtras,
 };

@@ -10,7 +10,7 @@ export { meshSculpt, meshSculptAsync, hasMesh, meshKey, sculptGeometry, cached, 
 export { meshDataToGeometry, paintGeometry, mergeKitGeometries, triCount, type PaintOpts } from './geometry';
 export { createCreatureMaterial, cloneCreatureMaterial, type CreatureMaterialOpts } from './material';
 export { SURFACES, PATTERNS, surface, type SurfaceName, type SurfaceSpec, type PatternName } from './surfaces';
-export { growStrands, hairGeometry, createHairMaterial, strandTexture, type Strand, type GrowRoot, type GrowOpts, type BraidDef, type EllipsoidCollider, type WeightFn } from './hair';
+export { growStrands, clumpStrands, hairGeometry, createHairMaterial, strandTexture, type ClumpOpts, type Strand, type GrowRoot, type GrowOpts, type BraidDef, type EllipsoidCollider, type WeightFn } from './hair';
 export { sheetGeometry, quadGrid, type SheetOpts } from './sheet';
 export {
   PoseSolver, PoseBuffer, SpringChain, fastBones, aimBone, frameRotation, solveTwoBone, lookAt, footCycle, gaitFrequency, bipedGait,

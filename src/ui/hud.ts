@@ -3,7 +3,7 @@
  */
 import type { ArrowType, Hud, Speaker } from '../core/types';
 import { esc, h, setText, toggleClass } from './dom';
-import { promptGlyph, type PromptAction } from './glyphs';
+import { padWide, promptGlyph, type PromptAction } from './glyphs';
 import { ARROW_ICON, icon, ornament, type IconName } from './icons';
 import { getDevice, onDevice, setArrow, type Device } from './bus';
 import { injectStyles } from './styles';
@@ -12,6 +12,9 @@ import { injectStyles } from './styles';
 export interface HudImpl extends Hud {
   /** hide/show subtitles (Settings.subtitles). Default true. */
   setSubtitlesEnabled(v: boolean): void;
+  clearSubtitles(): void;
+  clearToasts(): void;
+  subtitleBacklog(): number;
   /** subtle "Click to focus" hint while keyboard/mouse play runs without pointer lock */
   setPointerHint(v: boolean): void;
   /** show/hide only the gameplay widgets while keeping toasts, subtitles and title cards */
@@ -19,10 +22,10 @@ export interface HudImpl extends Hud {
 }
 
 const SPEAKER_COLOR: Record<string, string> = {
-  Legolas: '#b4e3a0',
-  Gimli: '#e6a15d',
+  Legolas: '#c9b57b',
+  Gimli: '#d8a775',
   Aragorn: '#9fc0e6',
-  Tauriel: '#f09a86',
+  Tauriel: '#9fb88b',
   Thranduil: '#d6ddff',
   Gandalf: '#cfcfdc',
   Bard: '#a7cc9a',
@@ -36,7 +39,7 @@ const SPEAKER_COLOR: Record<string, string> = {
   'Éomer': '#d9c28a',
   Haldir: '#c9e6ff',
   Boromir: '#c7b08a',
-  Narrator: '#d8b66a',
+  Narrator: '#c9b57b',
 };
 const DEFAULT_SPEAKER_COLOR = '#e8d9a8';
 
@@ -50,7 +53,7 @@ const DEFAULT_PROMPT: Record<PromptAction, string> = {
   draw: 'Draw',
 };
 
-const TOAST_ICON: Record<string, IconName> = { checkpoint: 'rune', info: 'info', reward: 'star', warning: 'warn' };
+const TOAST_ICON: Record<string, IconName> = { checkpoint: 'checkpoint', info: 'info', reward: 'star', warning: 'warn' };
 const RING_C = 2 * Math.PI * 30;
 const TITLE_CARD_SEC = 5.4;
 
@@ -65,6 +68,8 @@ function veinPath(from: number, to: number, step: number, mid: number, amp: numb
 interface ToastItem {
   el: HTMLElement;
   ttl: number;
+  text: string;
+  kind: string;
 }
 
 export function createHud(root: HTMLElement): HudImpl {
@@ -75,9 +80,9 @@ export function createHud(root: HTMLElement): HudImpl {
   const el = h('div', `gl-hud gl-dev-${dev0}`);
   el.innerHTML = `
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-    <linearGradient id="gl-hp-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="320" y1="0" y2="0"><stop offset="0" stop-color="#376634"/><stop offset=".55" stop-color="#78ad66"/><stop offset="1" stop-color="#c8ebaa"/></linearGradient>
+    <linearGradient id="gl-hp-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="320" y1="0" y2="0"><stop offset="0" stop-color="#44663d"/><stop offset=".55" stop-color="#739064"/><stop offset="1" stop-color="#b9d6a4"/></linearGradient>
     <linearGradient id="gl-hp-low-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="320" y1="0" y2="0"><stop offset="0" stop-color="#6e1812"/><stop offset=".6" stop-color="#b8402f"/><stop offset="1" stop-color="#e8785a"/></linearGradient>
-    <linearGradient id="gl-fc-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="240" y1="0" y2="0"><stop offset="0" stop-color="#3f6f98"/><stop offset=".6" stop-color="#8ec8f2"/><stop offset="1" stop-color="#eaf7ff"/></linearGradient>
+    <linearGradient id="gl-fc-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="240" y1="0" y2="0"><stop offset="0" stop-color="#3a746f"/><stop offset=".6" stop-color="#85bcb7"/><stop offset="1" stop-color="#d9f1ee"/></linearGradient>
     <linearGradient id="gl-boss-${uid}" gradientUnits="userSpaceOnUse" x1="0" x2="600" y1="0" y2="0"><stop offset="0" stop-color="#5d140f"/><stop offset=".6" stop-color="#b0362a"/><stop offset="1" stop-color="#ee8a5c"/></linearGradient>
     <clipPath id="gl-hpc-${uid}"><path d="M4 11C4 6 12 3 24 3H270C296 3 312 8 318 11C312 14 296 19 270 19H24C12 19 4 16 4 11Z"/></clipPath>
     <clipPath id="gl-fcc-${uid}"><path d="M3 6C3 3.4 8 2 14 2H200C222 2 234 4.4 238 6C234 7.6 222 10 200 10H14C8 10 3 8.6 3 6Z"/></clipPath>
@@ -105,6 +110,7 @@ export function createHud(root: HTMLElement): HudImpl {
         <path class="frame" d="M3 6C3 3.4 8 2 14 2H200C222 2 234 4.4 238 6C234 7.6 222 10 200 10H14C8 10 3 8.6 3 6Z"/>
       </svg>
     </div>
+    <div class="gl-readout"><span class="hpv"></span><i></i><span class="fcv"></span></div>
   </div>
 
   <div class="gl-arrows gl-g"></div>
@@ -120,6 +126,17 @@ export function createHud(root: HTMLElement): HudImpl {
 
   <div class="gl-dmg"></div>
 
+  <div class="gl-top">
+    <div class="gl-boss gl-g none">
+      <div class="nm"></div>
+      <svg viewBox="0 0 600 18" aria-hidden="true">
+        <path class="track" d="M18 9L28 2H572L582 9L572 16H28Z"/>
+        <g clip-path="url(#gl-bsc-${uid})"><rect class="lag" x="0" y="0" width="600" height="18"/><rect class="b-fill" x="0" y="0" width="600" height="18" fill="url(#gl-boss-${uid})"/></g>
+        <path class="frame" d="M18 9L28 2H572L582 9L572 16H28Z"/>
+        <path class="frame" d="M8 9l6 -6 6 6 -6 6z M592 9l-6 -6 -6 6 6 6z" fill="#d8b66a" fill-opacity=".6"/>
+      </svg>
+    </div>
+
   <div class="gl-obj gl-g none"><div class="hd">${icon('diamond')}<span>Objective</span></div><div class="tx"></div></div>
 
   <div class="gl-riv gl-g none">
@@ -128,20 +145,10 @@ export function createHud(root: HTMLElement): HudImpl {
     <div class="side him"><div class="row"><span class="num">0</span>${icon('axe')}</div><div class="who">Gimli</div></div>
   </div>
 
-
-  <div class="gl-boss gl-g none">
-    <div class="nm"></div>
-    <svg viewBox="0 0 600 18" aria-hidden="true">
-      <path class="track" d="M18 9L28 2H572L582 9L572 16H28Z"/>
-      <g clip-path="url(#gl-bsc-${uid})"><rect class="lag" x="0" y="0" width="600" height="18"/><rect class="b-fill" x="0" y="0" width="600" height="18" fill="url(#gl-boss-${uid})"/></g>
-      <path class="frame" d="M18 9L28 2H572L582 9L572 16H28Z"/>
-      <path class="frame" d="M8 9l6 -6 6 6 -6 6z M592 9l-6 -6 -6 6 6 6z" fill="#d8b66a" fill-opacity=".6"/>
-    </svg>
-  </div>
-
   <div class="gl-topc">
     <div class="gl-prog gl-g none"><div class="lb"></div><div class="tr"><div class="fl"></div></div></div>
     <div class="gl-toasts" style="display:flex;flex-direction:column;align-items:center;gap:8px"></div>
+  </div>
   </div>
 
   <div class="gl-marks gl-g"></div>
@@ -161,6 +168,8 @@ export function createHud(root: HTMLElement): HudImpl {
   const hpLag = q<SVGRectElement>('.gl-bar.hp .lag');
   const fcFill = q<SVGRectElement>('.fc-fill');
   const focusRow = q<HTMLElement>('.gl-bar-row.focus');
+  const hpVal = q<HTMLElement>('.gl-readout .hpv');
+  const fcVal = q<HTMLElement>('.gl-readout .fcv');
   let hpFrac = 1;
   let hpLagFrac = 1;
   let hpLagDelay = 0;
@@ -175,6 +184,7 @@ export function createHud(root: HTMLElement): HudImpl {
 
   function setHealth(cur: number, max: number): void {
     const f = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
+    setText(hpVal, `${Math.max(0, Math.ceil(cur))} / ${Math.round(max)}`);
     const w = Math.round(f * 320 * 4) / 4;
     if (w !== hpW) {
       hpW = w;
@@ -191,6 +201,7 @@ export function createHud(root: HTMLElement): HudImpl {
 
   function setFocus(cur: number, max: number, active: boolean): void {
     const f = max > 0 ? Math.max(0, Math.min(1, cur / max)) : 0;
+    setText(fcVal, `Focus ${Math.round(f * 100)}%`);
     const w = Math.round(f * 240 * 4) / 4;
     if (w !== fcW) {
       fcW = w;
@@ -211,7 +222,7 @@ export function createHud(root: HTMLElement): HudImpl {
   const arrowName = h('div', 'gl-aname');
   arrowsEl.appendChild(arrowName);
   const padHint = h('div', 'gl-padhint');
-  padHint.innerHTML = promptGlyph('focus', 'gamepad').replace('LB', 'RB');
+  padHint.innerHTML = padWide('RB');
   arrowsEl.appendChild(padHint);
   let arrowKey = '';
 
@@ -307,7 +318,7 @@ export function createHud(root: HTMLElement): HudImpl {
         ],
         { duration: 520, easing: 'cubic-bezier(.2,.8,.2,1)' },
       );
-      objTx.animate([{ color: '#fff3c0', textShadow: '0 0 14px rgba(246,227,168,.9)' }, { color: 'inherit', textShadow: 'none' }], { duration: 1400, easing: 'ease-out' });
+      objTx.animate([{ color: '#fff3c0', textShadow: '0 0 14px rgba(232,215,154,.9)' }, { color: 'inherit', textShadow: 'none' }], { duration: 1400, easing: 'ease-out' });
     }
   }
 
@@ -397,7 +408,14 @@ export function createHud(root: HTMLElement): HudImpl {
   // ── toasts ──────────────────────────────────────────────────────────────────
   const toastHost = q<HTMLElement>('.gl-toasts');
   const toasts: ToastItem[] = [];
+  const MAX_TOASTS = 2;
   function toast(text: string, kind: 'checkpoint' | 'info' | 'reward' | 'warning' = 'info'): void {
+    // the same message again just keeps the live toast alive
+    const dup = toasts.find((x) => x.text === text && x.kind === kind);
+    if (dup) {
+      dup.ttl = Math.max(dup.ttl, kind === 'checkpoint' ? 3.4 : 3);
+      return;
+    }
     const t = h('div', `gl-toast ${kind}`);
     t.innerHTML = `${icon(TOAST_ICON[kind] ?? 'info')}<span>${esc(text)}</span>`;
     toastHost.appendChild(t);
@@ -408,8 +426,9 @@ export function createHud(root: HTMLElement): HudImpl {
       ],
       { duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)' },
     );
-    toasts.push({ el: t, ttl: kind === 'checkpoint' ? 3.4 : 3 });
-    while (toasts.length > 3) removeToast(toasts[0], true);
+    toasts.push({ el: t, ttl: kind === 'checkpoint' ? 3.4 : 3, text, kind });
+    // at most two at once: the oldest is replaced
+    while (toasts.length > MAX_TOASTS) removeToast(toasts[0], true);
   }
   function removeToast(it: ToastItem, now = false): void {
     const i = toasts.indexOf(it);
@@ -420,6 +439,11 @@ export function createHud(root: HTMLElement): HudImpl {
     }
     const a = it.el.animate([{ opacity: 1 }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: 320, easing: 'ease-in', fill: 'forwards' });
     a.onfinish = () => it.el.remove();
+  }
+
+  function clearToasts(): void {
+    for (const t of toasts.splice(0)) t.el.remove();
+    toastHost.textContent = '';
   }
 
   // ── subtitles ───────────────────────────────────────────────────────────────
@@ -444,21 +468,33 @@ export function createHud(root: HTMLElement): HudImpl {
     subTx.textContent = it.text;
     subTtl = it.dur;
     toggleClass(subEl, 'on', true);
+    for (const e of [subSp, subTx]) e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: 'ease-out' });
   }
   function subtitle(speaker: Speaker, text: string, duration?: number): void {
     if (!subsEnabled) return;
     const dur = duration ?? Math.max(2.4, 1.3 + text.length * 0.052);
+    // strictly sequential: a line waits for the one on screen (no cutting it short), so overlapping
+    // sources (chapter script, rivalry banter) can never talk over each other
     subQueue.push({ speaker: speaker === 'Narrator' ? '' : String(speaker), text, dur });
     if (!subShowing) showNextSub();
-    else if (subTtl > 1.1) subTtl = Math.min(subTtl, Math.max(1.1, subTtl * 0.5));
+  }
+  /** seconds until a line queued right now would start showing */
+  function subtitleBacklog(): number {
+    if (!subsEnabled) return 0;
+    let t = subShowing ? Math.max(0, subTtl) : 0;
+    for (const q of subQueue) t += q.dur;
+    return t;
+  }
+  /** drop the current line and everything queued (level dispose) */
+  function clearSubtitles(): void {
+    subQueue.length = 0;
+    subShowing = false;
+    subTtl = 0;
+    toggleClass(subEl, 'on', false);
   }
   function setSubtitlesEnabled(v: boolean): void {
     subsEnabled = v;
-    if (!v) {
-      subQueue.length = 0;
-      subShowing = false;
-      toggleClass(subEl, 'on', false);
-    }
+    if (!v) clearSubtitles();
   }
 
   // ── title card ──────────────────────────────────────────────────────────────
@@ -683,6 +719,9 @@ export function createHud(root: HTMLElement): HudImpl {
     setProgress,
     setFps,
     setSubtitlesEnabled,
+    clearSubtitles,
+    clearToasts,
+    subtitleBacklog,
     setPointerHint,
     update,
   };

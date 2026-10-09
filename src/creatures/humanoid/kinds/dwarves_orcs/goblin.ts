@@ -58,25 +58,26 @@ function strips(ctx: KindContext, color: number, rng: Rng) {
 
 function scrambler(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
-  skinTint(ctx, { dim: 0.62, color: 0x9a968a, color2: 0x78746a, noise: 0.55, torso: true, legs: true });
-  skinMottle(ctx, rng, [0x8a867a, 0xaaa699, 0x6a665c], { dim: 0.62, n: 14, torso: true, strength: 0.45 });
+  skinTint(ctx, { dim: 0.62, color: 0x9a968a, color2: 0x78746a, noise: 0.55, torso: false, legs: true, sleeve: 0.45, legRange: [0.3, 0.58] });
+  skinMottle(ctx, rng, [0x8a867a, 0xaaa699, 0x6a665c], { dim: 0.62, n: 14, torso: false, strength: 0.45 });
   eyeRings(ctx, 0x5a5448, 0.5);
   orcTeeth(ctx, rng, { n: 10, big: 0.8, color: 0xd8cca0 });
   bodyMarks(ctx, rng, { scars: 3 });
   boneNecklace(ctx, { rng, n: 7 });
-  sculptStrap(ctx, { color: 0x3a2e22, mat: 'leather_worn', width: 0.028 * P.s, inflate: 0.013 * P.s, sign: -1 });
-  strips(ctx, 0x4a4234, rng);
-  void s;
+  sculptStrap(ctx, { color: 0x3a2e22, mat: 'leather_worn', width: 0.028 * P.s, inflate: 0.022 * P.s, sign: -1 });
+  // sheet: sparse, long, stringy dark hair and a rusty plate strapped to one shoulder
+  sculptHairCap(s, P, { style: 'stringy', color: 0x302e26, length: 1, density: 1 });
+  addHairdo(ctx, { color: 0x302e26, tip: 0x3c3a30, deep: 0x1c1a14, length: 0.34 * P.s, count: 34, width: 0.022, wave: 0.6, wild: 0.8, comb: 0.55, front: 0.24, back: -0.42, gravity: 7, segments: 5 }, rng);
+  crudePauldron(ctx, 'l', { color: 0x5a5040, rng, layers: 1, size: 0.85, trim: 0x3e3428 });
 }
 
 function hooded(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const sc = P.s;
-  skinTint(ctx, { dim: 0.62, color: 0x848a7c, color2: 0x626a5a, noise: 0.55, torso: true, legs: true });
+  skinTint(ctx, { dim: 0.62, color: 0x848a7c, color2: 0x626a5a, noise: 0.55, torso: false, legs: true, sleeve: 0.45, legRange: [0.3, 0.58] });
   eyeRings(ctx, 0x4a5048, 0.5);
   orcTeeth(ctx, rng, { n: 9, big: 0.8, color: 0xd8cca0 });
   raggedHood(ctx, 0x3a3228, rng);
-  strips(ctx, 0x3a3228, rng);
   sculptStrap(ctx, { color: 0x2c241a, mat: 'leather_worn', width: 0.028 * sc, inflate: 0.013 * sc, sign: 1 });
   crudePauldron(ctx, 'l', { color: 0x4a4038, rng, layers: 1, size: 0.9, trim: 0x3a3028 });
 }
@@ -84,8 +85,8 @@ function hooded(ctx: KindContext, rng: Rng) {
 function potHelm(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  skinTint(ctx, { dim: 0.62, color: 0xa09a7a, color2: 0x7a7660, noise: 0.55, torso: true, legs: true });
-  skinMottle(ctx, rng, [0x8c8668, 0xb0aa88], { dim: 0.62, n: 10, torso: true, strength: 0.4 });
+  skinTint(ctx, { dim: 0.62, color: 0xa09a7a, color2: 0x7a7660, noise: 0.55, torso: false, legs: true, sleeve: 0.45, legRange: [0.3, 0.58] });
+  skinMottle(ctx, rng, [0x8c8668, 0xb0aa88], { dim: 0.62, n: 10, torso: false, strength: 0.4 });
   eyeRings(ctx, 0x5a5440, 0.55);
   orcTeeth(ctx, rng, { n: 9, big: 0.9, color: 0xd8cca0 });
   bodyMarks(ctx, rng, { scars: 4 });
@@ -93,14 +94,13 @@ function potHelm(ctx: KindContext, rng: Rng) {
   addHairdo(ctx, { color: 0x2c2820, tip: 0x3c3830, deep: 0x1a1812, length: 0.2 * sc, count: ctx.helmet ? 12 : 35, width: 0.026, wave: 0.5, wild: 0.9, comb: 0.5, front: 0.2, back: -0.42, gravity: 7, segments: 4 }, rng);
   crudePauldron(ctx, 'r', { color: 0x4a4038, rng, layers: 2, size: 0.95, trim: 0x3a3028 });
   sculptStrap(ctx, { color: 0x3a2e22, mat: 'leather_worn', width: 0.028 * sc, inflate: 0.013 * sc, sign: 1 });
-  strips(ctx, 0x4a4234, rng);
   if (ctx.helmet) domeHelm(ctx, { color: 0x4a4038, trim: 0x3a3028, trimMat: IRON, mat: IRON, profile: [[0.42, -0.06], [0.43, 0.04], [0.4, 0.17], [0.32, 0.3], [0.2, 0.4], [0.1, 0.45], [0.0, 0.47]], band: true, ridge: false, cheeks: false, rivets: 10, nasal: false, finial: 'spike', tilt: 0.12, y: -0.04 });
 }
 
 function shaman(ctx: KindContext, rng: Rng) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  skinTint(ctx, { dim: 0.62, color: 0x7c8690, color2: 0x56606c, noise: 0.5, torso: true, legs: true });
+  skinTint(ctx, { dim: 0.62, color: 0x7c8690, color2: 0x56606c, noise: 0.5, torso: false, legs: true, sleeve: 0.45, legRange: [0.3, 0.58] });
   eyeRings(ctx, 0x3a4048, 0.55);
   orcTeeth(ctx, rng, { n: 10, big: 0.9, color: 0xd8d0a8 });
   // white face paint
@@ -112,7 +112,6 @@ function shaman(ctx: KindContext, rng: Rng) {
   addHairdo(ctx, { color: 0x8a8a84, tip: 0xaaaaa2, deep: 0x5a5a56, length: 0.42 * sc, count: 60, width: 0.026, wave: 0.8, wild: 1.0, comb: 0.5, front: 0.2, back: -0.42, gravity: 6, segments: 5 }, rng);
   boneNecklace(ctx, { rng, n: 11 });
   bodyMarks(ctx, rng, { scars: 2, paint: 4, paintColor: 0xddd8c8 });
-  strips(ctx, 0x4a3a2a, rng);
   // a horned skull cap of bone
   if (ctx.helmet) {
     const u = P.headH;
@@ -137,19 +136,26 @@ export function goblinExtras(ctx: KindContext) {
 export const goblinDef: KindDef = {
   label: 'Moria goblin',
   height: 1.48,
-  build: { shoulders: 0.92, hips: 0.88, bulk: 0.88, belly: 0.12, chest: 0.92, armLength: 1.3, legLength: 0.9, headSize: 1.24, neck: 0.75, neckThick: 0.85, hunch: 0.72, handSize: 1.45, footSize: 1.25, muscle: 0.7 },
+  // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
+  build: { shoulders: 0.9, hips: 0.86, bulk: 0.78, belly: 0.05, chest: 0.88, armLength: 1.32, legLength: 0.9, headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
   face: FACE,
   skin: { color: 0x5e5c54, color2: 0x4a4842, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x6a5a54, brows: 0x4a463e, surface: 'skin_orc', scatter: 0x9a8a70 },
-  eyes: { color: 0xe6dc7a, glow: 1.1, sclera: 0xd8d4b0 },
+  // large glinting amber eyes (#bb8b32)
+  eyes: { color: 0xd09a3a, glow: 1.0, sclera: 0xd8d4b0 },
   hair: { style: 'stringy', color: 0x5e5c54, density: 0 },
   beard: null,
+  // sheet: a coarse brown rag wrap over the torso, a ragged kilt to the knees on a fibrous
+  // binding, wrapped feet and shins (it no longer reads as a pale naked person)
   outfit: [
-    { type: 'loincloth', color: 0x3a3428, length: 0.55 },
-    { type: 'belt', color: 0x2a2218 },
+    { type: 'rags', color: 0x40362a, color2: 0x342c22 },
+    { type: 'wraps', color: 0x3c3226, thickness: 0.004 },
+    { type: 'skirt', color: 0x40362a, color2: 0x2e271e, mat: 'rags', length: 0.62 },
+    { type: 'belt', color: 0x594a34, thickness: 0.004 },
   ],
   armor: [],
   weapons: { right: 'cleaver', style: 'orc' },
-  anim: { hunch: 0.7, swagger: 0.3, aggression: 0.9, stance: 1.28, cadence: 1.2, armSwing: 1.3 },
+  // sheet: a deep scrambling crouch
+  anim: { hunch: 0.92, swagger: 0.3, aggression: 0.9, stance: 1.36, cadence: 1.2, armSwing: 1.3 },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
   detail: { res: devNum('res', 0.058), headRes: devNum('headRes', 0.0135), faceRes: 0, detailScale: 0.9 },
   sfx: { voice: 'goblin', grunt: 'goblin_screech', die: 'orc_die', roar: 'goblin_screech', weight: 0.35 },
@@ -157,3 +163,4 @@ export const goblinDef: KindDef = {
 };
 
 void shade;
+void strips;

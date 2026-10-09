@@ -13,7 +13,7 @@ import type { Rng } from '../../core/rng';
 
 export interface OutfitResult {
   /** cloth panels to add as separate skinned layers */
-  skirt?: { top: number; bottom: number; color: number; color2?: number; mat: SurfaceName | SurfaceSpec; panels: [number, number][]; ragged?: number };
+  skirt?: { top: number; bottom: number; color: number; color2?: number; mat: SurfaceName | SurfaceSpec; panels: [number, number][]; ragged?: number; grow?: number };
   cloak?: { color: number; color2?: number; mat: SurfaceName | SurfaceSpec; length: number; ragged?: number };
   /** the hair is covered (hood/helmet) */
   hood?: boolean;
@@ -174,7 +174,9 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
       case 'vest': {
         const inf = 0.014 * sc + t;
         s.group('union', 0.0025 * sc, () => {
-          emitParts(s, parts, [...UPPER, 'pelvis', 'glutes', 'thigh', 'neck'], { ...base(l.type === 'jerkin' ? 'suede' : 'leather'), inflate: inf });
+          // a second colour mottles the leather (tooling and wear read at a distance)
+          const mottle: PrimOpts = l.color2 !== undefined ? { color2: l.color2, colorNoise: 0.4, colorFreq: 34 / sc } : {};
+          emitParts(s, parts, [...UPPER, 'pelvis', 'glutes', 'thigh', 'neck'], { ...base(l.type === 'jerkin' ? 'suede' : 'leather', mottle), inflate: inf });
           // the neckline sits on the base of the neck (a taller collar is under-resolved at body res)
           slab(s, hipY + (l.length !== undefined ? -0.08 * l.length * sc : 0.02 * sc), j.neck[1] + 0.012 * sc, 0.005 * sc, true);
           // arm holes: the plane leans outward downward, so the vest opens at the shoulder joint
@@ -196,7 +198,8 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
           s.group('union', 0.002 * sc, () => {
             emitParts(s, parts, ['forearm'], { ...base('leather', { k: 0.02 * sc }), inflate: inf, oneSide: true });
             limbCut(s, L, [P.j.hand_l[0] - L.x * 0.008 * sc, P.j.hand_l[1] - L.y * 0.008 * sc, P.j.hand_l[2]], false, 0.004 * sc, true);
-            limbCut(s, L, [P.j.forearm_l[0] + L.x * P.foreArm * 0.3, P.j.forearm_l[1] + L.y * P.foreArm * 0.3, P.j.forearm_l[2]], true, 0.004 * sc, true);
+            const from = 1 - Math.min(0.97, Math.max(0.1, l.length ?? 0.7));
+            limbCut(s, L, [P.j.forearm_l[0] + L.x * P.foreArm * from, P.j.forearm_l[1] + L.y * P.foreArm * from, P.j.forearm_l[2]], true, 0.004 * sc, true);
           }),
         );
         // (edges are stitched and worn via the seam channel; thin tooled rings alias at body resolution)
@@ -204,7 +207,7 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
       }
       case 'belt':
       case 'sash': {
-        const y = hipY + 0.07 * sc;
+        const y = hipY + (0.07 + (l.offset ?? 0)) * sc;
         res.beltY = y;
         const hw = (l.type === 'sash' ? 0.045 : 0.021) * sc;
         s.group('union', 0.002 * sc, () => {
@@ -249,7 +252,10 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
           color2: l.color2,
           mat: mat(l.type === 'loincloth' ? 'rags' : 'cloth'),
           panels: l.type === 'loincloth' ? [[-0.5, 0.5], [Math.PI - 0.55, Math.PI + 0.55]] : [[-0.7, 0.7], [0.8, 2.3], [2.4, 3.88], [3.98, 5.48]],
-          ragged: l.type === 'loincloth' ? 0.04 * sc : undefined,
+          // loincloths and rag kilts get torn hems
+          ragged: l.type === 'loincloth' || l.mat === 'rags' ? 0.04 * sc : undefined,
+          // thickness: clearance for bodies sculpted bigger than the anatomy (trolls)
+          grow: l.thickness ? l.thickness * sc : undefined,
         };
         break;
       }

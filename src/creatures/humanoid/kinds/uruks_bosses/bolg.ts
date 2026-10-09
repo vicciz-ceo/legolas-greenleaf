@@ -23,17 +23,42 @@ const LEATHER = surface('leather_worn', { rough: 0.7 });
 const BONE = surface('bone', { rough: 0.6 });
 const SCAR = 0x2d2828;
 
+// sheet (docs/refs/bolg): pale grey-white skin #c4c1b6, rusted iron #635647, dark kilt #3c332b,
+// leather straps #4f3827; bare scarred torso with crossed straps
 export const BOLG_PAL = {
-  skin: 0x8f8a82,
-  skin2: 0x6a655e,
+  skin: 0x7d776f, // renders close to the sheet's lit #c4c1b6 under daylight
+  skin2: 0x5e5852,
   lips: 0x5a4a48,
   scatter: 0x8a6a62,
   eyes: 0xa6b2bc,
-  iron: 0x2a2724,
-  rust: 0x4a3426,
+  iron: 0x4e4234, // rusted iron (lit sheet colour #635647)
+  rust: 0x5a3c28,
   fur: 0x241d17,
-  leather: 0x1f1813,
+  leather: 0x3e2c1f, // coarse leather straps #4f3827
+  kilt: 0x3a3029, // ragged dark kilt #3c332b
 };
+
+/** two coarse leather straps crossing the bare chest and back (shoulders → opposite hip) */
+function crossStraps(ctx: KindContext, parts: ReturnType<typeof anatomyParts>) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const j = P.j;
+  const mid = new THREE.Vector3(0, (j.chest[1] + j.thigh_l[1]) / 2 + 0.06 * sc, 0);
+  const hw = 0.03 * sc;
+  for (const sx of [1, -1]) {
+    const n = new THREE.Vector3(sx * 1.0, 1.15, 0).normalize();
+    const c = n.dot(mid);
+    s.group('union', 0.002 * sc, () => {
+      // (inflated past the extra muscle masses of brawnBody)
+      emitParts(s, parts, ['ribs', 'chest', 'pecs', 'back', 'trap', 'waist', 'belly'], { color: BOLG_PAL.leather, mat: LEATHER, inflate: 0.034 * sc, k: 0.05 * sc });
+      s.plane([n.x, n.y, n.z], c + hw, { op: 'intersect', k: 0.003 * sc });
+      s.plane([-n.x, -n.y, -n.z], -(c - hw), { op: 'intersect', k: 0.003 * sc });
+      s.plane([0, 1, 0], j.upperarm_l[1] + 0.06 * sc, { op: 'intersect', k: 0.01 * sc });
+      s.plane([n.x, n.y, n.z], c + hw, { op: 'paint', seam: 0, k: 0.002 });
+      s.plane([-n.x, -n.y, -n.z], -(c - hw), { op: 'paint', seam: 0, k: 0.002 });
+    });
+  }
+}
 
 const BOLG_FACE = {
   jaw: 1.32,
@@ -166,31 +191,26 @@ function bolgExtras(ctx: KindContext) {
   const box = { min: [-1, 0, -0.8] as [number, number, number], max: [1, P.H + 0.4, 0.9] as [number, number, number] };
 
   brawnBody(ctx, { traps: 1.2, lats: 1.2, delts: 1.2, forearm: 1.15, thigh: 1.1, calf: 1.1, biceps: 1.15 });
-  const cuirass = armor >= 0.25 ? cuirassSdf(ctx, { cuirass: 'plate' }, parts, { rusty: true, color: BOLG_PAL.iron, lats: 1.2 }) : null;
+  // sheet: the torso is bare (pale, scarred) under two crossed leather straps — no cuirass
+  void cuirassSdf;
+  void cuirassGear;
+  crossStraps(ctx, parts);
   if (armor >= 0.25) forearms(ctx, parts, 'plate', 1.15);
-
-  // heavy fur collar over the trapezius
-  s.group('union', 0.006 * sc, () => {
-    emitParts(s, parts, ['trap', 'neck'], { color: BOLG_PAL.fur, mat: 'fur', inflate: 0.04 * sc, k: 0.05 * sc, noise: { amp: 0.015 * sc, freq: 16 / sc, type: 'fbm', octaves: 3 } });
-    s.plane([0, 1, 0], j.neck[1] + 0.05 * sc, { op: 'intersect', k: 0.02 * sc });
-    s.plane([0, -1, 0], -(j.neck[1] - 0.06 * sc), { op: 'intersect', k: 0.02 * sc });
-  });
 
   const proj0 = makeProjector(s, box);
   if (proj0) bolgFaceScars(ctx, proj0);
 
   const proj = makeProjector(s, box);
   if (!proj) return;
-  if (cuirass) cuirassGear(ctx, gear, proj, { cuirass: 'plate' }, cuirass.botY);
   skullHardware(ctx, gear, proj);
 
   // a mace sized for a 2.6 m brute
   scaleHeldWeapon(ctx, 'hand_r', ['mace'], [1.7, 1.55, 1.7]);
 
-  // spiked pauldron (left) and a smaller plate on the right
+  // heavy spiked pauldrons of rusted iron on both shoulders (sheet)
   if (armor >= 0.5) {
-    pauldron(ctx, gear, 1, { lames: 4, spikes: 7, scale: 1.3, rusty: true, color: BOLG_PAL.iron });
-    pauldron(ctx, gear, -1, { lames: 3, spikes: 3, scale: 1.0, rusty: true, color: BOLG_PAL.iron });
+    pauldron(ctx, gear, 1, { lames: 4, spikes: 6, scale: 1.3, rusty: true, color: BOLG_PAL.iron });
+    pauldron(ctx, gear, -1, { lames: 4, spikes: 6, scale: 1.3, rusty: true, color: BOLG_PAL.iron });
   }
 
   // spikes along the forearm guards
@@ -239,17 +259,18 @@ function bolgExtras(ctx: KindContext) {
       const sfx = side > 0 ? 'l' : 'r';
       const t = new THREE.Vector3(...j[`thigh_${sfx}`]);
       const g = Math.sqrt(P.build.bulk);
-      {
-        const c = V(t.x + side * 0.012 * sc, t.y - 0.17 * sc, 0.0);
-        const R: [number, number, number] = [0.108 * sc * g, 0.17 * sc, 0.105 * sc * g];
-        const fn = ellipsoidFn(c, R, [-0.8, 0.8], [-0.75, 0.55]);
-        gear(shellPatch(fn, 10, 6, 0.009 * sc, { noInner: true }), { bone: `thigh_${sfx}`, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
-      }
+      void t; // (no thigh tassets: the sheet's kilt hangs over bare thighs)
       const kn = new THREE.Vector3(...j[`shin_${sfx}`]);
       const kc = V(kn.x, kn.y + 0.005 * sc, kn.z + 0.012 * sc);
       const kfn = ellipsoidFn(kc, [0.062 * sc * g, 0.06 * sc, 0.07 * sc * g], [-1.1, 1.1], [-0.5, 0.9]);
       gear(shellPatch(kfn, 8, 3, 0.008 * sc, { noInner: true }), { bone: `shin_${sfx}`, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85, small: true });
       gear(spike(0.014 * sc, 0.07 * sc, 5), { bone: `shin_${sfx}`, color: BOLG_PAL.iron, mat: IRON, matrix: placeAlong(V(kc.x, kc.y + 0.01 * sc, kc.z + 0.07 * sc), V(0, 0.2, 1), V(0, 1, 0)), small: true });
+      // rusted shin plate over the foot wraps (sheet)
+      const an = new THREE.Vector3(...j[`foot_${sfx}`]);
+      const sc0 = V(kn.x, (kn.y + an.y) / 2 + 0.02 * sc, kn.z + 0.012 * sc);
+      const sfn = ellipsoidFn(sc0, [0.07 * sc * g, (kn.y - an.y) * 0.46, 0.072 * sc * g], [-1.25, 1.25], [-0.85, 0.85]);
+      gear(shellPatch(sfn, 8, 6, 0.009 * sc, { noInner: true }), { bone: `shin_${sfx}`, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
+      gear(spike(0.012 * sc, 0.06 * sc, 5), { bone: `shin_${sfx}`, color: BOLG_PAL.iron, mat: IRON, matrix: placeAlong(V(sc0.x, sc0.y, sc0.z + 0.078 * sc * g), V(0, 0.1, 1), V(0, 1, 0)), small: true });
     }
   }
 
@@ -278,11 +299,11 @@ export const bolgKind: KindDef = {
   skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.4, blemish: 0.6, scars: 5, warts: 0.12, wrinkles: 0.7, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_orc', scatter: BOLG_PAL.scatter },
   eyes: { color: BOLG_PAL.eyes, glow: 0.3, sclera: 0xbdb6a6 },
   hair: { style: 'bald', color: 0x1a1612 },
+  // bare legs under a ragged knee-length kilt, shins and feet in worn wraps (sheet)
   outfit: [
-    { type: 'trousers', color: 0x25201b, mat: 'leather_worn' },
-    { type: 'boots', color: 0x1a1613, color2: 0x120f0d, length: 0.92 },
-    { type: 'belt', color: 0x17120f },
-    { type: 'loincloth', color: 0x1f1813, mat: 'leather_worn', length: 0.65 },
+    { type: 'wraps', color: 0x4a3a2c, thickness: 0.02 },
+    { type: 'belt', color: BOLG_PAL.leather, thickness: 0.006 },
+    { type: 'skirt', color: BOLG_PAL.kilt, color2: 0x2a231e, mat: 'rags', length: 0.85 },
   ],
   armor: [],
   weapons: { right: 'mace' },

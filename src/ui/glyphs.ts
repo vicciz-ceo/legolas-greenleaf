@@ -4,10 +4,23 @@ import { icon, type IconName } from './icons';
 
 export type PromptAction = 'interact' | 'jump' | 'melee' | 'focus' | 'draw';
 
+/** gamepad labels that have a hand-drawn reference glyph */
+const PAD_ICON: Record<string, IconName> = {
+  A: 'gamepad_a', B: 'gamepad_b', X: 'gamepad_x', Y: 'gamepad_y',
+  LB: 'gamepad_lb', RB: 'gamepad_rb', LT: 'gamepad_lt', RT: 'gamepad_rt',
+  LS: 'gamepad_stick_left', RS: 'gamepad_stick_right',
+};
+
 export const key = (label: string) => `<span class="gl-key">${label}</span>`;
-export const pad = (label: string, color?: 'a' | 'b' | 'x' | 'y') =>
-  `<span class="gl-pad${color ? ' gl-pad-' + color : ''}">${label}</span>`;
-export const padWide = (label: string) => `<span class="gl-pad gl-pad-wide">${label}</span>`;
+export const pad = (label: string, color?: 'a' | 'b' | 'x' | 'y') => {
+  const ic = PAD_ICON[label];
+  const cls = `gl-pad${color ? ' gl-pad-' + color : ''}${ic ? ' gl-pad-i' : ''}`;
+  return `<span class="${cls}" title="${label}">${ic ? icon(ic) : label}</span>`;
+};
+export const padWide = (label: string) => {
+  const ic = PAD_ICON[label];
+  return `<span class="gl-pad gl-pad-wide${ic ? ' gl-pad-i' : ''}" title="${label}">${ic ? icon(ic) : label}</span>`;
+};
 export const mouse = (kind: 'mouse' | 'mouse_l' | 'mouse_r' | 'mouse_w') => icon(kind, 'gl-mouse');
 
 const TOUCH_ICON: Record<PromptAction, IconName> = {
