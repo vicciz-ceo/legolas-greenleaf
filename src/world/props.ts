@@ -40,7 +40,10 @@ function rockMaterial(kind: RockKind, moss: boolean): THREE.Material {
 
 /** one rock. `size` = radius in metres (rocks are ~1.4 wide per unit). Sits on y = 0. */
 export function rock(size = 1, seed = 1, o: RockOpts & { kind?: RockKind } = {}): Built {
-  const geo = rockGeometry(seed, o);
+  // the geometry is unit size and the mesh is scaled by `size`, so divide the tile by it to keep the
+  // texture at its real-world scale on big crags (size quantised to 0.25 so the geometry cache still hits)
+  const q = Math.max(0.25, Math.round(size * 4) / 4);
+  const geo = rockGeometry(seed, { ...o, tile: (o.tile ?? 3.4) / q });
   const mesh = new THREE.Mesh(geo, rockMaterial(o.kind ?? 'rock', !!o.moss));
   const flat = o.flat ?? 0.72;
   mesh.scale.setScalar(size);
