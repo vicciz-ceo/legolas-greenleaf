@@ -70,13 +70,13 @@ The parallax-threejs debug harness is scaffolded (`deno.json` tasks such as `che
 
 | # | Chapter | Built + independent QA + fixes | Finisher pass (art vs refs + move to shared APIs) | Last verified |
 |---|---|---|---|---|
-| 1 | `mirkwood` | ✅ | ⚠️ interrupted part-way (edits committed) | see `docs/handoff/STATUS.md` |
+| 1 | `mirkwood` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
 | 2 | `barrels` | ✅ | ⏳ not started (an earlier interrupted art pass left partial edits) | smoke ✅ (11 Oct baseline, before shared fixes) |
-| 3 | `laketown` | ✅ | ⚠️ interrupted part-way (edits committed) | see `docs/handoff/STATUS.md` |
+| 3 | `laketown` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
 | 4 | `ravenhill` | ✅ | ✅ done | smoke 4/4, bot reaches complete (11 Oct) |
 | 5 | `moria` | ✅ | ⏳ not started (partial art edits from earlier) | smoke 3/3 after shared fixes |
-| 6 | `amon_hen` | ✅ | ⚠️ interrupted part-way (edits committed) | see `docs/handoff/STATUS.md` |
-| 7 | `helms_deep` | ✅ | ⚠️ interrupted part-way (edits committed) | see `docs/handoff/STATUS.md` |
+| 6 | `amon_hen` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
+| 7 | `helms_deep` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
 | 8 | `pelennor` | ✅ | ✅ done | smoke 3/3, bot reaches complete at Low and High (11 Oct) |
 | 9 | `black_gate` | ✅ | ⏳ not started | smoke 3/3 after shared fixes |
 
@@ -84,7 +84,7 @@ The "interrupted" finishers stopped mid-task when the session ended. Their edits
 
 ## What's left
 
-1. **Verify the 4 interrupted chapters** (`mirkwood`, `laketown`, `amon_hen`, `helms_deep`): `npm run smoke -- --only <id>` plus a bot play-through to `complete` (`/?chapter=<id>&cp=0&bot=1&god=1&quality=low&skipIntro=1`). Fix any regressions, then optionally finish their art pass.
+1. **Finish the 4 interrupted chapters** (`mirkwood`, `laketown`, `amon_hen`, `helms_deep`). Their smoke already passes (13/13 at handoff). Still to do: a bot play-through to `complete` (`/?chapter=<id>&cp=0&bot=1&god=1&quality=low&skipIntro=1`), then finish their art pass and migration with FINISHER_PROMPT.md.
 2. **Run the finisher on `barrels`, `moria`, `black_gate`**, using `docs/handoff/FINISHER_PROMPT.md`.
 3. **Final review**, using `docs/handoff/FINAL_REVIEW_PROMPT.md`: full smoke, build and tests, a campaign play-through, a review across several angles, fixes.
 4. **Play it yourself.** Difficulty and pacing were tuned with a bot (often in god mode), the audio mix has only been checked numerically (no human has listened), and all perf numbers come from software rendering. A real-GPU, human pass is the most valuable thing left.
