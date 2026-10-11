@@ -29,6 +29,8 @@ export interface Motor {
   groundY: number;
   readonly groundNormal: THREE.Vector3;
   groundMaterial: SurfaceMaterial;
+  /** grip of the ground under the feet 0..1 (GroundHit.friction; 1 = normal) */
+  groundFriction: number;
   groundCollider: ColliderHandle | null;
   /** on ground steeper than the walkable limit */
   sliding: boolean;
@@ -60,6 +62,7 @@ export function createMotor(pos: THREE.Vector3, vel: THREE.Vector3, radius: numb
     groundY: -Infinity,
     groundNormal: new THREE.Vector3(0, 1, 0),
     groundMaterial: 'dirt',
+    groundFriction: 1,
     groundCollider: null,
     sliding: false,
     airTime: 0,
@@ -228,6 +231,7 @@ function subStep(physics: PhysicsWorld, m: Motor, dt: number, noGravity: boolean
   m.groundY = g.y;
   m.groundNormal.copy(g.normal);
   m.groundMaterial = g.material;
+  m.groundFriction = g.friction ?? 1;
   const walkable = g.normal.y >= WALKABLE_NORMAL_Y;
 
   if (!walkable) {
@@ -295,6 +299,7 @@ export function settle(physics: PhysicsWorld, m: Motor, searchUp = 2) {
     m.groundY = g.y;
     m.groundNormal.copy(g.normal);
     m.groundMaterial = g.material;
+    m.groundFriction = g.friction ?? 1;
     m.groundCollider = g.collider;
   } else {
     m.grounded = false;

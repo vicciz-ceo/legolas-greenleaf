@@ -101,6 +101,16 @@ export interface NpcOpts extends CombatantOpts {
   facing?: number;
 }
 
+/**
+ * Scripted-destination arrival (Enemy.moveTarget): within `radius` metres horizontally and `yTol`
+ * metres vertically (a waypoint at floor level is reached from a stair tread above or below it).
+ */
+export function moveArrived(pos: THREE.Vector3, target: THREE.Vector3, radius = 1, yTol = 2): boolean {
+  const dx = target.x - pos.x;
+  const dz = target.z - pos.z;
+  return dx * dx + dz * dz < radius * radius && Math.abs(target.y - pos.y) < yTol;
+}
+
 export abstract class NpcBase extends BaseCombatant {
   protected readonly ctx: GameContext;
   protected readonly motor: Motor;

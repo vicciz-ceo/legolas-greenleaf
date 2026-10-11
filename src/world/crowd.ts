@@ -715,6 +715,10 @@ function makeMaterial(shared: CrowdUniforms, maskedTint: boolean): THREE.MeshSta
 // ───────────────────────────────────────────────────────────────────────────────────────────
 
 interface VariantInst {
+  /** the sphere this module keeps up to date (mesh.boundingSphere unless a chapter replaced it) */
+  sphere: THREE.Sphere;
+  /** radius of one figure about its origin, with a margin for the gait animation */
+  figR: number;
   mesh: THREE.InstancedMesh;
   n: number;
   bx: Float32Array;
@@ -726,7 +730,30 @@ interface VariantInst {
 
 const geoCache = new Map<string, THREE.BufferGeometry>();
 
+// ── shared game-time clock ───────────────────────────────────────────────────────────────────
+// Every live crowd advances from tickCrowds(dt), which the level calls each game step (so crowds
+// pause with the game, slow with Focus, and keep marching while frustum culled). Crowds built
+// outside a level (the lab, tools) fall back to a real-time tick from onBeforeRender until the
+// first tickCrowds call.
+type CrowdTick = (dt: number) => void;
+const liveCrowds = new Set<CrowdTick>();
+let gameClock = false;
+
+/** advance every live crowd by `dt` game seconds (called by the level each step) */
+export function tickCrowds(dt: number): void {
+  gameClock = true;
+  if (!(dt > 0)) return;
+  for (const t of liveCrowds) t(dt);
+}
+
+/** true once tickCrowds has driven the crowds (diagnostics) */
+export function crowdsOnGameClock(): boolean {
+  return gameClock;
+}
+
 const COUNT_SCALE = { low: 0.4, medium: 0.7, high: 1, ultra: 1 } as const;
+/** metres a marching crowd moves between bounding-sphere refits (added to the sphere radius) */
+const REFIT_SLACK = 2;
 const HORSE_COATS = [0x6b4a30, 0x4a3020, 0x8a8a86, 0xd8d4c8, 0x2a2420, 0x8a6a40, 0x5a3a24];
 
 export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => number): CrowdHandle {
@@ -799,7 +826,8 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
     }
     const mesh = new THREE.InstancedMesh(geo, material, n);
     mesh.name = `crowd:${def.kind}:${v.weapon}`;
-    mesh.frustumCulled = false;
+    // culled with a real bounding sphere (set below, kept up to date while marching)
+    mesh.frustumCulled = true;
     mesh.castShadow = castShadow;
     mesh.receiveShadow = true;
     mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
@@ -840,21 +868,66 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
     mesh.instanceMatrix.needsUpdate = true;
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
     group.add(mesh);
-    insts.push({ mesh, n, bx, bz, yawScale: ys, alive: new Uint8Array(n).fill(1), inst });
+    const rec: VariantInst = { mesh, n, bx, bz, yawScale: ys, alive: new Uint8Array(n).fill(1), inst, sphere: new THREE.Sphere(), figR: 1 };
+    // figure radius about its origin (geometry bounds: a banner pole or a rider is taller than a man)
+    if (!geo.boundingSphere) geo.computeBoundingSphere();
+    const gs = geo.boundingSphere!;
+    rec.figR = (gs.center.length() + gs.radius) * 1.08 + 0.3;
+    fitSphere(rec);
+    mesh.boundingSphere = rec.sphere;
+    insts.push(rec);
   });
 
-  // ── animation clock (real time; multiple render passes per frame just add their small dts) ──
+  /**
+   * Bounding sphere of a variant's figures, read from the instance matrices (marching figures where
+   * they are now, fallen ones where they fell), padded by the figure radius, the fall / sink of
+   * thinned figures and the refit slack. Only touches the sphere this module assigned: a sphere a
+   * chapter set by hand is left alone.
+   */
+  function fitSphere(vi: VariantInst): void {
+    const arr = vi.mesh.instanceMatrix.array as Float32Array;
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (let i = 0; i < vi.n; i++) {
+      const o = i * 16;
+      const x = arr[o + 12], y = arr[o + 13], z = arr[o + 14];
+      if (x < x0) x0 = x;
+      if (x > x1) x1 = x;
+      if (y < y0) y0 = y;
+      if (y > y1) y1 = y;
+      if (z < z0) z0 = z;
+      if (z > z1) z1 = z;
+    }
+    if (!(x1 >= x0)) {
+      vi.sphere.set(new THREE.Vector3(def.center.x, def.center.y, def.center.z), 1);
+      return;
+    }
+    vi.sphere.center.set((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
+    vi.sphere.radius = Math.hypot(x1 - x0, y1 - y0, z1 - z0) / 2 + vi.figR + 1.7 + REFIT_SLACK;
+  }
+
+  // ── animation clock: GAME time from tickCrowds (see above); real time only as a fallback ──
   let speed = def.speed ?? 0;
   let dist = 0;
-  let last = performance.now();
-  let lastUpdate = 0;
+  let clock = 0;
+  let lastUpdate = -1;
+  let boundsDist = 0;
   let aliveCount = insts.reduce((s, i) => s + i.n, 0);
-  const t0 = last;
-  const tick = (): void => {
-    const now = performance.now();
-    const dt = Math.min(0.1, (now - last) / 1000);
-    last = now;
-    uniforms.uTime.value = (now - t0) / 1000;
+  let orphanT = 0;
+  const advance = (dtIn: number): void => {
+    // a crowd whose level is gone without dispose() (built with createCrowd directly) drops out of
+    // the shared clock after a few seconds outside any scene; it re-registers if rendered again
+    let top: THREE.Object3D = group;
+    while (top.parent) top = top.parent;
+    if (!(top as THREE.Scene).isScene) {
+      orphanT += dtIn;
+      if (orphanT > 5) liveCrowds.delete(advance);
+      return;
+    }
+    orphanT = 0;
+    const dt = Math.min(0.1, Math.max(0, dtIn));
+    clock += dt;
+    const now = clock * 1000;
+    uniforms.uTime.value = clock;
     const move = Math.max(0, Math.min(1, (speed - 0.2) / 2.3));
     const run = Math.max(0, Math.min(1, (speed - 3) / 5));
     uniforms.uMove.value += (move - uniforms.uMove.value) * Math.min(1, dt * 3);
@@ -863,7 +936,7 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
     uniforms.uPhase.value += dt * cadence;
     if (speed > 0.05) {
       dist += speed * dt;
-      if (now - lastUpdate > 20) {
+      if (lastUpdate < 0 || now - lastUpdate > 20) {
         lastUpdate = now;
         for (const vi of insts) {
           const arr = vi.mesh.instanceMatrix.array as Float32Array;
@@ -878,14 +951,27 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
           }
           vi.mesh.instanceMatrix.needsUpdate = true;
         }
+        // keep the culling spheres on the marching figures (a few metres of slack between refits)
+        if (Math.abs(dist - boundsDist) > REFIT_SLACK) {
+          boundsDist = dist;
+          for (const vi of insts) fitSphere(vi);
+        }
       }
     }
   };
-  for (const vi of insts) vi.mesh.onBeforeRender = tick;
-  if (insts.length) {
-    // only the first mesh needs to tick; the others share the uniforms
-    for (let i = 1; i < insts.length; i++) insts[i].mesh.onBeforeRender = () => {};
-  }
+  liveCrowds.add(advance);
+  // fallback for crowds that no level ticks (lab, tools): real time from the first mesh's render
+  let lastReal = -1;
+  const fallback = (): void => {
+    if (gameClock) {
+      if (!disposed && !liveCrowds.has(advance)) liveCrowds.add(advance);
+      return;
+    }
+    const t = performance.now();
+    if (lastReal >= 0) advance((t - lastReal) / 1000);
+    lastReal = t;
+  };
+  if (insts.length) insts[0].mesh.onBeforeRender = fallback;
 
   let disposed = false;
   const handle: CrowdHandle = {
@@ -910,6 +996,7 @@ export function createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => n
     dispose() {
       if (disposed) return;
       disposed = true;
+      liveCrowds.delete(advance);
       for (const vi of insts) {
         vi.mesh.geometry.dispose();
         vi.mesh.dispose();

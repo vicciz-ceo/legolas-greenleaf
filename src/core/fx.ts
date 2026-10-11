@@ -16,7 +16,7 @@
  *    the same target), so particles fade near the camera instead.
  */
 import * as THREE from 'three';
-import type { BloodKind, Engine, Fx, FxHandle, WeatherKind } from './types';
+import type { BloodKind, Engine, FireOpts, Fx, FxHandle, WeatherKind } from './types';
 import { fbm2, noise2 } from './rng';
 import { getEngineInternals } from './engine';
 import type { EnvironmentPresetEx } from './environment';
@@ -888,6 +888,9 @@ class Emitter implements FxHandle {
   releasing = false;
   pick = -1;
   lightBase = 20;
+  /** fx.fire opts: smoke plume multiplier and whether this emitter may take a pooled light */
+  smokeMul = 1;
+  lit = true;
   lightDist = 12;
   lightColor = 0xff8a3a;
   flickerSeed = Math.random() * 100;
@@ -1508,14 +1511,17 @@ export function createFx(engine: Engine): Fx & FxExtras {
     e.kind = kind; e.scale = 1; e.intensity = 1; e.alive = 1; e.stopped = false; e.obj = null;
     e.offset.set(0, 0, 0); e.accFlame = e.accSmoke = e.accEmber = e.accCore = 0;
     e.ttl = e.ttl0 = 0; e.light = null; e.releasing = false; e.pick = -1;
+    e.smokeMul = 1; e.lit = true;
     e.lightBase = 20; e.lightDist = 12; e.lightColor = 0xff8a3a;
     e.flickerSeed = Math.random() * 100;
     return e;
   }
 
-  function fireFx(pos: THREE.Vector3, scale = 1): FxHandle {
+  function fireFx(pos: THREE.Vector3, scale = 1, opts?: FireOpts): FxHandle {
     const e = acquireEmitter('fire');
     e.position.copy(pos); e.scale = scale;
+    if (opts?.smoke !== undefined) e.smokeMul = Math.max(0, opts.smoke);
+    if (opts?.light === false) e.lit = false;
     e.lightBase = 15 * scale * scale; e.lightDist = 14 * Math.max(0.6, scale);
     return e;
   }
@@ -1599,7 +1605,7 @@ export function createFx(engine: Engine): Fx & FxExtras {
         p.fadeIn = 0.03;
         layer.commit();
       }
-      e.accSmoke += dt * (torch ? 3 : 5) * power * m;
+      e.accSmoke += dt * (torch ? 3 : 5) * power * m * e.smokeMul;
       while (e.accSmoke >= 1) {
         e.accSmoke -= 1;
         const p = layer.begin();
@@ -1608,7 +1614,8 @@ export function createFx(engine: Engine): Fx & FxExtras {
         p.drag = 0.5; p.life = rr(2.4, 4.2);
         p.s0 = rr(0.25, 0.4) * S; p.s1 = rr(1.1, 1.9) * S; p.cell = CELL.puff0 + ((rnd() * 3) | 0); p.lit = true;
         p.rot = rnd() * 6; p.rotVel = (rnd() - 0.5) * 0.5; p.turb = 0.35 * S;
-        p.r0 = 0.3; p.g0 = 0.285; p.b0 = 0.27; p.a0 = 0.3; p.r1 = 0.4; p.g1 = 0.38; p.b1 = 0.36; p.a1 = 0;
+        // sooty and thin: lit by the fire's own point light, the old pale ramp read as cotton puffs
+        p.r0 = 0.13; p.g0 = 0.12; p.b0 = 0.11; p.a0 = 0.2; p.r1 = 0.2; p.g1 = 0.19; p.b1 = 0.18; p.a1 = 0;
         p.fadeIn = 1.1;
         layer.commit();
       }
@@ -1649,7 +1656,7 @@ export function createFx(engine: Engine): Fx & FxExtras {
     let producers = 0;
     for (let _i1 = 0; _i1 < emitters.length; _i1++) {
       const e = emitters[_i1];
-      if (!e.used || e.kind === 'smoke') continue;
+      if (!e.used || e.kind === 'smoke' || !e.lit) continue;
       e.distSq = e.position.distanceToSquared(_camPos);
       if (e.kind === 'flash') e.distSq *= 0.1; // flashes win ties
       producers++;
@@ -1671,7 +1678,7 @@ export function createFx(engine: Engine): Fx & FxExtras {
       let bd = Infinity;
       for (let _i2 = 0; _i2 < emitters.length; _i2++) {
         const e = emitters[_i2];
-        if (!e.used || e.kind === 'smoke' || e.pick === frameId) continue;
+        if (!e.used || e.kind === 'smoke' || !e.lit || e.pick === frameId) continue;
         if (e.distSq < bd) { bd = e.distSq; best = e; }
       }
       if (!best) break;

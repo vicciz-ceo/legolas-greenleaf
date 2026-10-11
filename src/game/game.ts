@@ -26,6 +26,7 @@ import { clamp, damp } from '../core/math';
 import { fbm2, mulberry32 } from '../core/rng';
 import { applyEnvironment, createLevelAPI, createTerrain, loadWorld, type LevelHost, type WorldModules } from './level';
 import { buildMenuBackdrop } from './backdrop';
+import { createCharacterLight } from './cinelight';
 import { preloadHumanoids } from '../creatures/humanoid';
 import { seedBucket } from '../creatures/humanoid/build';
 import { setWorldQuality } from '../world/quality';
@@ -173,6 +174,8 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   let playT = 0;
 
   // ── per-phase CPU timings ────────────────────────────────────────────────
+  // soft key light on the faces during cinematics / scripted shots (lives for the session, 0 when idle)
+  const charLight = createCharacterLight(engine.scene);
   const perf: GamePerf = {
     phases: { bot: 0, player: 0, chapter: 0, combatants: 0, projectiles: 0, fx: 0, rivalry: 0, camera: 0, mood: 0 },
     frameMs: 0,
@@ -465,6 +468,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     backdrop = null;
     mood = 'none';
     moodHold = 0;
+    charLight.reset();
   }
 
   async function toTitle(showMenu = true): Promise<void> {
@@ -585,6 +589,18 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
           load.preload = now() - tPre;
         }
       })();
+      // non-humanoid creatures (spiders, bats, mûmakil...): the chapter's own hook, also in the pool
+      const tCre = now();
+      const creatures = (async () => {
+        if (!def.preloadCreatures || ctx.flags.preload === '0') return;
+        try {
+          await def.preloadCreatures();
+        } catch (e) {
+          console.warn('[game] creature preload failed', e); // never fatal: built on demand instead
+        } finally {
+          load.creatures = now() - tCre;
+        }
+      })();
       await allQueued;
       load.sculpt = now() - tPre;
       if (token !== loadToken) return;
@@ -617,6 +633,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
         onCheckpoint: handleCheckpoint,
         onComplete: handleComplete,
         onFail: (reason) => void defeat(reason),
+        onSay: (sec) => ctx.rivalry.noteScriptLine?.(sec),
         onHop: () => {
           hop = true;
         },
@@ -632,6 +649,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
       instance = made;
       t0 = now();
       await preload;
+      await creatures;
       load.preloadWait = now() - t0;
       if (token !== loadToken) return;
       setProgress(0.95);
@@ -868,6 +886,8 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     t2 = now();
     acc.fx += t2 - t;
     t = t2;
+    // banter waits while a cinematic runs (delivered after it, see rivalry.ts)
+    ctx.rivalry.hold = level?.inCinematic ?? false;
     ctx.rivalry.update(dt);
     acc.rivalry += now() - t;
   }
@@ -966,6 +986,12 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     const p = engine.post;
     p.letterbox = damp(p.letterbox, target, 5, dtReal);
     if (Math.abs(p.letterbox - target) < 0.002) p.letterbox = target;
+    const cine = !!level && (level.inCinematic || !!ctx.player.camera.shot);
+    try {
+      charLight.update(dtReal, cine, level?.characterLightOpts ?? null, engine.camera, engine.env);
+    } catch (e) {
+      report('characterLight', e);
+    }
   }
 
   // ── test hooks ────────────────────────────────────────────────────────────

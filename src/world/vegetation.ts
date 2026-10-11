@@ -87,7 +87,50 @@ function leafMaterial(key: string, o: { bend: number; flutter: number; emissive?
   return m;
 }
 
-function leafMatFor(kind: TreeKind): THREE.MeshStandardMaterial {
+/**
+ * Crown look options (finishing pass) for forest() / tree(). Defaults keep the stock look.
+ *  - density: >1 fills the crowns (a lower alpha-test threshold keeps more of each sprig's soft
+ *    edge opaque, so fewer specks of bright sky shine through: the "confetti"); <1 thins them.
+ *    1 = default, useful range 0.7..1.6.
+ *  - alphaToCoverage: anti-aliased cut-outs through MSAA (High / Ultra); the sprig edges dither
+ *    instead of crawling. No effect without MSAA, no extra draw calls.
+ */
+export interface CrownOpts {
+  density?: number;
+  alphaToCoverage?: boolean;
+}
+
+const LEAF_ALPHA_TEST = 0.46;
+
+/** alpha-test threshold for a crown density (pure; exported for tests) */
+export function crownAlphaTest(density = 1): number {
+  const d = Number.isFinite(density) && density > 0 ? density : 1;
+  return Math.min(0.7, Math.max(0.12, LEAF_ALPHA_TEST / d));
+}
+
+/** the kind's leaf material, or a cached variant for non-default crown options */
+function leafMatFor(kind: TreeKind, crown?: CrownOpts): THREE.MeshStandardMaterial {
+  const base = stockLeafMat(kind);
+  const density = crown?.density ?? 1;
+  const a2c = crown?.alphaToCoverage ?? false;
+  if (density === 1 && !a2c) return base;
+  const k = `${base.name}:crown:${crownAlphaTest(density).toFixed(3)}:${a2c ? 1 : 0}`;
+  let m = matCache.get(k) as THREE.MeshStandardMaterial | undefined;
+  if (m) return m;
+  m = base.clone();
+  // Material.copy does not carry the shader patches (wind, leaf SSS): share the base's hooks (the
+  // program cache key already separates alphaToCoverage)
+  m.onBeforeCompile = base.onBeforeCompile;
+  m.customProgramCacheKey = base.customProgramCacheKey;
+  m.alphaTest = crownAlphaTest(density);
+  m.alphaToCoverage = a2c;
+  m.name = k;
+  m.userData = { ...base.userData };
+  matCache.set(k, m);
+  return m;
+}
+
+function stockLeafMat(kind: TreeKind): THREE.MeshStandardMaterial {
   switch (kind) {
     case 'mirkwood_oak': return leafMaterial('mirk', { bend: 1.4, flutter: 0.16, emissive: 0.05 });
     case 'beech': return leafMaterial('beech', { bend: 1.0, flutter: 0.2 });
@@ -130,7 +173,7 @@ function treeColliders(kind: TreeKind, r: number): ColliderDesc[] {
 }
 
 /** one tree (not instanced) built from the shared cached geometry. Origin at the base. */
-export function tree(kind: TreeKind, seed = 0): TreeResult {
+export function tree(kind: TreeKind, seed = 0, opts: { crown?: CrownOpts } = {}): TreeResult {
   const variant = Math.abs(Math.floor(seed)) % 4;
   const g = buildTreeGeometry(kind, variant, 0);
   const group = new THREE.Group();
@@ -140,7 +183,7 @@ export function tree(kind: TreeKind, seed = 0): TreeResult {
   bark.onBeforeRender = tick;
   group.add(bark);
   if (g.leaves) {
-    const leaves = new THREE.Mesh(g.leaves, leafMatFor(kind));
+    const leaves = new THREE.Mesh(g.leaves, leafMatFor(kind, opts.crown));
     leaves.castShadow = leaves.receiveShadow = true;
     leaves.userData.noAO = true;
     leaves.onBeforeRender = tick;
@@ -184,6 +227,8 @@ export interface ForestOpts {
   noQualityScale?: boolean;
   /** forest-wide leaf tint multiplier */
   leafTint?: [number, number, number];
+  /** crown fill / anti-aliasing (finishing pass; default = stock look) */
+  crown?: CrownOpts;
 }
 
 export interface ForestTree {
@@ -304,7 +349,7 @@ export function forest(area: Area, requested: number, kinds: KindSpec[], heightA
         const g = buildTreeGeometry(b.kind, b.variant, li as 0 | 1);
         const n = b.idx.length;
         const barkM = new THREE.InstancedMesh(g.bark, barkMaterial(b.kind), n);
-        const leafM = g.leaves ? new THREE.InstancedMesh(g.leaves, leafMatFor(b.kind), n) : null;
+        const leafM = g.leaves ? new THREE.InstancedMesh(g.leaves, leafMatFor(b.kind, opts.crown), n) : null;
         const webM = g.webs && li === 0 ? new THREE.InstancedMesh(g.webs, webMaterial(), n) : null;
         b.idx.forEach((ti, k) => {
           const t = trees[ti];

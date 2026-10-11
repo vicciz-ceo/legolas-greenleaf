@@ -19,6 +19,7 @@ Contents
 10. [Performance budgets](#10-performance-budgets)
 11. [Testing](#11-testing)
 12. [Common pitfalls](#12-common-pitfalls)
+13. [Added in the finishing pass](#13-added-in-the-finishing-pass)
 
 ---
 
@@ -652,6 +653,8 @@ npm run build                               # before you hand in
 ```
 
 - URL flags: `chapter`, `cp`, `quality=low|medium|high|ultra`, `skipIntro=1`, `god=1`, `bot=1`,
+  (`god`, `bot`, `dev`, `freeze` and `window.__game` only exist in a dev build, which is what
+  `npm run dev`, snap.mjs and smoke.mjs serve, or with `?debug=1`; see section 13),
   `seed=N`, `difficulty=easy|normal|hard`, `dev=1` (dev chapters in the menu), `touch=1`,
   `freeze=1` (simulation only through `__game.advance`), `preload=0`, `menu=0`.
 - `--pre "<js>"` runs before `--advance` and the shots (stage a moment); `--eval` runs after.
@@ -698,3 +701,139 @@ npm run build                               # before you hand in
 - **Huge single meshes far away.** Distant mountains and walls should be low-poly with fog doing
   the work; check `perf.triangles` at your widest shot.
 - **Not reading the PNGs.** The smoke test passes on a black screen. Look at your shots.
+
+## 13. Added in the finishing pass
+
+Shared-code fixes for the gaps the chapters worked around locally. Everything is optional and
+backward compatible: the old workarounds keep working, so migrate when you next touch the chapter.
+Each entry names the workaround it replaces.
+
+### Enemies
+
+- **`EnemySpec.kind?: HumanoidKind`**: the body to build instead of the archetype's. Stats,
+  attacks, voice and behaviour still come from the archetype.
+  ```ts
+  level.spawnEnemy({ archetype: 'gundabad', kind: 'bolg', boss: true, name: 'Bolg', hp: 2400, weapon: 'mace', countsForRivalry: false, seed: 77 }, pos);
+  ```
+  Replaces the body swap in `laketown/bolg.ts` and `ravenhill/bolg.ts`. List `'bolg'` in
+  `ChapterDef.preload`. The hit radius comes from the new body (`height * 0.18 * girth`), so set
+  `e.radius` yourself if the old swap tuned it.
+- **`Enemy.moveTarget` arrival** is now horizontal (within 1 m) with a 2 m height tolerance, so a
+  waypoint at floor level is reached from a stair tread and a scripted route no longer stalls. The
+  check is `moveArrived(pos, target, radius = 1, yTol = 2)` (exported from `src/actors/npc.ts`
+  and `src/actors/enemy.ts`). With `aiEnabled = false` the target is still kept (the enemy holds
+  it). Replaces the waypoint follower in `barrels/orcs.ts` (chain `moveTarget`s and test
+  `moveArrived` in `onUpdate`, or just set the next point when `moveTarget` goes `null`).
+
+### Player
+
+- **`player.addModifier?(mod): string`** / **`player.removeModifier?(id)`**: timed stat changes
+  that survive the stats refresh. `mod = { moveSpeedMul?, damageTakenMul?, drawTimeMul?, duration, id? }`;
+  `duration` in game seconds (`Infinity` = until removed); the same `id` again replaces and
+  refreshes it; multipliers stack multiplicatively; `moveSpeedMul` also slows the aim-walk. All
+  modifiers are cleared on respawn and chapter load.
+  ```ts
+  ctx.player.addModifier?.({ id: 'web', moveSpeedMul: 0.5, duration: 2 });   // webbed: half speed for 2 s
+  ```
+  Replaces the per-frame `stats.moveSpeed` patch in `mirkwood/spiders.ts` (which the 1 s refresh
+  kept wiping).
+- **`player.playMelee?(hit: 1 | 2 | 3, opts?: { lunge?: boolean; damage?: boolean })`**: play a
+  knife stroke in a cinematic. Defaults: no lunge, no damage (the script applies its own); the
+  knives come out and the stroke animates and sounds as in play. Replaces
+  `(player as any).startMeleeHit(3)` in `c4_ravenhill.ts`.
+- **`PlayerMover.camera.aim?: Partial<CameraParams>`**: the aim camera while this mover is
+  installed (the stock one is distance 2.15, height 1.6, shoulder 0.78, fov 48; unset fields keep
+  it). For a wide ride:
+  ```ts
+  camera: { distance: 10.5, height: 1.7, shoulder: 0.6, fov: 64, aim: { distance: 6, height: 1.9, shoulder: 0.9, fov: 52 } },
+  ```
+  For the ravenhill bat ride, whose aim camera snapped to 2.15 m behind Legolas.
+
+### Physics: surface friction
+
+- **`ColliderOpts.friction?: number`** (0..1, 1 = normal ground): the player's run accelerates,
+  stops and turns at `friction` times the usual rate on it. Default from the material: **`'ice'`
+  is 0.3**, everything else 1. Terrain: `TerrainOpts.friction?` (via `level.terrain`) or
+  `physics.setTerrain(fn, material, friction?)`. The motor exposes it as `motor.groundFriction`
+  and `GroundHit.friction`. Only the player's locomotion honours it (NPCs keep their grip).
+  **Note for ravenhill:** its river colliders are `material: 'ice'`, so they now get the motor's
+  grip **and** the velocity blend of `ravenhill/ice.ts` (both together are slipperier than
+  either). Migrating = delete `installIce` (or keep it and pass `friction: 1` on the colliders).
+
+### FX
+
+- **`fx.fire(pos, scale?, opts?: { smoke?: number; light?: boolean })`**: `smoke` multiplies the
+  plume (0 = flame only, 0.3 = a wisp), `light: false` never takes a pooled point light. The
+  fire / torch smoke ramp itself is now sooty and thinner (the old pale ramp read as cotton puffs
+  in dark interiors). Replaces moria's flame-mesh-only torches: light them with
+  `fx.fire(p, s, { smoke: 0.3 })`, or `{ smoke: 0, light: false }` for far ones.
+
+### World builders
+
+- **Crowds** (`level.crowd`) now animate and march on GAME time (they pause with the game and slow
+  with Focus), and every InstancedMesh carries a real bounding sphere that follows the march and
+  is frustum culled by default (the shadow pass too). The clock is advanced from the level step
+  (`tickCrowds(dt)` in `src/world/crowd.ts`), never from rendering, so a culled crowd does not
+  stall. A sphere you assign by hand (`im.boundingSphere = mySphere`, as `black_gate/hosts.ts`
+  `cullStanding` does) is respected and never overwritten; you no longer need it. Crowds built with
+  `createCrowd` directly (not `level.crowd`) are ticked too while they are in the scene.
+- **`lightShaft(height, top, bottom, color, intensity, opts?: { groundFade?: number; nearFade?: [number, number] })`**
+  fades toward its foot (`groundFade`, default the last 0.3 of its length) and near the camera
+  (`nearFade`, default gone at 1.2 m, full from 6 m), so it never becomes a flat pale panel up close.
+- **Forest crowns**: `forest(area, n, kinds, heightAt, { crown: { density?, alphaToCoverage? } })` and
+  `tree(kind, seed, { crown })`. `density` > 1 fills the crowns (lower alpha-test threshold: fewer
+  specks of bright sky, the "confetti"); < 1 thins them; useful range 0.7–1.6. `alphaToCoverage:
+  true` anti-aliases the leaf cut-outs through MSAA (High/Ultra; no effect without MSAA). Same
+  draw calls; default look unchanged. Try `{ density: 1.3, alphaToCoverage: true }` against a
+  bright sky.
+- **`'dwarven_stone_weathered'`** texture set (`mat('dwarven_stone_weathered', ...)`,
+  `makeMaterial`, `getTextureSet`): the carved Moria stone with lower albedo contrast, no polish
+  or clearcoat, tarnished inlay, pitting, and a grime layer (soot in the grooves, blotches, vertical
+  seepage streaks). Same 2 m tile as `dwarven_stone`.
+
+### Cinematics and rivalry
+
+- **Character light**: while `cinematic(true)` or a `cameraShot` is active, a soft key light
+  (point light, not shadow casting, ~9 m reach) rides up and to the left of the lens and lights the
+  faces in frame. Its strength follows the environment (a fraction of its sun + sky light). It
+  is always in the scene at intensity 0 when idle, so it never recompiles shaders.
+  `level.characterLight?.(false)` turns it off for the level, `true` restores it,
+  `{ intensity?: number /* multiplier, default 1 */, color?: number }` tunes it.
+- **Rivalry banter** waits while `cinematic(true)` is on (the line is delivered just after the
+  cinematic; a line older than 10 s is dropped). The opening wager now follows the chapter's first
+  `level.say()` line instead of talking over it (at most 6 s after start when the chapter says
+  nothing). Spoken numbers always match the HUD counter (which carries the totals from earlier
+  chapters); "first kill" lines ("Two already", "That's one") key off this chapter's own counts.
+  `ctx.rivalry.chapterCounts?.()` returns this chapter's counts (HUD counts minus the carried-in
+  totals), replacing the baseline arithmetic in `c7_helms_deep.ts`. (`rivalry.hold` and
+  `rivalry.noteScriptLine(sec)` are set by the shell; you do not call them.) `amon_hen`'s
+  `hushRivalry` is only needed for stretches that are not under `cinematic(true)`.
+
+### Loading
+
+- **`ChapterDef.preloadCreatures?: () => Promise<unknown>`**: mesh non-humanoid creatures in the kit
+  worker pool during the loading screen, in parallel with `preload` and `create()`; `start()`
+  waits for it; errors are logged, never fatal; `?preload=0` skips it. Use the creature's own
+  premesh helper or the generic kit one:
+  ```ts
+  import { premeshCreatures } from '../../creatures/kit';
+  import { createGundabadBat } from '../../creatures/bat';
+  preloadCreatures: () => Promise.all([premeshCreatures([() => createGundabadBat(0), () => createGundabadBat(1)]), preloadSpiders()]),
+  ```
+  `premeshCreatures(builders)` runs each factory only until its first `buildCreature()` call (rig
+  and sculpt set-up, no geometry, nothing added to a scene), queues that body in the worker pool,
+  and resolves when every mesh is cached, so the real `createX()` later is a cache hit. One body
+  per builder (call it again for a second body, or use `premeshCreature(def)` with a definition).
+  A factory that catches every error around its `buildCreature` call must not log the capture with
+  `console.error`. Existing helpers: `preloadSpiders()` (spider.ts), `premeshMumak('hero' | 'far')`
+  (mumak.ts). Measured in `__game.state().perf.load.creatures`.
+
+### Bot and debug
+
+- **Bot**: leads moving targets (full-draw arrow speed, intercept capped at 1.2 s) and walks to a
+  `botHint().moveTo` farther than 3 m even with an enemy in range (it shoots on the move instead of
+  holding ground; the moria cp2 dawdle).
+- **Debug hooks**: `window.__game` and the `?god`, `?bot`, `?dev`, `?freeze` flags exist only in a dev
+  build (`import.meta.env.DEV`: `npm run dev`, `scripts/snap.mjs`, `scripts/smoke.mjs`) or with
+  `?debug=1`. A production build ignores them (`ctx.flags` does not contain them), so never make a
+  chapter depend on them for anything but tooling.

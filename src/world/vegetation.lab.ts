@@ -32,6 +32,21 @@ export const subjects: LabSubject[] = [
     },
   })),
   {
+    // finishing pass: crown options side by side (left stock, right { density: 1.35, alphaToCoverage })
+    name: 'tree_crown_options',
+    category: 'environment',
+    create() {
+      setWindTime(1.3);
+      const g = new THREE.Group();
+      const a = tree('beech', 0);
+      const b = tree('beech', 0, { crown: { density: 1.35, alphaToCoverage: true } });
+      a.object.position.x = -a.height * 0.42;
+      b.object.position.x = a.height * 0.42;
+      g.add(a.object, b.object);
+      return { object: g, height: a.height };
+    },
+  },
+  {
     name: 'leaf_atlas',
     category: 'environment',
     create: () => ({ object: atlasPlane(), height: 2 }),

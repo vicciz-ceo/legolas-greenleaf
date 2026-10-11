@@ -18,6 +18,25 @@ import { clamp, wrapAngle, yawOf } from '../core/math';
 import { mulberry32 } from '../core/rng';
 import type { CameraRigExt } from '../actors/camera';
 
+/** full-draw player arrow speed (m/s, player.ts loose(): lerp(30, 72, charge)) */
+const ARROW_SPEED = 72;
+/** a hinted destination farther than this is walked to even mid-fight (shooting on the move) */
+const HINT_PRIORITY_DIST = 3;
+
+/**
+ * Lead a moving target (pure; exported for the unit tests): the point to aim at so an arrow of
+ * `speed` fired from `from` meets a target at `pos` moving at `vel` (iterated intercept, capped at
+ * `maxLead` seconds of flight; vertical velocity ignored — jumps and falls are not worth chasing).
+ */
+export function leadAim(from: THREE.Vector3, pos: THREE.Vector3, vel: THREE.Vector3, speed: number, out: THREE.Vector3, maxLead = 1.2): THREE.Vector3 {
+  out.copy(pos);
+  for (let i = 0; i < 3; i++) {
+    const t = Math.min(maxLead, from.distanceTo(out) / Math.max(1, speed));
+    out.set(pos.x + vel.x * t, pos.y, pos.z + vel.z * t);
+  }
+  return out;
+}
+
 export type BotHint = ReturnType<NonNullable<ChapterInstance['botHint']>>;
 
 export interface Bot {
@@ -36,6 +55,7 @@ const _v = new THREE.Vector3();
 const _o = new THREE.Vector3();
 const _d = new THREE.Vector3();
 const _aim = new THREE.Vector3();
+const _lp = new THREE.Vector3();
 
 function blank(): InputState {
   return {
@@ -148,6 +168,8 @@ export function createBot(ctx: GameContext, getHint: () => BotHint): Bot {
 
       if (target && haveShot && tDist < SEE_RANGE) {
         aimPointOf(target, headShot && tDist < 30 && !focusing, _aim);
+        // lead a moving target (Focus volleys home on their own)
+        if (!focusing && target.velocity && target.velocity.lengthSq() > 0.25) leadAim(camPos, _lp.copy(_aim), target.velocity, ARROW_SPEED, _aim);
         _d.copy(_aim).sub(camPos);
         desYaw = yawOf(_d.x, _d.z);
         desPitch = Math.atan2(_d.y, Math.hypot(_d.x, _d.z));
@@ -237,7 +259,10 @@ export function createBot(ctx: GameContext, getHint: () => BotHint): Bot {
       let my = 0;
       let moving = false;
       let wantMove = false;
-      const hold = target && haveShot && tDist < HOLD_GROUND_RANGE && target.alive;
+      // a chapter that asks us to move somewhere wins over holding ground (the moria cp2 dawdle):
+      // the bot keeps shooting while it walks
+      const hintFar = !!hint?.moveTo && Math.hypot(hint.moveTo.x - player.position.x, hint.moveTo.z - player.position.z) > HINT_PRIORITY_DIST;
+      const hold = target && haveShot && tDist < HOLD_GROUND_RANGE && target.alive && !hintFar;
       if (!focusing && !engaged) {
         let goal: THREE.Vector3 | null = null;
         if (hint?.moveTo) goal = hint.moveTo;

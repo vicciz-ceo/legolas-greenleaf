@@ -21,13 +21,16 @@ export type TextureSetName =
   | 'cloth_wool' | 'web' | 'water_normal' | 'chitin' | 'scales_rough' | 'hide' | 'skin_human' | 'skin_orc'
   | 'skin_troll'
   // extras beyond the contract list
-  | 'birch_bark' | 'shingles' | 'bone';
+  | 'birch_bark' | 'shingles' | 'bone'
+  // finishing pass: carved Moria stone with grime, lower contrast and no polish
+  | 'dwarven_stone_weathered';
 
 export const ALL_TEXTURE_SETS: readonly TextureSetName[] = [
   'bark', 'mossy_bark', 'leaves', 'grass', 'forest_floor', 'mud', 'dirt', 'rock', 'cliff', 'cobble',
   'stone_blocks', 'dwarven_stone', 'marble', 'wood_planks', 'old_wood', 'thatch', 'snow', 'ice', 'sand',
   'ash', 'metal_dark', 'metal_bright', 'gold', 'leather', 'cloth_linen', 'cloth_wool', 'web', 'water_normal',
   'chitin', 'scales_rough', 'hide', 'skin_human', 'skin_orc', 'skin_troll', 'birch_bark', 'shingles', 'bone',
+  'dwarven_stone_weathered',
 ];
 
 /** Real-world size of one texture tile in metres: use it to bake world UVs (uv = metres / tile). */
@@ -37,6 +40,7 @@ export const TILE_METERS: Record<TextureSetName, number> = {
   old_wood: 1.2, shingles: 1.0, thatch: 1.5, snow: 3.0, ice: 2.0, sand: 2.0, ash: 2.5, metal_dark: 1.0,
   metal_bright: 1.0, gold: 0.6, leather: 0.5, cloth_linen: 0.25, cloth_wool: 0.3, web: 1.0, water_normal: 6,
   chitin: 0.8, scales_rough: 0.6, hide: 0.8, skin_human: 0.5, skin_orc: 0.8, skin_troll: 1.5, bone: 0.4,
+  dwarven_stone_weathered: 2.0,
 };
 
 export interface TextureSet {

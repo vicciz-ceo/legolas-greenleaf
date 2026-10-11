@@ -560,9 +560,15 @@ function stoneBlocks(s: Surf, N: TileNoise, o: { rows: number; base: C3; var: nu
   }
 }
 
-function dwarvenStone(s: Surf, N: TileNoise): void {
+/**
+ * Carved Moria stone. `weathered` (the 'dwarven_stone_weathered' set): lower albedo contrast, no
+ * polish, tarnished inlay, and a grime layer (soot pooled in the grooves, blotches and vertical
+ * seepage streaks) so long walls do not read as a clean, high-contrast tile.
+ */
+function dwarvenStone(s: Surf, N: TileNoise, weathered = false): void {
   const vein = fbmF(N, 4, 4, 4);
   const mott = fbmF(N, 10, 10, 3);
+  const blot = weathered ? fbmF(N, 3, 3, 4) : null;
   fillRange(s, (i, x, y, u, v) => {
     const pu = fract(u * 2);
     const pv = fract(v * 2);
@@ -586,18 +592,42 @@ function dwarvenStone(s: Surf, N: TileNoise): void {
     }
     if (frame < 0.01) inlay = 1;
     h -= groove * 0.34;
-    s.h[i] = h;
-    const base = 0.85 + ve * 0.25 + grain * 0.08;
-    let r = 66 * base * (1 - groove * 0.55);
-    let g = 70 * base * (1 - groove * 0.55);
-    let b = 82 * base * (1 - groove * 0.5);
-    if (inlay > 0) {
-      r = mix(r, 92, 0.45);
-      g = mix(g, 74, 0.45);
-      b = mix(b, 42, 0.45);
+    if (!weathered) {
+      s.h[i] = h;
+      const base = 0.85 + ve * 0.25 + grain * 0.08;
+      let r = 66 * base * (1 - groove * 0.55);
+      let g = 70 * base * (1 - groove * 0.55);
+      let b = 82 * base * (1 - groove * 0.5);
+      if (inlay > 0) {
+        r = mix(r, 92, 0.45);
+        g = mix(g, 74, 0.45);
+        b = mix(b, 42, 0.45);
+      }
+      s.px(i, r, g, b);
+      s.rough[i] = 0.34 + grain * 0.12 + groove * 0.3 + Math.abs(mott.at(u, v)) * 0.15;
+      return;
     }
+    // ── weathered ──
+    const pit = N.g(u * 64, v * 64, 64, 64, 37);
+    h -= sstep(0.45, 0.8, pit) * 0.05; // pitting
+    s.h[i] = h;
+    const streak = sstep(0.1, 0.75, N.g(u * 14, v * 2, 14, 2, 31) * 0.7 + N.g(u * 29, v * 3, 29, 3, 33) * 0.3);
+    const bl = blot!.at(u, v);
+    const grime = Math.min(1, sstep(-0.35, 0.45, bl) * 0.7 + groove * 0.55 + streak * 0.45 + sstep(0.5, 0.9, pit) * 0.25);
+    const base = 0.92 + ve * 0.1 + grain * 0.05;
+    let r = 60 * base * (1 - groove * 0.3);
+    let g = 61 * base * (1 - groove * 0.3);
+    let b = 65 * base * (1 - groove * 0.28);
+    if (inlay > 0) {
+      r = mix(r, 74, 0.3);
+      g = mix(g, 66, 0.3);
+      b = mix(b, 50, 0.3);
+    }
+    r = mix(r, 33, grime * 0.75);
+    g = mix(g, 30, grime * 0.75);
+    b = mix(b, 26, grime * 0.75);
     s.px(i, r, g, b);
-    s.rough[i] = 0.34 + grain * 0.12 + groove * 0.3 + Math.abs(mott.at(u, v)) * 0.15;
+    s.rough[i] = Math.min(0.98, 0.62 + grain * 0.08 + groove * 0.18 + grime * 0.18 + Math.abs(mott.at(u, v)) * 0.08);
   });
   aoFromHeight(s, 0.4, 1.3);
 }
@@ -1250,7 +1280,8 @@ export const GENERATORS: Record<string, GenSpec> = {
   cliff: { normal: 4.4, ao: true, fn: cliff },
   cobble: { normal: 4.8, ao: true, fn: cobble },
   stone_blocks: { normal: 3.6, ao: true, fn: (s, N) => stoneBlocks(s, N, { rows: 6, base: [130, 122, 110], var: 0.2, mortar: [60, 56, 50] }) },
-  dwarven_stone: { normal: 4.0, ao: true, fn: dwarvenStone },
+  dwarven_stone: { normal: 4.0, ao: true, fn: (s, N) => dwarvenStone(s, N) },
+  dwarven_stone_weathered: { normal: 3.4, ao: true, fn: (s, N) => dwarvenStone(s, N, true) },
   marble: { normal: 0.8, ao: true, fn: marble },
   wood_planks: {
     normal: 3.0,

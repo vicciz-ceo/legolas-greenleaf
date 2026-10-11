@@ -25,6 +25,7 @@ import type {
   Humanoid,
   InputState,
   PlayerAPI,
+  PlayerModifier,
   PlayerMover,
   PlayerStats,
 } from '../core/types';
@@ -35,6 +36,7 @@ import { makeHumanoid } from './humanoids';
 import { createMotor, launch, settle, stepMotor, type Motor } from '../physics/motor';
 import { ARROW_GRAVITY, angleBetween, ballisticDir, leadTarget, rotateToward, spreadDir } from '../combat/aim';
 import { createFocus, type FocusController } from '../combat/focus';
+import { applyModifiers } from './modifiers';
 
 export const DEFAULT_STATS: PlayerStats = {
   maxHp: 100,
@@ -127,6 +129,11 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
   private readonly ctx: GameContext;
   private _stats: PlayerStats = { ...DEFAULT_STATS };
   private statsT = 0;
+  /** timed stat modifiers (addModifier); folded into _stats by refreshStats */
+  private readonly mods: { id: string; mod: PlayerModifier; left: number }[] = [];
+  private modSeq = 0;
+  /** product of the live modifiers' moveSpeedMul (also scales the aim-walk speed) */
+  private modMove = 1;
   private readonly motor: Motor;
   private readonly focusCtl: FocusController;
   private readonly anim: AnimInput = { speed: 0, moveDir: { x: 0, z: 1 }, grounded: true, vy: 0, aim: 0, draw: 0, aimPitch: 0, attack: null, hit: 0, dead: 0, deathVariant: 0, special: null, specialT: 0, lookAt: null };
@@ -262,6 +269,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
   }
 
   revive(): void {
+    this.mods.length = 0; // a respawn / new chapter starts clean (the web that slowed us is gone)
     this.refreshStats(true);
     this.resurrect();
     this.hp = this.maxHp;
@@ -293,6 +301,41 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     this.camera.snap();
   }
 
+  // ── stat modifiers ─────────────────────────────────────────────────────────
+  addModifier(mod: PlayerModifier): string {
+    const id = mod.id ?? `mod${++this.modSeq}`;
+    const left = Number.isFinite(mod.duration) ? Math.max(0, mod.duration) : Infinity;
+    const live = this.mods.find((m) => m.id === id);
+    if (live) {
+      live.mod = mod;
+      live.left = left;
+    } else this.mods.push({ id, mod, left });
+    this.refreshStats();
+    return id;
+  }
+
+  removeModifier(id: string): void {
+    const i = this.mods.findIndex((m) => m.id === id);
+    if (i < 0) return;
+    this.mods.splice(i, 1);
+    this.refreshStats();
+  }
+
+  /** expire timed modifiers (game time) */
+  private tickModifiers(dt: number) {
+    if (!this.mods.length) return;
+    let changed = false;
+    for (let i = this.mods.length - 1; i >= 0; i--) {
+      const m = this.mods[i];
+      m.left -= dt;
+      if (m.left <= 0) {
+        this.mods.splice(i, 1);
+        changed = true;
+      }
+    }
+    if (changed) this.refreshStats();
+  }
+
   // ── stats ──────────────────────────────────────────────────────────────────
   private refreshStats(force = false) {
     let s: PlayerStats | null = null;
@@ -301,7 +344,9 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     } catch {
       s = null;
     }
-    const n = { ...DEFAULT_STATS, ...(s ?? {}) };
+    const n = applyModifiers({ ...DEFAULT_STATS, ...(s ?? {}) }, this.mods.map((m) => m.mod));
+    this.modMove = 1;
+    for (const m of this.mods) this.modMove *= m.mod.moveSpeedMul ?? 1;
     const hpFrac = this.maxHp > 0 ? this.hp / this.maxHp : 1;
     this._stats = n;
     if (n.maxHp !== this.maxHp) {
@@ -493,6 +538,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     dtReal = clamp(dtReal, 0, 0.1);
     this.lastReal = real;
 
+    this.tickModifiers(dt);
     this.statsT -= dtReal;
     if (this.statsT <= 0) {
       this.statsT = 1;
@@ -747,7 +793,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       const aimingMove = this.aimHeld || this.drawing || this.focusCtl.engaged;
       const wantSprint = inp.sprintHeld && inp.moveY > 0.35 && !aimingMove && m.grounded && this.meleeHit === 0;
       this.sprint = damp(this.sprint, wantSprint && mag > 0.5 ? 1 : 0, 5, dt);
-      let speed = aimingMove ? AIM_MOVE_SPEED : lerp(stats.moveSpeed, stats.moveSpeed * SPRINT_MUL, this.sprint);
+      let speed = aimingMove ? AIM_MOVE_SPEED * this.modMove : lerp(stats.moveSpeed, stats.moveSpeed * SPRINT_MUL, this.sprint);
       if (this.meleeHit > 0) speed *= 0.35;
       const tx = _wish.x * speed * mag;
       const tz = _wish.z * speed * mag;
@@ -757,6 +803,8 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       if (!m.grounded) accel = AIR_ACCEL;
       else if (tx * v.x + tz * v.z < 0) accel = REVERSE_ACCEL;
       else accel = tx * tx + tz * tz >= v.x * v.x + v.z * v.z ? ACCEL : DECEL;
+      // slippery ground (ColliderOpts.friction / terrain friction; 'ice' is low grip by default)
+      if (m.grounded) accel *= m.groundFriction;
       const dl = Math.hypot(dx, dz);
       const maxD = accel * dt;
       if (dl > maxD) {
@@ -1004,7 +1052,22 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     }
   }
 
-  private startMeleeHit(n: number) {
+  /** a knife stroke for cinematics (PlayerAPI.playMelee): no combo rules, no lunge / damage unless asked */
+  playMelee(hit: 1 | 2 | 3, opts: { lunge?: boolean; damage?: boolean } = {}): void {
+    if (!this.alive) return;
+    const n = hit === 2 || hit === 3 ? hit : 1;
+    if (this.drawing) {
+      this.drawing = false;
+      this.charge = 0;
+    }
+    this.dashT = -1;
+    this.meleeRecover = 0;
+    this.startMeleeHit(n, opts.lunge ?? false);
+    // the hit test runs at 40 % of the stroke; marking it done keeps the stroke purely visual
+    if (!(opts.damage ?? false)) this.meleeDidHit = true;
+  }
+
+  private startMeleeHit(n: number, lunge = true) {
     this.meleeHit = n;
     this.meleeT = 0;
     this.meleeQueued = false;
@@ -1015,8 +1078,13 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       this.humanoid.setWeapon('hand_l', 'elven_knives');
     }
     this.knivesTimer = 1.8;
-    // lunge to the nearest enemy within 3 m, preferring what is in front / under the stick
     const ctx = this.ctx;
+    if (!lunge) {
+      this.lungeT = 0;
+      ctx.audio.play('knife_slash', { pos: this.position, volume: 0.8, pitch: 0.95 + n * 0.06 });
+      return;
+    }
+    // lunge to the nearest enemy within 3 m, preferring what is in front / under the stick
     const inp = ctx.input.state;
     const mag = this.wishDir(inp, _wish);
     const pref = mag > 0.2 ? yawOf(_wish.x, _wish.z) : this.camera.yaw;

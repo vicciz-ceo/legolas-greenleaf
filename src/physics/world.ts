@@ -38,6 +38,15 @@ if (bgProto.computeBoundsTree !== computeBoundsTree) {
 
 /** surfaces with normal.y above this can be stood on */
 export const WALKABLE_NORMAL_Y = 0.6;
+
+/** default grip per surface material (ColliderOpts.friction / setTerrain overrides it) */
+export const SURFACE_FRICTION: Partial<Record<SurfaceMaterial, number>> = { ice: 0.3 };
+export function surfaceFriction(material: SurfaceMaterial): number {
+  return SURFACE_FRICTION[material] ?? 1;
+}
+function clampFriction(f: number): number {
+  return Number.isFinite(f) ? Math.min(1, Math.max(0.02, f)) : 1;
+}
 export const DEFAULT_STEP_UP = 0.45;
 const CELL = 8;
 const LARGE_CELLS = 96;
@@ -63,6 +72,8 @@ class Collider implements ColliderHandle {
   blocksCamera: boolean;
   solid: boolean;
   material: SurfaceMaterial;
+  /** grip 0..1 for character locomotion */
+  friction: number;
   // pose (box centre / cylinder axis base / mesh origin)
   px = 0;
   py = 0;
@@ -115,6 +126,7 @@ class Collider implements ColliderHandle {
     this.blocksCamera = opts?.blocksCamera ?? true;
     this.solid = opts?.solid ?? true;
     this.material = opts?.material ?? 'stone';
+    this.friction = clampFriction(opts?.friction ?? surfaceFriction(this.material));
   }
   setTransform(pos: THREE.Vector3, yaw?: number): void {
     if (this.kind === 'cyl') {
@@ -203,7 +215,7 @@ const _tmpN = new THREE.Vector3();
 const _localBox = new THREE.Box3();
 
 function makeGroundHit(): GroundHit {
-  return { y: 0, normal: new THREE.Vector3(0, 1, 0), material: 'dirt', collider: null };
+  return { y: 0, normal: new THREE.Vector3(0, 1, 0), material: 'dirt', collider: null, friction: 1 };
 }
 function makeRayHit(): WorldRayHit {
   return { t: 0, point: new THREE.Vector3(), normal: new THREE.Vector3(0, 1, 0), material: 'dirt', collider: null, object: undefined };
@@ -212,6 +224,7 @@ function makeRayHit(): WorldRayHit {
 export function createPhysics(): PhysicsWorldExt {
   let terrain: ((x: number, z: number) => number) | null = null;
   let terrainMat: SurfaceMaterial = 'dirt';
+  let terrainFriction = 1;
   let nextId = 1;
   let stampCounter = 1;
   const colliders: Collider[] = [];
@@ -496,9 +509,10 @@ export function createPhysics(): PhysicsWorldExt {
     get count() {
       return colliders.length;
     },
-    setTerrain(fn, material) {
+    setTerrain(fn, material, friction) {
       terrain = fn;
       terrainMat = material ?? 'dirt';
+      terrainFriction = clampFriction(friction ?? surfaceFriction(terrainMat));
     },
     heightAt(x, z) {
       return terrain ? terrain(x, z) : 0;
@@ -559,6 +573,7 @@ export function createPhysics(): PhysicsWorldExt {
       grid.clear();
       large.length = 0;
       terrain = null;
+      terrainFriction = 1;
       world.killY = -60;
     },
 
@@ -571,6 +586,7 @@ export function createPhysics(): PhysicsWorldExt {
         bestY = terrain(x, z);
         terrainNormal(x, z, out.normal);
         out.material = terrainMat;
+        out.friction = terrainFriction;
         out.collider = null;
       }
       const list = query(x, z, x, z);
@@ -587,6 +603,7 @@ export function createPhysics(): PhysicsWorldExt {
           bestY = top;
           out.normal.set(0, 1, 0);
           out.material = c.material;
+          out.friction = c.friction;
           out.collider = c;
         } else if (c.kind === 'cyl') {
           const top = c.y1;
@@ -597,6 +614,7 @@ export function createPhysics(): PhysicsWorldExt {
           bestY = top;
           out.normal.set(0, 1, 0);
           out.material = c.material;
+          out.friction = c.friction;
           out.collider = c;
         } else {
           const y = meshGround(c, x, z, limit, bestY, _n);
@@ -604,6 +622,7 @@ export function createPhysics(): PhysicsWorldExt {
             bestY = y;
             out.normal.copy(_n);
             out.material = c.material;
+            out.friction = c.friction;
             out.collider = c;
           }
         }

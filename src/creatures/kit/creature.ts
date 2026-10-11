@@ -18,7 +18,7 @@
 import * as THREE from 'three';
 import { Sculpt } from './sdf';
 import type { MeshOpts } from './mesher';
-import { meshSculpt, cached } from './cache';
+import { meshSculpt, meshSculptAsync, hasMesh, cached } from './cache';
 import { meshDataToGeometry, mergeKitGeometries, paintGeometry, triCount } from './geometry';
 import { createCreatureMaterial, cloneCreatureMaterial, type CreatureMaterialOpts } from './material';
 import { createHairMaterial, type HairMaterialOpts } from './hair';
@@ -75,7 +75,57 @@ interface Shared {
   center: THREE.Vector3;
 }
 
+// ── premeshing (loading screens) ───────────────────────────────────────────────
+/** set while premeshCreatures runs a builder: buildCreature queues the meshing job and bails out */
+let capture: Promise<unknown>[] | null = null;
+class PremeshCaptured extends Error {
+  constructor() {
+    super('premesh capture (not an error)');
+    this.name = 'PremeshCaptured';
+  }
+}
+
+/**
+ * Mesh a creature definition's body sculpt in the kit worker pool. A later buildCreature(def) with
+ * the same rig + sculpt + mesh options is then a cache hit for the expensive part.
+ */
+export function premeshCreature(def: CreatureDef): Promise<void> {
+  const s = new Sculpt(def.rig, { skinK: def.skinK });
+  def.sculpt(s);
+  if (hasMesh(s, def.mesh)) return Promise.resolve();
+  return meshSculptAsync(s, def.mesh).then(() => undefined);
+}
+
+/**
+ * Premesh creatures through their ordinary factories, without building them: each builder (e.g.
+ * `() => createGundabadBat(0)`) runs until its first buildCreature() call, which queues the body
+ * sculpt in the worker pool and aborts the builder (rig + sculpt setup only, no geometry, no scene
+ * objects). Resolves when every mesh is cached. One creature per builder: a factory that builds two
+ * bodies needs two builders (or call premeshCreature with each definition). Errors are logged, never
+ * thrown. Use it from ChapterDef.preloadCreatures.
+ */
+export async function premeshCreatures(builders: readonly (() => unknown)[]): Promise<void> {
+  const jobs: Promise<unknown>[] = [];
+  for (const build of builders) {
+    const mine: Promise<unknown>[] = [];
+    capture = mine;
+    try {
+      build();
+    } catch (e) {
+      if (!(e instanceof PremeshCaptured)) console.warn('[kit] premeshCreatures: builder failed', e);
+    } finally {
+      capture = null;
+    }
+    for (const j of mine) jobs.push(j.catch((e) => console.warn('[kit] premeshCreatures: meshing failed', e)));
+  }
+  await Promise.all(jobs);
+}
+
 export function buildCreature(def: CreatureDef): Creature {
+  if (capture) {
+    capture.push(premeshCreature(def));
+    throw new PremeshCaptured();
+  }
   const t0 = performance.now();
   const shared = cached<Shared>(`creature:${def.key}:${def.seed ?? 0}`, () => {
     const s = new Sculpt(def.rig, { skinK: def.skinK });

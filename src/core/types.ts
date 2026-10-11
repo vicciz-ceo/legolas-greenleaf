@@ -147,6 +147,14 @@ export interface FxHandle {
   stop(): void;
 }
 
+/** optional extras for fx.fire (added in the finishing pass) */
+export interface FireOpts {
+  /** smoke plume multiplier: 1 = default, 0 = none, 0.3 = a thin wisp */
+  smoke?: number;
+  /** false: no pooled point light for this fire (sprites only). default true */
+  light?: boolean;
+}
+
 export interface Fx {
   blood(pos: THREE.Vector3, dir: THREE.Vector3, kind: BloodKind, amount?: number): void;
   sparks(pos: THREE.Vector3, normal: THREE.Vector3, amount?: number): void;
@@ -155,8 +163,12 @@ export interface Fx {
   debris(pos: THREE.Vector3, amount?: number, color?: number): void;
   /** burst of stone chunks + dust + shockwave + light flash + camera-independent sound is NOT played here */
   explosion(pos: THREE.Vector3, scale?: number): void;
-  /** persistent fire with flickering point light (respects quality light budget) */
-  fire(pos: THREE.Vector3, scale?: number): FxHandle;
+  /**
+   * persistent fire with flickering point light (respects quality light budget).
+   * opts (optional, added in the finishing pass): `smoke` multiplies the smoke plume (default 1,
+   * 0 = flame only, no puffs); `light: false` never takes a pooled point light (flame sprites only).
+   */
+  fire(pos: THREE.Vector3, scale?: number, opts?: FireOpts): FxHandle;
   smoke(pos: THREE.Vector3, scale?: number): FxHandle;
   /** flame attached to an object (torch head). Follows the object. */
   torch(obj: THREE.Object3D, offset?: THREE.Vector3): FxHandle;
@@ -452,6 +464,12 @@ export interface ColliderOpts {
   solid?: boolean;
   material?: SurfaceMaterial;
   tag?: string;
+  /**
+   * grip of the surface for the player's locomotion, 0..1 (1 = normal ground; lower = slippery: the
+   * run accelerates, stops and turns at `friction` times the usual rate). Default from the material:
+   * 'ice' 0.3, everything else 1. (Added in the finishing pass.)
+   */
+  friction?: number;
 }
 
 export interface ColliderHandle {
@@ -469,6 +487,8 @@ export interface GroundHit {
   normal: THREE.Vector3;
   material: SurfaceMaterial;
   collider: ColliderHandle | null;
+  /** surface grip 0..1 (see ColliderOpts.friction); undefined = 1 */
+  friction?: number;
 }
 
 export interface WorldRayHit {
@@ -483,7 +503,8 @@ export interface WorldRayHit {
 
 export interface PhysicsWorld {
   /** terrain height function, or null for no terrain */
-  setTerrain(heightAt: ((x: number, z: number) => number) | null, material?: SurfaceMaterial): void;
+  /** `friction` (optional): terrain grip 0..1, default from the material ('ice' 0.3, else 1) */
+  setTerrain(heightAt: ((x: number, z: number) => number) | null, material?: SurfaceMaterial, friction?: number): void;
   heightAt(x: number, z: number): number;
   /** oriented box (yaw only). center is the box centre. */
   addBox(center: THREE.Vector3, halfExtents: Vec3Tuple, yaw?: number, opts?: ColliderOpts): ColliderHandle;
@@ -765,8 +786,12 @@ export interface PlayerMover {
   allowMelee?: boolean;
   allowDash?: boolean;
   allowJump?: boolean;
-  /** camera adjustments while active */
-  camera?: Partial<CameraParams>;
+  /**
+   * camera adjustments while active. `aim` (optional, finishing pass) replaces the stock aim camera
+   * (distance 2.15, height 1.6, shoulder 0.78, fov 48) as the aim-blend target while this mover is
+   * installed; unset fields keep the stock aim values.
+   */
+  camera?: Partial<CameraParams> & { aim?: Partial<CameraParams> };
   /** if true the camera yaw is locked to the player's facing (on-rails sections) */
   lockCameraYaw?: boolean;
 }
@@ -796,6 +821,34 @@ export interface PlayerAPI extends Combatant {
   resetTally(): void;
   /** respawn at full health */
   revive(): void;
+  /**
+   * Timed stat modifier that survives the stats refresh (finishing pass). Multipliers stack
+   * multiplicatively; `duration` is in GAME seconds (Infinity = until removed). Adding a modifier
+   * with the `id` of a live one replaces it (re-webbing refreshes the slow instead of stacking it).
+   * Returns the id. All modifiers are cleared on revive() (respawn, chapter load).
+   */
+  addModifier?(mod: PlayerModifier): string;
+  removeModifier?(id: string): void;
+  /**
+   * Play a knife stroke (1, 2 or 3 = the finisher) for cinematics without the combo rules
+   * (finishing pass). Defaults: no lunge and no damage (the script applies its own); pass
+   * `{ lunge: true, damage: true }` for the gameplay stroke.
+   */
+  playMelee?(hit: 1 | 2 | 3, opts?: { lunge?: boolean; damage?: boolean }): void;
+}
+
+/** a timed player stat modifier (PlayerAPI.addModifier) */
+export interface PlayerModifier {
+  /** multiplier on stats.moveSpeed (also scales the aim-walk speed) */
+  moveSpeedMul?: number;
+  /** multiplier on stats.damageTakenMul */
+  damageTakenMul?: number;
+  /** multiplier on stats.drawTime */
+  drawTimeMul?: number;
+  /** game seconds; Infinity = until removeModifier(id) */
+  duration: number;
+  /** stable id: adding again with the same id replaces (refreshes) the modifier */
+  id?: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -824,6 +877,11 @@ export interface EnemySpec {
   seed?: number;
   /** count toward the Gimli rivalry (default true) */
   countsForRivalry?: boolean;
+  /**
+   * humanoid body to build instead of the archetype's (finishing pass), e.g. `{ archetype:
+   * 'gundabad', kind: 'bolg', boss: true }`. Stats, attacks and voice still come from the archetype.
+   */
+  kind?: HumanoidKind;
 }
 
 export interface Enemy extends Combatant {
@@ -884,6 +942,15 @@ export interface Rivalry {
   /** when true, Gimli's count rises on its own while enemies are alive, rubber-banded to the player's pace */
   autoGimli: boolean;
   update(dt: number): void;
+  /**
+   * (finishing pass) while true, banter lines wait (they are delivered when it turns false; lines
+   * older than ~10 s are dropped). The shell sets it every step from level.cinematic().
+   */
+  hold?: boolean;
+  /** (finishing pass) a chapter line was shown that ends in `seconds`: the opening wager waits for it */
+  noteScriptLine?(seconds: number): void;
+  /** (finishing pass) this chapter's own counts (HUD counts minus the carried-in totals) */
+  chapterCounts?(): { legolas: number; gimli: number };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -932,6 +999,12 @@ export interface CrowdDef {
 }
 
 export interface CrowdHandle {
+  /**
+   * The crowd group (InstancedMesh children). Since the finishing pass every InstancedMesh carries a
+   * real bounding sphere (kept up to date while it marches) and is frustum culled; the animation runs
+   * on game time from the level step, so culling never stalls it. A sphere assigned by hand
+   * (`im.boundingSphere = mySphere`) is respected and never overwritten.
+   */
   readonly mesh: THREE.Object3D;
   setSpeed(v: number): void;
   /** kill a fraction (0..1) of the crowd with a falling animation (scripted battle progression) */
@@ -982,6 +1055,12 @@ export interface LevelAPI {
    * back to the adaptive score (explore / tension / combat / boss). Cleared when the level ends.
    */
   music?(mood: MusicMood | null): void;
+  /**
+   * (finishing pass) Soft character key light that follows the camera while cinematic(true) or a
+   * cameraShot is active (not shadow casting; on by default). `false` turns it off for this level,
+   * `true` restores the default, an object tunes it: `intensity` multiplier (default 1), `color`.
+   */
+  characterLight?(opts: boolean | { intensity?: number; color?: number }): void;
 }
 
 export interface TerrainOpts {
@@ -1001,6 +1080,8 @@ export interface TerrainOpts {
   /** hidden skirt below the border (default true) */
   skirt?: boolean;
   cavity?: number;
+  /** physics grip of the terrain 0..1 (finishing pass; default from `material`: 'ice' 0.3, else 1) */
+  friction?: number;
 }
 
 export interface ChapterDef {
@@ -1024,6 +1105,13 @@ export interface ChapterDef {
    * screen (preloadHumanoids) so createHumanoid is a cache hit in play. 'legolas' is always included.
    */
   preload?: HumanoidKind[];
+  /**
+   * (finishing pass) Mesh non-humanoid creatures in the kit worker pool during the loading screen,
+   * in parallel with `preload` and create(). Return a promise; start() waits for it (errors are only
+   * logged). Typical: `preloadCreatures: () => premeshCreatures([() => createGundabadBat(0)])`, or
+   * `preloadSpiders()` / `premeshMumak('hero')`.
+   */
+  preloadCreatures?: () => Promise<unknown>;
   create(level: LevelAPI): ChapterInstance | Promise<ChapterInstance>;
 }
 
@@ -1057,12 +1145,15 @@ export interface GameContext {
   rivalry: Rivalry;
   /** current settings (alias of progression.data.settings) */
   readonly settings: Settings;
-  /** parsed URL flags: ?dev=1 &bot=1 &quality=low &chapter=… &cp=… &seed=… &skipIntro=1 &god=1 */
+  /**
+   * parsed URL flags: ?dev=1 &bot=1 &quality=low &chapter=… &cp=… &seed=… &skipIntro=1 &god=1.
+   * god / bot / dev / freeze are present only in a dev build or with ?debug=1 (finishing pass).
+   */
   readonly flags: Readonly<Record<string, string>>;
 }
 
 /**
- * Test hooks exposed on window (set by main.ts):
+ * Test hooks exposed on window (set by main.ts; window.__game only in a dev build or with ?debug=1):
  *   window.__snapReady = true      after the requested chapter (or lab subject) has loaded and rendered 2 frames
  *   window.__snapError = string    on fatal load error
  *   window.__game = {

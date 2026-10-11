@@ -27,7 +27,16 @@ interface Line {
   speaker: Speaker;
   text: string;
   prio: number;
+  /** seconds it has been waiting (held lines older than STALE are dropped) */
+  age: number;
+  /** the opening wager: waits for the chapter's first scripted line */
+  opening?: boolean;
 }
+
+/** a held banter line older than this is dropped (closing lines, prio >= 4, never are) */
+const STALE = 10;
+/** the opening wager plays this long after start() at the latest when the chapter says nothing */
+const OPENING_MAX_WAIT = 6;
 
 /** pure rubber-band target for Gimli's count given the player's, with a slow lead oscillation */
 export function gimliTarget(legolas: number, t: number): number {
@@ -38,6 +47,42 @@ export function gimliTarget(legolas: number, t: number): number {
 export interface RivalryExt extends Rivalry {
   /** stop silently (no closing line, queued banter dropped, HUD counter hidden): level unload */
   reset(): void;
+  hold: boolean;
+  noteScriptLine(seconds: number): void;
+  chapterCounts(): { legolas: number; gimli: number };
+}
+
+/**
+ * Pure helper (exported for the unit tests): the banter line for a count change, or null.
+ * `hud` are the counts the HUD shows (carried-in totals included), `local` this chapter's own.
+ * Spoken numbers always match the HUD; "first kill" style lines key off the chapter's own counts.
+ */
+export function banterFor(
+  who: 'legolas' | 'gimli',
+  hud: { legolas: number; gimli: number },
+  local: { legolas: number; gimli: number },
+  leader: 'legolas' | 'gimli' | 'tie',
+  warnedGap: boolean,
+): { speaker: Speaker; text: string; prio: number; warn?: boolean } | null {
+  const { legolas, gimli } = hud;
+  const now = legolas > gimli ? 'legolas' : gimli > legolas ? 'gimli' : 'tie';
+  const L = numberWord(legolas);
+  const G = numberWord(gimli);
+  if (who === 'legolas') {
+    if (legolas % 10 === 0 && legolas > 0) return { speaker: 'Legolas', text: `${L}, Master Dwarf.`, prio: 2 };
+    if (now === 'legolas' && leader !== 'legolas') {
+      return { speaker: 'Gimli', text: local.gimli === 0 ? `Hold on — I've not even started!` : `${L}?! I'll not be outdone by an elf!`, prio: 1 };
+    }
+    if (legolas - gimli >= 3 && !warnedGap) return { speaker: 'Gimli', text: `Stop showing off and leave some for me!`, prio: 2, warn: true };
+    if (local.legolas === 2 && local.gimli < 2) return { speaker: 'Legolas', text: `${L} already, Gimli.`, prio: 1 };
+    if (now === 'tie' && local.legolas > 2) return { speaker: 'Gimli', text: `${L} apiece! It's not over yet.`, prio: 1 };
+    return null;
+  }
+  if (now === 'gimli' && leader !== 'gimli') return { speaker: 'Gimli', text: `${G}! Ha! Keep up, laddie!`, prio: 1 };
+  if (gimli - legolas >= 3 && !warnedGap) return { speaker: 'Gimli', text: `I'm on ${G}! Are you even trying, elf?`, prio: 2, warn: true };
+  if (gimli % 10 === 0 && gimli > 0) return { speaker: 'Gimli', text: `${G}! Count them, elf — ${G}!`, prio: 2 };
+  if (local.gimli === 1 && local.legolas === 0) return { speaker: 'Gimli', text: gimli === 1 ? `That's one!` : `${G}! That's one more for the count!`, prio: 1 };
+  return null;
 }
 
 export function createRivalry(ctx: GameContext): RivalryExt {
@@ -54,6 +99,10 @@ export function createRivalry(ctx: GameContext): RivalryExt {
   let lastLegolasKillT = -1;
   let leader: 'legolas' | 'gimli' | 'tie' = 'tie';
   let warnedGap = false;
+  /** counts carried in at start(): the chapter's own counts are the HUD counts minus these */
+  let baseL = 0;
+  let baseG = 0;
+  let openingWait = 0;
 
   const hud = () => ctx.hud;
 
@@ -61,7 +110,7 @@ export function createRivalry(ctx: GameContext): RivalryExt {
     if (!active && prio < 5) return;
     if (pending && pending.prio > prio) return;
     if (prio < 3 && sinceBanter < BANTER_GAP) return;
-    pending = { speaker, text, prio };
+    pending = { speaker, text, prio, age: 0 };
     pendingDelay = delay;
   }
 
@@ -73,34 +122,16 @@ export function createRivalry(ctx: GameContext): RivalryExt {
     hud().setRivalry(legolas, gimli);
   }
 
+  function local() {
+    return { legolas: Math.max(0, legolas - baseL), gimli: Math.max(0, gimli - baseG) };
+  }
+
   function afterCount(who: 'legolas' | 'gimli', n: number) {
     const now: typeof leader = legolas > gimli ? 'legolas' : gimli > legolas ? 'gimli' : 'tie';
-    const L = numberWord(legolas);
-    const G = numberWord(gimli);
-    if (who === 'legolas') {
-      if (legolas % 10 === 0 && legolas > 0) {
-        say('Legolas', `${L}, Master Dwarf.`, 2);
-      } else if (now === 'legolas' && leader !== 'legolas') {
-        say('Gimli', gimli === 0 ? `Hold on — I've not even started!` : `${L}?! I'll not be outdone by an elf!`, 1);
-      } else if (legolas - gimli >= 3 && !warnedGap) {
-        warnedGap = true;
-        say('Gimli', `Stop showing off and leave some for me!`, 2);
-      } else if (legolas === 2 && gimli < 2) {
-        say('Legolas', `Two already, Gimli.`, 1);
-      } else if (now === 'tie' && legolas > 2) {
-        say('Gimli', `${L} apiece! It's not over yet.`, 1);
-      }
-    } else {
-      if (now === 'gimli' && leader !== 'gimli') {
-        say('Gimli', `${G}! Ha! Keep up, laddie!`, 1);
-      } else if (gimli - legolas >= 3 && !warnedGap) {
-        warnedGap = true;
-        say('Gimli', `I'm on ${G}! Are you even trying, elf?`, 2);
-      } else if (gimli % 10 === 0 && gimli > 0) {
-        say('Gimli', `${G}! Count them, elf — ${G}!`, 2);
-      } else if (gimli === 1 && legolas === 0) {
-        say('Gimli', `That's one!`, 1);
-      }
+    const line = banterFor(who, { legolas, gimli }, local(), leader, warnedGap);
+    if (line) {
+      if (line.warn) warnedGap = true;
+      say(line.speaker, line.text, line.prio);
     }
     if (Math.abs(legolas - gimli) < 2) warnedGap = false;
     leader = now;
@@ -126,10 +157,23 @@ export function createRivalry(ctx: GameContext): RivalryExt {
       if (active) hud().setRivalry(legolas, gimli);
     },
     autoGimli: false,
+    hold: false,
+    noteScriptLine(seconds: number) {
+      // the opening wager follows the chapter's first line instead of talking over it
+      if (pending?.opening && openingWait > 0) {
+        openingWait = 0;
+        pendingDelay = Math.max(pendingDelay, Math.max(0, seconds) + 0.6);
+      }
+    },
+    chapterCounts() {
+      return local();
+    },
     start(from) {
       active = true;
       legolas = Math.max(0, from?.legolas ?? 0);
       gimli = Math.max(0, from?.gimli ?? 0);
+      baseL = legolas;
+      baseG = gimli;
       leader = legolas > gimli ? 'legolas' : gimli > legolas ? 'gimli' : 'tie';
       clock = 0;
       autoT = 3;
@@ -139,6 +183,8 @@ export function createRivalry(ctx: GameContext): RivalryExt {
       hud().setRivalry(legolas, gimli);
       if (legolas + gimli === 0) say('Gimli', `A friendly wager, laddie? Let's see who fells the most.`, 2, 1.2);
       else say('Gimli', `I'm on ${numberWord(gimli)}. Keep counting, elf.`, 2, 1.2);
+      if (pending) pending.opening = true;
+      openingWait = OPENING_MAX_WAIT;
     },
     stop() {
       if (!active) return;
@@ -153,6 +199,8 @@ export function createRivalry(ctx: GameContext): RivalryExt {
     reset() {
       active = false;
       pending = null;
+      openingWait = 0;
+      r.hold = false;
       r.autoGimli = false;
       hud().setRivalry(null);
     },
@@ -174,11 +222,23 @@ export function createRivalry(ctx: GameContext): RivalryExt {
       sfxT -= dt;
       sinceBanter += dt;
       if (pending) {
-        pendingDelay -= dt;
-        if (pendingDelay <= 0) {
-          hud().subtitle(pending.speaker, pending.text, 2.8);
-          pending = null;
-          sinceBanter = 0;
+        pending.age += dt;
+        const closing = pending.prio >= 4;
+        if (r.hold && !closing) {
+          // a cinematic is running: keep the line for afterwards (unless it has gone stale); its delay
+          // keeps running, so it follows the cinematic by a short beat rather than its full delay
+          if (pending.age > STALE && !pending.opening) pending = null;
+          else pendingDelay = Math.max(0.6, pendingDelay - dt);
+        } else if (pending.opening && openingWait > 0) {
+          // waiting for the chapter's first scripted line (noteScriptLine), at most OPENING_MAX_WAIT
+          openingWait -= dt;
+        } else {
+          pendingDelay -= dt;
+          if (pendingDelay <= 0) {
+            hud().subtitle(pending.speaker, pending.text, 2.8);
+            pending = null;
+            sinceBanter = 0;
+          }
         }
       }
       if (!active) return;

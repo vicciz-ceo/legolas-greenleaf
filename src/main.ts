@@ -12,6 +12,10 @@
  *
  * Test hooks: window.__snapReady, window.__snapError, window.__game (see GameTestHooks in
  * core/types.ts), window.scene / __THREE_CAMERA__ / __renderer__.
+ *
+ * Debug gate: window.__game and the cheat / tooling flags (?god ?bot ?dev ?freeze) exist only in a
+ * dev build (import.meta.env.DEV: `npm run dev`, scripts/snap.mjs, scripts/smoke.mjs) or with
+ * ?debug=1. A production build ignores them otherwise.
  */
 import type * as THREE from 'three';
 import type {
@@ -46,6 +50,8 @@ declare global {
 }
 
 const QUALITIES: readonly Quality[] = ['low', 'medium', 'high', 'ultra'];
+/** URL flags that only work in a dev build or with ?debug=1 */
+const DEBUG_FLAGS: readonly string[] = ['god', 'bot', 'dev', 'freeze'];
 const DIFFICULTIES: readonly Difficulty[] = ['easy', 'normal', 'hard'];
 
 function fail(e: unknown): void {
@@ -67,6 +73,15 @@ const afterFrames = (n: number): Promise<void> =>
 
 async function boot(): Promise<void> {
   const flags: Record<string, string> = Object.fromEntries(new URLSearchParams(location.search).entries());
+  const debug = import.meta.env.DEV || flags.debug === '1';
+  if (!debug) {
+    for (const k of DEBUG_FLAGS) {
+      if (k in flags) {
+        console.info(`[boot] ?${k} ignored (debug hooks need a dev build or ?debug=1)`);
+        delete flags[k];
+      }
+    }
+  }
   const app = document.getElementById('app');
   const ui = document.getElementById('ui');
   if (!app || !ui) throw new Error('index.html must contain #app and #ui');
@@ -266,7 +281,7 @@ async function boot(): Promise<void> {
   window.scene = engine.scene;
   window.__THREE_CAMERA__ = engine.camera;
   window.__renderer__ = engine.renderer;
-  window.__game = {
+  if (debug) window.__game = {
     advance: (sec: number, step?: number, render?: boolean) => g.advance(sec, step, render),
     advanceAsync: (sec: number, step?: number, render?: boolean) => g.advance(sec, step, render),
     advanceSync: (sec: number, step?: number, render?: boolean) => g.advanceSync(sec, step, render),

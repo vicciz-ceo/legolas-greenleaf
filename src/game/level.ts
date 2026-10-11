@@ -30,7 +30,11 @@ import { disposeObject } from '../core/math';
 
 export interface WorldModules {
   terrain?: { buildTerrain(opts: TerrainOpts): { mesh: THREE.Mesh; heightAt(x: number, z: number): number } };
-  crowd?: { createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => number): CrowdHandle };
+  crowd?: {
+    createCrowd(def: CrowdDef, heightAt: (x: number, z: number) => number): CrowdHandle;
+    /** advance every live crowd on game time (finishing pass; absent in old builds) */
+    tickCrowds?(dt: number): void;
+  };
   /** names of modules that failed to load (diagnostics) */
   failed: string[];
 }
@@ -215,6 +219,8 @@ export interface LevelHooks {
   onFail(reason: string): void;
   /** called when a wait / waitUntil / say / wave promise resolves (a script continuation is now pending) */
   onHop?(): void;
+  /** a chapter line was queued with say(); it finishes in `seconds` (the rivalry's opening wager waits for it) */
+  onSay?(seconds: number): void;
 }
 
 export interface LevelHost extends LevelAPI {
@@ -230,7 +236,12 @@ export interface LevelHost extends LevelAPI {
   readonly bossTarget: Combatant | null;
   /** mood pinned by the chapter with music(), or null for the adaptive score */
   readonly musicOverride: MusicMood | null;
+  /** characterLight() setting: null = off, else the intensity multiplier and colour */
+  readonly characterLightOpts: { intensity: number; color: number } | null;
 }
+
+/** default colour of the cinematic character key light (warm-neutral) */
+export const CHARACTER_LIGHT_COLOR = 0xfff1e0;
 
 interface Waiter {
   left: number;
@@ -257,6 +268,7 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
   let bossDeadT = 0;
   let clock = 0;
   let musicOverride: MusicMood | null = null;
+  let charLight: { intensity: number; color: number } | null = { intensity: 1, color: CHARACTER_LIGHT_COLOR };
   let ambience: string | undefined = ctx.engine.env.ambience;
 
   function waitFor(left: number, pred: (() => boolean) | null): Promise<void> {
@@ -299,6 +311,15 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
     get musicOverride() {
       return musicOverride;
     },
+    get characterLightOpts() {
+      return charLight;
+    },
+    characterLight(opts) {
+      if (disposed) return;
+      if (opts === false) charLight = null;
+      else if (opts === true) charLight = { intensity: 1, color: CHARACTER_LIGHT_COLOR };
+      else charLight = { intensity: Math.max(0, opts.intensity ?? 1), color: opts.color ?? CHARACTER_LIGHT_COLOR };
+    },
     music(mood) {
       if (!disposed) musicOverride = mood;
     },
@@ -338,6 +359,7 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
         total += ctx.hud.subtitleBacklog?.() ?? 0;
         ctx.hud.subtitle(speaker, text, dur);
       }
+      if (!disposed) hooks.onSay?.(total);
       return waitFor(total, null);
     },
 
@@ -460,7 +482,7 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
     terrain(opts: TerrainOpts) {
       const t = createTerrain(world, opts);
       root.add(t.mesh);
-      ctx.physics.setTerrain(t.heightAt, opts.material ?? 'dirt');
+      ctx.physics.setTerrain(t.heightAt, opts.material ?? 'dirt', opts.friction);
       const fx = ctx.fx as unknown as Partial<FxExtras>;
       if ('groundAt' in fx) fx.groundAt = t.heightAt;
       return t;
@@ -487,6 +509,12 @@ export function createLevelAPI(ctx: GameContext, chapter: ChapterDef, world: Wor
           w.resolve();
           hooks.onHop?.();
         } else i++;
+      }
+      // crowds animate and march on game time (and keep doing so while frustum culled)
+      try {
+        world.crowd?.tickCrowds?.(dt);
+      } catch (e) {
+        console.warn('[level] tickCrowds threw', e);
       }
       // chapter per-frame callbacks (copy: a callback may remove itself)
       for (const fn of updaters.slice()) {

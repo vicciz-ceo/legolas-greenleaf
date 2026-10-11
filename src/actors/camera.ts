@@ -113,13 +113,19 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
     const ph = mc?.height ?? base.height;
     const ps = mc?.shoulder ?? base.shoulder;
     const pf = mc?.fov ?? base.fov;
+    // aim-blend target: the stock aim camera, or the mover's own (a wide bat ride needs a wider aim)
+    const ma = mc?.aim;
+    const ad = ma?.distance ?? AIM_CAMERA.distance;
+    const ah = ma?.height ?? AIM_CAMERA.height;
+    const aSh = ma?.shoulder ?? AIM_CAMERA.shoulder;
+    const af = ma?.fov ?? AIM_CAMERA.fov;
     aimBlend = damp(aimBlend, subject.aimZoom, 12, dt);
     focusBlend = damp(focusBlend, subject.focusActive ? 1 : 0, 6, dt);
     sprintBlend = damp(sprintBlend, subject.sprintBlend, 4, dt);
-    const dist = lerp(pd, AIM_CAMERA.distance, aimBlend) + sprintBlend * 0.35 - focusBlend * 0.3;
-    const height = lerp(ph, AIM_CAMERA.height, aimBlend);
-    const shoulder = lerp(ps, AIM_CAMERA.shoulder, aimBlend);
-    const fov = lerp(pf, AIM_CAMERA.fov, aimBlend) + sprintBlend * 5 - focusBlend * 7 + punchDeg;
+    const dist = lerp(pd, ad, aimBlend) + sprintBlend * 0.35 - focusBlend * 0.3;
+    const height = lerp(ph, ah, aimBlend);
+    const shoulder = lerp(ps, aSh, aimBlend);
+    const fov = lerp(pf, af, aimBlend) + sprintBlend * 5 - focusBlend * 7 + punchDeg;
     punchDeg = damp(punchDeg, 0, 7, dt);
 
     if (subject.mover?.lockCameraYaw) rig.yaw = dampAngle(rig.yaw, subject.facing, 5, dt);

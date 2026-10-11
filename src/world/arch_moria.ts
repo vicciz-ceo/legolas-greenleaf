@@ -8,23 +8,46 @@ import type { Built, ColliderDesc } from './colliders';
 import { stoneMat, wallWithOpenings, type Opening, type V3 } from './arch_common';
 import { skeleton, well } from './props';
 
-/** soft additive light shaft (cone). Origin at the top centre, pointing down -y. */
-export function lightShaft(height = 8, topRadius = 0.5, bottomRadius = 2.4, color = 0xcfe0ff, intensity = 0.22): THREE.Mesh {
+/**
+ * Soft additive light shaft (cone). Origin at the top centre, pointing down -y.
+ *
+ * Fades so it never turns into a flat pale panel: toward its foot (`groundFade`, the last fraction of
+ * its length, where it meets the floor) and near the camera (`nearFade` [start, end] metres: fully gone
+ * at `start`, full strength from `end`). Grazing views of the hollow cone are softened as well.
+ */
+export function lightShaft(
+  height = 8,
+  topRadius = 0.5,
+  bottomRadius = 2.4,
+  color = 0xcfe0ff,
+  intensity = 0.22,
+  opts: { groundFade?: number; nearFade?: [number, number] } = {},
+): THREE.Mesh {
   const g = new THREE.CylinderGeometry(topRadius, bottomRadius, height, 24, 1, true);
   g.translate(0, -height / 2, 0);
+  const groundFade = Math.min(0.9, Math.max(0.01, opts.groundFade ?? 0.3));
+  const [n0, n1] = opts.nearFade ?? [1.2, 6];
   const m = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
     side: THREE.DoubleSide,
-    uniforms: { uColor: { value: new THREE.Color(color) }, uI: { value: intensity } },
-    vertexShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV;
-      void main(){ vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; uniform vec3 uColor; uniform float uI;
+    uniforms: {
+      uColor: { value: new THREE.Color(color) },
+      uI: { value: intensity },
+      uGround: { value: groundFade },
+      uNear: { value: new THREE.Vector2(n0, Math.max(n0 + 0.01, n1)) },
+    },
+    vertexShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist;
+      void main(){ vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vDist = length(mv.xyz); gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist; uniform vec3 uColor; uniform float uI; uniform float uGround; uniform vec2 uNear;
       void main(){
         float edge = pow(abs(dot(normalize(vN), normalize(vV))), 1.6);
-        float fade = smoothstep(0.0, 0.12, 1.0 - vUv.y) * (1.0 - smoothstep(0.55, 1.0, 1.0 - vUv.y));
-        float a = edge * (0.35 + 0.65 * (1.0 - vUv.y)) * uI;
+        float along = 1.0 - vUv.y; // 0 at the top, 1 at the foot
+        float top = smoothstep(0.0, 0.12, along);
+        float foot = 1.0 - smoothstep(1.0 - uGround, 1.0, along);
+        float near = smoothstep(uNear.x, uNear.y, vDist);
+        float a = edge * (0.35 + 0.65 * along) * top * foot * near * uI;
         gl_FragColor = vec4(uColor * a, a);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>

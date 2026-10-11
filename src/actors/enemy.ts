@@ -28,7 +28,8 @@ import { clamp, dirFromYaw, wrapAngle, yawOf } from '../core/math';
 import { Rng, hashSeed } from '../core/rng';
 import { makeHumanoid } from './humanoids';
 import { applyLoadout } from '../creatures/loadouts';
-import { NpcBase, releaseSlot, requestAttackToken, requestSlot, slotHolders, vocal } from './npc';
+import { NpcBase, moveArrived, releaseSlot, requestAttackToken, requestSlot, slotHolders, vocal } from './npc';
+export { moveArrived } from './npc';
 import { hostile, meleeLineClear } from './combatant';
 import { ARROW_GRAVITY, ballisticDir, leadTarget, spreadDir } from '../combat/aim';
 
@@ -131,7 +132,8 @@ class EnemyImpl extends NpcBase implements Enemy {
     const melee = !def.ranged && def.behavior !== 'archer' && def.behavior !== 'hold';
     const humanoid = makeHumanoid(
       applyLoadout(
-        { kind: def.kind, seed, weapon: spec.weapon ?? def.weapon, offhand: def.offhand, scale: spec.scale ?? def.scale },
+        // spec.kind swaps the body only (Bolg on the 'gundabad' archetype); behaviour stays the archetype's
+        { kind: spec.kind ?? def.kind, seed, weapon: spec.weapon ?? def.weapon, offhand: def.offhand, scale: spec.scale ?? def.scale },
         melee,
         { weapon: spec.weapon !== undefined },
       ),
@@ -401,7 +403,9 @@ class EnemyImpl extends NpcBase implements Enemy {
         this.state = 'advance';
         this.setGoal(this.moveTarget, this.speedMax, 0.6);
         this.faceToward(null);
-        if (this.position.distanceTo(this.moveTarget) < 1) this.moveTarget = null;
+        // horizontal arrival with a height tolerance: a waypoint set at floor level is reached from a
+        // stair tread above or below it (the 3-D distance never dropped under 1 m there)
+        if (moveArrived(this.position, this.moveTarget)) this.moveTarget = null;
         return;
       }
     }

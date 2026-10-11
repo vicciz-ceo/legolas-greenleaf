@@ -17,4 +17,4 @@ export {
   makeBipedSample, quadGait, insectGait, wingFlap, boneMask, envelope,
   type FootSample, type BipedGaitSample, type QuadGaitSample, type QuadGaitKind, type WingSample, type TwoBoneOpts, type SpringCollider, type SpringOpts,
 } from './anim';
-export { buildCreature, type Creature, type CreatureDef, type CreatureExtraCtx } from './creature';
+export { buildCreature, premeshCreature, premeshCreatures, type Creature, type CreatureDef, type CreatureExtraCtx } from './creature';
