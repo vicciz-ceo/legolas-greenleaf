@@ -43,18 +43,34 @@ cartoon brick stone and featureless snow; Legolas read as clay, Bolg as a grey t
 in-progress "after" shots barely differed from "before". The common cause was shared code (stone texture,
 cliff mapping, snow, weather sprites, character materials), which chapter finishers may not touch.
 Decision: stop phase 1, run a shared rendering pass first, then re-finish all 9 chapters on top of it
-(32 snaps per chapter). The partial phase 1 edits were kept (`0ffc8db`).
+(32 snaps per chapter). The partial phase 1 edits were kept (`c493a42`).
 
 ## Shared rendering pass (two Opus agents, separate worktrees)
 
 | Area | Commit | Result |
 |---|---|---|
-| Characters (kit + humanoid) | `66b1a01` | Kit shader: skin detail and scars, twill, tooled leather, hammered metal, rust, albedo-tinted cloth sheen (no more mint wash); strand hair; parallax eyes. Legolas re-dressed per spec; Bolg re-sculpted (42.7k tris); palette passes for the named cast. Arena High 382 calls / 849k tris. |
-| Environment (world + fx + lighting) | `d7ab30b` | Realistic `stone_blocks`, unstretched cliffs/rock, snow with occlusion and rock breaks, de-cartooned wood/bark/floor; small depth-faded snow and thin rain; night floor, height fog, ground-shade IBL (new optional preset fields, CHAPTER_AUTHORING §14). Calls/tris unchanged, load +7–18 %. |
-| Orchestrator fix | (this commit) | `rock()` keeps its texture at world scale on big crags (tile divided by the quantised size). |
+| Characters (kit + humanoid) | `0c13d10` | Kit shader: skin detail and scars, twill, tooled leather, hammered metal, rust, albedo-tinted cloth sheen (no more mint wash); strand hair; parallax eyes. Legolas re-dressed per spec; Bolg re-sculpted (42.7k tris); palette passes for the named cast. Arena High 382 calls / 849k tris. |
+| Environment (world + fx + lighting) | `8135d74` | Realistic `stone_blocks`, unstretched cliffs/rock, snow with occlusion and rock breaks, de-cartooned wood/bark/floor; small depth-faded snow and thin rain; night floor, height fog, ground-shade IBL (new optional preset fields, CHAPTER_AUTHORING §14). Calls/tris unchanged, load +7–18 %. |
+| Orchestrator fix | `d1d50a3` | `rock()` keeps its texture at world scale on big crags (tile divided by the quantised size). |
 
 Gates on the merged tree: typecheck ✅, unit tests ✅ 359/359, **full smoke `SNAP_GPU=1 npm run smoke`: 33/33 checkpoints, 0 errors.**
 
-Known after the shared pass (handed to the chapter re-finishers): Helm's Deep cp0 is 1.64 M triangles at
-High (over budget, unchanged by the pass); Legolas still bleaches in Ravenhill's bright snow (chapter
+Known after the shared pass (handed to the chapter re-finishers): Helm's Deep cp0 is over the triangle budget at
+High (re-measured at `09f093e`: 1.52 M, cp1 1.46 M; an earlier reading said 1.64 M); Legolas still bleaches in Ravenhill's bright snow (chapter
 exposure); Lake-town's Bolg reads pink under lantern light; Mirkwood floor has pale decal blotches.
+
+## Per-asset art pass (stopped) and handoff to Codex
+
+The owner judged the shared pass still far from the references ("characters nothing like the references,
+environments awful") and asked for one agent per character and per environment. Set-up:
+- `view=turn` in the Creature Lab (`09f093e`), laid out like the reference turnarounds.
+- A GPU queue (now `scripts/gpu-queue.sh`).
+- 30 worktrees `/Users/nerya/greenleaf-wt/<name>` (branches `art/<name>`, local only).
+- One Opus agent per character (32 character sheets, in 24 worktrees) and per shared asset (6), each with an independent art-director review.
+
+It was stopped about 50 minutes in for a **handoff to Codex**, before any item finished. Five branches hold
+unreviewed WIP commits (`art/dwarves` `04d3a97`, `art/materials` `8c35c2f`, `art/props` `e1e5fb0`,
+`art/terrain_water` `85f8b99`, `art/vegetation` `92d59f4`). They typecheck; none is smoke-tested or merged.
+The full state, lessons and plan are in `docs/handoff/CODEX_HANDOFF.md`.
+
+Last verified gates on `build/chapters`: typecheck ✅, unit tests ✅ 359/359, full GPU smoke ✅ 33/33 (`d1d50a3`).

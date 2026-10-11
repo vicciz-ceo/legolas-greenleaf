@@ -1,5 +1,7 @@
 # Final review prompt (Claude Code)
 
+> **Note for Codex (2026-10-11 handoff):** written for Claude Code subagents before the handoff. Read `AGENTS.md` first: every render goes through `scripts/gpu-queue.sh`, shared code is no longer off-limits (see the AGENTS.md guardrails), you do commit on `build/chapters`, and Ravenhill and Pelennor are **not** done visually (`docs/handoff/CODEX_HANDOFF.md` §5.2, §6). The per-chapter technical notes (APIs to migrate to) are still valid.
+
 Run this after every chapter's finisher is done. It is the last gate before merging `build/chapters` into `main`.
 
 ```text

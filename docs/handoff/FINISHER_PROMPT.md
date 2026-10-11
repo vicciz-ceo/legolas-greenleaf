@@ -1,5 +1,7 @@
 # Chapter finisher prompt (Claude Code)
 
+> **Note for Codex (2026-10-11 handoff):** written for Claude Code subagents before the handoff. Read `AGENTS.md` first: every render goes through `scripts/gpu-queue.sh`, shared code is no longer off-limits (see the AGENTS.md guardrails), you do commit on `build/chapters`, and Ravenhill and Pelennor are **not** done visually (`docs/handoff/CODEX_HANDOFF.md` §5.2, §6). The per-chapter technical notes (APIs to migrate to) are still valid.
+
 Paste the block below into Claude Code at the repo root, once per chapter. Replace `<N>`, `<id>` and `<file>`, and add that chapter's notes from the table at the bottom.
 Tip: one chapter per session (or per subagent) keeps context small. On a desktop, use `SNAP_GPU=1` for the snapshot and smoke tools.
 

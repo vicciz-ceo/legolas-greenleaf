@@ -1,10 +1,12 @@
 # Handoff: continuing Greenleaf on your machine
 
+> **Superseded on 2026-10-11 by [`docs/handoff/CODEX_HANDOFF.md`](docs/handoff/CODEX_HANDOFF.md)** (handoff to Codex). This file is kept for its quick start, URLs and history. Its "✅ done" art rows did not hold up to the owner's review: re-verify any visual claim against `docs/refs/`.
+
 Snapshot taken 2026-10-11, when the cloud build session was stopped.
 
 ## TL;DR
 
-- **Work on branch `build/chapters`.** It has everything: all 9 chapters, the cast and UI polish, the shared-system fixes, and the art passes for 2 chapters (2 complete, 4 partial). `main` is the earlier verified milestone (the foundation only).
+- **Work on branch `build/chapters`.** It has everything: all 9 chapters, the cast and UI polish, the shared-system fixes, and art passes started on 6 chapters (none accepted on the owner's review; see `docs/handoff/CODEX_HANDOFF.md` §5). `main` is the earlier verified milestone (the foundation only).
 - The game builds, typechecks and passes all 359 unit tests on `build/chapters`.
 - What's left is listed in [What's left](#whats-left), in order. The prompts for continuing with Claude Code are in `docs/handoff/`.
 
@@ -73,11 +75,11 @@ The parallax-threejs debug harness is scaffolded (`deno.json` tasks such as `che
 | 1 | `mirkwood` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
 | 2 | `barrels` | ✅ | ⏳ not started (an earlier interrupted art pass left partial edits) | smoke ✅ (11 Oct baseline, before shared fixes) |
 | 3 | `laketown` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
-| 4 | `ravenhill` | ✅ | ✅ done | smoke 4/4, bot reaches complete (11 Oct) |
+| 4 | `ravenhill` | ✅ | ⚠️ marked done, rejected on visual review (no vista, floating rocks, cartoon stone) | smoke 4/4, bot reaches complete (11 Oct) |
 | 5 | `moria` | ✅ | ⏳ not started (partial art edits from earlier) | smoke 3/3 after shared fixes |
 | 6 | `amon_hen` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
 | 7 | `helms_deep` | ✅ | ⚠️ interrupted part-way (edits committed) | smoke ✅ (handoff run) |
-| 8 | `pelennor` | ✅ | ✅ done | smoke 3/3, bot reaches complete at Low and High (11 Oct) |
+| 8 | `pelennor` | ✅ | ⚠️ marked done; visuals not re-reviewed against the refs | smoke 3/3, bot reaches complete at Low and High (11 Oct) |
 | 9 | `black_gate` | ✅ | ⏳ not started | smoke 3/3 after shared fixes |
 
 The "interrupted" finishers stopped mid-task when the session ended. Their edits typecheck and the unit tests pass, but their art passes and migrations may be incomplete.
