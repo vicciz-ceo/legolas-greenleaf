@@ -94,6 +94,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   addColliders(physics, hall.colliders, hall.object);
   // swap the 28 separate pillar objects for instanced meshes (identical carved pillars, a few draw calls)
   swapPillarsForInstances(hall.object);
+  // the pillars are monoliths: big drums with a carved panel on most of them, not a brick tower
+  weatherStone([hall.object], { cell: [3.6, 2.3], carve: 0.7, mortar: 0.3 });
 
   const stone = mat('dwarven_stone', { key: 'moriaFloor' });
   const wallM = mat('dwarven_stone', { key: 'moriaWall', rgb: [0.9, 0.9, 0.95] });
@@ -260,8 +262,8 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     place(skeleton(pose, (x * 3 + z) | 0, 0.85), x, 0, z, yaw);
   }
   // banners of Durin's folk, tattered, on the long walls
-  place(banner(0x2a3f66, 'hammer', { height: 4.2, clothW: 1.4, clothH: 2.8 }), -7.2, 0, -5.8, Math.PI / 2);
-  place(banner(0x2a3f66, 'hammer', { height: 4.2, clothW: 1.4, clothH: 2.8 }), 7.2, 0, 6.0, -Math.PI / 2 + Math.PI);
+  place(banner(0x4a1a16, 'hammer', { height: 4.2, clothW: 1.4, clothH: 2.8 }), -7.2, 0, -5.8, Math.PI / 2);
+  place(banner(0x2a2f40, 'hammer', { height: 4.2, clothW: 1.4, clothH: 2.8 }), 7.2, 0, 6.0, -Math.PI / 2 + Math.PI);
 
   // ── antechamber and hall dressing ───────────────────────────────────────
   // braziers flanking the arch on the hall side and down the central aisle
@@ -288,7 +290,7 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   }
   // banners hanging among the pillars
   for (const [x, z] of [[19, -12], [47, 13], [75, -14], [103, 12]] as [number, number][]) {
-    place(banner(rng.float() < 0.5 ? 0x2a3f66 : 0x5a2a1a, 'hammer', { height: 5.4, clothW: 1.6, clothH: 3.4 }), x, 0, z, rng.float() * 6);
+    place(banner(rng.float() < 0.5 ? 0x232a3c : 0x4a1a16, 'hammer', { height: 5.4, clothW: 1.6, clothH: 3.4 }), x, 0, z, rng.float() * 6);
   }
   // fallen masonry and rubble outside the central aisle
   for (let i = 0; i < 7; i++) {
@@ -339,7 +341,7 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   const addPedestal = (x: number, z: number, sc: number, hFlame: number) => {
     const top = stoneBrazier(pedKit, x, z, sc);
     flames.push({ x: top.x, y: top.y - 0.02, z: top.z, h: hFlame, w: hFlame * 0.78 });
-    pools.push({ x: top.x, z: top.z, r: 5.2 * sc });
+    pools.push({ x: top.x, z: top.z, r: 3.6 * sc });
     aisleFires.push(new THREE.Vector3(top.x, top.y + hFlame * 0.45, top.z));
     pedColliders.push({ kind: 'cyl', x, z, r: 0.34 * sc, y0: 0, y1: 1.0 * sc, opts: { material: 'stone', walkable: false, tag: 'pedestal' } });
   };
@@ -355,15 +357,47 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   {
     const ff = flameField(flames);
     root.add(ff);
-    const aisleHalo = fireHalos(aisleFires, 3.4, 0xff8a3a, 0.5);
+    const aisleHalo = fireHalos(aisleFires, 2.8, 0xff8a3a, 0.3);
     root.add(aisleHalo);
-    root.add(firePools(pools, 0xff7a2a, 0.24));
+    root.add(firePools(pools, 0xff7a2a, 0.11));
   }
   // the pillar tops are tied together by dark stone beams that vanish into the roof's black
   {
     const bk = new MeshKit();
     overheadBeams(bk, Array.from({ length: HALL.cols }, (_, c) => HALL.firstX + c * HALL.spacing), Array.from({ length: HALL.rows }, (_, r) => (r - (HALL.rows - 1) / 2) * HALL.spacing), 21.4, 1.5);
     root.add(bk.build({ name: 'hall_beams', castShadow: false }));
+  }
+  // high galleries along the long walls: a dark shelf of masonry with parapet piers, small fires and black
+  // doorways behind them. They give the hall a skyline of layered floors beyond the pillars.
+  {
+    const gk = new MeshKit();
+    const gm = mat('dwarven_stone', { key: 'moriaGallery', rgb: [0.85, 0.85, 0.9] });
+    const black = plain(0x020203, { roughness: 1, key: 'moriaDoorway' });
+    const x0 = 22;
+    const x1 = HALL_X1 - 6;
+    const gy = 11;
+    const gfl: FlameSpec[] = [];
+    const gpts: THREE.Vector3[] = [];
+    for (const sd of [-1, 1]) {
+      const zc = sd * (HALL_HZ - 1.6);
+      const zi = sd * (HALL_HZ - 3.0);
+      gk.box(gm, [x1 - x0, 0.8, 3.2], [(x0 + x1) / 2, gy - 0.4, zc], 0, { tile: 2 });
+      gk.box(gm, [x1 - x0, 0.9, 0.4], [(x0 + x1) / 2, gy + 0.45, zi], 0, { tile: 1.5 });
+      for (let x = x0 + 3; x < x1; x += 7) {
+        gk.box(gm, [1.4, 2.6, 2.6], [x, gy - 2.0, sd * (HALL_HZ - 1.5)], 0, { tile: 1.2 });
+        gk.box(gm, [0.9, 1.5, 0.9], [x, gy + 0.75, zi], 0, { tile: 1.0 });
+      }
+      for (let x = x0 + 10; x < x1; x += 14) {
+        gk.box(gm, [0.7, 0.5, 0.7], [x + 3.5, gy + 1.15, zi], Math.PI / 4, { tile: 0.8 });
+        gfl.push({ x: x + 3.5, y: gy + 1.3, z: zi, h: 1.0, w: 0.8 });
+        gpts.push(new THREE.Vector3(x + 3.5, gy + 1.8, zi));
+        // the doorway behind it
+        gk.box(black, [3.0, 5.0, 0.12], [x + 3.5, gy + 2.5, sd * (HALL_HZ - 0.06)], 0);
+      }
+    }
+    root.add(gk.build({ name: 'hall_galleries', castShadow: false }));
+    root.add(flameField(gfl, 1.4));
+    root.add(fireHalos(gpts, 3.4, 0xff7a30, 0.28));
   }
   // the well's windlass: two posts, a beam, a bucket on a chain (the dwarves' last water)
   {
@@ -437,11 +471,23 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     root.add(spot);
     // a stronger shaft than the builder's faint cone: same pose, dusty streaks
     chamber.shaft.visible = false;
-    const sh = volumeShaft(8.8, 0.6, 1.9, 0xc4d8ff, 0.62);
+    const sh = volumeShaft(8.8, 0.6, 2.1, 0xc4d8ff, 0.46);
     sh.position.copy(chamber.shaft.position);
     sh.rotation.copy(chamber.shaft.rotation);
     root.add(sh);
     root.add(dustMotes(new THREE.Vector3(0, 0.6, -4.6), 2.2, 7.4, 90, 0xeaf0ff, 0.05));
+    // the high window itself: a pale sky seen through stone tracery (the source of the shaft)
+    const wm = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.9, 2.3, 3.0) });
+    const win = new THREE.Mesh(new THREE.PlaneGeometry(1.1, 2.6), wm);
+    win.position.set(0, 6.9, -9.25);
+    win.userData.noAO = true;
+    win.castShadow = false;
+    root.add(win);
+    const bars = new MeshKit();
+    const barM = mat('dwarven_stone', { key: 'moriaTracery', rgb: [0.9, 0.9, 0.95] });
+    bars.box(barM, [0.09, 2.6, 0.12], [0, 6.9, -8.12], 0, { tile: 0.6 });
+    for (const y of [6.1, 7.7]) bars.box(barM, [1.1, 0.08, 0.12], [0, y, -8.12], 0, { tile: 0.6 });
+    root.add(bars.build({ name: 'window_tracery', castShadow: false }));
   }
 
   // ── chamber ceiling: coffering ribs and a cornice, so it is not a flat black slab ──
@@ -463,6 +509,12 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
   glowA.position.set(HALL_X1 + CL + 46, 18, 0);
   glowA.rotation.y = -Math.PI / 2;
   root.add(glowA);
+  // a faint ember-light standing in the gate itself, so the far end of the hall always has a warm
+  // horizon to run toward (it swells with the Balrog)
+  const gateGlow = glowPlane(0xff5a14, 11, 15, 0);
+  gateGlow.position.set(HALL_X1 + 0.8, 7.2, 0);
+  gateGlow.rotation.y = -Math.PI / 2;
+  root.add(gateGlow);
   const glowB = glowPlane(0xff6a18, 60, 34, 0);
   glowB.position.set(HALL_X1 + CL + 24, 9, 0);
   glowB.rotation.y = -Math.PI / 2;
@@ -542,18 +594,29 @@ export function buildMoria(level: LevelAPI): MoriaWorld {
     tickLook(dt);
     (glowA.material as THREE.ShaderMaterial).uniforms.uT.value = t;
     (glowB.material as THREE.ShaderMaterial).uniforms.uT.value = t;
+    (gateGlow.material as THREE.ShaderMaterial).uniforms.uT.value = t;
     for (const c of curtains) (c.material as THREE.ShaderMaterial).uniforms.uT.value = t;
   });
   const setBalrog = (v: number) => {
     balrog = v;
     (glowA.material as THREE.ShaderMaterial).uniforms.uI.value = 0.08 + v * 0.3;
     (glowB.material as THREE.ShaderMaterial).uniforms.uI.value = 0.03 + v * 0.26;
+    (gateGlow.material as THREE.ShaderMaterial).uniforms.uI.value = 0.16 + v * 0.55;
     for (const f of chasmFires) f.setIntensity(v * 1.1);
     if (chasmDepth) (chasmDepth.material as THREE.ShaderMaterial).uniforms.uI.value = 0.25 + v * 0.9;
     for (const c of curtains) (c.material as THREE.ShaderMaterial).uniforms.uI.value = v < 0.02 ? 0 : 0.18 + v * 0.55;
   };
   setBalrog(0);
   // finally: re-grade every dwarven stone material of the set (walls, floors, pillars, ledge, ribs)
+  // warm glow sprites around every other flame (wall torches, stands, the gate's great braziers)
+  {
+    const small = flamePts.filter((f) => f.size < 3.4).map((f) => f.p);
+    const mid = flamePts.filter((f) => f.size >= 3.4 && f.size < 6).map((f) => f.p);
+    const big = flamePts.filter((f) => f.size >= 6).map((f) => f.p);
+    if (small.length) root.add(fireHalos(small, 1.9, 0xff8a3a, 0.3));
+    if (mid.length) root.add(fireHalos(mid, 3.0, 0xff8a3a, 0.3));
+    if (big.length) root.add(fireHalos(big, 6.5, 0xff7a2a, 0.3));
+  }
   // the tomb is the one pale thing in the dark: pearl, not paper
   tintTextureSet([root], 'marble', [0.62, 0.66, 0.74]);
   if (level.ctx.flags.noweather !== '1') weatherStone([root]);

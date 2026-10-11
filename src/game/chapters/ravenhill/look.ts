@@ -28,9 +28,9 @@ const KEY: Preset = {
   // key from the left/behind the player (the player faces north through the gorge): the crag, the
   // falls and the cliff faces turned towards him catch light instead of standing in shadow
   sunDirection: [-0.42, 0.56, -0.42],
-  sunIntensity: 1.7,
-  hemiIntensity: 0.78,
-  envIntensity: 1.05,
+  sunIntensity: 1.85,
+  hemiIntensity: 0.7,
+  envIntensity: 1.0,
   exposure: 0.98,
   bloom: 0.12,
   grade: GRADE,
@@ -40,15 +40,15 @@ const KEY: Preset = {
 const fog = (color: number, density: number) => ({ color, density });
 
 /** the gorge: thick snow haze, but the far falls still read */
-export const ENV_GORGE: Preset = { ...KEY, fog: fog(0xbac7d2, 0.0066), weatherIntensity: 0.55 };
+export const ENV_GORGE: Preset = { ...KEY, fog: fog(0xbac7d2, 0.0042), weatherIntensity: 0.45 };
 /** the bat ride and the tower: the air opens up on the heights */
-export const ENV_HEIGHTS: Preset = { ...KEY, fog: fog(0xbcc8d3, 0.0046), weatherIntensity: 0.55, sunIntensity: 1.9, mist: 0.5 };
+export const ENV_HEIGHTS: Preset = { ...KEY, fog: fog(0xbcc8d3, 0.0026), weatherIntensity: 0.4, sunIntensity: 2.0, mist: 0.5 };
 /** the establishing shot: a lull in the snow, so the tower on its crag reads from the gorge */
-export const ENV_CLEAR: Preset = { ...KEY, fog: fog(0xb6c3cf, 0.0032), weatherIntensity: 0.32, sunIntensity: 1.95, mist: 0.5 };
+export const ENV_CLEAR: Preset = { ...KEY, fog: fog(0xb6c3cf, 0.002), weatherIntensity: 0.28, sunIntensity: 2.0, mist: 0.5 };
 /** the falling stones: the storm thins on the heights so the blocks hang dark against the abyss */
-export const ENV_SUMMIT: Preset = { ...KEY, fog: fog(0xb8c5d1, 0.0034), weatherIntensity: 0.42, sunIntensity: 1.95, mist: 0.5 };
+export const ENV_SUMMIT: Preset = { ...KEY, fog: fog(0xb8c5d1, 0.002), weatherIntensity: 0.34, sunIntensity: 2.0, mist: 0.5 };
 /** the outro over the valley: clearer still, the armies visible below */
-export const ENV_VALLEY: Preset = { ...KEY, fog: fog(0xb4c0cc, 0.0021), weatherIntensity: 0.3, sunIntensity: 2.0, mist: 0.4 };
+export const ENV_VALLEY: Preset = { ...KEY, fog: fog(0xb4c0cc, 0.0014), weatherIntensity: 0.25, sunIntensity: 2.05, mist: 0.4 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Terrain finish
@@ -74,9 +74,9 @@ export function tuneTerrain(mesh: THREE.Mesh): void {
       /* glsl */ `
       {
         // snow on the ledges: upward-facing parts of the rock, patchy, with the thinnest cover on the steepest faces
-        float lay = smoothstep(0.1, 0.62, nW.y + (kMid - 0.5) * 0.7 + (kHi - 0.5) * 0.3 + (kLow - 0.5) * 0.35);
+        float lay = smoothstep(0.3, 0.8, nW.y + (kMid - 0.5) * 0.9 + (kHi - 0.5) * 0.4 + (kLow - 0.5) * 0.5);
         vec3 snowDust = vec3(0.80, 0.86, 0.96) * (0.9 + 0.2 * kHi);
-        colC = mix(colC, snowDust, lay * 0.92);
+        colC = mix(colC, snowDust, lay * 0.9);
       }
       vec3 splat = colA * wA + colB * wB + colC * wC;`,
     );

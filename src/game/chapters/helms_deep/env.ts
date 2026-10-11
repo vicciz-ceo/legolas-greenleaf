@@ -11,18 +11,37 @@ import type { SkyDef, Vec3Tuple } from '../../../core/types';
 const base = ENVIRONMENTS.helms_deep_storm as EnvironmentPresetEx;
 const baseSky = base.sky as Extract<SkyDef, { kind: 'gradient' }>;
 
+/**
+ * The storm night. Starts from the preset and folds in the reference pack's lighting key
+ * (docs/refs/scenes/helms_deep/lighting.json): a neutral moonlight (#9baecb) instead of the
+ * blue-purple wash, a cooler and darker shadow fill, bloom held back to flames and hot glints,
+ * a light vignette so the flanks stay readable. Intensities are judged by eye against the
+ * gameplay_view reference (the json's absolute numbers assume a different baseline).
+ */
 export const STORM: EnvironmentPresetEx = {
   ...base,
   // the moon rakes the wall from the side (azimuth 75): the outer face and the host both read
-  sky: { ...baseSky, horizon: 0x1f2b3d, moon: { elevation: 34, azimuth: 75, size: 2.4, color: 0xaebfe0 } },
-  // FogExp2: the preset's 0.0165 swallows everything past ~110 m (the host was invisible)
-  fog: { color: 0x172131, density: 0.0088 },
-  hemiIntensity: 1.45,
-  sunIntensity: 1.5,
-  exposure: 1.6,
-  mist: 0.45,
+  sky: { ...baseSky, top: 0x03060d, horizon: 0x22304a, bottom: 0x05070c, clouds: 1, cloudColor: 0x26344c, moon: { elevation: 34, azimuth: 75, size: 2.4, color: 0xaebfe0 } },
+  sunColor: 0x9baecb,
+  sunIntensity: 1.3,
+  hemiSky: 0x2a3b58,
+  hemiGround: 0x0b0c10,
+  hemiIntensity: 1.5,
+  envIntensity: 0.6,
+  // FogExp2: thick fog swallows the host and the Hornburg; the json's 0.01 is for a stage with
+  // its own haze layers, here the fog stays thin and the ground mist (below) does the layering
+  fog: { color: 0x16202e, density: 0.0058 },
+  exposure: 1.5,
+  bloom: 0.2,
+  grade: { lift: [0.0, 0.005, 0.016], gamma: [0.98, 1.0, 1.04], gain: [0.93, 0.99, 1.1], saturation: 0.82, vignette: 0.32 },
+  mist: 0.5,
+  // clouds a little lighter than the sky behind them, so the storm has a ceiling and the ridges a backdrop
+  cloudLit: 0x3e4f70,
+  cloudShade: 0x0f141d,
   weather: 'storm',
-  weatherIntensity: 0.72,
+  // the rain was a curtain across the whole frame (notes: gap 1): thinner, so the wall, the host and
+  // the crosshair zone read through it
+  weatherIntensity: 0.5,
 };
 
 export const DAWN: EnvironmentPresetEx = {

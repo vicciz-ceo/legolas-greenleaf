@@ -77,6 +77,10 @@ export const HEROES: HeroDef[] = [
   { x: 18, z: 64, scale: 1.1, seed: 0, rot: 4.4 }, // 10
   { x: -13, z: 92, scale: 1.18, seed: 3, rot: 0.2 }, // 11
   { x: 13, z: 94, scale: 1.16, seed: 1, rot: 2.9 }, // 12
+  // the gate between the Web Clearing and the Larder: two colossal oaks framing the lane north, with
+  // silk and cocoons strung between them (a landmark from the gameplay camera, no climbers)
+  { x: 12.5, z: 24, scale: 1.18, seed: 2, rot: 3.6 }, // 13
+  { x: -12.5, z: 26, scale: 1.14, seed: 0, rot: 0.7 }, // 14
 ];
 
 /** silk lines strung between trunks [heroA, heroB, height above ground at A, height at B] */
@@ -89,6 +93,7 @@ export const LINES: [number, number, number, number][] = [
   [5, 7, 10.5, 11], // Larder west
   [9, 11, 13, 12], // arena west
   [10, 12, 13, 12.5], // arena east
+  [13, 14, 12.5, 12], // the gate (ambient silk only: not a spider route)
 ];
 
 /** decorative cocoons: [line, t along it, hang drop below the line (m)] */
@@ -99,6 +104,8 @@ export const DECOR_COCOONS: [number, number, number][] = [
   [5, 0.25, 3.5],
   [6, 0.3, 5.0], [6, 0.7, 4.0],
   [7, 0.5, 6.2],
+  // the gate: long drops so they hang at head-to-canopy height over the lane, as in the reference
+  [8, 0.18, 6.8], [8, 0.34, 5.0], [8, 0.52, 7.2], [8, 0.7, 6.0], [8, 0.86, 6.9],
 ];
 
 /** the four cocoons to cut (Larder): [line, t]. They hang with their feet ~0.35 m off the ground. */

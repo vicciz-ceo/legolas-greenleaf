@@ -154,16 +154,20 @@ const FLAME_VS = /* glsl */ `
   attribute float aPh;
   varying vec2 vUv;
   varying float vPh;
+  varying float vNear;
   #include <fog_pars_vertex>
   void main(){
     vUv = uv; vPh = aPh;
     vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    // a flame that is right in front of the lens thins out instead of filling the screen
+    vNear = smoothstep(0.5, 2.6, -mvPosition.z);
     gl_Position = projectionMatrix * mvPosition;
     #include <fog_vertex>
   }`;
 const FLAME_FS = /* glsl */ `
   varying vec2 vUv;
   varying float vPh;
+  varying float vNear;
   uniform float uT;
   uniform float uI;
   #include <fog_pars_fragment>
@@ -181,8 +185,8 @@ const FLAME_FS = /* glsl */ `
     float f = body * (1.0 - smoothstep(0.55, 1.0, y + (n - 0.5) * 0.5)) * (0.55 + 0.75 * n);
     vec3 hot = vec3(1.0, 0.86, 0.5);
     vec3 mid = vec3(1.0, 0.42, 0.08);
-    vec3 col = mix(mid, hot, smoothstep(0.35, 0.95, f) * (1.0 - y)) * f * uI;
-    float a = f;
+    vec3 col = mix(mid, hot, smoothstep(0.6, 1.25, f) * (1.0 - y)) * f * uI * vNear;
+    float a = f * vNear;
     gl_FragColor = vec4(col, a);
     #ifdef USE_FOG
       #ifdef FOG_EXP2
@@ -195,7 +199,7 @@ const FLAME_FS = /* glsl */ `
   }`;
 
 /** a cluster of flames: two crossed quads each, one shared animated shader, one draw call */
-export function flameField(list: FlameSpec[], intensity = 1.6): THREE.Mesh {
+export function flameField(list: FlameSpec[], intensity = 1.25): THREE.Mesh {
   const geos: THREE.BufferGeometry[] = [];
   list.forEach((f, i) => {
     for (let k = 0; k < 2; k++) {
@@ -238,8 +242,10 @@ function haloTexture(): THREE.CanvasTexture {
   const g = c.getContext('2d')!;
   const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
   gr.addColorStop(0, 'rgba(255,255,255,1)');
-  gr.addColorStop(0.18, 'rgba(255,255,255,0.55)');
-  gr.addColorStop(0.5, 'rgba(255,255,255,0.14)');
+  gr.addColorStop(0.1, 'rgba(255,255,255,0.62)');
+  gr.addColorStop(0.28, 'rgba(255,255,255,0.24)');
+  gr.addColorStop(0.55, 'rgba(255,255,255,0.06)');
+  gr.addColorStop(0.8, 'rgba(255,255,255,0.012)');
   gr.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = gr;
   g.fillRect(0, 0, 128, 128);
@@ -249,23 +255,57 @@ function haloTexture(): THREE.CanvasTexture {
   return haloTex;
 }
 
-/** warm glow sprites hovering at each flame (world-size, additive, fog-faded). One draw call. */
+/**
+ * warm glow sprites hovering at each flame (world-size, additive, fog-faded). One draw call. They thin out
+ * when the lens is close to a flame, so walking past a fire never washes the screen out.
+ */
 export function fireHalos(points: THREE.Vector3[], size: number, color = 0xff8a3a, opacity = 0.5): THREE.Points {
   const pos = new Float32Array(points.length * 3);
   points.forEach((p, i) => pos.set([p.x, p.y, p.z], i * 3));
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const m = new THREE.PointsMaterial({
-    map: haloTexture(),
-    color,
-    size,
-    sizeAttenuation: true,
+  const m = new THREE.ShaderMaterial({
     transparent: true,
-    opacity,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
+    fog: true,
+    uniforms: THREE.UniformsUtils.merge([
+      THREE.UniformsLib.fog,
+      { uMap: { value: haloTexture() }, uColor: { value: new THREE.Color(color) }, uSize: { value: size }, uOpacity: { value: opacity }, uScale: { value: 360 } },
+    ]),
+    vertexShader: /* glsl */ `
+      uniform float uSize; uniform float uScale; varying float vNear;
+      #include <fog_pars_vertex>
+      void main(){
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * mvPosition;
+        float d = max(0.2, -mvPosition.z);
+        gl_PointSize = min(uSize * uScale / d, 340.0);
+        vNear = smoothstep(1.2, 5.0, d);
+        #include <fog_vertex>
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform sampler2D uMap; uniform vec3 uColor; uniform float uOpacity; varying float vNear;
+      #include <fog_pars_fragment>
+      void main(){
+        float a = texture2D(uMap, gl_PointCoord).a * uOpacity * vNear;
+        gl_FragColor = vec4(uColor * a, a);
+        #ifdef USE_FOG
+          #ifdef FOG_EXP2
+            float ff = 1.0 - exp(-fogDensity * fogDensity * vFogDepth * vFogDepth);
+          #else
+            float ff = smoothstep(fogNear, fogFar, vFogDepth);
+          #endif
+          gl_FragColor.rgb *= 1.0 - ff;
+        #endif
+      }`,
   });
   const pts = new THREE.Points(g, m);
+  const sz = new THREE.Vector2();
+  pts.onBeforeRender = (renderer) => {
+    renderer.getDrawingBufferSize(sz);
+    m.uniforms.uScale.value = sz.y * 0.5;
+  };
   pts.frustumCulled = false;
   pts.userData.noAO = true;
   pts.renderOrder = 3;

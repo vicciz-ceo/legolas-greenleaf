@@ -41,15 +41,24 @@ export interface WeatherOpts {
   grime?: number;
   /** mean linear albedo of the stone (default 0.062) */
   base?: number;
+  /** wall / pillar masonry: block width and course height in metres (default 2.4 x 1.1); widths vary per course */
+  cell?: [number, number];
+  /** fraction of wall blocks that keep their carved relief (default 0.44) */
+  carve?: number;
+  /** joint darkness 0..1 (default 0.4) */
+  mortar?: number;
 }
 
 /** a re-graded clone of a dwarven stone material (cached by source material + options) */
 function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
   const flatten = o.flatten ?? 0.78;
-  const warm = o.warm ?? [0.94, 1.0, 1.1];
+  const warm = o.warm ?? [1.0, 1.0, 1.05];
   const grime = o.grime ?? 0.8;
-  const base = o.base ?? 0.062;
-  const key = `${src.uuid}|${flatten}|${warm.join(',')}|${grime}|${base}`;
+  const base = o.base ?? 0.105;
+  const cell = o.cell ?? [2.4, 1.1];
+  const carve = o.carve ?? 0.44;
+  const mortar = o.mortar ?? 0.4;
+  const key = `${src.uuid}|${flatten}|${warm.join(',')}|${grime}|${base}|${cell.join('x')}|${carve}|${mortar}`;
   let m = variants.get(key);
   if (m) return m;
   m = src.clone();
@@ -57,7 +66,7 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
   // clone() drops the shader hooks (the macro anti-tiling patch): carry them over, then chain ours
   m.onBeforeCompile = src.onBeforeCompile;
   m.customProgramCacheKey = src.customProgramCacheKey;
-  patchShader(m, `moriaStone2|${flatten}|${grime}|${base}`, (shader) => {
+  patchShader(m, `moriaStone3|${flatten}|${grime}|${base}|${cell.join('x')}|${carve}|${mortar}`, (shader) => {
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nvarying vec3 vMW;\nvarying vec3 vMN;')
       .replace(
@@ -86,18 +95,22 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
           float isFlat = max(isFloor, isCeil);
           // masonry coordinates: big slabs on floors and ceilings, courses of blocks on walls and pillars
           vec2 bp = isFlat > 0.5 ? vMW.xz : vec2(abs(wn.x) > abs(wn.z) ? vMW.z : vMW.x, vMW.y);
-          vec2 cell = isFlat > 0.5 ? vec2(2.7, 1.75) : vec2(1.3, 0.66);
-          float row = floor(bp.y / cell.y);
+          // big ashlar: widths vary course by course so the joints never line up into a brick wall
+          float rowH = mHash2(vec2(floor(bp.y / (isFlat > 0.5 ? 1.9 : ${cell[1].toFixed(3)})), 4.4));
+          vec2 cell = isFlat > 0.5 ? vec2(2.9 + rowH * 1.4, 1.9) : vec2(${cell[0].toFixed(3)} * (0.6 + rowH * 0.9), ${cell[1].toFixed(3)});
+          float row = floor(bp.y / cell.y + 0.001);
           float cx = (bp.x + mHash2(vec2(row, 1.7)) * cell.x) / cell.x;
           vec2 id = vec2(floor(cx), row);
           float h1 = mHash2(id + 7.1);
           mBlockH = h1;
           vec2 fr = vec2(fract(cx) * cell.x, fract(bp.y / cell.y) * cell.y);
           float e = min(min(fr.x, cell.x - fr.x), min(fr.y, cell.y - fr.y));
-          mMortar = 1.0 - smoothstep(0.014, 0.05, e);
-          float bevel = (1.0 - smoothstep(0.05, 0.2, e)) * (1.0 - mMortar);
+          // chipped, worn joints rather than ruled lines
+          e += (mNoise(vec3(bp * 7.0, 3.0)) - 0.5) * 0.06;
+          mMortar = 1.0 - smoothstep(0.012, 0.04, e);
+          float bevel = (1.0 - smoothstep(0.04, 0.22, e)) * (1.0 - mMortar);
           // the carved diamonds survive on some blocks only (panels), not as wallpaper over everything
-          mCarve = isFlat > 0.5 ? 0.2 : (h1 > 0.56 ? 1.0 : 0.32);
+          mCarve = isFlat > 0.5 ? 0.2 : (h1 > ${(1 - carve).toFixed(3)} ? 1.0 : 0.3);
           // a hairline crack through a few slabs
           float crack = isFlat > 0.5 ? (1.0 - smoothstep(0.004, 0.02, abs(mNoise(vec3(bp * 0.8, h1 * 9.0)) - 0.5))) * step(0.55, h1) : 0.0;
 
@@ -107,8 +120,8 @@ function weatheredClone(src: THREE.Material, o: WeatherOpts): THREE.Material {
           float trimK = smoothstep(1.15, 1.45, diffuse.r);
           stoneC *= mix(vec3(1.0), vec3(1.55, 1.12, 0.62), trimK * 0.8);
           diffuseColor.rgb = mix(diffuseColor.rgb * 0.5, stoneC, ${Math.min(1, flatten + 0.15).toFixed(3)});
-          float tone = mix(0.7, 1.32, h1);
-          diffuseColor.rgb *= tone * (1.0 - mMortar * 0.62) * (1.0 + bevel * 0.2) * (1.0 - crack * 0.5);
+          float tone = mix(0.78, 1.24, h1);
+          diffuseColor.rgb *= tone * (1.0 - mMortar * ${mortar.toFixed(3)}) * (1.0 + bevel * 0.2) * (1.0 - crack * 0.5);
           // grime and erosion: large blotches, finer stains, and damp darkening near the floor
           float n1 = mNoise(vMW * 0.17) * 0.65 + mNoise(vMW * 0.37 + 5.3) * 0.35;
           float n2 = mNoise(vMW * 1.1 + 3.7);

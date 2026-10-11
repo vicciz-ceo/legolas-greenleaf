@@ -15,9 +15,10 @@ import { MeshBVH } from 'three-mesh-bvh';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LevelAPI } from '../../../core/types';
 import {
-  addColliders, boulderField, cocoon, fallenLog, ferns, forest, mushrooms, rock, skeleton, tree, webCluster,
+  addColliders, boulderField, cocoon, fallenLog, ferns, forest, mushrooms, makeMaterial, rock, setWetness, skeleton, tree, webCluster,
   type Built,
 } from '../../../world';
+import { buildDressing } from './dressing';
 import { Rng } from '../../../core/rng';
 import {
   BRANCH, C2, CANOPY, CLEARINGS, CUT_COCOONS, DECOR_COCOONS, HEROES, HOLLOW, LINES, V, centerX, heightAt, inClearing, type HeroDef,
@@ -67,7 +68,10 @@ const _d = new THREE.Vector3();
 
 export function buildWorld(level: LevelAPI): MirkWorld {
   const { physics } = level.ctx;
-  const terrain = level.terrain({ size: 250, segments: 132, height: heightAt, style: 'forest', theme: 'mirkwood', material: 'leaves', center: [0, 38], patchiness: 0.45 });
+  // wet, dark mud with leaf litter (the reference floor is warm brown, not green-black): a warm tint
+  // replaces the theme's cool one, more of the mud layer shows, and the whole forest is damp
+  const terrain = level.terrain({ size: 250, segments: 132, height: heightAt, style: 'forest', theme: 'mirkwood', material: 'leaves', center: [0, 38], patchiness: 0.58, tint: 0xe2cfb2 });
+  setWetness(0.45); // the shell resets it when the level unloads
   const ground = terrain.heightAt;
   const root = level.root;
 
@@ -75,7 +79,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   const heroes: HeroTree[] = [];
   // instanced per (play-area cluster, variant): a cluster far behind the player is hidden, and
   // frustum culling can drop a cluster that is off screen (one InstancedMesh has one bounding sphere)
-  const clusterOf = (i: number) => (i <= 4 ? 0 : i <= 8 ? 1 : 2);
+  const clusterOf = (i: number) => (i <= 4 ? 0 : i <= 8 ? 1 : i <= 12 ? 2 : HEROES[i].z < 40 ? 0 : 1);
   const clusterGroups = [new THREE.Group(), new THREE.Group(), new THREE.Group()];
   const clusterCenters = [V(0, 0, 0), V(0, 0, 0), V(0, 0, 0)];
   const clusterN = [0, 0, 0];
@@ -99,6 +103,33 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   });
   const bvhs = new Map<number, MeshBVH>();
   const tmpQ = new THREE.Quaternion();
+  // private copies of the shared oak materials, so this chapter can grade them (warm, furrowed bark
+  // catching the light; backlit green-gold leaves) without recolouring every other chapter's trees
+  const gradeMat = (src: THREE.Material, fn: (m: THREE.MeshStandardMaterial) => void): THREE.Material => {
+    const c = src.clone() as THREE.MeshStandardMaterial;
+    c.onBeforeCompile = src.onBeforeCompile;
+    c.customProgramCacheKey = src.customProgramCacheKey;
+    fn(c);
+    return c;
+  };
+  const graded = new Map<THREE.Material, THREE.Material>();
+  const gradeFor = (m: THREE.Mesh, isBark: boolean): THREE.Material => {
+    let g = graded.get(m.material as THREE.Material);
+    if (!g) {
+      g = gradeMat(m.material as THREE.Material, (c) => {
+        if (isBark) {
+          c.color.setRGB(1.5, 1.22, 0.92);
+          c.envMapIntensity = 1.1;
+        } else {
+          c.color.multiply(new THREE.Color(1.55, 1.5, 0.95));
+          c.emissive.setHex(0x3a4a12);
+          c.emissiveIntensity = 0.22;
+        }
+      });
+      graded.set(m.material as THREE.Material, g);
+    }
+    return g;
+  };
   for (const [key, list] of byVariant) {
     const variant = Number(key.split(':')[1]);
     const cluster = Number(key.split(':')[0]);
@@ -113,7 +144,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     for (const m of meshes) {
       // the trees' own web cards read as flat polygons in this light: our strand webs replace them
       if (m.renderOrder === 2) continue;
-      const im = new THREE.InstancedMesh(m.geometry, m.material, list.length);
+      const im = new THREE.InstancedMesh(m.geometry, gradeFor(m, m === bark), list.length);
       im.castShadow = m.castShadow;
       im.receiveShadow = m.receiveShadow;
       im.userData.noAO = m.userData.noAO;
@@ -221,14 +252,20 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     }
     for (let k = 0; k < 6; k++) strands.thread(top[k % 5], top[(k + 2) % 5].clone().add(V(0, -0.5, 0)), 0.004, 0.25, 4);
   };
-  tangle(0, 4, 1.5, 9.5, 26);
-  tangle(1, 3, 2.5, 10, 26);
-  tangle(0, 2, 6, 14, 14);
-  tangle(5, 7, 2, 9, 24);
-  tangle(6, 8, 3, 11, 24);
-  tangle(9, 11, 1.2, 9, 28);
-  tangle(10, 12, 2.0, 9, 28);
+  tangle(0, 4, 1.5, 9.5, 40);
+  tangle(1, 3, 2.5, 10, 40);
+  tangle(0, 2, 6, 14, 22);
+  tangle(5, 7, 2, 9, 38);
+  tangle(6, 8, 3, 11, 38);
+  tangle(9, 11, 1.2, 9, 44);
+  tangle(10, 12, 2.0, 9, 44);
+  // the gate: silk strung high between the two landmark oaks (above head height, the lane stays open)
+  tangle(13, 14, 4.5, 11.5, 46);
+  tangle(13, 6, 3, 10, 22);
+  tangle(14, 2, 3, 11, 22);
   for (let i = 0; i < HEROES.length; i++) funnel(i, rng.float() * Math.PI * 2);
+  // a second funnel on the trunks beside the lane: silk draped over the roots, thick at the foot
+  for (const i of [2, 3, 13, 14, 5, 6, 9, 10]) funnel(i, rng.float() * Math.PI * 2);
 
   // ── the canopy: a great orb web over the arena, framed by four trunks ─────
   const cIdx = CANOPY.heroes;
@@ -256,6 +293,12 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     const r = rim[i % NR];
     out.lerpVectors(canopyCenter, r, f);
     out.y = canopyCenter.y + (r.y - canopyCenter.y) * Math.pow(f, 0.65);
+    // an old web is not a drawing: smooth, deterministic wobble (rings and spokes share it, so they still meet)
+    const k = i % NR;
+    const w = 0.7 * Math.sin(Math.PI * Math.min(1, f * 1.05)) * (0.4 + 0.6 * f);
+    out.x += (Math.sin(k * 1.91 + f * 4.3) + 0.5 * Math.sin(k * 0.73 - f * 7.1)) * w * 0.6;
+    out.z += (Math.sin(k * 2.37 - f * 3.7) + 0.5 * Math.sin(k * 1.13 + f * 6.3)) * w * 0.6;
+    out.y += Math.sin(k * 1.31 + f * 5.1) * w * 0.5;
     return out;
   };
   for (let i = 0; i < NR; i++) orb.thread(canopyCenter, rim[i], 0.022, 0, 8, (f, o) => along(i, f, o));
@@ -264,6 +307,8 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     for (let i = 0; i < NR; i++) {
       const f0 = (j + i / NR) / (RINGS + 1.5);
       const f1 = (j + (i + 1) / NR) / (RINGS + 1.5);
+      // torn gaps: the odd ring segment is missing
+      if (Math.abs(Math.sin(i * 91.7 + j * 17.3) * 43758.5453 % 1) < 0.1 && j > 3) continue;
       orb.thread(along(i, f0, V(0, 0, 0)), along(i + 1, f1, V(0, 0, 0)), 0.011, 0.03, 1);
     }
   }
@@ -362,7 +407,13 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   const area = { center: V(0, 0, 40), halfSize: [44, 72] as [number, number] };
   root.add(ferns(area, 720, ground, { seed: 3, exclude: (x, z) => inClearing(x, z, -4) || nearHero(x, z, 0.5), tint: [0.42, 0.62, 0.4], clump: 0.7, scale: [0.7, 1.6] }));
   root.add(ferns({ center: V(0, 0, 38), halfSize: [16, 60] }, 150, ground, { seed: 5, exclude: (x, z) => inClearing(x, z, -7) || nearHero(x, z, 0.3), tint: [0.4, 0.58, 0.38], clump: 0.85, scale: [0.5, 1.1] }));
-  root.add(mushrooms(area, 120, ground, { seed: 7, glow: true, capTint: [0.75, 1.0, 1.05], exclude: (x, z) => nearHero(x, z, -0.5) }));
+  // sun-struck undergrowth: golden-green ferns in the lit patches and along the lane edges (the reference has
+  // warm yellow-green plants against the dark bark, not a uniform dark-green carpet)
+  root.add(ferns({ center: V(0, 0, 38), halfSize: [30, 66] }, 360, ground, { seed: 13, exclude: (x, z) => inClearing(x, z, -2) || nearHero(x, z, 0.4), tint: [1.25, 1.05, 0.42], clump: 0.9, scale: [0.6, 1.3] }));
+  root.add(ferns({ center: V(0, 0, 38), halfSize: [22, 66] }, 260, ground, { seed: 17, exclude: (x, z) => inClearing(x, z, -5) || nearHero(x, z, 0.6), tint: [0.78, 0.72, 0.38], clump: 0.8, scale: [0.45, 0.95] }));
+  root.add(mushrooms(area, 70, ground, { seed: 7, glow: true, capTint: [0.75, 1.0, 1.05], exclude: (x, z) => nearHero(x, z, -0.5) }));
+  // a few warm toadstools and browns beside the roots (no glow): the reference's amber caps
+  root.add(mushrooms(area, 90, ground, { seed: 19, glow: false, capTint: [1.5, 1.0, 0.55], exclude: (x, z) => nearHero(x, z, 0.2) || inClearing(x, z, -3) }));
 
 
   const rocks = boulderField({ center: V(0, 0, 40), halfSize: [34, 66] }, 34, [0.35, 1.5], ground, { seed: 9, kind: 'dark', moss: 0.85, exclude: (x, z) => inClearing(x, z, -3) || nearHero(x, z, 0.5), clump: 0.5 });
@@ -383,13 +434,34 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   place(fallenLog(12, 0.8, 5), -24, 46, -0.3, -0.25);
   place(fallenLog(8, 0.55, 6), 13, -18, 0.2, -0.1);
   place(fallenLog(10, 0.7, 8), -21, 82, 1.3, -0.2);
+  // more of the forest's dead lying along the lane (foreground framing, as in the establishing art)
+  place(fallenLog(12, 0.85, 12), 11, 14, 1.2, -0.22);
+  place(fallenLog(9, 0.7, 13), -13, 5, 0.25, -0.2);
+  place(fallenLog(10, 0.8, 14), 9, 52, -0.5, -0.2);
+  place(fallenLog(8, 0.65, 15), -9, 63, 0.7, -0.15);
+  place(fallenLog(13, 0.9, 16), -26, 28, -0.9, -0.25);
+  place(fallenLog(7, 0.6, 17), 25, 22, 0.35, -0.15);
 
   // ── the hollow: dark rock, webs, bones ──────────────────────────────────
   const hz = HOLLOW.z;
   const rockSpots: [number, number, number, number][] = [
     [-8, hz + 6, 4.5, 1], [0, hz + 9, 5.5, 2], [8, hz + 6, 4.8, 3], [-14, hz + 2, 3.2, 4], [14, hz + 3, 3.4, 5], [-4, hz + 12, 6, 6], [6, hz + 12, 5.5, 7],
   ];
-  for (const [x, z, s, seed] of rockSpots) place(rock(s, seed, { kind: 'cliff', moss: 0.6 }), x, z, seed * 0.9, -s * 0.25);
+  const darkRock = new Map<THREE.Material, THREE.Material>();
+  for (const [x, z, s, seed] of rockSpots) {
+    const b = place(rock(s, seed, { kind: 'cliff', moss: 0.6 }), x, z, seed * 0.9, -s * 0.25);
+    // the cave mouth is black: grey boulders there read as pale cut-outs against it
+    b.object.traverse((n) => {
+      const m = n as THREE.Mesh;
+      if (!m.isMesh) return;
+      let g = darkRock.get(m.material as THREE.Material);
+      if (!g) {
+        g = gradeMat(m.material as THREE.Material, (c) => c.color.multiply(new THREE.Color(0.42, 0.4, 0.36)));
+        darkRock.set(m.material as THREE.Material, g);
+      }
+      m.material = g;
+    });
+  }
   // the hollow choked with web: a dense 3D tangle of threads, sheets of it torn and hanging
   {
     const hr = new Rng(909);
@@ -411,6 +483,10 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     box(HOLLOW.x - 9, 7, hz - 3, 4, 3.5, 3, 140);
     box(HOLLOW.x + 9, 7, hz - 2, 4, 3.5, 3, 140);
     box(HOLLOW.x, 2.5, hz - 1.5, 11, 2.5, 1.2, 160);
+    // curtains across the whole mouth (the cave is 20 m wide): fibrous, dense at the sides, thinner in the middle
+    box(HOLLOW.x - 6.5, 5, hz + 3, 3.5, 4.2, 1.5, 380);
+    box(HOLLOW.x + 6.5, 5, hz + 3, 3.5, 4.2, 1.5, 380);
+    box(HOLLOW.x, 8, hz + 3, 8, 1.8, 1.2, 240);
   }
   addWeb(webCluster([HOLLOW.x, ground(HOLLOW.x, hz) + 5, hz + 5.5], [8, 4, 1.5], 10, 3));
   for (let i = 0; i < 4; i++) {
@@ -436,15 +512,25 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   const sun = V(-0.35, 0.82, 0.3).normalize();
   // at the play areas' edges, not where Legolas fights (they fade out close to the camera anyway)
   const shaftSpots: [number, number, number, number][] = [
-    [8.5, 7, 2.1, 0.26], [-10, -4, 1.6, 0.2], [3, 20, 2.0, 0.22], [14, 33, 2.2, 0.26], [-4, 46, 1.5, 0.18], [-12, 69, 2.2, 0.26], [11, 83, 1.8, 0.2], [12, 12, 1.5, 0.15],
+    [8.5, 7, 2.1, 0.3], [-10, -4, 1.6, 0.24], [3, 20, 2.0, 0.26], [14, 33, 2.2, 0.3], [-4, 46, 1.5, 0.22], [-12, 69, 2.2, 0.3], [11, 83, 1.8, 0.24], [12, 12, 1.5, 0.18],
+    // the gate between the two landmark oaks, and the lane beyond it
+    [2, 27, 2.4, 0.3], [-7, 14, 1.7, 0.2], [7, -20, 1.8, 0.2],
   ];
   for (const [x, z, r, k] of shaftSpots) {
     const len = 34;
-    const s = softShaft(len, r * 0.3, r, 0xd2e8a4, k);
+    const s = softShaft(len, r * 0.3, r, 0xf0e2a0, k);
     s.position.set(x, ground(x, z) + 0.2, z).addScaledVector(sun, len);
     s.quaternion.setFromUnitVectors(V(0, 1, 0), sun);
     root.add(s);
   }
+
+  // ── set dressing: creeping roots, snags, bracket fungi, leaf litter, puddles, light pools ──
+  const rootBark = makeMaterial('mossy_bark', { macro: { scale: 0.09, strength: 0.28, tint: 0.05 } }) as THREE.MeshStandardMaterial;
+  rootBark.color.setRGB(1.5, 1.22, 0.92);
+  buildDressing({
+    level, ground, heroes, probe, sun, bark: rootBark, hollow: HOLLOW,
+    pools: [...shaftSpots.map(([x, z, r]): [number, number, number] => [x, z, r * 1.1]), [-3, 4, 1.8], [4, -14, 1.6], [0, 38, 1.9], [-5, 60, 2.0]],
+  });
 
   // ── merge the static silk and webs ──────────────────────────────────────
   if (webGeos.length && webMat) {

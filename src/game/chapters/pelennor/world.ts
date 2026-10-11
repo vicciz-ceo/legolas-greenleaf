@@ -8,7 +8,7 @@ import type { CrowdHandle, LevelAPI } from '../../../core/types';
 import {
   addColliders, banner, boulderField, buildTerrain, catapult, grassField, minasTirith, siegeTower, batteringRam, crate, barrel, type Built,
 } from '../../../world';
-import { applyFogCap } from '../../../world/shader';
+import { applyFogCap, patchShader } from '../../../world/shader';
 import { cliffGeometry } from '../../../world/geom';
 import { mat } from '../../../world';
 import { TILE_METERS, getTextureSet } from '../../../world/textures';
@@ -18,6 +18,7 @@ import { Rng, fbm2 } from '../../../core/rng';
 import { clamp, smoothstep } from '../../../core/math';
 import { worldQuality } from '../../../world';
 import { L, V, pelennorHeight, beastCorridor } from './layout';
+import { clods, debris, hostForest, mountainRing, puddles } from './scenery';
 
 export interface PelennorWorld {
   ground: (x: number, z: number) => number;
@@ -73,9 +74,11 @@ function churnedMud(ground: (x: number, z: number) => number, mudAt: (x: number,
     const x = pos.getX(i) + cx;
     const z = pos.getZ(i) + cz;
     pos.setXYZ(i, x, ground(x, z) + 0.05, z);
-    uv.setXY(i, x / tile, z / tile);
+    // a fine grain (the plates of the stock texture read as dried desert cracks at tile scale)
+    uv.setXY(i, (x / tile) * 3.2, (z / tile) * 3.2);
     const edge = 1 - smoothstep(0.86, 1, Math.max(Math.abs(x - cx) / (W / 2), Math.abs(z - cz) / (D / 2)));
-    const shade = 0.72 + 0.28 * (0.5 + 0.5 * fbm2(x * 0.3, z * 0.3, 2, 33));
+    const wet = 0.5 + 0.5 * fbm2(x * 0.07 + 5, z * 0.07, 3, 34);
+    const shade = (0.56 + 0.5 * (0.5 + 0.5 * fbm2(x * 0.3, z * 0.3, 2, 33))) * (0.72 + 0.5 * wet);
     col[i * 4] = shade;
     col[i * 4 + 1] = shade;
     col[i * 4 + 2] = shade;
@@ -104,7 +107,8 @@ function churnedMud(ground: (x: number, z: number) => number, mudAt: (x: number,
     polygonOffsetFactor: -2,
     polygonOffsetUnits: -2,
   });
-  m.color.setRGB(0.36, 0.32, 0.26);
+  m.color.setRGB(0.78, 0.64, 0.5);
+  m.normalScale.set(1.7, 1.7);
   const mesh = new THREE.Mesh(geo, m);
   mesh.name = 'pelennor:mud';
   mesh.renderOrder = -1;
@@ -122,14 +126,14 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   // grass-green plains, a little darker and greener than the sun-bleached default so the field does
   // not read as sand under the morning haze (the mud is a matte overlay, churnedMud: the terrain's
   // own wet-mud layer mirrors the low sun into a glare streak)
-  const terrain = level.terrain({ size: 640, segments: 140, height: pelennorHeight, style: 'plains', material: 'grass', center: [10, 0], patchiness: 0.5, tint: 0xa4ae88 });
+  const terrain = level.terrain({ size: 640, segments: 140, height: pelennorHeight, style: 'plains', material: 'grass', center: [10, 0], patchiness: 0.5, tint: 0x96966f });
   const ground = terrain.heightAt;
   const apron = buildTerrain({
     size: 3600,
     segments: 72,
     height: (x, z) => pelennorHeight(x, z) - 3 * (1 - smoothstep(312, 350, Math.max(Math.abs(x - 10), Math.abs(z)))),
     style: 'plains',
-    tint: 0xa8ae8e,
+    tint: 0x98986f,
     patchiness: 0.45,
   });
   {
@@ -152,66 +156,91 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   apron.mesh.userData.noAO = true;
   level.root.add(apron.mesh);
 
-  // ── Minas Tirith on the western horizon, Mindolluin behind it ──
-  const city = minasTirith({ scale: 0.72, fires: true, seed: 3 });
+  // ── Minas Tirith on the south-south-east horizon, Mindolluin behind it, the mountain ring beyond ──
+  const city = minasTirith({ scale: 0.72, tiers: 5, fires: true, seed: 3 });
   city.object.position.set(L.city.x, pelennorHeight(L.city.x, L.city.z) - 6, L.city.z);
-  city.object.rotation.y = Math.PI / 2;
+  city.object.rotation.y = L.cityYaw;
   city.object.traverse((o) => (o.castShadow = false));
-  // Mindolluin behind it: the shared builder's pale rock reads as a beige cone in this warm haze.
-  // Swap in a darker, colder rock of our own (the shared material stays untouched) so the white
-  // city stands out against grey stone, as in the film
-  const rock = mat('cliff', { key: 'pelennorMindolluin', vertexColors: true, rgb: [0.3, 0.315, 0.37] });
-  applyFogCap(rock, 0.62);
+  // Mindolluin behind it: recoloured slate and snow to match the mountain ring (the shared builder's
+  // pale rock reads as a beige cone in this warm haze), and given the ring's material
+  const rock = mat('cliff', { key: 'pelennorMindolluin', vertexColors: true, rgb: [0.62, 0.64, 0.7] });
+  applyFogCap(rock, 0.5);
   city.object.traverse((o) => {
     const m = o as THREE.Mesh;
-    if (m.isMesh && m.geometry.getAttribute('color')) {
-      m.geometry.computeBoundingBox();
-      const bb = m.geometry.boundingBox!;
-      if (bb.max.y - bb.min.y > 300) m.material = rock;
+    if (!m.isMesh || !m.geometry.getAttribute('color')) return;
+    m.geometry.computeBoundingBox();
+    const bb = m.geometry.boundingBox!;
+    if (bb.max.y - bb.min.y <= 300) return;
+    const g = m.geometry;
+    const p = g.getAttribute('position') as THREE.BufferAttribute;
+    const nr = g.getAttribute('normal') as THREE.BufferAttribute;
+    const col = g.getAttribute('color') as THREE.BufferAttribute;
+    const hgt = bb.max.y - bb.min.y;
+    for (let i = 0; i < p.count; i++) {
+      const hn = (p.getY(i) - bb.min.y) / hgt;
+      const ny = Math.max(0, nr.getY(i));
+      const nz = 0.5 + 0.5 * fbm2(p.getX(i) * 0.012, p.getZ(i) * 0.012 + p.getY(i) * 0.004, 2, 57);
+      const shade = 0.44 * (0.78 + 0.4 * nz) * (0.7 + 0.5 * ny);
+      const snow = smoothstep(0.3, 0.55, hn + (ny - 0.55) * 0.3);
+      col.setXYZ(i, shade * 0.9 * (1 - snow) + 1.55 * snow, shade * 0.93 * (1 - snow) + 1.6 * snow, shade * 1.06 * (1 - snow) + 1.7 * snow);
     }
+    col.needsUpdate = true;
+    m.material = rock;
+    // a little lower: the ring's jagged ridges behind it carry the skyline, and the massif should not wall the frame
+    const lower = 0.72;
+    m.scale.y = lower;
+    m.position.y -= (1 - lower) * (bb.max.y - bb.min.y) * 0.5;
+  });
+  // the white city is the brightest thing on the horizon: let it keep more of its own light in the haze
+  const seen = new Set<THREE.Material>();
+  city.object.traverse((o) => {
+    const m = (o as THREE.Mesh).material as THREE.Material | undefined;
+    if (!m || seen.has(m) || m === rock || m.userData.pelennorCap) return;
+    seen.add(m);
+    m.userData.pelennorCap = true;
+    patchShader(m, 'pelennorCityCap', (shader) => {
+      if (shader.uniforms.uFogCap) shader.uniforms.uFogCap.value = 0.46;
+    });
   });
   level.root.add(city.object);
-  // the White Mountains run on north and south of it: a range, not a lone peak
-  const range = mat('cliff', { key: 'pelennorRange', rgb: [0.27, 0.28, 0.33] });
-  applyFogCap(range, 0.7);
-  for (const [x, z, w, h, seed, yaw] of [
-    [-1560, -760, 1100, 520, 11, 0.25], [-1500, 420, 1200, 470, 12, -0.2], [-1900, -200, 1600, 640, 13, 0], [-1380, -1150, 900, 380, 14, 0.5],
-  ] as [number, number, number, number, number, number][]) {
-    const g = cliffGeometry(w, h, 320, seed, { rough: 1.5, taper: 0.55, strata: 0.15, cell: 50, tile: 110 });
-    const ridge = new THREE.Mesh(g, range);
-    ridge.position.set(x, h * 0.32 + 20, z);
-    ridge.rotation.y = Math.PI / 2 + yaw;
-    ridge.castShadow = false;
-    ridge.userData.noAO = true;
-    level.root.add(ridge);
-  }
-  // the dark mountains of Shadow on the eastern horizon, against the morning sun
-  const ridgeMat = mat('cliff', { key: 'pelennorRidge', rgb: [0.42, 0.4, 0.42] });
-  applyFogCap(ridgeMat, 0.9);
-  for (const [x, z, w, h, seed] of [[1700, -500, 1400, 420, 3], [1850, 300, 1600, 520, 5], [1600, 1000, 1200, 360, 8]] as [number, number, number, number, number][]) {
-    const g = cliffGeometry(w, h, 300, seed, { rough: 1.4, taper: 0.7, strata: 0.1, cell: 60, tile: 120 });
-    const ridge = new THREE.Mesh(g, ridgeMat);
-    ridge.position.set(x, h * 0.35, z);
-    ridge.rotation.y = Math.PI / 2 + (seed - 5) * 0.08;
-    ridge.castShadow = false;
-    ridge.userData.noAO = true;
-    level.root.add(ridge);
-  }
+  // the White Mountains and the mountains of Shadow: one jagged ring inside the far plane
+  mountainRing(level, 10, 0, 33);
 
   // ── churned mud: the beasts' trails and the fighting ground are trodden into dark wet earth ──
   const corridor = beastCorridor();
   const mudAt = (x: number, z: number): number => {
     const n = fbm2(x * 0.045, z * 0.045, 3, 31) + fbm2(x * 0.17, z * 0.17, 2, 32) * 0.45;
     const trail = 1 - smoothstep(3.5, 12, corridor(x, z));
-    const fight = 1 - smoothstep(12, 36, Math.hypot(x - 8, z));
+    const fight = 1 - smoothstep(18, 66, Math.hypot(x - 8, z));
     const ruts = smoothstep(0.55, 0.95, Math.abs(Math.sin(z * 0.21 + Math.sin(x * 0.03) * 2.2)));
-    const a = Math.max(trail * 0.95, fight * 0.75, ruts * fight * 0.9) * smoothstep(-0.45, 0.2, n + trail * 0.35);
+    const a = Math.max(trail * 0.95, fight * 0.85, ruts * fight * 0.95) * smoothstep(-0.45, 0.2, n + trail * 0.35);
     return clamp(a * 1.25, 0, 0.92);
   };
   level.root.add(churnedMud(ground, mudAt));
   // grass stays off the mud
   const churn = (x: number, z: number) => 1 - 0.9 * mudAt(x, z);
-  level.root.add(grassField({ center: V(10, 0, 0), halfSize: [70, 70] }, 0.45, ground, { seed: 8, dry: 0.45, fade: [20, 46], height: [0.25, 0.6], mask: churn }));
+  level.root.add(grassField({ center: V(10, 0, 0), halfSize: [70, 70] }, 0.75, ground, { seed: 8, dry: 0.55, fade: [20, 46], height: [0.25, 0.6], mask: churn }));
+
+  // ── what the churned ground is made of: puddles mirroring the sky, clods of turned earth, the
+  // splintered wheels and planks of the siege (cosmetic: no colliders, clear of the beasts' routes) ──
+  const okSpot = (x: number, z: number) => corridor(x, z) > 7 && Math.hypot(x - L.spawn.x, z - L.spawn.z) > 6;
+  {
+    const pr = new Rng(909);
+    const pools: [number, number, number, number, number][] = [];
+    for (let tries = 0; pools.length < (worldQuality() === 'low' ? 8 : 16) && tries < 600; tries++) {
+      const a = pr.float() * Math.PI * 2;
+      const d = 9 + Math.sqrt(pr.float()) * 66;
+      const x = 8 + Math.cos(a) * d;
+      const z = -4 + Math.sin(a) * d * 0.8;
+      if (mudAt(x, z) < 0.45 || !okSpot(x, z)) continue;
+      if (pools.some(([qx, qz, qr]) => Math.hypot(qx - x, qz - z) < qr * 2.4 + 6)) continue;
+      pools.push([x, z, pr.range(1.7, 3.6), pr.range(1.3, 2.6), pr.float() * Math.PI]);
+    }
+    puddles(level, ground, pools);
+  }
+  const art = new Rng(1717);
+  clods(level, ground, mudAt, art, V(8, 0, -4), 66, worldQuality() === 'low' ? 160 : 460);
+  debris(level, ground, okSpot, art, V(8, 0, -4), 78, [[10, 15], [13, 27], [21, -4], [31, 12], [-8, 20]]);
 
   // ── wreckage of the siege: towers, catapults, a ram, crates and spilled barrels ──
   const place = (b: Built, x: number, z: number, yaw = 0, tilt: [number, number] = [0, 0]): Built => {
@@ -248,11 +277,38 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   }
   // the burning field: tall columns with a broad base (a wide emitter on the ground and a second,
   // larger one high in the column, so they rise as pillars instead of puffs)
-  const columns: [number, number, number][] = [[-240, -120, 5], [210, -60, 5.5], [280, 120, 5], [-420, 40, 6], [160, 300, 4.5], [-180, 160, 4.5], [90, -240, 4]];
-  columns.slice(0, low ? 3 : 7).forEach(([x, z, s], i) => {
+  const columns: [number, number, number][] = [
+    [210, -60, 5.5], [280, 120, 5], [160, 300, 4.5], [110, 165, 4.5], [-240, -120, 5], [330, 250, 6], [-420, 40, 6], [-180, 160, 4.5], [90, -240, 4],
+  ];
+  columns.slice(0, low ? 3 : 9).forEach(([x, z, s], i) => {
     fx.smoke(V(x, ground(x, z) + 2, z), s * 1.25);
-    if (!low && i < 5) fx.smoke(V(x + 4, ground(x, z) + 26 * (s / 5), z + 2), s * 1.5);
+    if (!low && i < 6) fx.smoke(V(x + 4, ground(x, z) + 26 * (s / 5), z + 2), s * 1.5);
   });
+  // the skyline: more towers and engines of the siege standing and burning in the middle distance,
+  // the silhouettes that break the horizon line between the hosts (all beyond the beasts' loops)
+  for (const [x, z, h, yaw, burnt, seed, tilt] of [
+    [230, -150, 17, 2.7, true, 6, [0, 0]], [300, 30, 16, 1.9, false, 7, [0.06, 0.1]], [150, 210, 18, -0.6, true, 8, [0, 0]],
+    [-200, 120, 15, 0.4, true, 9, [0.1, -0.15]], [320, 150, 17, 2.2, true, 10, [0, 0]], [-150, -190, 16, 1.1, false, 11, [0, 0]],
+  ] as [number, number, number, number, boolean, number, [number, number]][]) {
+    place(siegeTower({ height: h, burnt, seed }), x, z, yaw, tilt);
+  }
+  for (const [x, z, sc] of [[230, -150, 2.4], [150, 210, 2.6], [320, 150, 2.4], [-200, 120, 2.0]] as [number, number, number][]) {
+    fx.fire(V(x, ground(x, z) + 2.5, z), sc);
+    fx.smoke(V(x, ground(x, z) + 8, z), sc * 2.4);
+  }
+  // Minas Tirith burning on its hill: flames in the tiers and columns of smoke leaning off to the north-west
+  {
+    const cb = city.object;
+    const lp = new THREE.Vector3();
+    const cityAt = (lx: number, ly: number, lz: number) => cb.localToWorld(lp.set(lx, ly, lz)).clone();
+    const flames: [number, number, number, number][] = [[-45, 32, 116, 6], [30, 40, 110, 7], [50, 100, 46, 6.5], [-25, 106, 50, 6], [6, 170, -18, 5.5]];
+    flames.slice(0, low ? 3 : 5).forEach(([lx, ly, lz, sc]) => {
+      const w = cityAt(lx, ly, lz);
+      fx.fire(w, sc);
+      fx.smoke(V(w.x, w.y + 10, w.z), sc * 1.3);
+    });
+    if (!low) for (const [lx, ly, lz, sc] of [[10, 240, -25, 5.5], [-54, 70, 80, 5]] as [number, number, number, number][]) fx.smoke(cityAt(lx, ly, lz), sc);
+  }
 
   // stones flung by the catapults of Mordor, scattered rubble
   const rubble = boulderField({ center: V(10, 0, 0), halfSize: [110, 110] }, 46, [0.4, 1.9], ground, {
@@ -333,5 +389,26 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
       o.castShadow = false;
       o.userData.noAO = true; // and skip the GTAO pre-pass: ambient occlusion is invisible at that range
     });
+  // the pike-forests and standards of the hosts: instanced shafts behind and between the crowd figures
+  hostForest(
+    level,
+    ground,
+    [
+      { cx: 200, cz: 10, hx: 56, hz: 120, flag: 0x7a1a12, n: 950 },
+      { cx: 125, cz: 180, hx: 95, hz: 44, flag: 0x8f1d16, n: 760 },
+      { cx: 155, cz: -165, hx: 76, hz: 44, flag: 0x2a201c, n: 640 },
+      { cx: -255, cz: -20, hx: 44, hz: 120, flag: 0xc8c8c0, n: 520 },
+      { cx: -35, cz: -155, hx: 140, hz: 32, flag: 0x32602c, n: 520 },
+    ],
+    (
+      [
+        [96, 44, 9, 0x8e1c14], [112, -34, 8, 0x8e1c14], [132, 104, 9.5, 0x8e1c14], [152, 62, 8, 0x8e1c14], [82, 134, 8.5, 0x8e1c14], [172, 150, 10, 0x8e1c14],
+        [124, -66, 10, 0x14110e], [162, -122, 9, 0x14110e], [98, -92, 8, 0x14110e], [210, -20, 9.5, 0x8e1c14],
+        [-20, -112, 8, 0x2f5a2c], [-70, -132, 8, 0x2f5a2c], [32, -122, 7.5, 0x2f5a2c], [-120, -140, 8, 0x2f5a2c],
+        [-172, -30, 9, 0xd8d4c8], [-192, 42, 8.5, 0xd8d4c8], [-162, 74, 8, 0xd8d4c8], [-210, -80, 9, 0x20201e],
+      ] as [number, number, number, number][]
+    ).filter(([x, z]) => corridor(x, z) > 18),
+    art,
+  );
   return { ground, crowds: { rohirrim, gondor, orcs, harad, orcsNorth } };
 }

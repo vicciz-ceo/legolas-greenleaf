@@ -12,7 +12,8 @@ import {
 import { Rng, fbm2 } from '../../../core/rng';
 import { tuneTerrain } from './look';
 import { buildCloudBanks, buildFarGround, buildRanges } from './vista';
-import { battleSmoke, dressFalls, fallsSpray, farRuins, gorgeViaduct, rimStonework } from './dress';
+import { cragStairs, warmGlints } from './accents';
+import { battleSmoke, dressFalls, fallsSpray, iceFlows, farRuins, gorgeViaduct, rimStonework, towerWings } from './dress';
 import {
   BRIDGE, BRIDGE_CX, BRIDGE_LEN, CRAG, FALLS_H, FALLS_Z, ICE_HALF, ICE_Z, L, PINNACLE, TERRAIN, TOWER, V, heightAt, riverX,
 } from './layout';
@@ -99,6 +100,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   add(falls, riverX(FALLS_Z), 0, FALLS_Z, Math.PI);
   dressFalls(falls);
   fallsSpray(level, rng);
+  iceFlows(level, ground);
   // break the curtain's straight edges: ice-bound boulders up both sides and along the lip
   {
     const fx0 = riverX(FALLS_Z);
@@ -142,6 +144,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     kind: 'cliff',
     exclude: (x, z) => Math.abs(x - riverX(z)) < 20 || z > FALLS_Z - 6 || z < -60,
     clump: 0.6,
+    sink: 0.4,
   });
   level.root.add(walls.object);
   addColliders(physics, walls.colliders);
@@ -174,6 +177,19 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   noShadow(woods.object);
   level.root.add(woods.object);
   addColliders(physics, woods.colliders);
+  // wind-bent dry scrub on the banks and the snow slopes: little thorny dead shrubs, a warm brown against the snow
+  const scrub = forest({ center: V(0, 0, 14), halfSize: [58, 76] }, 90, [{ kind: 'dead', weight: 1 }], ground, {
+    seed: 51,
+    scale: [0.2, 0.4],
+    colliders: false,
+    noQualityScale: true,
+    exclude: (x, z) => Math.abs(x - riverX(z)) < ICE_HALF + 2 || z > FALLS_Z - 8 || z < -62,
+    lodNear: 26,
+    lodFar: 110,
+    leafTint: [1.15, 0.9, 0.62],
+  });
+  noShadow(scrub.object);
+  level.root.add(scrub.object);
   // the Gundabad camp on the banks: war banners, braziers, a weapon rack, the dead of an earlier fight
   for (const [x, z, yaw] of [[riverX(52) - 13, 52, 0.4], [riverX(30) + 14, 30, -0.6], [riverX(8) - 14, 8, 0.9]] as [number, number, number][]) {
     add(banner(0x2c1a14, 'none', { height: 4.2, clothW: 1.1, clothH: 2.4 }), x, ground(x, z), z, yaw + Math.PI);
@@ -201,6 +217,9 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
       if ((o as THREE.Mesh).isMesh && (o as THREE.Mesh).material === snowMat) towerSnow.push(o);
     });
   }
+  towerWings(level, ground, CRAG, BRIDGE.z, BRIDGE.x0);
+  cragStairs(level, ground);
+  warmGlints(level);
   // dwarven columns and wall stubs round the plateau rim
   const rim = ruins({ center: V(CRAG.x, 0, CRAG.z), halfSize: [CRAG.r, CRAG.r] }, 12, ground, {
     seed: 31,
@@ -302,7 +321,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   // a ruined viaduct over the gorge: the deck above both rims, its piers in the cliffs
   {
     const z = 36;
-    const span = 90;
+    const span = 100;
     const xl = riverX(z) - span / 2;
     const xr = riverX(z) + span / 2;
     gorgeViaduct(level, z, Math.max(ground(xl, z), ground(xr, z)) + 3.2, span, ground);

@@ -16,7 +16,7 @@
  */
 import * as THREE from 'three';
 import type { Ally, ChapterDef, ChapterInstance, EnvironmentPreset, LevelAPI, PlayerMover } from '../../core/types';
-import { ENVIRONMENTS } from '../../core/environment';
+import { ENVIRONMENTS, type EnvironmentPresetEx } from '../../core/environment';
 import { clamp, wrapAngle, yawOf } from '../../core/math';
 import { Rng } from '../../core/rng';
 import { buildWorld, type CutCocoon } from './mirkwood/world';
@@ -30,6 +30,26 @@ type Area = 'c1' | 'c2' | 'c3';
 type Beat = 'intro' | 'fight' | 'travel' | 'cocoons' | 'boss' | 'outro';
 
 const CUT_TIME = 1.5;
+
+/** the chapter's lighting: lighting.json folded into the shared mirkwood preset, tuned against the art refs */
+const MIRKWOOD_LOOK: EnvironmentPresetEx = {
+  ...(ENVIRONMENTS.mirkwood as EnvironmentPresetEx),
+  sunColor: 0xeee2a2,
+  sunIntensity: 2.8,
+  hemiSky: 0x7a9a7c,
+  hemiGround: 0x2e2616,
+  hemiIntensity: 0.6,
+  envIntensity: 0.7,
+  fog: { color: 0x3e4c3c, density: 0.018 },
+  exposure: 1.2,
+  bloom: 0.18,
+  grade: { lift: [0.004, 0.01, 0.004], gamma: [1.0, 1.02, 0.97], gain: [1.0, 1.03, 0.92], saturation: 0.9, vignette: 0.32 },
+  weather: 'spores',
+  weatherIntensity: 0.4,
+  mist: 0.6,
+  shafts: 1.2,
+  contrast: 1.14,
+};
 
 export const chapter: ChapterDef = {
   id: 'mirkwood',
@@ -47,16 +67,10 @@ export const chapter: ChapterDef = {
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
 
-    // a darker, less milky Mirkwood: deep green-grey gloom, the shafts doing the lighting
-    const base = ENVIRONMENTS.mirkwood as EnvironmentPreset & Record<string, unknown>;
-    level.setEnvironment({
-      ...base,
-      fog: { color: 0x1f2f26, density: 0.026 },
-      exposure: 1.22,
-      hemiIntensity: 0.95,
-      mist: 0.55,
-      grade: { ...base.grade, saturation: 0.84, gain: [0.97, 1.03, 0.94] },
-    } as EnvironmentPreset);
+    // the lighting key from docs/refs/scenes/mirkwood/lighting.json (sun 2.8, hemisphere 0.55, IBL 0.65, fog 0.018,
+    // exposure 1.15, bloom 0.18, vignette 0.32), graded by eye against the reference frames: golden shafts
+    // (not green), a warm brown floor, a pale olive haze that separates the 10-35 m aiming depth
+    level.setEnvironment(MIRKWOOD_LOOK);
 
     // mesh the spider sculpts in the worker pool while the world is built, then warm the creature cache
     const meshing = preloadSpiders([['spider', 0], ['spider', 1], ['brood', 0]]);

@@ -29,24 +29,39 @@ import { createLogBridge } from './barrels/logbridge';
 
 const CHECKPOINTS = ['The River Gate', 'Along the Banks', 'Riding the Rapids'];
 
-/** the gorge's mist: thick enough to read as a misty morning, thin enough that the far bank and the log bridge are seen */
-const FOG_BASE = 0.0086;
+/** the gorge's mist: lighting.json's 0.0075, enough haze to layer the banks, thin enough that the far bank and the log bridge are read */
+const FOG_BASE = 0.0075;
 /** at the log bridge the mist lifts a little more so the captain and his crew can be read from 90 m */
-const FOG_LOG = 0.0066;
+const FOG_LOG = 0.0058;
 
 type Beat = 'intro' | 'gate' | 'saboteur' | 'lever' | 'cinema' | 'run' | 'leap' | 'ride' | 'pool' | 'outro';
 
-/** the forest river on a bright, misty overcast morning, with the sun low ahead of the camera for rim light */
+/**
+ * The forest river on a bright, misty autumn morning (docs/refs/scenes/barrels/lighting.json folded in):
+ * a warm key from the upper left, pale cool fill, a thinner mist so the tree layers separate, no dust
+ * (river foam and spray are the weather), softer grade. Extended renderer-only fields follow the
+ * reference too: a little low mist, faint shafts through the gorge haze.
+ */
 function riverEnvironment(): EnvironmentPreset {
   const base = ENVIRONMENTS.forest_river;
   return {
     ...base,
-    sky: base.sky.kind === 'physical' ? { ...base.sky, elevation: 27, azimuth: 28, clouds: 0.9 } : base.sky,
-    sunIntensity: 2.9,
-    fog: { color: 0xb6cdc6, density: FOG_BASE },
-    weather: 'dust',
-    weatherIntensity: 0.35,
-  };
+    sky: base.sky.kind === 'physical' ? { ...base.sky, elevation: 34, azimuth: 205, clouds: 0.95 } : base.sky,
+    sunColor: 0xfff1da,
+    sunIntensity: 2.2,
+    hemiSky: 0xd5e6f2,
+    hemiGround: 0x5a5a38,
+    hemiIntensity: 0.6,
+    envIntensity: 0.85,
+    fog: { color: 0xbdd0d0, density: FOG_BASE },
+    exposure: 0.95,
+    bloom: 0.12,
+    grade: { lift: [0, 0.004, 0.004], gamma: [1, 1.02, 1], gain: [1.02, 1.03, 0.97], saturation: 1.04, vignette: 0.32 },
+    weather: 'none',
+    weatherIntensity: 0,
+    mist: 0.2,
+    shafts: 0.5,
+  } as EnvironmentPreset;
 }
 
 export const chapter: ChapterDef = {
@@ -128,7 +143,7 @@ export const chapter: ChapterDef = {
       if (!f || !f.isFogExp2) return;
       const lead = train.sLead;
       const k = train.running ? smoothstep(S.log - 150, S.log - 100, lead) * (1 - smoothstep(S.log + 30, S.log + 90, lead)) : 0;
-      const want = beat === 'outro' ? 0.0052 : beat === 'pool' ? 0.0066 : FOG_BASE + (FOG_LOG - FOG_BASE) * k;
+      const want = beat === 'outro' ? 0.0042 : beat === 'pool' ? 0.0052 : FOG_BASE + (FOG_LOG - FOG_BASE) * k;
       fogNow += (want - fogNow) * Math.min(1, dt * 1.5);
       f.density = fogNow;
     }

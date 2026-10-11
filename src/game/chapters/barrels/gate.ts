@@ -64,7 +64,7 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   };
 
   // ── the gatehouse itself: wooden iron-banded leaves in a stone portal ──
-  const g = gate({ width: 8, height: 6.5, depth: 4, material: 'mossy', kind: 'wood' });
+  const g = gate({ width: 8, height: 6.5, depth: 4, material: 'blocks', kind: 'wood' });
   g.object.position.set(c.x, y0, c.z);
   g.object.rotation.y = yaw;
   add(g);
@@ -72,17 +72,17 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
 
   // ── walls: gate piers -> cliffs ──
   // the left wall is split where the stairs arrive (u 8.0 .. 10.6): a solid slab carries the deck across
-  const wallL1 = stoneWall([at(7.0, 0, y0), at(8.0, 0, y0)], 8.5, 4, { crenellated: false, outer: 'right', material: 'mossy', anchorEvery: 0, sink: 3 });
+  const wallL1 = stoneWall([at(7.0, 0, y0), at(8.0, 0, y0)], 8.5, 4, { crenellated: false, outer: 'right', material: 'blocks', anchorEvery: 0, sink: 3 });
   add(wallL1, undefined);
-  const wallL2 = stoneWall([at(10.6, 0, y0), at(19, 0, y0)], 8.5, 4, { crenellated: false, outer: 'right', material: 'mossy', anchorEvery: 0, sink: 3 });
+  const wallL2 = stoneWall([at(10.6, 0, y0), at(19, 0, y0)], 8.5, 4, { crenellated: false, outer: 'right', material: 'blocks', anchorEvery: 0, sink: 3 });
   add(wallL2, undefined);
-  const wallR = stoneWall([at(-7.0, 0, y0), at(-17, 0, y0)], 8.5, 4, { crenellated: false, outer: 'left', material: 'mossy', anchorEvery: 0, sink: 3 });
+  const wallR = stoneWall([at(-7.0, 0, y0), at(-17, 0, y0)], 8.5, 4, { crenellated: false, outer: 'left', material: 'blocks', anchorEvery: 0, sink: 3 });
   add(wallR, undefined);
 
   // ── parapet across the lintel (downstream side), the lever house on the upstream side ──
   const kit = new MeshKit();
-  const stone = mat('stone_blocks', { key: 'gate-moss', rgb: [0.68, 0.8, 0.58] });
-  const trim = mat('stone_blocks', { key: 'gate-trim', rgb: [0.95, 0.94, 0.88] });
+  const stone = mat('stone_blocks', { key: 'gate-grey', rgb: [0.8, 0.82, 0.8] });
+  const trim = mat('stone_blocks', { key: 'gate-trim', rgb: [0.98, 0.96, 0.9] });
   const iron = mat('metal_dark', { key: 'lever' });
   const wood = mat('old_wood', { key: 'lever' });
   // low parapet over the opening
@@ -112,6 +112,60 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
   level.root.add(frame);
   frame.updateMatrixWorld(true);
   handles.push(...addColliders(physics, topCols, frame));
+  // the winch frame over the lever house: timber posts on the upstream parapet, a cross-beam, braces and the chains
+  // that hold the leaves (the tall timber machine on the left of the reference gate)
+  {
+    const tk = new MeshKit();
+    const beam = mat('old_wood', { key: 'winch', rgb: [0.85, 0.78, 0.68] });
+    const chainM = mat('metal_dark', { key: 'winch-chain' });
+    const vz = -1.75;
+    const top = topY + 4.3;
+    for (const du of [-2.0, 2.0]) {
+      tk.box(beam, [0.34, 4.3 + 0.2, 0.34], [LX + du, topY + 2.05, vz], 0, { tile: 1.6, swap: true });
+      tk.box(beam, [0.2, 1.9, 0.2], [LX + du * 0.62, topY + 3.2, vz], 0, { tile: 1.6, swap: true }, [0, du > 0 ? 0.6 : -0.6]);
+    }
+    tk.box(beam, [4.9, 0.36, 0.4], [LX, top, vz], 0, { tile: 1.6 });
+    tk.box(beam, [4.4, 0.24, 0.3], [LX, top - 1.25, vz], 0, { tile: 1.6 });
+    tk.cyl(iron, 0.2, 0.2, 1.7, 10, [LX, top - 0.55, vz], 1, { tilt: [0, Math.PI / 2] });
+    for (const du of [-0.7, 0.7]) {
+      // a taut chain from the drum down to the leaves' lintel (the slab of links is a thin dark rod)
+      const x = LX + du;
+      tk.cyl(chainM, 0.045, 0.045, 5.4, 6, [x, topY + 1.2, vz + 0.0], 0.5, { tilt: [0.02, 0] });
+    }
+    // banner poles on the downstream parapet get a tall timber cap
+    const frame = new THREE.Group();
+    frame.position.set(c.x, 0, c.z);
+    frame.rotation.y = yaw;
+    frame.add(tk.build({ name: 'winch-frame' }));
+    level.root.add(frame);
+  }
+  // two stone towers where the walls meet the cliffs: the gate reads as a fortress from the bank run
+  {
+    const sk = new MeshKit();
+    const slate = mat('stone_blocks', { key: 'gate-slate', rgb: [0.46, 0.52, 0.5] });
+    const darkSlot = plain(0x070706, { roughness: 1, key: 'slit' });
+    const towers: { u: number; w: number }[] = [{ u: 14.8, w: 4.4 }, { u: -12.8, w: 4.4 }];
+    const cols: Built['colliders'] = [];
+    for (const t of towers) {
+      const hgt = 5.4;
+      sk.box(stone, [t.w, hgt + 3, 4.6], [t.u, topY - 3 + (hgt + 3) / 2, 0], 0, { tile: 2.4 });
+      sk.box(trim, [t.w + 0.4, 0.3, 5.0], [t.u, topY + hgt - 0.1, 0], 0, { tile: 2 });
+      // pyramid roof
+      sk.cyl(slate, 0.1, t.w * 0.82, 3.0, 4, [t.u, topY + hgt + 1.6, 0], 2, { yaw: Math.PI / 4 });
+      // pointed window on the downstream face, an arrow slit on each side
+      sk.box(darkSlot, [0.75, 1.7, 0.1], [t.u, topY + 3.2, 2.33], 0, undefined);
+      sk.box(trim, [1.1, 0.18, 0.2], [t.u, topY + 4.15, 2.36], 0, { tile: 1 });
+      sk.box(darkSlot, [0.1, 1.2, 0.18], [t.u - t.w / 2 - 0.0, topY + 2.8, 0.0], 0, undefined);
+      cols.push({ kind: 'box', center: [t.u, topY + hgt / 2 - 0.2, 0], half: [t.w / 2, hgt / 2 + 0.2, 2.3], opts: { material: 'stone', walkable: false, tag: 'gate_tower' } });
+    }
+    const tf = new THREE.Group();
+    tf.position.set(c.x, 0, c.z);
+    tf.rotation.y = yaw;
+    tf.add(sk.build({ name: 'gate-towers' }));
+    level.root.add(tf);
+    tf.updateMatrixWorld(true);
+    handles.push(...addColliders(physics, cols, tf));
+  }
   // the stair-head slab: a solid block under the deck between the wall ends
   {
     const sk = new MeshKit();
@@ -155,7 +209,7 @@ export function buildWaterGate(level: LevelAPI, heightAt: (x: number, z: number)
 
   // elven banners on the downstream parapet
   for (const u of [-2.6, 2.6]) {
-    const b = banner(0x2f5a34, 'none', { height: 2.8 });
+    const b = banner(0x233d2b, 'white_tree', { height: 3.4, clothW: 0.85, clothH: 2.5 });
     const p = at(u, 1.75, topY + 0.9);
     b.object.position.copy(p);
     b.object.rotation.y = yaw + Math.PI;

@@ -23,14 +23,15 @@ import type { Ally, ChapterDef, ChapterInstance, Combatant, Enemy, LevelAPI } fr
 import { clamp } from '../../core/math';
 import { ENVIRONMENTS } from '../../core/environment';
 import { premeshMumak, GIRTHS, HOWDAH_SEAT } from '../../creatures/mumak';
-import { L, V, HERD, charge2Entry, charge2Loop, loopPath, tramplePath } from './pelennor/layout';
+import { FACE, L, V, HERD, charge2Entry, charge2Loop, loopPath, tramplePath } from './pelennor/layout';
 import { buildPelennor } from './pelennor/world';
 import { BossProxy, FarMumak, MumakActor, WeakPoint } from './pelennor/mumak_actor';
 import { CrewMember } from './pelennor/crew';
 import { climbMover, deckMover, neckStandMover, pathMover, trunkSlideMover, type DeckState } from './pelennor/movers';
 
 const CHECKPOINTS = ['The Field', 'The Mûmak', 'The Last Charge'];
-const EAST = Math.PI / 2;
+/** every checkpoint starts on the layout heading (east-south-east: the host ahead, the White City to the right, the sun to the left) */
+const EAST = FACE;
 
 export const chapter: ChapterDef = {
   id: 'pelennor',
@@ -51,24 +52,40 @@ export const chapter: ChapterDef = {
 
     // the beasts are meshed in the kit worker pool while the main thread builds the field
     const premesh = Promise.all([premeshMumak('hero'), premeshMumak('far')]);
-    // the preset, with the haze thinned so the hosts and the herd read at range, and cooled toward
-    // the film's grey-green smoke-hung morning (the stock haze turns the whole field sepia backlit)
+    // the preset with the reference's lighting key folded in (docs/refs/scenes/pelennor/lighting.json):
+    // a neutral warm key (#f1cba1, 3.2) low in the east-north-east off the left shoulder, the cool sky
+    // fill kept blue, a lighter ground bounce so the mud is not black in shadow, the haze thinned and
+    // greyed toward the film's smoke-hung blue-grey distance, bloom held to flames and glints, and the
+    // grade eased (saturation 1.04, vignette 0.32). The ash is only a light drift: the film's embers
+    // belong to the burning engines, not the whole sky.
     const env = ENVIRONMENTS.pelennor;
+    const sky = env.sky.kind === 'physical' ? { ...env.sky, elevation: 18, azimuth: 108, clouds: 0.8 } : env.sky;
     const tuned = {
       ...env,
-      fog: { color: 0xa69e8e, density: 0.0026 },
-      hemiGround: 0x3e3a2e,
-      // the sun sits low in the east, straight down the field: less veiling glare across the fight
-      mist: 0.22,
-      shafts: 0.22,
-      bloom: 0.34,
-      grade: { ...env.grade!, gain: [1.03, 1.0, 0.95] as [number, number, number], saturation: 1.02 },
+      sky,
+      sunColor: 0xf1cba1,
+      sunIntensity: 3.3,
+      hemiSky: 0x87a1c8,
+      hemiGround: 0x6a5a46,
+      hemiIntensity: 0.9,
+      envIntensity: 1.1,
+      fog: { color: 0x8e97a2, density: 0.0023 },
+      exposure: 1.0,
+      bloom: 0.22,
+      mist: 0.12,
+      shafts: 0.1,
+      // heavy, dark-bellied cloud with bright gaps (the reference sky) and a firmer grade contrast
+      cloudShade: 0x5d6978,
+      cloudSoft: 0.36,
+      contrast: 1.26,
+      grade: { lift: [0, 0.008, 0.014] as [number, number, number], gamma: [1, 1, 0.98] as [number, number, number], gain: [1.05, 1.0, 0.94] as [number, number, number], saturation: 1.04, vignette: 0.32 },
+      weatherIntensity: 0.16,
     };
     level.setEnvironment(tuned);
     const world = buildPelennor(level);
     const ground = world.ground;
     await premesh;
-    const herd = HERD.map((h, i) => new FarMumak(level, loopPath(h.cx, h.cz, h.rx, h.rz), h.speed, h.phase, 11 + i, ground));
+    const herd = HERD.map((h, i) => new FarMumak(level, loopPath(h.cx, h.cz, h.rx, h.rz), h.speed, h.phase, 11 + (i % 3), ground));
     // both hero beasts are built now, while the loading screen is still up and the workers mesh the
     // cast; start() only mans their howdahs (crew humanoids are preload cache hits by then)
     const m1Pre = new MumakActor({ level, name: 'Mûmak', seed: 1, ground, crew: false });

@@ -11,7 +11,7 @@ import type { LevelAPI } from '../../../core/types';
 import { fbm2, Rng } from '../../../core/rng';
 import { clamp, lerp, smoothstep } from '../../../core/math';
 import {
-  TILE_METERS, addColliders, barrel, boulderField, carveRiver, fallenLog, ferns, forest, grassField, mat, mushrooms, river, rock, torch,
+  TILE_METERS, addColliders, barrel, boulderField, carveRiver, fallenLog, ferns, forest, grassField, mat, mushrooms, river, rock, setWetness, torch,
   type Built, type WaterBody,
 } from '../../../world';
 import {
@@ -19,6 +19,7 @@ import {
   shelfLeft, shelfRight, terrainPath, tangentAt, widthAt, waterY, flowYaw,
 } from './layout';
 import { buildWaterGate, type WaterGate } from './gate';
+import { buildRidges, buildSpray, buildWhitewater } from './dressing';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Height field
@@ -72,12 +73,16 @@ function profile(left: boolean, e: number, s: number, x: number, z: number): num
     return lerp(plain, beach, beachK);
   }
   const sw = left ? shelfLeft(s) : shelfRight(s);
-  const k = left ? 1.2 : 2.0;
+  const k = left ? 1.9 : 3.0;
   if (e <= 0) return 0.4;
   const shelfNoise = (fbm2(x * 0.17, z * 0.17, 2, 21) * 0.5 + 0.1) * Math.min(1, e * 0.5);
   if (e < sw) return 0.4 + 0.045 * e + shelfNoise * 0.55;
   const d = e - sw;
-  const rough = fbm2(x * 0.07, z * 0.07, 3, 33) * d * 0.28 + fbm2(x * 0.21, z * 0.21, 2, 35) * Math.min(d, 6) * 0.22;
+  // broken crags and strata ledges: the walls step and bulge instead of sliding down in one smooth ramp
+  const crag = fbm2(x * 0.07, z * 0.07, 3, 33) * d * 0.4 + fbm2(x * 0.21, z * 0.21, 2, 35) * Math.min(d, 7) * 0.34;
+  const ledgeN = fbm2(x * 0.035, z * 0.035, 2, 51);
+  const ledge = Math.sin(d * 0.55 + ledgeN * 5.0) * Math.min(d, 9) * 0.16 * smoothstep(1.5, 5, d);
+  const rough = crag + ledge;
   return 0.4 + 0.045 * sw + d * k + d * d * 0.012 + rough;
 }
 
@@ -124,13 +129,37 @@ interface RockSpec {
   squash?: number;
 }
 
-function placeRocks(specs: RockSpec[], seed: number, moss: number): Built {
+/** rock geometry with a wet, dark, moss-free foot: the lower part of the stone stands in the spray */
+function wetRockGeometry(src: THREE.BufferGeometry): THREE.BufferGeometry {
+  const g = src.clone();
+  const pos = g.getAttribute('position') as THREE.BufferAttribute;
+  const col = g.getAttribute('color') as THREE.BufferAttribute | undefined;
+  const out = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    const wet = 1 - smoothstep(-0.16, 0.12, pos.getY(i));
+    const r = col ? col.getX(i) : 1;
+    const gg = col ? col.getY(i) : 1;
+    const b = col ? col.getZ(i) : 1;
+    const k = lerp(1, 0.3, wet);
+    out[i * 3] = lerp(r, 0.86, wet * 0.75) * k;
+    out[i * 3 + 1] = lerp(gg, 0.92, wet * 0.75) * k;
+    out[i * 3 + 2] = lerp(b, 1.0, wet * 0.75) * k;
+  }
+  g.setAttribute('color', new THREE.BufferAttribute(out, 3));
+  return g;
+}
+
+function placeRocks(specs: RockSpec[], seed: number, moss: number, wet = false): Built {
   const variants = 4;
   const geoms: { geo: THREE.BufferGeometry; mat: THREE.Material }[] = [];
   for (let v = 0; v < variants; v++) {
     const b = rock(1, seed + v * 7, { moss }) as Built;
     const mesh = b.object.children[0] as THREE.Mesh;
-    geoms.push({ geo: mesh.geometry, mat: mesh.material as THREE.Material });
+    geoms.push(
+      wet
+        ? { geo: wetRockGeometry(mesh.geometry), mat: mat('rock', { vertexColors: true, key: 'wet-river', rgb: [0.9, 0.92, 0.95] }) }
+        : { geo: mesh.geometry, mat: mesh.material as THREE.Material },
+    );
   }
   const buckets: RockSpec[][] = Array.from({ length: variants }, () => []);
   specs.forEach((r, i) => buckets[i % variants].push(r));
@@ -176,6 +205,8 @@ export interface Gorge {
 export function buildGorge(level: LevelAPI): Gorge {
   const { physics } = level.ctx;
   const rng = new Rng(7777);
+  // a misty, drizzle-damp gorge: darker wet rock and soil, glossier stone (the shell resets this when the level unloads)
+  setWetness(0.42);
 
   // ── terrain: one heightfield, the river carved into it ──
   const carved = carveRiver(baseHeight, terrainPath, widthAt, { depth: 1.9, bank: 1.9 });
@@ -184,10 +215,11 @@ export function buildGorge(level: LevelAPI): Gorge {
     segments: TERRAIN.segments,
     height: carved,
     style: 'riverbank',
-    theme: 'wet',
+    theme: 'autumn',
+    tint: 0xd8d0bc,
     center: TERRAIN.center,
-    layers: ['grass', 'forest_floor', 'rock'],
-    patchiness: 0.5,
+    layers: ['leaves', 'mud', 'rock'],
+    patchiness: 0.55,
     material: 'grass',
   });
   const h = terrain.heightAt;
@@ -217,7 +249,7 @@ export function buildGorge(level: LevelAPI): Gorge {
   zone(168, 430, { speed: 7.6, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
   zone(428, 522, { speed: 5.2, foam: 0.45, color: deep, shallow, depth: 2.2, ripple: 1.0, wave: 0.03 });
   zone(520, 706, { speed: 7.9, foam: 0.85, rapids: true, color: 0x1f4440, shallow, depth: 2.0, wave: 0.07 });
-  zone(704, RIVER_LEN, { speed: 1.2, foam: 0.16, color: 0x1d4540, shallow: 0x6b6a4c, depth: 2.4, ripple: 0.7 });
+  zone(704, RIVER_LEN, { speed: 1.2, foam: 0.16, color: 0x1f6a66, shallow: 0x7d8664, depth: 2.4, ripple: 0.7 });
 
   // side streams in the clefts (tiny waterfalls into the river)
   for (const g of CLEFTS) {
@@ -242,7 +274,7 @@ export function buildGorge(level: LevelAPI): Gorge {
     const p = riverPos(r.s, r.l);
     return { x: p.x, z: p.z, y: p.y - 0.55, size: r.r * 1.15, yaw: i * 1.7, squash: 1.15 };
   });
-  const riverRocks = placeRocks(rockSpecs, 3, 0.7);
+  const riverRocks = placeRocks(rockSpecs, 3, 0.7, true);
   level.root.add(riverRocks.object);
   // no colliders for the water rocks: the barrels steer around them logically, and an arrow
   // should still be able to fly across the river
@@ -288,15 +320,55 @@ export function buildGorge(level: LevelAPI): Gorge {
     // keep the shelf and the walkway clear; the cliff itself is too steep for trunks
     return !slopeOk(x, z, 0.62) || onWalkway(x, z);
   };
-  const rim = forest(
+  // gold and fresh-green beech/oak (two tints so the rim reads as a mixed autumn wood) and dark conifers
+  const rimOpts = { scale: [0.95, 1.4] as [number, number], spacing: 1.2, exclude: (x: number, z: number) => rimExclude(x, z) || Math.hypot(x - riverPos(S.gate, 0).x, z - riverPos(S.gate, 0).z) < 20, lodNear: 52, lodFar: 330, chunk: 64, variants: 3 };
+  const gold = forest(
     { center: V(0, 0, 300), halfSize: [330, 340] },
-    430,
-    [{ kind: 'beech', weight: 3 }, { kind: 'mirkwood_oak', weight: 1.3 }, { kind: 'birch', weight: 0.5 }, { kind: 'pine', weight: 0.6 }],
+    250,
+    [{ kind: 'beech', weight: 3 }, { kind: 'mirkwood_oak', weight: 1.2 }, { kind: 'birch', weight: 0.8 }],
     h,
-    { seed: 21, scale: [0.95, 1.4], spacing: 1.2, exclude: (x, z) => rimExclude(x, z) || Math.hypot(x - riverPos(S.gate, 0).x, z - riverPos(S.gate, 0).z) < 20, lodNear: 52, lodFar: 300, chunk: 64, variants: 3 },
+    { ...rimOpts, seed: 21, leafTint: [1.75, 1.08, 0.5] },
   );
-  level.root.add(rim.object);
-  addColliders(physics, rim.colliders);
+  const fresh = forest(
+    { center: V(0, 0, 300), halfSize: [330, 340] },
+    200,
+    [{ kind: 'beech', weight: 3 }, { kind: 'mirkwood_oak', weight: 1.4 }, { kind: 'birch', weight: 0.4 }],
+    h,
+    { ...rimOpts, seed: 22, leafTint: [1.12, 1.1, 0.72] },
+  );
+  const firs = forest(
+    { center: V(0, 0, 300), halfSize: [330, 340] },
+    120,
+    [{ kind: 'pine', weight: 1 }],
+    h,
+    { ...rimOpts, seed: 24, scale: [1.0, 1.55], leafTint: [0.78, 1.0, 0.92] },
+  );
+  for (const f of [gold, fresh, firs]) {
+    level.root.add(f.object);
+    addColliders(physics, f.colliders);
+  }
+
+  // trees clinging to the gorge walls, in the clefts and on the ledges, so the walls are not bare rock all the way up
+  {
+    const wallTrees = forest(
+      { center: V(0, 0, 330), halfSize: [300, 330] },
+      190,
+      [{ kind: 'beech', weight: 2 }, { kind: 'mirkwood_oak', weight: 1 }, { kind: 'birch', weight: 1 }, { kind: 'pine', weight: 1.4 }],
+      h,
+      {
+        seed: 26, scale: [0.55, 0.95], spacing: 1.0, lodNear: 46, lodFar: 280, chunk: 64, variants: 3, colliders: false, leafTint: [1.45, 1.06, 0.62],
+        exclude: (x, z) => {
+          const n = terrainPath.nearest(x, z);
+          const e = n.dist - widthAt(n.s) / 2;
+          if (n.s < 24 || n.s > 680 || onWalkway(x, z)) return true;
+          const sw = n.signed < 0 ? shelfLeft(n.s) : shelfRight(n.s);
+          // clear of the lane and the archers' ledges: only on the faces above them
+          return e < sw + 3.5 || e > 28;
+        },
+      },
+    );
+    level.root.add(wallTrees.object);
+  }
 
   // ── ground cover: ferns and moss on the shelf, mushrooms, grass on the banks ──
   const shelfArea = { center: V(0, 0, 150), halfSize: [60, 110] as [number, number] };
@@ -304,9 +376,14 @@ export function buildGorge(level: LevelAPI): Gorge {
     const n = terrainPath.nearest(x, z);
     return n.dist > widthAt(n.s) / 2 + 16 || n.dist < widthAt(n.s) / 2 + 0.6;
   };
-  level.root.add(ferns(shelfArea, 120, h, { seed: 31, exclude: nearRun, clump: 0.7 }));
-  level.root.add(grassField({ center: V(20, 0, 110), halfSize: [50, 90] }, 0.7, h, { seed: 8, exclude: nearRun, fade: [14, 34], height: [0.25, 0.6] }));
-  level.root.add(mushrooms({ center: V(30, 0, 130), halfSize: [30, 70] }, 20, h, { seed: 3, exclude: nearRun }));
+  // the runner's lane (4.4 m off the water, 4 m clear): no ferns or toadstools across it
+  const inLane = (x: number, z: number) => {
+    const n = terrainPath.nearest(x, z);
+    return n.signed < 0 && n.s > S.runStart - 4 && n.s < S.runEnd + 6 && Math.abs(n.dist - widthAt(n.s) / 2 - RUN_E) < 2.4;
+  };
+  level.root.add(ferns(shelfArea, 70, h, { seed: 31, exclude: (x, z) => nearRun(x, z) || inLane(x, z), clump: 0.7, tint: [1.05, 0.95, 0.55] }));
+  level.root.add(grassField({ center: V(20, 0, 110), halfSize: [50, 90] }, 0.6, h, { seed: 8, exclude: nearRun, fade: [14, 34], height: [0.25, 0.6], dry: 0.6, color: 0x6a7438, tipColor: 0xcdb46a }));
+  level.root.add(mushrooms({ center: V(30, 0, 130), halfSize: [30, 70] }, 20, h, { seed: 3, exclude: (x, z) => nearRun(x, z) || inLane(x, z) }));
 
   // ── fallen logs on the shelf and shore, mossy and wedged ──
   const placeLog = (s: number, e: number, len: number, rad: number, yaw: number, seed: number) => {
@@ -518,23 +595,50 @@ export function buildGorge(level: LevelAPI): Gorge {
     addColliders(physics, tail.colliders);
   }
 
-  // ── cliff faces: big mossy outcrops break up the stretched cliff texture (the gorge walls, both sides) ──
+  // ── cliff faces: big mossy crags break up the rock texture; a second, dark wet set hugs the foot of the walls.
+  //    Visual only (no colliders): the run's shelf and the archers' ledges stay clear ──
   {
-    const outcrops = boulderField({ center: V(0, 0, 330), halfSize: [260, 300] }, 170, [1.5, 5.4], h, {
-      seed: 77, moss: 0.65, colliderMin: 99, clump: 0.5, sink: 0.35,
+    const wallOk = (x: number, z: number, minSlope: number): boolean => {
+      const n = terrainPath.nearest(x, z);
+      const e = n.dist - widthAt(n.s) / 2;
+      if (e < 2.5 || e > 24 || n.s > 690 || n.s < 20) return false;
+      if (n.s > S.gate - 16 && n.s < S.gate + 26) return false;
+      if (n.signed < 0 && e < shelfLeft(n.s) + 1.5) return false;
+      if (n.signed >= 0 && e < shelfRight(n.s) + 1.0) return false;
+      return Math.hypot(h(x + 1.5, z) - h(x - 1.5, z), h(x, z + 1.5) - h(x, z - 1.5)) / 3 > minSlope;
+    };
+    const crags = boulderField({ center: V(0, 0, 330), halfSize: [260, 300] }, 340, [1.8, 6.4], h, {
+      seed: 77, moss: 0.7, colliderMin: 99, clump: 0.55, sink: 0.35,
+      exclude: (x, z) => !wallOk(x, z, 0.33),
+    });
+    level.root.add(crags.object);
+    const lowCrags = boulderField({ center: V(0, 0, 330), halfSize: [260, 300] }, 150, [1.2, 4.0], h, {
+      seed: 78, moss: 0.35, colliderMin: 99, clump: 0.5, sink: 0.3,
+      exclude: (x, z) => !wallOk(x, z, 0.5),
+    });
+    level.root.add(lowCrags.object);
+  }
+
+  // ── wet boulders along both waterlines, half in the water, with the white water licking at them.
+  //    Never on the left shelf from the gate stairs to the launch rock: that is the runner's lane. ──
+  {
+    const lining = boulderField({ center: V(0, 0, 330), halfSize: [260, 300] }, 230, [0.55, 1.5], h, {
+      seed: 91, moss: 0.25, colliderMin: 99, clump: 0.45, sink: 0.3,
       exclude: (x, z) => {
         const n = terrainPath.nearest(x, z);
         const e = n.dist - widthAt(n.s) / 2;
-        if (e < 2.5 || e > 20 || n.s > 690 || n.s < 20) return true;
-        if (n.s > S.gate - 16 && n.s < S.gate + 26) return true;
-        // the run's shelf and the archers' ledges stay clear
-        if (n.signed < 0 && e < shelfLeft(n.s) + 1.5) return true;
-        if (n.signed >= 0 && e < shelfRight(n.s) + 1.0) return true;
-        return !(Math.hypot(h(x + 1.5, z) - h(x - 1.5, z), h(x, z + 1.5) - h(x, z - 1.5)) / 3 > 0.35);
+        if (e < 0.3 || e > 2.4 || n.s < S.gate + 6 || n.s > 696) return true;
+        if (n.signed < 0 && n.s < S.runEnd + 6) return true;
+        return false;
       },
     });
-    level.root.add(outcrops.object);
+    level.root.add(lining.object);
   }
+
+  // ── the white water, the spray and the far ridges ──
+  buildWhitewater(level, h);
+  buildSpray(level);
+  buildRidges(level);
 
   // far dressing: leave a few torches at the gate (lit by fx lights, budgeted)
   void torch;

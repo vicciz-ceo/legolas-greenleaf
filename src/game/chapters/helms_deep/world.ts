@@ -17,6 +17,7 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { createWeapon } from '../../../creatures/weapons';
 import { yawOf } from '../../../core/math';
+import { dressHelmsDeep, type Dress } from './dress';
 import { L, TOWERS, WALL_A_PTS, WALL_B_PTS, WALL_C_PTS, WALL_H, WALL_T, WATCH_STEP, terrainHeight, walk, wallAt } from './layout';
 
 const WALL_TAGS = new Set(['wall', 'parapet', 'merlon', 'buttress', 'tower']);
@@ -167,7 +168,9 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   // ~3.3 m cells: the cliffs dissolve into the storm fog long before the facets show
   const terrain = level.terrain({
     size: 640, segments: 184, height: terrainHeight, style: 'plains', material: 'dirt', center: [20, 120],
-    theme: 'wet', layers: ['grass', 'mud', 'cliff'], patchiness: 0.72, cavity: 0.7,
+    // a bare, churned, rain-black coomb (<5% hardy grass, notes.md): mud and dirt under the wet theme,
+    // cooled and darkened so the stone reads lighter than the ground
+    theme: 'wet', layers: ['mud', 'dirt', 'cliff'], patchiness: 0.66, cavity: 0.7, tint: 0xa6b0bc,
   });
   const ground = terrain.heightAt;
 
@@ -337,6 +340,14 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   }
   for (const f of [...fireSpots, ...torchSpots]) fx.fire(f, 0.5);
 
+  // ── art dressing (pilasters, parapet torches, Hornburg, siege towers, ridges): see dress.ts ─
+  const pools: [number, number, number, number][] = [];
+  for (const f of hd.anchors.fires) pools.push([f.pos[0] + f.out[0] * 1.6, f.pos[1] + 0.02, f.pos[2] + f.out[2] * 1.6, 3.6]);
+  for (const t of TOWERS) pools.push([t.center.x, t.hgt + 0.02, t.center.z, 3.4]);
+  for (const [x, y, z] of courtFires) pools.push([x, y + 0.02, z, 3.8]);
+  const dress: Dress = dressHelmsDeep({ hd, ground, rng: level.rng, pools });
+  level.root.add(dress.object);
+
   // ── the court: stores, racks, barrels by the stair foot and the causeway ramp ─
   const rng = level.rng;
   const props: [Built, number, number, number][] = [
@@ -368,6 +379,19 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     level.root.add(r.object);
     addColliders(physics, r.colliders);
   }
+  // the cliff-toe boulders sit high up the dark cliffs: darker, so they read as part of the rock
+  // face instead of pale shapes hanging in the night (own material copies: the cache is shared)
+  const rockMats: THREE.Material[] = [];
+  for (const r of rocks.slice(0, 3)) {
+    r.object.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || Array.isArray(m.material)) return;
+      const c = (m.material as THREE.MeshStandardMaterial).clone();
+      c.color.multiplyScalar(0.42);
+      m.material = c;
+      rockMats.push(c);
+    });
+  }
 
   // ── the shield at the head of the stair ─────────────────────────────────
   const shield = createWeapon('shield', 4);
@@ -392,8 +416,8 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   const front = level.crowd({ center: new THREE.Vector3(4, 0, 58), halfSize: [80, 7], count: 440, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
   // a sea of torches over the host (the crowd's own torch figures are too small to read through the rain)
   const torchSea = makeTorchSea(ground, rng, [
-    { c: L.armyCenter, h: [115, 32], n: 520 },
-    { c: new THREE.Vector3(4, 0, 58), h: [80, 7], n: 110 },
+    { c: L.armyCenter, h: [115, 32], n: 820 },
+    { c: new THREE.Vector3(4, 0, 58), h: [80, 7], n: 190 },
   ]);
   level.root.add(torchSea.points);
   // the armies are far from the camera: keep them out of the GTAO / depth pre-passes (half their cost on High)
@@ -430,6 +454,7 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     torchSea,
     shieldBeacon,
     update(dt: number) {
+      dress.update(dt);
       if (!shieldBeacon.visible) return;
       beaconT += dt;
       const k = 0.75 + 0.25 * Math.sin(beaconT * 3.2);
@@ -437,6 +462,8 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
       shieldBeacon.position.y = WALL_H + 0.9 + Math.sin(beaconT * 1.6) * 0.08;
     },
     dispose() {
+      dress.dispose();
+      for (const m of rockMats) m.dispose();
       for (const e of elves) e.dispose();
     },
   };

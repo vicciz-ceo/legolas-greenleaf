@@ -30,9 +30,22 @@ export const L = {
   deadYaw: 2.2,
   /** Rohirrim on foot holding the line (anchors) */
   riders: [V(-2, 0, -9), V(-9, 0, 9), V(4, 0, 12), V(-12, 0, -3)],
-  /** Minas Tirith, far to the west */
-  city: V(-1080, 0, -140),
+  /**
+   * Minas Tirith, ~740 m off to the south-south-east (az 33° from the field), behind the host of Harad:
+   * the layout's S4 landmark sits straight ahead of the route, and from the cp0 heading (FACE) it hangs
+   * in the right third of the frame with the low sun on the left, as in the gameplay reference. Inside
+   * the 1200 m far plane, scaled up so it reads as a hill-city rather than a speck.
+   */
+  city: V(405, 0, 620),
+  /**
+   * the white city's front (local +Z) turned from the field toward the low sun, so its terraces catch the
+   * key light and stand bright against the dark mountains (facing the field it would be in its own shade)
+   */
+  cityYaw: 2.93,
 };
+
+/** the heading every checkpoint starts on: east-south-east, the host ahead, the city to the right, the sun to the left */
+export const FACE = 1.2;
 
 /** the battlefield heightfield: broad gentle swells, churned ruts and catapult craters, rising to the city */
 const CRATERS: [number, number, number][] = [
@@ -86,6 +99,9 @@ export const HERD: { cx: number; cz: number; rx: number; rz: number; phase: numb
   { cx: 200, cz: 120, rx: 50, rz: 32, phase: 0.1, speed: 2.1 },
   { cx: 250, cz: -100, rx: 60, rz: 36, phase: 0.55, speed: 1.8 },
   { cx: 70, cz: 240, rx: 70, rz: 30, phase: 0.3, speed: 2.3 },
+  // two more in the haze toward the city: the herd the film shows rolling across the whole field
+  { cx: 300, cz: 330, rx: 60, rz: 26, phase: 0.8, speed: 1.9 },
+  { cx: 170, cz: 380, rx: 55, rz: 24, phase: 0.45, speed: 2.0 },
 ];
 
 /**

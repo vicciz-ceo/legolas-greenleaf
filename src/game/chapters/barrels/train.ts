@@ -63,6 +63,46 @@ const _e = new THREE.Euler();
 const _s1 = new THREE.Vector3(1, 1, 1);
 const _p = new THREE.Vector3();
 const _pp = new THREE.Vector3();
+const _rs = new THREE.Vector3();
+const _ry = new THREE.Quaternion();
+const _yAxis = new THREE.Vector3(0, 1, 0);
+
+/** the pale churn a barrel throws up: a broken foam ring with a tail trailing downstream (canvas, no assets) */
+function wakeTexture(): THREE.CanvasTexture {
+  const N = 128;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = N;
+  const cx = cv.getContext('2d')!;
+  let seed = 7;
+  const rnd = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  cx.clearRect(0, 0, N, N);
+  const dot = (x: number, y: number, r: number, a: number) => {
+    const g = cx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, `rgba(255,255,255,${a})`);
+    g.addColorStop(1, 'rgba(255,255,255,0)');
+    cx.fillStyle = g;
+    cx.fillRect(x - r, y - r, r * 2, r * 2);
+  };
+  // the ring round the hull
+  for (let i = 0; i < 90; i++) {
+    const a = rnd() * Math.PI * 2;
+    const r = (0.21 + (rnd() - 0.5) * 0.12) * N;
+    dot(N / 2 + Math.cos(a) * r, N / 2 + Math.sin(a) * r, 3 + rnd() * 5, 0.5 + rnd() * 0.4);
+  }
+  // the wake: downstream is the bottom of the canvas
+  for (let i = 0; i < 70; i++) {
+    const t = rnd();
+    const x = N / 2 + (rnd() - 0.5) * (0.28 + 0.3 * t) * N;
+    const y = N / 2 + (0.15 + t * 0.34) * N;
+    dot(x, y, 2.5 + rnd() * 4.5, (1 - t) * (0.35 + rnd() * 0.4));
+  }
+  const t = new THREE.CanvasTexture(cv);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
 export interface TrainOpts {
   count?: number;
@@ -88,6 +128,8 @@ export class BarrelTrain {
   speed = 0;
   /** extra lateral room scale (the chute squeezes the formation) */
   private readonly instances: InstanceBase[] = [];
+  /** one foam ring per barrel, flat on the water */
+  private readonly wakes: THREE.InstancedMesh;
   private t = 0;
   private readonly holdS: number;
   private bumpCd = 0;
@@ -113,6 +155,19 @@ export class BarrelTrain {
       level.root.add(inst);
       this.instances.push({ mesh: inst, base: mesh.matrixWorld.clone() });
     });
+
+    // ── foam rings: the barrels sit in churned white water, not on glass ──
+    const wakeGeo = new THREE.PlaneGeometry(1, 1);
+    wakeGeo.rotateX(-Math.PI / 2);
+    this.wakes = new THREE.InstancedMesh(
+      wakeGeo,
+      new THREE.MeshStandardMaterial({ map: wakeTexture(), transparent: true, depthWrite: false, roughness: 0.85, color: 0xf2f7f7, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3 }),
+      count,
+    );
+    this.wakes.frustumCulled = false;
+    this.wakes.renderOrder = 3;
+    this.wakes.name = 'barrel-wakes';
+    level.root.add(this.wakes);
 
     // ── dwarves: four looks (seed buckets), cycled ──
     for (let i = 0; i < count; i++) {
@@ -288,6 +343,13 @@ export class BarrelTrain {
         _m.compose(b.holder.position, _q, _s1).multiply(inst.base);
         inst.mesh.setMatrixAt(b.idx, _m);
       }
+      // foam ring on the water under the barrel (bigger when it has just been jolted)
+      {
+        const k = b.smashed ? 0.001 : 3.1 + b.bump * 0.9 + b.dip * 0.5;
+        _ry.setFromAxisAngle(_yAxis, yawFlow);
+        _m.compose(_pp.set(_p.x, water + 0.13, _p.z), _ry, _rs.set(k, 1, k));
+        this.wakes.setMatrixAt(b.idx, _m);
+      }
       // head-top stand point (follows the bob and tilt a little)
       const sx = _p.x;
       const sz = _p.z;
@@ -329,6 +391,7 @@ export class BarrelTrain {
       }
     }
     for (const inst of this.instances) inst.mesh.instanceMatrix.needsUpdate = true;
+    this.wakes.instanceMatrix.needsUpdate = true;
   }
 
   /** a rider lands on a barrel: it dips, the dwarf grumbles with a flinch */

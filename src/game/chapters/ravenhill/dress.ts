@@ -7,7 +7,8 @@
  */
 import * as THREE from 'three';
 import type { LevelAPI } from '../../../core/types';
-import { brokenBridge, ruinedWatchtower, ruins, type Built, type HeightFn } from '../../../world';
+import { brokenBridge, ruins, type Built, type HeightFn } from '../../../world';
+import { ruinedTurret } from './turret';
 import { Rng, fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
 import { FALLS_Z, V, riverX } from './layout';
@@ -74,6 +75,61 @@ export function dressFalls(falls: Built): void {
   });
 }
 
+/**
+ * Frozen cascades down the gorge walls: ribbons of blue-white ice laid on the cliff surface (they follow
+ * the terrain's height, so no gap shows), bright in the middle and fading into snow at the edges.
+ */
+export function iceFlows(level: LevelAPI, ground: HeightFn): void {
+  const pos: number[] = [];
+  const col: number[] = [];
+  const idx: number[] = [];
+  const flows: [number, number, number][] = [[-16, -1, 4.2], [4, 1, 3.4], [22, -1, 5], [30, 1, 4.2], [48, -1, 3.8], [-30, 1, 3.6], [-24, -1, 4.2]];
+  const ice = new THREE.Color(0x6fa9d4);
+  const bright = new THREE.Color(0xc4e2f7);
+  const snow = new THREE.Color(0xdde6f0);
+  const c = new THREE.Color();
+  const ns = 18;
+  const nw = 6;
+  for (const [z0, side, w] of flows) {
+    const base = pos.length / 3;
+    for (let j = 0; j <= ns; j++) {
+      const t = j / ns;
+      for (let i = 0; i <= nw; i++) {
+        const u = i / nw - 0.5;
+        const ww = w * (0.6 + 0.8 * t);
+        const z = z0 + u * ww + Math.sin(t * 5 + z0) * 0.9 * t;
+        const x = riverX(z) + side * (39.5 - 21 * t);
+        const gy = ground(x, z);
+        const gx = (ground(x + 1, z) - ground(x - 1, z)) / 2;
+        const gz = (ground(x, z + 1) - ground(x, z - 1)) / 2;
+        const inv = 1 / Math.hypot(gx, 1, gz);
+        const off = 0.28;
+        pos.push(x - gx * inv * off, gy + inv * off, z - gz * inv * off);
+        const edge = 1 - Math.pow(Math.abs(u) * 2, 2.2);
+        const fl = 0.5 + 0.5 * Math.sin(u * 17 + z0 * 3 + t * 2);
+        c.copy(ice).lerp(bright, fl * 0.7).lerp(snow, 1 - Math.min(1, edge * 1.6));
+        c.lerp(snow, Math.max(0, 0.5 - t * 3));
+        col.push(c.r, c.g, c.b);
+      }
+    }
+    for (let j = 0; j < ns; j++)
+      for (let i = 0; i < nw; i++) {
+        const a = base + j * (nw + 1) + i;
+        idx.push(a, a + 1, a + nw + 1, a + 1, a + nw + 2, a + nw + 1);
+      }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.32, metalness: 0, emissive: 0x1d3a55, emissiveIntensity: 0.4, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+  m.name = 'rh_ice_flows';
+  m.receiveShadow = true;
+  m.castShadow = false;
+  level.root.add(m);
+}
+
 let softTex: THREE.CanvasTexture | null = null;
 /** a soft round puff (canvas, once) */
 function softPuff(): THREE.CanvasTexture {
@@ -135,11 +191,11 @@ export function fallsSpray(level: LevelAPI, rng: Rng): void {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * A ruined dwarven viaduct over the gorge: nine arches, a collapsed stretch near the middle. Its deck is
- * above the rim on both sides and its piers go down into the cliffs.
+ * A ruined dwarven viaduct across the gorge: only the two ends are left, cantilevered from the rims (the
+ * span over the river has fallen), so its piers stand on the cliffs and never in the river lane.
  */
 export function gorgeViaduct(level: LevelAPI, z: number, deckY: number, span: number, ground: HeightFn): void {
-  const b = brokenBridge(span, 5.5, { seed: 9, snow: true, depth: 44, gap: [0.4, 0.6] });
+  const b = brokenBridge(span, 5.5, { seed: 9, snow: true, depth: 26, gap: [0.16, 0.84] });
   b.object.position.set(riverX(z), deckY, z);
   b.object.rotation.y = 0.04;
   level.root.add(b.object);
@@ -164,14 +220,13 @@ function flatSpot(ground: HeightFn, z: number, side: number, from: number, to: n
 
 /** low turrets and wall stubs on the cliff tops (the east and west rims of the gorge) */
 export function rimStonework(level: LevelAPI, ground: HeightFn, rng: Rng): void {
-  // two small dwarven watch towers per rim
-  for (const [z, side, h, r] of [[16, -1, 17, 4.4], [44, 1, 21, 4.8], [60, -1, 15, 3.8], [-6, 1, 14, 4.0]] as [number, number, number, number][]) {
+  // small dwarven watch towers on the rims
+  for (const [z, side, h, r] of [[16, -1, 17, 3.6], [44, 1, 21, 4.0], [60, -1, 15, 3.2], [-6, 1, 14, 3.4]] as [number, number, number, number][]) {
     const x = flatSpot(ground, z, side, 34, 62);
-    const t = ruinedWatchtower({ radius: r, height: h, thickness: 1.25, tallSide: side > 0 ? Math.PI : 0, seed: 20 + Math.round(z), snow: true });
-    t.object.position.set(x, ground(x, z) - 0.8, z);
-    t.object.rotation.y = side > 0 ? Math.PI / 2 : -Math.PI / 2;
-    level.root.add(t.object);
-    noShadow(t.object);
+    const t = ruinedTurret({ radius: r, height: h, seed: 20 + Math.round(z), tall: side > 0 ? Math.PI : 0 });
+    t.position.set(x, ground(x, z) - 0.8, z);
+    level.root.add(t);
+    noShadow(t);
   }
   // wall stubs, columns and arches along the rims
   for (const side of [-1, 1]) {
@@ -181,13 +236,33 @@ export function rimStonework(level: LevelAPI, ground: HeightFn, rng: Rng): void 
       grandeur: 0.85,
       exclude: (x, z) => {
         const sl = Math.abs(ground(x + 2, z) - ground(x - 2, z)) / 4 + Math.abs(ground(x, z + 2) - ground(x, z - 2)) / 4;
-        return sl > 0.6 || Math.abs(x - riverX(z)) < 30;
+        return sl > 0.32 || Math.abs(x - riverX(z)) < 30;
       },
     });
     level.root.add(r.object);
     noShadow(r.object);
   }
   void rng;
+}
+
+/**
+ * The watchtower's wings: ruined turrets clustered round the main tower on its blind (west) side, and a
+ * pair of gate towers at the bridge head, so the crag reads as a dwarven fortress and not one lone drum.
+ * Scenery only: the turrets stand clear of the plateau's gameplay spots (the door and the bridge head).
+ */
+export function towerWings(level: LevelAPI, ground: HeightFn, crag: { x: number; z: number; y: number }, bridgeZ: number, bridgeX0: number): void {
+  const put = (x: number, z: number, r: number, h: number, seed: number, tall: number) => {
+    const t = ruinedTurret({ radius: r, height: h, seed, tall });
+    t.position.set(x, Math.max(ground(x, z), crag.y - 1.5) - 0.4, z);
+    level.root.add(t);
+    noShadow(t);
+  };
+  // wings round the tower (the door faces east, toward the bridge)
+  for (const [dx, dz, r, h] of [[-9.5, 6.5, 3.4, 21], [-9.2, -7.5, 3.0, 16], [-1.5, 10.8, 3.2, 13], [0.5, -11.4, 3.6, 18], [-14.5, -0.5, 2.8, 12]] as [number, number, number, number][]) {
+    put(crag.x + dx, crag.z + dz, r, h, 40 + Math.round(dx * 3 + dz), Math.atan2(dz, dx));
+  }
+  // gate towers flanking the bridge head
+  for (const side of [-1, 1]) put(bridgeX0 - 1.5, bridgeZ + side * 6.2, 2.7, 12.5 + side * 2, 90 + side, side > 0 ? 0 : Math.PI);
 }
 
 /** far scenery: broken bridges over the valley river and dwarven watch towers on the far hills */
@@ -214,11 +289,10 @@ export function farRuins(level: LevelAPI, ground: HeightFn): void {
     [-170, 210, 26, 6],
   ];
   for (const [x, z, h, r] of towers) {
-    const t = ruinedWatchtower({ radius: r, height: h, thickness: 1.4, seed: Math.round(x + z), snow: true });
-    t.object.position.set(x, (z < -150 || Math.hypot(x, z - 60) > 230 ? farHeight(x, z) : ground(x, z)) - 0.6, z);
-    t.object.rotation.y = x * 0.01;
-    level.root.add(t.object);
-    noShadow(t.object);
+    const t = ruinedTurret({ radius: r, height: h, seed: Math.round(x + z), thickness: 1.5, tall: x * 0.02 });
+    t.position.set(x, (z < -150 || Math.hypot(x, z - 60) > 230 ? farHeight(x, z) : ground(x, z)) - 0.6, z);
+    level.root.add(t);
+    noShadow(t);
   }
 }
 
@@ -231,14 +305,16 @@ export function battleSmoke(level: LevelAPI, rng: Rng): void {
   const tex = softPuff();
   const roots: [number, number, number][] = [[-70, -150, 1.0], [-20, -178, 1.3], [30, -160, 1.1], [95, -190, 1.2], [150, -150, 0.9], [-130, -190, 1.0]];
   const smoke: { s: THREE.Sprite; base: THREE.Vector3; ph: number; k: number }[] = [];
+  const N = 11;
   for (const [x, z, sc] of roots) {
-    for (let i = 0; i < 8; i++) {
-      const h = i / 7;
-      const m = new THREE.SpriteMaterial({ map: tex, color: new THREE.Color().setHSL(0.6, 0.08, 0.1 + h * 0.2), transparent: true, opacity: 0.5 - h * 0.18, depthWrite: false, fog: true });
+    for (let i = 0; i < N; i++) {
+      const h = i / (N - 1);
+      // a leaning column that thickens and thins out with height; black at the foot, ash-grey at the top
+      const m = new THREE.SpriteMaterial({ map: tex, color: new THREE.Color().setHSL(0.6, 0.07, 0.07 + h * 0.3), transparent: true, opacity: 0.55 - h * 0.3, depthWrite: false, fog: true });
       const s = new THREE.Sprite(m);
-      const sz = (14 + h * 40 + rng.float() * 8) * sc;
-      s.position.set(x + h * 28 * sc + (rng.float() - 0.5) * 6, 8 + h * 120 * sc, z + (rng.float() - 0.5) * 6);
-      s.scale.set(sz, sz * 0.9, 1);
+      const sz = (12 + Math.sin(h * 3.0) * 16 + h * 22 + rng.float() * 6) * sc;
+      s.position.set(x + Math.pow(h, 1.6) * 40 * sc + (rng.float() - 0.5) * 5, 6 + h * 125 * sc, z + (rng.float() - 0.5) * 5);
+      s.scale.set(sz, sz * 1.15, 1);
       s.renderOrder = 1;
       level.root.add(s);
       smoke.push({ s, base: s.position.clone(), ph: rng.float() * 6.28, k: 0.5 + h });
@@ -246,8 +322,8 @@ export function battleSmoke(level: LevelAPI, rng: Rng): void {
     // the fire at the foot: a warm glow (additive), no real light
     const gm = new THREE.SpriteMaterial({ map: tex, color: 0xff9a45, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending, fog: false });
     const gs = new THREE.Sprite(gm);
-    gs.position.set(x, 5, z);
-    gs.scale.set(15 * sc, 9 * sc, 1);
+    gs.position.set(x, 4, z);
+    gs.scale.set(15 * sc, 8 * sc, 1);
     gs.renderOrder = 3;
     level.root.add(gs);
     smoke.push({ s: gs, base: gs.position.clone(), ph: rng.float() * 6.28, k: 0 });

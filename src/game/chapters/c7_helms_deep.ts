@@ -969,7 +969,9 @@ export const chapter: ChapterDef = {
           world.setBreached(true);
           breachFires();
         }
-        if (c === 0) player.teleport(L.spawn.clone(), outYaw(L.spawn.x));
+        // (art) the opening view looks along the wall toward the Hornburg, the battlements and the host to the
+        // right (gameplay_view.jpg), not square into the parapet
+        if (c === 0) player.teleport(L.spawn.clone(), outYaw(L.spawn.x) + 1.15);
         else if (c === 1) player.teleport(L.culvertWatch.clone(), yawOf(5 - L.culvertWatch.x, 30 - L.culvertWatch.z));
         else if (c === 2) player.teleport(walk(-22, -0.6), yawOf(-8, -2));
         else player.teleport(L.gateHold.clone(), Math.PI);

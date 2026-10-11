@@ -13,8 +13,8 @@ import { fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
 import { heightAt, TERRAIN } from './layout';
 
-const ROCK = new THREE.Color(0x585f69);
-const ROCK_WARM = new THREE.Color(0x6a655f);
+const ROCK = new THREE.Color(0x4a5360);
+const ROCK_WARM = new THREE.Color(0x5e5d5e);
 const SNOW = new THREE.Color(0xe9eff6);
 const SNOW_SHADE = new THREE.Color(0x9fb0c6);
 const HAZE = new THREE.Color(0xbfcad6);
@@ -25,8 +25,9 @@ const SUN = new THREE.Vector3(-0.62, 0.5, -0.5).normalize();
 
 /** a ridged-noise crest (0..1, sharp at the arêtes) */
 function ridged(x: number, z: number, scale: number, oct: number, seed: number): number {
-  const n = 1 - Math.abs(fbm2(x * scale, z * scale, oct, seed) * 1.7);
-  return Math.max(0, n) * Math.max(0, n);
+  // few octaves and a soft crest: long buttresses and gullies, not a field of needles
+  const n = Math.max(0, 1 - Math.abs(fbm2(x * scale, z * scale, Math.min(oct, 3), seed) * 1.9));
+  return Math.pow(n, 1.5);
 }
 
 function peak(x: number, z: number, cx: number, cz: number, h: number, r: number): number {
@@ -39,12 +40,12 @@ function northH(x: number, z: number): number {
   const d = Math.hypot((x - 150) * 0.85, z - 930);
   const cone = Math.max(0, 1 - d / 880);
   const body = Math.pow(cone, 1.3) * 330;
-  const crest = ridged(x, z, 0.0042, 5, 91) * 150 * smoothstep(0.05, 0.55, cone);
-  const spurs = ridged(x + 120, z, 0.0085, 4, 97) * 70 * smoothstep(0.0, 0.5, cone);
+  const crest = ridged(x, z, 0.0026, 4, 91) * 150 * smoothstep(0.05, 0.55, cone);
+  const spurs = ridged(x + 120, z, 0.0042, 3, 97) * 55 * smoothstep(0.0, 0.5, cone);
   const peaks = peak(x, z, 150, 930, 170, 75) + peak(x, z, -60, 860, 110, 70) + peak(x, z, 330, 800, 120, 80) + peak(x, z, 40, 1020, 150, 90);
-  const fine = fbm2(x * 0.02, z * 0.02, 3, 95) * 16 * smoothstep(0, 0.4, cone);
+  const fine = fbm2(x * 0.012, z * 0.012, 3, 95) * 12 * smoothstep(0, 0.4, cone);
   // the north-west and north-east ranges lower on either side
-  const wing = (ridged(x, z, 0.0055, 5, 101) * 130 + 40) * smoothstep(340, 700, Math.abs(x - 100)) * smoothstep(380, 560, z);
+  const wing = (ridged(x, z, 0.003, 4, 101) * 120 + 40) * smoothstep(340, 700, Math.abs(x - 100)) * smoothstep(380, 560, z);
   const foot = 18 + fbm2(x * 0.01, z * 0.01, 3, 92) * 14;
   return Math.max(foot, body + crest + spurs + peaks + fine, wing * 0.9);
 }
@@ -52,17 +53,60 @@ function northH(x: number, z: number): number {
 /** the ranges east and west of the gorge and the low hills in the far south */
 function flankH(x: number, z: number): number {
   const side = Math.abs(x);
-  const ramp = smoothstep(380, 900, side);
-  const r = ridged(x, z, 0.0048, 5, 111);
-  const base = 32 + fbm2(x * 0.006, z * 0.006, 4, 112) * 30;
-  return base + (r * 190 + 50) * ramp;
+  const ramp = smoothstep(480, 1100, side);
+  const r = ridged(x, z, 0.0026, 4, 111);
+  const base = 32 + fbm2(x * 0.005, z * 0.005, 4, 112) * 26;
+  return base + (r * 150 + 45) * ramp;
 }
 
 function southH(x: number, z: number): number {
   const ramp = smoothstep(-480, -1000, z);
-  const r = ridged(x, z, 0.0045, 5, 121);
-  const base = 4 + fbm2(x * 0.007, z * 0.007, 4, 122) * 10;
-  return base + (r * 170 + 40) * ramp;
+  const r = ridged(x, z, 0.0025, 4, 121);
+  const base = 4 + fbm2(x * 0.006, z * 0.006, 4, 122) * 10;
+  return base + (r * 140 + 35) * ramp;
+}
+
+let detailTex: THREE.CanvasTexture | null = null;
+
+/**
+ * Greyscale crag detail (multiplied into the vertex colours): fine speckle plus gully streaks that run
+ * down the slope, so a coarse mesh still reads as rock and wind-packed snow and not as smooth paper.
+ */
+function detailTexture(): THREE.CanvasTexture {
+  if (detailTex) return detailTex;
+  const S = 512;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = S;
+  const ctx = cv.getContext('2d')!;
+  const img = ctx.createImageData(S, S);
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const u = x / S;
+      const v = y / S;
+      // the texture repeats: sample the noise on a torus so the seams vanish
+      const a = u * Math.PI * 2;
+      const b = v * Math.PI * 2;
+      const nx = Math.cos(a) * 1.3;
+      const nz = Math.sin(a) * 1.3;
+      const ny = Math.cos(b) * 1.3;
+      const nw = Math.sin(b) * 1.3;
+      const fine = fbm2(nx * 6 + ny * 3, nz * 6 + nw * 3, 4, 181);
+      const streak = fbm2(nx * 2.2 + 9, nz * 2.2 + ny * 5.5, 3, 182);
+      const crack = Math.abs(fbm2(nx * 4 + 3, nw * 9 + nz * 2, 3, 183));
+      let t = 0.78 + fine * 0.32 + streak * 0.34 - (1 - Math.min(1, crack * 3.2)) * 0.2;
+      t = Math.max(0.35, Math.min(1.12, t));
+      const k = (y * S + x) * 4;
+      const c = Math.round(Math.min(1, t) * 255);
+      img.data[k] = img.data[k + 1] = img.data[k + 2] = c;
+      img.data[k + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  detailTex = new THREE.CanvasTexture(cv);
+  detailTex.colorSpace = THREE.NoColorSpace; // a plain multiplier
+  detailTex.wrapS = detailTex.wrapT = THREE.RepeatWrapping;
+  detailTex.anisotropy = 4;
+  return detailTex;
 }
 
 interface Region {
@@ -83,6 +127,7 @@ function mountainMesh(level: LevelAPI, r: Region): void {
   const nz = r.nz;
   const pos = new Float32Array((nx + 1) * (nz + 1) * 3);
   const col = new Float32Array((nx + 1) * (nz + 1) * 3);
+  const uv = new Float32Array((nx + 1) * (nz + 1) * 2);
   const idx: number[] = [];
   for (let j = 0; j <= nz; j++) {
     for (let i = 0; i <= nx; i++) {
@@ -92,6 +137,10 @@ function mountainMesh(level: LevelAPI, r: Region): void {
       pos[k] = x;
       pos[k + 1] = r.H(x, z) - 30;
       pos[k + 2] = z;
+      // detail UVs: along the ridge lines horizontally, down the slope vertically (gully streaks)
+      const u = (j * (nx + 1) + i) * 2;
+      uv[u] = (x * 0.7 + z * 0.7) * 0.0046 + pos[k + 1] * 0.001;
+      uv[u + 1] = pos[k + 1] * 0.0098 + (x - z) * 0.0006;
     }
   }
   for (let j = 0; j < nz; j++)
@@ -101,6 +150,7 @@ function mountainMesh(level: LevelAPI, r: Region): void {
     }
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
   const nrm = g.getAttribute('normal') as THREE.BufferAttribute;
@@ -117,28 +167,29 @@ function mountainMesh(level: LevelAPI, r: Region): void {
     const n2 = fbm2(x * 0.07 + y * 0.03, z * 0.07, 2, 132);
     // snow: sits on gentle slopes and everywhere the winter has covered the valleys; steep arêtes stay rock
     const snowLine = 55 + n1 * 70;
-    const snow = Math.min(1, smoothstep(0.42, 0.78, ny + n2 * 0.18) * 0.95 + (1 - smoothstep(snowLine - 30, snowLine + 40, y)) * 0.6 * smoothstep(0.3, 0.6, ny));
+    const snow = Math.min(1, smoothstep(0.74, 0.95, ny + n2 * 0.2) * 0.95 + (1 - smoothstep(snowLine - 30, snowLine + 40, y)) * 0.6 * smoothstep(0.45, 0.7, ny));
     tmp.copy(ROCK).lerp(ROCK_WARM, 0.5 + n2 * 0.5);
     // strata: faint horizontal banding in the rock
     tmp.multiplyScalar(0.86 + 0.14 * Math.sin(y * 0.16 + n1 * 5));
     c.copy(tmp).lerp(SNOW, snow);
     // light: a fake key from the left/camera side so the faces read (the real sun is behind the mountain)
     const lit = Math.max(0, nxn * SUN.x + ny * SUN.y + nzn * SUN.z);
-    const shade = 0.5 + 0.62 * lit;
+    const shade = 0.42 + 0.78 * lit;
     c.multiplyScalar(shade);
     // cool blue shadows
     tmp.copy(SNOW_SHADE).multiplyScalar(0.55);
     c.lerp(tmp, (1 - lit) * 0.22 * (0.4 + snow));
     // aerial perspective: distance, and the cloud/valley haze clinging low on the flanks
     const d = Math.hypot(x, z - 60);
-    const hz = Math.min(0.88, smoothstep(300, 2200, d) * 0.55 + r.hazeBias + (1 - smoothstep(30, 300, y)) * 0.36);
+    const hz = Math.min(0.88, 0.05 + smoothstep(250, 2000, d) * 0.5 + r.hazeBias * 0.6 + (1 - smoothstep(30, 300, y)) * 0.28);
     c.lerp(HAZE, hz);
-    col[i * 3] = c.r;
-    col[i * 3 + 1] = c.g;
-    col[i * 3 + 2] = c.b;
+    // the detail texture averages ~0.8: lift the colours to match
+    col[i * 3] = c.r * 1.22;
+    col[i * 3 + 1] = c.g * 1.22;
+    col[i * 3 + 2] = c.b * 1.22;
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false }));
+  const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, map: detailTexture() }));
   m.name = 'rh_range_' + r.name;
   m.castShadow = m.receiveShadow = false;
   m.userData.noAO = true;
@@ -148,9 +199,9 @@ function mountainMesh(level: LevelAPI, r: Region): void {
 
 /** Erebor, the flank ranges and the southern hills */
 export function buildRanges(level: LevelAPI): void {
-  mountainMesh(level, { name: 'north', x0: -1100, x1: 1200, z0: 380, z1: 1700, nx: 230, nz: 132, H: northH, hazeBias: 0.1 });
-  mountainMesh(level, { name: 'west', x0: -1900, x1: -440, z0: -420, z1: 700, nx: 110, nz: 84, H: flankH, hazeBias: 0.2 });
-  mountainMesh(level, { name: 'east', x0: 440, x1: 1900, z0: -420, z1: 700, nx: 110, nz: 84, H: flankH, hazeBias: 0.2 });
+  mountainMesh(level, { name: 'north', x0: -1100, x1: 1200, z0: 380, z1: 1700, nx: 280, nz: 150, H: northH, hazeBias: 0.1 });
+  mountainMesh(level, { name: 'west', x0: -1900, x1: -440, z0: -420, z1: 700, nx: 150, nz: 104, H: flankH, hazeBias: 0.2 });
+  mountainMesh(level, { name: 'east', x0: 440, x1: 1900, z0: -420, z1: 700, nx: 150, nz: 104, H: flankH, hazeBias: 0.2 });
   mountainMesh(level, { name: 'south', x0: -1700, x1: 1700, z0: -1900, z1: -460, nx: 190, nz: 80, H: southH, hazeBias: 0.28 });
 }
 
