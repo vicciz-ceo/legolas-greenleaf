@@ -19,7 +19,7 @@
 import * as THREE from 'three';
 import type { Engine, EnvironmentName, EnvironmentPreset, PostControls, Quality } from './types';
 import { disposeObject } from './math';
-import { lightDirectionOf, resolvePreset, SkyRig, type EnvironmentPresetEx } from './environment';
+import { effectiveFogColor, lightDirectionOf, resolvePreset, SkyRig, type EnvironmentPresetEx } from './environment';
 import { Pipeline } from './post/pipeline';
 import { QUALITY, type QualityConfig } from './post/quality';
 
@@ -43,6 +43,58 @@ export function getEngineInternals(engine: Engine): EngineInternals | undefined 
 
 const SUN_DISTANCE = 90;
 const SHADOW_HALF = 35;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Height fog (shared rendering pass)
+//
+// Three's FogExp2 is one density everywhere, so a cliff, a tower or a canopy 20–150 m away washes out
+// exactly as much as the ground: everything flattens into one layer. The fog chunks are patched once,
+// globally, so the density thins above the player's ground level (exponential falloff, integrated along
+// the view ray) and returns to the preset's density beyond ~420 m, where the far ranges rely on it.
+// One shared uniform array feeds every material: [ground y, 1/falloff, floor, camera y]. A material that
+// does not carry the uniform reads zeros, which means "off" (plain FogExp2).
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FOG_HEIGHT = new Float32Array(4);
+function installHeightFog(): void {
+  const SC = THREE.ShaderChunk as unknown as Record<string, string>;
+  if (SC.fog_fragment.includes('glFogH(')) return;
+  SC.fog_pars_vertex = SC.fog_pars_vertex.replace('varying float vFogDepth;', 'varying float vFogDepth;\n\tvarying float vFogWorldY;');
+  SC.fog_vertex = SC.fog_vertex.replace(
+    'vFogDepth = - mvPosition.z;',
+    'vFogDepth = - mvPosition.z;\n\tvFogWorldY = ( mvPosition.xyz * mat3( viewMatrix ) ).y + cameraPosition.y;',
+  );
+  SC.fog_pars_fragment = SC.fog_pars_fragment.replace(
+    'varying float vFogDepth;',
+    `varying float vFogDepth;
+	varying float vFogWorldY;
+	uniform vec4 glFogHeight;
+	float glFogH( const in float y, const in float dist ) {
+		if ( glFogHeight.y <= 0.0 ) return 1.0;
+		float k = glFogHeight.y;
+		float a = max( glFogHeight.w - glFogHeight.x, 0.0 ) * k;
+		float b = max( y - glFogHeight.x, 0.0 ) * k;
+		float d = b - a;
+		float m = abs( d ) < 1e-3 ? exp( - a ) : ( exp( - a ) - exp( - b ) ) / d;
+		m = mix( glFogHeight.z, 1.0, m );
+		return mix( m, 1.0, smoothstep( 160.0, 420.0, dist ) );
+	}`,
+  );
+  SC.fog_fragment = SC.fog_fragment.replace(
+    'float fogFactor = 1.0 - exp( - fogDensity * fogDensity * vFogDepth * vFogDepth );',
+    'float fogDensityH = fogDensity * glFogH( vFogWorldY, vFogDepth );\n\t\tfloat fogFactor = 1.0 - exp( - fogDensityH * fogDensityH * vFogDepth * vFogDepth );',
+  );
+  // the value object is a plain Float32Array: UniformsUtils.clone() keeps it by reference, so every
+  // material's copy of the uniform reads the same four numbers
+  const lib = THREE.UniformsLib as unknown as Record<string, Record<string, THREE.IUniform>>;
+  lib.fog.glFogHeight = { value: FOG_HEIGHT };
+  const shaders = THREE.ShaderLib as unknown as Record<string, { uniforms: Record<string, THREE.IUniform> }>;
+  for (const k of Object.keys(shaders)) {
+    const u = shaders[k].uniforms;
+    if (u && u.fogDensity && !u.glFogHeight) u.glFogHeight = { value: FOG_HEIGHT };
+  }
+}
+installHeightFog();
 
 class EngineImpl implements Engine {
   readonly renderer: THREE.WebGLRenderer;
@@ -78,6 +130,7 @@ class EngineImpl implements Engine {
   private baseEnv = 1;
   private flash = 0;
   private flashApplied = false;
+  private fogBaseInit = false;
 
   // shadow frustum
   private lightDir = new THREE.Vector3(0.3, 0.8, 0.4).normalize();
@@ -257,9 +310,12 @@ class EngineImpl implements Engine {
     this.flash = 0;
     this.sky.setFlash(0);
 
-    // fog + clear colour match the horizon
-    this.fog.color.setHex(env.fog.color);
+    // fog + clear colour match the horizon (a night haze is lifted a little, see effectiveFogColor)
+    effectiveFogColor(env, this.fog.color);
     this.fog.density = env.fog.density;
+    const fh = env.fogHeight ?? (env.sky.kind === 'cave' ? 0 : 30);
+    FOG_HEIGHT[1] = fh > 0 ? 1 / fh : 0;
+    FOG_HEIGHT[2] = THREE.MathUtils.clamp(env.fogFloor ?? 0.5, 0, 1);
     this.renderer.setClearColor(this.fog.color, 1);
 
     // post
@@ -348,6 +404,12 @@ class EngineImpl implements Engine {
 
     this.sky.update(dt, this.camera);
     this.updateShadowFrustum();
+    // height fog: ground level follows the player (eased, so a jump does not pump the haze), camera height
+    const groundY = this.shadowFocus.y - 1;
+    const snap = !this.fogBaseInit || Math.abs(groundY - FOG_HEIGHT[0]) > 15;
+    FOG_HEIGHT[0] = snap ? groundY : FOG_HEIGHT[0] + (groundY - FOG_HEIGHT[0]) * Math.min(1, dt * 1.5);
+    this.fogBaseInit = true;
+    FOG_HEIGHT[3] = this.camera.position.y;
 
     const fl = this.flash;
     if (fl > 0.001 || this.flashApplied) {

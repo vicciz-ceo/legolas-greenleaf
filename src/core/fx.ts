@@ -133,10 +133,9 @@ function buildAtlas(): THREE.CanvasTexture {
   });
 
   paint(CELL.snow, (u, v) => {
-    const r = Math.sqrt(u * u + v * v);
-    const dot = smooth(1, 0.45, r);
-    const arms = Math.max(Math.exp(-u * u * 90), Math.exp(-v * v * 90)) * smooth(1, 0.3, r) * 0.35;
-    return Math.max(dot * dot, arms);
+    // a soft, slightly irregular flake: bright core, feathered edge (no hard disc, no crystal arms)
+    const r = Math.sqrt(u * u + v * v) * (1 + 0.08 * n1(u * 5 + 2, v * 5));
+    return Math.exp(-r * r * 4.2) * smooth(1, 0.72, r);
   });
 
   paint(CELL.flake, (u, v) => {
@@ -463,19 +462,22 @@ interface WeatherCfg {
   glowFrac: number;
   gust: number;
   tumble: number;
+  /** camera distance (m) over which particles fade in: [gone, full]. Default [0.35, 2.2] */
+  near?: [number, number];
 }
 
 const WEATHER: Record<Exclude<WeatherKind, 'none'>, WeatherCfg> = {
-  rain: { count: 8000, box: [38, 24, 38], vel: [-1.4, -17, -0.8], size: [0.02, 0.032], len: [0.7, 1.3], sway: 0, color: [0.72, 0.8, 0.92], alpha: 0.6, additive: 0, cell: CELL.streak, lit: 1, pulse: 0, glowFrac: 0, gust: 0.1, tumble: 0 },
-  storm: { count: 13000, box: [38, 24, 38], vel: [-9, -23, -5.5], size: [0.018, 0.03], len: [1.0, 1.9], sway: 0, color: [0.72, 0.8, 0.95], alpha: 0.55, additive: 0, cell: CELL.streak, lit: 1, pulse: 0, glowFrac: 0, gust: 0.35, tumble: 0 },
-  snow: { count: 10000, box: [34, 20, 34], vel: [-0.55, -1.25, -0.35], size: [0.05, 0.12], len: [0, 0], sway: 0.7, color: [0.97, 0.985, 1.0], alpha: 0.9, additive: 0, cell: CELL.snow, lit: 1, pulse: 0, glowFrac: 0, gust: 0.25, tumble: 0 },
-  ash: { count: 5200, box: [36, 20, 36], vel: [-0.9, -0.55, -0.5], size: [0.05, 0.14], len: [0, 0], sway: 0.55, color: [0.16, 0.14, 0.13], alpha: 0.85, additive: 0, cell: CELL.flake, lit: 1, pulse: 0.5, glowFrac: 0.12, gust: 0.3, tumble: 1 },
+  rain: { count: 8000, box: [38, 24, 38], vel: [-1.4, -17, -0.8], size: [0.012, 0.02], len: [0.4, 0.75], sway: 0, color: [0.72, 0.8, 0.92], alpha: 0.45, additive: 0, cell: CELL.streak, lit: 1, pulse: 0, glowFrac: 0, gust: 0.1, tumble: 0, near: [1.2, 4.5] },
+  storm: { count: 13000, box: [38, 24, 38], vel: [-9, -23, -5.5], size: [0.012, 0.02], len: [0.55, 1.0], sway: 0, color: [0.72, 0.8, 0.95], alpha: 0.42, additive: 0, cell: CELL.streak, lit: 1, pulse: 0, glowFrac: 0, gust: 0.35, tumble: 0, near: [1.2, 4.5] },
+  // small soft flakes (1.5–5 cm), depth-scaled, and almost none within a metre or two of the lens
+  snow: { count: 10000, box: [34, 20, 34], vel: [-0.55, -1.25, -0.35], size: [0.03, 0.07], len: [0, 0], sway: 0.7, color: [0.97, 0.985, 1.0], alpha: 0.8, additive: 0, cell: CELL.snow, lit: 1, pulse: 0, glowFrac: 0, gust: 0.25, tumble: 0, near: [1.4, 5.0] },
+  ash: { count: 5200, box: [36, 20, 36], vel: [-0.9, -0.55, -0.5], size: [0.045, 0.12], len: [0, 0], sway: 0.55, color: [0.16, 0.14, 0.13], alpha: 0.85, additive: 0, cell: CELL.flake, lit: 1, pulse: 0.5, glowFrac: 0.12, gust: 0.3, tumble: 1, near: [0.8, 3.0] },
   embers: { count: 1500, box: [32, 18, 32], vel: [0.35, 0.85, 0.2], size: [0.02, 0.055], len: [0, 0], sway: 0.8, color: [4.2, 1.35, 0.32], alpha: 0.95, additive: 1, cell: CELL.dot, lit: 0, pulse: 0.8, glowFrac: 0, gust: 0.3, tumble: 0 },
   spores: { count: 2200, box: [34, 14, 34], vel: [0.05, 0.035, 0.04], size: [0.035, 0.1], len: [0, 0], sway: 1.0, color: [0.55, 1.1, 0.5], alpha: 0.7, additive: 1, cell: CELL.dot, lit: 0, pulse: 0.9, glowFrac: 0, gust: 0, tumble: 0 },
   dust: { count: 1500, box: [26, 12, 26], vel: [0.04, -0.02, 0.03], size: [0.013, 0.034], len: [0, 0], sway: 0.4, color: [1.0, 0.93, 0.78], alpha: 0.7, additive: 0.55, cell: CELL.dot, lit: 1, pulse: 0.6, glowFrac: 0, gust: 0, tumble: 0 },
 };
 
-const DIST_SCALE: Record<Exclude<WeatherKind, 'none'>, number> = { rain: 0.07, storm: 0.07, snow: 0.055, ash: 0.06, embers: 0.03, spores: 0.0, dust: 0.04 };
+const DIST_SCALE: Record<Exclude<WeatherKind, 'none'>, number> = { rain: 0.05, storm: 0.05, snow: 0.045, ash: 0.06, embers: 0.03, spores: 0.0, dust: 0.04 };
 /** low ground mist: always-on ambient layer driven by the environment preset's `mist` value */
 const MIST: WeatherCfg = {
   count: 900, box: [70, 3.2, 70], vel: [0.3, 0.0, 0.14], size: [3.5, 8.5], len: [0, 0], sway: 0.7,
@@ -557,6 +559,7 @@ const WEATHER_FS = /* glsl */ `
   uniform float uContrast;
   uniform float uGroundFade;
   uniform float uGround;
+  uniform vec2 uNear;
   ${FOG_FRAG}
   varying vec2 vUv;
   varying float vAlpha;
@@ -580,7 +583,7 @@ const WEATHER_FS = /* glsl */ `
     float dist = length(vWorld - cameraPosition);
     float f = fogAmount(dist);
     col = mix(col, uFogColor, f * (1.0 - add));
-    a *= (1.0 - f * add) * smoothstep(0.35, 2.2, dist);
+    a *= (1.0 - f * add) * smoothstep(uNear.x, uNear.y, dist);
     // low mist: dissolve toward the ground plane instead of cutting hard against it
     a *= mix(1.0, smoothstep(uGround + 0.05, uGround + 1.1, vWorld.y), uGroundFade);
     gl_FragColor = vec4(col * a, a * (1.0 - add));
@@ -679,6 +682,7 @@ class WeatherLayer {
         uLit: { value: cfg.lit },
         uContrast: { value: contrast },
         uGroundFade: { value: kind === 'mist' ? 1 : 0 },
+        uNear: { value: new THREE.Vector2(...(cfg.near ?? [0.35, 2.2])) },
         ...overrides,
       },
       vertexShader: WEATHER_VS,

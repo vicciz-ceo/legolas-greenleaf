@@ -52,6 +52,44 @@ export interface EnvironmentPresetEx extends EnvironmentPreset {
   /** extra emissive glow along the lower horizon (Mordor), sRGB hex */
   horizonGlow?: number;
   horizonGlowAmount?: number;
+  /**
+   * Height fog falloff in metres (shared rendering pass): fog thins above the player's ground level, so
+   * cliffs, towers and canopies within ~400 m separate into layers instead of one flat wash. Default 30
+   * (cave skies: 0 = off). The ground level and everything beyond ~400 m keep the preset's density.
+   */
+  fogHeight?: number;
+  /** fraction of the fog density left high above the player (default 0.5) */
+  fogFloor?: number;
+  /** 0..1 strength of the night floor (lifted night haze + horizon glow) on a dark preset (default 1, 0 = off) */
+  nightFloor?: number;
+  /** 0..1 strength of the darker ground hemisphere in the IBL bake under bright skies (default 1, 0 = off) */
+  groundShade?: number;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Derived lighting terms (shared rendering pass): applied by the engine on top of every preset, so the
+// chapters keep their own preset copies untouched.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _c = new THREE.Color();
+function lumOf(c: THREE.Color): number {
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+}
+
+/** 0..1 how much a preset is a dark night haze (cool, near-black fog under an open sky) */
+export function nightnessOf(env: EnvironmentPresetEx): number {
+  if (env.sky.kind === 'cave') return 0;
+  const l = lumOf(_c.setHex(env.fog.color));
+  return (1 - THREE.MathUtils.smoothstep(l, 0.014, 0.024)) * THREE.MathUtils.clamp(env.nightFloor ?? 1, 0, 1);
+}
+
+/**
+ * The fog colour the engine actually uses: a night haze is lifted a little (moonlit air), so distant
+ * shapes dissolve into a readable dark blue instead of a black void. Linear RGB.
+ */
+export function effectiveFogColor(env: EnvironmentPresetEx, out: THREE.Color): THREE.Color {
+  out.setHex(env.fog.color);
+  return out.multiplyScalar(1 + 0.35 * nightnessOf(env));
 }
 
 export function resolvePreset(p: EnvironmentName | EnvironmentPreset): EnvironmentPresetEx {
@@ -121,6 +159,8 @@ const DOME_FS = /* glsl */ `
   uniform float uTime;
   uniform float uFlash;
   uniform vec3 uFlashDir;
+  uniform vec3 uNightGlow;    // night: faint sky glow just above the horizon (visible sky only)
+  uniform vec4 uGround;       // IBL bake: ground colour below the horizon (rgb) and how much (a)
 
   float hash12(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -318,6 +358,12 @@ const DOME_FS = /* glsl */ `
       float h = uHazeAmt * exp(-max(d.y, 0.0) * uHazeK);
       if (d.y <= 0.0) h = 1.0;
       res = res * (1.0 - h) + vec4(uFog * h, h);
+      // night: the air just above the horizon glows a little brighter than the haze, so far ridges and
+      // walls stand out as silhouettes instead of melting into one black field
+      res.rgb += uNightGlow * smoothstep(-0.015, 0.02, d.y) * exp(-max(d.y, 0.0) * 7.0);
+      // IBL bake: the ground below the horizon bounces less light than the haze above it (gives
+      // characters and walls a lit top and a darker underside under bright overcast skies)
+      if (uGround.a > 0.0 && d.y < 0.0) res.rgb = mix(res.rgb, uGround.rgb, uGround.a * smoothstep(0.0, -0.2, d.y));
     }
     gl_FragColor = res;
   }`;
@@ -379,6 +425,8 @@ export class SkyRig {
         uTime: { value: 0 },
         uFlash: { value: 0 },
         uFlashDir: { value: this.flashDir },
+        uNightGlow: { value: new THREE.Color(0, 0, 0) },
+        uGround: { value: new THREE.Vector4(0, 0, 0, 0) },
       },
       vertexShader: DOME_VS,
       fragmentShader: DOME_FS,
@@ -417,7 +465,11 @@ export class SkyRig {
     this.domeMain = new THREE.Mesh(this.domeGeo, this.domeMat);
     // the bake dome shares every uniform with the visible one except the sun disc (IBL comes from the sun light)
     this.bakeMat = this.domeMat.clone();
-    this.bakeMat.uniforms = Object.assign({}, this.domeMat.uniforms, { uSunDisc: { value: 0 } });
+    this.bakeMat.uniforms = Object.assign({}, this.domeMat.uniforms, {
+      uSunDisc: { value: 0 },
+      uNightGlow: { value: new THREE.Color(0, 0, 0) },
+      uGround: { value: new THREE.Vector4(0, 0, 0, 0) },
+    });
     this.domeBake = new THREE.Mesh(this.domeGeo, this.bakeMat);
     for (const m of [this.domeMain, this.domeBake]) {
       m.frustumCulled = false;
@@ -433,8 +485,17 @@ export class SkyRig {
   apply(env: EnvironmentPresetEx, lightDir: THREE.Vector3): void {
     const u = this.domeMat.uniforms;
     const sky: SkyDef = env.sky;
-    const fogCol = linear(env.fog.color, u.uFog.value as THREE.Color);
-    void fogCol;
+    const fogCol = effectiveFogColor(env, u.uFog.value as THREE.Color);
+    // night glow (visible sky) and the darker ground hemisphere of the IBL bake under bright skies
+    (u.uNightGlow.value as THREE.Color).copy(fogCol).multiplyScalar(1.0 * nightnessOf(env));
+    {
+      const g = this.bakeMat.uniforms.uGround.value as THREE.Vector4;
+      const lf = lumOf(fogCol);
+      const bright = sky.kind === 'cave' ? 0 : THREE.MathUtils.smoothstep(lf, 0.12, 0.35) * THREE.MathUtils.clamp(env.groundShade ?? 1, 0, 1);
+      const hg = _c.setHex(env.hemiGround);
+      const k = (0.55 * lf) / Math.max(lumOf(hg), 1e-4);
+      g.set(hg.r * k, hg.g * k, hg.b * k, 0.85 * bright);
+    }
     const density = env.fog.density;
     const hazeH = env.hazeHeight ?? THREE.MathUtils.clamp(density * 14, 0.07, 0.7);
     u.uHazeK.value = 3 / hazeH;

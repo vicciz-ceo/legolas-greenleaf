@@ -836,3 +836,79 @@ Each entry names the workaround it replaces.
   build (`import.meta.env.DEV`: `npm run dev`, `scripts/snap.mjs`, `scripts/smoke.mjs`) or with
   `?debug=1`. A production build ignores them (`ctx.flags` does not contain them), so never make a
   chapter depend on them for anything but tooling.
+
+## 14. Shared rendering pass (environment)
+
+A quality pass on the shared materials, weather and lighting defaults. Nothing here changes an API or a
+chapter file; every chapter picks the changes up automatically. What you should know, and what you can
+now use:
+
+### Materials (`src/world/texgen.ts`)
+
+The texture sets keep their names, tile sizes (`TILE_METERS`) and channel layout; their content changed.
+
+- **`stone_blocks`**: irregular ashlar (7 courses of 0.3–0.62 m on the 3 m tile, blocks 0.6–1.25 m), a
+  recessed mortar a little darker and browner than the stone (its depth comes from the normal map and a
+  soft occlusion, not an ink line), chipped arrises, flaking terraces, per-block colour, weathered
+  patches, seepage below the joints and splash grime at the foot of each block. Average albedo is about
+  5 % brighter and a touch greener-grey than before. `v` grows upward: the seepage runs down the wall.
+- **`cliff`**: horizontal beds 0.18–0.6 m (hard beds proud with an undercut foot, soft beds recessed),
+  slanted, wandering joints, angular fracture facets, iron stains and wet seepage. Less brown, a little
+  brighter. Map it with `v` = height (terrain biplanar and the box-UV builders already do).
+- **`rock`**: granular grey rock (salt-and-pepper grains, faceted plates, sparse cracks and chips). About
+  15 % brighter than before (it was well under the reference); `rgb` tints you chose still apply.
+- **`snow`**: wind ripples (~12 cm), soft drifts, grain glints, a faint cool occlusion in the troughs; now
+  has an AO map. `ice` is unchanged.
+- **`cobble`**: separate rounded stones in gravelly, mossy joints (no dark-lined voronoi tile).
+- **`wood_planks` / `old_wood`**: fibrous grain, checks, dark-brown joints, nail heads with rust (no drawn
+  contour rings). `old_wood` is ~35 % brighter (it was far darker than the reference).
+- **`bark` / `mossy_bark`**: long vertical furrows and plates (no camouflage squiggles).
+- **`forest_floor`**: muted brown leaves with ragged edges on dark soil, fewer and duller needles.
+- Cavity AO: the stone sets compute AO from local cavities (joints, cracks), not from absolute height.
+
+**Box pieces line up.** `MeshKit.box(..., { tile })` without an explicit `offset` now aligns the texture
+vertically to the piece's height (`v = y / tile`); only the horizontal offset stays random. Stacked or
+neighbouring wall pieces keep continuous courses instead of every panel showing its own seam. Pass
+`offset` yourself to override (the Ravenhill tower uses `[arc / tile, y / tile]`, fully continuous).
+
+### Terrain (`src/world/terrain.ts`)
+
+- The macro noise of the splat shader (`kLow`, `kMid`, `kHi`, which your terrain patches may use) is taken
+  from a wall projection on steep faces: walls no longer show vertical streaks, and a threshold on these
+  values gives round patches (gradient noise) instead of stripes. Variable names are unchanged.
+- Style `'snow'`: rock breaks through the snow in patches on moderate slopes (stronger slope noise),
+  concave ground takes a blue-grey cavity tint instead of plain grey, and sparse grains glint in the sun
+  (faded out at distance, no shimmer). Other styles are unchanged.
+
+### Weather (`src/core/fx.ts`)
+
+`weatherIntensity` means what it did (fraction of the particle budget). The particles changed:
+
+- **snow**: small soft flakes (≈1–3 cm cores, no crystal arms), depth-scaled, and almost none within
+  1.5–5 m of the lens (no more big bright discs over the frame).
+- **rain / storm**: thinner (≈60 % of the old width), shorter streaks (0.4–1.0 m) that fade in from 1.2–4.5 m:
+  rain reads as streaks, not a curtain. You can raise `weatherIntensity` a little if your chapter had
+  turned it down to fight the curtain.
+- **ash**: slightly smaller flakes, faded out within ~1 m of the lens.
+
+### Lighting and fog (`src/core/engine.ts`, `src/core/environment.ts`)
+
+Applied by the engine on top of every preset (your preset copies stay as they are):
+
+- **Height fog.** Fog thins above the player's ground level (exponential falloff integrated along the
+  view ray, eased as the player climbs) and returns to the preset's density beyond ~420 m. Cliffs,
+  towers and canopies 20–150 m away separate into layers; the ground level and the far ranges look as
+  before. Optional preset fields (`EnvironmentPresetEx`): `fogHeight` (falloff in metres, default 30,
+  `0` = off; cave skies default to off) and `fogFloor` (fraction of the density left high above the
+  player, default 0.5). Built-in materials and any `ShaderMaterial` built with `UniformsLib.fog` and the
+  fog chunks get it; a material without the uniform falls back to plain FogExp2. `applyFogCap()`
+  materials keep their capped classic fog.
+- **Night floor.** A dark, cool night haze (fog luminance under ~0.02, open sky) is lifted up to 35 %
+  (moonlit air), and the sky glows faintly just above the horizon, so ridges, walls and the host read as
+  silhouettes instead of a black void. Moria (cave sky) and daylight presets are untouched. Opt out or
+  soften it per preset with `nightFloor` (0..1, default 1).
+- **Form under bright skies.** The image-based lighting bake darkens the ground hemisphere (below the
+  horizon) toward the preset's `hemiGround` hue at ~55 % of the haze brightness, for bright hazes only
+  (snow, overcast, daylight). Characters and walls get a lit top and a darker underside instead of
+  washing out to flat pastel shapes. Night, Mirkwood and cave presets are unchanged. Per preset:
+  `groundShade` (0..1, default 1, 0 = the old uniform bake).

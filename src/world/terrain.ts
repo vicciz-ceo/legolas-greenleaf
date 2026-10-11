@@ -46,6 +46,12 @@ interface StyleDef {
   rough: number;
   /** normal-map strength for [A,B,C] */
   nrm: [number, number, number];
+  /** noise amplitude on the slope threshold of the steep layer (default 0.12): higher = rock breaks through in patches */
+  breakup?: number;
+  /** colour the cavity (concave) darkening takes on (default neutral); snow: a cool blue-grey */
+  cavTint?: [number, number, number];
+  /** 0..1 sun glints on sparse grains (snow) */
+  sparkle?: number;
 }
 
 const C = (hex: number): [number, number, number] => {
@@ -56,7 +62,7 @@ const C = (hex: number): [number, number, number] => {
 const STYLES: Record<TerrainOpts['style'], StyleDef> = {
   forest: { layers: ['forest_floor', 'leaves', 'cliff'], tint: [1, 1, 1], slope: [0.22, 0.42], patch: [0.56, 0.74], low: [0, 0], tile: [1, 1, 1], rough: 1, nrm: [1.0, 0.9, 1.1] },
   riverbank: { layers: ['grass', 'mud', 'rock'], tint: [1, 1, 1], slope: [0.24, 0.45], patch: [0.78, 0.9], low: [0.04, 0.2], tile: [1, 1, 1], rough: 1, nrm: [0.9, 1.0, 1.1] },
-  snow: { layers: ['snow', 'dirt', 'cliff'], tint: [1, 1, 1], slope: [0.3, 0.5], patch: [0.64, 0.8], low: [0, 0], tile: [1.4, 1, 1], rough: 1, nrm: [0.7, 0.9, 1.1] },
+  snow: { layers: ['snow', 'dirt', 'cliff'], tint: [1, 1, 1], slope: [0.3, 0.5], patch: [0.64, 0.8], low: [0, 0], tile: [1.4, 1, 1], rough: 1, nrm: [0.8, 0.9, 1.1], breakup: 0.3, cavTint: [0.8, 0.88, 1.0], sparkle: 1 },
   rock: { layers: ['rock', 'dirt', 'cliff'], tint: [1, 1, 1], slope: [0.3, 0.55], patch: [0.6, 0.78], low: [0, 0], tile: [1, 1, 1], rough: 1, nrm: [1.0, 0.9, 1.1] },
   plains: { layers: ['grass', 'dirt', 'rock'], tint: [1, 1, 1], slope: [0.26, 0.48], patch: [0.68, 0.84], low: [0, 0], tile: [1, 1, 1], rough: 1, nrm: [0.9, 1.0, 1.1] },
   ash: { layers: ['ash', 'rock', 'cliff'], tint: C(0xb8b0a8), slope: [0.28, 0.5], patch: [0.55, 0.75], low: [0, 0], tile: [1, 1, 1], rough: 1, nrm: [1.0, 1.0, 1.1] },
@@ -80,11 +86,20 @@ uniform vec4 uSlope;     // slope lo, hi, patch lo, patch hi
 uniform vec4 uLow;       // low lo, low hi, hmin, 1/range
 uniform vec3 uTintA; uniform vec3 uTintB; uniform vec3 uTintC;
 uniform vec3 uNrm; uniform float uRough; uniform float uPatchBias; uniform float uWet;
+uniform float uBreak; uniform vec3 uCavTint; uniform float uSparkle;
 varying vec3 vWPos; varying vec3 vWNrm; varying float vCav;
 float tH(vec2 p){ p = fract(p * vec2(0.1031, 0.1030)); p += dot(p, p.yx + 33.33); return fract((p.x + p.y) * p.x); }
 float tN(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
   return mix(mix(tH(i), tH(i+vec2(1,0)), f.x), mix(tH(i+vec2(0,1)), tH(i+vec2(1,1)), f.x), f.y); }
 float tF(vec2 p){ return tN(p)*0.55 + tN(p*2.13+5.2)*0.3 + tN(p*4.4+1.7)*0.15; }
+// gradient noise (round features, no lattice squares when thresholded), 0..1 around 0.5
+vec2 tG2(vec2 p){ p = vec2(dot(p, vec2(127.1, 311.7)), dot(p, vec2(269.5, 183.3))); return fract(sin(p) * 43758.5453) * 2.0 - 1.0; }
+float tGN(vec2 p){ vec2 i = floor(p); vec2 f = fract(p); vec2 w = f * f * (3.0 - 2.0 * f);
+  float n = mix(mix(dot(tG2(i), f), dot(tG2(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), w.x),
+                mix(dot(tG2(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)), dot(tG2(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0)), w.x), w.y);
+  return clamp(0.5 + n * 0.8, 0.0, 1.0); }
+float tGF(vec2 p){ return tGN(p)*0.55 + tGN(p*2.13+5.2)*0.3 + tGN(p*4.4+1.7)*0.15; }
+float tH3(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
 // two-scale anti-tiling: blend the texture with a rotated, rescaled copy of itself by low-frequency noise
 vec4 aT(sampler2D t, vec2 uv, float k){
   vec4 a = texture2D(t, uv);
@@ -100,7 +115,26 @@ float kLow = tF(wp * 0.031 + 3.7);
 float kMid = tF(wp * 0.11 + 9.1);
 float kHi = tN(wp * 0.9);
 float slope = 1.0 - nW.y;
-float wC = smoothstep(uSlope.x, uSlope.y, slope + (kMid - 0.5) * 0.12);
+// the macro noise is planar in xz: on steep faces every value would be smeared into vertical
+// streaks, so walls take it from a wall projection (u = z or x, v = height) instead
+{
+  float stp = smoothstep(0.2, 0.45, slope);
+  if (stp > 0.0) {
+    float bx = abs(nW.x) / (abs(nW.x) + abs(nW.z) + 1e-4);
+    // gradient noise, rotated off the lattice: chapters threshold these values, and value noise
+    // thresholded on a wall reads as square pixels
+    mat2 rot = mat2(0.8, -0.6, 0.6, 0.8);
+    vec2 qx = rot * vec2(vWPos.z, vWPos.y);
+    vec2 qz = rot * vec2(vWPos.x, vWPos.y);
+    float vLow = mix(tGF(qz * 0.031 + 3.7), tGF(qx * 0.031 + 6.1), bx);
+    float vMid = mix(tGF(qz * 0.11 + 9.1), tGF(qx * 0.11 + 2.3), bx);
+    float vHi = mix(tGF(qz * 0.9), tGF(qx * 0.9 + 4.4), bx);
+    kLow = mix(kLow, vLow, stp);
+    kMid = mix(kMid, vMid, stp);
+    kHi = mix(kHi, vHi, stp);
+  }
+}
+float wC = smoothstep(uSlope.x, uSlope.y, slope + (kMid - 0.5) * uBreak);
 float hn = (vWPos.y - uLow.z) * uLow.w;
 float lowW = uLow.y > 0.0 ? 1.0 - smoothstep(uLow.x, uLow.y, hn + (kMid - 0.5) * 0.1) : 0.0;
 float patchW = smoothstep(uSlope.z - uPatchBias, uSlope.w - uPatchBias, kLow * 0.7 + kMid * 0.3);
@@ -130,18 +164,42 @@ if (wC > 0.01) {
   vec2 uvz = vec2(vWPos.x, vWPos.y) / uTile.z;
   vec4 sx = texture2D(tA2, uvx); vec4 sz = texture2D(tA2, uvz + 0.31);
   vec4 nx = texture2D(tN2, uvx); vec4 nz = texture2D(tN2, uvz + 0.31);
+  // anti-tiling on big walls: blend in a 2.3x larger, offset copy by low-frequency noise (not rotated,
+  // so strata stay level)
+  float atl = smoothstep(0.38, 0.62, kLow);
+  if (atl > 0.01) {
+    vec2 ux2 = uvx * 0.43 + vec2(0.37, 0.11);
+    vec2 uz2 = uvz * 0.43 + vec2(0.71, 0.53);
+    sx = mix(sx, texture2D(tA2, ux2), atl); sz = mix(sz, texture2D(tA2, uz2), atl);
+    nx = mix(nx, texture2D(tN2, ux2), atl); nz = mix(nz, texture2D(tN2, uz2), atl);
+  }
   colC = (sx.rgb * ax + sz.rgb * az) * uTintC * (0.8 + 0.4 * kMid);
   nC = nx * ax + nz * az;
   nXZ = vec3(ax, az, 0.0);
 }
 vec3 splat = colA * wA + colB * wB + colC * wC;
 splat *= vCav * (0.94 + 0.12 * kHi) * (1.0 - 0.32 * uWet);
+// concave ground takes the cavity tint (snow: blue-grey occlusion instead of plain grey)
+splat *= mix(vec3(1.0), uCavTint, clamp((1.0 - vCav) * 2.5, 0.0, 1.0));
 diffuseColor.rgb *= splat;
 float splatRough = (nA.a * wA + nB.a * wB + nC.a * wC);
 `;
 
 const FRAG_ROUGH = /* glsl */ `
 float roughnessFactor = clamp(splatRough * uRough * (1.0 - 0.55 * uWet), 0.04, 1.0);
+// sun glints: sparse ~1.5 cm grains with a smooth, randomly tilted facet (faded out where a pixel
+// covers many grains, so distant snow does not shimmer)
+vec3 glintN = vec3(0.0);
+if (uSparkle > 0.0 && wA > 0.5) {
+  vec3 gc = floor(vWPos * 64.0);
+  float gh = tH3(gc);
+  float fp = length(fwidth(vWPos));
+  float gOn = step(0.988, gh) * (1.0 - smoothstep(0.008, 0.025, fp)) * uSparkle;
+  if (gOn > 0.0) {
+    roughnessFactor = mix(roughnessFactor, 0.07, gOn);
+    glintN = (vec3(tH3(gc + 3.1), tH3(gc + 7.7), tH3(gc + 1.9)) - 0.5) * 0.9 * gOn;
+  }
+}
 `;
 
 const FRAG_NORMAL = /* glsl */ `
@@ -158,7 +216,7 @@ const FRAG_NORMAL = /* glsl */ `
     pn.z += dC.x * wC * nXZ.x * sign(nW.x);
     pn.x += dC.x * wC * nXZ.y * sign(nW.z);
   }
-  pn = normalize(pn);
+  pn = normalize(pn + glintN);
   normal = normalize((viewMatrix * vec4(pn, 0.0)).xyz);
 }
 `;
@@ -326,6 +384,9 @@ export function buildTerrain(opts: TerrainOpts & TerrainExtras): { mesh: THREE.M
     u.uRough = { value: style.rough };
     u.uPatchBias = { value: patchBias };
     u.uWet = wetU;
+    u.uBreak = { value: style.breakup ?? 0.12 };
+    u.uCavTint = { value: new THREE.Vector3(...(style.cavTint ?? [1, 1, 1])) };
+    u.uSparkle = { value: style.sparkle ?? 0 };
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nattribute float aCav;\nvarying vec3 vWPos; varying vec3 vWNrm; varying float vCav;')
       .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWPos = (modelMatrix * vec4(position, 1.0)).xyz;\nvWNrm = normalize(mat3(modelMatrix) * normal);\nvCav = aCav;');
