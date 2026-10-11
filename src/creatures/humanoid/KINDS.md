@@ -46,13 +46,13 @@ Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dress
 | `extends` | start from another kind |
 | `build` | `shoulders hips bulk belly chest armLength legLength headSize neck neckThick hunch handSize footSize muscle` (multipliers, 1 = average man; `belly`, `hunch`, `muscle` 0..1) |
 | `face` | `jaw jawLength chin brow cheekbones cranium foreheadSlope`, `nose{length width bridge hook tip flat}`, `lips{width fullness}`, `ears: 'round'│'pointed'│'long'│'small'│'orc'│'bat'`, `earSize`, `eyeSize eyeSpacing eyeTilt eyeOpen`, `tusks underbite asym` |
-| `skin` | `color color2 blotch blemish scars warts wrinkles lips brows surface scatter` — `surface` is a kit preset (`skin`, `skin_weathered`, `skin_orc`, `skin_troll`), `scatter` the subsurface tint |
+| `skin` | `color color2 blotch blemish scars warts wrinkles lips brows surface scatter` — `surface` is a kit preset (`skin`, `skin_weathered`, `skin_brute` (sweaty sheen: Uruk-hai, Lurtz, berserker), `skin_scarred` (procedural healed cuts: Bolg), `skin_orc`, `skin_troll`), `scatter` the subsurface tint. Keep albedos plausible: fair skin ≈ `0xd9ab8c`, pale brute ≈ `0x9e7b6b` (the lab and the game's AgX render them lighter and greyer than the hex suggests) |
 | `eyes` | `color glow sclera` (`glow` > 0 makes the irises emissive) |
 | `hair` | `style` (`long_straight long_wavy shoulder short cropped mohawk topknot bald mane wild tied_back stringy`), `color tipColor length density braids('temple'│'side'│'many')`. `length` also moves the end height of long styles |
 | `beard` | `style` (`full braided forked stubble goatee mustache`), `color`, `length` (m) |
-| `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, offset?, chance?}` (bracers: `length` = fraction of the forearm from the wrist, default 0.7; belt/sash: `offset` raises it (m); skirt: `thickness` adds clearance for bodies bigger than the anatomy, `mat: 'rags'` tears the hem; jerkin/vest: `color2` mottles the leather); types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
+| `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, offset?, chance?, tatter?, strips?}` (bracers: `length` = fraction of the forearm from the wrist, default 0.7; belt/sash: `offset` raises it (m); skirt: `thickness` adds clearance for bodies bigger than the anatomy, `mat: 'rags'` tears the hem; skirt/loincloth: `tatter` (m) cuts torn zig-zag points into the hem, `strips: { count, color, color2?, mat?, width, length, phase? }` hangs pointed leather strips over the cloth (Bolg's and Lurtz's layered kilts); jerkin/vest: `color2` mottles the leather; any layer: `mat: 'leather_tooled'` for embossed leaf work, `'twill'` for wool twill); types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
 | `armor` | pieces `{type, style, color?, minArmor?, chance?}`; types `helmet pauldrons breastplate vambraces greaves gorget tassets shoulder_spikes plates crown circlet gauntlets mask`; styles `elven orc uruk rohan gondor dwarf easterling haradrim gundabad goblin ranger king`. A piece appears when `spec.armor ≥ minArmor`; helmets only when `spec.helmet !== false` |
-| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look (`'uruk'` → falchion + white-hand shield, `'gondor'`, `'dwarf'`, `'easterling'` shields…). Bows always go to the left hand; a default bow not in hand is shown stowed on the back |
+| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look (`'uruk'` → falchion + white-hand shield, `'orc'` → the mace becomes a spiked morning star (Bolg, Gundabad), `'gondor'`, `'dwarf'`, `'easterling'` shields…). Bows always go to the left hand; a default bow not in hand is shown stowed on the back |
 | `palette` | named colours for your own extras |
 | `sfx` | hints for gameplay/audio: `voice grunt hurt die roar footstep weight` |
 | `anim` | `hunch swagger aggression stance armSwing cadence grace` — posture and gait character |
@@ -68,6 +68,12 @@ automatically: jerkin/vest hem, neckline and armholes, tunic/shirt neckline and 
 belt edges, bracer ends, boot tops and the hems/edges of skirt panels and cloaks. To stitch an
 edge of your own garment in `extras`, add a seam paint plane (same plane as the cut) inside the
 garment's group: `s.plane(n, d, { op: 'paint', seam: 0, k: 0.002 })`.
+
+Belts get a buckle automatically (heroes, i.e. kinds with a `faceRes`: a cast oval frame with a
+tongue in `palette.buckle`; crowds: a 12-triangle plate). Eyes are wet clear-coated eyeballs with a
+corneal bulge; the iris is looked up through the cornea with a view-dependent offset (parallax
+depth), the sclera is never paper-white and the upper lid shades the eyeball (heroes: a finer eye
+mesh).
 
 Faces: every kind gets the same sculpted head (full midface and cheek pads, eyelid shells with an
 almond opening, nose, lips) driven by `face`; kinds with ordinary skin (`skin.surface: 'skin'`, or
@@ -125,24 +131,48 @@ that hand holds that weapon (Legolas' sheathed knives do this).
    (Aragorn). Lab: `?kitdebug=hairlayers` tints A/B, `noclump` skips the clumping; subject
    `legolas_shoulder` shows him from behind as the game camera does (`&yaw=` turns him).
 4. **Outfit** (order matters only for readability; layers are sorted inner → outer):
-   leggings → boots (`length 0.86`, folded cuff) → tunic (green-grey, `length 0.5` → four skirt
-   panels to mid-thigh) → suede jerkin (sleeveless: wraps the ribs and opens only at the shoulder
-   joint; `color2` mottles it) → bracers (`length 0.9`, wrist to elbow) → belt (`offset` raises it
-   to the waist, with buckle). The jerkin's skirt below the belt (flat-backed, split at the back,
-   open at the front) is sculpted in `extras`. Every edge is stitched and worn (see above).
+   dark brown wool leggings (`mat: twill` variant) → tooled boots (`length 0.86`, folded cuff) →
+   olive grey-green wool twill tunic (`length 0.5` → four skirt panels to mid-thigh) → tooled
+   leather jerkin (`mat: leather_tooled`; sleeveless: wraps the ribs and opens only at the shoulder
+   joint; `color2` mottles it) → tooled bracers (`length 0.9`, wrist to elbow, `thickness` so they
+   stand proud) → belt (`offset` raises it to the waist, bronze buckle). The jerkin's skirt below
+   the belt (flat-backed, split at the back, open at the front) is sculpted in `extras`. Every edge
+   is stitched and worn (see above).
 5. **Weapons** — `left: 'elven_bow'`, `right: 'none'` (the right hand draws the string). The bow
    string follows the right hand while aiming; the arrow is shown nocked. During the `climb`,
    `hang`, `swing` and `barrel` special poses the bow is stowed on the back automatically and
    returned to the hand afterwards (any kind holding a bow).
 6. **Extras** — a leather baldric (torso parts inflated and cut by two planes into a diagonal
-   band), the quiver on the right back (`quiverGear`: tooled leather lathe, 16 arrows standing
+   band) with a bronze ring buckle on the right breast (placed with the uruks' `makeProjector` +
+   `snapPoint` on the finished sculpt), raised darker rolls at both bracer ends (the forearm part
+   inflated a little more and cut by two planes), the tooled quiver (`QuiverOpts.mat`) on the right back (`quiverGear`: tooled leather lathe, 16 arrows standing
    nock-up so the white fletchings show) on the springy `quiver` bone, two sheaths side by side on
    its spine side (`sheathSide: -1`), and the two white-handled knives as separate objects with
    `stowFor`, so they vanish from the back when the knives are drawn.
 7. **Detail** — `faceRes: 0.0048` gives Legolas a fine face region (hero quality).
 
-Result: ~61k triangles at LOD0 (body + clothing + gear ≈ 39k in one draw call, hair + braids +
-lashes + brows ≈ 18k, eyes), ~13.6k at LOD1, ~6.2k at LOD2.
+Result: ~63k triangles at LOD0 (body + clothing + gear ≈ 39k in one draw call, hair + braids +
+lashes + brows ≈ 18k, eyes ≈ 2k), ~19k at LOD1 in the lab (body, hair, eyes), ~6.5k at LOD2. The
+bow (a separate object) is a Galadhrim recurve: golden wood with leaf work carved by the shader,
+dark curled tips, a leather grip wrap between two metal rings.
+
+## Worked example: Bolg (`kinds/uruks_bosses/bolg.ts`)
+
+2.6 m, ~43k triangles at LOD0. What makes him read at the duel distance:
+* **Muscle at a resolution that can show it**: `detail.res 0.038` (was 0.05 — 5 cm cells cannot
+  draw an abdominal), `brawnBody` masses, `bareTorso` abs/clavicles/ribs, extra pecs with a defined
+  lower edge, serratus ridges and a sternum/linea alba groove, all projected onto the finished body.
+* **Skin**: `skin_scarred` (pale warm albedo `0x9e7b6b`, procedural healed cuts everywhere) plus a
+  few carved face scars and raised arm welts; a painted beard shadow over the jaw, chin and cheeks.
+* **Head**: `headSize 1.12`, heavy brow, small amber eyes, flattened nose, lower fangs that come
+  forward with the under-bite, orc ears; a face region (`faceRes 0.009`, `refine 1`, `hands: false`)
+  keeps the features crisp inside the boss budget. Hardware is an iron band bolted down the left side
+  of the skull continuing as a brace along the jaw (no helmet rim, no chin plate).
+* **Kit**: tattered leather mantle under three rust-brown iron lames with a crown of spikes and
+  rivets (`bolgPauldron`), spiked leather bracers with iron bands, X straps with an iron ring and
+  rivets, a wide two-tier riveted belt with a front ring, a tattered kilt with leather strips
+  (`tatter`, `strips`), strapped greaves with iron splints and a spiked knee cap over the shin wraps,
+  sandals, and the `'orc'`-style morning star.
 
 ## Performance rules of thumb
 

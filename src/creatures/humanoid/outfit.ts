@@ -8,12 +8,12 @@ import type { PrimOpts, Sculpt, V3 } from '../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../kit/surfaces';
 import { emitParts, type Part, type PartTag } from './anatomy';
 import type { Proportions } from './proportions';
-import type { OutfitLayer, ResolvedKind } from './types';
+import type { OutfitLayer, ResolvedKind, SkirtStrips } from './types';
 import type { Rng } from '../../core/rng';
 
 export interface OutfitResult {
   /** cloth panels to add as separate skinned layers */
-  skirt?: { top: number; bottom: number; color: number; color2?: number; mat: SurfaceName | SurfaceSpec; panels: [number, number][]; ragged?: number; grow?: number };
+  skirt?: { top: number; bottom: number; color: number; color2?: number; mat: SurfaceName | SurfaceSpec; panels: [number, number][]; ragged?: number; grow?: number; tatter?: number; strips?: SkirtStrips };
   cloak?: { color: number; color2?: number; mat: SurfaceName | SurfaceSpec; length: number; ragged?: number };
   /** the hair is covered (hood/helmet) */
   hood?: boolean;
@@ -256,6 +256,8 @@ export function sculptOutfit(s: Sculpt, P: Proportions, parts: Part[], def: Reso
           ragged: l.type === 'loincloth' || l.mat === 'rags' ? 0.04 * sc : undefined,
           // thickness: clearance for bodies sculpted bigger than the anatomy (trolls)
           grow: l.thickness ? l.thickness * sc : undefined,
+          tatter: l.tatter ? l.tatter * sc : undefined,
+          strips: l.strips ? { ...l.strips, width: l.strips.width * sc } : undefined,
         };
         break;
       }

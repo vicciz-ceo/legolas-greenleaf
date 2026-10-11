@@ -189,14 +189,15 @@ export const lurtzKind: KindDef = {
   face: LURTZ_FACE,
   // sheet: dark brown-black skin (#55432f lit), long loose black hair, bare torso, ragged dark
   // knee-length kilt (#302a25), wrapped shins and feet (#40352b), black iron shield on the back
-  skin: { color: 0x36291f, color2: 0x221a14, blotch: 0.55, blemish: 0.5, scars: 3, warts: 0.08, wrinkles: 0.55, lips: 0x30221d, brows: 0x14100d, surface: 'skin_orc', scatter: 0x4c2e22 },
+  // (a warmer red-brown and a sweaty sheen: the turnaround's skin reads #6a4232 where lit)
+  skin: { color: 0x48302a, color2: 0x2e1f1a, blotch: 0.5, blemish: 0.5, scars: 3, warts: 0.06, wrinkles: 0.5, lips: 0x30221d, brows: 0x14100d, surface: 'skin_brute', scatter: 0x7a3626 },
   eyes: { color: 0xd8a830, glow: 0.45, sclera: 0xb8aa80 },
   hair: { style: 'mane', color: 0x16130f, tipColor: 0x24211b, length: 1.15, density: 0.75 },
   outfit: [
     { type: 'wraps', color: 0x40352b, thickness: 0.014 },
     { type: 'shoes', color: 0x2e261f, color2: 0x1c1712 },
     { type: 'belt', color: 0x3a2c20, thickness: 0.006 },
-    { type: 'skirt', color: 0x302a25, color2: 0x221d19, mat: 'rags', length: 0.85 },
+    { type: 'skirt', color: 0x302a25, color2: 0x221d19, mat: 'rags', length: 0.85, tatter: 0.04, strips: { count: 7, color: 0x3a2c20, color2: 0x281e16, mat: 'leather_worn', width: 0.06, length: 0.78, phase: 0.3 } },
   ],
   armor: [],
   weapons: { right: 'sword', left: 'uruk_bow', back: ['shield'], style: 'uruk' },

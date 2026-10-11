@@ -192,7 +192,8 @@ export function sculptHead(s: Sculpt, P: Proportions, def: ResolvedKind, rng: Rn
   // tusks
   if (f.tusks > 0) {
     s.mirrored(() =>
-      s.cone(h(0.075, my - 0.05, 0.35), h(0.095, my + 0.07 * f.tusks, 0.385), 0.017 * u * f.tusks, 0.005 * u, { bone: 'jaw', color: 0xd8cca8, mat: 'teeth', k: 0.004 * u }),
+      // (an under-bite pushes the lower jaw forward: the fangs come with it, or they hide in the lip)
+      s.cone(h(0.075, my - 0.05, 0.35 + 0.06 * f.underbite), h(0.095, my + 0.07 * f.tusks, 0.385 + 0.07 * f.underbite), 0.017 * u * f.tusks, 0.005 * u, { bone: 'jaw', color: 0xd8c89c, mat: 'teeth', k: 0.004 * u }),
     );
   }
   sculptEars(s, P, f, sk, warm > 0 ? blush : null);

@@ -81,11 +81,36 @@ Primitive options (`PrimOpts`): `op` (`union`/`subtract`/`intersect`/`paint`), `
 `noise` (`fbm` / `ridged` wrinkles / `cells` warts & scales / `dents`), `strength` (paint),
 `paintCarve` (repaint carved surfaces), `rot` (Euler or quaternion).
 
-Surface presets (`SURFACES`): `skin`, `skin_weathered`, `skin_orc`, `skin_troll`, `lips`, `nail`,
-`horn`, `bone`, `teeth`, `eye`, `cloth`, `linen`, `wool`, `rags`, `leather`, `suede`,
-`leather_worn`, `metal`, `metal_dark`, `metal_rusty`, `gold`, `mail`, `wood`, `chitin`, `scales`,
-`fur`, `hair`, `hide`, `membrane`, `stone`. Derive variants with
+Surface presets (`SURFACES`): `skin`, `skin_weathered`, `skin_brute`, `skin_scarred`, `skin_orc`,
+`skin_troll`, `lips`, `nail`, `horn`, `bone`, `teeth`, `eye`, `cloth`, `twill`, `linen`, `wool`,
+`rags`, `leather`, `leather_tooled`, `suede`, `leather_worn`, `metal`, `metal_dark`,
+`metal_hammered`, `metal_rusty`, `iron_rusty`, `gold`, `mail`, `wood`, `chitin`, `scales`, `fur`,
+`hair`, `hide`, `membrane`, `stone`. Derive variants with
 `surface('chitin', { rough: 0.5, pat: { fur: 1 } })`.
+
+**Alternative patterns (negative weights).** The first four pattern slots switch to a second
+pattern when their weight is negative (a blend between the two fades through 0, so boundaries stay
+clean and the crisp-seam splitter treats the sign change as a material edge):
+
+| Slot | `> 0` | `< 0` | Preset |
+|---|---|---|---|
+| `pores` | pores + fine crosshatched skin lines | the same plus long healed cuts (raised, glossy, red-purple) | `skin_scarred` |
+| `weave` | plain weave | 2/1 twill (diagonal ribs) | `twill` |
+| `leather` | grain + creases | tooled / embossed leaf work (raised burnished leaves with incised outlines, midribs and veins on a stippled ground, a scrolling stem; triplanar) | `leather_tooled` |
+| `scales` | scales / mail rings | hammered metal (shallow dents) | `metal_hammered`, `iron_rusty` |
+
+```ts
+s.set({ mat: surface('leather_tooled', { rough: 0.62 }) });            // Legolas' jerkin, bracers, boots
+s.set({ mat: surface('wood', { rough: 0.42, pat: { leather: -0.6 } }) }); // carved bow limbs
+```
+
+**Built into the shader (no options):** skin (surface `skin` amount > 0.3) gets 1–3 cm mottling,
+capillary warmth and oily/dry roughness patches; cloth gets slub and lump variation in the albedo;
+leather collects grime where the baked AO is low and is burnished where it is high; metal is polished
+where exposed (high AO), and **pitted metal (`metal > 0`, `pores` ≥ ~0.4: `metal_rusty`,
+`iron_rusty`) rusts** — orange-brown, rough and non-metallic — first in its crevices, then in
+blotches. Cloth sheen is tinted by the albedo and never brighter than it (no pastel wash under a
+bright sky). The baked AO is softened on skin by `0.4 × skin`, enough to seat eyes in their sockets.
 
 ## 3. Mesh (and cache)
 
@@ -173,6 +198,13 @@ const strands = growStrands(roots /* {p, dir, length, width, bone?, color?, minY
 const geo = hairGeometry(strands, braids, { color: 0xd8c8a0, weights: (p, along, out) => out.push([headBone, 1]) });
 const mat = createHairMaterial({ anisotropy: 0.8 }); // alpha-tested strand cards + Kajiya-Kay highlight
 ```
+
+The shared strand texture makes every card read as separate strands: each of its four lock tiles
+is 3–6 bundles of fine fibres (per-fibre brightness), separated by gaps that are dark near the root
+(coverage over the scalp) and **transparent in the free-hanging part** (from ~40–60 % of the card's
+length), so the cards and the darker cap behind show between the strands; bundles end at different
+lengths and lock edges are sparse, so ends taper. The Kajiya-Kay lobes are shifted per bundle (and
+vary in strength), so the highlight breaks into strands instead of a smooth band.
 
 `growStrands` options worth knowing: `hug: 0` keeps strands on collider 0 (the scalp) until the
 outward normal drops below `hugUntil`; `normalColliders: [0, …]` lists the colliders card normals

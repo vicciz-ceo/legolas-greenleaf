@@ -195,7 +195,8 @@ function bowLimbCenter(o: BowOpts, y: number): number {
   // z of the limb centre line at height |y| (string side is -Z)
   const t = Math.min(1, Math.abs(y) / o.half);
   let z = -o.brace * 0.82 * Math.pow(Math.max(0, (t - 0.08) / 0.92), 1.65);
-  if (t > 0.8) z += o.recurve * Math.pow((t - 0.8) / 0.2, 2);
+  // recurve: the outer limb sweeps forward (away from the archer) into curled tips
+  if (t > 0.74) z += o.recurve * Math.pow((t - 0.74) / 0.26, 2.2);
   return z + 0.012;
 }
 
@@ -208,7 +209,8 @@ function buildBow(o: BowOpts): THREE.Object3D {
   for (const sgn of [1, -1]) {
     const pos: number[] = [];
     const idx: number[] = [];
-    const N = 30;
+    // (the carving is in the shader; a few more rings keep the recurve smooth)
+    const N = o.carved ? 36 : 30;
     const ring = 6;
     for (let i = 0; i <= N; i++) {
       const t = i / N;
@@ -243,22 +245,24 @@ function buildBow(o: BowOpts): THREE.Object3D {
     const tipC = lin(o.tipColor ?? o.wood);
     k.add(g, {
       color: o.wood,
-      mat: o.crude ? surface('wood', { rough: 0.85 }) : surface('wood', { rough: 0.5 }),
+      // carved (Galadhrim) bows: leaf work cut into the polished limbs (the kit's tooled pattern)
+      mat: o.crude ? surface('wood', { rough: 0.85 }) : o.carved ? surface('wood', { rough: 0.42, pat: { leather: -0.6, fur: 0.7 } }) : surface('wood', { rough: 0.5 }),
       colorFn: (p, n, c) => {
         woodColor(o.wood, o.seed)(p, n, c);
         const t = Math.abs(p.y) / o.half;
-        if (t > 0.9) c.lerp(tipC, 0.8);
-        if (o.carved && t > 0.15 && t < 0.75) {
-          // carved vine pattern on the belly/back
-          const v = Math.sin(p.y * 160 + Math.sin(p.y * 40) * 2) * Math.sin(p.x * 400);
-          if (v > 0.55) c.multiplyScalar(0.55);
-        }
+        if (t > 0.86) c.lerp(tipC, Math.min(1, (t - 0.86) / 0.06) * 0.85);
+        // darker inlaid bands where the limbs leave the riser and before the recurve
+        if (o.carved && (Math.abs(t - 0.2) < 0.012 || Math.abs(t - 0.72) < 0.01)) c.lerp(tipC, 0.75);
       },
     });
   }
   // riser + grip wrap + arrow shelf
   k.add(lathe([[0.0, -0.11], [0.014, -0.105], [0.019, -0.07], [0.021, 0], [0.019, 0.07], [0.014, 0.105], [0.0, 0.11]], 10).scale(1, 1, 1.25).translate(0, 0, 0.004), { color: o.wood, mat: 'wood', colorFn: woodColor(o.wood, o.seed) });
-  k.add(grip(0.0215, -0.06, 0.055, 9, 10).scale(1, 1, 1.25).translate(0, 0, 0.004), { color: o.gripColor, mat: o.crude ? 'rags' : 'suede' });
+  k.add(grip(0.0215, -0.06, 0.055, o.carved ? 15 : 9, 10).scale(1, 1, 1.25).translate(0, 0, 0.004), { color: o.gripColor, mat: o.crude ? 'rags' : 'leather_worn' });
+  if (o.carved) {
+    // metal binding rings at both ends of the leather grip wrap
+    for (const y of [-0.064, 0.059]) k.add(new THREE.TorusGeometry(0.0222, 0.0032, 5, 14).rotateX(Math.PI / 2).scale(1, 1, 1.25).translate(0, y, 0.004), { color: 0xa88a52, mat: 'gold' });
+  }
   k.add(new THREE.BoxGeometry(0.012, 0.012, 0.03).translate(0.012, 0.068, 0.0), { color: o.gripColor, mat: 'leather' });
   if (o.crude) {
     for (const y of [-0.3, 0.25, 0.42]) k.add(grip(0.018, y, y + 0.035, 4, 6).translate(0, 0, bowLimbCenter(o, y)), { color: 0x4a3a28, mat: 'rags' });
@@ -632,7 +636,51 @@ function polearm(kind: 'pike' | 'spear', seed: number): THREE.Object3D {
   return withTip(k.mesh(kind), y1 + (pike ? 0.32 : 0.26));
 }
 
-function blunt(kind: 'mace' | 'club' | 'warhammer', seed: number): THREE.Object3D {
+/** orc morning star: leather-wrapped haft with iron bands, a hammered faceted iron ball with a
+ *  collar and a crown of rusted conical spikes (Bolg, Gundabad) */
+function morningStar(seed: number): THREE.Object3D {
+  const k = new Kit();
+  const rnd = new Rng(seed + 17);
+  const RUST = surface('iron_rusty', { rough: 0.62 });
+  // haft: dark wood under spiral leather wraps, iron ferrule and collar
+  k.add(lathe([[0.0, -0.24], [0.02, -0.24], [0.02, -0.2], [0.017, -0.18], [0.0175, 0.5], [0.022, 0.52], [0.0, 0.53]], 8), { color: 0x3a2a1e, mat: 'wood', colorFn: woodColor(0x3a2a1e, seed) });
+  k.add(grip(0.0195, -0.17, 0.12, 12, 8), { color: 0x4a3424, mat: 'leather_worn' });
+  for (const [y, h] of [[-0.22, 0.04], [0.14, 0.025], [0.46, 0.06]] as [number, number][]) k.add(new THREE.CylinderGeometry(0.023, 0.023, h, 8).translate(0, y + h / 2, 0), { color: 0x5a4636, mat: RUST });
+  // the head: a hammered faceted ball (icosahedron) with flanged collar
+  const y = 0.6;
+  const R = 0.068;
+  const ball = new THREE.IcosahedronGeometry(R, 1);
+  const bp = ball.attributes.position as THREE.BufferAttribute;
+  // (non-indexed faces: the dent depth is a function of the position so shared corners stay welded)
+  for (let i = 0; i < bp.count; i++) {
+    const x = bp.getX(i), yy = bp.getY(i), z = bp.getZ(i);
+    const kk = 1 + 0.035 * Math.sin(x * 91.7 + yy * 57.3 + z * 33.1 + seed);
+    bp.setXYZ(i, x * kk, yy * kk, z * kk);
+  }
+  ball.computeVertexNormals();
+  k.add(ball.translate(0, y, 0), { color: 0x5e4a3a, mat: RUST });
+  k.add(lathe([[0.0, y - R - 0.03], [0.03, y - R - 0.03], [0.036, y - R - 0.005], [0.02, y - R + 0.012], [0.0, y - R + 0.012]], 8), { color: 0x54402f, mat: RUST });
+  // spikes on the icosahedron's vertex directions (12) + a top spike
+  const dirs: THREE.Vector3[] = [];
+  const ico = new THREE.IcosahedronGeometry(1, 0);
+  const ip = ico.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < ip.count; i++) {
+    const d = new THREE.Vector3(ip.getX(i), ip.getY(i), ip.getZ(i)).normalize();
+    if (d.y < -0.8) continue; // the haft
+    if (!dirs.some((e) => e.distanceToSquared(d) < 1e-4)) dirs.push(d);
+  }
+  ico.dispose();
+  for (const d of dirs) {
+    const h = d.y > 0.95 ? 0.085 : 0.065 + rnd.range(-0.006, 0.008);
+    const cone = new THREE.ConeGeometry(0.016, h, 6).translate(0, R * 0.92 + h / 2, 0);
+    const m = new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), d)).setPosition(0, y, 0);
+    k.add(cone, { color: 0x6a5240, mat: RUST }, m);
+  }
+  return withTip(k.mesh('mace'), y + R + 0.08);
+}
+
+function blunt(kind: 'mace' | 'club' | 'warhammer', seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
+  if (kind === 'mace' && style === 'orc') return morningStar(seed);
   const k = new Kit();
   const rnd = new Rng(seed);
   if (kind === 'club') {
@@ -862,7 +910,8 @@ function build(kind: WeaponKind, seed: number, style: WeaponStyle = 'default'): 
   if (kind === 'sword' && style === 'uruk') return falchion(seed);
   switch (kind) {
     case 'elven_bow':
-      return buildBow({ half: 0.79, brace: 0.17, recurve: 0.07, width: 0.034, thick: 0.022, wood: 0xcfbf98, gripColor: 0x3a2e24, tipColor: 0xe8dcc0, stringColor: 0xe0dccc, fletch: 0xf2f0ea, carved: true, seed });
+      // Galadhrim recurve: golden polished wood, darker curled tips, dark leather grip wrap
+      return buildBow({ half: 0.79, brace: 0.17, recurve: 0.12, width: 0.034, thick: 0.022, wood: 0xbf9b62, gripColor: 0x33251a, tipColor: 0x5a4026, stringColor: 0xd8d0bc, fletch: 0xf2f0ea, carved: true, seed });
     case 'orc_bow':
       return buildBow({ half: 0.55, brace: 0.13, recurve: 0.05, width: 0.032, thick: 0.024, wood: 0x2e241c, gripColor: 0x3a2e22, stringColor: 0x6a5a48, fletch: 0x2a2622, crude: true, seed });
     case 'uruk_bow':
@@ -884,7 +933,7 @@ function build(kind: WeaponKind, seed: number, style: WeaponStyle = 'default'): 
     case 'mace':
     case 'club':
     case 'warhammer':
-      return blunt(kind, seed);
+      return blunt(kind, seed, style);
     case 'crossbow':
       return crossbow(seed);
     case 'torch':

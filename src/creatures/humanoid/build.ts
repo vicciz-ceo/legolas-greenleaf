@@ -184,7 +184,7 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
   const arm = armorGear(sink, P, vdef, def.armor.filter((a) => armor >= (a.minArmor ?? 0) && (a.chance === undefined || rng.float() < a.chance)), rng, helmet);
   const hooded = !!out.hood || arm.helmet;
   if (def.hair && !out.hood) sculptHairCap(sc, P, def.hair, hooded);
-  if (out.beltY !== undefined) buckleGear(sink, P, out.beltY, 0xb0a080);
+  if (out.beltY !== undefined) buckleGear(sink, P, out.beltY, def.palette.buckle ?? 0x9a8058, def.detail.faceRes > 0);
   const objects: ExtraObject[] = [];
   const ctx: KindContext = {
     kind: spec.kind,
@@ -292,7 +292,7 @@ function assembleHumanoid(prep: Prepared): HumanoidAssets {
   if (hair0.geo) hair0.geo.userData.shared = true;
 
   // ── eyes: eyeballs + lashes rigid to the head ──
-  const eyeGeo = eyesGeometry(rig, head);
+  const eyeGeo = eyesGeometry(rig, head, (def.detail.faceRes ?? 0) > 0);
   eyeGeo.userData.shared = true;
 
   const bodyMat = createCreatureMaterial({
@@ -411,12 +411,39 @@ function hairMaterialFor(hairCol: number): THREE.MeshPhysicalMaterial {
   return hairMat;
 }
 
-function eyesGeometry(rig: RigDef, head: HeadInfo): THREE.BufferGeometry {
+/** cornea: bulge of the front of the eyeball (fraction of the radius) over the iris cap */
+const CORNEA = { lift: 0.075, angle: 0.2 * Math.PI };
+
+function eyesGeometry(rig: RigDef, head: HeadInfo, hero = false): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   const hb = rig.boneIndex('head');
+  const R = head.eyes.radius;
   for (const sd of ['l', 'r'] as const) {
     const c = head.eyes[sd];
-    const g = new THREE.SphereGeometry(head.eyes.radius, 24, 16).rotateX(Math.PI / 2);
+    const g = new THREE.SphereGeometry(R, hero ? 28 : 24, hero ? 20 : 16).rotateX(Math.PI / 2);
+    // the cornea bulges over the iris (a clear dome catches a tight wet highlight and gives the
+    // eye its profile); analytic normals so the uv seam never shows on the cornea
+    const pa = g.attributes.position as THREE.BufferAttribute;
+    const na = g.attributes.normal as THREE.BufferAttribute;
+    const d = new THREE.Vector3();
+    const et = new THREE.Vector3();
+    const th0 = CORNEA.angle;
+    for (let i = 0; i < pa.count; i++) {
+      d.set(pa.getX(i), pa.getY(i), pa.getZ(i)).normalize();
+      const th = Math.acos(Math.max(-1, Math.min(1, d.z)));
+      if (th >= th0) continue;
+      const q = th / th0;
+      const b = (1 - q * q) * (1 - q * q);
+      const db = (-4 * th * (1 - q * q)) / (th0 * th0);
+      const r = 1 + CORNEA.lift * b;
+      pa.setXYZ(i, d.x * R * r, d.y * R * r, d.z * R * r);
+      const st = Math.sin(th);
+      if (st > 1e-4) {
+        et.set((d.x * d.z) / st, (d.y * d.z) / st, -st);
+        const n = d.clone().addScaledVector(et, -(CORNEA.lift * db) / r).normalize();
+        na.setXYZ(i, n.x, n.y, n.z);
+      }
+    }
     // the eye opening is wider than a sphere's silhouette: widen slightly so no corner shows a gap
     g.scale(1.08, 1, 1);
     // slight outward gaze for a natural look
@@ -464,7 +491,10 @@ function eyeTextures(iris: number, sclera: number) {
   const data = new Uint8Array(W * H * 4);
   const glow = new Uint8Array(W * H * 4);
   const ci = new THREE.Color().setHex(iris, THREE.SRGBColorSpace);
-  const cs = new THREE.Color().setHex(sclera, THREE.SRGBColorSpace);
+  // a living sclera is never paper-white: slightly darker and warmer than the given colour
+  const cs = new THREE.Color().setHex(sclera, THREE.SRGBColorSpace).multiplyScalar(0.8);
+  cs.g *= 0.985;
+  cs.b *= 0.955;
   const rnd = new Rng(hashSeed('eye', iris));
   // radial iris fibres: a smooth random profile around the circumference
   const fib = Array.from({ length: W }, () => rnd.float());
@@ -517,7 +547,7 @@ function eyeTextures(iris: number, sclera: number) {
         b *= 1 - 0.35 * lr;
       }
       // the upper lid and lashes shade the top of the eyeball; the corners are in shadow too
-      const lid = 1 - 0.5 * Math.min(1, Math.max(0, (dy - 0.12) / 0.32)) - 0.15 * Math.min(1, Math.max(0, (-dy - 0.3) / 0.3));
+      const lid = 1 - 0.62 * Math.min(1, Math.max(0, (dy - 0.04) / 0.34)) - 0.18 * Math.min(1, Math.max(0, (-dy - 0.26) / 0.3));
       const side = 1 - 0.25 * Math.min(1, Math.max(0, (Math.abs(dx) - 0.45) / 0.35));
       r *= lid * side;
       g *= lid * side;
@@ -548,21 +578,72 @@ function eyeTextures(iris: number, sclera: number) {
   return res;
 }
 
+/**
+ * Eyes: a wet clear-coated eyeball whose iris sits BEHIND the cornea — the iris lookup is offset
+ * along the view ray to a plane below the corneal dome (parallax refraction), so the iris has depth
+ * and the pupil stays put while the highlight slides over the bulge.
+ */
 function eyeMaterial(iris: number, glowAmt: number, sclera: number): THREE.MeshPhysicalMaterial {
   const tex = eyeTextures(iris, sclera);
   const m = new THREE.MeshPhysicalMaterial({
     map: tex.map,
-    roughness: 0.18,
+    roughness: 0.22,
     clearcoat: 1,
-    clearcoatRoughness: 0.04,
+    clearcoatRoughness: 0.03,
     metalness: 0,
-    specularIntensity: 0.6,
+    specularIntensity: 0.7,
   });
   if (glowAmt > 0) {
     m.emissive = new THREE.Color().setHex(iris, THREE.SRGBColorSpace);
     m.emissiveMap = tex.glow;
     m.emissiveIntensity = glowAmt;
   }
+  m.onBeforeCompile = (shader) => {
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vEyeX;\nvarying vec3 vEyeY;\nvarying vec3 vEyeZ;')
+      .replace(
+        '#include <skinnormal_vertex>',
+        `#include <skinnormal_vertex>
+	#ifdef USE_SKINNING
+		vEyeX = normalize( normalMatrix * ( skinMatrix * vec4( 1.0, 0.0, 0.0, 0.0 ) ).xyz );
+		vEyeY = normalize( normalMatrix * ( skinMatrix * vec4( 0.0, 1.0, 0.0, 0.0 ) ).xyz );
+		vEyeZ = normalize( normalMatrix * ( skinMatrix * vec4( 0.0, 0.0, 1.0, 0.0 ) ).xyz );
+	#else
+		vEyeX = normalize( normalMatrix * vec3( 1.0, 0.0, 0.0 ) );
+		vEyeY = normalize( normalMatrix * vec3( 0.0, 1.0, 0.0 ) );
+		vEyeZ = normalize( normalMatrix * vec3( 0.0, 0.0, 1.0 ) );
+	#endif`,
+      );
+    shader.fragmentShader = shader.fragmentShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vEyeX;\nvarying vec3 vEyeY;\nvarying vec3 vEyeZ;')
+      .replace(
+        '#include <map_fragment>',
+        `#ifdef USE_MAP
+	{
+		// direction on the eyeball from the equirectangular uv (front pole = v 1, see eyeTextures)
+		float th = ( 1.0 - vMapUv.y ) * PI;
+		float ph = vMapUv.x * 2.0 * PI;
+		vec3 dl = vec3( - cos( ph ) * sin( th ), - sin( ph ) * sin( th ), cos( th ) );
+		vec3 Vv = normalize( vViewPosition );
+		vec3 vl = vec3( dot( Vv, vEyeX ), dot( Vv, vEyeY ), dot( Vv, vEyeZ ) );
+		// march (with a refraction-like damping) from the cornea to the iris plane
+		float irisZ = 0.855;
+		float t = max( dl.z - irisZ, 0.0 ) / max( vl.z, 0.25 );
+		vec2 hit = dl.xy - vl.xy * t * 0.62;
+		float rho = clamp( length( hit ), 0.0, 0.999 );
+		float th2 = asin( rho );
+		float ph2 = atan( - hit.y, - hit.x );
+		vec2 uv2 = vec2( fract( ph2 / ( 2.0 * PI ) + 1.0 ), 1.0 - th2 / PI );
+		float kc = 1.0 - smoothstep( 0.17 * PI, 0.205 * PI, th );
+		vec2 gx = dFdx( vMapUv ), gy = dFdy( vMapUv );
+		vec4 base = textureGrad( map, vMapUv, gx, gy );
+		vec4 deep = textureGrad( map, uv2, gx, gy );
+		diffuseColor *= mix( base, deep, kc );
+	}
+	#endif`,
+      );
+  };
+  m.customProgramCacheKey = () => 'kit-eye-v1';
   return m;
 }
 

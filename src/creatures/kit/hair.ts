@@ -470,7 +470,7 @@ export interface HairGeoOpts {
   weights: WeightFn;
   /** card curl: bend the card across its width (0 = flat) for volume */
   curl?: number;
-  /** brightness at the root (darker roots give depth), default 0.72 */
+  /** brightness at the root (darker roots give depth), default 0.62 */
   rootShade?: number;
   /** length over which the root shade fades out (m), default 0.04 */
   rootLength?: number;
@@ -541,7 +541,7 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
       _side.crossVectors(_tan, nm).normalize();
       const w = (s.width + (s.tipWidth - s.width) * along) * 0.5;
       // root slightly darker, tips toward the tip colour
-      const rs0 = o.rootShade ?? 0.72;
+      const rs0 = o.rootShade ?? 0.62;
       _c.copy(sc ?? root).multiplyScalar(rs0 + (1 - rs0) * Math.min(1, along / rootFrac));
       if (o.tipColor !== undefined) _c.lerp(tip, along * along * 0.8);
       if (s.tone !== undefined) _c.multiplyScalar(s.tone);
@@ -611,50 +611,79 @@ export function hairGeometry(strands: Strand[], braids: BraidDef[], o: HairGeoOp
 
 let strandTex: THREE.DataTexture | null = null;
 /**
- * RGBA strand texture (4 card tiles across): fibres grouped in bundles with darker gaps between
- * them, sparse wispy edges, and a TAPERED tip — centre fibres run to the end of the card, edge
- * fibres stop earlier — so cards (and the locks they form) end in soft points instead of a blunt,
- * straw-like fringe. Brightness is smooth along the length (no banding). Shared (do not dispose).
+ * RGBA strand texture (4 lock tiles across; a card spans all four): every tile is one lock of
+ * hair made of 3–6 strand bundles. Bundles differ in brightness, are separated by darker gaps that
+ * turn TRANSPARENT below the root zone (real strand separation: the cards behind and the darker cap
+ * show between them), end at different lengths, and taper — the centre of the lock runs to the end
+ * of the card, the edges stop earlier — so locks end in soft points instead of a blunt fringe.
+ * Single fibres inside a bundle vary slightly; a few stray fibres sit between bundles.
+ * Brightness is a LINEAR multiplier on the vertex colour and smooth along the length (no banding).
+ * The B channel is unused by colour (equal to R/G); the shader derives a per-bundle highlight shift
+ * from the column. Shared (do not dispose).
  */
 export function strandTexture(): THREE.DataTexture {
   if (strandTex) return strandTex;
   const W = 256, H = 256;
   const data = new Uint8Array(W * H * 4);
   const rnd = mulberry32(777);
-  // fibre table per column
-  const fib: { b: number; end: number; a: number; ph: number }[] = [];
-  let bundleB = 1, bundleLeft = 0, bundlePh = 0;
+  // per-column fibre table: brightness, end (v), alpha class, gap flag + where the gap opens
+  const fib: { b: number; end: number; a: number; gap: boolean; open: number; ph: number }[] = [];
+  let bundleB = 1, bundlePh = 0, bundleEnd = 1;
+  let run = 0; // columns left in the current bundle
+  let gapRun = 0; // columns left in the current gap
   for (let x = 0; x < W; x++) {
-    const u = (x % 64) / 64; // 4 tiles across (cards pick one)
-    const edge = Math.min(u, 1 - u) * 2; // 0 at card edge, 1 at centre
-    if (bundleLeft <= 0 || x % 64 === 0) {
-      bundleLeft = 3 + Math.floor(rnd() * 6);
-      bundleB = 0.86 + rnd() * 0.16;
+    const u = (x % 64) / 64; // 4 lock tiles across
+    const edge = Math.min(u, 1 - u) * 2; // 0 at the lock edge, 1 at its centre
+    let gap = false;
+    const newBundle = () => {
+      run = 5 + Math.floor(rnd() * 9);
+      bundleB = 0.74 + rnd() * 0.26;
       bundlePh = rnd() * 6.28;
+      // bundles end at different lengths; the lock's centre bundles reach furthest
+      bundleEnd = 1 - 0.24 * Math.pow(1 - edge, 1.4) - rnd() * 0.08;
+    };
+    if (x % 64 === 0) {
+      gapRun = 0;
+      newBundle();
+    } else if (run <= 0 && gapRun <= 0) {
+      // a bundle just ended: open a gap of 1–3 columns, then a new bundle
+      gapRun = 1 + Math.floor(rnd() * 2.2);
     }
-    bundleLeft--;
-    // a slightly darker fibre between bundles (opaque: holes inside a card read as wool once
-    // cards cross at different angles)
-    const gap = bundleLeft === 0;
-    // brightness is a LINEAR multiplier on the vertex colour (texture is not sRGB-decoded)
-    const b = bundleB * (0.95 + rnd() * 0.07) * (gap ? 0.84 : 1);
-    // tapered tip: the centre reaches the end, the edges stop ~22 % earlier (+ jitter)
-    const end = 1 - 0.22 * Math.pow(1 - edge, 1.3) - rnd() * 0.05;
-    const a = edge < 0.2 ? (rnd() < edge * 4 ? 1 : 0) : 1;
-    fib.push({ b, end, a, ph: bundlePh });
+    if (gapRun > 0) {
+      gap = true;
+      gapRun--;
+      if (gapRun === 0) newBundle();
+    } else run--;
+    // fine striation: every fibre differs a little, so the lock reads as many thin strands
+    const fibreJ = 0.86 + rnd() * 0.18;
+    const b = gap ? 0.66 + rnd() * 0.12 : bundleB * fibreJ;
+    const end = gap ? 0.2 + rnd() * 0.3 : bundleEnd - rnd() * 0.04;
+    // sparse fibres at the lock edges
+    const a = edge < 0.18 ? (rnd() < edge * 4.5 ? 1 : 0) : 1;
+    // where a gap opens (becomes transparent): in the free-hanging part of the card, varying per gap
+    // (cards lie on the scalp over their first third: gaps there would show the cap as dark streaks)
+    const open = 0.4 + rnd() * 0.22;
+    fib.push({ b, end, a, gap, open, ph: bundlePh });
   }
   for (let y = 0; y < H; y++) {
     const v = y / (H - 1);
     for (let x = 0; x < W; x++) {
       const f = fib[x];
       const i = (y * W + x) * 4;
-      // very gentle lengthwise variation per bundle (one slow wave over the card)
-      const vary = 0.96 + 0.04 * Math.sin(v * 5.5 + f.ph);
+      // gentle lengthwise variation per bundle (one slow wave over the card)
+      const vary = 0.95 + 0.05 * Math.sin(v * 5.5 + f.ph);
       const b = Math.min(1, f.b * vary);
-      data[i] = data[i + 1] = data[i + 2] = Math.round(b * 255);
-      // fibres thin out just before their end; roots fade in over the first 1.5 % (no square starts)
-      const tipFade = v > f.end ? 0 : v > f.end - 0.05 ? (rnd() < 0.75 ? 1 : 0) : v < 0.015 ? (v / 0.015 > (x % 7) / 7 ? 1 : 0) : 1;
-      data[i + 3] = Math.round(f.a * tipFade * 255);
+      const c = Math.round(b * 255);
+      data[i] = data[i + 1] = data[i + 2] = c;
+      let alpha = f.a;
+      if (f.gap) {
+        // gaps are dark fibres near the root (coverage), open below it; a stray fibre or two stays
+        alpha = v < f.open ? 1 : v < f.open + 0.08 ? (rnd() < 0.5 ? 1 : 0) : rnd() < 0.06 ? 1 : 0;
+      } else {
+        // fibres thin out just before their end; roots fade in over the first 1.5 % (no square starts)
+        alpha *= v > f.end ? 0 : v > f.end - 0.06 ? (rnd() < 0.7 ? 1 : 0) : v < 0.015 ? (v / 0.015 > (x % 7) / 7 ? 1 : 0) : 1;
+      }
+      data[i + 3] = Math.round(alpha * 255);
     }
   }
   const t = new THREE.DataTexture(data, W, H, THREE.RGBAFormat);
@@ -684,6 +713,9 @@ export interface HairMaterialOpts {
 
 const KK_COMMON = /* glsl */ `
 vec3 gHairT = vec3( 0.0, 1.0, 0.0 );
+float gHairJ = 0.0;
+float gHairK = 1.0;
+float khh( float n ) { return fract( sin( n * 12.9898 + 4.1414 ) * 43758.5453 ); }
 uniform float hairSpec;
 uniform vec3 hairHighlight;
 `;
@@ -719,15 +751,16 @@ export function createHairMaterial(o: HairMaterialOpts = {}): THREE.MeshPhysical
         target,
         `${target}
 	{
-		// Kajiya-Kay strand highlights
+		// Kajiya-Kay strand highlights; every strand bundle shifts its lobes a little (the cuticle
+		// tilt varies), so the highlight breaks into strands instead of a smooth band
 		vec3 H = normalize( directLight.direction + geometryViewDir );
-		vec3 T1 = normalize( gHairT + geometryNormal * 0.12 );
-		vec3 T2 = normalize( gHairT - geometryNormal * 0.1 );
+		vec3 T1 = normalize( gHairT + geometryNormal * ( 0.12 + gHairJ * 0.15 ) );
+		vec3 T2 = normalize( gHairT - geometryNormal * ( 0.1 - gHairJ * 0.12 ) );
 		float d1 = dot( T1, H ), d2 = dot( T2, H );
-		float s1 = pow( sqrt( max( 0.0, 1.0 - d1 * d1 ) ), 110.0 );
-		float s2 = pow( sqrt( max( 0.0, 1.0 - d2 * d2 ) ), 28.0 );
+		float s1 = pow( sqrt( max( 0.0, 1.0 - d1 * d1 ) ), 80.0 );
+		float s2 = pow( sqrt( max( 0.0, 1.0 - d2 * d2 ) ), 30.0 );
 		float wrapL = saturate( dot( geometryNormal, directLight.direction ) * 0.5 + 0.5 );
-		reflectedLight.directSpecular += directLight.color * wrapL * hairSpec * ( s1 * 0.18 * hairHighlight + s2 * 0.35 * material.diffuseColor );
+		reflectedLight.directSpecular += directLight.color * wrapL * hairSpec * gHairK * ( s1 * 0.32 * hairHighlight + s2 * 0.42 * material.diffuseColor );
 	}`,
       );
     }
@@ -744,9 +777,13 @@ export function createHairMaterial(o: HairMaterialOpts = {}): THREE.MeshPhysical
 		vec3 dp2perp = cross( dp2, normal ), dp1perp = cross( normal, dp1 );
 		vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
 		gHairT = length( B ) > 1e-9 ? normalize( B ) : vec3( 0.0, 1.0, 0.0 );
+		// per-bundle jitter (≈ 6 texture columns) of the highlight shift and strength
+		float bid = floor( vMapUv.x * 42.0 );
+		gHairJ = khh( bid ) - 0.5;
+		gHairK = 0.6 + 0.65 * khh( bid + 17.0 );
 	}`,
       );
   };
-  m.customProgramCacheKey = () => 'kit-hair-v2';
+  m.customProgramCacheKey = () => 'kit-hair-v3';
   return m;
 }

@@ -26,10 +26,10 @@ export const GIMLI = {
   skin2: 0x935e46,
   lips: 0xa85c52,
   eyes: 0x5e4e36, // #756346
-  trousers: 0x4a3a2c,
+  trousers: 0x47433d, // dark grey wool (turnaround)
   boots: 0x33241a,
   bootsTrim: 0x4a3626,
-  mail: 0x85847e,
+  mail: 0x6c6b67, // darker gunmetal rings (turnaround)
   jerkin: 0x3e2a1e,
   jerkinTrim: 0x5a3c28,
   belt: 0x2c1e14,

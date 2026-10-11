@@ -10,25 +10,38 @@ import type { KindDef, KindContext } from '../types';
 import { emitParts, anatomyParts } from '../anatomy';
 import { quiverGear, quiverSheathMatrix, type QuiverOpts } from '../gear';
 import { createWeapon } from '../../weapons';
+import { surface } from '../../kit/surfaces';
+import { makeProjector, snapPoint, placeAlong as placeOn, V } from './uruks_bosses/common';
+
+/** stitched brown leather tooled with leaf work (jerkin, bracers, boots, quiver) */
+const TOOLED = surface('leather_tooled', { rough: 0.62, sheen: 0.1 });
+/** dense wool twill (tunic) */
+const TWILL = surface('twill', { rough: 0.85, sheen: 0.45 });
+/** fitted dense wool (leggings) */
+const WOOL = surface('twill', { rough: 0.9, sheen: 0.25, pat: { weave: -0.6 } });
 
 // sRGB design colours from docs/refs/legolas/spec.json (outfit_layers, armor, hair, face)
 const PALETTE = {
   hair: 0xc9ae80, // between the sheet's root #9f8866 and tip: the crown reads warm platinum
   hairTip: 0xe1d4af,
   brows: 0xa08a64,
-  skin: 0xe6c5ac, // #e9c9b1
-  skin2: 0xd9b398,
-  lips: 0xc58d82,
-  eyes: 0x5d8bb5,
-  tunic: 0x5f6b55, // wool twill, muted green-grey
-  tunicTrim: 0x4c5744,
-  leggings: 0x484a3d, // olive charcoal
+  // a little warmer and deeper than the sheet's #e9c9b1 (that albedo rendered as pale clay; the
+  // turnaround's lit face is a warm #bc8f72)
+  skin: 0xd9ab8c,
+  skin2: 0xc8977a,
+  lips: 0xbf8377,
+  eyes: 0x6188a8, // sheet #5d8bb5, a touch greyer (the iris read as painted-on saturated blue)
+  // (the sheet's #5f6b55 rendered mint under bright sky light; the turnaround reads as a warm
+  // olive grey-green, so the albedo is less saturated and the sheen is albedo-tinted)
+  tunic: 0x5a5a48, // wool twill, muted olive grey
+  tunicTrim: 0x4a4a3b,
+  leggings: 0x45382c, // dark brown fitted wool (turnaround)
   jerkin: 0x69513b, // stitched brown leather
   jerkinTrim: 0x7e6044, // lighter tooling / wear mottle
-  bracers: 0x49392c, // dark brown leather (bracers, belt, boots)
+  bracers: 0x4f3c2c, // dark brown tooled leather (bracers, belt, boots)
   bracersTrim: 0x35291f,
-  boots: 0x49392c,
-  bootsTrim: 0x35291f,
+  boots: 0x4c3a2b,
+  bootsTrim: 0x33271d,
   belt: 0x3f3126,
   buckle: 0x997b4a, // bronze
   quiver: 0x5a4330,
@@ -62,7 +75,7 @@ function legolasExtras(ctx: KindContext) {
   const hemY = hipY - 0.045 * sc;
   const g = Math.sqrt(P.build.bulk);
   s.group('union', 0.003 * sc, () => {
-    const leather = { color: PALETTE.jerkin, color2: PALETTE.jerkinTrim, colorNoise: 0.4, colorFreq: 34 / sc, mat: 'suede' as const };
+    const leather = { color: PALETTE.jerkin, color2: PALETTE.jerkinTrim, colorNoise: 0.4, colorFreq: 34 / sc, mat: TOOLED };
     emitParts(s, parts, ['pelvis', 'glutes', 'waist'], { ...leather, inflate: 0.019 * sc, k: 0.05 * sc });
     // hangs straight from the hips (a flat-backed panel, clear of the thighs when they swing)
     const top = hipY + 0.04 * sc;
@@ -87,12 +100,47 @@ function legolasExtras(ctx: KindContext) {
     fletch: PALETTE.fletch,
     shaft: 0xc9b38a,
     bone: 'quiver',
+    mat: TOOLED,
     knives: null,
     sheathsOnly: true,
     sheathSide: -1,
     seed: 7,
   };
   quiverGear({ add: (geo, o) => ctx.gear(geo, o) }, q);
+  // ── bracers: raised, burnished rolls at the wrist and elbow ends (the bracer reads as a
+  // separate stiff cuff, not a sleeve) ──
+  const L = P.hand.l.L;
+  const fromB = 1 - 0.9; // bracers cover 0.9 of the forearm from the wrist (outfit layer)
+  const roll = (t0: number, t1: number) =>
+    s.mirrored(() =>
+      s.group('union', 0.0015 * sc, () => {
+        emitParts(s, parts, ['forearm'], { color: PALETTE.bracersTrim, mat: 'leather_worn', inflate: 0.0158 * sc, k: 0.02 * sc, oneSide: true });
+        const a0: [number, number, number] = [j.forearm_l[0] + L.x * P.foreArm * t0, j.forearm_l[1] + L.y * P.foreArm * t0, j.forearm_l[2]];
+        const a1: [number, number, number] = [j.forearm_l[0] + L.x * P.foreArm * t1, j.forearm_l[1] + L.y * P.foreArm * t1, j.forearm_l[2]];
+        s.plane([-L.x, -L.y, -L.z], -(L.x * a0[0] + L.y * a0[1] + L.z * a0[2]), { op: 'intersect', k: 0.003 * sc });
+        s.plane([L.x, L.y, L.z], L.x * a1[0] + L.y * a1[1] + L.z * a1[2], { op: 'intersect', k: 0.003 * sc });
+      }),
+    );
+  roll(fromB + 0.005, fromB + 0.05);
+  const wristT = 1 - 0.008 * sc / P.foreArm;
+  roll(wristT - 0.06, wristT - 0.012);
+  // ── bronze buckle where the baldric crosses the right breast (turnaround) ──
+  const proj = makeProjector(s, { min: [-0.4 * sc, j.chest[1] - 0.3 * sc, -0.3 * sc], max: [0.4 * sc, j.neck[1] + 0.1 * sc, 0.4 * sc] });
+  if (proj) {
+    const bx = -0.085 * sc;
+    const by = (c - n.x * bx) / n.y;
+    const hp = V(), hn = V();
+    if (snapPoint(proj, [bx, by, 0.3 * sc], 'f', hp, hn)) {
+      const along = V(-n.y, n.x, 0); // strap direction (in the strap plane, roughly down-left)
+      const m = placeOn(hp.addScaledVector(hn, 0.002 * sc), hn, along);
+      const ring = new THREE.TorusGeometry(0.0155 * sc, 0.0034 * sc, 6, 18).rotateX(Math.PI / 2);
+      ctx.gear(ring, { bone: 'chest', color: PALETTE.buckle, mat: 'metal', matrix: m, small: true });
+      const bar = new THREE.CylinderGeometry(0.0023 * sc, 0.0023 * sc, 0.031 * sc, 5).rotateZ(Math.PI / 2);
+      ctx.gear(bar, { bone: 'chest', color: PALETTE.buckle, mat: 'metal', matrix: m, small: true });
+      const keeper = new THREE.BoxGeometry(0.05 * sc, 0.003 * sc, 0.011 * sc).translate(0, 0.0005 * sc, 0.022 * sc);
+      ctx.gear(keeper, { bone: 'chest', color: PALETTE.belt, mat: 'leather_worn', matrix: m, small: true });
+    }
+  }
   // ── the twin white-handled knives sit in their sheaths (hidden while held) ──
   for (const side of [1, -1]) {
     ctx.object(
@@ -142,7 +190,7 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
       eyeSize: 1.1,
       eyeSpacing: 1.0,
       eyeTilt: 0.1,
-      eyeOpen: 1.08,
+      eyeOpen: 0.95,
       foreheadSlope: 0.08,
       cranium: 1.0,
     },
@@ -161,13 +209,13 @@ export const kinds: Partial<Record<HumanoidKind, KindDef>> = {
     hair: { style: 'long_straight', color: PALETTE.hair, tipColor: PALETTE.hairTip, braids: 'temple', length: 0.88, density: 1.0, bounce: 0.8 },
     beard: null,
     outfit: [
-      { type: 'leggings', color: PALETTE.leggings },
-      { type: 'boots', color: PALETTE.boots, color2: PALETTE.bootsTrim, length: 0.86 },
-      { type: 'tunic', color: PALETTE.tunic, color2: PALETTE.tunicTrim, length: 0.5 },
-      { type: 'jerkin', color: PALETTE.jerkin, color2: PALETTE.jerkinTrim },
-      // bracers from the wrist almost to the elbow
-      { type: 'bracers', color: PALETTE.bracers, color2: PALETTE.bracersTrim, length: 0.9 },
-      { type: 'belt', color: PALETTE.belt, offset: BELT_RAISE },
+      { type: 'leggings', color: PALETTE.leggings, mat: WOOL },
+      { type: 'boots', color: PALETTE.boots, color2: PALETTE.bootsTrim, length: 0.86, mat: TOOLED },
+      { type: 'tunic', color: PALETTE.tunic, color2: PALETTE.tunicTrim, length: 0.5, mat: TWILL },
+      { type: 'jerkin', color: PALETTE.jerkin, color2: PALETTE.jerkinTrim, mat: TOOLED },
+      // stiff tooled bracers from the wrist almost to the elbow (rolled ends in extras)
+      { type: 'bracers', color: PALETTE.bracers, color2: PALETTE.bracersTrim, length: 0.9, thickness: 0.003, mat: TOOLED },
+      { type: 'belt', color: PALETTE.belt, offset: BELT_RAISE, mat: 'leather_worn' },
     ],
     armor: [],
     weapons: { right: 'none', left: 'elven_bow' },
