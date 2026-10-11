@@ -39,6 +39,8 @@ export interface HelmsWorld {
   /** the Uruk host (main body, front ranks) */
   host: CrowdHandle;
   front: CrowdHandle;
+  /** the ranks between the front ranks and the wall's killing ground (art: the host reads as massed from the wall) */
+  mid: CrowdHandle;
   /** the torch glow over the host; setFraction() dims it as the host thins */
   torchSea: { points: THREE.Points; setFraction(f: number): void };
   /** the Galadhrim lining the far battlements (not combatants) */
@@ -358,6 +360,9 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     [70.5, 0.04, -97], [81.5, 0.04, -97], [72.6, 5.82, -45], [79.4, 5.82, -45], [72.6, 5.82, -60], [79.4, 5.82, -60],
     // right at the gate: warm light on the hold (the ram and its bearers pass between them)
     [72.55, 5.82, -29.2], [79.45, 5.82, -29.2],
+    // (art, beat 3) the east cliff's foot: the black face behind the causeway picks up a warm rim and the
+    // court gets depth, instead of fading into a dark wall (the moon is on the other side of the Deep)
+    [93, 0.04, -52], [93, 0.04, -78], [93, 0.04, -104], [58, 0.04, -112],
   ];
   for (const [x, y, z] of courtFires) {
     const b = brazier({ scale: 1.1 }) as Built & { flameAnchor: THREE.Object3D };
@@ -367,7 +372,9 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   }
   // (the plume is sooty and thinner now: a wisp over each, the rain carries it off)
   // (the two braziers at the gate stand a metre from the hold camera: a smaller flame, or it whites out the frame)
-  for (const f of [...fireSpots, ...torchSpots]) fx.fire(f, f.distanceTo(L.gateHold) < 3.5 ? 0.3 : 0.45, { smoke: 0.5 });
+  // (and the wall brazier a few metres from the cp2 spawn: 0.45 whites out the lower frame there)
+  const cp2Spawn = walk(-22, -0.6);
+  for (const f of [...fireSpots, ...torchSpots]) fx.fire(f, f.distanceTo(L.gateHold) < 3.5 || f.distanceTo(cp2Spawn) < 3.4 ? 0.3 : 0.45, { smoke: 0.5 });
 
   // ── art dressing (pilasters, parapet torches, Hornburg, siege towers, ridges): see dress.ts ─
   const pools: [number, number, number, number][] = [];
@@ -446,10 +453,15 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   // ── the Uruk host: thousands in the coomb, the front ranks with ladders and torches ─
   const host = level.crowd({ center: L.armyCenter, halfSize: [115, 32], count: 1550, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
   const front = level.crowd({ center: new THREE.Vector3(4, 0, 58), halfSize: [80, 7], count: 380, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
+  // (art) the ranks between the front ranks and the killing ground below the wall: from the walkway the host
+  // now fills the coomb out to ~40 m instead of starting 55 m out (gameplay_view.jpg: massed to the wall)
+  const mid = level.crowd({ center: new THREE.Vector3(4, 0, 43), halfSize: [78, 8], count: 300, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
+  mid.mesh.userData.noAO = true;
   // a sea of torches over the host (the crowd's own torch figures are too small to read through the rain)
   const torchSea = makeTorchSea(ground, rng, [
     { c: L.armyCenter, h: [115, 32], n: 820 },
     { c: new THREE.Vector3(4, 0, 58), h: [80, 7], n: 190 },
+    { c: new THREE.Vector3(4, 0, 43), h: [78, 8], n: 150 },
   ]);
   level.root.add(torchSea.points);
   // the armies are far from the camera: keep them out of the GTAO / depth pre-passes (half their cost on High)
@@ -484,6 +496,7 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     torchSpots,
     host,
     front,
+    mid,
     elves,
     torchSea,
     shieldBeacon,

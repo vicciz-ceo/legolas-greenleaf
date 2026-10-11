@@ -342,7 +342,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     const a = along(Math.floor(rng.float() * NR), 0.2 + rng.float() * 0.75, V(0, 0, 0));
     orb.thread(a, a.clone().add(V((rng.float() - 0.5) * 0.6, -1 - rng.float() * 3.5, (rng.float() - 0.5) * 0.6)), 0.008, 0, 3);
   }
-  const silkMat = new THREE.MeshStandardMaterial({ color: 0xd8d4c6, roughness: 0.45, emissive: 0x2a2a24, emissiveIntensity: 0.6, side: THREE.DoubleSide });
+  const silkMat = new THREE.MeshStandardMaterial({ color: 0xd4d6d0, roughness: 0.45, emissive: 0x26282a, emissiveIntensity: 0.6, side: THREE.DoubleSide });
   const canopySheet = new THREE.Mesh(orb.geometry(), silkMat);
   canopySheet.name = 'canopy_web';
   canopySheet.castShadow = true;

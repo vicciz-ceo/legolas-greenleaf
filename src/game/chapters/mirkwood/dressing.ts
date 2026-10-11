@@ -18,7 +18,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LevelAPI } from '../../../core/types';
 import { addColliders } from '../../../world';
 import { Rng, fbm2 } from '../../../core/rng';
-import { C1, C2, C3, centerX, inClearing, V } from './layout';
+import { C1, C2, C3, CLEARINGS, STARTS, centerX, inClearing, V } from './layout';
 import type { HeroTree } from './world';
 
 type P3 = [number, number, number];
@@ -299,6 +299,97 @@ export function buildDressing(o: DressingOpts): void {
     dressing.add(mesh);
   }
 
+  // ── the floor between the trunks: arching roots, fallen twigs and branches ──
+  // (the reference path is laced with roots and litter all the way to the camera; here the surface roots stop at
+  // the trunk rings, so the open lane read as a bare plane.) Flush with the ground, no colliders.
+  {
+    const roots = new Buf();
+    const sticks = new Buf();
+    const fr = new Rng(5521);
+    const lane = (z: number) => centerX(z) + (fr.float() * 2 - 1) * 17;
+    for (let i = 0; i < 118; i++) {
+      // the first 54 lie in the play areas (what the gameplay camera looks at), the rest along the lane
+      let px: number;
+      let pz: number;
+      if (i < 54) {
+        const [cx, cz, cr] = CLEARINGS[i % 3];
+        const a = fr.float() * Math.PI * 2;
+        const d = Math.sqrt(fr.float()) * cr * 0.95;
+        px = cx + Math.cos(a) * d;
+        pz = cz + Math.sin(a) * d;
+      } else {
+        pz = -30 + fr.float() * 128;
+        px = lane(pz);
+      }
+      if (nearHero(px, pz, 1.5)) continue;
+      const L = 2.6 + fr.float() * 4.2;
+      const r0 = 0.1 + fr.float() * 0.12;
+      const steps = Math.max(6, Math.round(L / 0.55));
+      const arch = 0.05 + fr.float() * 0.16;
+      let ang = fr.float() * Math.PI * 2;
+      const pts: P3[] = [];
+      const radii: number[] = [];
+      for (let k = 0; k <= steps; k++) {
+        const t = k / steps;
+        const r = r0 * (1 - 0.75 * t) + 0.025;
+        // half buried at the ends, humped in the middle
+        const y = ground(px, pz) + r * 0.35 + Math.sin(Math.PI * Math.min(1, t * 1.2)) * arch * (0.6 + 0.4 * Math.sin(k * 1.9 + i));
+        pts.push([px, y, pz]);
+        radii.push(r * (0.8 + 0.4 * Math.sin(Math.PI * Math.min(1, t * 1.2))));
+        ang += fbm2(px * 0.5, pz * 0.5, 2, 61 + i) * 0.45;
+        px += Math.cos(ang) * (L / steps);
+        pz += Math.sin(ang) * (L / steps);
+      }
+      sweep(roots, pts, radii, 6, 2.4, 0.16, i * 1.7);
+    }
+    for (let i = 0; i < 300; i++) {
+      const z = -32 + fr.float() * 130;
+      const x0 = lane(z);
+      const len = 0.7 + Math.pow(fr.float(), 1.8) * 2.6;
+      const a = fr.float() * Math.PI * 2;
+      const r = 0.02 + fr.float() * 0.035;
+      const pts: P3[] = [];
+      const radii: number[] = [];
+      const n = Math.max(3, Math.round(len / 0.5));
+      for (let k = 0; k <= n; k++) {
+        const t = k / n;
+        const x = x0 + Math.cos(a + 0.25 * Math.sin(k * 2.1 + i)) * t * len;
+        const zz = z + Math.sin(a + 0.25 * Math.sin(k * 2.1 + i)) * t * len;
+        pts.push([x, ground(x, zz) + r * 0.7, zz]);
+        radii.push(r * (1 - 0.55 * t));
+      }
+      sweep(sticks, pts, radii, 4, 2.4, 0.2, i);
+      // a side twig on the longer ones
+      if (len > 1.5 && fr.chance(0.7)) {
+        const k0 = Math.floor(n * 0.5);
+        const sa = a + (fr.chance(0.5) ? 1 : -1) * (0.6 + fr.float() * 0.5);
+        const tw: P3[] = [];
+        const tr: number[] = [];
+        for (let k = 0; k <= 3; k++) {
+          const x = pts[k0][0] + Math.cos(sa) * k * 0.28;
+          const zz = pts[k0][2] + Math.sin(sa) * k * 0.28;
+          tw.push([x, ground(x, zz) + r * 0.7 + k * 0.012, zz]);
+          tr.push(Math.max(0.008, r * 0.55 * (1 - k / 4)));
+        }
+        sweep(sticks, tw, tr, 4, 2.4, 0.2, i + 3);
+      }
+    }
+    if (roots.count) {
+      const mesh = new THREE.Mesh(roots.geometry(), o.bark);
+      mesh.name = 'floor_roots';
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      dressing.add(mesh);
+    }
+    if (sticks.count) {
+      const mesh = new THREE.Mesh(sticks.geometry(), new THREE.MeshStandardMaterial({ color: 0x5a4630, roughness: 0.95, metalness: 0 }));
+      mesh.name = 'floor_sticks';
+      mesh.castShadow = false;
+      mesh.receiveShadow = true;
+      dressing.add(mesh);
+    }
+  }
+
   // ── jagged stumps (snags), kept out of the play areas ────────────────────
   {
     const geos: THREE.BufferGeometry[] = [];
@@ -355,7 +446,7 @@ export function buildDressing(o: DressingOpts): void {
             const top = p.getY(i) / (rad * 0.32);
             const rim = Math.hypot(p.getX(i), p.getZ(i)) / rad;
             const k = 0.55 + 0.45 * top;
-            col.push((0.46 + 0.22 * rim) * k + 0.1, (0.3 + 0.16 * rim) * k + 0.08, (0.17 + 0.1 * rim) * k + 0.05);
+            col.push(((0.46 + 0.22 * rim) * k + 0.1) * 0.72, ((0.3 + 0.16 * rim) * k + 0.08) * 0.7, ((0.17 + 0.1 * rim) * k + 0.05) * 0.68);
           }
           g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
           // the shelf's +Y axis points along the bark normal (tilted a touch downward), sunk 25 % in
@@ -373,6 +464,74 @@ export function buildDressing(o: DressingOpts): void {
       const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0 });
       const mesh = new THREE.Mesh(merged, mat);
       mesh.name = 'bracket_fungi';
+      mesh.castShadow = false;
+      mesh.receiveShadow = true;
+      dressing.add(mesh);
+      geos.forEach((g) => g.dispose());
+    }
+  }
+
+  // ── moss: green cushions on the trunk bases and the ground around them ───
+  // (the reference trunks wear bright moss over warm bark; the bark texture alone is a dull olive)
+  {
+    const geos: THREE.BufferGeometry[] = [];
+    const q = new THREE.Quaternion();
+    const m = new THREE.Matrix4();
+    const up = V(0, 1, 0);
+    const tmp = V(0, 0, 0);
+    const cushion = (rad: number, flat: number, seedV: number): THREE.BufferGeometry => {
+      const g = new THREE.SphereGeometry(1, 9, 6, 0, Math.PI * 2, 0, Math.PI / 2);
+      const p = g.attributes.position;
+      const col: number[] = [];
+      for (let i = 0; i < p.count; i++) {
+        const x = p.getX(i);
+        const y = p.getY(i);
+        const z = p.getZ(i);
+        const n = 1 + 0.22 * fbm2(x * 2.1 + seedV, z * 2.1, 2, 5) + 0.12 * Math.sin(x * 7 + z * 5 + seedV);
+        p.setXYZ(i, x * rad * n, y * rad * flat * (0.8 + 0.4 * n), z * rad * n);
+        const k = 0.75 + 0.5 * fbm2(x * 3 + seedV, z * 3, 2, 9) + 0.3 * y;
+        col.push(0.12 * k, 0.17 * k, 0.045 * k);
+      }
+      g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+      g.deleteAttribute('uv');
+      return g;
+    };
+    heroes.forEach((h, hi) => {
+      // clinging to the bark, thickest at the foot
+      const onBark = 9 + Math.floor(rng.float() * 4);
+      for (let c = 0; c < onBark; c++) {
+        const ang = rng.float() * Math.PI * 2;
+        const y = 0.15 + Math.pow(rng.float(), 1.6) * 3.4;
+        const hit = o.probe(hi, ang, y);
+        const rad = 0.22 + rng.float() * 0.4;
+        const g = cushion(rad, 0.7, hi * 7 + c);
+        tmp.copy(hit.normal).normalize();
+        q.setFromUnitVectors(up, tmp);
+        m.compose(hit.point.clone().addScaledVector(hit.normal, -rad * 0.12), q.multiply(new THREE.Quaternion().setFromAxisAngle(up, rng.float() * 6.28)), V(1, 1, 1));
+        g.applyMatrix4(m);
+        geos.push(g);
+      }
+      // mounds on the ground around the base, between the roots
+      const onGround = 7 + Math.floor(rng.float() * 3);
+      for (let c = 0; c < onGround; c++) {
+        const ang = rng.float() * Math.PI * 2;
+        const d = h.r0 * (0.95 + rng.float() * 0.9);
+        const x = h.x + Math.cos(ang) * d;
+        const z = h.z + Math.sin(ang) * d;
+        if (inClearing(x, z, -3)) continue;
+        const rad = 0.35 + rng.float() * 0.6;
+        const g = cushion(rad, 0.4, hi * 11 + c);
+        g.rotateY(rng.float() * 6.28);
+        g.translate(x, ground(x, z) - 0.02, z);
+        geos.push(g);
+      }
+    });
+    if (geos.length) {
+      const merged = mergeGeometries(geos)!;
+      merged.computeVertexNormals();
+      const mat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0 });
+      const mesh = new THREE.Mesh(merged, mat);
+      mesh.name = 'moss';
       mesh.castShadow = false;
       mesh.receiveShadow = true;
       dressing.add(mesh);
@@ -448,6 +607,14 @@ export function buildDressing(o: DressingOpts): void {
         sites.push([x, z, 0.7 + rng.float() * 1.5]);
       }
     }
+    // always a few in front of each start, where the gameplay camera looks (the reference lane is full of them)
+    for (const s of STARTS) {
+      const fx = Math.sin(s.facing);
+      const fz = Math.cos(s.facing);
+      for (const [d, side, r] of [[5.5, -2.2, 0.8], [9, 2.8, 1.1], [13, -1.2, 1.0]] as const) {
+        sites.push([s.pos.x + fx * d - fz * side, s.pos.z + fz * d + fx * side, r]);
+      }
+    }
     const geos: THREE.BufferGeometry[] = [];
     const RINGS = 5;
     const SEG = 20;
@@ -478,7 +645,7 @@ export function buildDressing(o: DressingOpts): void {
           const b = j * SEG + ((k + 1) % SEG);
           const c = a + SEG;
           const d = b + SEG;
-          idx.push(a, c, b, b, c, d);
+          idx.push(a, b, c, b, d, c); // counter-clockwise from above (the normals point up)
         }
       }
       const g = new THREE.BufferGeometry();
@@ -492,9 +659,18 @@ export function buildDressing(o: DressingOpts): void {
     }
     if (geos.length) {
       const mat = new THREE.MeshPhysicalMaterial({
-        color: 0x1a150e, roughness: 0.04, metalness: 0, vertexColors: true, transparent: true, opacity: 0.92, envMapIntensity: 2.4,
-        specularColor: new THREE.Color(0xffe2a8), specularIntensity: 1, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+        color: 0x1a150e, roughness: 0.04, metalness: 0, vertexColors: true, transparent: true, opacity: 0.88, envMapIntensity: 0.8,
+        specularColor: new THREE.Color(0xffe2a8), specularIntensity: 0.5, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
       });
+      // the canopy-dimmed IBL leaves a mirror-smooth puddle as just a darker patch: add the hazy sky sheen that
+      // grows towards grazing angles (the reference puddles flash pale where the lane meets the light)
+      mat.onBeforeCompile = (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <emissivemap_fragment>',
+          '#include <emissivemap_fragment>\n  float puddleFres = pow(1.0 - clamp(dot(normalize(vViewPosition), normal), 0.0, 1.0), 3.0);\n  totalEmissiveRadiance += vec3(0.2, 0.21, 0.14) * (0.06 + 0.94 * puddleFres);',
+        );
+      };
+      mat.customProgramCacheKey = () => 'mirk_puddle_sheen';
       const mesh = new THREE.Mesh(mergeGeometries(geos)!, mat);
       mesh.name = 'puddles';
       mesh.receiveShadow = true;

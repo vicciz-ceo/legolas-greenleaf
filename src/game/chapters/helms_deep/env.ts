@@ -43,9 +43,9 @@ export const STORM: EnvironmentPresetEx = {
   cloudLit: 0x3e4f70,
   cloudShade: 0x0f141d,
   weather: 'storm',
-  // the rain was a curtain across the whole frame (notes: gap 1): thinner, so the wall, the host and
-  // the crosshair zone read through it
-  weatherIntensity: 0.42,
+  // the rain was a curtain across the whole frame (notes: gap 1): much thinner (0.72 -> 0.42 -> 0.22), so the
+  // wall, the host and the crosshair zone read through it
+  weatherIntensity: 0.22,
 };
 
 export const DAWN: EnvironmentPresetEx = {
@@ -135,6 +135,6 @@ export function lerpEnv(a: EnvironmentPresetEx, b: EnvironmentPresetEx, t: numbe
     cloudLit: lc(a.cloudLit ?? 0x2a3446, b.cloudLit ?? 0x2a3446, t),
     cloudShade: lc(a.cloudShade ?? 0x0c1018, b.cloudShade ?? 0x0c1018, t),
     weather: t < 0.85 ? 'storm' : 'rain',
-    weatherIntensity: t < 0.85 ? ln(a.weatherIntensity ?? 0.72, 0.4, t / 0.85) : ln(0.45, b.weatherIntensity ?? 0.1, (t - 0.85) / 0.15),
+    weatherIntensity: t < 0.85 ? ln(a.weatherIntensity ?? 0.22, 0.2, t / 0.85) : ln(0.45, b.weatherIntensity ?? 0.1, (t - 0.85) / 0.15),
   };
 }

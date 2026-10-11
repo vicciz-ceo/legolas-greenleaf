@@ -36,14 +36,15 @@ const SPIDER_BODIES: [SpiderVariant, number][] = [['spider', 0], ['spider', 1], 
 const MIRKWOOD_LOOK: EnvironmentPresetEx = {
   ...(ENVIRONMENTS.mirkwood as EnvironmentPresetEx),
   // the sky glimpsed through the canopy is the same olive haze as the fog (no teal), a touch brighter at the horizon
-  sky: { kind: 'gradient', top: 0x131c12, horizon: 0x5a6347, bottom: 0x10150d, stars: 0, clouds: 0.5, cloudColor: 0x3a4630 },
+  sky: { kind: 'gradient', top: 0x131c12, horizon: 0x6c7556, bottom: 0x10150d, stars: 0, clouds: 0.5, cloudColor: 0x3a4630 },
   sunColor: 0xf6e4a0,
   sunIntensity: 3.0,
   hemiSky: 0x93a083,
   hemiGround: 0x46341c,
   hemiIntensity: 0.62,
   envIntensity: 0.7,
-  fog: { color: 0x4a5340, density: 0.017 },
+  // lighter than the trunks, so they read as dark silhouettes against the haze (the reference fog is a pale grey-olive)
+  fog: { color: 0x636c52, density: 0.017 },
   exposure: 1.25,
   bloom: 0.18,
   grade: { lift: [0.006, 0.008, 0], gamma: [1.02, 1.0, 0.96], gain: [1.04, 1.02, 0.9], saturation: 0.95, vignette: 0.32 },

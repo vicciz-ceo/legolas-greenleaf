@@ -93,7 +93,7 @@ function tintStone(root: THREE.Object3D): () => void {
   });
   for (const [m] of seen) {
     // cooler, a touch lighter: moonlit wet stone, not a dark-blue slab (and not a pale one)
-    m.color.multiply(new THREE.Color(0.86, 0.93, 1.04));
+    m.color.multiply(new THREE.Color(0.72, 0.87, 1.1));
   }
   return () => {
     for (const [m, c] of seen) m.color.copy(c);
@@ -119,7 +119,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     const g = m.geometry as THREE.PlaneGeometry | undefined;
     if (!m.isMesh || Array.isArray(m.material) || g?.type !== 'PlaneGeometry' || g.parameters.width !== 150) return;
     const c = (m.material as THREE.MeshStandardMaterial).clone();
-    c.color.multiplyScalar(0.26);
+    c.color.multiplyScalar(0.42);
     c.roughness = Math.min(c.roughness, 0.5);
     courtSwap.push([m, m.material, c]);
     m.material = c;
@@ -194,7 +194,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     if (pg) {
       const tex = own(glowTexture(64, 0.0, 2.0));
       const pm = own(new THREE.MeshBasicMaterial({
-        map: tex, color: new THREE.Color(1.0, 0.5, 0.2), transparent: true, opacity: 0.2, depthWrite: false,
+        map: tex, color: new THREE.Color(1.0, 0.5, 0.2), transparent: true, opacity: 0.27, depthWrite: false,
         blending: THREE.AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
       }));
       const pools = new THREE.Mesh(own(pg), pm);

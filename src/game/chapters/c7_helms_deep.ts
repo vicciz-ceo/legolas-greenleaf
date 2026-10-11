@@ -359,6 +359,7 @@ export const chapter: ChapterDef = {
       await level.wait(1.15);
       // the arrows land: the front ranks fall, the torch sea gutters
       world.front.thin(0.4);
+      world.mid.thin(0.35);
       world.host.thin(0.06);
       world.torchSea.setFraction(0.9);
       ctx.audio.play('orc_die', { pos: V(0, 0, 58), volume: 1, pitch: 0.8 });
@@ -726,6 +727,7 @@ export const chapter: ChapterDef = {
     const showArmies = (on: boolean) => {
       world.host.mesh.visible = on;
       world.front.mesh.visible = on;
+      world.mid.mesh.visible = on;
       world.torchSea.points.visible = on;
       for (const e of world.elves) e.mesh.visible = on;
     };
@@ -864,6 +866,7 @@ export const chapter: ChapterDef = {
         await level.wait(1.1);
         world.host.thin(0.25);
         world.front.thin(0.4);
+        world.mid.thin(0.35);
         frac *= 0.6;
         world.torchSea.setFraction(frac);
         if (i === 1) flee.setSpeed(5.5);
@@ -938,6 +941,7 @@ export const chapter: ChapterDef = {
         if (c >= 1) {
           for (const l of ladders) l.hide();
           world.front.thin(0.4);
+          world.mid.thin(0.35);
           world.host.thin(0.06);
           world.torchSea.setFraction(0.9);
         }
@@ -947,7 +951,7 @@ export const chapter: ChapterDef = {
         }
         // (art) the opening view looks along the wall toward the Hornburg, the battlements and the host to the
         // right (gameplay_view.jpg), not square into the parapet
-        if (c === 0) player.teleport(L.spawn.clone(), outYaw(L.spawn.x) + 1.15);
+        if (c === 0) player.teleport(L.spawn.clone(), outYaw(L.spawn.x) + 0.95);
         else if (c === 1) player.teleport(L.culvertWatch.clone(), yawOf(5 - L.culvertWatch.x, 30 - L.culvertWatch.z));
         else if (c === 2) player.teleport(walk(-22, -0.6), yawOf(-8, -2));
         else player.teleport(L.gateHold.clone(), Math.PI);
