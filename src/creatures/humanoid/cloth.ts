@@ -82,6 +82,10 @@ export interface SkirtOpts {
   ragged?: number;
   /** extra clearance all round (m): for bodies sculpted bigger than the anatomy (trolls) */
   grow?: number;
+  /** torn zig-zag points along the hem (m) */
+  tatter?: number;
+  /** leather strips over the cloth (see SkirtStrips; width already in m) */
+  strips?: { count: number; color: number; color2?: number; mat?: SurfaceName | SurfaceSpec; width: number; length: number; phase?: number };
   seed?: number;
 }
 
@@ -110,30 +114,39 @@ export function skirtGeometry(P: Proportions, rig: RigDef, o: SkirtOpts): THREE.
   const H = o.top - o.bottom;
   const nv = Math.max(4, Math.round(H / (0.045 * s)));
   const w: [number, number][] = [];
-  for (const [a0, a1] of o.panels) {
-    const nu = Math.max(3, Math.round(((a1 - a0) * (rx0 + rx1) * 0.5) / (0.035 * s)));
+  const tat = o.tatter ?? 0;
+  /** one panel between angles a0..a1; `out` pushes it outward (strips over the cloth), `len` scales
+   *  its length, `point` drops the middle of its hem into a point */
+  const panel = (a0: number, a1: number, pc: THREE.Color, tc: THREE.Color, pspec: SurfaceSpec, out: number, len: number, point: number, rag: number, tatter: number, seed: number) => {
+    const spacing = tatter > 0 ? 0.02 * s : 0.035 * s;
+    const nu = Math.max(point > 0 ? 2 : 3, Math.round(((a1 - a0) * (rx0 + rx1) * 0.5) / spacing));
     const start = b.pos.length / 3;
+    const HH = H * len;
     for (let iv = 0; iv <= nv; iv++) {
       const v = iv / nv;
       for (let iu = 0; iu <= nu; iu++) {
         const u = iu / nu;
         const a = a0 + (a1 - a0) * u;
         const ease = v * v * (3 - 2 * v);
-        const rx = rx0 + (rx1 - rx0) * Math.sqrt(v);
-        const rz = rz0 + (rz1 - rz0) * Math.sqrt(v);
-        let y = o.top - H * v;
+        const vv = v * len;
+        const rx = rx0 + (rx1 - rx0) * Math.sqrt(vv) + out;
+        const rz = rz0 + (rz1 - rz0) * Math.sqrt(vv) + out;
+        let y = o.top - HH * v;
         // soft folds
-        const fold = Math.sin(a * 9 + (o.seed ?? 0)) * 0.006 * s * ease;
-        if (o.ragged && v > 0.85) y += n2(a * 6, (o.seed ?? 0) * 1.7) * o.ragged * ((v - 0.85) / 0.15);
+        const fold = Math.sin(a * 9 + seed) * 0.006 * s * ease;
+        if (rag && v > 0.85) y += n2(a * 6, seed * 1.7) * rag * ((v - 0.85) / 0.15);
+        // torn points: alternate hem vertices up/down with random depth
+        if (tatter > 0 && v > 0.72) y += ((iu % 2 ? 0.55 : -0.45) + 0.45 * n2(a * 37, seed * 3.1)) * tatter * ((v - 0.72) / 0.28);
+        if (point > 0) y -= point * (1 - Math.abs(2 * u - 1)) * v * v;
         const p = new THREE.Vector3(Math.sin(a) * (rx + fold), y, Math.cos(a) * (rz + fold) - 0.01 * s);
-        _c.copy(base);
-        if (v > 0.93) _c.lerp(trim, 0.85);
+        _c.copy(pc);
+        if (v > 0.93) _c.lerp(tc, 0.85);
         // weights
         w.length = 0;
         const side = Math.sin(a);
         const front = Math.max(0, Math.cos(a));
         const back = Math.max(0, -Math.cos(a));
-        const lower = Math.min(1, v * 1.25);
+        const lower = Math.min(1, vv * 1.25);
         const tl = side > 0 ? side * side * lower : 0;
         const tr = side < 0 ? side * side * lower : 0;
         const sf = iSF >= 0 ? front * front * lower * 0.9 : 0;
@@ -142,8 +155,8 @@ export function skirtGeometry(P: Proportions, rig: RigDef, o: SkirtOpts): THREE.
         if (iSF >= 0) w.push([iSF, sf]);
         if (iSB >= 0) w.push([iSB, sb]);
         const arc = (a1 - a0) * (rx0 + rx1) * 0.5;
-        const edge = Math.min(H * (1 - v), arc * u, arc * (1 - u));
-        pushVertex(b, p, _c, spec, 0.55 + 0.45 * v, w, edge);
+        const edge = Math.min(HH * (1 - v), arc * u, arc * (1 - u));
+        pushVertex(b, p, _c, pspec, 0.55 + 0.45 * vv, w, edge);
       }
     }
     for (let iv = 0; iv < nv; iv++)
@@ -152,6 +165,20 @@ export function skirtGeometry(P: Proportions, rig: RigDef, o: SkirtOpts): THREE.
         const c = a + nu + 1;
         b.idx.push(a, c, a + 1, a + 1, c, c + 1);
       }
+  };
+  for (const [a0, a1] of o.panels) panel(a0, a1, base, trim, spec, 0, 1, 0, o.ragged ?? 0, tat, o.seed ?? 0);
+  // leather strips hanging over the cloth: each a narrow pointed panel just outside it
+  const st = o.strips;
+  if (st && st.count > 0) {
+    const sspec: SurfaceSpec = typeof st.mat === 'string' ? SURFACES[st.mat] : st.mat ?? SURFACES.leather_worn;
+    const sc0 = new THREE.Color().setHex(st.color, THREE.SRGBColorSpace);
+    const sc1 = new THREE.Color().setHex(st.color2 ?? st.color, THREE.SRGBColorSpace);
+    const half = st.width / 2 / ((rx0 + rx1) * 0.5);
+    for (let k = 0; k < st.count; k++) {
+      const ac = (st.phase ?? 0) + (k / st.count) * Math.PI * 2;
+      const lk = st.length * (0.88 + 0.12 * Math.abs(n2(k * 3.3, 1.7)));
+      panel(ac - half, ac + half, sc0, sc1, sspec, 0.012 * s + (k % 2) * 0.004 * s, lk, 0.045 * s, 0, 0, (o.seed ?? 0) + k);
+    }
   }
   return finish(b);
 }

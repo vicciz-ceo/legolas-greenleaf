@@ -90,9 +90,10 @@ function gondorExtras(ctx: KindContext) {
 
   if (captain) {
     // dark leather doublet over the mail, studded
-    sculptTorso(ctx, { color: 0x30251c, mat: 'leather_worn', inflate: 0.0185 * sc, hem: 0.08, sleeve: 0, neck: false, shoulders: false, seams: true, frontOpen: { top: 0.045 * sc, bottom: 0.012 * sc, y1: ny - 0.03 * sc } });
+    // Boromir's dark charcoal-blue surcoat over the mail (turnaround)
+    sculptTorso(ctx, { color: 0x2a2b32, mat: surface('wool', { rough: 0.88, pat: { weave: 0.8 } }), inflate: 0.0185 * sc, hem: 0.08, sleeve: 0, neck: false, shoulders: false, seams: true, frontOpen: { top: 0.045 * sc, bottom: 0.012 * sc, y1: ny - 0.03 * sc } });
     sculptFurCollar(ctx, { color: 0x6c5640, color2: 0x4b3a2b, thick: 0.03, drop: 0.07, open: 0.6 });
-    addCloak(ctx, { color: 0x372c22, color2: 0x241c15, mat: wool, length: 0.82, mantle: false });
+    addCloak(ctx, { color: 0x27262c, color2: 0x1c1b20, mat: wool, length: 0.82, mantle: false });
     sculptStrap(ctx, { color: 0x3a2a1c, mat: 'leather_worn', width: 0.034 * sc, inflate: 0.026 * sc, sign: 1 });
     // the Horn of Gondor on its baldric, hanging at the hip
     const cx = P.hipX + 0.17 * sc;

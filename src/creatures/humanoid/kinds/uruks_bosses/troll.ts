@@ -27,13 +27,14 @@ const HIDE = surface('hide', { rough: 0.8 });
 // sheets: cave troll olive-grey warty hide #717866 (lit), woven kilt #605044, belt #503c2a;
 // war troll soot-dark hide #45473c, battered iron #57594e, leather kilt #4b392b
 export const TROLL_PAL = {
-  skin: 0x4e4c3c,
-  skin2: 0x36342a,
+  // olive-tan hide (the sheet's cave troll reads warm olive, not mould green)
+  skin: 0x534e3d,
+  skin2: 0x3f3b2e,
   belly: 0x7a7866,
   lips: 0x4a4a3e,
   scatter: 0x7a6a50,
   eyes: 0xb8a64a,
-  wart: 0x5a644e,
+  wart: 0x5c5946,
   iron: 0x45463e,
   rust: 0x4a3828,
   leather: 0x2c2118,
@@ -378,12 +379,12 @@ export const trollKind: KindDef = {
   height: 4.5,
   build: { shoulders: 1.12, hips: 1.1, bulk: 1.22, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 0.78, headSize: 1.05, neck: 0.85, neckThick: 0.9, hunch: 0.5, handSize: 1.45, footSize: 1.45, muscle: 0.6 },
   face: TROLL_FACE,
-  skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.6, blemish: 0.6, scars: 3, warts: 0.5, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3e30, surface: 'skin_troll', scatter: TROLL_PAL.scatter },
+  skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.45, blemish: 0.5, scars: 3, warts: 0.38, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3e30, surface: 'skin_troll', scatter: 0x8a5a40 },
   eyes: { color: TROLL_PAL.eyes, glow: 0.25, sclera: 0xa8a070 },
   hair: { style: 'bald', color: 0x1a1a14 },
   // a full knee-length ragged kilt on a broad leather belt (both sheets)
   outfit: [
-    { type: 'skirt', color: 0x5a4a3e, color2: 0x45382e, length: 0.95, mat: 'rags', thickness: 0.075 },
+    { type: 'skirt', color: 0x5a4434, color2: 0x45342a, length: 0.95, mat: 'rags', thickness: 0.075, tatter: 0.05 },
     { type: 'belt', color: 0x4a3828, thickness: 0.012 },
   ],
   armor: [],

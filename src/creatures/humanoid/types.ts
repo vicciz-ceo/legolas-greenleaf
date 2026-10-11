@@ -148,6 +148,23 @@ export interface OutfitLayer {
   thickness?: number;
   /** probability this layer appears (seed-varied crowds) */
   chance?: number;
+  /** skirt/loincloth: torn zig-zag points along the hem, amplitude in m (at 1.85 m scale) */
+  tatter?: number;
+  /** skirt/loincloth: leather strips hanging over the cloth panels (layered kilts) */
+  strips?: SkirtStrips;
+}
+
+/** leather strips over a skirt: `count` evenly spaced, `width` (m at 1.85 m scale), `length` as a
+ *  fraction of the skirt length (pointed, stitched ends) */
+export interface SkirtStrips {
+  count: number;
+  color: number;
+  color2?: number;
+  mat?: SurfaceName | SurfaceSpec;
+  width: number;
+  length: number;
+  /** angle offset (radians from +Z toward +X) */
+  phase?: number;
 }
 
 export type ArmorType =

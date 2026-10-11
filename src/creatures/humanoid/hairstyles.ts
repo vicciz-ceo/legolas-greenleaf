@@ -64,7 +64,7 @@ const STYLES: Record<HairStyle, StyleCfg> = {
     back: -0.42,
     comb: -1,
     cap: 0.022,
-    clump: { per: 7, strength: 0.7, radial: 0.75, tone: 0.13, lockLength: 0.14, taperTips: 0.16 },
+    clump: { per: 7, strength: 0.7, radial: 0.75, tone: 0.15, lockLength: 0.14, taperTips: 0.16 },
     taper: 0.5,
     hem: { v: 0.07, spread: 0.012 },
   },
@@ -91,7 +91,7 @@ export function sculptHairCap(s: Sculpt, P: Proportions, hair: HairDef, hooded =
   s.group('union', 0.018 * u, () => {
     s.ellipsoid(h(0, 0.045, -0.055), [(0.325 + cfg.cap) * u, (0.4 + cfg.cap) * u, (0.425 + cfg.cap) * u], {
       // the cap reads as the hair's shadowed depth between strands: darker than the strands
-      color: shade(hair.color, 0.95),
+      color: shade(hair.color, 0.7),
       mat: 'hair',
       bone: 'head',
       k: 0.02 * u,

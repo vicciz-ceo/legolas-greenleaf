@@ -6,6 +6,12 @@
  *   surf = (roughness, metalness, sheen, skin-scatter)
  *   pat0 = (pores, weave, leather, scales)        — detail pattern weights (may exceed 1)
  *   pat1 = (chitin, fur, scratches, wrinkles)
+ * A NEGATIVE weight in the first four slots selects an alternative pattern (blends fade through 0):
+ *   pores < 0   scarred skin (pores + long healed cuts)
+ *   weave < 0   2/1 twill
+ *   leather < 0 tooled / embossed leather (leaf work)
+ *   scales < 0  hammered metal (shallow dents)
+ * Metal (metal > 0) with pores ≥ ~0.4 rusts in its crevices (rough, orange-brown, non-metallic).
  */
 export interface SurfaceSpec {
   rough: number;
@@ -30,12 +36,18 @@ const S = (rough: number, metal: number, sheen: number, skin: number, pat: Parti
 });
 
 export const SURFACES = {
-  /** smooth human/elf skin with pores (a faint velvet sheen for peach fuzz) */
-  skin: S(0.5, 0, 0.12, 1, { pores: 1, wrinkles: 0.06 }),
+  /** smooth human/elf skin with pores and fine crosshatched lines (a faint velvet sheen for peach
+   *  fuzz); the shader adds mottling, capillary warmth and oily/dry roughness patches */
+  skin: S(0.46, 0, 0.12, 1, { pores: 1.15, wrinkles: 0.06 }),
   /** weathered human skin (dwarves, rangers) */
   skin_weathered: S(0.56, 0, 0, 0.9, { pores: 1.3, wrinkles: 0.35 }),
+  /** muscular brute skin with a sweaty sheen (Uruk-hai, Lurtz, the berserker) */
+  skin_brute: S(0.44, 0, 0.04, 0.5, { pores: 1.3, wrinkles: 0.45, leather: 0.12 }),
   /** orc/goblin skin: coarse, scarred */
   skin_orc: S(0.62, 0, 0, 0.55, { pores: 1.5, wrinkles: 0.7, leather: 0.2 }),
+  /** pale scarred brute skin (Bolg): pores plus long healed cuts (a negative pore weight turns on
+   *  the procedural scar lines: raised, glossy, red-purple) */
+  skin_scarred: S(0.52, 0, 0.04, 0.5, { pores: -1.35, wrinkles: 0.5, leather: 0.12 }),
   /** troll hide: thick, deeply wrinkled */
   skin_troll: S(0.78, 0, 0, 0.3, { pores: 1.0, wrinkles: 1.3, leather: 0.5 }),
   lips: S(0.38, 0, 0.05, 1, { pores: 0.25, wrinkles: 0.05 }),
@@ -48,6 +60,8 @@ export const SURFACES = {
   eye: S(0.08, 0, 0, 0, {}),
   /** woven cloth (tunics, leggings) */
   cloth: S(0.86, 0, 1, 0, { weave: 1 }),
+  /** wool twill: diagonal 2/1 ribs (a negative weave weight selects the twill) */
+  twill: S(0.86, 0, 0.6, 0, { weave: -1 }),
   /** fine linen/silk */
   linen: S(0.74, 0, 0.7, 0, { weave: 0.7 }),
   /** heavy wool (cloaks) */
@@ -55,6 +69,9 @@ export const SURFACES = {
   /** rough sack/rags (goblins) */
   rags: S(0.95, 0, 0.6, 0, { weave: 1.2, wrinkles: 0.4 }),
   leather: S(0.6, 0, 0.12, 0, { leather: 1, scratches: 0.15 }),
+  /** tooled (embossed) leather: raised burnished leaves with incised outlines, midribs and veins on
+   *  a darker stippled ground (a negative leather weight selects the tooling) */
+  leather_tooled: S(0.6, 0, 0.1, 0, { leather: -1, scratches: 0.12 }),
   /** soft suede (Legolas' jerkin) */
   suede: S(0.82, 0, 0.45, 0, { leather: 0.55, fur: 0.15 }),
   /** dark worn leather (orc armour straps) */
@@ -63,6 +80,10 @@ export const SURFACES = {
   metal_dark: S(0.5, 1, 0, 0, { scratches: 1.2, pores: 0.3 }),
   /** rusty crude orc iron */
   metal_rusty: S(0.72, 0.75, 0, 0, { scratches: 1.0, pores: 1.2, wrinkles: 0.3 }),
+  /** hammered iron: shallow overlapping dents (a negative scales weight) and scratches */
+  metal_hammered: S(0.42, 1, 0, 0, { scales: -1, scratches: 0.8 }),
+  /** rusted, hammered crude iron (Bolg's spikes, pauldrons and mace): rust blooms in the pits */
+  iron_rusty: S(0.66, 0.85, 0, 0, { scratches: 0.7, pores: 1.15, scales: -0.7, wrinkles: 0.15 }),
   gold: S(0.24, 1, 0, 0, { scratches: 0.5 }),
   mail: S(0.42, 1, 0, 0, { scales: 1.4, scratches: 0.5 }),
   wood: S(0.66, 0, 0, 0, { fur: 0.9, wrinkles: 0.3 }),

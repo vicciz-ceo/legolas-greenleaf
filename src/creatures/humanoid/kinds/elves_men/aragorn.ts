@@ -28,10 +28,10 @@ const PAL = {
   boots: 0x3b2b1f,
   bootsTrim: 0x2a1e15,
   shirt: 0x403f38,
-  jerkin: 0x513c2d, // worn leather #513c2d
+  jerkin: 0x56392a, // worn reddish-brown leather (turnaround)
   jerkinTrim: 0x3c2c20,
-  coat: 0x4c5141, // faded green-grey wool #565b4b
-  coatTrim: 0x3a3e31,
+  coat: 0x524f3d, // faded olive-grey wool (the turnaround's coat is browner than #565b4b)
+  coatTrim: 0x3f3c2f,
   bracers: 0x2a2018,
   belt: 0x2c2018,
   steel: 0x9a9ca0,

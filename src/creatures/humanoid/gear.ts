@@ -73,6 +73,8 @@ export interface QuiverOpts {
    *  for a quiver on the right back), grips raised above the quiver mouth. Default: one each side. */
   sheathSide?: 1 | -1;
   seed: number;
+  /** leather surface of the quiver and sheaths (default 'leather'; e.g. 'leather_tooled') */
+  mat?: SurfaceName | SurfaceSpec;
 }
 
 /** quiver-local offset + splay of knife sheath `side` (±1) */
@@ -129,7 +131,7 @@ export function quiverGear(sink: GearSink, o: QuiverOpts) {
   sink.add(lathe(prof, 14), {
     bone: o.bone,
     color: o.color,
-    mat: 'leather',
+    mat: o.mat ?? 'leather',
     matrix: base,
     colorFn: (p, _n, c) => {
       // tooled bands (computed in model space back to local via axis projection)
@@ -158,7 +160,7 @@ export function quiverGear(sink: GearSink, o: QuiverOpts) {
       const mm = base.clone().multiply(sheathLocal(o, side));
       // sheath: flattened tapered tube
       const sheath = lathe([[0.0, -0.17], [0.006, -0.17], [0.016, -0.12], [0.019, 0.02], [0.02, 0.1], [0.018, 0.105], [0.0, 0.105]], 8).scale(1, 1, 0.55);
-      sink.add(sheath, { bone: o.bone, color: o.color, mat: 'leather', matrix: mm });
+      sink.add(sheath, { bone: o.bone, color: o.color, mat: o.mat ?? 'leather', matrix: mm });
       if (!o.knives) continue;
       const guard = new THREE.BoxGeometry(0.05, 0.009, 0.016).translate(0, 0.112, 0);
       sink.add(guard, { bone: o.bone, color: o.knives.guard, mat: 'metal', matrix: mm, small: true });
@@ -387,12 +389,21 @@ export function armorGear(sink: GearSink, P: Proportions, def: ResolvedKind, pie
   return { helmet: hasHelmet, helmetRimY: rim };
 }
 
-/** small belt buckle / clasp */
-export function buckleGear(sink: GearSink, P: Proportions, y: number, color: number) {
+/** small belt buckle: heroes get a cast oval frame with a tongue; crowds a flat plate (12 tris) */
+export function buckleGear(sink: GearSink, P: Proportions, y: number, color: number, detailed = false) {
   const s = P.s;
   const z = 0.104 * s * P.build.bulk * (1 + P.build.belly * 0.4) + 0.02 * s;
-  const geo = new THREE.BoxGeometry(0.045 * s, 0.038 * s, 0.008 * s);
-  sink.add(geo, { bone: 'hips', color, mat: 'metal', matrix: new THREE.Matrix4().makeTranslation(0, y, z), small: true });
+  if (!detailed) {
+    sink.add(new THREE.BoxGeometry(0.045 * s, 0.038 * s, 0.008 * s), { bone: 'hips', color, mat: 'metal', matrix: new THREE.Matrix4().makeTranslation(0, y, z), small: true });
+    return;
+  }
+  const at = new THREE.Matrix4().makeTranslation(0, y, z);
+  const frame = new THREE.TorusGeometry(0.017 * s, 0.0036 * s, 6, 18).scale(1.25, 1, 0.8);
+  sink.add(frame, { bone: 'hips', color, mat: 'metal', matrix: at, small: true });
+  const tongue = new THREE.CylinderGeometry(0.0022 * s, 0.0022 * s, 0.024 * s, 5).rotateZ(Math.PI / 2).translate(0.006 * s, 0, 0.002 * s);
+  sink.add(tongue, { bone: 'hips', color, mat: 'metal', matrix: at, small: true });
+  const bar = new THREE.CylinderGeometry(0.0026 * s, 0.0026 * s, 0.034 * s, 5).translate(-0.013 * s, 0, 0.001 * s);
+  sink.add(bar, { bone: 'hips', color, mat: 'metal', matrix: at, small: true });
 }
 
 void _m;
