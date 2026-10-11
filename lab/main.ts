@@ -6,10 +6,13 @@
  *
  * URL params
  *   subject=<name>          subject to show (default: first)
- *   view=orbit|single|quad|sheet
+ *   view=orbit|single|quad|turn|sheet
  *        orbit  interactive orbit camera + live animation (for humans)
  *        single one 3/4 view, static (for snapshots)
  *        quad   front / right / back / 3-4-high views of one subject, static
+ *        turn   a turnaround strip laid out like the reference sheets (docs/refs/<name>/*_turnaround.jpg):
+ *               FRONT, 3/4 FRONT, RIGHT PROFILE, BACK side by side at eye level. Use a wide size
+ *               (e.g. --size 1536x1024) and bg=7f7f7f to match the sheets; yaws=0,-35,-90,180 (the default) overrides the angles
  *        sheet  contact sheet of every subject (or `subjects=a,b,c`, or `category=enemy`)
  *   anim=<name>&t=<sec>     pose the subject at time t of animation anim (static views)
  *   wire=1                  wireframe overlay
@@ -41,7 +44,7 @@ declare global {
 }
 
 const params = new URLSearchParams(location.search);
-const view = (params.get('view') ?? 'orbit') as 'orbit' | 'single' | 'quad' | 'sheet';
+const view = (params.get('view') ?? 'orbit') as 'orbit' | 'single' | 'quad' | 'turn' | 'sheet';
 const animParam = params.get('anim');
 const tParam = Number(params.get('t') ?? '0');
 const zoom = Number(params.get('zoom') ?? '1');
@@ -310,22 +313,27 @@ async function main() {
   const pole = makeReferencePole();
   pole.position.set(f0.center.x - f0.size.x / 2 - 0.6, 0, f0.center.z);
   scene.add(pole);
+  if (view === 'turn') pole.visible = false; // the sheets have a side scale, not a pole in frame
 
   const info = `${subject.name}  ${Math.round(b.tris).toLocaleString()} tris  build ${b.ms.toFixed(0)} ms  size ${f0.size.x.toFixed(2)}×${f0.size.y.toFixed(2)}×${f0.size.z.toFixed(2)} m`;
   const pose = (a: string, t: number) => b.inst.pose?.(a, t);
 
-  if (view === 'quad' || view === 'single') {
+  if (view === 'quad' || view === 'single' || view === 'turn') {
     const f = frameOf(b.holder);
+    const turnYaws = (params.get('yaws') ?? '0,-35,-90,180').split(',').map(Number);
+    const turnNames = ['FRONT', '3/4 FRONT', 'RIGHT PROFILE', 'BACK'];
     const views =
       view === 'single'
         ? [{ yaw: 35, pitch: 12, name: '3/4' }]
-        : [
-            { yaw: 0, pitch: 6, name: 'front' },
-            { yaw: 90, pitch: 6, name: 'right' },
-            { yaw: 180, pitch: 6, name: 'back' },
-            { yaw: 40, pitch: 35, name: '3/4 high' },
-          ];
-    const cols = views.length === 1 ? 1 : 2;
+        : view === 'turn'
+          ? turnYaws.map((yaw, i) => ({ yaw, pitch: 3, name: turnNames[i] ?? `yaw ${yaw}` }))
+          : [
+              { yaw: 0, pitch: 6, name: 'front' },
+              { yaw: 90, pitch: 6, name: 'right' },
+              { yaw: 180, pitch: 6, name: 'back' },
+              { yaw: 40, pitch: 35, name: '3/4 high' },
+            ];
+    const cols = views.length === 1 ? 1 : view === 'turn' ? views.length : 2;
     const rows = Math.ceil(views.length / cols);
     const cw = innerWidth / cols;
     const ch = innerHeight / rows;
