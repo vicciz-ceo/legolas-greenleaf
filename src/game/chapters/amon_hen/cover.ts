@@ -90,16 +90,28 @@ export function groundCover(level: LevelAPI, o: CoverOpts): THREE.Mesh {
  * behind the far wood, so the gaps in the canopies show hill and not saturated sky (the alpha-tested crowns
  * otherwise cut hard blue pixels out of the horizon).
  */
-export function distantRidge(level: LevelAPI, center: THREE.Vector3, radius: number, baseY: number, noise: (a: number) => number): THREE.Mesh {
+export interface RidgeOpts {
+  /** crest height: base + noise * span (default 34 + 22) */
+  height?: [number, number];
+  /** vertex colour (default the olive woodland) */
+  color?: number;
+  /** true = fogged like the world (default); false = the colour is the final, already hazed, colour */
+  fog?: boolean;
+  /** draw order (further layers first) */
+  order?: number;
+  name?: string;
+}
+
+export function distantRidge(level: LevelAPI, center: THREE.Vector3, radius: number, baseY: number, noise: (a: number) => number, o: RidgeOpts = {}): THREE.Mesh {
   const SEG = 180;
   const ROWS = 6;
   const pos: number[] = [];
   const col: number[] = [];
   const idx: number[] = [];
-  const c = new THREE.Color(0x76764a);
+  const c = new THREE.Color(o.color ?? 0x76764a);
   for (let i = 0; i <= SEG; i++) {
     const a = (i / SEG) * Math.PI * 2;
-    const top = 34 + noise(a) * 22;
+    const top = (o.height?.[0] ?? 34) + noise(a) * (o.height?.[1] ?? 22);
     for (let j = 0; j <= ROWS; j++) {
       const f = j / ROWS;
       pos.push(center.x + Math.cos(a) * radius, baseY + f * top, center.z + Math.sin(a) * radius);
@@ -119,13 +131,13 @@ export function distantRidge(level: LevelAPI, center: THREE.Vector3, radius: num
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 4));
   geo.setIndex(idx);
-  const m = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: true });
+  const m = new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, side: THREE.DoubleSide, fog: o.fog ?? true });
   const mesh = new THREE.Mesh(geo, m);
-  mesh.name = 'distant_ridge';
+  mesh.name = o.name ?? 'distant_ridge';
   mesh.frustumCulled = false;
   mesh.castShadow = false;
   mesh.receiveShadow = false;
-  mesh.renderOrder = -1;
+  mesh.renderOrder = o.order ?? -1;
   mesh.userData.noAO = true;
   level.root.add(mesh);
   return mesh;

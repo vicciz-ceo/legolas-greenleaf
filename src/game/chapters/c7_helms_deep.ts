@@ -19,6 +19,7 @@ import * as THREE from 'three';
 import type { Ally, ChapterDef, ChapterInstance, Combatant, CrowdHandle, Enemy, FxHandle, LevelAPI } from '../../core/types';
 import { createCrowd, setWetness } from '../../world';
 import { clamp, yawOf } from '../../core/math';
+import { moveArrived } from '../../actors/npc';
 import { ballisticDir } from '../../combat/aim';
 import { numberWord } from '../rivalry';
 import { buildWorld } from './helms_deep/world';
@@ -43,41 +44,17 @@ const DAWN_SHOTS = {
   riderD: 50,
   /** from above the slope's southern flank: the riders massed on the shelf, the White Rider in front */
   ridge: { p: [170, 8, 84], p2: [172, 7.5, 86.5], l: [190, 4, 104], fov: 50 },
-  /** on the shelf, low: the White Rider close, the host of riders behind him against the dawn */
-  white: { p: [174, 1.3, 97], l: [187, 4, 111], fov: 44 },
+  /**
+   * on the shelf, low: the White Rider close, the host of riders behind him against the dawn. (The first
+   * framing sat 1.3 m above a bulge of the shelf edge and looked straight into it: the terrain filled the
+   * frame. This camera keeps >= 1.8 m clear of the ground along the whole line to the rider.)
+   */
+  white: { p: [172, 3.5, 90], l: [182, 1.8, 105], fov: 44 },
   /** from the slope's southern flank: the charge pours down the slope toward the coomb */
   charge: { p: [150, 8, 84], l: [165, 8, 104], p2: [148, 8, 86], l2: [163, 6, 106], fov: 50 },
   /** over the coomb: the host breaks and flees for the back of the Deep */
   flee: { p: [40, 22, 40], l: [-20, 2, 125], fov: 50 },
 };
-
-/**
- * Workaround (shared creature code): the berserker's generated hair geometry carries a few NaN
- * vertex positions, which makes three.js log computeBoundingSphere() errors. Zero them in place
- * (the geometry is cached and shared, so this runs once per geometry).
- */
-const _sanitized = new WeakSet<object>();
-function sanitizeGeometry(root: THREE.Object3D): void {
-  root.traverse((o) => {
-    const geo = (o as THREE.Mesh).geometry as THREE.BufferGeometry | undefined;
-    const pos = geo?.getAttribute('position') as THREE.BufferAttribute | undefined;
-    if (!geo || !pos || _sanitized.has(pos)) return;
-    _sanitized.add(pos);
-    const a = pos.array as Float32Array;
-    let bad = false;
-    for (let i = 0; i < a.length; i++) {
-      if (!Number.isFinite(a[i])) {
-        a[i] = 0;
-        bad = true;
-      }
-    }
-    if (bad) {
-      pos.needsUpdate = true;
-      geo.computeBoundingSphere();
-      geo.computeBoundingBox();
-    }
-  });
-}
 
 /** tint a crowd's instances (the masked coat, e.g. a horse) */
 function paintCrowd(c: CrowdHandle, hex: number, k: number): void {
@@ -117,14 +94,9 @@ export const chapter: ChapterDef = {
     level.setEnvironment(STORM);
     setWetness(0.85);
     const world = buildWorld(level, false);
+    // the wall, tower and court materials were created by buildWorld: wetness only reaches materials already cached
+    setWetness(0.85);
     world.shieldBeacon.visible = false;
-    // (workaround, see sanitizeGeometry) clean every enemy's new geometry before the frame culls it
-    const scene = ctx.engine.scene;
-    const prevBeforeRender = scene.onBeforeRender;
-    scene.onBeforeRender = function (...a: Parameters<THREE.Object3D['onBeforeRender']>) {
-      for (const c of ctx.combatants.byTeam('enemy')) sanitizeGeometry(c.object);
-      prevBeforeRender.apply(this, a);
-    };
     // pre-warm the blast's shaders and pools off-screen (the first explosion otherwise hitches)
     ctx.fx.explosion(V(0, -400, 0), 0.2);
     ctx.fx.debris(V(0, -400, 0), 4, 0x8a8478);
@@ -158,11 +130,9 @@ export const chapter: ChapterDef = {
     const tmp = new THREE.Vector3();
     const tmp2 = new THREE.Vector3();
 
-    // chapter-local counts for the banter ("Forty-two!"): the totals carried in minus this chapter's start
-    const pe = ctx.progression as typeof ctx.progression & { rivalryBaseline?: (id: string) => { legolas: number; gimli: number } };
-    const base = pe.rivalryBaseline ? pe.rivalryBaseline('helms_deep') : { ...ctx.progression.data.rivalryTotals };
-    const countL = () => Math.max(0, ctx.rivalry.legolas - base.legolas);
-    const countG = () => Math.max(0, ctx.rivalry.gimli - base.gimli);
+    // chapter-local counts for the banter ("Forty-two!"): the rivalry keeps the totals carried in separate
+    const countL = () => ctx.rivalry.chapterCounts?.().legolas ?? 0;
+    const countG = () => ctx.rivalry.chapterCounts?.().gimli ?? 0;
 
     // ── helpers ──────────────────────────────────────────────────────────
     /** a line of dialogue: awaited normally, fire-and-forget with ?skipIntro=1 */
@@ -269,6 +239,9 @@ export const chapter: ChapterDef = {
       ctx.fx.smoke(V(5, 1, -6), 2.2);
       ctx.fx.fire(V(3.2, 0.7, -5.5), 1.5);
       ctx.fx.fire(V(8.4, 1.1, -8.2), 1.1);
+      // the fireball's embers: burning timber in the throat of the breach (culvert_breach.jpg), lighting the fight
+      ctx.fx.fire(V(5.2, 0.5, -3.4), 2.1, { smoke: 0.4 });
+      ctx.fx.fire(V(-0.4, 0.5, -7.6), 0.9, { smoke: 0.25, light: false });
     };
 
     // ── surf kills: shield bowls and arrows while surfing count double ─────
@@ -472,13 +445,16 @@ export const chapter: ChapterDef = {
       const e = level.spawnEnemy({ archetype: 'berserker', weapon: 'torch', hp, speed: pace / 0.6, name: 'Torch-bearer' }, at, Math.PI);
       e.aiEnabled = false;
       e.moveTarget = L.culvert.clone();
-      sanitizeGeometry(e.object);
       const anchor = e.humanoid.weaponObject('hand_r')?.userData.fireAnchor as THREE.Object3D | undefined;
       const flame = anchor ? ctx.fx.torch(anchor) : null;
       return { e, flame };
     }
 
-    /** most torch-bearers that come before the blast, stopped or not (the beat cannot stall) */
+    /**
+     * most torch-bearers that come before the blast, stopped or not (the beat cannot stall). The bot, which now
+     * leads its targets, stops the three on its own (6 sent, 3 stopped in the play-through), so this is only the
+     * guard for a player who never connects.
+     */
     const MAX_RUNNERS = 7;
     async function culvert(fromCheckpoint: boolean): Promise<void> {
       beat = 'toCulvert';
@@ -523,7 +499,7 @@ export const chapter: ChapterDef = {
         let reached = false;
         await level.waitUntil(() => {
           if (!r.e.alive) return true;
-          if (r.e.position.distanceTo(L.culvert) < 3) {
+          if (moveArrived(r.e.position, L.culvert, 3)) {
             reached = true;
             return true;
           }
@@ -585,7 +561,7 @@ export const chapter: ChapterDef = {
       }
       // the dive into the culvert: wide from the coomb side, the whole culvert section in frame
       level.cameraShot({ position: V(17, 3.4, 22), lookAt: V(4.5, 4.5, -3), fov: 50, blend: 0 });
-      await level.waitUntil(() => r.e.position.distanceTo(L.culvert) < 2.2, 9);
+      await level.waitUntil(() => moveArrived(r.e.position, L.culvert, 2.2), 9);
       r.e.playPose?.('crouch', 1);
       await level.wait(0.35);
       // BOOM
@@ -980,7 +956,6 @@ export const chapter: ChapterDef = {
       },
       update(): void {},
       dispose(): void {
-        scene.onBeforeRender = prevBeforeRender;
         offKill();
         ram?.dispose();
         for (const cr of crowds) cr.dispose();

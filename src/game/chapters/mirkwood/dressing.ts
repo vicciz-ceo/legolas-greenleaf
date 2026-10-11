@@ -398,7 +398,7 @@ export function buildDressing(o: DressingOpts): void {
     const batches: THREE.InstancedMesh[] = [];
     const centers: THREE.Vector3[] = [];
     for (const [z0, z1] of zones) {
-      const N = 3200;
+      const N = 2300;
       const im = new THREE.InstancedMesh(geo, mat, N);
       let k = 0;
       let guard = 0;
@@ -433,7 +433,7 @@ export function buildDressing(o: DressingOpts): void {
     }
     level.onUpdate(() => {
       const pz = level.ctx.player.position.z;
-      for (let i = 0; i < batches.length; i++) batches[i].visible = Math.abs(pz - centers[i].z) < 80;
+      for (let i = 0; i < batches.length; i++) batches[i].visible = Math.abs(pz - centers[i].z) < 52;
     });
   }
 
@@ -508,7 +508,7 @@ export function buildDressing(o: DressingOpts): void {
   // ── warm light pools where the shafts land ───────────────────────────────
   {
     const mat = new THREE.MeshBasicMaterial({
-      map: glowTexture(), color: 0xe9d994, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending, depthWrite: false,
+      map: glowTexture(), color: 0xe9d994, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending, depthWrite: false,
       polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3,
     });
     const geos: THREE.BufferGeometry[] = [];

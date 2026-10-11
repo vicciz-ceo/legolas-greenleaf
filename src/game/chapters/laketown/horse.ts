@@ -244,7 +244,7 @@ export interface HorseRig {
   readonly galloping: boolean;
 }
 
-const HORSE_SCALE = 1.2;
+export const HORSE_SCALE = 1.2;
 
 /**
  * The horse as a Combatant (a neutral one: never targeted, never hostile) with hit zones on its

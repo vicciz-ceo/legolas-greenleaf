@@ -31,21 +31,26 @@ export const L = {
   /** Rohirrim on foot holding the line (anchors) */
   riders: [V(-2, 0, -9), V(-9, 0, 9), V(4, 0, 12), V(-12, 0, -3)],
   /**
-   * Minas Tirith, ~740 m off to the south-south-east (az 33° from the field), behind the host of Harad:
+   * Minas Tirith, ~540 m off to the south-east (az 46° from the field), behind the host of Harad:
    * the layout's S4 landmark sits straight ahead of the route, and from the cp0 heading (FACE) it hangs
    * in the right third of the frame with the low sun on the left, as in the gameplay reference. Inside
-   * the 1200 m far plane, scaled up so it reads as a hill-city rather than a speck.
+   * the 1200 m far plane; built small and broad (CITY_SCALE, CITY_WIDEN) so it reads as a hill-city
+   * filling a third of the frame with its tower clear of the HUD, not a spike.
    */
-  city: V(405, 0, 620),
+  city: V(398, 0, 375),
   /**
    * the white city's front (local +Z) turned from the field toward the low sun, so its terraces catch the
    * key light and stand bright against the dark mountains (facing the field it would be in its own shade)
    */
-  cityYaw: 2.93,
+  cityYaw: 3.0,
 };
 
 /** the heading every checkpoint starts on: east-south-east, the host ahead, the city to the right, the sun to the left */
 export const FACE = 1.2;
+
+/** the city's uniform scale and its extra horizontal widening (the film's city is broader than it is tall) */
+export const CITY_SCALE = 0.52;
+export const CITY_WIDEN = 1.7;
 
 /** the battlefield heightfield: broad gentle swells, churned ruts and catapult craters, rising to the city */
 const CRATERS: [number, number, number][] = [

@@ -10,7 +10,7 @@
  * Nothing allocates per frame; every geometry is built once at load.
  */
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LevelAPI } from '../../../core/types';
 import { Rng, fbm2 } from '../../../core/rng';
 import { clamp, smoothstep } from '../../../core/math';
@@ -53,14 +53,14 @@ export function mountainRing(level: LevelAPI, cx: number, cz: number, citAz: num
       // tall behind the city, along the south-west range and the eastern wall; low and rolling in the north
       const amp =
         0.3 +
-        0.36 * bump(aa, citAz, 40) +
+        0.78 * bump(aa, citAz, 38) +
         0.5 * bump(aa, 250, 60) +
         0.42 * bump(aa, 112, 42) +
         0.3 * bump(aa, 305, 32) +
         0.16 * bump(aa, 150, 30);
       const env = smoothstep(0.0, 0.8, t);
       const ridged = 1 - Math.abs(fbm2(x * 0.0029, z * 0.0029, 4, 51));
-      const crag = Math.pow(clamp(ridged, 0, 1), 1.9);
+      const crag = Math.pow(clamp(ridged, 0, 1), 1.45);
       const mass = 0.5 + 0.5 * (0.5 + 0.5 * fbm2(x * 0.0014, z * 0.0014, 2, 52));
       const detail = fbm2(x * 0.016, z * 0.016, 3, 53) * 22 + fbm2(x * 0.06, z * 0.06, 2, 54) * 6;
       const h = (50 + 400 * crag * mass) * amp * env + detail * env - 26 * (1 - env);
@@ -112,7 +112,7 @@ export function mountainRing(level: LevelAPI, cx: number, cz: number, citAz: num
   geo.computeBoundingSphere();
   geo.computeBoundingBox();
   const m = mat('cliff', { key: 'pelennorRing', vertexColors: true, rgb: [0.62, 0.64, 0.7] });
-  applyFogCap(m, 0.42);
+  applyFogCap(m, 0.34);
   const mesh = new THREE.Mesh(geo, m);
   mesh.name = 'pelennor:mountains';
   mesh.castShadow = false;
@@ -165,17 +165,32 @@ export function puddles(
 
 /** lumpy clods of turned earth, thickest where the mud is (one instanced draw call) */
 export function clods(level: LevelAPI, ground: Ground, mudAt: Ground, rng: Rng, centre: THREE.Vector3, radius: number, count: number): void {
-  const g = new THREE.IcosahedronGeometry(1, 1);
+  // 20 triangles each: a welded, noise-pushed icosahedron with smooth normals reads as a lump of turned earth
+  // (the stock detail-0 icosahedron has flat normals and reads as a cut stone)
+  const ico = new THREE.IcosahedronGeometry(1, 0);
+  ico.deleteAttribute('normal');
+  ico.deleteAttribute('uv');
+  const g = mergeVertices(ico, 1e-4);
   const p = g.getAttribute('position') as THREE.BufferAttribute;
+  const uvs = new Float32Array(p.count * 2);
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i);
     const y = p.getY(i);
     const z = p.getZ(i);
-    const kk = 1 + 0.38 * fbm2(x * 1.7 + 3, z * 1.9 + y, 2, 61);
+    const kk = 1 + 0.42 * fbm2(x * 1.7 + 3, z * 1.9 + y, 2, 61);
     p.setXYZ(i, x * kk, y * kk * 0.55, z * kk);
+    uvs[i * 2] = Math.atan2(z, x) / (Math.PI * 2) + 0.5;
+    uvs[i * 2 + 1] = y * 0.5 + 0.5;
   }
+  g.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
   g.computeVertexNormals();
-  const m = mat('mud', { key: 'pelennorClod', rgb: [0.62, 0.52, 0.42] });
+  const m = mat('mud', { key: 'pelennorClod2', rgb: [0.78, 0.62, 0.47] });
+  // dry matte earth: the stock mud is wet and mirrors the sky (blue glints made the clods read as stones)
+  const mp = m as THREE.MeshPhysicalMaterial;
+  mp.roughness = 1;
+  if ('clearcoat' in mp) mp.clearcoat = 0;
+  if ('specularIntensity' in mp) mp.specularIntensity = 0.12;
+  mp.envMapIntensity = 0.3;
   const mesh = new THREE.InstancedMesh(g, m, count);
   const q = new THREE.Quaternion();
   const e = new THREE.Euler();
@@ -185,17 +200,18 @@ export function clods(level: LevelAPI, ground: Ground, mudAt: Ground, rng: Rng, 
   let guard = 0;
   while (n < count && guard++ < count * 20) {
     const a = rng.float() * Math.PI * 2;
-    const d = 5 + Math.sqrt(rng.float()) * radius;
+    // thickest near the middle of the field, where the camera lives
+    const d = 3 + Math.pow(rng.float(), 0.75) * radius;
     const x = centre.x + Math.cos(a) * d;
     const z = centre.z + Math.sin(a) * d;
     if (rng.float() > mudAt(x, z) * 1.1) continue;
-    const s = 0.1 + Math.pow(rng.float(), 2.2) * 0.42;
+    const s = 0.07 + Math.pow(rng.float(), 2.8) * 0.2;
     e.set((rng.float() - 0.5) * 0.7, rng.float() * 6.28, (rng.float() - 0.5) * 0.7);
     q.setFromEuler(e);
     mm.compose(new THREE.Vector3(x, ground(x, z) + 0.02 + s * 0.12, z), q, new THREE.Vector3(s * (0.9 + rng.float() * 0.6), s * (0.8 + rng.float() * 0.5), s * (0.9 + rng.float() * 0.6)));
     mesh.setMatrixAt(n, mm);
-    const v = 0.7 + rng.float() * 0.5;
-    c.setRGB(v, v * 0.97, v * 0.93);
+    const v = 0.75 + rng.float() * 0.5;
+    c.setRGB(v, v * 0.95, v * 0.9);
     mesh.setColorAt(n, c);
     n++;
   }
@@ -354,15 +370,17 @@ export interface Host {
  */
 export function hostForest(level: LevelAPI, ground: Ground, hosts: readonly Host[], standards: readonly (readonly [x: number, z: number, h: number, colour: number])[], rng: Rng): void {
   const low = worldQuality() === 'low';
+  const hiq = worldQuality() === 'high' || worldQuality() === 'ultra';
+  const share = low ? 0.4 : hiq ? 0.5 : 1;
   const shaft = new THREE.BoxGeometry(0.1, 1, 0.1).translate(0, 0.5, 0);
   const tip = new THREE.ConeGeometry(0.11, 0.3, 4).translate(0, 1.0, 0);
   const shaftTip = mergeGeometries([shaft, tip])!;
   const dark = new THREE.MeshLambertMaterial({ color: 0x3a3028 });
-  const total = hosts.reduce((s, h) => s + Math.round(h.n * (low ? 0.4 : 1)), 0);
+  const total = hosts.reduce((s, h) => s + Math.round(h.n * share), 0);
   const spears = new THREE.InstancedMesh(shaftTip, dark, total);
   const flagGeo = new THREE.PlaneGeometry(0.9, 0.55).translate(0.45, 0, 0);
   const flagMat = new THREE.MeshLambertMaterial({ color: 0xffffff, side: THREE.DoubleSide });
-  const flagCount = hosts.reduce((s, h) => s + Math.round(h.n * (low ? 0.4 : 1) * 0.07), 0);
+  const flagCount = hosts.reduce((s, h) => s + Math.round(h.n * share * 0.07), 0);
   const flags = new THREE.InstancedMesh(flagGeo, flagMat, flagCount);
   const q = new THREE.Quaternion();
   const e = new THREE.Euler();
@@ -371,7 +389,7 @@ export function hostForest(level: LevelAPI, ground: Ground, hosts: readonly Host
   let ns = 0;
   let nf = 0;
   for (const h of hosts) {
-    const n = Math.round(h.n * (low ? 0.4 : 1));
+    const n = Math.round(h.n * share);
     for (let i = 0; i < n; i++) {
       const x = h.cx + (rng.float() * 2 - 1) * h.hx;
       const z = h.cz + (rng.float() * 2 - 1) * h.hz;
@@ -438,4 +456,68 @@ export function hostForest(level: LevelAPI, ground: Ground, hosts: readonly Host
   poles.name = 'pelennor:standards';
   cloths.name = 'pelennor:standardCloth';
   level.root.add(poles, cloths);
+}
+
+
+/**
+ * The dense ranks of the hosts beyond the crowd figures: thousands of tiny dark soldiers (a tapered
+ * body and a head, ~40 triangles, one instanced draw call), jittered on a rank-and-file grid and
+ * toned per host (iron and black of Mordor, the red of Harad, the grey of Gondor). At 150-350 m in the
+ * haze they read as the unbroken band of armies along the reference's horizon. Never casts shadows.
+ */
+export interface Mass {
+  cx: number;
+  cz: number;
+  hx: number;
+  hz: number;
+  n: number;
+  tones: readonly number[];
+}
+export function hostMass(level: LevelAPI, ground: Ground, masses: readonly Mass[], rng: Rng, ok: (x: number, z: number) => boolean = () => true): void {
+  const q = worldQuality();
+  const k = q === 'low' ? 0.3 : q === 'high' || q === 'ultra' ? 0.32 : 0.8;
+  const body = new THREE.CylinderGeometry(0.26, 0.4, 1.4, 4, 1).translate(0, 0.7, 0);
+  const head = new THREE.OctahedronGeometry(0.2, 0).translate(0, 1.62, 0);
+  const geo = mergeGeometries([body.index ? body.toNonIndexed() : body, head.index ? head.toNonIndexed() : head])!;
+  const total = masses.reduce((s, m) => s + Math.round(m.n * k), 0);
+  const mat0 = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  const mesh = new THREE.InstancedMesh(geo, mat0, total);
+  const m4 = new THREE.Matrix4();
+  const qq = new THREE.Quaternion();
+  const ee = new THREE.Euler();
+  const sc = new THREE.Vector3();
+  const col = new THREE.Color();
+  let n = 0;
+  for (const m of masses) {
+    const cnt = Math.round(m.n * k);
+    // ranks of ~1.5 m spacing, filled from the middle outward until the count is spent
+    const step = Math.sqrt((4 * m.hx * m.hz) / cnt);
+    const cols = Math.max(1, Math.round((2 * m.hx) / step));
+    const rows = Math.max(1, Math.ceil(cnt / cols));
+    for (let i = 0; i < cnt; i++) {
+      const cI = i % cols;
+      const rI = Math.floor(i / cols) % rows;
+      const x = m.cx - m.hx + ((cI + 0.5 + (rng.float() - 0.5) * 0.8) / cols) * 2 * m.hx;
+      const z = m.cz - m.hz + ((rI + 0.5 + (rng.float() - 0.5) * 0.8) / rows) * 2 * m.hz;
+      if (!ok(x, z)) continue;
+      const s = 0.95 + rng.float() * 0.3;
+      ee.set(0, rng.float() * 6.28, 0);
+      qq.setFromEuler(ee);
+      m4.compose(new THREE.Vector3(x, ground(x, z), z), qq, sc.set(s, s * (0.95 + rng.float() * 0.2), s));
+      mesh.setMatrixAt(n, m4);
+      col.setHex(m.tones[Math.floor(rng.float() * m.tones.length) % m.tones.length]);
+      col.multiplyScalar(0.8 + rng.float() * 0.5);
+      mesh.setColorAt(n, col);
+      n++;
+    }
+  }
+  mesh.count = n;
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  mesh.computeBoundingSphere();
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  mesh.userData.noAO = true;
+  mesh.name = 'pelennor:hostMass';
+  level.root.add(mesh);
 }

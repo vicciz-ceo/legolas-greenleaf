@@ -17,6 +17,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { fbm2 } from '../../../core/rng';
 import { getTextureSet, mat, tower, type HelmsDeepResult } from '../../../world';
+import type { Fx, FxHandle } from '../../../core/types';
 import { L, WALL_H, WALL_T, stairY, wallAt } from './layout';
 
 /** radial glow (hot core, soft halo) as RGBA data; shared by the flame sprites and the floor pools */
@@ -72,6 +73,8 @@ export interface Dress {
 
 export interface DressOpts {
   hd: HelmsDeepResult;
+  /** real flames (pooled GPU particles, the nearest ones take a point light) for the torches */
+  fx: Fx;
   ground: (x: number, z: number) => number;
   rng: () => number;
   /** floor positions that should glow warm (braziers, torches): [x, y, z, radius] */
@@ -90,7 +93,7 @@ function tintStone(root: THREE.Object3D): () => void {
   });
   for (const [m] of seen) {
     // cooler, a touch lighter: moonlit wet stone, not a dark-blue slab (and not a pale one)
-    m.color.multiply(new THREE.Color(0.94, 1.02, 1.12));
+    m.color.multiply(new THREE.Color(0.86, 0.93, 1.04));
   }
   return () => {
     for (const [m, c] of seen) m.color.copy(c);
@@ -107,6 +110,20 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     return x;
   };
   const restoreStone = tintStone(hd.object);
+
+  // the court paving: the builder's cobbles are lit like a pale slab. Rain-black, glossy flagstones
+  // (own clone: the builder's material is shared across levels), the torches then pool on them
+  const courtSwap: [THREE.Mesh, THREE.Material, THREE.Material][] = [];
+  hd.object.traverse((ob) => {
+    const m = ob as THREE.Mesh;
+    const g = m.geometry as THREE.PlaneGeometry | undefined;
+    if (!m.isMesh || Array.isArray(m.material) || g?.type !== 'PlaneGeometry' || g.parameters.width !== 150) return;
+    const c = (m.material as THREE.MeshStandardMaterial).clone();
+    c.color.multiplyScalar(0.26);
+    c.roughness = Math.min(c.roughness, 0.5);
+    courtSwap.push([m, m.material, c]);
+    m.material = c;
+  });
 
   const wallStone = mat('stone_blocks', { key: 'base' });
   const timber = mat('old_wood', { key: 'siege' });
@@ -145,7 +162,8 @@ export function dressHelmsDeep(o: DressOpts): Dress {
       const p = w.c.clone().addScaledVector(w.n, WALL_T / 2 - 0.3);
       // an iron-shod torch standing in the parapet's crenel
       sticks.push(boxGeo(0.07, 1.0, 0.07, p.x, WALL_H + 1.1 + 0.5, p.z, 0, 0.5));
-      flames.push(new THREE.Vector3(p.x, WALL_H + 2.55, p.z));
+      sticks.push(boxGeo(0.2, 0.18, 0.2, p.x, WALL_H + 2.15, p.z, 0, 0.5));
+      flames.push(new THREE.Vector3(p.x, WALL_H + 2.4, p.z));
       const q = w.c.clone().addScaledVector(w.n, 0.7);
       poolPts.push([q.x, WALL_H + 0.02, q.z, 3.0]);
     }
@@ -155,7 +173,8 @@ export function dressHelmsDeep(o: DressOpts): Dress {
       const x = L.stairTop.x + sx * 4.8;
       const y0 = stairY(z) + 0.9;
       sticks.push(boxGeo(0.09, 1.7, 0.09, x, y0 + 0.85, z, 0, 0.5));
-      flames.push(new THREE.Vector3(x, y0 + 1.85, z));
+      sticks.push(boxGeo(0.24, 0.2, 0.24, x, y0 + 1.75, z, 0, 0.5));
+      flames.push(new THREE.Vector3(x, y0 + 2.05, z));
     }
     const sm = merge(sticks, 'hd_parapet_torches', mat('old_wood', { key: 'torchstick' }), false);
     if (sm) {
@@ -175,7 +194,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     if (pg) {
       const tex = own(glowTexture(64, 0.0, 2.0));
       const pm = own(new THREE.MeshBasicMaterial({
-        map: tex, color: new THREE.Color(1.0, 0.5, 0.2), transparent: true, opacity: 0.34, depthWrite: false,
+        map: tex, color: new THREE.Color(1.0, 0.5, 0.2), transparent: true, opacity: 0.2, depthWrite: false,
         blending: THREE.AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
       }));
       const pools = new THREE.Mesh(own(pg), pm);
@@ -185,23 +204,10 @@ export function dressHelmsDeep(o: DressOpts): Dress {
       root.add(pools);
     }
   }
-  // flame glows (billboards): parapet torches
-  let flameMat: THREE.PointsMaterial | null = null;
-  if (flames.length) {
-    const pos = new Float32Array(flames.length * 3);
-    flames.forEach((f, i) => f.toArray(pos, i * 3));
-    const g = own(new THREE.BufferGeometry());
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    flameMat = own(new THREE.PointsMaterial({
-      size: 0.85, map: own(glowTexture(32, 2.2, 2.4)), color: new THREE.Color(1.0, 0.5, 0.18), transparent: true, depthWrite: false,
-      blending: THREE.AdditiveBlending, sizeAttenuation: true,
-    }));
-    const pts = new THREE.Points(g, flameMat);
-    pts.name = 'hd_parapet_flames';
-    pts.frustumCulled = false;
-    pts.userData.noAO = true;
-    root.add(pts);
-  }
+  // real flames on the parapet and stair torches: the nearest few take a pooled point light, so the
+  // wet walkway and the merlons pick up a living orange (a billboard glow read as a pearl, not a flame)
+  const flameHandles: FxHandle[] = flames.map((f, i) => o.fx.fire(f, 0.34, { smoke: i % 3 === 0 ? 0.12 : 0, light: i % 2 === 0 }));
+  disposers.push(() => { for (const h of flameHandles) h.stop(); });
 
   // ── Hornburg: crenellated drums for the cone-roofed towers, lit windows ─────
   {
@@ -268,14 +274,25 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     cv.height = S;
     const g = cv.getContext('2d')!;
     g.clearRect(0, 0, S, S);
-    for (let i = 0; i < 70; i++) {
+    // a sheet of falling water: a soft white body with many fine, fast streaks (a few thick streaks read as
+    // a barcode), brighter toward the middle and fading out at both sides
+    const body = g.createLinearGradient(0, 0, S, 0);
+    body.addColorStop(0, 'rgba(225,238,255,0)');
+    body.addColorStop(0.25, 'rgba(225,238,255,0.22)');
+    body.addColorStop(0.5, 'rgba(235,245,255,0.34)');
+    body.addColorStop(0.75, 'rgba(225,238,255,0.22)');
+    body.addColorStop(1, 'rgba(225,238,255,0)');
+    g.fillStyle = body;
+    g.fillRect(0, 0, S, S);
+    for (let i = 0; i < 260; i++) {
       const x = rng() * S;
-      const w = 1 + rng() * 3;
+      const edge = 1 - Math.abs(x / S - 0.5) * 1.6;
+      const w = 0.7 + rng() * 1.6;
       const y0 = rng() * S;
-      const len = 14 + rng() * 60;
+      const len = 20 + rng() * 70;
       const grd = g.createLinearGradient(0, y0, 0, y0 + len);
       grd.addColorStop(0, 'rgba(255,255,255,0)');
-      grd.addColorStop(0.5, `rgba(235,245,255,${0.35 + rng() * 0.5})`);
+      grd.addColorStop(0.5, `rgba(240,248,255,${(0.2 + rng() * 0.45) * Math.max(0.15, edge)})`);
       grd.addColorStop(1, 'rgba(255,255,255,0)');
       g.fillStyle = grd;
       g.fillRect(x, y0, w, len);
@@ -297,7 +314,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     sheet.userData.noAO = true;
     hd.breach.intact.add(sheet);
     // the foam where it lands
-    const fm = own(new THREE.SpriteMaterial({ map: own(glowTexture(32, 0, 1.4)), color: new THREE.Color(0.8, 0.9, 1.05), transparent: true, opacity: 0.55, depthWrite: false, fog: true }));
+    const fm = own(new THREE.SpriteMaterial({ map: own(glowTexture(32, 0, 1.4)), color: new THREE.Color(0.8, 0.9, 1.05), transparent: true, opacity: 0.3, depthWrite: false, fog: true }));
     const foam = new THREE.Sprite(fm);
     foam.position.set(5, 0.4, 0.9);
     foam.scale.set(5.5, 1.8, 1);
@@ -353,11 +370,13 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     const spillTex = own(mk(256, 64, (g) => {
       const img = g.createImageData(256, 64);
       for (let x = 0; x < 256; x++) {
-        // clusters of torches: bright pools along the foot of the wall
-        const k = 0.35 + 0.65 * Math.pow(Math.max(0, 0.5 + 0.9 * fbm2(x / 256 * 7, 3.3, 3, 91)), 1.6);
+        // discrete torch clusters: soft pools of light along the foot of the wall with dark gaps between
+        // them (a continuous band read as a lit billboard)
+        const c = Math.max(0, 0.5 + 0.9 * fbm2(x / 256 * 7, 3.3, 3, 91));
+        const k = Math.pow(c, 2.4);
         for (let y = 0; y < 64; y++) {
           const v = 1 - y / 63; // canvas y 0 = top of the ribbon (v = 1)
-          const a = Math.pow(1 - v, 2.2) * k;
+          const a = Math.pow(1 - v, 2.4) * k;
           const o = (y * 256 + x) * 4;
           img.data[o] = 255;
           img.data[o + 1] = 255;
@@ -386,7 +405,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     }, true));
     streakTex.repeat.set(1, 1);
     const spillMat = own(new THREE.MeshBasicMaterial({
-      map: spillTex, color: new THREE.Color(1.0, 0.46, 0.16), transparent: true, opacity: 0.55, depthWrite: false,
+      map: spillTex, color: new THREE.Color(1.0, 0.42, 0.13), transparent: true, opacity: 0.34, depthWrite: false,
       blending: THREE.AdditiveBlending, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
     }));
     const streakMat = own(new THREE.MeshBasicMaterial({
@@ -394,7 +413,7 @@ export function dressHelmsDeep(o: DressOpts): Dress {
       polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1,
     }));
     const add = (x0: number, x1: number, parent: THREE.Object3D) => {
-      const spill = new THREE.Mesh(own(ribbon(x0, x1, 3.05, 11.5, 0.03, 20)), spillMat);
+      const spill = new THREE.Mesh(own(ribbon(x0, x1, 0.4, 10.5, 0.03, 20)), spillMat);
       spill.name = 'hd_wall_spill';
       // the streaks run from the cornice down: the texture's top (canvas y 0) is v = 1
       const st = new THREE.Mesh(own(ribbon(x0, x1, 3.05, WALL_H - 0.5, 0.05, 18)), streakMat);
@@ -489,10 +508,12 @@ export function dressHelmsDeep(o: DressOpts): Dress {
   // ── far ridges: dark silhouettes ringing the sky (the fog would swallow real distance) ──
   {
     const rings: { r: number; base: number; amp: number; peak: number; top: number; bot: number; seed: number }[] = [
-      { r: 520, base: 70, amp: 55, peak: 70, top: 0x0b111a, bot: 0x16202e, seed: 71 },
-      { r: 610, base: 120, amp: 80, peak: 90, top: 0x101823, bot: 0x1a2636, seed: 72 },
+      { r: 520, base: 52, amp: 50, peak: 60, top: 0x0b111a, bot: 0x16202e, seed: 71 },
+      { r: 610, base: 95, amp: 70, peak: 80, top: 0x101823, bot: 0x1a2636, seed: 72 },
     ];
-    const SEG = 160;
+    // 480 segments (7 m a step at the near ring): massifs from low-frequency noise, crags from a finer
+    // octave. (The first version used |noise| for the peaks, whose creases read as toy pyramids.)
+    const SEG = 480;
     for (const ring of rings) {
       const pos: number[] = [];
       const col: number[] = [];
@@ -501,11 +522,14 @@ export function dressHelmsDeep(o: DressOpts): Dress {
       const cb = new THREE.Color(ring.bot);
       for (let i = 0; i <= SEG; i++) {
         const a = (i / SEG) * Math.PI * 2;
-        const x = 20 + Math.cos(a) * ring.r;
-        const z = 120 + Math.sin(a) * ring.r;
-        const n = fbm2(Math.cos(a) * 1.6, Math.sin(a) * 1.6, 3, ring.seed);
-        const sharp = Math.abs(fbm2(Math.cos(a) * 5.5, Math.sin(a) * 5.5, 3, ring.seed + 5));
-        const h = ring.base + n * ring.amp + sharp * ring.peak;
+        const ca = Math.cos(a);
+        const sa = Math.sin(a);
+        const x = 20 + ca * ring.r;
+        const z = 120 + sa * ring.r;
+        const massif = 0.5 + 0.5 * fbm2(ca * 1.3, sa * 1.3, 3, ring.seed);
+        const saddle = 0.5 + 0.5 * fbm2(ca * 3.4, sa * 3.4, 3, ring.seed + 5);
+        const crag = fbm2(ca * 16, sa * 16, 3, ring.seed + 9);
+        const h = ring.base + massif * ring.amp + saddle * saddle * ring.peak + crag * ring.peak * 0.12;
         pos.push(x, h, z, x, -50, z);
         col.push(ct.r, ct.g, ct.b, cb.r, cb.g, cb.b);
         if (i < SEG) {
@@ -532,10 +556,13 @@ export function dressHelmsDeep(o: DressOpts): Dress {
     update(dt: number) {
       t += dt;
       if (cascadeTex) cascadeTex.offset.y -= dt * 1.8;
-      if (flameMat) flameMat.opacity = 0.82 + 0.12 * Math.sin(t * 9.3) + 0.06 * Math.sin(t * 17.1);
     },
     dispose() {
       restoreStone();
+      for (const [m, orig, clone] of courtSwap) {
+        m.material = orig;
+        clone.dispose();
+      }
       for (const d of disposers) d();
       root.removeFromParent();
     },

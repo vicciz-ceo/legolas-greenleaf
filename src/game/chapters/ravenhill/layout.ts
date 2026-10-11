@@ -114,10 +114,14 @@ export function heightAt(x: number, z: number): number {
   const rx = riverX(z);
   const dx = Math.abs(x - rx);
   const open = smoothstep(-45, -135, z);
-  const wallIn = 22 + n1 * 3 + open * 60; // the gorge walls recede into the valley
+  // the wall line wanders (bays and promontories along the gorge: it only ever recedes, so the banks
+  // the fights use stay as they were) and the face is buttressed with gullies and ribs
+  const bay = Math.min(6, Math.max(0, 3 + 7 * fbm2(x * 0.026, z * 0.038, 3, 46)));
+  const wallIn = 22 + n1 * 3 + bay + open * 60; // the gorge walls recede into the valley
   const bank = 3.4 * smoothstep(ICE_HALF + 0.3, 21, dx) + n2 * 0.7 * smoothstep(13, 22, dx);
   const wall = smoothstep(wallIn, wallIn + 13 + n2 * 2, dx);
-  let lower = bank + wall * Math.max(0, hc - 3.4);
+  const rib = Math.max(0, 1 - Math.abs(fbm2(x * 0.05 + z * 0.02, z * 0.075, 3, 48) * 2.6));
+  let lower = bank + wall * Math.max(0, hc - 3.4) + wall * (1 - wall) * 4 * rib * 5.5;
   // bed flat ice
   if (dx < ICE_HALF) lower = 0;
 
@@ -149,9 +153,4 @@ export function heightAt(x: number, z: number): number {
     h = Math.max(h, pin);
   }
   return h;
-}
-
-/** true where the frozen river is (the slippery ice) */
-export function onIce(x: number, z: number, y: number): boolean {
-  return z > ICE_Z[0] && z < ICE_Z[1] && Math.abs(x - riverX(z)) < ICE_HALF - 0.2 && y < 0.8;
 }

@@ -71,7 +71,8 @@ export function makeShieldSurf(level: LevelAPI, landing: Enemy | null, onDone: (
     allowJump: false,
     allowDash: false,
     lockCameraYaw: true,
-    camera: { distance: 5.0, height: 2.0, fov: 74 },
+    // the aim camera stays wide too (the stock one snaps to 2.15 m behind and the stair vanishes under the shield)
+    camera: { distance: 5.0, height: 2.0, fov: 74, aim: { distance: 3.8, height: 1.9, shoulder: 0.85, fov: 58 } },
     update(dt, player, input) {
       m.elapsed += dt;
       const p = player.position;

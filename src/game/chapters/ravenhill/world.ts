@@ -10,9 +10,9 @@ import {
   removeColliders, rock, ruins, ruinedWatchtower, skeleton, stoneBlock, weaponRack, type Built, type BridgeResult,
 } from '../../../world';
 import { Rng, fbm2 } from '../../../core/rng';
-import { tuneTerrain } from './look';
+import { tuneTerrain, winterize } from './look';
 import { buildCloudBanks, buildFarGround, buildRanges } from './vista';
-import { cragStairs, warmGlints } from './accents';
+import { cragStairs, towerTorches, warmGlints } from './accents';
 import { battleSmoke, dressFalls, fallsSpray, iceFlows, farRuins, gorgeViaduct, rimStonework, towerWings } from './dress';
 import {
   BRIDGE, BRIDGE_CX, BRIDGE_LEN, CRAG, FALLS_H, FALLS_Z, ICE_HALF, ICE_Z, L, PINNACLE, TERRAIN, TOWER, V, heightAt, riverX,
@@ -34,6 +34,13 @@ export interface RavenhillWorld {
 }
 
 const noShadow = (o: THREE.Object3D) => o.traverse((c) => (c.castShadow = false));
+
+/**
+ * How well boots grip the river ice (the motor scales the player's acceleration, braking and turning by
+ * it: 1 = stone). 0.22 ≈ 10 m/s² to get going and ~2.8 m to stop from a run: slippery enough to read as
+ * ice and still fightable. (The stock 'ice' value is 0.3.)
+ */
+const ICE_GRIP = 0.22;
 
 /** the frozen river: a strip of ice following the river line, with colliders tagged 'ice' */
 function iceRiver(level: LevelAPI): void {
@@ -67,7 +74,7 @@ function iceRiver(level: LevelAPI): void {
   g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   g.setIndex(idx);
   g.computeVertexNormals();
-  const m = new THREE.Mesh(g, mat('ice', { key: 'rh_river', rgb: [0.86, 0.94, 1.04] }));
+  const m = new THREE.Mesh(g, mat('ice', { key: 'rh_river', rgb: [0.74, 0.9, 1.08] }));
   m.receiveShadow = true;
   m.name = 'ice_river';
   level.root.add(m);
@@ -76,7 +83,7 @@ function iceRiver(level: LevelAPI): void {
   for (let z = ICE_Z[0]; z < ICE_Z[1]; z += 6) {
     const zc = z + 3;
     const slope = (riverX(zc + 1) - riverX(zc - 1)) / 2;
-    physics.addBox(V(riverX(zc), -0.2, zc), [ICE_HALF, 0.25, 3.3], Math.atan2(slope, 1), { material: 'ice', tag: 'ice', blocksCamera: false });
+    physics.addBox(V(riverX(zc), -0.2, zc), [ICE_HALF, 0.25, 3.3], Math.atan2(slope, 1), { material: 'ice', tag: 'ice', friction: ICE_GRIP, blocksCamera: false });
   }
 }
 
@@ -122,6 +129,8 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     const nearBank = rng.chance(0.65);
     const x = riverX(z) + side * (nearBank ? ICE_HALF - 1.5 - rng.float() * 2 : rng.float() * 5);
     const s = iceSheet(2.2 + rng.float() * 3.5, i + 1, { thickness: 0.35 + rng.float() * 0.3 });
+    // the floes are as slippery as the river they lie on
+    for (const c of s.colliders) c.opts = { ...c.opts, friction: ICE_GRIP };
     add(s, x, 0.0, z, rng.float() * 3, true);
     if (nearBank) s.object.rotation.z = side * (0.1 + rng.float() * 0.25);
   }
@@ -135,6 +144,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
       grandeur: 0.55,
       exclude: (x, z) => onRiverLane(x, z) || Math.abs(x - riverX(z)) > 26,
     });
+    winterize(stones.object, 0.75);
     level.root.add(stones.object);
     addColliders(physics, stones.colliders);
   }
@@ -146,6 +156,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     clump: 0.6,
     sink: 0.4,
   });
+  winterize(walls.object);
   level.root.add(walls.object);
   addColliders(physics, walls.colliders);
   const bankRocks = boulderField({ center: V(0, 0, 0), halfSize: [24, 70] }, 30, [0.35, 1.3], ground, {
@@ -153,10 +164,12 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     kind: 'rock',
     exclude: (x, z) => onRiverLane(x, z) || z > FALLS_Z - 4,
   });
+  winterize(bankRocks.object);
   level.root.add(bankRocks.object);
   addColliders(physics, bankRocks.colliders);
   // icefall boulders round the falls base
   const iceRocks = boulderField({ center: V(riverX(64), 0, 64), halfSize: [14, 6] }, 12, [0.6, 1.6], ground, { seed: 14, kind: 'ice', exclude: (x) => Math.abs(x - riverX(64)) < 5 });
+  winterize(iceRocks.object, 0.6);
   level.root.add(iceRocks.object);
   addColliders(physics, iceRocks.colliders);
   // pines and dead trees on the high ground, sparse and wind-bent
@@ -173,6 +186,8 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     lodNear: 40,
     lodFar: 230,
     leafTint: [0.75, 0.8, 0.8],
+    // fuller crowns and anti-aliased cut-outs: no bright-sky confetti through the needles
+    crown: { density: 1.3, alphaToCoverage: true },
   });
   noShadow(woods.object);
   level.root.add(woods.object);
@@ -197,8 +212,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   for (const [x, z] of [[riverX(46) + 13.5, 46], [riverX(14) - 13.5, 14]] as [number, number][]) {
     const b = add(brazier({ lit: true, scale: 1.1 }), x, ground(x, z), z) as Built & { flameAnchor: THREE.Object3D };
     b.object.updateMatrixWorld(true);
-    fx.fire(b.flameAnchor.getWorldPosition(new THREE.Vector3()), 0.5);
-    fx.smoke(b.flameAnchor.getWorldPosition(new THREE.Vector3()).add(V(0, 1, 0)), 0.5);
+    fx.fire(b.flameAnchor.getWorldPosition(new THREE.Vector3()), 0.55, { smoke: 0.7 });
   }
   add(weaponRack({ width: 2.2, seed: 3 }), riverX(40) + 15, ground(riverX(40) + 15, 40), 40, -1.2);
   for (let i = 0; i < 7; i++) {
@@ -220,6 +234,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
   towerWings(level, ground, CRAG, BRIDGE.z, BRIDGE.x0);
   cragStairs(level, ground);
   warmGlints(level);
+  towerTorches(level);
   // dwarven columns and wall stubs round the plateau rim
   const rim = ruins({ center: V(CRAG.x, 0, CRAG.z), halfSize: [CRAG.r, CRAG.r] }, 12, ground, {
     seed: 31,
@@ -230,6 +245,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
       return d < TOWER.r + 3.5 || d > CRAG.r - 2 || (Math.abs(z - BRIDGE.z) < 5 && x > CRAG.x);
     },
   });
+  winterize(rim.object, 0.75);
   level.root.add(rim.object);
   addColliders(physics, rim.colliders);
   const cragRocks = boulderField({ center: V(CRAG.x, 0, CRAG.z), halfSize: [CRAG.r + 16, CRAG.r + 16] }, 40, [1.6, 5], ground, {
@@ -240,6 +256,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
       return d < CRAG.r + 1 || (Math.abs(z - BRIDGE.z) < 6 && x > CRAG.x);
     },
   });
+  winterize(cragRocks.object);
   level.root.add(cragRocks.object);
   addColliders(physics, cragRocks.colliders);
   // crown blocks perched on the broken top of the tall wall (they fall in the collapse)
@@ -284,6 +301,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
       return d < PINNACLE.r + 0.5 || (Math.abs(z - BRIDGE.z) < 9 && x < PINNACLE.x + 2);
     },
   });
+  winterize(summitRocks.object);
   level.root.add(summitRocks.object);
   addColliders(physics, summitRocks.colliders);
   add(banner(0x2c1a14, 'none', { height: 4.6, clothW: 1.2, clothH: 2.6 }), PINNACLE.x + 6.5, PINNACLE.y, PINNACLE.z + 1.2, -Math.PI / 2);
@@ -307,6 +325,7 @@ export function buildRavenhill(level: LevelAPI): RavenhillWorld {
     const z = cz + Math.sin(a) * r0;
     if (Math.abs(z - BRIDGE.z) < (onCrag ? 5 : 10) && x > CRAG.x && x < PINNACLE.x + 2) continue;
     const r = rock(5 + rng.float() * 4, 100 + i, { kind: 'cliff', flat: 1.3, rough: 0.9 });
+    winterize(r.object);
     add(r, x, ground(x, z) - 3, z, rng.float() * 6, false);
     noShadow(r.object);
   }

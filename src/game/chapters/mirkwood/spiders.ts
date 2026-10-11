@@ -227,9 +227,8 @@ interface Blob {
 
 export class WebSystem {
   private readonly blobs: Blob[] = [];
+  /** webbed seconds left (the slow itself is the player's own modifier; this drives the wrap visual and toast) */
   private slowT = 0;
-  private baseSpeed = 0;
-  private slowStats: { moveSpeed: number } | null = null;
   private wrap: { group: THREE.Group; mats: THREE.MeshPhysicalMaterial[] } | null = null;
   private wrapK = 0;
   private toastT = 0;
@@ -267,7 +266,8 @@ export class WebSystem {
   webPlayer(seconds = 2): void {
     const player = this.level.ctx.player;
     this.slowT = Math.max(this.slowT, seconds);
-    this.applySlow();
+    // the shared modifier survives the stats refresh and stacks multiplicatively; the same id refreshes it
+    player.addModifier?.({ id: 'web', moveSpeedMul: 0.5, duration: this.slowT });
     if (!this.wrap) {
       this.wrap = buildWrap();
       player.humanoid.bones.hips.add(this.wrap.group);
@@ -280,32 +280,12 @@ export class WebSystem {
     }
   }
 
-  /**
-   * Halve the player's move speed. The player rebuilds its stats object from progression every
-   * second, so this is re-checked every frame while webbed: a fresh stats object gets slowed too.
-   */
-  private applySlow(): void {
-    const stats = this.level.ctx.player.stats as { moveSpeed: number };
-    if (this.slowStats === stats) return;
-    this.restore();
-    this.slowStats = stats;
-    this.baseSpeed = stats.moveSpeed;
-    stats.moveSpeed = this.baseSpeed * 0.5;
-  }
-
-  private restore(): void {
-    if (this.slowStats && this.slowStats === this.level.ctx.player.stats) this.slowStats.moveSpeed = this.baseSpeed;
-    this.slowStats = null;
-  }
-
   private update(dt: number): void {
     const { ctx } = this.level;
     this.toastT -= dt;
     if (this.slowT > 0) {
       this.slowT -= dt;
       this.webbedFor += dt;
-      if (this.slowT <= 0) this.restore();
-      else this.applySlow();
     }
     // the wrap snaps on, then tears away as the slow ends
     if (this.wrap) {
@@ -362,7 +342,7 @@ export class WebSystem {
   }
 
   dispose(): void {
-    this.restore();
+    this.level.ctx.player.removeModifier?.('web');
     if (this.wrap) {
       this.wrap.group.removeFromParent();
       this.wrap.group.traverse((o) => (o as THREE.Mesh).geometry?.dispose());

@@ -1,10 +1,8 @@
 /**
  * Bolg, son of Azog: the Lake-town boss.
  *
- * EnemySpec has no way to ask for the 'bolg' humanoid kind (the 'gundabad' archetype builds a
- * Gundabad orc), so Bolg is spawned as a 'gundabad' boss and his body is swapped for the real 'bolg'
- * humanoid right after (local workaround, reported as a blocker: an optional `EnemySpec.kind` would
- * remove it). The stock AI is switched OFF and this controller drives him with the scripting surface
+ * Bolg is spawned as a 'gundabad' boss with `kind: 'bolg'` (the archetype gives the stats, attacks and voice, the
+ * spec gives the body). The stock AI is switched OFF and this controller drives him with the scripting surface
  * (`attack`, `playPose`, `moveTarget`), so every move is telegraphed and readable:
  *
  *   mace combo     three swings (overhead, slash, backslash), the first one slow and heavy
@@ -18,9 +16,8 @@
  * escape cinematic), and a fallen Bolg is hauled back onto the deck (he never drowns).
  */
 import * as THREE from 'three';
-import type { DamageInfo, Enemy, Humanoid, LevelAPI, PlayerAPI, PlayerMover } from '../../../core/types';
+import type { DamageInfo, Enemy, LevelAPI, PlayerMover } from '../../../core/types';
 import type { BaseCombatant } from '../../../actors/combatant';
-import { createHumanoid } from '../../../creatures/humanoid';
 import { clamp, dirFromYaw, smoothstep } from '../../../core/math';
 import { D, onDeck } from './layout';
 import type { QuayDeck } from './quay';
@@ -30,9 +27,8 @@ const _b = new THREE.Vector3();
 const _c = new THREE.Vector3();
 const _d = new THREE.Vector3();
 
-type Swappable = BaseCombatant & {
-  body: Humanoid;
-  motor?: { height: number; radius: number };
+/** the scripting-surface fields of the stock enemy that the controller reads or sets */
+type Scripted = BaseCombatant & {
   facing: number;
   speedMax: number;
   wallT: number;
@@ -75,32 +71,14 @@ export interface BolgOpts {
 export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o: BolgOpts): BolgBoss {
   const { ctx } = level;
   const player = ctx.player;
+  // the hit radius comes from the body (height * 0.18 * the archetype's girth 1.15), as the old swap tuned it
   const e = level.spawnEnemy(
-    { archetype: 'gundabad', boss: true, name: 'Bolg', hp: o.maxHp, damage: 12, speed: 4.5, weapon: 'mace', scale: 1.3, countsForRivalry: false, seed: 77 },
+    { archetype: 'gundabad', kind: 'bolg', boss: true, name: 'Bolg', hp: o.maxHp, damage: 12, speed: 4.5, weapon: 'mace', countsForRivalry: false, seed: 3 },
     pos,
     facing,
   );
-  const sw = e as unknown as Swappable;
-  try {
-    const bolg = createHumanoid({ kind: 'bolg', seed: 3, weapon: 'mace' });
-    const old = sw.body;
-    old.root.removeFromParent();
-    old.dispose();
-    sw.body = bolg;
-    sw.object.add(bolg.root);
-    sw.height = bolg.height;
-    sw.radius = Math.max(0.5, bolg.height * 0.2);
-    if (sw.motor) {
-      sw.motor.height = bolg.height * 0.95;
-      sw.motor.radius = sw.radius;
-    }
-    sw.clearZones();
-    sw.buildHumanoidZones(bolg, { girth: 1.2 });
-  } catch (err) {
-    console.warn('[laketown] Bolg body swap failed, keeping the Gundabad body', err);
-  }
+  const sw = e as unknown as Scripted;
   e.aiEnabled = false;
-  (e as unknown as { countsForRivalry: boolean }).countsForRivalry = false;
 
   const baseSpeed = 4.6;
   sw.speedMax = baseSpeed;

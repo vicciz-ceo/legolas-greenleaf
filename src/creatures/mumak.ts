@@ -55,8 +55,8 @@ export const GIRTHS: { bone: string; parent: string; z: number; side: 1 | -1 }[]
 /** z of the rope ladder on the left flank (model space) */
 export const LADDER_Z = -1.0;
 
-const HIDE = 0x4f4740;
-const HIDE2 = 0x36302b;
+const HIDE = 0x6b6057;
+const HIDE2 = 0x4d453d;
 const IVORY = 0xd8cbb0;
 const RED = 0x8a2414;
 const PAINT_WHITE = 0xd6cdbb;
@@ -1084,12 +1084,26 @@ export function buildHowdah(o: { lite?: boolean; seed?: number } = {}): Howdah {
     const len = Math.hypot(x1 - x0, z1 - z0);
     kit.box(wood, [0.12, 0.85, len], [(x0 + x1) / 2, uY + 0.5, (z0 + z1) / 2], Math.atan2(x1 - x0, z1 - z0), { tile: 1.4 });
   }
-  // canopy posts and a red and gold pyramid roof
+  // an open timber tower, not a pavilion: posts carrying a gold-trimmed top rail, tall standards with
+  // swallow-tailed pennants, and big banners hanging down the front (the reference's howdah is open
+  // scaffolding hung with red and gold, no roof)
   for (const [x, z] of [[-uW, -uD], [uW, -uD], [-uW, uD], [uW, uD]]) kit.add(wood, limbGeo([x, uY, z], [x * 0.95, uY + 2.3, z * 0.95], 0.09, 0.08, 6, 0.8));
-  const roof = new THREE.ConeGeometry(Math.hypot(uW, uD) * 1.12, 2.0, 4, 1, true);
-  kit.add(red, roof, xf(0, uY + 3.3, 0, Math.PI / 4, 1, 1, uD / uW), { tile: 1.5 });
-  kit.add(gold, new THREE.SphereGeometry(0.22, 10, 8), xf(0, uY + 4.35, 0));
-  kit.add(gold, limbGeo([0, uY + 4.3, 0], [0, uY + 5.4, 0], 0.07, 0.01, 6, 0.6));
+  for (const x of [-uW * 0.9, uW * 0.9]) {
+    kit.add(wood, limbGeo([x, uY + 2.2, -uD * 0.9], [x * 1.04, uY + 6.4, -uD * 0.9], 0.07, 0.04, 6, 0.8));
+    kit.add(gold, new THREE.SphereGeometry(0.1, 8, 6), xf(x * 1.04, uY + 6.5, -uD * 0.9));
+    // a long pennant streaming from each standard, torn at the tail
+    kit.box(red, [0.03, 0.8, 2.1], [x * 1.04, uY + 5.9, -uD * 0.9 + 1.1], 0, { tile: 1.2 });
+    kit.box(red, [0.03, 0.34, 1.0], [x * 1.04, uY + 5.9, -uD * 0.9 + 2.55], 0.05, { tile: 1.2 });
+  }
+  // the crossbeam over the front and the great banners hanging from it
+  kit.box(dark, [uW * 2 + 0.4, 0.14, 0.14], [0, uY + 2.3, uD * 0.95], 0, { tile: 1.2 });
+  if (!lite) {
+    for (const x of [-uW * 0.62, 0, uW * 0.62]) {
+      kit.box(red, [1.25, 2.3, 0.04], [x, uY + 1.1, uD * 0.95 + 0.1], 0, { tile: 1.2 });
+      kit.box(gold, [1.3, 0.12, 0.05], [x, uY - 0.05, uD * 0.95 + 0.11]);
+      kit.add(gold, new THREE.CylinderGeometry(0.28, 0.28, 0.05, 14).rotateX(Math.PI / 2), xf(x, uY + 1.25, uD * 0.95 + 0.14));
+    }
+  }
   // gold trim band under the roof
   for (const [x0, z0, x1, z1] of [[-uW, -uD, uW, -uD], [-uW, uD, uW, uD], [-uW, -uD, -uW, uD], [uW, -uD, uW, uD]]) {
     const len = Math.hypot(x1 - x0, z1 - z0);

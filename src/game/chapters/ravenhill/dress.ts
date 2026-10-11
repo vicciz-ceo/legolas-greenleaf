@@ -13,6 +13,7 @@ import { Rng, fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
 import { FALLS_Z, V, riverX } from './layout';
 import { farHeight } from './vista';
+import { winterize } from './look';
 
 const noShadow = (o: THREE.Object3D) => o.traverse((c) => (c.castShadow = false));
 
@@ -198,6 +199,7 @@ export function gorgeViaduct(level: LevelAPI, z: number, deckY: number, span: nu
   const b = brokenBridge(span, 5.5, { seed: 9, snow: true, depth: 26, gap: [0.16, 0.84] });
   b.object.position.set(riverX(z), deckY, z);
   b.object.rotation.y = 0.04;
+  winterize(b.object, 0.7);
   level.root.add(b.object);
   noShadow(b.object);
   void ground;
@@ -225,6 +227,7 @@ export function rimStonework(level: LevelAPI, ground: HeightFn, rng: Rng): void 
     const x = flatSpot(ground, z, side, 34, 62);
     const t = ruinedTurret({ radius: r, height: h, seed: 20 + Math.round(z), tall: side > 0 ? Math.PI : 0 });
     t.position.set(x, ground(x, z) - 0.8, z);
+    winterize(t, 0.8);
     level.root.add(t);
     noShadow(t);
   }
@@ -239,6 +242,7 @@ export function rimStonework(level: LevelAPI, ground: HeightFn, rng: Rng): void 
         return sl > 0.32 || Math.abs(x - riverX(z)) < 30;
       },
     });
+    winterize(r.object, 0.7);
     level.root.add(r.object);
     noShadow(r.object);
   }
@@ -254,6 +258,7 @@ export function towerWings(level: LevelAPI, ground: HeightFn, crag: { x: number;
   const put = (x: number, z: number, r: number, h: number, seed: number, tall: number) => {
     const t = ruinedTurret({ radius: r, height: h, seed, tall });
     t.position.set(x, Math.max(ground(x, z), crag.y - 1.5) - 0.4, z);
+    winterize(t, 0.8);
     level.root.add(t);
     noShadow(t);
   };
@@ -278,6 +283,7 @@ export function farRuins(level: LevelAPI, ground: HeightFn): void {
     b.object.position.set(x, farHeight(x, z) + 8.5, z);
     b.object.rotation.y = yaw;
     b.object.scale.setScalar(1.25);
+    winterize(b.object, 0.7);
     level.root.add(b.object);
     noShadow(b.object);
   }
@@ -291,6 +297,7 @@ export function farRuins(level: LevelAPI, ground: HeightFn): void {
   for (const [x, z, h, r] of towers) {
     const t = ruinedTurret({ radius: r, height: h, seed: Math.round(x + z), thickness: 1.5, tall: x * 0.02 });
     t.position.set(x, (z < -150 || Math.hypot(x, z - 60) > 230 ? farHeight(x, z) : ground(x, z)) - 0.6, z);
+    winterize(t, 0.8);
     level.root.add(t);
     noShadow(t);
   }
@@ -310,9 +317,10 @@ export function battleSmoke(level: LevelAPI, rng: Rng): void {
     for (let i = 0; i < N; i++) {
       const h = i / (N - 1);
       // a leaning column that thickens and thins out with height; black at the foot, ash-grey at the top
-      const m = new THREE.SpriteMaterial({ map: tex, color: new THREE.Color().setHSL(0.6, 0.07, 0.07 + h * 0.3), transparent: true, opacity: 0.55 - h * 0.3, depthWrite: false, fog: true });
+      // (no fog: the haze is in the colour, so the columns stay dark against the pale far snow)
+      const m = new THREE.SpriteMaterial({ map: tex, color: new THREE.Color().setHSL(0.6, 0.08, 0.09 + h * 0.3), transparent: true, opacity: 0.68 - h * 0.34, depthWrite: false, fog: false });
       const s = new THREE.Sprite(m);
-      const sz = (12 + Math.sin(h * 3.0) * 16 + h * 22 + rng.float() * 6) * sc;
+      const sz = (10 + Math.sin(h * 3.0) * 12 + h * 20 + rng.float() * 5) * sc;
       s.position.set(x + Math.pow(h, 1.6) * 40 * sc + (rng.float() - 0.5) * 5, 6 + h * 125 * sc, z + (rng.float() - 0.5) * 5);
       s.scale.set(sz, sz * 1.15, 1);
       s.renderOrder = 1;

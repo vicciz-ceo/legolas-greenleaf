@@ -105,7 +105,8 @@ export function makeChaseMover(level: LevelAPI, course: Course, o: { speed?: num
     allowDash: false,
     // the camera stays free so he can turn and shoot the archers on the roofs either side
     lockCameraYaw: false,
-    camera: { distance: 5.2, height: 1.9, shoulder: 0.55, fov: 72 },
+    // aiming (RMB) pulls in only to a mid-shot: the stock aim camera (2.15 m) would hide the roofs the archers shoot from
+    camera: { distance: 5.2, height: 1.9, shoulder: 0.55, fov: 72, aim: { distance: 3.4, height: 1.8, shoulder: 0.8, fov: 54 } },
     get z() {
       return z;
     },

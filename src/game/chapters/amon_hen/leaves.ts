@@ -79,7 +79,7 @@ export function fallenLeaves(
   const pv = new THREE.Vector3();
   const col = new THREE.Color();
   // golds, ochres, russets, a little green
-  const palette = [0xd8a23a, 0xc8842a, 0xb86a22, 0x9c5a24, 0xe0b850, 0x8a6a2a, 0x7d7a30, 0xc0902c];
+  const palette = [0xe0aa40, 0xd2902c, 0xc07828, 0xa8662a, 0xe8c258, 0x9a7a30, 0x8a8434, 0xd09a30];
   let k = 0;
   let guard = 0;
   while (k < n && guard++ < n * 12) {

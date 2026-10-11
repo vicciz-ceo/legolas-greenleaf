@@ -71,8 +71,13 @@ function glowTexture(): THREE.CanvasTexture {
   return glowTex;
 }
 
-/** warm points: torchlit tower windows and torches on the bridge head (additive sprites, no lights) */
+/**
+ * Warm points: torchlit tower windows seen from outside (additive sprites, no lights, faded out near the
+ * camera so they never wash a close view) and real flames on posts at the bridge head. The top floor's
+ * openings get no sprite: the duel is fought inside them.
+ */
 export function warmGlints(level: LevelAPI): void {
+  const { fx, engine } = level.ctx;
   const tex = glowTexture();
   const glints: { s: THREE.Sprite; ph: number; base: number }[] = [];
   const add = (x: number, y: number, z: number, w: number, h: number, o: number): void => {
@@ -84,22 +89,75 @@ export function warmGlints(level: LevelAPI): void {
     level.root.add(s);
     glints.push({ s, ph: Math.random() * 6.28, base: o });
   };
-  // the tower's window openings (the builder's list: angle, base height), seen from outside through the gaps
+  // the tower's lower window openings (the builder's list: angle, base height), seen from outside through the gaps
   const tmp = new THREE.Vector3();
-  for (const [a, wy] of [[0.55, 8.0], [2.4, 8.0], [4.2, 8.0], [1.2, 15.5], [3.4, 15.5], [5.3, 15.5]] as [number, number][]) {
+  for (const [a, wy] of [[0.55, 8.0], [2.4, 8.0], [4.2, 8.0]] as [number, number][]) {
     towerLocal(Math.cos(a) * TOWER.r * 0.9, CRAG.y + wy + 1.2, Math.sin(a) * TOWER.r * 0.9, tmp);
-    add(tmp.x, tmp.y, tmp.z, 3.0, 3.8, 0.55);
+    add(tmp.x, tmp.y, tmp.z, 3.0, 3.8, 0.5);
   }
   // the door
   towerLocal(0, CRAG.y + 1.6, TOWER.r * 0.8, tmp);
-  add(tmp.x, tmp.y, tmp.z, 3.4, 3.6, 0.6);
-  // torches along the bridge's west stub (it is the part that survives the collapse)
-  for (let x = BRIDGE.x0 + 2; x < GAP_X0 - 2; x += 8.5) {
-    for (const side of [-1, 1]) add(x, BRIDGE.y + 1.85, BRIDGE.z + side * 2.5, 1.5, 1.7, 0.7);
+  add(tmp.x, tmp.y, tmp.z, 3.4, 3.6, 0.55);
+  // torches on dressed posts along the bridge's west stub (the part that survives the collapse): real
+  // flames, and a warm light on the snow from the two nearest the head
+  const postGeo = new THREE.BoxGeometry(0.42, 0.55, 0.42);
+  const capGeo = new THREE.BoxGeometry(0.5, 0.1, 0.5);
+  const postMat = new THREE.MeshStandardMaterial({ color: 0x80868f, roughness: 0.92 });
+  const capMat = new THREE.MeshStandardMaterial({ color: 0xdfe8f2, roughness: 0.95 });
+  let n = 0;
+  for (const x of [BRIDGE.x0 + 2.5, BRIDGE.x0 + 9.5, BRIDGE.x0 + 16.5]) {
+    for (const side of [-1, 1]) {
+      const z = BRIDGE.z + side * 2.48;
+      const base = BRIDGE.y + 1.2;
+      const post = new THREE.Mesh(postGeo, postMat);
+      post.position.set(x, base + 0.27, z);
+      const cap = new THREE.Mesh(capGeo, capMat);
+      cap.position.set(x, base + 0.6, z);
+      post.castShadow = cap.castShadow = false;
+      level.root.add(post, cap);
+      fx.fire(tmp.set(x, base + 0.95, z), 0.5, { smoke: 0.25, light: n++ < 2 });
+    }
   }
+  const cam = engine.camera.position;
   let t = 0;
   level.onUpdate((dt) => {
     t += dt;
-    for (const g of glints) (g.s.material as THREE.SpriteMaterial).opacity = g.base * (0.78 + 0.22 * Math.sin(t * 7.3 + g.ph) * Math.sin(t * 3.1 + g.ph * 1.7));
+    for (const g of glints) {
+      const d = g.s.position.distanceTo(cam);
+      const near = d < 12 ? 0 : d > 34 ? 1 : (d - 12) / 22;
+      (g.s.material as THREE.SpriteMaterial).opacity = g.base * near * (0.78 + 0.22 * Math.sin(t * 7.3 + g.ph) * Math.sin(t * 3.1 + g.ph * 1.7));
+    }
   });
+}
+
+/**
+ * Torches on the inside of the watchtower's tall west wall, lit for the first Bolg duel: a warm key on the
+ * stone and the faces (the floor was lit by the sky alone, and read as a dim grey box). Each is an iron
+ * bracket with a real flame; no collider, clear of the stair hole and the windows.
+ */
+export function towerTorches(level: LevelAPI): void {
+  const { fx } = level.ctx;
+  const iron = new THREE.MeshStandardMaterial({ color: 0x2c2a28, roughness: 0.7, metalness: 0.5 });
+  const arm = new THREE.BoxGeometry(0.1, 0.1, 0.5);
+  const cup = new THREE.CylinderGeometry(0.17, 0.1, 0.24, 8);
+  const p = new THREE.Vector3();
+  const y = CRAG.y + TOWER.floorTop + 2.1;
+  for (const a of [Math.PI - 0.62, Math.PI + 0.1, Math.PI + 0.72]) {
+    const r = TOWER.r - 0.9;
+    const x = CRAG.x + Math.cos(a) * r;
+    const z = CRAG.z + Math.sin(a) * r;
+    const bracket = new THREE.Group();
+    const barm = new THREE.Mesh(arm, iron);
+    barm.position.z = 0.25;
+    const bcup = new THREE.Mesh(cup, iron);
+    bcup.position.set(0, 0.1, 0.5);
+    bracket.add(barm, bcup);
+    bracket.position.set(x, y, z);
+    // the arm points into the tower (from the wall toward its centre)
+    bracket.rotation.y = Math.atan2(CRAG.x - x, CRAG.z - z);
+    bracket.traverse((o) => (o.castShadow = false));
+    level.root.add(bracket);
+    const f = p.set(x + Math.cos(a + Math.PI) * 0.5, y + 0.38, z + Math.sin(a + Math.PI) * 0.5);
+    fx.fire(f, 0.45, { smoke: 0.2, light: true });
+  }
 }

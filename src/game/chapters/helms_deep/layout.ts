@@ -155,10 +155,18 @@ export function rightToe(z: number): number {
   return 97 + z * 0.36 + z * z * 0.0005 + fbm2(z * 0.015, 7.7, 3, 42) * 10 * smooth(0, 60, z);
 }
 
-function cliff(d: number, x: number, z: number, height: number, fall: number): number {
+function cliff(d: number, x: number, z: number, height: number, fall: number, rough = 0): number {
   if (d <= 0) return 0;
   const crag = Math.abs(fbm2(x * 0.045, z * 0.045, 3, 43)) * 9 + fbm2(x * 0.012, z * 0.012, 3, 44) * 22;
-  return height * (1 - Math.exp(-d / fall)) + d * 0.3 + crag * smooth(0, 14, d);
+  // (art) ridged buttresses and gullies running down the face: the sheer faces read as rock in the
+  // moonlight instead of a smooth drape. `rough` is 0 where riders have to cross (the eastern slope).
+  const rid = 1 - Math.abs(fbm2(x * 0.075, z * 0.075, 4, 47));
+  const gul = fbm2(x * 0.16, z * 0.09, 2, 48);
+  const base = height * (1 - Math.exp(-d / fall));
+  // horizontal strata: ledges every ~7 m up the face, wobbling with the noise so they are not contour lines
+  const ledge = Math.sin(base / 3.4 + fbm2(x * 0.03, z * 0.03, 2, 49) * 5) * 1.8;
+  const detail = (rid * rid * 19 + gul * 6 + ledge) * rough;
+  return base + d * 0.3 + (crag + detail) * smooth(0, 14, d);
 }
 
 export function terrainHeight(x: number, z: number): number {
@@ -175,9 +183,12 @@ export function terrainHeight(x: number, z: number): number {
   const db = -128 - z;
   // the right side in front of the wall is the long slope the Rohirrim ride down at dawn
   const gentle = smooth(30, 110, z);
-  h += cliff(dl, x, z, 110, 16);
-  h += cliff(dr, x, z, 120 - gentle * 50, 16 + gentle * 40);
-  h += cliff(db, x, z, 130, 18);
+  // (art) the faces fall away at ~65 degrees instead of ~82: a heightfield wall that steep is a stretched
+  // curtain of texture (the folds in the first pass); this reads as rock. The eastern slope (gentle = 1) is unchanged.
+  h += cliff(dl, x, z, 110, 32, 1);
+  // (no relief on the riders' slope: the dawn cameras sit a metre or two above it)
+  h += cliff(dr, x, z, 120 - gentle * 50, 30 + gentle * 26, Math.max(0, 1 - gentle * 1.6));
+  h += cliff(db, x, z, 130, 34, 1);
   return h;
 }
 

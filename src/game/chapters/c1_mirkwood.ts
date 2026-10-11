@@ -15,7 +15,7 @@
  * World: mirkwood/world.ts. Creatures: src/creatures/spider.ts (model), mirkwood/spiders.ts (AI).
  */
 import * as THREE from 'three';
-import type { Ally, ChapterDef, ChapterInstance, EnvironmentPreset, LevelAPI, PlayerMover } from '../../core/types';
+import type { Ally, ChapterDef, ChapterInstance, LevelAPI, PlayerMover } from '../../core/types';
 import { ENVIRONMENTS, type EnvironmentPresetEx } from '../../core/environment';
 import { clamp, wrapAngle, yawOf } from '../../core/math';
 import { Rng } from '../../core/rng';
@@ -24,26 +24,29 @@ import {
   BRANCH, BROOD_EMERGE, C1, C2, C3, CANOPY, CLIMBERS, DROPS, HOLLOW, STARTS, TAURIEL_ENTRY, TAURIEL_STAND, V,
 } from './mirkwood/layout';
 import { BroodMother, Spider, WebAnchor, WebSystem, type ClimbPoint, type SpiderOpts } from './mirkwood/spiders';
-import { createSpiderModel, preloadSpiders } from '../../creatures/spider';
+import { createSpiderModel, preloadSpiders, type SpiderVariant } from '../../creatures/spider';
 
 type Area = 'c1' | 'c2' | 'c3';
 type Beat = 'intro' | 'fight' | 'travel' | 'cocoons' | 'boss' | 'outro';
 
 const CUT_TIME = 1.5;
+const SPIDER_BODIES: [SpiderVariant, number][] = [['spider', 0], ['spider', 1], ['brood', 0]];
 
 /** the chapter's lighting: lighting.json folded into the shared mirkwood preset, tuned against the art refs */
 const MIRKWOOD_LOOK: EnvironmentPresetEx = {
   ...(ENVIRONMENTS.mirkwood as EnvironmentPresetEx),
-  sunColor: 0xeee2a2,
-  sunIntensity: 2.8,
-  hemiSky: 0x7a9a7c,
-  hemiGround: 0x2e2616,
-  hemiIntensity: 0.6,
+  // the sky glimpsed through the canopy is the same olive haze as the fog (no teal), a touch brighter at the horizon
+  sky: { kind: 'gradient', top: 0x131c12, horizon: 0x5a6347, bottom: 0x10150d, stars: 0, clouds: 0.5, cloudColor: 0x3a4630 },
+  sunColor: 0xf6e4a0,
+  sunIntensity: 3.0,
+  hemiSky: 0x93a083,
+  hemiGround: 0x46341c,
+  hemiIntensity: 0.62,
   envIntensity: 0.7,
-  fog: { color: 0x3e4c3c, density: 0.018 },
-  exposure: 1.2,
+  fog: { color: 0x4a5340, density: 0.017 },
+  exposure: 1.25,
   bloom: 0.18,
-  grade: { lift: [0.004, 0.01, 0.004], gamma: [1.0, 1.02, 0.97], gain: [1.0, 1.03, 0.92], saturation: 0.9, vignette: 0.32 },
+  grade: { lift: [0.006, 0.008, 0], gamma: [1.02, 1.0, 0.96], gain: [1.04, 1.02, 0.9], saturation: 0.95, vignette: 0.32 },
   weather: 'spores',
   weatherIntensity: 0.4,
   mist: 0.6,
@@ -61,6 +64,11 @@ export const chapter: ChapterDef = {
   checkpoints: ['The Web Clearing', 'Free the Dwarves', 'The Brood Mother'],
   parTime: 360,
   preload: ['tauriel', 'elf', 'dwarf'],
+  // mesh the spider sculpts in the kit worker pool during loading, then warm the creature cache
+  preloadCreatures: async () => {
+    await preloadSpiders(SPIDER_BODIES);
+    for (const [v, s] of SPIDER_BODIES) createSpiderModel(v, s).dispose();
+  },
 
   async create(level: LevelAPI): Promise<ChapterInstance> {
     const { ctx } = level;
@@ -72,11 +80,8 @@ export const chapter: ChapterDef = {
     // (not green), a warm brown floor, a pale olive haze that separates the 10-35 m aiming depth
     level.setEnvironment(MIRKWOOD_LOOK);
 
-    // mesh the spider sculpts in the worker pool while the world is built, then warm the creature cache
-    const meshing = preloadSpiders([['spider', 0], ['spider', 1], ['brood', 0]]);
+    // (the spider sculpts are meshed in the worker pool by `preloadCreatures`, in parallel with this)
     const world = buildWorld(level);
-    await meshing;
-    for (const [v, s] of [['spider', 0], ['spider', 1], ['brood', 0]] as const) createSpiderModel(v, s).dispose();
 
     const webs = new WebSystem(level);
     const rng = new Rng(1717 + (Number(ctx.flags.seed) || 0));

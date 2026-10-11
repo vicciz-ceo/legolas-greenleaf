@@ -746,7 +746,7 @@ export function farTown(inner: (x: number, z: number) => boolean, seed = 5, coun
     roof.rotateY(Math.PI / 2);
     roof.translate(-(w + 0.9) / 2, D + h, 0);
     place(roof, x, 0, z, yaw, roofGeos);
-    if (rng.chance(0.55)) {
+    if (rng.chance(0.8)) {
       const win = new THREE.PlaneGeometry(0.9, 0.9);
       win.translate((rng.float() - 0.5) * (w - 2), D + 1.4, dd / 2 + 0.02);
       place(win, x, 0, z, yaw, winGeos);
@@ -773,8 +773,316 @@ export function farTown(inner: (x: number, z: number) => boolean, seed = 5, coun
     mesh.userData.noAO = true;
     g.add(mesh);
   };
-  mk(wallGeos, new THREE.MeshStandardMaterial({ color: 0x1b1814, roughness: 0.95 }));
-  mk(roofGeos, new THREE.MeshStandardMaterial({ color: 0x24262a, roughness: 0.9 }));
-  mk(winGeos, new THREE.MeshStandardMaterial({ color: 0xffcc88, emissive: 0xff9a40, emissiveIntensity: 1.8, roughness: 0.5 }));
+  mk(wallGeos, new THREE.MeshStandardMaterial({ color: 0x241c16, roughness: 0.95 }));
+  mk(roofGeos, new THREE.MeshStandardMaterial({ color: 0x2c3140, roughness: 0.85 }));
+  mk(winGeos, new THREE.MeshStandardMaterial({ color: 0xffb05a, emissive: 0xff7a22, emissiveIntensity: 1.5, roughness: 0.5 }));
   return g;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lantern halos, chimney smoke and the far mountains (art pass)
+// ─────────────────────────────────────────────────────────────────────────────
+
+let haloTexture: THREE.CanvasTexture | null = null;
+/** a soft round halo (white, alpha only): hot core, long smooth falloff */
+function haloTex(): THREE.CanvasTexture {
+  if (haloTexture) return haloTexture;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grad.addColorStop(0, 'rgba(255,255,255,1)');
+  grad.addColorStop(0.12, 'rgba(255,255,255,0.7)');
+  grad.addColorStop(0.35, 'rgba(255,255,255,0.22)');
+  grad.addColorStop(0.65, 'rgba(255,255,255,0.05)');
+  grad.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.NoColorSpace;
+  t.userData.shared = true;
+  haloTexture = t;
+  return t;
+}
+
+let puffTexture: THREE.CanvasTexture | null = null;
+/** a soft irregular puff for smoke: a few overlapping blobs, no hot core */
+function puffTex(): THREE.CanvasTexture {
+  if (puffTexture) return puffTexture;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const g = c.getContext('2d')!;
+  const rng = new Rng(311);
+  for (let i = 0; i < 7; i++) {
+    const x = 32 + (rng.float() - 0.5) * 20;
+    const y = 32 + (rng.float() - 0.5) * 20;
+    const r = 13 + rng.float() * 10;
+    const grad = g.createRadialGradient(x, y, 0, x, y, r);
+    grad.addColorStop(0, 'rgba(255,255,255,0.5)');
+    grad.addColorStop(0.6, 'rgba(255,255,255,0.18)');
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 64, 64);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.NoColorSpace;
+  t.userData.shared = true;
+  puffTexture = t;
+  return t;
+}
+
+const _sz = new THREE.Vector2();
+/**
+ * Additive sprite points with a world-space size: fade out close to the camera (never a flat disc in the lens)
+ * and thin out with the scene fog (never brighter than the lights they belong to). Size/colour/position are
+ * attributes, so one draw call carries every lantern halo (or every smoke puff).
+ */
+function spritePoints(tex: THREE.Texture, count: number, name: string, nearFade: [number, number]): THREE.Points {
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  geo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(count), 1));
+  geo.setAttribute('aColor', new THREE.BufferAttribute(new Float32Array(count * 3), 3));
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uMap: { value: tex }, uK: { value: 600 }, uFog: { value: 0.01 }, uNear: { value: new THREE.Vector2(nearFade[0], nearFade[1]) } },
+    vertexShader: /* glsl */ `
+      attribute float aSize; attribute vec3 aColor;
+      uniform float uK; uniform float uFog; uniform vec2 uNear;
+      varying vec3 vC;
+      void main() {
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        float d = max(-mv.z, 0.05);
+        gl_PointSize = clamp(aSize * uK / d, 1.0, 300.0);
+        float f = exp(-pow(uFog * d, 2.0) * 0.45);
+        vC = aColor * f * smoothstep(uNear.x, uNear.y, d);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: /* glsl */ `
+      uniform sampler2D uMap; varying vec3 vC;
+      void main() { float a = texture2D(uMap, gl_PointCoord).a; gl_FragColor = vec4(vC, a); }`,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  const pts = new THREE.Points(geo, m);
+  pts.name = name;
+  pts.frustumCulled = false;
+  pts.renderOrder = 4;
+  pts.userData.noAO = true;
+  pts.onBeforeRender = (renderer, scene, camera) => {
+    renderer.getDrawingBufferSize(_sz);
+    m.uniforms.uK.value = (camera as THREE.PerspectiveCamera).projectionMatrix.elements[5] * 0.5 * _sz.y;
+    const f = scene.fog as THREE.FogExp2 | null;
+    m.uniforms.uFog.value = f && 'density' in f ? f.density : 0.01;
+  };
+  return pts;
+}
+
+export interface Halo {
+  x: number;
+  y: number;
+  z: number;
+  /** diameter (m) */
+  s: number;
+  /** strength 0..1 */
+  a?: number;
+  /** tint, 0xrrggbb (default lantern amber) */
+  color?: number;
+}
+
+/** soft glow halos around lanterns, fires and lit windows: one draw call */
+export function haloPoints(items: Halo[]): THREE.Points {
+  const pts = spritePoints(haloTex(), items.length, 'halos', [0.9, 3.5]);
+  const pos = pts.geometry.getAttribute('position') as THREE.BufferAttribute;
+  const siz = pts.geometry.getAttribute('aSize') as THREE.BufferAttribute;
+  const col = pts.geometry.getAttribute('aColor') as THREE.BufferAttribute;
+  const c = new THREE.Color();
+  items.forEach((h, i) => {
+    pos.setXYZ(i, h.x, h.y, h.z);
+    siz.setX(i, h.s);
+    c.setHex(h.color ?? 0xff9a3c);
+    const a = h.a ?? 0.5;
+    col.setXYZ(i, c.r * a, c.g * a, c.b * a);
+  });
+  return pts;
+}
+
+/**
+ * Chimney smoke: slow pale-blue puffs (moon-lit smoke, warm only at the flue). The stock fx.smoke ramp is a dark
+ * grey alpha blend, which reads as black puffs against a night sky; these are additive and dim, so they can only
+ * ever lighten the sky behind them.
+ */
+export function chimneySmoke(origins: THREE.Vector3[], perPlume = 7, seed = 17): { points: THREE.Points; update(dt: number): void } {
+  const n = origins.length * perPlume;
+  const pts = spritePoints(puffTex(), n, 'chimney_smoke', [2.0, 6.0]);
+  const pos = pts.geometry.getAttribute('position') as THREE.BufferAttribute;
+  const siz = pts.geometry.getAttribute('aSize') as THREE.BufferAttribute;
+  const col = pts.geometry.getAttribute('aColor') as THREE.BufferAttribute;
+  const rng = new Rng(seed);
+  const LIFE = 7.5;
+  const age: number[] = [];
+  const dir: [number, number][] = [];
+  for (let i = 0; i < n; i++) {
+    age.push(((i % perPlume) / perPlume) * LIFE + rng.float() * 0.4);
+    dir.push([(rng.float() - 0.3) * 0.5, (rng.float() - 0.5) * 0.3]);
+  }
+  const cold = new THREE.Color(0x6b7fa8);
+  const warm = new THREE.Color(0xc08050);
+  const c = new THREE.Color();
+  const put = () => {
+    for (let i = 0; i < n; i++) {
+      const o = origins[Math.floor(i / perPlume)];
+      const a = age[i];
+      const t = a / LIFE;
+      const [dx, dz] = dir[i];
+      pos.setXYZ(i, o.x + dx * a + Math.sin(a * 0.9 + i) * 0.25 * t, o.y + a * 0.75, o.z + dz * a + 0.12 * a);
+      siz.setX(i, 0.7 + 3.4 * Math.sqrt(t));
+      const fade = Math.min(1, t / 0.1) * Math.pow(1 - t, 1.6);
+      c.copy(cold).lerp(warm, Math.max(0, 1 - t * 6) * 0.5).multiplyScalar(0.085 * fade);
+      col.setXYZ(i, c.r, c.g, c.b);
+    }
+    pos.needsUpdate = siz.needsUpdate = col.needsUpdate = true;
+  };
+  put();
+  return {
+    points: pts,
+    update(dt) {
+      for (let i = 0; i < n; i++) age[i] = (age[i] + dt) % LIFE;
+      put();
+    },
+  };
+}
+
+/**
+ * A ring of snow-capped ridges far beyond the shores: dark blue rock, moon-pale snow on the tops. Unlit and
+ * unfogged (at this range the fog would erase it), its colours are the sky's own haze at the foot.
+ */
+export function mountainRing(center: THREE.Vector3, radius: number, seed = 9, o: { height?: number; foot?: number; snow?: number; steps?: number } = {}): THREE.Mesh {
+  const steps = o.steps ?? 360;
+  const H = o.height ?? 120;
+  const rng = new Rng(seed);
+  const phase = [rng.float() * 10, rng.float() * 10, rng.float() * 10];
+  const ridge = (a: number) => {
+    // a few big massifs, rough ridged detail on top
+    const big = 0.5 + 0.5 * Math.sin(a * 3 + phase[0]) * Math.sin(a * 5 + phase[1]);
+    const mid = Math.abs(Math.sin(a * 17 + phase[2])) * 0.45 + Math.abs(Math.sin(a * 41 + phase[0])) * 0.25;
+    const fine = Math.abs(Math.sin(a * 97 + phase[1])) * 0.12;
+    return H * (0.28 + 0.5 * big * (0.55 + mid) + fine);
+  };
+  const foot = new THREE.Color(o.foot ?? 0x131e35);
+  const mid = new THREE.Color(0x1b2a47);
+  const snow = new THREE.Color(o.snow ?? 0x6a7fa8);
+  const pos: number[] = [];
+  const colr: number[] = [];
+  const idx: number[] = [];
+  const c = new THREE.Color();
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * Math.PI * 2;
+    const h = ridge(a);
+    const x = center.x + Math.sin(a) * radius;
+    const z = center.z + Math.cos(a) * radius;
+    // top vertex (snow above ~60 % of the local height), foot vertex sunk below the water
+    pos.push(x, h, z, x, -30, z);
+    const k = THREE.MathUtils.clamp((h / H - 0.5) * 2.2, 0, 1);
+    c.copy(mid).lerp(snow, k * k);
+    colr.push(c.r, c.g, c.b, foot.r, foot.g, foot.b);
+    if (i < steps) {
+      const q = i * 2;
+      idx.push(q, q + 1, q + 2, q + 1, q + 3, q + 2);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colr, 3));
+  geo.setIndex(idx);
+  geo.computeBoundingSphere();
+  const m = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false, side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(geo, m);
+  mesh.name = 'far_mountains';
+  mesh.frustumCulled = false;
+  mesh.renderOrder = -1;
+  mesh.userData.noAO = true;
+  mesh.castShadow = false;
+  mesh.receiveShadow = false;
+  return mesh;
+}
+
+/** where lanternString() hangs its lanterns (same sequence of jitter), for halos */
+export function lanternStringPoints(a: THREE.Vector3, b: THREE.Vector3, count: number, sag = 0.7, seed = 1): THREE.Vector3[] {
+  const rng = new Rng(seed);
+  const out: THREE.Vector3[] = [];
+  for (let i = 0; i < count; i++) {
+    const t = (i + 0.5 + (rng.float() - 0.5) * 0.3) / count;
+    const p = new THREE.Vector3().lerpVectors(a, b, t);
+    p.y -= Math.sin(t * Math.PI) * sag + 0.35;
+    out.push(p);
+  }
+  return out;
+}
+
+/** dark pennants on slim poles: the raiders' standards and the town's own flags along the ridges */
+export function pennants(list: { x: number; y: number; z: number; yaw: number; h?: number }[]): THREE.Group {
+  const kit = new MeshKit();
+  const wood = mat('old_wood', { key: 'ltBeam', rgb: [0.78, 0.75, 0.7] });
+  const cloth = plain(0x1a1511, { roughness: 1, key: 'pennant' });
+  for (const p of list) {
+    const h = p.h ?? 1.7;
+    kit.add(wood, limbGeo([p.x, p.y - 0.15, p.z], [p.x, p.y + h, p.z], 0.032, 0.022, 5, 0.4));
+    const cs = Math.cos(p.yaw);
+    const sn = Math.sin(p.yaw);
+    // the flag streams sideways from the top of the pole, a long tapering strip
+    for (let k = 0; k < 3; k++) {
+      const len = 0.9 - k * 0.22;
+      const off = 0.08 + len / 2 + k * 0.02;
+      kit.box(cloth, [len, 0.4 - k * 0.12, 0.012], [p.x + cs * off, p.y + h - 0.22 - k * 0.12, p.z - sn * off], p.yaw, undefined);
+    }
+  }
+  return kit.build({ name: 'pennants', castShadow: false });
+}
+
+/** a timber watchtower on piles with a lit beacon cage: the landmark of the skyline. Origin: the water line at (x, z). */
+export function watchTower(x: number, z: number, height = 15): { object: THREE.Group; beacon: THREE.Vector3 } {
+  const kit = new MeshKit();
+  const old = mat('old_wood', { key: 'ltBeam', rgb: [0.78, 0.75, 0.7] });
+  const planks = mat('wood_planks', { key: 'ltDeck', rgb: [0.66, 0.54, 0.43] });
+  const walls = mat('old_wood', { key: 'houseWall', rgb: [1.15, 1.02, 0.88] });
+  const shingles = mat('shingles', { key: 'house' });
+  const glass = plain(0xffd08a, { roughness: 0.3, emissive: 0xff9a3c, emissiveIntensity: 1.6, key: 'glass_lit' });
+  const ember = plain(0xff8a30, { roughness: 0.9, emissive: 0xff6a18, emissiveIntensity: 2.2, key: 'beaconEmber' });
+  const y0 = -3.6;
+  const yp = height - 3.2;
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) kit.add(old, limbGeo([x + sx * 1.9, y0, z + sz * 1.9], [x + sx * 1.15, yp, z + sz * 1.15], 0.24, 0.17, 8, 0.8));
+  }
+  // cross braces on all four faces, two tiers
+  for (const [ya, yb] of [[D, D + 4.6], [D + 4.6, yp - 0.3]] as const) {
+    const k0 = (ya - 0) / yp;
+    const k1 = (yb - 0) / yp;
+    const w0 = 1.9 + (1.15 - 1.9) * Math.max(0, k0);
+    const w1 = 1.9 + (1.15 - 1.9) * Math.max(0, k1);
+    for (const sx of [-1, 1]) {
+      kit.add(old, limbGeo([x + sx * w0, ya, z - w0], [x + sx * w1, yb, z + w1], 0.07, 0.07, 5, 0.6));
+      kit.add(old, limbGeo([x + sx * w0, ya, z + w0], [x + sx * w1, yb, z - w1], 0.07, 0.07, 5, 0.6));
+      kit.add(old, limbGeo([x - w0, ya, z + sx * w0], [x + w1, yb, z + sx * w1], 0.07, 0.07, 5, 0.6));
+      kit.add(old, limbGeo([x + w0, ya, z + sx * w0], [x - w1, yb, z + sx * w1], 0.07, 0.07, 5, 0.6));
+    }
+  }
+  // the platform, a low plank cabin with lit windows, an open beacon cage above, a shingle roof
+  kit.box(planks, [3.6, 0.28, 3.6], [x, yp, z], 0, { tile: 1.2 });
+  kit.box(walls, [3.0, 1.5, 3.0], [x, yp + 0.89, z], 0, { tile: 1.0 });
+  for (const [dx, dz, yaw] of [[0, 1.52, 0], [0, -1.52, 0], [1.52, 0, Math.PI / 2], [-1.52, 0, Math.PI / 2]] as const) kit.box(glass, [0.9, 0.7, 0.04], [x + dx, yp + 1.0, z + dz], yaw, undefined);
+  const yc = yp + 1.65;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) kit.add(old, limbGeo([x + sx * 1.45, yc, z + sz * 1.45], [x + sx * 1.45, yc + 2.0, z + sz * 1.45], 0.1, 0.09, 6, 0.6));
+  for (const ry of [yc + 0.55, yc + 1.15]) {
+    kit.box(old, [3.0, 0.07, 0.07], [x, ry, z - 1.45], 0, undefined);
+    kit.box(old, [3.0, 0.07, 0.07], [x, ry, z + 1.45], 0, undefined);
+    kit.box(old, [0.07, 0.07, 3.0], [x - 1.45, ry, z], 0, undefined);
+    kit.box(old, [0.07, 0.07, 3.0], [x + 1.45, ry, z], 0, undefined);
+  }
+  kit.box(old, [0.9, 0.35, 0.9], [x, yc + 0.2, z], 0, { tile: 0.8 });
+  kit.box(ember, [0.7, 0.16, 0.7], [x, yc + 0.46, z], 0, undefined);
+  const cone = new THREE.ConeGeometry(2.7, 1.8, 4, 1);
+  cone.rotateY(Math.PI / 4);
+  kit.add(shingles, cone, xf(x, yc + 2.0 + 0.9, z));
+  const object = kit.build({ name: 'watchtower' });
+  return { object, beacon: new THREE.Vector3(x, yc + 0.8, z) };
 }

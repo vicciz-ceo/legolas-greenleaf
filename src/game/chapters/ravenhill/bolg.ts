@@ -1,11 +1,9 @@
 /**
  * Bolg, son of Azog: the Ravenhill boss.
  *
- * The enemy factory has no way to ask for the 'bolg' humanoid kind (EnemySpec has no `kind`; the
- * 'gundabad' archetype builds a Gundabad orc), so Bolg is spawned as a 'gundabad' boss and his
- * body is swapped for the real 'bolg' humanoid right after (LOCAL WORKAROUND, reported as a
- * blocker: an optional `EnemySpec.kind?: HumanoidKind` would remove it). Everything else is the
- * stock enemy AI (mace combos, stagger, death), plus this controller's telegraphed specials:
+ * Spawned as a 'gundabad' boss with the 'bolg' body (`EnemySpec.kind`: the real 2.6 m, pale, scarred,
+ * bolted-plate Bolg on the Gundabad orc's stats, attacks and AI): the stock enemy AI (mace combos,
+ * stagger, death), plus this controller's telegraphed specials:
  *
  *   chain lash   (4–11 m)  he whirls a chain overhead for ~1.1 s, then lashes it along a locked
  *                          line: sidestep or dash. 20 damage.
@@ -16,9 +14,7 @@
  * terms (a single big hit can never skip a phase).
  */
 import * as THREE from 'three';
-import type { DamageInfo, Enemy, Humanoid, LevelAPI } from '../../../core/types';
-import type { BaseCombatant } from '../../../actors/combatant';
-import { createHumanoid } from '../../../creatures/humanoid';
+import type { DamageInfo, Enemy, LevelAPI } from '../../../core/types';
 import { chain } from '../../../world';
 import { clamp, yawOf } from '../../../core/math';
 
@@ -48,36 +44,18 @@ export interface BolgBoss {
   stop(): void;
 }
 
-type Swappable = BaseCombatant & { body: Humanoid; motor?: { height: number; radius: number }; facing: number; speedMax: number };
+/** the enemy's steering fields the specials read and scale (not part of the public Enemy contract) */
+type Steered = { facing: number; speedMax: number };
 
 /** spawn Bolg at `pos` with `hpFrac` of his max HP left */
-export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o: { maxHp: number; hpFrac?: number }): BolgBoss {
+export function spawnBolg(level: LevelAPI, pos: THREE.Vector3, facing: number, o: { maxHp: number; hpFrac?: number; seed: number }): BolgBoss {
   const { ctx } = level;
   const e = level.spawnEnemy(
-    { archetype: 'gundabad', boss: true, name: 'Bolg', hp: o.maxHp, damage: 22, speed: 4.9, weapon: 'mace', countsForRivalry: false, seed: 77 },
+    { archetype: 'gundabad', kind: 'bolg', boss: true, name: 'Bolg', hp: o.maxHp, damage: 22, speed: 4.9, weapon: 'mace', countsForRivalry: false, seed: o.seed },
     pos,
     facing,
   );
-  // ── body swap: the real Bolg (2.6 m, pale, scarred, bolted plates) ──
-  const sw = e as unknown as Swappable;
-  try {
-    const bolg = createHumanoid({ kind: 'bolg', seed: 3, weapon: 'mace' });
-    const old = sw.body;
-    old.root.removeFromParent();
-    old.dispose();
-    sw.body = bolg;
-    sw.object.add(bolg.root);
-    sw.height = bolg.height;
-    sw.radius = Math.max(0.45, bolg.height * 0.19);
-    if (sw.motor) {
-      sw.motor.height = bolg.height * 0.95;
-      sw.motor.radius = sw.radius;
-    }
-    sw.clearZones();
-    sw.buildHumanoidZones(bolg, { girth: 1.15 });
-  } catch (err) {
-    console.warn('[ravenhill] Bolg body swap failed, keeping the Gundabad body', err);
-  }
+  const sw = e as unknown as Steered;
   e.hp = Math.round(o.maxHp * (o.hpFrac ?? 1));
 
   // the chain he lashes with: hangs from his left hand at rest, whirls and lashes on a special

@@ -9,7 +9,7 @@
  *   cp3 The Falling Stones   The tower crown and the bridge come down. Climb the falling stones to the
  *                            east pinnacle; Bolg, phase 2; the knife finisher; the battle turns.
  *
- * Helpers: ./ravenhill/ (layout + terrain, world, bats + bat ride, Bolg, falling stones, ice), the bat
+ * Helpers: ./ravenhill/ (layout + terrain, world + look, bats + bat ride, Bolg, falling stones), the bat
  * creature in src/creatures/bat.ts (lab: gundabad_bat, gundabad_bat_rider).
  */
 import * as THREE from 'three';
@@ -18,15 +18,18 @@ import { Path, addColliders, ringColliders, stoneBlock } from '../../world';
 import { clamp, yawOf } from '../../core/math';
 import { BRIDGE, BRIDGE_CX, CRAG, GAP_X0, L, PINNACLE, TOP_FLOOR_Y, TOP_HOLE, TOP_HOLE_R, TOWER, V, riverX } from './ravenhill/layout';
 import { preloadHumanoids } from '../../creatures/humanoid';
+import { premeshCreatures } from '../../creatures/kit';
+import { createGundabadBat } from '../../creatures/bat';
 import { buildRavenhill } from './ravenhill/world';
 import { GiantBat, MountBat, batRide, type BatRide } from './ravenhill/bats';
 import { spawnBolg, type BolgBoss } from './ravenhill/bolg';
 import { createFallingStones } from './ravenhill/stones';
-import { installIce } from './ravenhill/ice';
 import { ENV_CLEAR, ENV_GORGE, ENV_HEIGHTS, ENV_SUMMIT, ENV_VALLEY } from './ravenhill/look';
 
 const CHECKPOINTS = ['The Frozen Falls', 'The Bat Ride', 'The Tower', 'The Falling Stones'];
 const BOLG_HP = 3200;
+/** Bolg's body seed (the one preloaded behind the loading screen) */
+const BOLG_SEED = 3;
 /** Bolg's HP fraction at the end of the tower duel (phase 1 → 2) and when the finisher opens */
 const PHASE1_END = 0.55;
 const FINISHER_AT = 0.15;
@@ -89,17 +92,18 @@ export const chapter: ChapterDef = {
   // the waves need every variation of the Gundabad orc and the orc; the one troll and Bolg are a
   // single body each, preloaded below (one bucket instead of four: a third less loading)
   preload: ['tauriel', 'gundabad', 'orc'],
+  // the bats (the mount and the three escort bodies) mesh in the worker pool behind the loading screen
+  preloadCreatures: () => premeshCreatures([() => createGundabadBat(7, 1.05), () => createGundabadBat(0, 0.78), () => createGundabadBat(1, 0.78), () => createGundabadBat(2, 0.78)]),
 
   async create(level: LevelAPI): Promise<ChapterInstance> {
     const { ctx } = level;
     const { player, hud, audio, fx, physics } = ctx;
     const quick = ctx.flags.skipIntro === '1';
-    const singles = ctx.flags.preload === '0' ? Promise.resolve() : Promise.all([preloadHumanoids(['troll'], { seeds: [41] }), preloadHumanoids(['bolg'], { seeds: [3] })]).then(() => undefined, (e) => console.warn('[ravenhill] preload', e));
+    const singles = ctx.flags.preload === '0' ? Promise.resolve() : Promise.all([preloadHumanoids(['troll'], { seeds: [41] }), preloadHumanoids(['bolg'], { seeds: [BOLG_SEED] })]).then(() => undefined, (e) => console.warn('[ravenhill] preload', e));
     level.setEnvironment(ENV_GORGE);
     const camBase = { ...player.camera.params };
     const world = buildRavenhill(level);
     const ground = world.ground;
-    const ice = installIce(level);
 
     let summitGate: ColliderHandle[] = [];
     // keep the duel arenas: an invisible rim round the tower's top floor (its east wall is lower
@@ -192,12 +196,13 @@ export const chapter: ChapterDef = {
       beat = 'intro';
       if (quick) return;
       level.cinematic(true);
-      // establishing: a lull in the snow. From above the frozen falls, ~60 m out, the ruined tower on
-      // its crag and the bridge to the pinnacle, the camera drifting in
+      // establishing: a lull in the snow. From the high ground south-east of the gorge, the falls in the
+      // foreground and, above and beyond them, the ruined tower on its crag with the bridge to the
+      // pinnacle; the camera drifting in
       level.setEnvironment(ENV_CLEAR);
-      level.cameraShot({ position: V(8, 47, 58), lookAt: V(CRAG.x + 6, CRAG.y + 12, CRAG.z), fov: 44, blend: 0 });
+      level.cameraShot({ position: V(54, 47, 24), lookAt: V(-32, 58, 104), fov: 48, blend: 0 });
       await level.wait(0.4);
-      level.cameraShot({ position: V(-6, 50, 70), lookAt: V(CRAG.x + 2, CRAG.y + 14, CRAG.z), fov: 40, blend: 4.2 });
+      level.cameraShot({ position: V(42, 49, 38), lookAt: V(-38, 60, 108), fov: 42, blend: 4.2 });
       await level.say('Tauriel', 'Gundabad orcs. They have taken the old watchtower.', 3.2);
       // down on the ice: the two elves at the mouth of the gorge, face on (Legolas left, Tauriel right)
       level.setEnvironment(ENV_GORGE);
@@ -433,7 +438,6 @@ export const chapter: ChapterDef = {
       level.objective('Shoot bats and archers');
       level.setEnvironment(ENV_HEIGHTS);
       level.music?.('epic');
-      ice.enabled = false;
       audio.play('jump', { pos: player.position, volume: 0.9 });
       audio.play('bat_screech', { pos: player.position, volume: 1, pitch: 0.85 });
       for (const [x, z] of RIDE_ARCHERS) rideFoes.push(level.spawnEnemy({ archetype: 'orc_archer', behavior: 'hold', hp: 40 }, V(x, ground(x, z), z)));
@@ -527,7 +531,7 @@ export const chapter: ChapterDef = {
     // cp2: The Tower (Bolg, phase 1)
     // ─────────────────────────────────────────────────────────────────────
     function bolgAt(pos: THREE.Vector3, hpFrac: number): BolgBoss {
-      const b = spawnBolg(level, pos, faceTo(pos, player.position), { maxHp: BOLG_HP, hpFrac });
+      const b = spawnBolg(level, pos, faceTo(pos, player.position), { maxHp: BOLG_HP, hpFrac, seed: BOLG_SEED });
       bolg = b;
       return b;
     }
@@ -849,9 +853,8 @@ export const chapter: ChapterDef = {
       level.cameraShot({ position: V(midX - 0.5, camY, midZ - 3.6), lookAt: V(midX, camY - 0.3, midZ), fov: 42, blend: 0 });
       await level.wait(0.45);
       ctx.time.setScale(0.32, 0.12);
-      // the knife: the player's own finisher stroke (no public API: call it if present)
-      (player as unknown as { startMeleeHit?: (n: number) => void }).startMeleeHit?.(3);
-      audio.play('knife_slash', { pos: player.position, volume: 1, pitch: 0.9 });
+      // the knife: the player's own finisher stroke (stroke, knives and sound; the damage is ours below)
+      player.playMelee?.(3);
       await level.wait(0.12);
       b.floor = 0;
       e.takeDamage({ amount: e.hp + 50, type: 'melee', source: player, point: e.position.clone().setY(e.position.y + e.height * 0.86), dir: tmp.clone().negate(), zone: 'head', stagger: true });
@@ -949,7 +952,6 @@ export const chapter: ChapterDef = {
           }
         } else {
           level.setEnvironment(c === 2 ? ENV_HEIGHTS : ENV_SUMMIT);
-          ice.enabled = false;
           if (c === 2) {
             player.teleport(L.towerDrop, faceTo(L.towerDrop, L.bolgTower));
             bolgAt(L.bolgTower, 1);

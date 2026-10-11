@@ -303,8 +303,9 @@ export function batRide(level: LevelAPI, mount: MountBat, path: Path, cruise: nu
     allowJump: false,
     allowDash: false,
     lockCameraYaw: false,
-    // pulled well back: the hanging Legolas must not fill the frame, the ledges and bats must read
-    camera: { distance: 10.5, height: 1.7, shoulder: 0.6, fov: 64 },
+    // pulled well back: the hanging Legolas must not fill the frame, the ledges and bats must read; and
+    // drawing the bow keeps the camera out (the stock aim camera would snap in to 2.15 m behind him)
+    camera: { distance: 10.5, height: 1.7, shoulder: 0.6, fov: 64, aim: { distance: 6.5, height: 1.9, shoulder: 0.9, fov: 52 } },
     update(dt: number, player: PlayerAPI, input) {
       t += dt;
       // lift off gently, cruise, slow down over the release point

@@ -30,6 +30,8 @@ import { CrewMember } from './pelennor/crew';
 import { climbMover, deckMover, neckStandMover, pathMover, trunkSlideMover, type DeckState } from './pelennor/movers';
 
 const CHECKPOINTS = ['The Field', 'The Mûmak', 'The Last Charge'];
+/** mesh both mûmak bodies (hero and far LOD) in the worker pool; concurrent and repeat calls share the same jobs */
+const premeshBeasts = () => Promise.all([premeshMumak('hero'), premeshMumak('far')]);
 /** every checkpoint starts on the layout heading (east-south-east: the host ahead, the White City to the right, the sun to the left) */
 const EAST = FACE;
 
@@ -44,14 +46,15 @@ export const chapter: ChapterDef = {
   parTime: 480,
   rivalry: true,
   preload: ['gimli', 'aragorn', 'rohirrim', 'haradrim', 'orc'],
+  // the beasts' bodies are meshed in the kit worker pool during the loading screen, alongside the
+  // humanoid preload (create() then builds them as cache hits; start() waits for this)
+  preloadCreatures: premeshBeasts,
 
   async create(level: LevelAPI): Promise<ChapterInstance> {
     const { ctx } = level;
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
 
-    // the beasts are meshed in the kit worker pool while the main thread builds the field
-    const premesh = Promise.all([premeshMumak('hero'), premeshMumak('far')]);
     // the preset with the reference's lighting key folded in (docs/refs/scenes/pelennor/lighting.json):
     // a neutral warm key (#f1cba1, 3.2) low in the east-north-east off the left shoulder, the cool sky
     // fill kept blue, a lighter ground bounce so the mud is not black in shadow, the haze thinned and
@@ -69,22 +72,25 @@ export const chapter: ChapterDef = {
       hemiGround: 0x6a5a46,
       hemiIntensity: 0.9,
       envIntensity: 1.1,
-      fog: { color: 0x8e97a2, density: 0.0023 },
+      fog: { color: 0x8e97a2, density: 0.0019 },
       exposure: 1.0,
       bloom: 0.22,
       mist: 0.12,
       shafts: 0.1,
       // heavy, dark-bellied cloud with bright gaps (the reference sky) and a firmer grade contrast
+      cloudLit: 0xeee6da,
       cloudShade: 0x5d6978,
+      cloudScale: 1.15,
       cloudSoft: 0.36,
       contrast: 1.26,
       grade: { lift: [0, 0.008, 0.014] as [number, number, number], gamma: [1, 1, 0.98] as [number, number, number], gain: [1.05, 1.0, 0.94] as [number, number, number], saturation: 1.04, vignette: 0.32 },
-      weatherIntensity: 0.16,
+      weatherIntensity: 0.07,
     };
     level.setEnvironment(tuned);
     const world = buildPelennor(level);
     const ground = world.ground;
-    await premesh;
+    // the loading screen's preloadCreatures job (same in-flight meshing jobs); a cache hit unless it is still running
+    await premeshBeasts();
     const herd = HERD.map((h, i) => new FarMumak(level, loopPath(h.cx, h.cz, h.rx, h.rz), h.speed, h.phase, 11 + (i % 3), ground));
     // both hero beasts are built now, while the loading screen is still up and the workers mesh the
     // cast; start() only mans their howdahs (crew humanoids are preload cache hits by then)
@@ -324,7 +330,9 @@ export const chapter: ChapterDef = {
         await interactAt(spot, 1.5, 'Cut the howdah rope', 'Cut', 45);
         ropeCut[i] = true;
         h.ropes[i].visible = false;
-        ctx.audio.play('knife_slash', { pos: player.position, volume: 1 });
+        // a visible knife stroke (it plays its own slash sound); the rope parting is ours
+        if (player.playMelee) player.playMelee(k === 0 ? 2 : 3);
+        else ctx.audio.play('knife_slash', { pos: player.position, volume: 1 });
         ctx.audio.play('web_tear', { pos: player.position, volume: 1.1, pitch: 0.7 });
         tmp.copy(player.position).setY(player.position.y + 0.8);
         ctx.fx.sparks(tmp, V(0, 1, 0), 6);
@@ -520,13 +528,13 @@ export const chapter: ChapterDef = {
       }
       level.music?.('epic');
       if (!quick) {
-        // the charge, from in front of it: the riders of Rohan pour toward the camera across the
-        // field with the White City and Mindolluin behind them, then the camera turns with them
-        // onto the breaking host of Mordor
+        // the charge, from the north of it: the riders of Rohan pour east across the foreground toward the
+        // breaking host, with the White City and Mindolluin on the horizon beyond them (the city stands
+        // south-east of the field, see layout.ts), then the camera drifts east with them
         level.cinematic(true);
-        level.cameraShot({ position: V(150, ground(150, -128) + 3.2, -128), lookAt: V(-260, 26, -146), fov: 38, blend: 0 });
+        level.cameraShot({ position: V(-70, ground(-70, -192) + 2.6, -192), lookAt: V(170, 58, 110), fov: 40, blend: 0 });
         await level.wait(0.3);
-        level.cameraShot({ position: V(132, ground(132, -112) + 4.2, -112), lookAt: V(-120, 14, -150), fov: 44, blend: 5.5 });
+        level.cameraShot({ position: V(-6, ground(-6, -186) + 4.4, -186), lookAt: V(240, 62, 120), fov: 46, blend: 5.5 });
       }
       await level.wait(2.2);
       cr.orcs.thin(0.6);

@@ -1,9 +1,6 @@
 /**
  * Lurtz, the first Uruk-hai: the boss of Amon Hen, built on top of the stock enemy (createEnemy via
- * level.spawnEnemy) with the same body-swap trick the Ravenhill Bolg uses: the enemy factory has no
- * way to ask for the 'lurtz' humanoid kind, so he is spawned as an 'uruk_archer' (bow AI) and his body
- * is swapped for the real Lurtz right after. (Blocker report: an optional `EnemySpec.kind` would
- * remove the workaround.)
+ * level.spawnEnemy): the stock 'uruk_archer' AI on the real Lurtz body (`EnemySpec.kind: 'lurtz'`).
  *
  * Two phases, switched by the script (`toBlade`):
  *
@@ -21,10 +18,9 @@
  * can never skip a phase or the 15 % finisher.
  */
 import * as THREE from 'three';
-import type { AnimInput, DamageInfo, Enemy, EnemySpec, Humanoid, LevelAPI } from '../../../core/types';
+import type { AnimInput, DamageInfo, Enemy, EnemySpec, LevelAPI } from '../../../core/types';
 import type { BaseCombatant } from '../../../actors/combatant';
 import { ARCHETYPES, type ArchetypeDef } from '../../../actors/enemy';
-import { createHumanoid } from '../../../creatures/humanoid';
 import { ARROW_GRAVITY, ballisticDir, leadTarget } from '../../../combat/aim';
 import { plain } from '../../../world';
 import { clamp, yawOf } from '../../../core/math';
@@ -66,7 +62,6 @@ export interface LurtzBoss {
 }
 
 type Swappable = BaseCombatant & {
-  body: Humanoid;
   motor?: { height: number; radius: number };
   facing: number;
   speedMax: number;
@@ -82,32 +77,20 @@ export const BLADE_PHASE = { speed: 4.7, damage: 22 };
 /** spawn Lurtz at `pos` with `hpFrac` of his max HP left */
 export function spawnLurtz(level: LevelAPI, pos: THREE.Vector3, facing: number, o: { maxHp: number; hpFrac?: number }): LurtzBoss {
   const { ctx } = level;
+  // the 'lurtz' body on the stock archer's AI (EnemySpec.kind); the bow goes in his left hand
   const e = level.spawnEnemy(
-    { archetype: 'uruk_archer', behavior: 'archer', boss: true, name: 'Lurtz', hp: o.maxHp, damage: BOW_PHASE.damage, speed: BOW_PHASE.speed, countsForRivalry: false, seed: 5 },
+    { archetype: 'uruk_archer', kind: 'lurtz', weapon: 'none', behavior: 'archer', boss: true, name: 'Lurtz', hp: o.maxHp, damage: BOW_PHASE.damage, speed: BOW_PHASE.speed, countsForRivalry: false, seed: 2 },
     pos,
     facing,
   );
   const sw = e as unknown as Swappable;
-
-  // ── body swap: the real Lurtz (2.1 m, the white hand, scars), bow in the left hand ──
-  try {
-    const lurtz = createHumanoid({ kind: 'lurtz', seed: 2, weapon: 'none', offhand: 'uruk_bow' });
-    const old = sw.body;
-    old.root.removeFromParent();
-    old.dispose();
-    sw.body = lurtz;
-    sw.object.add(lurtz.root);
-    sw.height = lurtz.height;
-    sw.radius = Math.max(0.42, lurtz.height * 0.2);
-    if (sw.motor) {
-      sw.motor.height = lurtz.height * 0.95;
-      sw.motor.radius = sw.radius;
-    }
-    sw.clearZones();
-    sw.buildHumanoidZones(lurtz, { girth: 1.12 });
-  } catch (err) {
-    console.warn('[amon_hen] Lurtz body swap failed, keeping the Uruk archer body', err);
-  }
+  const lurtz = e.humanoid;
+  lurtz.setWeapon('hand_l', 'uruk_bow');
+  // a hit radius and motor for a 2.1 m Uruk captain, and zones that include the bow
+  sw.radius = Math.max(0.42, lurtz.height * 0.2);
+  if (sw.motor) sw.motor.radius = sw.radius;
+  sw.clearZones();
+  sw.buildHumanoidZones(lurtz, { girth: 1.12 });
   e.hp = Math.round(e.maxHp * (o.hpFrac ?? 1));
   // the bow phase: a faster bow than the stock archer's
   const bowDef: ArchetypeDef = {

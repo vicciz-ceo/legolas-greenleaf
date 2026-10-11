@@ -15,7 +15,7 @@ import { MeshBVH } from 'three-mesh-bvh';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { LevelAPI } from '../../../core/types';
 import {
-  addColliders, boulderField, cocoon, fallenLog, ferns, forest, mushrooms, makeMaterial, rock, setWetness, skeleton, tree, webCluster,
+  addColliders, boulderField, cocoon, fallenLog, ferns, forest, lightShaft, mushrooms, makeMaterial, rock, setWetness, skeleton, tree, webCluster,
   type Built,
 } from '../../../world';
 import { buildDressing } from './dressing';
@@ -70,8 +70,31 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   const { physics } = level.ctx;
   // wet, dark mud with leaf litter (the reference floor is warm brown, not green-black): a warm tint
   // replaces the theme's cool one, more of the mud layer shows, and the whole forest is damp
-  const terrain = level.terrain({ size: 250, segments: 132, height: heightAt, style: 'forest', theme: 'mirkwood', material: 'leaves', center: [0, 38], patchiness: 0.58, tint: 0xe2cfb2 });
+  const terrain = level.terrain({ size: 250, segments: 132, height: heightAt, style: 'forest', theme: 'mirkwood', material: 'leaves', center: [0, 38], patchiness: 0.5 });
   setWetness(0.45); // the shell resets it when the level unloads
+  // the floor sits in the canopy's shade, lit only by the sky: pushed warm and brighter (an HDR multiplier keeps
+  // the litter's contrast) so it reads as dark wet leaf-mould, not green-black
+  {
+    const tm = terrain.mesh.material as THREE.MeshStandardMaterial;
+    tm.color.setRGB(2.1, 1.7, 1.25);
+    tm.emissive.setHex(0x0c0804);
+  }
+  // the sun's shadow map only reaches ~35 m: beyond it the floor would be sun-lit between the trunks, a pale
+  // tan plane in the distance. The real forest is in canopy shade there, so take the direct light off far ground
+  {
+    const tm = terrain.mesh.material as THREE.MeshStandardMaterial;
+    const prev = tm.onBeforeCompile;
+    const prevKey = tm.customProgramCacheKey;
+    tm.onBeforeCompile = (shader, renderer) => {
+      prev?.call(tm, shader, renderer);
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <lights_fragment_end>',
+        '#include <lights_fragment_end>\n  reflectedLight.directDiffuse *= mix(1.0, 0.3, smoothstep(24.0, 42.0, length(vViewPosition)));',
+      );
+    };
+    tm.customProgramCacheKey = () => `${prevKey ? prevKey.call(tm) : ''}|mirk_far_shade`;
+    tm.needsUpdate = true;
+  }
   const ground = terrain.heightAt;
   const root = level.root;
 
@@ -99,7 +122,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   });
   level.onUpdate(() => {
     const p = level.ctx.player.position;
-    for (let k = 0; k < 3; k++) clusterGroups[k].visible = Math.hypot(p.x - clusterCenters[k].x, p.z - clusterCenters[k].z) < 70;
+    for (let k = 0; k < 3; k++) clusterGroups[k].visible = Math.hypot(p.x - clusterCenters[k].x, p.z - clusterCenters[k].z) < 50;
   });
   const bvhs = new Map<number, MeshBVH>();
   const tmpQ = new THREE.Quaternion();
@@ -118,8 +141,10 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     if (!g) {
       g = gradeMat(m.material as THREE.Material, (c) => {
         if (isBark) {
-          c.color.setRGB(1.5, 1.22, 0.92);
+          c.color.setRGB(1.75, 1.4, 1.02);
           c.envMapIntensity = 1.1;
+          // warm light bounced off the floor: lifts the shaded side of the trunks out of the black
+          c.emissive.setHex(0x0c0803);
         } else {
           c.color.multiply(new THREE.Color(1.55, 1.5, 0.95));
           c.emissive.setHex(0x3a4a12);
@@ -207,7 +232,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   };
   const silk = new StrandBuf();
   LINES.forEach((_, li) => {
-    silk.thread(V(0, 0, 0), V(0, 0, 0), 0.04, 0, 10, (f, o) => linePoint(li, f, o));
+    silk.thread(V(0, 0, 0), V(0, 0, 0), 0.026, 0, 10, (f, o) => linePoint(li, f, o));
     // finer strands braided alongside
     silk.thread(V(0, 0, 0), V(0, 0, 0), 0.016, 0, 10, (f, o) => linePoint(li, f, o).add(_d.set(0, 0.12 * Math.sin(f * 9), 0.06)));
     silk.thread(V(0, 0, 0), V(0, 0, 0), 0.012, 0, 10, (f, o) => linePoint(li, f, o).add(_d.set(0.05, -0.1 * Math.sin(f * 7 + 1), -0.04)));
@@ -252,15 +277,15 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     }
     for (let k = 0; k < 6; k++) strands.thread(top[k % 5], top[(k + 2) % 5].clone().add(V(0, -0.5, 0)), 0.004, 0.25, 4);
   };
-  tangle(0, 4, 1.5, 9.5, 40);
-  tangle(1, 3, 2.5, 10, 40);
+  tangle(0, 4, 1.5, 9.5, 32);
+  tangle(1, 3, 2.5, 10, 32);
   tangle(0, 2, 6, 14, 22);
-  tangle(5, 7, 2, 9, 38);
-  tangle(6, 8, 3, 11, 38);
-  tangle(9, 11, 1.2, 9, 44);
-  tangle(10, 12, 2.0, 9, 44);
+  tangle(5, 7, 2, 9, 30);
+  tangle(6, 8, 3, 11, 30);
+  tangle(9, 11, 1.2, 9, 36);
+  tangle(10, 12, 2.0, 9, 36);
   // the gate: silk strung high between the two landmark oaks (above head height, the lane stays open)
-  tangle(13, 14, 4.5, 11.5, 46);
+  tangle(13, 14, 4.5, 11.5, 38);
   tangle(13, 6, 3, 10, 22);
   tangle(14, 2, 3, 11, 22);
   for (let i = 0; i < HEROES.length; i++) funnel(i, rng.float() * Math.PI * 2);
@@ -347,8 +372,27 @@ export function buildWorld(level: LevelAPI): MirkWorld {
 
   // ── cocoons ─────────────────────────────────────────────────────────────
   const decor: THREE.Object3D[] = [];
+  // the ambient cocoons are never touched: a low-poly lathe body (the real ones are 1440 triangles each, and there
+  // are ~25 of them in the shadow pass too) sharing the shared cocoon's silk material
+  const tplCocoon = cocoon({ seed: 1 });
+  const decorSilk = (tplCocoon.children[0] as THREE.Mesh).material as THREE.Material;
+  tplCocoon.traverse((n) => (n as THREE.Mesh).geometry?.dispose());
+  const cocoonLite = (drop: number, L: number, k: number): THREE.Group => {
+    const g = new THREE.Group();
+    g.name = 'cocoon_lite';
+    const prof: [number, number][] = [[0, 0.1], [0.12, 0.17], [0.3, 0.2], [0.45, 0.26], [0.6, 0.31], [0.72, 0.29], [0.8, 0.18], [0.87, 0.14], [0.95, 0.15], [1, 0.0]];
+    const pts = prof.map(([t, r]) => new THREE.Vector2(r * (1 + 0.05 * Math.sin(t * 17 + k)), -drop - (1 - t) * L));
+    const body = new THREE.Mesh(new THREE.LatheGeometry(pts, 10), decorSilk);
+    body.scale.set(1, 1, 0.9);
+    body.castShadow = body.receiveShadow = true;
+    g.add(body);
+    const strand = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.045, drop + 0.2, 4), decorSilk);
+    strand.position.y = -drop / 2 + 0.05;
+    g.add(strand);
+    return g;
+  };
   DECOR_COCOONS.forEach(([line, t, drop], i) => {
-    const c = cocoon({ seed: 10 + i, drop, length: 1.45 + (i % 3) * 0.1 });
+    const c = cocoonLite(drop, 1.45 + (i % 3) * 0.1, i);
     const p = linePoint(line, t);
     c.position.copy(p);
     c.rotation.y = i * 1.3;
@@ -357,7 +401,7 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   });
   // cocoons in the hollow
   for (let i = 0; i < 6; i++) {
-    const c = cocoon({ seed: 40 + i, drop: 1.2 + (i % 3) * 1.4 });
+    const c = cocoonLite(1.2 + (i % 3) * 1.4, 1.55, 40 + i);
     const x = HOLLOW.x - 9 + i * 3.6;
     const z = HOLLOW.z + 2 + (i % 2) * 2.5;
     c.position.set(x, ground(x, z) + 7.5 + (i % 2), z);
@@ -409,14 +453,25 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   root.add(ferns({ center: V(0, 0, 38), halfSize: [16, 60] }, 150, ground, { seed: 5, exclude: (x, z) => inClearing(x, z, -7) || nearHero(x, z, 0.3), tint: [0.4, 0.58, 0.38], clump: 0.85, scale: [0.5, 1.1] }));
   // sun-struck undergrowth: golden-green ferns in the lit patches and along the lane edges (the reference has
   // warm yellow-green plants against the dark bark, not a uniform dark-green carpet)
-  root.add(ferns({ center: V(0, 0, 38), halfSize: [30, 66] }, 360, ground, { seed: 13, exclude: (x, z) => inClearing(x, z, -2) || nearHero(x, z, 0.4), tint: [1.25, 1.05, 0.42], clump: 0.9, scale: [0.6, 1.3] }));
-  root.add(ferns({ center: V(0, 0, 38), halfSize: [22, 66] }, 260, ground, { seed: 17, exclude: (x, z) => inClearing(x, z, -5) || nearHero(x, z, 0.6), tint: [0.78, 0.72, 0.38], clump: 0.8, scale: [0.45, 0.95] }));
+  root.add(ferns({ center: V(0, 0, 38), halfSize: [30, 66] }, 240, ground, { seed: 13, exclude: (x, z) => inClearing(x, z, -2) || nearHero(x, z, 0.4), tint: [1.25, 1.05, 0.42], clump: 0.9, scale: [0.6, 1.3] }));
   root.add(mushrooms(area, 70, ground, { seed: 7, glow: true, capTint: [0.75, 1.0, 1.05], exclude: (x, z) => nearHero(x, z, -0.5) }));
   // a few warm toadstools and browns beside the roots (no glow): the reference's amber caps
-  root.add(mushrooms(area, 90, ground, { seed: 19, glow: false, capTint: [1.5, 1.0, 0.55], exclude: (x, z) => nearHero(x, z, 0.2) || inClearing(x, z, -3) }));
+  root.add(mushrooms(area, 50, ground, { seed: 19, glow: false, capTint: [1.5, 1.0, 0.55], exclude: (x, z) => nearHero(x, z, 0.2) || inClearing(x, z, -3) }));
 
 
   const rocks = boulderField({ center: V(0, 0, 40), halfSize: [34, 66] }, 34, [0.35, 1.5], ground, { seed: 9, kind: 'dark', moss: 0.85, exclude: (x, z) => inClearing(x, z, -3) || nearHero(x, z, 0.5), clump: 0.5 });
+  // the boulders read as black cut-outs against the haze: lift them to a mossy, warm grey
+  const liftedRock = new Map<THREE.Material, THREE.Material>();
+  rocks.object.traverse((n) => {
+    const m = n as THREE.Mesh;
+    if (!m.isMesh) return;
+    let g = liftedRock.get(m.material as THREE.Material);
+    if (!g) {
+      g = gradeMat(m.material as THREE.Material, (c) => c.color.multiply(new THREE.Color(1.5, 1.4, 1.15)));
+      liftedRock.set(m.material as THREE.Material, g);
+    }
+    m.material = g;
+  });
   root.add(rocks.object);
   addColliders(physics, rocks.colliders);
 
@@ -518,15 +573,25 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   ];
   for (const [x, z, r, k] of shaftSpots) {
     const len = 34;
-    const s = softShaft(len, r * 0.3, r, 0xf0e2a0, k);
+    const s = lightShaft(len, r * 0.3, r, 0xf0e2a0, k, { groundFade: 0.28, nearFade: [3, 12] });
     s.position.set(x, ground(x, z) + 0.2, z).addScaledVector(sun, len);
     s.quaternion.setFromUnitVectors(V(0, 1, 0), sun);
     root.add(s);
   }
 
+  // the fallen logs' end caps use a plank texture that reads as a brick wall in this light: plain cut, damp heartwood
+  {
+    const heart = new THREE.MeshStandardMaterial({ color: 0x4a3924, roughness: 0.95, metalness: 0 });
+    root.traverse((n) => {
+      const m = n as THREE.Mesh;
+      if (m.isMesh && m.name === 'fallen_log:pbr:old_wood') m.material = heart;
+    });
+  }
+
   // ── set dressing: creeping roots, snags, bracket fungi, leaf litter, puddles, light pools ──
   const rootBark = makeMaterial('mossy_bark', { macro: { scale: 0.09, strength: 0.28, tint: 0.05 } }) as THREE.MeshStandardMaterial;
-  rootBark.color.setRGB(1.5, 1.22, 0.92);
+  rootBark.color.setRGB(1.75, 1.4, 1.02);
+  rootBark.emissive.setHex(0x0c0803);
   buildDressing({
     level, ground, heroes, probe, sun, bark: rootBark, hollow: HOLLOW,
     pools: [...shaftSpots.map(([x, z, r]): [number, number, number] => [x, z, r * 1.1]), [-3, 4, 1.8], [4, -14, 1.6], [0, 38, 1.9], [-5, 60, 2.0]],
@@ -553,7 +618,24 @@ export function buildWorld(level: LevelAPI): MirkWorld {
   silkMesh.castShadow = false;
   silkMesh.userData.noAO = true;
   root.add(silkMesh);
-  root.add(mergeStatic(decor, 'cocoons'));
+  const silkLit = new Map<THREE.Material, THREE.Material>();
+  const liftSilk = (obj: THREE.Object3D) =>
+    obj.traverse((n) => {
+      const m = n as THREE.Mesh;
+      const mat = m.material as THREE.MeshStandardMaterial | undefined;
+      if (!m.isMesh || !mat?.color || mat.color.r < 0.5 || mat.transparent) return;
+      let g = silkLit.get(mat);
+      if (!g) {
+        g = gradeMat(mat, (c) => c.emissive.setHex(0x2c2a20));
+        silkLit.set(mat, g);
+      }
+      m.material = g;
+    });
+  // pale silk catching the light: the reference cocoons glow against the dark bark
+  const decorMerged = mergeStatic(decor, 'cocoons');
+  liftSilk(decorMerged);
+  for (const c of cocoons) liftSilk(c.object);
+  root.add(decorMerged);
 
   void CLEARINGS;
   return {
@@ -565,44 +647,6 @@ export function buildWorld(level: LevelAPI): MirkWorld {
     canopy: { sheet: canopySheet, center: canopyCenter, anchors, lines: canopyLines, hold: corners[cIdx.findIndex((hi) => !CANOPY.anchors.includes(hi))].clone() },
     bough: bough.object,
   };
-}
-
-/**
- * A light shaft through the canopy (the chapter's own take on the shared `lightShaft`): the beam fades
- * out over its last metres above the ground and whenever the camera comes within a few metres of it,
- * with soft streaks round its girth, so it never reads as a flat pale panel up close.
- */
-export function softShaft(height: number, topRadius: number, bottomRadius: number, color: number, intensity: number): THREE.Mesh {
-  const g = new THREE.CylinderGeometry(topRadius, bottomRadius, height, 32, 1, true);
-  g.translate(0, -height / 2, 0);
-  const m = new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
-    side: THREE.DoubleSide,
-    uniforms: { uColor: { value: new THREE.Color(color) }, uI: { value: intensity } },
-    vertexShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist;
-      void main(){ vUv = uv; vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); vDist = length(mv.xyz); gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV; varying float vDist; uniform vec3 uColor; uniform float uI;
-      void main(){
-        float edge = pow(abs(dot(normalize(vN), normalize(vV))), 2.4);
-        float h = vUv.y; // 1 at the canopy, 0 at the ground
-        float ends = smoothstep(0.0, 0.2, h) * (1.0 - smoothstep(0.82, 1.0, h));
-        float body = 0.6 + 0.4 * smoothstep(0.15, 0.6, 1.0 - h);
-        float streak = 0.72 + 0.28 * sin(vUv.x * 6.2832 * 5.0 + h * 4.0) * sin(vUv.x * 6.2832 * 3.0 - h * 2.0 + 1.3);
-        float near = smoothstep(3.0, 14.0, vDist);
-        float a = edge * ends * body * streak * near * uI;
-        gl_FragColor = vec4(uColor * a, a);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }`,
-  });
-  const mesh = new THREE.Mesh(g, m);
-  mesh.userData.noAO = true;
-  mesh.castShadow = false;
-  mesh.renderOrder = 2;
-  mesh.name = 'light_shaft';
-  return mesh;
 }
 
 /** merge a set of static objects into one mesh per material (draw-call saver for decor) */

@@ -22,11 +22,12 @@ import * as THREE from 'three';
 import type { Ally, ChapterDef, ChapterInstance, Enemy, EnemySpec, LevelAPI } from '../../core/types';
 import { clamp, yawOf } from '../../core/math';
 import { ENVIRONMENTS } from '../../core/environment';
+import { premeshCreatures } from '../../creatures/kit';
 import { buildTown, type TownWorld } from './laketown/world';
 import { createSwim } from './laketown/swim';
 import { spawnBolg, type BolgBoss } from './laketown/bolg';
 import { buildCourse, makeBolgRunner, makeChaseMover, type BolgRunner, type ChaseMover } from './laketown/chase';
-import { createHorse, type HorseRig } from './laketown/horse';
+import { createHorse, createHorseCreature, HORSE_SCALE, type HorseRig } from './laketown/horse';
 import {
   BARD, BOT_ROUTE_1, CHASE_COVER, CHASE_LANE, CHASE_ROOFS, CHASE_X, D, JETTY, L, PLATFORMS, V, nearestDeckPoint, platformRect, roofSpot, type HouseDef,
 } from './laketown/layout';
@@ -50,15 +51,36 @@ export const chapter: ChapterDef = {
   checkpoints: CHECKPOINTS,
   parTime: 360,
   preload: ['tauriel', 'dwarf', 'gundabad', 'orc', 'goblin', 'bolg'],
+  // the horse of the outro is a kit creature: meshed in the worker pool while the chapter loads, so it appears without a hitch
+  preloadCreatures: () => premeshCreatures([() => createHorseCreature(1, HORSE_SCALE)]),
 
   async create(level: LevelAPI): Promise<ChapterInstance> {
     const { ctx } = level;
     const player = ctx.player;
     const quick = ctx.flags.skipIntro === '1';
-    // the preset, a little brighter: the moon and sky fill so the planks read
-    // (fewer drifting embers than the preset: one big ember next to the camera read as a floating orange orb;
-    // a slightly deeper fog colour so the far lake is not a milky plane)
-    level.setEnvironment({ ...ENVIRONMENTS.laketown_night, sunIntensity: 1.5, hemiIntensity: 1.0, envIntensity: 0.9, exposure: 1.4, weatherIntensity: 0.3, fog: { color: 0x0d1727, density: 0.0115 } });
+    // the preset with the art key of docs/refs/scenes/laketown/lighting.json: a paler, more neutral moon (so fire, hide and wet
+    // wood keep their own hues), a longer sight line (fog 0.008: the lit hall and the beacon tower read from the walks), bloom
+    // held to the flames, a lighter vignette and few embers (one big ember next to the camera read as a floating orange
+    // orb). Sun and sky fill sit a little above the key (1.05 / 0.85 against 0.9 / 0.65) because the planks need them to
+    // read at the gameplay camera; the star field is thinned and the cloud deck thickened (the lab's star field was the
+    // first gap in the notes: lanterns and roof silhouettes should lead the eye).
+    const night = ENVIRONMENTS.laketown_night;
+    level.setEnvironment({
+      ...night,
+      sky: { ...(night.sky as Extract<typeof night.sky, { kind: 'gradient' }>), stars: 0.3, clouds: 0.62 },
+      sunColor: 0xa2b7da,
+      sunIntensity: 1.05,
+      hemiIntensity: 0.85,
+      envIntensity: 0.85,
+      exposure: 1.4,
+      bloom: 0.24,
+      grade: { ...night.grade, vignette: 0.32 },
+      fog: { color: 0x101b2f, density: 0.008 },
+      weatherIntensity: 0.15,
+    });
+    // the cinematic character light is on by default and follows the environment; the key is weaker than before, so the
+    // faces in the close-ups get a little more of it
+    level.characterLight?.({ intensity: 1.35 });
     const world: TownWorld = buildTown(level);
     const course = buildCourse();
 
@@ -155,7 +177,7 @@ export const chapter: ChapterDef = {
       // 2. then up the main walk, low between the rows of houses: the lookouts creeping along the ridges ahead
       level.cameraShot({ position: V(-1.4, D + 3.2, -68), lookAt: V(2.5, 7.4, -32), fov: 44, blend: 4.6 });
       await level.wait(4.0);
-      ctx.fx.setWeather('embers', 0.3);
+      ctx.fx.setWeather('embers', 0.15);
       void level.say('Legolas', 'The orcs have crossed the water. They are already on the rooftops.', 3.2);
       level.cameraShot({ position: V(0.4, D + 2.7, -57), lookAt: V(-2.5, 7.6, -30), fov: 36, blend: 3.4 });
       await level.wait(3.4);

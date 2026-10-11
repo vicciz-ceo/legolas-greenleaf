@@ -165,12 +165,13 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   const { physics, fx } = level.ctx;
 
   // ── terrain ─────────────────────────────────────────────────────────────
-  // ~3.3 m cells: the cliffs dissolve into the storm fog long before the facets show
+  // ~3.8 m cells: the cliffs dissolve into the storm fog long before the facets show
   const terrain = level.terrain({
-    size: 640, segments: 184, height: terrainHeight, style: 'plains', material: 'dirt', center: [20, 120],
+    size: 640, segments: 168, height: terrainHeight, style: 'plains', material: 'dirt', center: [20, 120],
     // a bare, churned, rain-black coomb (<5% hardy grass, notes.md): mud and dirt under the wet theme,
-    // cooled and darkened so the stone reads lighter than the ground
-    theme: 'wet', layers: ['mud', 'dirt', 'cliff'], patchiness: 0.66, cavity: 0.7, tint: 0xa6b0bc,
+    // cooled and darkened so the stone reads lighter than the ground. The steep layer is the plain rock set:
+    // the 'cliff' set reads as cracked reptile skin on a 100 m face.
+    theme: 'wet', layers: ['mud', 'dirt', 'rock'], patchiness: 0.66, cavity: 0.7, tint: 0x626b77,
   });
   const ground = terrain.heightAt;
 
@@ -285,22 +286,48 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   level.root.add(ramp.object);
   addColliders(physics, ramp.colliders);
 
-  const place = (b: Built, x: number, y: number, z: number, yaw = 0): Built => {
+  // static props (barrels, crates, racks) are collected here and baked into one mesh per material at the
+  // end of the build: ~60 separate draw calls otherwise (the High budget is 700)
+  const statics = new THREE.Group();
+  statics.name = 'hd_static_props';
+  level.root.add(statics);
+  const place = (b: Built, x: number, y: number, z: number, yaw = 0, parent: THREE.Object3D = level.root): Built => {
     b.object.position.set(x, y, z);
     b.object.rotation.y = yaw;
-    level.root.add(b.object);
+    parent.add(b.object);
     addColliders(physics, b.colliders, b.object);
     return b;
   };
 
   // ── banners of Rohan along the inner edge of the walkway and on the keep ─
   const ROHAN = 0x23472a;
-  for (const x of [-50, -37, -21, -7, 9, 26, 40, 54]) {
+  // (nothing stands on the culvert section, x -4..14: the blast takes it, and a banner would hang in the air)
+  for (const x of [-50, -37, -21, -7, 26, 40, 54]) {
     const w = wallAt(x);
     const p = w.c.clone().addScaledVector(w.n, -2.05);
     place(banner(ROHAN, 'horse', { height: 4.6, clothW: 1.2, clothH: 2.7 }), p.x, WALL_H, p.z, yawOf(-w.n.x, -w.n.z));
   }
   for (const dx of [-9, 9]) place(banner(ROHAN, 'horse', { height: 6, clothW: 1.6, clothH: 3.6 }), 76 + dx, 29.6, -26.4, Math.PI);
+
+  // ── the defenders' stores along the inner edge of the walkway (ladder_assault.jpg): weapon racks,
+  //    arrow barrels, spare crates. Solid, but tucked against the inner guard: the walk stays 3 m clear ─
+  {
+    const stores: [number, 'rack' | 'barrel' | 'crate' | 'barrel2', number][] = [
+      [-55.5, 'rack', 0], [-47.2, 'barrel', 1], [-46.2, 'crate', 2], [-41.5, 'barrel', 3], [-19.2, 'crate', 4], [-18.2, 'barrel', 5],
+      [-12.4, 'rack', 6], [23, 'barrel', 7], [24.1, 'barrel2', 8], [31.5, 'crate', 9], [33.2, 'rack', 10], [44.5, 'barrel', 11], [45.6, 'crate', 12],
+      [49, 'rack', 13], [57.5, 'barrel', 14],
+    ];
+    for (const [x, kind, seed] of stores) {
+      const w = wallAt(x);
+      const inset = kind === 'rack' ? 2.0 : 1.85;
+      const p = w.c.clone().addScaledVector(w.n, -inset);
+      const yaw = yawOf(w.n.x, w.n.z);
+      const b = kind === 'rack' ? weaponRack({ width: 2.0, seed: 40 + seed })
+        : kind === 'crate' ? crate([0.8, 0.7, 0.8], { seed: 40 + seed })
+          : barrel({ seed: 40 + seed, open: kind === 'barrel2' });
+      place(b, p.x, WALL_H + 0.02, p.z, kind === 'rack' ? yaw : yaw + seed * 0.7, statics);
+    }
+  }
 
   // ── fire: the builder's braziers along the wall tops + wall torches in the court ─
   const fireSpots: THREE.Vector3[] = [];
@@ -338,14 +365,16 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     b.object.updateMatrixWorld(true);
     torchSpots.push(b.flameAnchor.getWorldPosition(new THREE.Vector3()));
   }
-  for (const f of [...fireSpots, ...torchSpots]) fx.fire(f, 0.5);
+  // (the plume is sooty and thinner now: a wisp over each, the rain carries it off)
+  // (the two braziers at the gate stand a metre from the hold camera: a smaller flame, or it whites out the frame)
+  for (const f of [...fireSpots, ...torchSpots]) fx.fire(f, f.distanceTo(L.gateHold) < 3.5 ? 0.3 : 0.45, { smoke: 0.5 });
 
   // ── art dressing (pilasters, parapet torches, Hornburg, siege towers, ridges): see dress.ts ─
   const pools: [number, number, number, number][] = [];
   for (const f of hd.anchors.fires) pools.push([f.pos[0] + f.out[0] * 1.6, f.pos[1] + 0.02, f.pos[2] + f.out[2] * 1.6, 3.6]);
   for (const t of TOWERS) pools.push([t.center.x, t.hgt + 0.02, t.center.z, 3.4]);
   for (const [x, y, z] of courtFires) pools.push([x, y + 0.02, z, 3.8]);
-  const dress: Dress = dressHelmsDeep({ hd, ground, rng: level.rng, pools });
+  const dress: Dress = dressHelmsDeep({ hd, fx, ground, rng: level.rng, pools });
   level.root.add(dress.object);
 
   // ── the court: stores, racks, barrels by the stair foot and the causeway ramp ─
@@ -358,18 +387,21 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     [crate(0.9, { seed: 12 }), 30, -40, 0.7], [barrel({ seed: 13 }), 31.4, -41.2, 0], [crate([1.4, 0.9, 1.1], { seed: 14 }), -48, -30, 0.2],
     [barrel({ seed: 15 }), -46.8, -28.6, 0], [weaponRack({ width: 2.2, seed: 16 }), 44, -25, Math.PI],
   ];
-  for (const [b, x, z, yaw] of props) place(b, x, 0.04, z, yaw);
+  for (const [b, x, z, yaw] of props) place(b, x, 0.04, z, yaw, statics);
   for (let i = 0; i < 6; i++) {
     const x = -14 + rng() * 40;
     const z = -42 - rng() * 30;
-    place(barrel({ seed: 30 + i, lying: rng() < 0.4 }), x, 0.04, z, rng() * 6);
+    place(barrel({ seed: 30 + i, lying: rng() < 0.4 }), x, 0.04, z, rng() * 6, statics);
   }
 
   // ── rocks: the cliff toes and the stony coomb ───────────────────────────
+  // cliff-toe boulders: only where the ground is still level (a cliff rises ~19 m within 3 m of its toe, so
+  // anything higher floated against the dark face like a spot on the sky)
+  const atToe = (x: number, z: number) => ground(x, z) > 2.2;
   const rocks = [
-    boulderField({ center: new THREE.Vector3(-76, 0, 20), halfSize: [10, 60] }, 28, [2.2, 6.5], ground, { seed: 3, kind: 'cliff', moss: 0.15, clump: 0.5, colliderMin: 99 }),
-    boulderField({ center: new THREE.Vector3(106, 0, -62), halfSize: [8, 50] }, 20, [2.5, 7], ground, { seed: 4, kind: 'cliff', moss: 0.1, clump: 0.5, colliderMin: 99 }),
-    boulderField({ center: new THREE.Vector3(10, 0, -138), halfSize: [80, 8] }, 26, [3, 8], ground, { seed: 5, kind: 'cliff', moss: 0.1, clump: 0.5, colliderMin: 99 }),
+    boulderField({ center: new THREE.Vector3(-75, 0, 20), halfSize: [11, 60] }, 28, [2.2, 6.5], ground, { seed: 3, kind: 'cliff', moss: 0.15, clump: 0.5, colliderMin: 99, exclude: atToe }),
+    boulderField({ center: new THREE.Vector3(108, 0, -62), halfSize: [11, 50] }, 20, [2.5, 7], ground, { seed: 4, kind: 'cliff', moss: 0.1, clump: 0.5, colliderMin: 99, exclude: (x, z) => x < 98.5 || atToe(x, z) }),
+    boulderField({ center: new THREE.Vector3(10, 0, -138), halfSize: [80, 10] }, 26, [3, 8], ground, { seed: 5, kind: 'cliff', moss: 0.1, clump: 0.5, colliderMin: 99, exclude: (x, z) => z > -129.5 || atToe(x, z) }),
     boulderField({ center: new THREE.Vector3(4, 0, 44), halfSize: [70, 30] }, 70, [0.25, 1.3], ground, {
       seed: 6, kind: 'rock', moss: 0.05, clump: 0.6, colliderMin: 99,
       exclude: (x, z) => z < 14 || Math.abs(x - 5) < 6,
@@ -412,8 +444,8 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
   let beaconT = 0;
 
   // ── the Uruk host: thousands in the coomb, the front ranks with ladders and torches ─
-  const host = level.crowd({ center: L.armyCenter, halfSize: [115, 32], count: 1900, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
-  const front = level.crowd({ center: new THREE.Vector3(4, 0, 58), halfSize: [80, 7], count: 440, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
+  const host = level.crowd({ center: L.armyCenter, halfSize: [115, 32], count: 1550, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
+  const front = level.crowd({ center: new THREE.Vector3(4, 0, 58), halfSize: [80, 7], count: 380, kind: 'uruk', facing: Math.PI, speed: 0, props: true });
   // a sea of torches over the host (the crowd's own torch figures are too small to read through the rain)
   const torchSea = makeTorchSea(ground, rng, [
     { c: L.armyCenter, h: [115, 32], n: 820 },
@@ -436,6 +468,8 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
     level.root.add(crowd.mesh);
     elves.push(crowd);
   }
+
+  const baked = bakeStatic(statics);
 
   return {
     hd,
@@ -462,6 +496,7 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
       shieldBeacon.position.y = WALL_H + 0.9 + Math.sin(beaconT * 1.6) * 0.08;
     },
     dispose() {
+      baked.dispose();
       dress.dispose();
       for (const m of rockMats) m.dispose();
       for (const e of elves) e.dispose();
@@ -470,6 +505,57 @@ export function buildWorld(level: LevelAPI, startBreached: boolean): HelmsWorld 
 }
 
 export type { ColliderDesc };
+
+/**
+ * Bake a group of static props into one mesh per (material, shadow flag): world-space copies of every
+ * plain mesh under it, the originals removed. Skinned / instanced / multi-material meshes are left alone.
+ */
+function bakeStatic(group: THREE.Group): { dispose(): void } {
+  group.updateMatrixWorld(true);
+  const inv = group.matrixWorld.clone().invert();
+  const rel = new THREE.Matrix4();
+  const buckets = new Map<string, { mat: THREE.Material; geos: THREE.BufferGeometry[]; cast: boolean }>();
+  const baked: THREE.Mesh[] = [];
+  group.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || (m as THREE.InstancedMesh).isInstancedMesh || (m as THREE.SkinnedMesh).isSkinnedMesh || Array.isArray(m.material)) return;
+    const src = m.geometry as THREE.BufferGeometry;
+    let g = src.index ? src.toNonIndexed() : src.clone();
+    g.applyMatrix4(rel.multiplyMatrices(inv, m.matrixWorld));
+    for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal' && k !== 'uv') g.deleteAttribute(k);
+    if (!g.getAttribute('normal') || !g.getAttribute('uv')) {
+      g.dispose();
+      return;
+    }
+    const key = `${m.material.uuid}|${m.castShadow ? 1 : 0}`;
+    let b = buckets.get(key);
+    if (!b) buckets.set(key, (b = { mat: m.material, geos: [], cast: m.castShadow }));
+    b.geos.push(g);
+    baked.push(m);
+  });
+  const made: THREE.Mesh[] = [];
+  for (const b of buckets.values()) {
+    const merged = mergeGeometries(b.geos, false);
+    for (const g of b.geos) g.dispose();
+    if (!merged) continue;
+    const mesh = new THREE.Mesh(merged, b.mat);
+    mesh.castShadow = b.cast;
+    mesh.receiveShadow = true;
+    mesh.name = 'hd_static_baked';
+    made.push(mesh);
+  }
+  // only drop the originals once the merge worked (a failed bucket keeps its source meshes in the scene)
+  if (made.length === buckets.size) for (const m of baked) m.removeFromParent();
+  else for (const mesh of made) mesh.geometry.dispose();
+  if (made.length === buckets.size) {
+    for (const mesh of made) group.add(mesh);
+  }
+  return {
+    dispose() {
+      for (const mesh of made) mesh.geometry.dispose();
+    },
+  };
+}
 
 /** a soft warm glow (additive sprite) marking an interactable */
 function makeBeacon(): THREE.Object3D {

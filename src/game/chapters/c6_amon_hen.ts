@@ -48,11 +48,24 @@ export const chapter: ChapterDef = {
     // ?cine=1 keeps them even then (QA: look at the cinematics without the shell's title card)
     const quick = ctx.flags.skipIntro === '1' && ctx.flags.cine !== '1';
 
-    // golden afternoon: the stock preset with more cloud (less bare blue through the canopy), a touch more
-    // exposure and fill so the shadowed ground keeps its colour, and a slightly clearer haze
+    // golden afternoon, from the scene reference's lighting key (docs/refs/scenes/amon_hen/lighting.json): a lower key so
+    // the warm sun leaves cool shadows, less fill and haze so the ruins read from the trail, a quieter bloom and grade.
+    // The sky is hazier and more clouded than the stock one (the reference's pale cream sky; less saturated blue through the canopy).
     const base = ENVIRONMENTS.amon_hen as EnvironmentPresetEx;
-    const sky = base.sky.kind === 'physical' ? { ...base.sky, clouds: 0.62 } : base.sky;
-    level.setEnvironment({ ...base, sky, exposure: 1.0, hemiIntensity: 0.72, fog: { color: 0xcdb99a, density: 0.0068 } });
+    const sky = base.sky.kind === 'physical' ? { ...base.sky, clouds: 0.7, turbidity: 8.5, rayleigh: 1.1 } : base.sky;
+    const env: EnvironmentPresetEx = {
+      ...base,
+      sky,
+      sunIntensity: 3.4,
+      hemiIntensity: 0.66,
+      fog: { color: 0xdcb78c, density: 0.0075 },
+      exposure: 1.04,
+      bloom: 0.2,
+      mist: 0.2,
+      shafts: 0.8,
+      grade: { ...base.grade, saturation: 1.04, vignette: 0.32 },
+    };
+    level.setEnvironment(env);
     const world = buildAmonHen(level);
     // Boromir's helmetless body is not in the preload list: build it now, behind the loading screen
     let boromirBody: Humanoid | null = makeBoromirBody();
@@ -492,22 +505,6 @@ export const chapter: ChapterDef = {
     }
     const yawFrom = (from: THREE.Vector3, to: THREE.Vector3): number => Math.atan2(to.x - from.x, to.z - from.z);
 
-    /** Gimli's banter must not run over a set-piece: the counter keeps counting, the lines are dropped */
-    let hushed: (() => void) | null = null;
-    function hushRivalry(): void {
-      if (hushed) return;
-      const rv = ctx.rivalry;
-      const was = { auto: rv.autoGimli, g: rv.addGimli, l: rv.addLegolas };
-      rv.autoGimli = false;
-      rv.addGimli = () => {};
-      rv.addLegolas = () => {};
-      hushed = () => {
-        rv.autoGimli = was.auto;
-        rv.addGimli = was.g;
-        rv.addLegolas = was.l;
-      };
-    }
-
     async function finisher(): Promise<void> {
       beat = 'finish';
       const lz = boss!;
@@ -519,9 +516,8 @@ export const chapter: ChapterDef = {
       lz.specials = false;
       level.objective(null);
       hud.setPrompt(null);
-      level.cinematic(true);
+      level.cinematic(true); // (Gimli's banter is held for as long as this lasts)
       level.music?.('epic');
-      hushRivalry();
       player.invulnerable = true; // nothing may touch Legolas until the clearing is quiet again
       // everyone stops: the rest of the Uruk-hai lose their nerve and run
       for (const c of ctx.combatants.byTeam('enemy')) {
@@ -636,7 +632,6 @@ export const chapter: ChapterDef = {
       level.cinematic(true);
       level.music?.('epic');
       level.objective(null);
-      hushRivalry();
       const bp = bm.position.clone();
       // fixed axes (Boromir's live facing follows the player): "forward" is toward where Lurtz stood
       const mk = markPos();
@@ -688,8 +683,6 @@ export const chapter: ChapterDef = {
       await level.say('Aragorn', 'We will not abandon Merry and Pippin.', 3.0);
       await level.say('Gimli', 'Not while there is an axe to swing.', 2.4);
       await level.wait(0.8);
-      hushed?.();
-      hushed = null;
       level.complete();
     }
 
@@ -746,8 +739,6 @@ export const chapter: ChapterDef = {
         boromirBody = null;
         drawHold?.stop();
         drawHold = null;
-        hushed?.();
-        hushed = null;
         player.invulnerable = false;
         ctx.time.setScale(1, 0.1);
       },

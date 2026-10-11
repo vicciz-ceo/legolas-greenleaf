@@ -20,13 +20,17 @@ const baseSky = base.sky as Extract<SkyDef, { kind: 'gradient' }>;
  */
 export const STORM: EnvironmentPresetEx = {
   ...base,
-  // the moon rakes the wall from the side (azimuth 75): the outer face and the host both read
-  sky: { ...baseSky, top: 0x03060d, horizon: 0x22304a, bottom: 0x05070c, clouds: 1, cloudColor: 0x26344c, moon: { elevation: 34, azimuth: 75, size: 2.4, color: 0xaebfe0 } },
+  // the moon stands behind the coomb and to the west (azimuth 300): it rakes the outer wall face, the
+  // merlons throw long shadows across the walkway, and the Hornburg's west face (the one the gameplay
+  // camera sees from the wall) is lit instead of a dark silhouette
+  sky: { ...baseSky, top: 0x03060d, horizon: 0x22304a, bottom: 0x05070c, clouds: 1, cloudColor: 0x26344c, moon: { elevation: 38, azimuth: 300, size: 2.4, color: 0xaebfe0 } },
   sunColor: 0x9baecb,
-  sunIntensity: 1.3,
-  hemiSky: 0x2a3b58,
-  hemiGround: 0x0b0c10,
-  hemiIntensity: 1.5,
+  sunIntensity: 1.05,
+  // the ground bounce is what lights the shadow side of the walls and the stair (a near-black ground colour
+  // left every face away from the moon pitch black)
+  hemiSky: 0x2e405c,
+  hemiGround: 0x17202c,
+  hemiIntensity: 1.45,
   envIntensity: 0.6,
   // FogExp2: thick fog swallows the host and the Hornburg; the json's 0.01 is for a stage with
   // its own haze layers, here the fog stays thin and the ground mist (below) does the layering
@@ -41,7 +45,7 @@ export const STORM: EnvironmentPresetEx = {
   weather: 'storm',
   // the rain was a curtain across the whole frame (notes: gap 1): thinner, so the wall, the host and
   // the crosshair zone read through it
-  weatherIntensity: 0.5,
+  weatherIntensity: 0.42,
 };
 
 export const DAWN: EnvironmentPresetEx = {

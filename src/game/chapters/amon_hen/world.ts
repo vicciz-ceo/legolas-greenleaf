@@ -11,7 +11,7 @@ import type { LevelAPI } from '../../../core/types';
 import { Rng } from '../../../core/rng';
 import {
   addColliders, amonHenSummit, banner, boulderField, fallenLog, ferns, forest, grassField, mat, mushrooms, pillar, river, rock, ruins, statue, stairs, stoneWall,
-  tree, type Built, type WaterBody,
+  tree, worldQuality, type Built, type WaterBody,
 } from '../../../world';
 import {
   CLEARING, FLIGHTS, L, RUINS, SEAT, STREAM_PTS, STREAM_W, ground, inClearing, inRuins, nearRoute, streamDist,
@@ -19,6 +19,7 @@ import {
 import { driftingLeaves, fallenLeaves } from './leaves';
 import { distantRidge, groundCover } from './cover';
 import { fbm2 } from '../../../core/rng';
+import { dressRuinedWay, sunShafts } from './dress';
 
 export interface Trunk {
   x: number;
@@ -78,7 +79,7 @@ export function buildAmonHen(level: LevelAPI): AmonHenWorld {
   const terrain = level.terrain({
     size: 360, segments: 160, height: ground, style: 'forest', theme: 'autumn', material: 'leaves', center: [0, 28], patchiness: 0.6, cavity: 0.55,
     // a touch of green out of the orange litter, so the upper hill and the far bank read as woodland floor, not desert
-    tint: 0xd9e0c6,
+    tint: 0xf0dcb0,
   });
   const h = terrain.heightAt;
 
@@ -99,12 +100,24 @@ export function buildAmonHen(level: LevelAPI): AmonHenWorld {
   level.root.add(water.object);
 
   // ── woods ──────────────────────────────────────────────────────────────
+  // fuller crowns: fewer specks of bare sky through the canopy (the 'confetti'); leaf cut-outs anti-aliased where MSAA is on
+  const hi = worldQuality();
+  const crown = { density: 1.8, alphaToCoverage: hi === 'high' || hi === 'ultra' };
   // the host of Isengard stands on the far bank: no trunks in its footprint (the wood stands behind and beside it)
   const inHost = (x: number, z: number): boolean => x > -54 && x < 70 && z > -138 && z < -114;
   // the summit: the Seat's disc stays open, and a broad lane up the great stair to it (the intro looks along it)
   const onSummit = (x: number, z: number): boolean => Math.hypot(x - SEAT.x, z - SEAT.z) < 27 || (z > 112 && z < SEAT.z && Math.abs(x - 2) < 13);
   const keepClear = (x: number, z: number): boolean =>
     nearRoute(x, z, 5.5) || inClearing(x, z, -2) || inRuins(x, z, -6) || streamDist(x, z) < 6 || onSummit(x, z) || inHost(x, z) || nearFlight(x, z, 3) || Math.hypot(x - L.spawn.x, z - L.spawn.z) < 7 || Math.hypot(x - L.boromir.x, z - L.boromir.z) < 13;
+  /**
+   * the sight line up the hill: the ruins, the stair's statues and, far up, the Seat must read from the trail, so the near wood
+   * is thinned (about half the trunks) in a broad band along the climb. Deterministic hash, no rng draw.
+   */
+  const sightLine = (x: number, z: number): boolean => {
+    if (z < -34 || z > 70 || Math.abs(x - 2) > 15) return false;
+    const r = Math.sin(x * 12.9898 + z * 78.233) * 43758.5453;
+    return r - Math.floor(r) < 0.5;
+  };
   /** where the player and the fights are: full-detail trees. Beyond it the wood is only ever seen from afar */
   const nearField = (x: number, z: number): boolean => nearRoute(x, z, 34) || inClearing(x, z, 16) || inRuins(x, z, 14);
   // the wood now climbs round the summit plateau and across the stream (z -148 .. 202)
@@ -112,13 +125,13 @@ export function buildAmonHen(level: LevelAPI): AmonHenWorld {
   const KINDS = [{ kind: 'beech' as const, weight: 5 }, { kind: 'birch' as const, weight: 2.4 }, { kind: 'pine' as const, weight: 1.4 }];
   // the near wood: full-detail trees close to the player (two variants per kind), the golden beechwood
   const beech = forest(area, 175, KINDS, h, {
-    seed: 6, scale: [1.05, 1.6], spacing: 1.5, variants: 2, exclude: (x, z) => keepClear(x, z) || !nearField(x, z), chunk: 48, lodNear: 30, lodFar: 185, leafTint: [1.22, 1.06, 0.62],
+    seed: 6, scale: [1.05, 1.6], spacing: 1.5, variants: 2, exclude: (x, z) => keepClear(x, z) || !nearField(x, z) || sightLine(x, z), chunk: 48, lodNear: 30, lodFar: 185, leafTint: [1.22, 1.06, 0.62], crown,
   });
   level.root.add(beech.object);
   addColliders(physics, beech.colliders);
   // the far wood: the same trees at their simplified level only (always beyond ~20 m, in the haze), few big chunks
   const mixed = forest(area, 400, KINDS, h, {
-    seed: 17, scale: [1.0, 1.55], spacing: 1.5, variants: 1, exclude: (x, z) => keepClear(x, z) || nearField(x, z), chunk: 80, lodNear: 1, lodFar: 185, leafTint: [1.22, 1.06, 0.62],
+    seed: 17, scale: [1.0, 1.55], spacing: 1.5, variants: 1, exclude: (x, z) => keepClear(x, z) || nearField(x, z) || sightLine(x, z), chunk: 80, lodNear: 1, lodFar: 185, leafTint: [1.22, 1.06, 0.62], crown,
   });
   level.root.add(mixed.object);
   addColliders(physics, mixed.colliders);
@@ -126,12 +139,12 @@ export function buildAmonHen(level: LevelAPI): AmonHenWorld {
   // the summit wood (round the plateau, in sight of the intro's first shot) and the far bank's wood (behind the host): more
   // trees here, near-detail within 45 m, so neither edge of the world reads as an empty horizon
   const summitWood = forest({ center: new THREE.Vector3(0, 0, 168), halfSize: [120, 36] }, 150, KINDS, h, {
-    seed: 31, scale: [1.05, 1.6], spacing: 1.6, variants: 2, exclude: (x, z) => keepClear(x, z) || Math.hypot(x - SEAT.x, z - SEAT.z) < 30, chunk: 60, lodNear: 45, lodFar: 190, leafTint: [1.18, 1.08, 0.7],
+    seed: 31, scale: [1.05, 1.6], spacing: 1.6, variants: 2, exclude: (x, z) => keepClear(x, z) || Math.hypot(x - SEAT.x, z - SEAT.z) < 30, chunk: 60, lodNear: 45, lodFar: 190, leafTint: [1.18, 1.08, 0.7], crown,
   });
   level.root.add(summitWood.object);
   addColliders(physics, summitWood.colliders);
   const bankWood = forest({ center: new THREE.Vector3(0, 0, -132), halfSize: [150, 20] }, 140, KINDS, h, {
-    seed: 33, scale: [1.0, 1.55], spacing: 1.6, variants: 1, exclude: (x, z) => keepClear(x, z) || streamDist(x, z) < 8, chunk: 70, lodNear: 1, lodFar: 190, leafTint: [1.18, 1.08, 0.7],
+    seed: 33, scale: [1.0, 1.55], spacing: 1.6, variants: 1, exclude: (x, z) => keepClear(x, z) || streamDist(x, z) < 8, chunk: 70, lodNear: 1, lodFar: 190, leafTint: [1.18, 1.08, 0.7], crown,
   });
   level.root.add(bankWood.object);
   addColliders(physics, bankWood.colliders);
@@ -193,9 +206,18 @@ export function buildAmonHen(level: LevelAPI): AmonHenWorld {
 
   // a far wooded ridge behind everything (see distantRidge)
   distantRidge(level, new THREE.Vector3(0, 0, 28), 260, -6, (a) => fbm2(Math.cos(a) * 3.1 + 7, Math.sin(a) * 3.1 + 3, 3, 77) * 0.5 + 0.5);
+  // and, behind that, a cool blue-grey range in the haze (the reference's mountains over the river valley): already hazed, so it
+  // keeps its colour at that distance instead of dissolving into the fog
+  distantRidge(level, new THREE.Vector3(0, 0, 28), 330, -10, (a) => fbm2(Math.cos(a) * 2.2 + 3, Math.sin(a) * 2.2 + 9, 4, 91) * 0.5 + 0.5, {
+    height: [58, 52], color: 0x9ea3a4, fog: false, order: -2, name: 'distant_range',
+  });
 
   // ── the ruins on the terrace ───────────────────────────────────────────
   buildRuins(level, place, h, rng);
+
+  // the ruined processional way: statues and columns on the stairs, litter, bracken, stones in the stream; golden shafts
+  dressRuinedWay(level, h, place, weather, (x, z) => Math.hypot(x - RUINS.x, z - (RUINS.z + 2)) < 10.2);
+  sunShafts(level);
 
   // Saruman's white hands: war banners planted where the Uruk-hai came through
   const bannerSpots: [number, number, number][] = [[-15, 88, Math.PI], [16, 86, Math.PI + 0.3], [31, 14, 2.4], [24, -22, 2.8], [6, -61, 3.3], [-22, -60, 3.0]];
@@ -227,13 +249,13 @@ function buildRuins(level: LevelAPI, place: Place, h: (x: number, z: number) => 
   // flights of stairs: each flush with the terrain's lane
   for (const f of FLIGHTS) {
     const st = stairs([f.from[0], f.y0, f.from[1]], [f.to[0], f.y1, f.to[1]], f.width, { riser: 0.22, material: 'mossy', cheeks: true, ramp: false });
-    weather(st.object, [0.8, 0.88, 0.72]);
+    weather(st.object, [1.05, 0.85, 1.08]);
     level.root.add(st.object);
     addColliders(physics, st.colliders);
   }
 
   // the plaza: a disc of worn paving, a little proud of the grass
-  const paving = mat('stone_blocks', { key: 'amonPaving', rgb: [0.7, 0.8, 0.62] }).clone();
+  const paving = mat('stone_blocks', { key: 'amonPaving', rgb: [0.74, 0.72, 0.64] }).clone();
   paving.polygonOffset = true;
   paving.polygonOffsetFactor = -3;
   paving.polygonOffsetUnits = -3;
@@ -255,7 +277,7 @@ function buildRuins(level: LevelAPI, place: Place, h: (x: number, z: number) => 
   ];
   for (const [x, z, hh, kind, seed] of cols) {
     const col = pillar(kind, hh, 1.5, { seed, broken: 0.5 });
-    weather(col.object, [0.6, 0.67, 0.5]);
+    weather(col.object, [0.74, 0.72, 0.68]);
     place(col, x, z, 0.4 * seed);
   }
 
@@ -270,7 +292,7 @@ function buildRuins(level: LevelAPI, place: Place, h: (x: number, z: number) => 
       pts.push([x, h(x, z), z]);
     }
     const w = stoneWall(pts, height, thick, { crenellated: false, walkway: false, material: 'mossy', sink: 1.4, slits: false, anchorEvery: 0, smooth: true, seed });
-    weather(w.object, [0.8, 0.88, 0.72]);
+    weather(w.object, [1.05, 0.85, 1.08]);
     level.root.add(w.object);
     addColliders(physics, w.colliders);
   };
@@ -284,7 +306,7 @@ function buildRuins(level: LevelAPI, place: Place, h: (x: number, z: number) => 
     seed: 12, material: 'mossy', grandeur: 0.55,
     exclude: (x, z) => Math.hypot(x - cx, (z - (cz - 2)) * 1.1) < 11 || nearFlight(x, z, 3.5) || (Math.abs(x - cx) < 6 && z < cz - 14) || z > 100,
   });
-  weather(stones.object, [0.8, 0.88, 0.72]);
+  weather(stones.object, [1.05, 0.85, 1.08]);
   level.root.add(stones.object);
   addColliders(physics, stones.colliders);
 
@@ -295,7 +317,7 @@ function buildRuins(level: LevelAPI, place: Place, h: (x: number, z: number) => 
     [statue('standing', { height: 8.2, seed: 8 }), cx - 14, cz + 36, 0.4],
   ];
   for (const [k, x, z, yaw] of kings) {
-    weather(k.object, [0.68, 0.78, 0.58]);
+    weather(k.object, [0.7, 0.67, 0.62]);
     place(k, x, z, yaw);
   }
   void rng;

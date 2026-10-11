@@ -17,8 +17,8 @@ import type { WeaponKind } from '../../../core/types';
 import { Rng, fbm2 } from '../../../core/rng';
 import { clamp, smoothstep } from '../../../core/math';
 import { worldQuality } from '../../../world';
-import { L, V, pelennorHeight, beastCorridor } from './layout';
-import { clods, debris, hostForest, mountainRing, puddles } from './scenery';
+import { CITY_SCALE, CITY_WIDEN, FACE, L, V, pelennorHeight, beastCorridor } from './layout';
+import { clods, debris, hostForest, hostMass, mountainRing, puddles } from './scenery';
 
 export interface PelennorWorld {
   ground: (x: number, z: number) => number;
@@ -79,9 +79,11 @@ function churnedMud(ground: (x: number, z: number) => number, mudAt: (x: number,
     const edge = 1 - smoothstep(0.86, 1, Math.max(Math.abs(x - cx) / (W / 2), Math.abs(z - cz) / (D / 2)));
     const wet = 0.5 + 0.5 * fbm2(x * 0.07 + 5, z * 0.07, 3, 34);
     const shade = (0.56 + 0.5 * (0.5 + 0.5 * fbm2(x * 0.3, z * 0.3, 2, 33))) * (0.72 + 0.5 * wet);
-    col[i * 4] = shade;
-    col[i * 4 + 1] = shade;
-    col[i * 4 + 2] = shade;
+    // dry, greyer clay in patches among the wet dark earth
+    const dry = smoothstep(0.55, 0.85, 0.5 + 0.5 * fbm2(x * 0.045 + 11, z * 0.045 - 7, 3, 35));
+    col[i * 4] = shade * (1 + 0.38 * dry);
+    col[i * 4 + 1] = shade * (1 + 0.3 * dry);
+    col[i * 4 + 2] = shade * (1 + 0.16 * dry);
     col[i * 4 + 3] = mudAt(x, z) * edge;
   }
   geo.setAttribute('color', new THREE.BufferAttribute(col, 4));
@@ -107,8 +109,46 @@ function churnedMud(ground: (x: number, z: number) => number, mudAt: (x: number,
     polygonOffsetFactor: -2,
     polygonOffsetUnits: -2,
   });
-  m.color.setRGB(0.78, 0.64, 0.5);
+  m.color.setRGB(0.86, 0.75, 0.63);
   m.normalScale.set(1.7, 1.7);
+  // clod relief: a cellular height field in world space shades the churned ground in the camera's reach
+  // (the low sun skimming it throws every clod's shadow, which a flat texture cannot), fading with distance
+  patchShader(m, 'pelennorClods', (shader) => {
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        `#include <common>
+        float cHash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+        float cVor(vec2 p){
+          vec2 i = floor(p); vec2 f = fract(p); float d = 8.0;
+          for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+            vec2 g = vec2(float(x), float(y));
+            vec2 o = vec2(cHash(i + g), cHash(i + g + 37.7));
+            vec2 r = g + o - f; d = min(d, dot(r, r));
+          }
+          return sqrt(d);
+        }
+        float clodH(vec2 p){ return (1.0 - min(cVor(p * 2.4), 1.0)) * 0.5 + (1.0 - min(cVor(p * 0.9 + 5.0), 1.0)) * 0.38 + (1.0 - min(cVor(p * 6.5 + 2.0), 1.0)) * 0.12 * (1.0 - smoothstep(6.0, 28.0, length(p - cameraPosition.xz))); }`,
+      )
+      .replace(
+        '#include <map_fragment>',
+        `#include <map_fragment>
+        vec3 cWorld = cameraPosition + transpose(mat3(viewMatrix)) * (-vViewPosition);
+        float cFade = 1.0 - smoothstep(18.0, 70.0, length(vViewPosition));
+        float cH0 = clodH(cWorld.xz);
+        diffuseColor.rgb *= mix(1.0, 0.42 + 1.15 * cH0, cFade);`,
+      )
+      .replace(
+        '#include <normal_fragment_maps>',
+        `#include <normal_fragment_maps>
+        {
+          float cHx = clodH(cWorld.xz + vec2(0.05, 0.0));
+          float cHz = clodH(cWorld.xz + vec2(0.0, 0.05));
+          vec3 cg = vec3(cH0 - cHx, 0.0, cH0 - cHz) * (5.0 * cFade);
+          normal = normalize(normal + (viewMatrix * vec4(cg, 0.0)).xyz);
+        }`,
+      );
+  });
   const mesh = new THREE.Mesh(geo, m);
   mesh.name = 'pelennor:mud';
   mesh.renderOrder = -1;
@@ -126,14 +166,26 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   // grass-green plains, a little darker and greener than the sun-bleached default so the field does
   // not read as sand under the morning haze (the mud is a matte overlay, churnedMud: the terrain's
   // own wet-mud layer mirrors the low sun into a glare streak)
-  const terrain = level.terrain({ size: 640, segments: 140, height: pelennorHeight, style: 'plains', material: 'grass', center: [10, 0], patchiness: 0.5, tint: 0x96966f });
+  const terrain = level.terrain({ size: 640, segments: 140, height: pelennorHeight, style: 'plains', material: 'grass', center: [10, 0], patchiness: 0.5, tint: 0x645c46 });
   const ground = terrain.heightAt;
+  // a dry-earth ground that does not mirror the sky: at the low sun's grazing angle the stock material's
+  // Fresnel (specular F90 = 1) washed the whole far field into a pale cream glare band along the horizon,
+  // where the reference's far ground is dark and misty
+  const dull = (mesh: THREE.Mesh) => {
+    const m = mesh.material as THREE.MeshStandardMaterial;
+    m.envMapIntensity = 0.3;
+    patchShader(m, 'pelennorDull', (shader) => {
+      shader.fragmentShader = shader.fragmentShader.replace('#include <lights_physical_fragment>', '#include <lights_physical_fragment>\n material.specularF90 = 0.08;');
+    });
+  };
+  dull(terrain.mesh);
   const apron = buildTerrain({
     size: 3600,
     segments: 72,
     height: (x, z) => pelennorHeight(x, z) - 3 * (1 - smoothstep(312, 350, Math.max(Math.abs(x - 10), Math.abs(z)))),
     style: 'plains',
-    tint: 0x98986f,
+    tint: 0x5e5742,
+    theme: 'wet',
     patchiness: 0.45,
   });
   {
@@ -152,19 +204,21 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
       g.setIndex(keep);
     }
   }
+  dull(apron.mesh);
   apron.mesh.castShadow = false;
   apron.mesh.userData.noAO = true;
   level.root.add(apron.mesh);
 
   // ── Minas Tirith on the south-south-east horizon, Mindolluin behind it, the mountain ring beyond ──
-  const city = minasTirith({ scale: 0.72, tiers: 5, fires: true, seed: 3 });
+  const city = minasTirith({ scale: CITY_SCALE, tiers: 5, fires: true, seed: 3 });
   city.object.position.set(L.city.x, pelennorHeight(L.city.x, L.city.z) - 6, L.city.z);
   city.object.rotation.y = L.cityYaw;
+  city.object.scale.set(CITY_WIDEN, 1, CITY_WIDEN);
   city.object.traverse((o) => (o.castShadow = false));
   // Mindolluin behind it: recoloured slate and snow to match the mountain ring (the shared builder's
   // pale rock reads as a beige cone in this warm haze), and given the ring's material
   const rock = mat('cliff', { key: 'pelennorMindolluin', vertexColors: true, rgb: [0.62, 0.64, 0.7] });
-  applyFogCap(rock, 0.5);
+  applyFogCap(rock, 0.3);
   city.object.traverse((o) => {
     const m = o as THREE.Mesh;
     if (!m.isMesh || !m.geometry.getAttribute('color')) return;
@@ -199,12 +253,12 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
     seen.add(m);
     m.userData.pelennorCap = true;
     patchShader(m, 'pelennorCityCap', (shader) => {
-      if (shader.uniforms.uFogCap) shader.uniforms.uFogCap.value = 0.46;
+      if (shader.uniforms.uFogCap) shader.uniforms.uFogCap.value = 0.2;
     });
   });
   level.root.add(city.object);
   // the White Mountains and the mountains of Shadow: one jagged ring inside the far plane
-  mountainRing(level, 10, 0, 33);
+  mountainRing(level, 10, 0, 46);
 
   // ── churned mud: the beasts' trails and the fighting ground are trodden into dark wet earth ──
   const corridor = beastCorridor();
@@ -218,16 +272,27 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   };
   level.root.add(churnedMud(ground, mudAt));
   // grass stays off the mud
-  const churn = (x: number, z: number) => 1 - 0.9 * mudAt(x, z);
-  level.root.add(grassField({ center: V(10, 0, 0), halfSize: [70, 70] }, 0.75, ground, { seed: 8, dry: 0.55, fade: [20, 46], height: [0.25, 0.6], mask: churn }));
+  const churn = (x: number, z: number) => 1 - 0.82 * mudAt(x, z);
+  level.root.add(grassField({ center: V(10, 0, 0), halfSize: [70, 70] }, worldQuality() === 'high' || worldQuality() === 'ultra' ? 0.35 : worldQuality() === 'low' ? 0.45 : 0.65, ground, { seed: 8, dry: 0.55, fade: [20, 46], height: [0.25, 0.6], mask: churn }));
 
   // ── what the churned ground is made of: puddles mirroring the sky, clods of turned earth, the
   // splintered wheels and planks of the siege (cosmetic: no colliders, clear of the beasts' routes) ──
   const okSpot = (x: number, z: number) => corridor(x, z) > 7 && Math.hypot(x - L.spawn.x, z - L.spawn.z) > 6;
+  // a point `d` m ahead of the cp0 spawn along its heading and `s` m to the right of it: the gameplay
+  // camera's foreground, where the reference shows its pools, timbers and fallen standards
+  const sx = Math.sin(FACE);
+  const sz = Math.cos(FACE);
+  const ahead = (d: number, side: number): [number, number] => [L.spawn.x + sx * d - sz * side, L.spawn.z + sz * d + sx * side];
   {
     const pr = new Rng(909);
-    const pools: [number, number, number, number, number][] = [];
-    for (let tries = 0; pools.length < (worldQuality() === 'low' ? 8 : 16) && tries < 600; tries++) {
+    // the foreground pools first (large, in the camera's view), then the scatter across the field
+    const pools: [number, number, number, number, number][] = [
+      [...ahead(15, 7), 3.4, 1.9, 0.5],
+      [...ahead(9, -6), 2.3, 1.7, 2.2],
+      [...ahead(21, 15), 4.2, 2.1, 0.9],
+      [...ahead(30, -16), 3.2, 1.8, 2.7],
+    ];
+    for (let tries = 0; pools.length < (worldQuality() === 'low' ? 10 : 20) && tries < 700; tries++) {
       const a = pr.float() * Math.PI * 2;
       const d = 9 + Math.sqrt(pr.float()) * 66;
       const x = 8 + Math.cos(a) * d;
@@ -239,8 +304,8 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
     puddles(level, ground, pools);
   }
   const art = new Rng(1717);
-  clods(level, ground, mudAt, art, V(8, 0, -4), 66, worldQuality() === 'low' ? 160 : 460);
-  debris(level, ground, okSpot, art, V(8, 0, -4), 78, [[10, 15], [13, 27], [21, -4], [31, 12], [-8, 20]]);
+  clods(level, ground, mudAt, art, V(8, 0, -4), 66, worldQuality() === 'low' ? 600 : worldQuality() === 'medium' ? 2000 : 900);
+  debris(level, ground, okSpot, art, V(8, 0, -4), 78, [ahead(7, 9), ahead(11, -9), ahead(15, 2), ahead(19, -4), ahead(24, 10), ahead(29, -12), ahead(36, 4), ahead(44, -9), [10, 15], [13, 27], [21, -4], [-8, 20]]);
 
   // ── wreckage of the siege: towers, catapults, a ram, crates and spilled barrels ──
   const place = (b: Built, x: number, z: number, yaw = 0, tilt: [number, number] = [0, 0]): Built => {
@@ -272,7 +337,8 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   // (big soft particles are the costliest thing to rasterise: fewer columns on the low preset)
   const low = worldQuality() === 'low';
   for (const [x, z, s] of [[-80, -60, 1.1], [58, 74, 1.4], [30, -72, 1.3]] as [number, number, number][]) {
-    fx.fire(V(x, ground(x, z) + 1.2, z), s);
+    // (the column above is placed separately: the flames carry a thin wisp only)
+    fx.fire(V(x, ground(x, z) + 1.2, z), s, { smoke: 0.35 });
     if (!low || x > 0) fx.smoke(V(x, ground(x, z) + 4, z), 1.8);
   }
   // the burning field: tall columns with a broad base (a wide emitter on the ground and a second,
@@ -289,25 +355,27 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   for (const [x, z, h, yaw, burnt, seed, tilt] of [
     [230, -150, 17, 2.7, true, 6, [0, 0]], [300, 30, 16, 1.9, false, 7, [0.06, 0.1]], [150, 210, 18, -0.6, true, 8, [0, 0]],
     [-200, 120, 15, 0.4, true, 9, [0.1, -0.15]], [320, 150, 17, 2.2, true, 10, [0, 0]], [-150, -190, 16, 1.1, false, 11, [0, 0]],
+    [252, 78, 18, 1.6, false, 12, [0, 0]], [214, 196, 17, 3.0, true, 13, [0.04, -0.08]], [270, -70, 16, 2.4, true, 14, [0, 0]],
   ] as [number, number, number, number, boolean, number, [number, number]][]) {
     place(siegeTower({ height: h, burnt, seed }), x, z, yaw, tilt);
   }
-  for (const [x, z, sc] of [[230, -150, 2.4], [150, 210, 2.6], [320, 150, 2.4], [-200, 120, 2.0]] as [number, number, number][]) {
-    fx.fire(V(x, ground(x, z) + 2.5, z), sc);
-    fx.smoke(V(x, ground(x, z) + 8, z), sc * 2.4);
+  // engines burning in the middle distance and along the host's front: flame only (the smoke columns
+  // above carry the plumes), no pooled lights; big enough to read as fires 150-350 m out
+  for (const [x, z, sc] of [[230, -150, 3.4], [150, 210, 3.6], [320, 150, 3.4], [-200, 120, 3.0], [214, 196, 3.4], [270, -70, 3.2], [180, 40, 3.0], [236, 118, 3.2], [196, -96, 3.0], [260, 224, 3.6]] as [number, number, number][]) {
+    fx.fire(V(x, ground(x, z) + 2.5, z), sc, { smoke: 0, light: false });
+    if (x !== 180 && x !== 196) fx.smoke(V(x, ground(x, z) + 8, z), sc * 2.2);
   }
   // Minas Tirith burning on its hill: flames in the tiers and columns of smoke leaning off to the north-west
+  // (positions in the builder's unit scale; the flames are the city's own glow: no pooled lights, and the
+  // smoke columns are placed separately so the flames carry none)
   {
     const cb = city.object;
     const lp = new THREE.Vector3();
-    const cityAt = (lx: number, ly: number, lz: number) => cb.localToWorld(lp.set(lx, ly, lz)).clone();
-    const flames: [number, number, number, number][] = [[-45, 32, 116, 6], [30, 40, 110, 7], [50, 100, 46, 6.5], [-25, 106, 50, 6], [6, 170, -18, 5.5]];
-    flames.slice(0, low ? 3 : 5).forEach(([lx, ly, lz, sc]) => {
-      const w = cityAt(lx, ly, lz);
-      fx.fire(w, sc);
-      fx.smoke(V(w.x, w.y + 10, w.z), sc * 1.3);
-    });
-    if (!low) for (const [lx, ly, lz, sc] of [[10, 240, -25, 5.5], [-54, 70, 80, 5]] as [number, number, number, number][]) fx.smoke(cityAt(lx, ly, lz), sc);
+    const cityAt = (lx: number, ly: number, lz: number) => cb.localToWorld(lp.set(lx * CITY_SCALE, ly * CITY_SCALE, lz * CITY_SCALE)).clone();
+    const flames: [number, number, number, number][] = [[-62, 44, 161, 6], [42, 55, 153, 6.5], [69, 139, 64, 6], [-35, 147, 69, 5.5], [8, 236, -25, 5]];
+    flames.slice(0, low ? 3 : 5).forEach(([lx, ly, lz, sc]) => fx.fire(cityAt(lx, ly, lz), sc, { smoke: 0, light: false }));
+    // two dark columns rising beside the city (to its right and left), not in front of it: the white walls must read
+    for (const [lx, ly, lz, sc] of [[150, 40, 30, 6.5], [-125, 70, 40, 6]] as [number, number, number, number][]) fx.smoke(cityAt(lx, ly, lz), sc);
   }
 
   // stones flung by the catapults of Mordor, scattered rubble
@@ -331,6 +399,13 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   bnr(0x8a1a12, 'none', 42, -6, -2.8, [0, 0], 4.6);
   bnr(0x8a1a12, 'none', 28, -70, 2.0, [1.1, 0.2], 4.2);
   bnr(0x111114, 'white_tree', -70, 30, 0.8, [0.7, 0], 4.2);
+  // fallen standards across the camera's foreground: the red sun of Harad and the horse of Rohan trampled in the mud
+  for (const [d, side, color, emblem, yaw, tilt] of [
+    [13, -11, 0x8a1a12, 'none', 0.9, [1.2, 0.3]], [19, 11, 0x2e5a2e, 'horse', 2.4, [1.1, -0.2]], [27, -5, 0x8a1a12, 'none', 4.0, [1.25, 0.4]],
+  ] as [number, number, number, Parameters<typeof banner>[1], number, [number, number]][]) {
+    const [bx, bz] = ahead(d, side);
+    if (corridor(bx, bz) > 9) bnr(color, emblem, bx, bz, yaw, tilt, 3.6);
+  }
 
   // spent arrows, broken spears, dropped shields and blades across the churned ground
   const scatter = (kind: WeaponKind, n: number, stuck: boolean, r0: number, r1: number) => {
@@ -354,7 +429,7 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   };
   scatter('spear', 26, true, 10, 70);
   scatter('spear', 14, false, 8, 60);
-  scatter('shield', 12, false, 9, 60);
+  scatter('shield', worldQuality() === 'high' || worldQuality() === 'ultra' ? 6 : 12, false, 9, 60);
   scatter('scimitar', 12, false, 8, 55);
   scatter('sword', 8, false, 8, 55);
 
@@ -365,7 +440,7 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
   // ranks never read, and the triangles go to the beasts and the fighters up close (High peaked at
   // 1.85 M with the full hosts; budget 1.5 M).
   const hq = worldQuality() === 'high' || worldQuality() === 'ultra';
-  const heads = (count: number) => Math.round(count * (hq ? 0.55 : 1));
+  const heads = (count: number) => Math.round(count * (hq ? 0.36 : 1));
   const rohirrim = level.crowd({ center: V(-30, 0, -150), halfSize: [130, 26], count: heads(210), kind: 'rohirrim', facing: Math.PI / 2, speed: 0, props: true });
   const gondor = level.crowd({ center: V(-250, 0, -20), halfSize: [36, 110], count: heads(200), kind: 'gondor', facing: Math.PI / 2, speed: 0, props: true });
   const orcs = level.crowd({ center: V(185, 0, 10), halfSize: [40, 110], count: heads(400), kind: 'orc', facing: -Math.PI / 2, speed: 0, props: true });
@@ -382,12 +457,13 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
       o.userData.noAO = true;
     });
   }
-  // the hosts stand 100 m+ out, far beyond the ±35 m shadow box: never draw them into the shadow
-  // pass (crowd meshes are not frustum culled, so every figure would be rendered there)
+  // the hosts stand 100 m+ out, far beyond the ±35 m shadow box: keep them out of the shadow pass. Crowd
+  // culling does not do it for us (a crowd's bounding sphere spans its whole field and so overlaps the shadow
+  // frustum, which measured +400 k triangles), and skip the GTAO pre-pass (invisible at that range)
   for (const c of [rohirrim, gondor, orcs, harad, orcsNorth])
     c.mesh.traverse((o) => {
       o.castShadow = false;
-      o.userData.noAO = true; // and skip the GTAO pre-pass: ambient occlusion is invisible at that range
+      o.userData.noAO = true;
     });
   // the pike-forests and standards of the hosts: instanced shafts behind and between the crowd figures
   hostForest(
@@ -409,6 +485,20 @@ export function buildPelennor(level: LevelAPI): PelennorWorld {
       ] as [number, number, number, number][]
     ).filter(([x, z]) => corridor(x, z) > 18),
     art,
+  );
+  // the dense dark ranks behind the crowd figures: the horizon of the reference is one unbroken band of
+  // the hosts (armour, red of Harad, black of Mordor), with the grey of Gondor under the city
+  hostMass(
+    level,
+    ground,
+    [
+      { cx: 195, cz: 10, hx: 75, hz: 120, n: 1800, tones: [0x2a221d, 0x3a2a22, 0x4a1d16, 0x231f1c, 0x5b2418] },
+      { cx: 150, cz: 190, hx: 80, hz: 42, n: 1100, tones: [0x5a1f15, 0x2a201b, 0x6b3a22, 0x3a2a22, 0x7a2a1a] },
+      { cx: 200, cz: -170, hx: 60, hz: 50, n: 700, tones: [0x2a221d, 0x3a2a22, 0x231f1c, 0x4a1d16] },
+      { cx: 270, cz: 262, hx: 30, hz: 34, n: 420, tones: [0x6a6c72, 0x4a4c52, 0x7a7266, 0x5a4a3a] },
+    ],
+    art,
+    (x, z) => corridor(x, z) > 10,
   );
   return { ground, crowds: { rohirrim, gondor, orcs, harad, orcsNorth } };
 }

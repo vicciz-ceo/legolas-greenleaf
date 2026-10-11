@@ -13,7 +13,7 @@ import { fbm2 } from '../../../core/rng';
 import { smoothstep } from '../../../core/math';
 import { heightAt, TERRAIN } from './layout';
 
-const ROCK = new THREE.Color(0x4a5360);
+const ROCK = new THREE.Color(0x414a57);
 const ROCK_WARM = new THREE.Color(0x5e5d5e);
 const SNOW = new THREE.Color(0xe9eff6);
 const SNOW_SHADE = new THREE.Color(0x9fb0c6);
@@ -47,7 +47,9 @@ function northH(x: number, z: number): number {
   // the north-west and north-east ranges lower on either side
   const wing = (ridged(x, z, 0.003, 4, 101) * 120 + 40) * smoothstep(340, 700, Math.abs(x - 100)) * smoothstep(380, 560, z);
   const foot = 18 + fbm2(x * 0.01, z * 0.01, 3, 92) * 14;
-  return Math.max(foot, body + crest + spurs + peaks + fine, wing * 0.9);
+  // the massif starts rising well beyond the mesh's southern edge: no cut face from the bat's height
+  const rise = smoothstep(430, 820, z);
+  return Math.max(foot, (body + crest + spurs + peaks + fine) * rise, wing * 0.9 * smoothstep(380, 620, z));
 }
 
 /** the ranges east and west of the gorge and the low hills in the far south */
@@ -90,10 +92,12 @@ function detailTexture(): THREE.CanvasTexture {
       const nz = Math.sin(a) * 1.3;
       const ny = Math.cos(b) * 1.3;
       const nw = Math.sin(b) * 1.3;
+      // isotropic detail: the mountains are mapped top-down, so on a steep face it stretches down the
+      // slope by itself (long gullies and ribs); on the snowfields it stays a fine grain
       const fine = fbm2(nx * 6 + ny * 3, nz * 6 + nw * 3, 4, 181);
-      const streak = fbm2(nx * 2.2 + 9, nz * 2.2 + ny * 5.5, 3, 182);
-      const crack = Math.abs(fbm2(nx * 4 + 3, nw * 9 + nz * 2, 3, 183));
-      let t = 0.78 + fine * 0.32 + streak * 0.34 - (1 - Math.min(1, crack * 3.2)) * 0.2;
+      const streak = fbm2(nx * 2.6 + 9 + ny * 2.6, nz * 2.6 + nw * 2.6, 3, 182);
+      const crack = Math.abs(fbm2(nx * 4 + 3 + ny * 4, nz * 4 + nw * 4, 3, 183));
+      let t = 0.82 + fine * 0.2 + streak * 0.2 - (1 - Math.min(1, crack * 3.2)) * 0.1;
       t = Math.max(0.35, Math.min(1.12, t));
       const k = (y * S + x) * 4;
       const c = Math.round(Math.min(1, t) * 255);
@@ -139,8 +143,8 @@ function mountainMesh(level: LevelAPI, r: Region): void {
       pos[k + 2] = z;
       // detail UVs: along the ridge lines horizontally, down the slope vertically (gully streaks)
       const u = (j * (nx + 1) + i) * 2;
-      uv[u] = (x * 0.7 + z * 0.7) * 0.0046 + pos[k + 1] * 0.001;
-      uv[u + 1] = pos[k + 1] * 0.0098 + (x - z) * 0.0006;
+      uv[u] = x * 0.0038;
+      uv[u + 1] = z * 0.0038;
     }
   }
   for (let j = 0; j < nz; j++)
@@ -166,22 +170,22 @@ function mountainMesh(level: LevelAPI, r: Region): void {
     const n1 = fbm2(x * 0.02, z * 0.02, 3, 131);
     const n2 = fbm2(x * 0.07 + y * 0.03, z * 0.07, 2, 132);
     // snow: sits on gentle slopes and everywhere the winter has covered the valleys; steep arêtes stay rock
-    const snowLine = 55 + n1 * 70;
-    const snow = Math.min(1, smoothstep(0.74, 0.95, ny + n2 * 0.2) * 0.95 + (1 - smoothstep(snowLine - 30, snowLine + 40, y)) * 0.6 * smoothstep(0.45, 0.7, ny));
+    const snowLine = 40 + n1 * 50;
+    const snow = Math.min(1, smoothstep(0.7, 0.93, ny + n2 * 0.28) * 0.95 + (1 - smoothstep(snowLine - 30, snowLine + 30, y)) * 0.6 * smoothstep(0.4, 0.65, ny));
     tmp.copy(ROCK).lerp(ROCK_WARM, 0.5 + n2 * 0.5);
     // strata: faint horizontal banding in the rock
     tmp.multiplyScalar(0.86 + 0.14 * Math.sin(y * 0.16 + n1 * 5));
     c.copy(tmp).lerp(SNOW, snow);
     // light: a fake key from the left/camera side so the faces read (the real sun is behind the mountain)
     const lit = Math.max(0, nxn * SUN.x + ny * SUN.y + nzn * SUN.z);
-    const shade = 0.42 + 0.78 * lit;
+    const shade = 0.34 + 0.9 * lit;
     c.multiplyScalar(shade);
     // cool blue shadows
     tmp.copy(SNOW_SHADE).multiplyScalar(0.55);
     c.lerp(tmp, (1 - lit) * 0.22 * (0.4 + snow));
     // aerial perspective: distance, and the cloud/valley haze clinging low on the flanks
     const d = Math.hypot(x, z - 60);
-    const hz = Math.min(0.88, 0.05 + smoothstep(250, 2000, d) * 0.5 + r.hazeBias * 0.6 + (1 - smoothstep(30, 300, y)) * 0.28);
+    const hz = Math.min(0.82, 0.03 + smoothstep(300, 2600, d) * 0.42 + r.hazeBias * 0.42 + (1 - smoothstep(30, 300, y)) * 0.2);
     c.lerp(HAZE, hz);
     // the detail texture averages ~0.8: lift the colours to match
     col[i * 3] = c.r * 1.22;
@@ -286,12 +290,16 @@ export function buildFarGround(level: LevelAPI): void {
     }
     const lit = Math.max(0, nxn * SUN.x + ny * SUN.y + nzn * SUN.z);
     c.multiplyScalar(0.7 + 0.45 * lit);
+    // aerial perspective baked in (the material takes no fog: the scene's snow haze would turn every
+    // forest belt and the river white a few hundred metres out, and the valley is meant to read)
+    const d = Math.hypot(x, z - 60);
+    c.lerp(HAZE, Math.min(0.9, 1 - Math.exp(-Math.pow(d * 0.0016, 2))));
     col[i * 3] = c.r;
     col[i * 3 + 1] = c.g;
     col[i * 3 + 2] = c.b;
   }
   g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, envMapIntensity: 0.6 }));
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1, metalness: 0, envMapIntensity: 0.6, fog: false }));
   m.name = 'rh_far_ground';
   m.castShadow = m.receiveShadow = false;
   m.userData.noAO = true;
@@ -350,16 +358,13 @@ export function buildCloudBanks(level: LevelAPI): void {
     [150, 30, -340, 520, 0.3, 1.9],
     [-210, 42, -270, 420, 0.28, 3.1],
     [40, 58, -500, 760, 0.3, 0.9],
-    // between Ravenhill and the mountain, above the bat ride's ceiling
-    [200, 135, 430, 640, 0.28, 2.6],
-    [-300, 150, 470, 700, 0.26, 1.4],
-    // round Erebor
-    [60, 190, 650, 900, 0.34, 0.8],
-    [340, 260, 750, 800, 0.3, 2.0],
-    [-220, 320, 830, 900, 0.28, 4.0],
+    // (none above the play space: a flat sheet seen from beneath is a grey panel, not a cloud)
     // east and west of the crag, level with the tower's top floor
     [-340, 70, 170, 380, 0.26, 5.2],
     [330, 74, 100, 380, 0.26, 0.5],
+    // the snow country north of the plateau, below the heights the camera flies at
+    [-60, 30, 330, 520, 0.3, 1.1],
+    [180, 34, 520, 640, 0.3, 2.4],
   ];
   const geo = new THREE.PlaneGeometry(1, 1);
   geo.rotateX(-Math.PI / 2);
