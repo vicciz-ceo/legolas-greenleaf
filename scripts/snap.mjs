@@ -34,6 +34,20 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Browser selection (portable): SNAP_CHROME=/path/to/chrome wins; otherwise the cloud container's
+// pre-installed Chromium if present; otherwise Playwright's own (run `npx playwright@1.56.1 install chromium`).
+// SNAP_GPU=1 renders with the real GPU instead of SwiftShader (much faster on a desktop).
+import { existsSync as __exists } from 'node:fs';
+function resolveChrome() {
+  if (process.env.SNAP_CHROME) return process.env.SNAP_CHROME;
+  const cloud = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+  return __exists(cloud) ? cloud : undefined;
+}
+const GL_ARGS = process.env.SNAP_GPU === '1'
+  ? ['--ignore-gpu-blocklist', '--enable-gpu-rasterization']
+  : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const target = args[0] && !args[0].startsWith('--') ? args.shift() : '/';
@@ -56,8 +70,7 @@ const preExpr = opt('pre', null);
 const keys = opt('keys', null);
 const noFail = args.includes('--no-fail');
 
-const CHROME =
-  process.env.SNAP_CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = resolveChrome();
 
 const errors = [];
 const warnings = [];
@@ -76,11 +89,9 @@ try {
   const base = `http://127.0.0.1:${addr.port}`;
 
   browser = await chromium.launch({
-    executablePath: CHROME,
+    ...(CHROME ? { executablePath: CHROME } : {}),
     args: [
-      '--use-angle=swiftshader',
-      '--enable-unsafe-swiftshader',
-      '--ignore-gpu-blocklist',
+      ...GL_ARGS,
       '--autoplay-policy=no-user-gesture-required',
     ],
   });

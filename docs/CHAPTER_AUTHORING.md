@@ -756,9 +756,8 @@ Each entry names the workaround it replaces.
   is 0.3**, everything else 1. Terrain: `TerrainOpts.friction?` (via `level.terrain`) or
   `physics.setTerrain(fn, material, friction?)`. The motor exposes it as `motor.groundFriction`
   and `GroundHit.friction`. Only the player's locomotion honours it (NPCs keep their grip).
-  **Note for ravenhill:** its river colliders are `material: 'ice'`, so they now get the motor's
-  grip **and** the velocity blend of `ravenhill/ice.ts` (both together are slipperier than
-  either). Migrating = delete `installIce` (or keep it and pass `friction: 1` on the colliders).
+  Example: ravenhill's river and floe colliders use `material: 'ice', friction: 0.22` (its old
+  `ravenhill/ice.ts` velocity-blend hack was removed in the finishing pass).
 
 ### FX
 

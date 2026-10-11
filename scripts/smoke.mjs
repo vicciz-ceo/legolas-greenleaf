@@ -21,6 +21,20 @@ import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Browser selection (portable): SNAP_CHROME=/path/to/chrome wins; otherwise the cloud container's
+// pre-installed Chromium if present; otherwise Playwright's own (run `npx playwright@1.56.1 install chromium`).
+// SNAP_GPU=1 renders with the real GPU instead of SwiftShader (much faster on a desktop).
+import { existsSync as __exists } from 'node:fs';
+function resolveChrome() {
+  if (process.env.SNAP_CHROME) return process.env.SNAP_CHROME;
+  const cloud = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+  return __exists(cloud) ? cloud : undefined;
+}
+const GL_ARGS = process.env.SNAP_GPU === '1'
+  ? ['--ignore-gpu-blocklist', '--enable-gpu-rasterization']
+  : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
+
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const opt = (name, def) => {
@@ -39,7 +53,7 @@ const REUSE = args.includes('--reuse');
 const READY_TIMEOUT = Number(opt('timeout', 300000));
 // screenshots under SwiftShader on a loaded machine can take minutes; never let Playwright's 30 s default fail a run
 const SHOT_TIMEOUT = Number(opt('shot-timeout', 180000));
-const CHROME = process.env.SNAP_CHROME || '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
+const CHROME = resolveChrome();
 const shotDir = resolve(root, 'shots/smoke');
 mkdirSync(shotDir, { recursive: true });
 
@@ -171,8 +185,8 @@ try {
   await server.listen();
   const base = `http://127.0.0.1:${server.httpServer.address().port}`;
   browser = await chromium.launch({
-    executablePath: CHROME,
-    args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'],
+    ...(CHROME ? { executablePath: CHROME } : {}),
+    args: [...GL_ARGS, '--autoplay-policy=no-user-gesture-required'],
   });
 
   // chapter list from the game itself
