@@ -180,8 +180,11 @@ export const sstep = (a: number, b: number, v: number) => {
 export class Field {
   readonly res: number;
   readonly data: Float32Array;
+  /** res - 1 when res is a power of two (fast wrap), else -1 */
+  private readonly mask: number;
   constructor(res: number, fn: (u: number, v: number) => number) {
     this.res = res;
+    this.mask = (res & (res - 1)) === 0 ? res - 1 : -1;
     this.data = new Float32Array(res * res);
     const inv = 1 / res;
     for (let y = 0; y < res; y++) for (let x = 0; x < res; x++) this.data[y * res + x] = fn((x + 0.5) * inv, (y + 0.5) * inv);
@@ -197,8 +200,14 @@ export class Field {
     let fy = y - y0;
     fx = fx * fx * (3 - 2 * fx);
     fy = fy * fy * (3 - 2 * fy);
-    x0 = ((x0 % res) + res) % res;
-    y0 = ((y0 % res) + res) % res;
+    const m = this.mask;
+    if (m >= 0) {
+      x0 &= m;
+      y0 &= m;
+    } else {
+      x0 = ((x0 % res) + res) % res;
+      y0 = ((y0 % res) + res) % res;
+    }
     const x1 = x0 + 1 === res ? 0 : x0 + 1;
     const y1 = y0 + 1 === res ? 0 : y0 + 1;
     const d = this.data;

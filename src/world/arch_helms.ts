@@ -127,7 +127,7 @@ export function stoneWall(points: PathPoint[], height: number, thickness: number
         const mzp = a.z + dz * t + nz * po;
         const my = a.y + (b.y - a.y) * t + height + parapetH + 0.45;
         const mh = 0.95 + rng.float() * 0.06;
-        kit.box(stone, [mw, mh, pt + 0.06], [mxp, my + (mh - 0.9) / 2 - 0.0, mzp], yaw, { tile: 2 });
+        kit.box(stone, [mw, mh, pt + 0.06], [mxp, my + (mh - 0.9) / 2 - 0.0, mzp], yaw, { tile: 3 });
         kit.box(trim, [mw + 0.1, 0.12, pt + 0.14], [mxp, my + mh / 2 + 0.05, mzp], yaw, { tile: 2 });
         colliders.push({ kind: 'box', center: [mxp, my, mzp], half: [mw / 2, mh / 2, pt / 2], yaw, opts: { material: 'stone', walkable: false, tag: 'merlon' } });
       }
@@ -308,13 +308,13 @@ export function tower(radius: number, height: number, o: TowerOpts = {}): Built 
         const side = Math.floor(d / (radius * 2));
         const t = (d % (radius * 2)) - radius;
         const pos: [number, number] = side === 0 ? [t, radius] : side === 1 ? [radius, -t] : side === 2 ? [-t, -radius] : [-radius, t];
-        kit.box(stone, [1.2, 1.1, 0.6], [pos[0], height + 0.55, pos[1]], side % 2 ? Math.PI / 2 : 0, { tile: 2 });
+        kit.box(stone, [1.2, 1.1, 0.6], [pos[0], height + 0.55, pos[1]], side % 2 ? Math.PI / 2 : 0, { tile: 3 });
         colliders.push({ kind: 'box', center: [pos[0], height + 0.55, pos[1]], half: [side % 2 ? 0.3 : 0.6, 0.55, side % 2 ? 0.6 : 0.3], opts: { walkable: false, material: 'stone', tag: 'merlon' } });
       } else {
         const a = (i / n) * Math.PI * 2;
         const x = Math.cos(a) * (radius + 0.2);
         const z = Math.sin(a) * (radius + 0.2);
-        kit.box(stone, [0.7, 1.1, 1.2], [x, height + 0.55, z], -a, { tile: 2 });
+        kit.box(stone, [0.7, 1.1, 1.2], [x, height + 0.55, z], -a, { tile: 3 });
         colliders.push({ kind: 'box', center: [x, height + 0.55, z], half: [0.35, 0.55, 0.6], yaw: -a, opts: { walkable: false, material: 'stone', tag: 'merlon' } });
       }
     }

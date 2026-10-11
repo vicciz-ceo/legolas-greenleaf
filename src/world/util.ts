@@ -141,7 +141,16 @@ export class MeshKit {
     const px = Array.isArray(pos) ? pos[0] : pos.x;
     const py = Array.isArray(pos) ? pos[1] : pos.y;
     const pz = Array.isArray(pos) ? pos[2] : pos.z;
-    const o = uv ? { ...uv, offset: uv.offset ?? hashOffset(px, py, pz) } : undefined;
+    // default offset: random along the face, but world-aligned vertically (v = height / tile), so the
+    // courses of stacked and neighbouring pieces line up instead of every panel showing its own seam
+    let o: PieceUV | undefined;
+    if (uv) {
+      if (uv.offset) o = uv;
+      else {
+        const h = hashOffset(px, py, pz);
+        o = { ...uv, offset: [h[0], uv.tile ? fract(py / uv.tile) : h[1]] };
+      }
+    }
     _e.set(tilt?.[0] ?? 0, yaw, tilt?.[1] ?? 0, 'YXZ');
     _q.setFromEuler(_e);
     _m.compose(_p.set(px, py, pz), _q, _s);
@@ -201,6 +210,8 @@ export class MeshKit {
 }
 
 /** deterministic small UV offset from a position so repeated pieces do not tile identically */
+const fract = (v: number) => v - Math.floor(v);
+
 export function hashOffset(x: number, y: number, z: number): [number, number] {
   const h = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
   const f = h - Math.floor(h);

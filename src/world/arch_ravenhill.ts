@@ -79,7 +79,7 @@ export function ruinedWatchtower(o: TowerRuinOpts = {}): TowerRuinResult {
       if (isWin) continue;
       const off = (rng.float() - 0.5) * 0.12;
       const rr = R + off;
-      kit.box(stone, [T + (rng.float() - 0.5) * 0.12, bh + 0.02, chord * 1.04], [Math.cos(a) * rr, yc, Math.sin(a) * rr], -a, { tile: 3 }, [0, (rng.float() - 0.5) * 0.02]);
+      kit.box(stone, [T + (rng.float() - 0.5) * 0.12, bh + 0.02, chord * 1.04], [Math.cos(a) * rr, yc, Math.sin(a) * rr], -a, { tile: 3, offset: [(a * R) / 3, yc / 3] }, [0, (rng.float() - 0.5) * 0.02]);
     }
     // jagged top: a few loose blocks
     if (h < H - 1 && rng.chance(0.6)) {
