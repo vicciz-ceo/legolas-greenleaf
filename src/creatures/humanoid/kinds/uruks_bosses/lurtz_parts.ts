@@ -7,7 +7,7 @@ import * as THREE from 'three';
 import type { KindContext } from '../../types';
 import { anatomyParts, emitParts } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
-import { V, placeAlong, rivet, ringSnap, spike, type GearFn, type Projector } from './common';
+import { V, placeAlong, rivet, ringSnap, spike, ribbon, type GearFn, type Projector } from './common';
 import { kiltEnvelope, kiltPanel } from './bolg_kilt';
 
 export const LURTZ_PAL = {
@@ -21,13 +21,13 @@ export const LURTZ_PAL = {
   hair: 0x1b1714, // details hair sample #1b1714 (lit), design #24211b: near-black at root and tip
   eyes: 0xb88c39, // design iris #b88c39
   kilt: 0x1f1d1e, // design #302a25 (lit #463e3a): near-black charcoal
-  kilt2: 0x151415,
+  kilt2: 0x4a3426, // hem grime: rust-brown
   flap: 0x1a130e, // the central flap and the belt hangers: grimy brown. 0x4a3322 rendered (113,92,79) and 0x241911 on leather_worn (82,74,69) against the sheet's (35,31,29): leather lifts dark colours, so they are cloth now
-  belt: 0x1a110b, // design #4d3a2b (lit #463933)
+  belt: 0x241810, // design #4d3a2b (lit #463933)
   beltDark: 0x120b07,
-  leather: 0x1e1814, // bracers: near-black leather, sheet reads #3a312e lit
+  leather: 0x2a211c, // bracers: near-black leather, sheet reads #3a312e lit
   leatherDark: 0x120e0b,
-  wrap: 0x1c150f, // foot wraps design #40352b (lit #40362f) (0x2e241c rendered ~35 RGB lighter than the sheet's boots)
+  wrap: 0x30251c, // foot wraps design #40352b (lit #40362f) (0x2e241c rendered ~35 RGB lighter than the sheet's boots)
   wrap2: 0x140f0a,
   iron: 0x3a352e, // blackened iron (shield #302e28, bracer fittings #6b6657 lit)
   ironLt: 0x5a554b,
@@ -127,12 +127,15 @@ export function lurtzBelt(ctx: KindContext, parts: ReturnType<typeof anatomyPart
   }
 }
 
+/** boot height as a fraction of knee-above-ankle: shared by the outfit layer and the wrap bands */
+export const LURTZ_BOOT_LENGTH = 0.7;
+
 /** raised binding bands over the boots (sheet: layered cloth/leather wraps from the ankle to
  *  ≈ 0.44 m on a 2.1 m figure; the calf is bare above and below the kilt hem) */
 export function lurtzBootWraps(ctx: KindContext, parts: ReturnType<typeof anatomyParts>) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  const bootTop = P.ankleH + (P.j.shin_l[1] - P.ankleH) * 0.7; // the 'boots' outfit layer (length 0.7)
+  const bootTop = P.ankleH + (P.j.shin_l[1] - P.ankleH) * LURTZ_BOOT_LENGTH; // the 'boots' outfit layer (LURTZ_BOOT_LENGTH)
   const n = 5;
   const y0 = P.ankleH + 0.025 * sc;
   const step = (bootTop - 0.02 * sc - y0) / n;
@@ -162,7 +165,8 @@ export function lurtzBeltHangers(ctx: KindContext, gear: GearFn) {
   }
 }
 
-/** a flat dark sole slab under each boot (sheet: the boot sits on a thin sole, the foot reads flat) */
+/** a long, tapered dark sole under each boot (≈ 25 % longer than the outfit's own, thinner and
+ *  centred 6 mm lower so the two never share a surface) */
 export function lurtzSoles(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
@@ -170,7 +174,7 @@ export function lurtzSoles(ctx: KindContext) {
   s.mirrored(() => {
     const f = j.foot_l;
     const toe = j.toe_l;
-    s.box([f[0] + 0.004 * sc, 0.011 * sc, (f[2] + toe[2]) / 2 + 0.018 * sc], [0.058 * sc * P.build.footSize, 0.012 * sc, P.footLen * 0.55], 0.007 * sc, { color: 0x1c1712, mat: LEATHER_DK, bone: 'foot_l', bone2: 'toe_l', blendAxis: [[0, 0, f[2]], [0, 0, toe[2] + 0.02 * sc]], blend: [0.5, 0.8], k: 0.005 * sc });
+    s.ellipsoid([f[0] + 0.004 * sc, 0.007 * sc, (f[2] + toe[2]) / 2 + 0.05 * sc], [0.05 * sc * P.build.footSize, 0.0075 * sc, P.footLen * 0.7], { color: 0x1c1712, mat: LEATHER_DK, bone: 'foot_l', bone2: 'toe_l', blendAxis: [[0, 0, f[2]], [0, 0, toe[2] + 0.02 * sc]], blend: [0.5, 0.8], k: 0.004 * sc });
   });
 }
 
@@ -178,9 +182,34 @@ export function lurtzSoles(ctx: KindContext) {
 export function lurtzFangs(ctx: KindContext, gear: GearFn) {
   const { P } = ctx;
   const u = P.headH;
-  for (const [sx, len, r] of [[1, 0.1, 0.017], [-1, 0.068, 0.014]] as [number, number, number][]) {
+  for (const [sx, len, r] of [[1, 0.17, 0.027], [-1, 0.12, 0.022]] as [number, number, number][]) {
     const base = V(...P.h(0.07 * sx, -0.425, 0.385));
     const dir = V(0.02 * sx, 1, 0.25).normalize();
-    gear(spike(r * u, len * u, 5, 0.01), { bone: 'jaw', color: 0xd8c890, mat: surface('bone', { rough: 0.45 }), matrix: placeAlong(base, dir, V(0, 0, 1)), small: true });
+    gear(spike(r * u, len * u, 5, 0.01), { bone: 'jaw', color: 0xd0b878, mat: surface('bone', { rough: 0.45 }), matrix: placeAlong(base, dir, V(0, 0, 1)), small: true });
+  }
+}
+
+/** chunky black locks (sheet: a big loose mane that frames the face, covers the neck and falls past the
+ *  shoulders): three per side from ear height to the chest, (the back mass was removed: it cut skyline-shaped holes through the shield on the back) */
+export function lurtzHairLocks(ctx: KindContext, gear: GearFn) {
+  const { P } = ctx;
+  const sc = P.s;
+  const j = P.j;
+  const mat = surface('rags', { rough: 0.7, sheen: 0.45 });
+  const lock = (pts: THREE.Vector3[], nrm: THREE.Vector3, w0: number, w1: number, bone: string) => {
+    gear(ribbon(pts, pts.map(() => nrm.clone()), (t) => w0 + (w1 - w0) * t, 0.007 * sc, 1, { outerOnly: true, noInner: true }, 14), { bone, color: LURTZ_PAL.hair, mat, small: true });
+  };
+  const chestY = j.chest[1];
+  for (const sx of [1, -1]) {
+    for (let k = 0; k < 3; k++) {
+      const q = (x: number, y: number, z: number) => V(...P.h(sx * x, y, z));
+      const pts = [
+        q(0.3 + 0.02 * k, 0.14 - 0.05 * k, -0.04 - 0.05 * k),
+        q(0.36 + 0.02 * k, -0.18, -0.1 - 0.05 * k),
+        V(sx * (0.15 + 0.03 * k) * sc, j.neck[1] - 0.1 * sc, (0.01 - 0.03 * k) * sc),
+        V(sx * (0.19 + 0.03 * k) * sc, chestY - 0.02 * sc - 0.05 * k * sc, (0.05 - 0.02 * k) * sc),
+      ];
+      lock(pts, V(sx * 0.6, 0, 0.8).normalize(), 0.06 * sc, 0.03 * sc, 'head');
+    }
   }
 }
