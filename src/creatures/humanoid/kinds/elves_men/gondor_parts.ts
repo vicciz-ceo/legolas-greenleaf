@@ -8,9 +8,9 @@ import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { cloakGeometry } from '../../cloth';
 import { anatomyParts, emitParts } from '../../anatomy';
 import type { KindContext } from '../../types';
-import { attachSkinned } from './common';
+import { attachSkinned, hairMaterial } from './common';
 import { slab } from './garments';
-import { along, leaf, mergeAll, put, taperedTube } from './geo';
+import { mergeAll, put, taperedTube, torsoSection } from './geo';
 
 /**
  * The kit's cloak sheet, widened towards the hem (an A-line cloak that falls clear of the legs)
@@ -33,6 +33,11 @@ export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: nu
     const e = f * f * (3 - 2 * f);
     pos.setX(i, pos.getX(i) * (1 + o.flareX * e));
     pos.setZ(i, zc + (pos.getZ(i) - zc) * (1 + o.flareZ * e));
+    // long soft folds that deepen towards the hem
+    const ang = Math.atan2(pos.getX(i), pos.getZ(i) - zc);
+    const fold = Math.sin(ang * 8) * 0.02 * sc * e;
+    pos.setX(i, pos.getX(i) + Math.sin(ang) * fold);
+    pos.setZ(i, pos.getZ(i) + Math.cos(ang) * fold);
   }
   geo.computeVertexNormals();
   attachSkinned(ctx, geo, 'body', { small: false, name: 'cloak' });
@@ -98,23 +103,88 @@ export function medallion(ctx: KindContext, o: { y: number; z: number; r: number
 }
 
 /**
- * The Minas Tirith helm's two tall feathered wings (sheet: slender, standing nearly upright and
- * a little back from above the temples, ~0.25 m over the crown), as three overlapping feathers each.
- * The shared helm's own wings are turned down to a stub (`wing: 0.02`) when these are used.
+ * The White Tree of Gondor as tapered capsules (a trunk, roots and a fan of branches with twigs)
+ * laid on the front of the torso at height `cy`; `h` is the tree's height, `thin` scales the stroke radius.
+ */
+export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number; thin: number }) {
+  const { P } = ctx;
+  const h = o.h;
+  const base = o.cy - h * 0.5;
+  const surf = (x: number, y: number): V3 => {
+    const sec = torsoSection(P, y);
+    const z0 = (sec.zf + sec.zb) / 2;
+    const rz = (sec.zf - sec.zb) / 2;
+    const fx = Math.min(0.96, Math.abs(x) / sec.rx);
+    return [x, y, z0 + rz * Math.sqrt(1 - fx * fx) + o.inflate];
+  };
+  const r = (v: number) => v * h * 0.1 * o.thin;
+  const geos: THREE.BufferGeometry[] = [];
+  const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length * 2, radial: 4 }));
+  // trunk and roots
+  stroke([[0, base + 0.03 * h], [0, base + 0.2 * h], [0, base + 0.42 * h]], 0.2, 0.1);
+  for (const sx of [-1, 1]) stroke([[sx * 0.01 * h, base + 0.07 * h], [sx * 0.07 * h, base + 0.03 * h], [sx * 0.16 * h, base - 0.005 * h]], 0.12, 0.04);
+  stroke([[0, base + 0.06 * h], [0, base + 0.01 * h], [0, base - 0.02 * h]], 0.1, 0.04);
+  // branches: seven fanned from the top of the trunk
+  const fan = [-1.18, -0.82, -0.46, 0, 0.46, 0.82, 1.18];
+  fan.forEach((a, k) => {
+    const sx = Math.sin(a);
+    const cx = Math.cos(a);
+    const ys = base + (0.34 + 0.05 * Math.abs(a)) * h;
+    const L = h * (0.5 - 0.09 * Math.abs(a));
+    const mid: [number, number] = [sx * L * 0.5 * 0.95, ys + cx * L * 0.5];
+    const tip: [number, number] = [sx * L * 0.95, ys + cx * L];
+    stroke([[sx * 0.02 * h, ys], mid, tip], 0.1, 0.035);
+    if (k % 2 === 0 || Math.abs(a) < 0.5) {
+      // a twig either side near the tip
+      for (const t of [-1, 1]) stroke([mid, [mid[0] + (sx + t * 0.7) * L * 0.2, mid[1] + (cx + t * 0.1) * L * 0.22]], 0.05, 0.02);
+    }
+  });
+  put(ctx, mergeAll(geos), { bone: 'chest', color: o.color, mat: o.mat, small: true });
+}
+
+/**
+ * The Minas Tirith helm's two tall feathered wings: five flattened-ellipsoid feathers per side, fanned
+ * ~9 degrees apart and splayed ~17 degrees outward from the wing-root plates above the temples
+ * (head-unit x = ±0.325), about 0.22 m tall; their tips stay apart. The shared helm's own wings are
+ * turned down to a stub (`wing: 0.02`) when these are used.
  */
 export function helmWings(ctx: KindContext, o: { color: number; mat: SurfaceName | SurfaceSpec }) {
   const { P } = ctx;
   const u = P.headH;
-  const feather = leaf(1, 0.17, { droop: 0.1, cup: 0.15, rows: 5, rib: 0.1, pointy: 1.3 });
   const geos: THREE.BufferGeometry[] = [];
+  const splay = 0.3;
   for (const sx of [1, -1]) {
-    const base = P.h(sx * 0.4, 0.08, 0.0);
-    for (let k = 0; k < 2; k++) {
-      const len = (1.35 - 0.3 * k) * u;
-      const dir: V3 = [sx * (0.18 + 0.14 * k), 1.0 - 0.08 * k, -0.2 - 0.12 * k];
-      const m = along([base[0] + sx * 0.03 * u * k, base[1] - 0.05 * u * k, base[2]], dir, [sx, 0.1, 0.12], 1);
-      geos.push(feather.clone().scale(u, len, 1).applyMatrix4(m));
+    const root = P.h(sx * 0.325, 0.08, 0.02);
+    for (let k = 0; k < 5; k++) {
+      const phi = (k - 2) * 0.16 - 0.1;
+      const up = new THREE.Vector3(0, Math.cos(phi), Math.sin(phi));
+      const dir = new THREE.Vector3(sx * Math.sin(splay) * up.y, Math.cos(splay) * up.y, up.z).normalize();
+      const L = (1.3 - 0.07 * Math.abs(k - 2)) * u;
+      const n = new THREE.Vector3(sx, 0, 0).addScaledVector(dir, -sx * dir.x).normalize();
+      const w = new THREE.Vector3().crossVectors(dir, n).normalize();
+      const m = new THREE.Matrix4().makeBasis(n.clone().multiplyScalar(0.012 * u), dir.clone().multiplyScalar(L / 2), w.clone().multiplyScalar(0.19 * u));
+      m.setPosition(root[0] + dir.x * L * 0.45, root[1] + dir.y * L * 0.45, root[2] + dir.z * L * 0.45);
+      geos.push(new THREE.SphereGeometry(1, 6, 4).applyMatrix4(m));
     }
   }
   put(ctx, mergeAll(geos), { bone: 'head', color: o.color, mat: o.mat, small: true });
 }
+
+/**
+ * The kit's hair material for exactly this hair colour, matted down: the stock Kajiya-Kay highlight and
+ * sheen read as pale blond streaks and gloss on dark hair under sky light. The material is cached per
+ * colour (common.hairMaterial), so use a colour no other kind shares.
+ */
+export function matteHair(color: number): THREE.MeshPhysicalMaterial {
+  const m = hairMaterial(color);
+  const u = m.userData.hairUniforms as { hairSpec: { value: number }; hairHighlight: { value: THREE.Vector3 } } | undefined;
+  m.roughness = 0.88;
+  m.specularIntensity = 0.04;
+  m.sheen = 0.05;
+  if (u) {
+    u.hairSpec.value = 0.12;
+    u.hairHighlight.value.set(0.3, 0.19, 0.11);
+  }
+  return m;
+}
+

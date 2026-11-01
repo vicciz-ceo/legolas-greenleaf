@@ -187,6 +187,7 @@ export function resolveKind(kind: HumanoidKind): ResolvedKind {
       refine: def.detail?.refine,
       hands: def.detail?.hands,
     },
+    bucketDetail: def.bucketDetail,
     extras: extras as ResolvedKind['extras'],
   };
   resolved.set(kind, r);

@@ -58,6 +58,7 @@ Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dress
 | `anim` | `hunch swagger aggression stance armSwing cadence grace` — posture and gait character |
 | `variation` | `height bulk skin` (± fractions) across the ≤4 seed buckets (bucket 0 is canonical) |
 | `detail` | `res headRes faceRes detailScale refine hands` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region, fine ear and hand regions and two seam-refinement levels; crowds leave it unset (one refinement level, ≤ ~12k tris). Named NPCs take a face region within ~45k with `faceRes ≈ 0.0056, refine: 1, hands: false` (Tauriel, Thranduil, Aragorn, Gimli) |
+| `bucketDetail` | `{ 0: {faceRes, refine, hands, …}, … }` overrides `detail` for one seed bucket (bucket 0 = canonical): a named captain inside a crowd kind (Boromir in `gondor`) gets a hero face region while buckets 1-3 stay crowd cost. |
 | `extras(ctx)` | your hook: add sculpt primitives and attachments (below) |
 
 How clothing works: garments re-emit the body's anatomy parts slightly inflated with their own

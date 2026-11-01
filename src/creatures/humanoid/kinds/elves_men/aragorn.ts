@@ -13,17 +13,18 @@ import { skirtGeometry } from '../../cloth';
 import { anatomyParts, emitParts } from '../../anatomy';
 import type { KindContext, KindDef } from '../../types';
 import { attachSkinned, devNum, devSkip, withHair } from './common';
-import { laceFront, sheathed } from './detail';
-import { put, ring, studs, torsoSection } from './geo';
+import { sheathed } from './detail';
+import { put, ring, studs, taperedTube, torsoSection, tube } from './geo';
 import { addHair, noKitHair, paintStubble, sculptBeard } from './hair';
+import { matteHair } from './gondor_parts';
 import { sculptBand, sculptTorso } from './garments';
 import { limbGuards } from './armor';
 
 // sRGB design colours from docs/refs/aragorn/spec.json (outfit_layers, armor, hair, face), corrected
 // against the turnaround's lit samples (observed.samples) for how the lab / AgX render albedos
 const PAL = {
-  hair: 0x36251b, // sheet root #30261f → tip #49372b; the turnaround's curls read chestnut (lit #37251e), a touch lighter than the root
-  hairTip: 0x4b3425,
+  hair: 0x38271c, // sheet root #30261f → tip #49372b; the turnaround's curls read chestnut (lit #37251e), a touch lighter than the root
+  hairTip: 0x3d2a1e, // tips ≈ root: the kit's tip lerp otherwise shows pale streaks under the sky light
   // a weathered, sun-browned face: deeper and warmer than the sheet's #b98e73 (that albedo renders pink-clay)
   skin: 0xa4704f,
   skin2: 0x8c5b40,
@@ -36,9 +37,9 @@ const PAL = {
   shirt: 0x3a3836, // observed #3c3837 dark charcoal
   jerkin: 0x5c3b2b, // reddish-brown stitched vest (observed #452e22 in shade)
   jerkinTrim: 0x3e281c,
-  coat: 0x4c4a3d, // faded green-grey wool; sheet #565b4b is greener than the turnaround (observed #665c4b)
-  coatTrim: 0x3d3b2f,
-  coatFray: 0x7f7050, // frayed tan cord along the hems and lapels
+  coat: 0x58563f, // faded green-grey wool; sheet #565b4b is greener than the turnaround (observed #665c4b)
+  coatTrim: 0x4d4b36,
+  coatFray: 0x6c6a4b, // frayed cord along the hems and lapels: only a little lighter than the coat
   bracers: 0x5d4231, // tooled brown leather (the sheet's bracers are brown, not black; observed #67534e)
   bracersTrim: 0x3a291d,
   belt: 0x4a3322,
@@ -58,6 +59,59 @@ const LINEN = surface('linen', { rough: 0.9, sheen: 0.12 });
 /** coat hem height (m; sheet: front ~0.5, back ~0.52) */
 const COAT_HEM = 0.5;
 
+/** extra locks of dark wavy hair (rigid, on the chest bone) that lengthen the kit's shoulder-length hair */
+function hairLocks(ctx: KindContext) {
+  const { P } = ctx;
+  const sc = P.s;
+  const ny = P.j.neck[1];
+  const rng = new Rng(hashSeed('aragorn', 'locks'));
+  const mat = surface('hair', { rough: 0.82, sheen: 0.1 });
+  const sec = (y: number) => torsoSection(P, Math.min(y, ny - 0.01 * sc));
+  const top = ny + 0.035 * sc;
+  const list: { geo: THREE.BufferGeometry; color: number }[] = [];
+  const lock = (x0: number, x1: number, y1: number, zOut: number, back: boolean, phase: number) => {
+    const pts: V3[] = [];
+    const n = 8;
+    const wave = (0.011 + 0.004 * rng.float()) * sc;
+    for (let i = 0; i <= n; i++) {
+      const f = i / n;
+      const y = top + (y1 - top) * f;
+      const t = sec(y);
+      const z = back ? t.zb - zOut * sc : t.zf + zOut * sc;
+      const x = x0 + (x1 - x0) * f + Math.sin(f * 9 + phase) * wave * f;
+      pts.push([x, y, z + Math.cos(f * 7 + phase) * 0.006 * sc * f]);
+    }
+    // a lock swells out of the hair above and tapers to a tip: two tapered halves
+    const color = mix3(0x3a281c, 0x4f3625, rng.float());
+    list.push({ geo: taperedTube(pts.slice(0, 4), 0.006 * sc, 0.0125 * sc, { seg: 6, radial: 5 }), color });
+    list.push({ geo: taperedTube(pts.slice(3), 0.0125 * sc, 0.0025 * sc, { seg: 10, radial: 5 }), color });
+  };
+  // behind the shoulders: a fan of locks to the shoulder blades
+  for (let k = 0; k < 9; k++) {
+    const f = k / 8;
+    lock(-0.1 * sc + 0.2 * sc * f, -0.095 * sc + 0.19 * sc * f + (rng.float() - 0.5) * 0.02 * sc, ny - (0.2 + 0.05 * rng.float()) * sc, 0.034, true, k * 1.7);
+  }
+  // in front of the shoulders, over the coat lapels
+  for (const sx of [1, -1]) {
+    for (let k = 0; k < 3; k++) {
+      const x0 = sx * (0.1 + 0.012 * k) * sc;
+      lock(x0, sx * (0.108 + 0.013 * k) * sc, ny - (0.19 + 0.04 * k) * sc, 0.03 + 0.004 * k, false, k * 2.3 + sx);
+    }
+  }
+  // a dark mass of hair filling the gap between the kit's hair and the locks (back of the neck and shoulders)
+  {
+    const t = sec(ny - 0.05 * sc);
+    const geo = new THREE.SphereGeometry(1, 10, 6).scale(0.105 * sc, 0.12 * sc, 0.03 * sc).translate(0, ny - 0.02 * sc, t.zb - 0.026 * sc);
+    put(ctx, geo, { bone: 'chest', color: 0x3a281c, mat, small: true });
+  }
+  for (const l of list) put(ctx, l.geo, { bone: 'chest', color: l.color, mat, small: true });
+}
+
+function mix3(a: number, b: number, t: number): number {
+  const c = new THREE.Color().setHex(a, THREE.SRGBColorSpace).lerp(new THREE.Color().setHex(b, THREE.SRGBColorSpace), t);
+  return c.getHex(THREE.SRGBColorSpace);
+}
+
 function aragornExtras(ctx: KindContext) {
   const { P, sculpt: s, rig, spec } = ctx;
   const sc = P.s;
@@ -70,13 +124,14 @@ function aragornExtras(ctx: KindContext) {
   const parts = anatomyParts(P);
   const beltY = hipY + 0.07 * sc;
 
-  // hair
+  // hair: the kit's wavy shoulder-length style (centre part, curls; at length 1.0 no lock falls over the eyes),
+  // then extra dark locks of our own that carry it down behind and in front of the shoulders to mid-chest
+  // (the sheet's hair ends at ~1.28 m)
   withHair(ctx, () => {
-    // long, dark chestnut hair falling past the shoulders to mid-chest (sheet: ends ~1.28 m). The kit's
-    // curlier styles ('shoulder', 'long_wavy') drop front locks across the eyes once they are long, so the
-    // length comes from 'long_straight'; the curls are a known gap
-    if (!devSkip('hair')) addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: devNum('hairlen', 1.0), density: devNum('density', 0.85), braids: 'none' }, rng: new Rng(hashSeed('aragorn', 'hair')), backClear: 1.12 });
+    if (!devSkip('hair')) addHair(ctx, { hair: { style: 'shoulder', color: PAL.hair, tipColor: PAL.hairTip, length: devNum('hairlen', 0.95), density: devNum('density', 0.7), braids: 'none' }, rng: new Rng(hashSeed('aragorn', 'hair')), backClear: 1.12 });
   });
+  matteHair(PAL.hair);
+  if (!devSkip('hair')) hairLocks(ctx);
 
   // short trimmed beard and stubble (sculpted hair volume + skin shadow); the mouth stays clear
   paintStubble(ctx, { color: 0x2a1d15, paint: 0.6, cheeks: 0.9 });
@@ -101,7 +156,7 @@ function aragornExtras(ctx: KindContext) {
       const y = ny + 0.015 * sc - f * (ny - cy + 0.2 * sc);
       lap.push([0.052 * sc + f * 0.085 * sc, y, zAt(y) - 0.004 * sc]);
     }
-    s.mirrored(() => s.tube(lap, lap.map(() => 0.0125 * sc), { color: PAL.coatFray, color2: PAL.coat, colorNoise: 0.6, colorFreq: 60 / sc, mat: COAT, bone: 'chest', k: 0.006 * sc }));
+    s.mirrored(() => s.tube(lap, lap.map(() => 0.0125 * sc), { color: PAL.coatFray, color2: PAL.coat, colorNoise: 0.5, colorFreq: 60 / sc, mat: COAT, bone: 'chest', k: 0.006 * sc }));
     s.group('union', 0.01 * sc, () => {
       s.ellipsoid([0, ny + 0.012 * sc, -0.05 * sc], [0.1 * sc * g, 0.05 * sc, 0.06 * sc], { color: PAL.coat, mat: COAT, bone: 'chest', k: 0.02 * sc });
       s.ellipsoid([0, ny + 0.03 * sc, 0.0], [0.068 * sc * P.build.neckThick, 0.14 * sc, 0.088 * sc], { op: 'subtract', k: 0.014 * sc });
@@ -133,8 +188,18 @@ function aragornExtras(ctx: KindContext) {
   // tooled brown leather bracers over the sleeves
   limbGuards(ctx, { kind: 'vambrace', color: PAL.bracers, trim: PAL.bracersTrim, mat: TOOLED, trimMat: LEATHER, length: 0.52, grow: 0.0125 * sc });
 
-  // ── the vest: laced down the front ──
-  laceFront(ctx, { y0: beltY + 0.03 * sc, y1: cy + 0.1 * sc, inflate: 0.0105 * sc, color: 0x2a1c13, rows: 5, spread: 0.034, mat: LEATHER });
+  // ── the vest: five light-brown lace bars through eyelets down the front (above the jerkin's 0.014 inflate) ──
+  {
+    const zl = (y: number) => torsoSection(P, y).zf + 0.0178 * sc;
+    const eyes: V3[] = [];
+    for (let i = 0; i < 5; i++) {
+      const y = cy + 0.09 * sc - (i * (cy + 0.09 * sc - beltY - 0.02 * sc)) / 4;
+      const w = 0.03 * sc;
+      put(ctx, tube([[-w, y + 0.002 * sc, zl(y)], [0, y - 0.0015 * sc, zl(y) + 0.004 * sc], [w, y + 0.002 * sc, zl(y)]], 0.0046 * sc, { seg: 5, radial: 4 }), { bone: 'chest', color: 0xb8935f, mat: LEATHER, small: true });
+      eyes.push([-w, y + 0.002 * sc, zl(y)], [w, y + 0.002 * sc, zl(y)]);
+    }
+    put(ctx, studs(eyes, 0.0048 * sc, 0.6), { bone: 'chest', color: 0x7e7a72, mat: 'metal', small: true });
+  }
 
   // ── belt hardware, pouches and the scabbard ──
   const zf = 0.108 * sc * P.build.bulk * (1 + P.build.belly * 0.4) + 0.034 * sc;
