@@ -29,7 +29,8 @@
  *   node scripts/snap.mjs "/lab/?subject=spider&view=quad&anim=walk&t=0.35" --out shots/spider-quad.png
  *   node scripts/snap.mjs "/lab/?view=sheet&category=enemy" --size 1600x1000 --out shots/enemies.png
  *
- * Test hooks: window.__snapReady, window.__lab = { subjects, pose(anim, t), render() }.
+ * Test hooks: window.__snapReady, window.__lab = { subjects, pose(anim, t), render(), tris } (`tris` = visible
+ * triangles now, after pose() and LOD selection; the info line shows it next to the built total).
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -230,6 +231,19 @@ async function build(s: LabSubject): Promise<Built> {
     }
   });
   return { subject: s, inst, holder, ms, tris };
+}
+
+/** triangles of the meshes that are visible right now (LOD swaps, hidden hair/extras, instanced counts) */
+function visibleTris(root: THREE.Object3D): number {
+  let n = 0;
+  root.traverseVisible((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || !m.geometry || m.layers.mask === 0) return;
+    const g = m.geometry as THREE.BufferGeometry;
+    const t = g.index ? g.index.count / 3 : (g.attributes.position?.count ?? 0) / 3;
+    n += (m as THREE.InstancedMesh).isInstancedMesh ? t * (m as THREE.InstancedMesh).count : t;
+  });
+  return Math.round(n);
 }
 
 function applyWire(root: THREE.Object3D) {
@@ -444,14 +458,15 @@ async function main() {
   scene.add(pole);
   if (view === 'turn') pole.visible = false; // the sheets have a side scale, not a pole in frame
 
-  const info = `${subject.name}  ${Math.round(b.tris).toLocaleString()} tris  build ${b.ms.toFixed(0)} ms  size ${f0.size.x.toFixed(2)}×${f0.size.y.toFixed(2)}×${f0.size.z.toFixed(2)} m`;
+  const vis = visibleTris(b.holder);
+  const info = `${subject.name}  ${vis.toLocaleString()} tris (visible) / ${Math.round(b.tris).toLocaleString()} built  build ${b.ms.toFixed(0)} ms  size ${f0.size.x.toFixed(2)}×${f0.size.y.toFixed(2)}×${f0.size.z.toFixed(2)} m`;
   const pose = (a: string, t: number) => b.inst.pose?.(a, t);
 
   if (view === 'turn') {
     const calib = await loadSheetCalibration();
     if (calib) {
       renderCalibratedTurn(b, calib, info, () => anim);
-      window.__lab = { subjects: allSubjects.map((s) => s.name), pose, calib };
+      window.__lab = { subjects: allSubjects.map((s) => s.name), pose, calib, get tris() { return visibleTris(b.holder); } };
       return;
     }
   }
@@ -492,7 +507,7 @@ async function main() {
     };
     renderStatic();
     requestAnimationFrame(() => { renderStatic(); window.__snapReady = true; });
-    window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: renderStatic };
+    window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: renderStatic, get tris() { return visibleTris(b.holder); } };
     return;
   }
 
@@ -540,7 +555,7 @@ async function main() {
     renderer.render(scene, camera);
     if (++frames === 2) window.__snapReady = true;
   });
-  window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: () => renderer.render(scene, camera) };
+  window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: () => renderer.render(scene, camera), get tris() { return visibleTris(b.holder); } };
 }
 
 main().catch((e) => {
