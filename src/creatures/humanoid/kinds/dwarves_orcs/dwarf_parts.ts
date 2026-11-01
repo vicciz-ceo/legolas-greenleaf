@@ -683,16 +683,16 @@ export function chinBraids(ctx: KindContext, proj: Projector, o: { color: number
 
 
 /** the two trouser legs joined at the crotch: each leg carries a half, so the gap between the inner thighs closes without sticking to the hips when the legs swing */
-export function crotchBridge(ctx: KindContext, o: { color: number; mat: Mat }) {
+export function crotchBridge(ctx: KindContext, o: { color: number; mat: Mat; drop: number }) {
+  if (o.drop <= 0) return;
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const g = Math.sqrt(P.build.bulk);
   const hipY = P.j.thigh_l[1];
-  const kneeY = P.j.shin_l[1];
-  // stops 4 cm above the knee so the gap between the lower legs stays (the sheets show it)
-  const y0 = kneeY + 0.04 * sc;
-  const yc = (hipY + y0) / 2 + 0.01 * sc;
-  s.mirrored(() => s.ellipsoid([P.hipX * 0.5, yc, 0.004 * sc], [P.hipX * 0.5 + 0.075 * sc * g, (hipY - y0) / 2 + 0.02 * sc, 0.1 * sc * g], { color: o.color, mat: o.mat, bone: 'thigh_l', k: 0.03 * sc }));
+  // only the crotch itself: a few cm below the hip joint, so the legs read as two legs with a gap below
+  const top = hipY + 0.02 * sc;
+  const y0 = hipY - o.drop * sc;
+  s.mirrored(() => s.ellipsoid([P.hipX * 0.5, (top + y0) / 2, 0.004 * sc], [P.hipX * 0.5 + 0.06 * sc * g, (top - y0) / 2, 0.09 * sc * g], { color: o.color, mat: o.mat, bone: 'thigh_l', k: 0.03 * sc }));
 }
 
 /** a belt as one continuous strap laid round the finished body at height y (the seam is at the front, under the buckle) */
