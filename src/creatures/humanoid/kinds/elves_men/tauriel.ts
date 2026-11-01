@@ -33,17 +33,17 @@ const DRAPE = surface('twill', { rough: 0.9, sheen: 0.3, pat: { weave: 0.4 } });
 const PAL = {
   hair: 0x652f17, // sheet root #703820 (observed lit #5c2c1b) — slightly deeper so the lab's sheen doesn't wash it orange
   hairTip: 0x8f4a28, // sheet tip #a35730
-  skin: 0xe0bda2, // sheet #e0bfa5 (observed lit #d39e8a) // sheet #e0bfa5 (observed #d39e8a); warmer/deeper like Legolas
-  skin2: 0xd2a98e,
+  skin: 0xdcae92, // sheet #e0bfa5 (observed lit #d39e8a), warmer on the lit side // sheet #e0bfa5 (observed #d39e8a); warmer/deeper like Legolas
+  skin2: 0xcc9c82,
   lips: 0xa65e56,
   brows: 0x7a3a22,
   eyes: 0x6b8274, // sheet iris #738277 grey-green, a touch darker
-  leggings: 0x292d21, // observed #3a3728 under wool sheen; design cloth #45553a
-  tunic: 0x2d3427, // design cloth #45553a, desaturated
-  tunicTrim: 0x242b1e, // darker hem band
-  tunicPanel: 0x293024, // second layer of pointed hem panels
-  cowl: 0x4a5a3c, // pale green draped wool (turnaround reads lighter than the tunic)
-  capelet: 0x354229,
+  leggings: 0x2b2f23, // observed #3a3728 under wool sheen; design cloth #45553a
+  tunic: 0x353f2c, // design cloth #45553a, desaturated
+  tunicTrim: 0x353f2c, // no hem fade (a darker trim read as dirt)
+  tunicPanel: 0x37422d, // second layer of pointed hem panels
+  cowl: 0x3a4731, // pale green draped wool (turnaround reads lighter than the tunic)
+  capelet: 0x323c29,
   corset: 0x573e2b, // design leather #624630 (observed #503b33)
   corsetTrim: 0x6b4d36, // lighter tooling / wear mottle
   bracers: 0x47362a, // observed #4e3c34
@@ -53,8 +53,9 @@ const PAL = {
   belt: 0x4a3626, // observed #5a433a (lit)
   strap: 0x5a4330,
   bronze: 0x9a8762, // design metal #9a8762
+  sheath: 0x3a2a1c, // dark leather scabbards
   bootsCuff: 0x6a4f35, // folded boot cuff (lighter, worn)
-  hemBronze: 0x4d4228, // gold-bronze trim on the tunic hem points
+  hemBronze: 0x37422d, // hem panel colour (the trim is the same flat colour, no gradient)
   quiver: 0x5a4330,
   quiverTrim: 0x8a6a44,
   fletch: 0xdcd3be, // sheet: cream feathers on dark shafts
@@ -107,8 +108,8 @@ function cowl(ctx: KindContext) {
   const w = { color: PAL.cowl, color2: shade(PAL.cowl, 0.85), colorNoise: 0.35, colorFreq: 18 / sc, mat: DRAPE, bone: 'neck' };
   s.with(w, () => {
     s.group('union', 0.02 * sc, () => {
-      s.torus([0, ny - 0.012 * sc, z + 0.008 * sc], r + 0.012 * sc, 0.019 * sc, { k: 0.015 * sc, rot: [-0.4, 0, 0] });
-      s.torus([0, ny - 0.04 * sc, z + 0.014 * sc], r + 0.026 * sc, 0.014 * sc, { k: 0.015 * sc, rot: [-0.55, 0, 0] });
+      s.torus([0, ny - 0.012 * sc, z + 0.008 * sc], r + 0.012 * sc, 0.015 * sc, { k: 0.015 * sc, rot: [-0.4, 0, 0] });
+      s.torus([0, ny - 0.04 * sc, z + 0.014 * sc], r + 0.026 * sc, 0.011 * sc, { k: 0.015 * sc, rot: [-0.55, 0, 0] });
       // the hood bunched on the upper back
       s.ellipsoid([0, ny - 0.035 * sc, z - 0.065 * sc], [0.09 * sc * g, 0.05 * sc, 0.045 * sc], { bone: 'chest', k: 0.025 * sc });
       s.mirrored(() => s.ellipsoid([0.09 * sc * g, ny - 0.03 * sc, z - 0.015 * sc], [0.04 * sc, 0.03 * sc, 0.045 * sc], { bone: 'chest', k: 0.02 * sc }));
@@ -131,7 +132,7 @@ function tauriExtras(ctx: KindContext) {
   // the pale green cowl sits on the shoulders, a hood bunched at the back
   cowl(ctx);
   // small green wool capelets over both shoulder points
-  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.013 * sc, reach: 0.44 });
+  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.0095 * sc, reach: 0.4 });
   // tooled corset from just under the belt to the bust
   corset(ctx, { y0: beltY - 0.05 * sc, y1: cy + 0.115 * sc, inflate: 0.0145 * sc });
   // baldric across the chest for the quiver (right shoulder to left hip)
@@ -199,11 +200,12 @@ function tauriExtras(ctx: KindContext) {
       kind: 'elven_knives',
       style: 'elven',
       hand: side > 0 ? 'hand_l' : 'hand_r',
-      pos: [side * (P.hipX + 0.13 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.07 * sc],
+      pos: [side * (P.hipX + 0.145 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.08 * sc],
       dir: [side * 0.07, -0.85, -0.52],
       len: 0.33,
-      r: 0.021 * sc,
-      color: PAL.belt,
+      r: 0.025 * sc,
+      flat: 0.75,
+      color: PAL.sheath,
       trim: PAL.bronze,
       mat: TOOLED,
       seed: side > 0 ? 5 : 6,
@@ -230,7 +232,7 @@ function tauriExtras(ctx: KindContext) {
 export const taurielDef: KindDef = {
   label: 'Tauriel',
   height: 1.78,
-  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.1 },
+  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.03 },
   face: {
     jaw: 0.8,
     jawLength: 0.96,
@@ -256,15 +258,15 @@ export const taurielDef: KindDef = {
     { type: 'leggings', color: PAL.leggings, mat: WOOL },
     { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 1.0, mat: TOOLED },
     // long sleeves; the hem panels are the skirt layer below
-    { type: 'tunic', color: PAL.tunic, color2: PAL.tunicTrim, length: 0, mat: TWILL },
+    { type: 'tunic', color: PAL.tunic, color2: PAL.tunicTrim, length: 0, thickness: -0.0015, mat: TWILL },
     {
       type: 'skirt',
       color: PAL.tunic,
-      color2: PAL.hemBronze,
+      color2: PAL.tunic,
       mat: TWILL,
-      length: 0.3,
-      thickness: -0.022,
-      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.hemBronze, mat: TWILL, width: 0.15, length: 1.5, phase: 0 },
+      length: 0.28,
+      thickness: -0.026,
+      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.hemBronze, mat: TWILL, width: 0.14, length: 1.35, phase: 0 },
     },
     { type: 'bracers', color: PAL.bracers, color2: PAL.bracersTrim, length: 0.86, thickness: 0.003, mat: TOOLED },
     { type: 'belt', color: PAL.belt, offset: BELT_RAISE, mat: 'leather_worn' },
