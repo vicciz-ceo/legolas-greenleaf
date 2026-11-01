@@ -758,6 +758,8 @@ export interface CameraShot {
   follow?: THREE.Object3D;
   /** seconds to blend in (default 0.6) */
   blend?: number;
+  /** seconds to glide back to the player view when this shot is cleared (default: min(blend, 0.6)) */
+  blendOut?: number;
 }
 
 export interface CameraRig {
