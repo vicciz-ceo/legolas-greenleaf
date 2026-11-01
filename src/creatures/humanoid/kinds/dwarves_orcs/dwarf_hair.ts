@@ -131,6 +131,10 @@ export interface RibbonBeardOpts {
   waveLen: number;
   /** clearance over the sculpt (m) */
   clear: number;
+  /** extra clearance growing towards the tips, so the beard stands off the chest (m) */
+  stand?: number;
+  /** base colour per layer (0 = innermost); the outer layers show, the inner ones fill */
+  layerColors?: number[];
 }
 
 /** a beard of a few wide wavy ribbons draped over the sculpt (head, jaw, chest) */
@@ -166,12 +170,12 @@ export function ribbonBeard(ctx: KindContext, proj: Projector, rng: Rng, o: Ribb
         const y = yTop - L * t;
         const x = x0 * (1 - taper * Math.pow(t, 1.3)) + o.amp * Math.sin((2 * Math.PI * L * t) / o.waveLen + phase) * Math.min(1, t * 3);
         if (!snapPoint(proj, [x, y, 0], 'f', p, n)) continue;
-        pts.push(p.clone().addScaledVector(n, o.clear * (0.7 + 0.8 * layer) + 0.004 * Math.sin(k + i)));
+        pts.push(p.clone().addScaledVector(n, o.clear * (0.7 + 0.8 * layer) + (o.stand ?? 0) * t + 0.004 * Math.sin(k + i)));
         nrm.push(n.clone());
       }
       if (pts.length < 4) continue;
-      const c = mix(o.color, o.deep, 0.25 * rng.float());
-      strands.push(strandOf(pts, nrm, o.width * (0.9 + 0.25 * rng.float()), o.width * 0.55, c));
+      const c = mix(o.layerColors?.[layer] ?? o.color, o.deep, 0.25 * rng.float());
+      strands.push(strandOf(pts, nrm, o.width * (0.9 + 0.25 * rng.float()), o.width * 0.18, c));
     }
   }
   if (!strands.length) return null;
@@ -224,7 +228,7 @@ export function hangLocks(ctx: KindContext, proj: Projector, rng: Rng, o: HangLo
         nrm.push(nn.clone());
       }
       if (pts.length < 4) continue;
-      strands.push(strandOf(pts, nrm, o.width * (0.9 + 0.25 * rng.float()), o.width * 0.6, mix(o.color, o.deep, 0.3 * rng.float())));
+      strands.push(strandOf(pts, nrm, o.width * (0.9 + 0.25 * rng.float()), o.width * 0.2, mix(o.color, o.deep, 0.3 * rng.float())));
     }
   }
   if (!strands.length) return null;

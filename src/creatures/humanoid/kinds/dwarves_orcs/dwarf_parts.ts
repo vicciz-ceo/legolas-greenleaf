@@ -18,9 +18,12 @@ import {
   snapPoint,
   Builder,
   smooth,
+  ribbon,
+  snapPath,
   type Projector,
+  type SnapPoint,
 } from '../uruks_bosses/common';
-import { put } from './armor';
+import { put, ring, taperedTube } from './armor';
 import { slab } from './garments';
 import { scalpPoint } from './markings';
 
@@ -421,39 +424,43 @@ export interface FeltHatOpts {
   color: number;
   color2?: number;
   mat: Mat;
-  /** brim radius (head units) */
+  /** brim radius (head units); the rolled cuff sits on its rim */
   brim?: number;
   /** how far the side and back brim droop (head units) */
   droop?: number;
-  /** height of the hat's band on the head (head units; the brow is at 0.075) */
+  /** height of the hat's cuff on the head (head units; the brow is at 0.075) */
   y?: number;
+  /** thickness of the rolled cuff (head units) */
+  roll?: number;
   band?: number;
 }
 
 /**
- * A soft felt hat: a modest brim at brow level with a rolled edge, and a tall crown that folds over
- * and hangs its tip down behind the left ear (sheet: front view tip to the viewer's right, profile
- * tip hangs to the back).
+ * A soft slouchy felt hat: a short rolled cuff resting on the brows and a crown that rises, folds
+ * over and hangs its capped tip down at the left of the head, past ear height (sheet: front view tip
+ * to the viewer's right, profile tip hangs to the back).
  */
 export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   const { P } = ctx;
   const u = P.headH;
   const h = P.h;
-  const y0 = o.y ?? 0.1;
+  const y0 = o.y ?? 0.07;
   const zOff = -0.07;
-  const brim = o.brim ?? 0.58;
-  const droop = o.droop ?? 0.12;
+  const brim = o.brim ?? 0.52;
+  const droop = o.droop ?? 0.06;
   const Rh = 0.41;
-  // crown spine (head units, relative to the hat's base centre): rises, folds over, flops back and down
+  const rollR = o.roll ?? 0.034;
+  // crown spine (head units, relative to the cuff centre): a tapered chain that rises, then bends over
+  // with a lateral offset and falls
   const spine = new THREE.CatmullRomCurve3(
     [
       new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, 0.2, -0.02),
-      new THREE.Vector3(0.02, 0.4, -0.04),
-      new THREE.Vector3(0.1, 0.55, -0.1),
-      new THREE.Vector3(0.3, 0.52, -0.2),
-      new THREE.Vector3(0.5, 0.34, -0.28),
-      new THREE.Vector3(0.62, 0.14, -0.3),
+      new THREE.Vector3(0, 0.22, -0.02),
+      new THREE.Vector3(0.03, 0.42, -0.04),
+      new THREE.Vector3(0.15, 0.53, -0.06),
+      new THREE.Vector3(0.38, 0.43, -0.08),
+      new THREE.Vector3(0.62, 0.2, -0.08),
+      new THREE.Vector3(0.74, -0.08, -0.08),
     ],
     false,
     'catmullrom',
@@ -467,7 +474,7 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   for (let i = 0; i <= nS; i++) {
     const t = i / nS;
     const c = spine.getPointAt(t);
-    const r = Rh * (1 - 0.74 * Math.pow(t, 1.1)) * (1 + 0.12 * Math.sin(t * Math.PI)) + 0.03 * (1 - t);
+    const r = Rh * Math.pow(1 - 0.82 * Math.pow(t, 0.9), 1.0) * (1 + 0.1 * Math.sin(t * Math.PI)) + 0.025 * (1 - t);
     for (let j = 0; j <= nR; j++) {
       const a = (j / nR) * Math.PI * 2;
       const nrm = frames.normals[i];
@@ -485,15 +492,21 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
       const b = a + nR + 1;
       idx.push(a, b, a + 1, a + 1, b, b + 1);
     }
+  // cap the tip: a fan from the last ring to a point just past it
+  const tip = spine.getPointAt(1);
+  const tq = h(tip.x, y0 + tip.y, zOff + tip.z);
+  const apex = pos.length / 3;
+  pos.push(tq[0], tq[1], tq[2]);
+  for (let j = 0; j < nR; j++) idx.push(nS * (nR + 1) + j, apex, nS * (nR + 1) + j + 1);
   const crown = new THREE.BufferGeometry();
   crown.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   crown.setIndex(idx);
   crown.computeVertexNormals();
-  // the brim: an annulus whose sides and back droop a little; the front stays low and flat so the eyes show
+  // the brim: a short annulus, nearly flat so the eyes stay clear, with a thick rolled cuff on its rim
   const bp: number[] = [];
   const bi: number[] = [];
   const nPh = 30;
-  const nT = 3;
+  const nT = 2;
   const edge: THREE.Vector3[] = [];
   for (let i = 0; i <= nT; i++) {
     const t = i / nT;
@@ -502,7 +515,7 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
       const r = Rh * 0.98 + (brim - Rh * 0.98) * t;
       const side = Math.abs(Math.sin(ph));
       const back = Math.max(0, -Math.cos(ph));
-      const y = -droop * Math.pow(t, 1.5) * (0.3 + 0.7 * side + 0.4 * back) + 0.04 * Math.max(0, Math.cos(ph)) * t;
+      const y = -droop * Math.pow(t, 1.4) * (0.3 + 0.7 * side + 0.4 * back);
       const q = h(Math.sin(ph) * r, y0 + y + 0.01, zOff + Math.cos(ph) * r * 1.12);
       bp.push(q[0], q[1], q[2]);
       if (i === nT && j < nPh) edge.push(new THREE.Vector3(q[0], q[1], q[2]));
@@ -529,14 +542,130 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   };
   put(ctx, crown, { bone: 'head', color: o.color, mat: o.mat, colorFn });
   put(ctx, brimG, { bone: 'head', color: o.color, mat: o.mat, colorFn });
-  // rolled edge of the brim: a thin tube in the crown's wool
-  const roll = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge, true, 'centripetal'), 36, 0.02 * u, 5, true);
-  put(ctx, roll, { bone: 'head', color: o.color, mat: o.mat, small: true });
+  const roll = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge, true, 'centripetal'), 40, rollR * u, 6, true);
+  put(ctx, roll, { bone: 'head', color: o.color, mat: o.mat });
   if (o.band) {
-    const ring = new THREE.TorusGeometry(Rh * 1.01 * u, 0.022 * u, 4, 24).rotateX(Math.PI / 2).scale(1, 1, 1.12);
-    ring.translate(...h(0, y0 + 0.03, zOff));
+    const ring = new THREE.TorusGeometry(Rh * 1.01 * u, 0.02 * u, 4, 24).rotateX(Math.PI / 2).scale(1, 1, 1.12);
+    ring.translate(...h(0, y0 + 0.05, zOff));
     put(ctx, ring, { bone: 'head', color: o.band, mat: 'leather_worn', small: true });
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// quilting, real straps, chin braids
+// ─────────────────────────────────────────────────────────────────────────────
+
+function mergeIndexed(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
+  const pos: number[] = [];
+  const nor: number[] = [];
+  const idx: number[] = [];
+  for (const g of list) {
+    const base = pos.length / 3;
+    const p = g.attributes.position;
+    const n = g.attributes.normal;
+    for (let i = 0; i < p.count; i++) {
+      pos.push(p.getX(i), p.getY(i), p.getZ(i));
+      nor.push(n.getX(i), n.getY(i), n.getZ(i));
+    }
+    const ix = g.index!;
+    for (let i = 0; i < ix.count; i++) idx.push(base + ix.getX(i));
+    g.dispose();
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  out.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  out.setIndex(idx);
+  return out;
+}
+
+/**
+ * The quilted grid of a padded vest: thin dark channels on the chest and back (columns and rows),
+ * snapped to the sculpt and pressed half into it. Thicker and lighter than a stitch line so they read
+ * at game distance without turning into a black wireframe.
+ */
+export function quiltGrid(ctx: KindContext, proj: Projector, o: { cols: number[]; rows: number[]; y0: number; y1: number; halfW: number; color: number; radius: number; skipY?: [number, number] }) {
+  const { P } = ctx;
+  const k = P.s / 0.735;
+  const lines: THREE.Vector3[][] = [];
+  const p = V();
+  const n = V();
+  const lift = 0.0006 * k;
+  for (const mode of ['f', 'b'] as const) {
+    for (const y of o.rows) {
+      const row: THREE.Vector3[] = [];
+      for (let x = -o.halfW; x <= o.halfW + 1e-6; x += 0.045 * k) if (snapPoint(proj, [x, y, 0], mode, p, n)) row.push(p.clone().addScaledVector(n, lift));
+      if (row.length > 1) lines.push(row);
+    }
+    for (const x of o.cols) {
+      let col: THREE.Vector3[] = [];
+      for (let y = o.y0; y <= o.y1 + 1e-6; y += 0.045 * k) {
+        if (o.skipY && y > o.skipY[0] && y < o.skipY[1]) {
+          if (col.length > 1) lines.push(col);
+          col = [];
+          continue;
+        }
+        if (snapPoint(proj, [x, y, 0], mode, p, n)) col.push(p.clone().addScaledVector(n, lift));
+      }
+      if (col.length > 1) lines.push(col);
+    }
+  }
+  const list: THREE.BufferGeometry[] = [];
+  for (const l of lines) list.push(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(l, false, 'centripetal'), Math.max(2, l.length - 1), o.radius * k, 3, false));
+  if (list.length) put(ctx, mergeIndexed(list), { bone: 'chest', color: o.color, mat: 'wool', small: true, ao: 1 });
+}
+
+/** a thin leather strap across the chest or back (one diagonal), lying on the finished sculpt */
+export function crossStrap(ctx: KindContext, proj: Projector, o: { sign: 1 | -1; side: 'f' | 'b'; color: number; mat: Mat; width: number; thick: number }) {
+  const { P } = ctx;
+  const sc = P.s;
+  const k = sc / 0.735;
+  const n = new THREE.Vector3(o.sign, 1.25, 0).normalize();
+  const c = n.dot(new THREE.Vector3(0, P.j.chest[1] + 0.05 * sc, 0));
+  const pts: SnapPoint[] = [];
+  for (let i = 0; i <= 10; i++) {
+    const x = (-0.17 + (0.34 * i) / 10) * k;
+    pts.push([x, (c - n.x * x) / n.y, 0, o.side, 0.7]);
+  }
+  const path = snapPath(proj, pts, 0.001);
+  if (path.p.length < 3) return;
+  put(ctx, ribbon(path.p, path.n, o.width, o.thick, 1, { outerOnly: true, noInner: true }, 12), { bone: 'chest', color: o.color, mat: o.mat });
+}
+
+/**
+ * Braids hanging from the chin: tapered tubes laid down the chest with brass rings. Real geometry,
+ * outside the hair-card alpha path so they cannot be culled.
+ */
+export function chinBraids(ctx: KindContext, proj: Projector, o: { color: number; brass: number; xs: number[]; lens: number[]; radius: number; rings: number }) {
+  const { P } = ctx;
+  const sc = P.s;
+  const u = P.headH;
+  const k = sc / 0.735;
+  const p = V();
+  const n = V();
+  const y0 = P.h(0, -0.56, 0)[1];
+  o.xs.forEach((xu, bi) => {
+    const L = o.lens[bi] * k;
+    const pts: V3[] = [];
+    const surf: THREE.Vector3[] = [];
+    for (let i = 0; i <= 5; i++) {
+      const t = i / 5;
+      const x = xu * u * (1 + 0.1 * t);
+      const y = y0 - L * t;
+      if (!snapPoint(proj, [x, y, 0], 'f', p, n)) continue;
+      const q = p.clone().addScaledVector(n, o.radius * k * (1.0 - 0.3 * t) + 0.002 * k);
+      pts.push([q.x, q.y, q.z]);
+      surf.push(q);
+    }
+    if (pts.length < 3) return;
+    put(ctx, taperedTube(pts, o.radius * k, o.radius * 0.55 * k, { seg: 6, radial: 5 }), { bone: 'jaw', color: o.color, mat: 'hair' });
+    const curve = new THREE.CatmullRomCurve3(surf, false, 'catmullrom', 0.4);
+    for (let r = 0; r < o.rings; r++) {
+      const t = o.rings === 1 ? 0.9 : 0.42 + (0.52 * r) / (o.rings - 1);
+      const c = curve.getPointAt(t);
+      const d = curve.getTangentAt(t);
+      put(ctx, ring([c.x, c.y, c.z], [d.x, d.y, d.z], o.radius * 1.12 * k * (1 - 0.25 * t), 0.0045 * k, 6), { bone: 'jaw', color: o.brass, mat: 'gold', small: true });
+    }
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
