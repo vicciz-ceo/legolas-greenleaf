@@ -41,7 +41,7 @@ const PALETTE = {
   brows: 0x1c1410,
   beard: 0x24201e, // black beard (hair #2a231b, lit #342d2a): matte charcoal with grey flecks
   beardFleck: 0x6a645c,
-  paint: 0xe6dccb, // white strokes
+  paint: 0xd8d0c0, // off-white strokes
 };
 
 const RED_COAT = surface('cloth', { rough: 0.9, sheen: 0.3, pat: { weave: 1.3, wrinkles: 0.15 } });
@@ -92,18 +92,25 @@ function paintQueued(ctx: KindContext) {
   const proj = makeProjector(s, { min: [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.min(a[2], b[2])], max: [Math.max(a[0], b[0]), Math.max(a[1], b[1]), Math.max(a[2], b[2])] });
   if (!proj) return;
   for (const st of strokes) {
-    const pts: SnapPoint[] = st.map(([x, y]) => {
-      const q = P.h(x, y, 0.5);
-      return [q[0], q[1], q[2], 'f'];
-    });
-    paintSnapped(s, proj, pts, 0.0075 * P.s, { color: PALETTE.paint, mat: 'skin', bone: 'head', k: 0.003 * P.s, strength: 0.75 });
+    // a snapped point every ~1.5 cm so the stroke follows the cheek instead of cutting across it
+    const pts: SnapPoint[] = [];
+    for (let i = 0; i + 1 < st.length; i++) {
+      const n = Math.max(1, Math.ceil(Math.hypot(st[i + 1][0] - st[i][0], st[i + 1][1] - st[i][1]) / 0.07));
+      for (let k = 0; k < n; k++) {
+        const q = P.h(st[i][0] + ((st[i + 1][0] - st[i][0]) * k) / n, st[i][1] + ((st[i + 1][1] - st[i][1]) * k) / n, 0.5);
+        pts.push([q[0], q[1], q[2], 'f']);
+      }
+    }
+    const e = P.h(st[st.length - 1][0], st[st.length - 1][1], 0.5);
+    pts.push([e[0], e[1], e[2], 'f']);
+    paintSnapped(s, proj, pts, 0.0065 * P.s, { color: PALETTE.paint, mat: 'skin', bone: 'head', k: 0.001 * P.s, strength: 0.6 });
   }
 }
 
-/** the sheet's paint: a forehead line, brow ticks and a chevron on each upper cheek */
+/** the sheet's paint: per cheek one short stripe on the cheekbone (the head mesh cannot resolve two) just below the eye, and one line along the brow */
 function sheetPaint(ctx: KindContext) {
-  const strokes: [number, number][][] = [[[0, 0.16], [0, 0.06]]];
-  for (const sd of [1, -1]) strokes.push([[sd * 0.3, -0.06], [sd * 0.2, -0.16], [sd * 0.3, -0.26]], [[sd * 0.1, 0.07], [sd * 0.26, 0.05]]);
+  const strokes: [number, number][][] = [[[-0.24, 0.075], [0.24, 0.075]]];
+  for (const sd of [1, -1]) strokes.push([[sd * 0.28, -0.13], [sd * 0.13, -0.23]]);
   queuePaint(ctx, strokes);
 }
 
@@ -315,7 +322,7 @@ function head(ctx: KindContext, look: Look, rng: Rng) {
     default:
       turban(ctx, { color: 0x1c1818, color2: 0x2e2220, y: 0.16, tall: 0.8 });
       turbanScarf(ctx, 0x1c1818, 0x2e2220);
-      queuePaint(ctx, [[[0.28, -0.14], [0.1, -0.16]], [[-0.28, -0.14], [-0.1, -0.16]], [[0.22, -0.24], [0.08, -0.26]], [[-0.22, -0.24], [-0.08, -0.26]]]);
+      queuePaint(ctx, [[[0.28, -0.14], [0.12, -0.16]], [[-0.28, -0.14], [-0.12, -0.16]], [[0.26, -0.24], [0.12, -0.26]], [[-0.26, -0.24], [-0.12, -0.26]]]);
       cowl(ctx, { color: PALETTE.red, color2: PALETTE.redDeep, mat: RED_COAT, rings: 2, thick: 0.03, lift: 0.04 });
       shortBeard(ctx);
       jewelry(ctx, { color: PALETTE.gold, neck: true });
