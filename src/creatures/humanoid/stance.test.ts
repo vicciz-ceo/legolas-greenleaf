@@ -155,7 +155,8 @@ test('every kind idles planted with sane knees (LOD 0 and 1)', () => {
       for (const t of TIMES) {
         const s = idle(P, A, t);
         worst = Math.max(worst, mx(s));
-        sane(s, `${kind} LOD${lod} ${label(kind, def.height, t)}`);
+        // a kind that sets `crouch` (the goblin) is held to its own crouch-adjusted limit, every other kind to 40 deg
+        sane(s, `${kind} LOD${lod} ${label(kind, def.height, t)}`, def.anim.crouch ?? 0);
       }
       cal(`${kind} LOD${lod} worst flexion ${worst.toFixed(1)} deg`);
     }
@@ -169,6 +170,9 @@ test('every kind walks with its planted leg inside a sane knee flexion (LOD 0 an
   const WALK_STANCE_LIMIT = 45;
   for (const kind of ALL_KINDS) {
     const def = resolveKind(kind);
+    // crouching kinds scuttle: their planted leg stays near their own crouch limit (as in the crouch sweep below)
+    const crouch = def.anim.crouch ?? 0;
+    const walkLimit = crouch > 0 ? stanceFlexLimit(crouch) * DEG + 12 : WALK_STANCE_LIMIT;
     for (const lod of [0, 1] as const) {
       const { P, A } = body(def, def.height, lod);
       let worst = 0;
@@ -177,7 +181,7 @@ test('every kind walks with its planted leg inside a sane knee flexion (LOD 0 an
         for (let i = 0; i < 2; i++) {
           if (s.lift[i] >= PLANTED) continue; // swinging
           worst = Math.max(worst, s.flex[i]);
-          ok(s.flex[i] <= WALK_STANCE_LIMIT, `${kind} LOD${lod} walk phase ${(k / 40).toFixed(3)}: planted leg flexion ${s.flex[i].toFixed(1)} deg must be <= ${WALK_STANCE_LIMIT}`);
+          ok(s.flex[i] <= walkLimit, `${kind} LOD${lod} walk phase ${(k / 40).toFixed(3)}: planted leg flexion ${s.flex[i].toFixed(1)} deg must be <= ${walkLimit.toFixed(0)}`);
         }
       }
       cal(`${kind} LOD${lod} walk planted-leg worst flexion ${worst.toFixed(1)} deg`);
@@ -205,7 +209,7 @@ test('idle is planted and continuous over height (crowd variation, 1.70-1.80 m m
       for (let h = c.lo; h <= c.hi + 1e-9; h += c.step) {
         const { P, A } = body(def, h);
         const s = idle(P, A, t);
-        sane(s, `${c.kind} ${label(c.kind, h, t)}`);
+        sane(s, `${c.kind} ${label(c.kind, h, t)}`, def.anim.crouch ?? 0);
         if (prev) maxStep = Math.max(maxStep, Math.abs(mx(s) - mx(prev)));
         prev = s;
         lo = Math.min(lo, mx(s));
