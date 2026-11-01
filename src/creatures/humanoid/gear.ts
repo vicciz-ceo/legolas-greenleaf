@@ -89,7 +89,11 @@ function sheathLocal(o: QuiverOpts, side: number): THREE.Matrix4 {
   return off.multiply(new THREE.Matrix4().makeRotationZ(side * -0.08));
 }
 
-/** model matrix of a knife sheath on the quiver (side ±1); knife grip origin = matrix × (0, 0.11, 0) */
+/** model matrix of a knife sheath on the quiver (side ±1). Sheath-local: mouth at y = 0.105, closed end at
+ *  y = −0.17. A stowed `createWeapon('elven_knives')` (blade down, i.e. rotated π about Z) puts its grip
+ *  origin at (0, 0.16, 0) so its guard ring (0.03–0.058 above the grip origin) sits on the mouth and the
+ *  tip (≤ 0.33 m from the grip, asserted in weapons.test.ts) stays inside; see legolas.ts. The built-in
+ *  `knives` hilts below start their guard at y = 0.112. */
 export function quiverSheathMatrix(o: QuiverOpts, side: number): THREE.Matrix4 {
   const base = placeAlong(o.center, o.axis, new THREE.Vector3(0, 0, -1));
   return base.multiply(sheathLocal(o, side));
