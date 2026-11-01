@@ -1,12 +1,17 @@
 /**
  * Lab subjects for the group `uruks_bosses`: uruk (+4 seed variants, archer, pikeman), berserker,
  * lurtz, bolg, troll_cave, troll_war and `uruks_bosses_lineup` (all at true scale next to Legolas).
+ *
+ * Lab-only: `anim=sheet` poses the reference sheets' relaxed stance (humanoid/sheetPose.ts) and
+ * `&portrait=1&focus=head&zoom=0.15` frames the head bone's world position, so Lurtz, Bolg, the
+ * trolls and the uruks need no custom camera code for face shots.
  */
 import * as THREE from 'three';
 import type { AnimInput, HumanoidKind, LabInstance, LabSubject, WeaponKind } from '../core/types';
 import { createHumanoid, type HumanoidExt } from './humanoid';
 import { resolveKind } from './humanoid/registry';
 import { seedForBucket } from './humanoid/kinds/uruks_bosses';
+import { addHeadFraming, poseSheet, restoreSheet } from './humanoid/sheetPose';
 
 const ATTACKS = ['slash', 'backslash', 'thrust', 'overhead', 'slam', 'sweep', 'shoot', 'punch', 'stomp'];
 const SPECIAL = ['block', 'roar', 'cheer', 'stagger', 'crouch'];
@@ -35,6 +40,8 @@ function frame(anim: string, t: number, attackAlias: string): AnimInput {
 
 /** deterministic pose at (anim, t): seek, then pre-roll the springs for 1.2 s */
 function poseAt(h: HumanoidExt, anim: string, t: number, alias: string) {
+  if (anim === 'sheet') return poseSheet(h); // reference-sheet stance (lab only)
+  restoreSheet(h); // a shield the sheet pose turned face-forward goes back
   const pre = Math.min(t, 1.2);
   const start = t - pre;
   const f0 = frame(anim, start, alias);
@@ -44,7 +51,7 @@ function poseAt(h: HumanoidExt, anim: string, t: number, alias: string) {
   for (let i = 0; i <= steps; i++) h.animate(i === 0 ? 0 : dt, frame(anim, start + i * dt, alias));
 }
 
-export const ANIMS = ['idle', 'walk', 'run', 'attack', 'hit', 'death', 'slash', 'overhead', 'slam', 'sweep', 'thrust', 'shoot', 'stomp', 'block', 'roar', 'cheer', 'stagger'];
+export const ANIMS = ['idle', 'walk', 'run', 'attack', 'hit', 'death', 'slash', 'overhead', 'slam', 'sweep', 'thrust', 'shoot', 'stomp', 'block', 'roar', 'cheer', 'stagger', 'sheet'];
 
 interface SubjOpts {
   kind: HumanoidKind;
@@ -65,15 +72,25 @@ function subject(name: string, o: SubjOpts): LabSubject {
       const q = new URLSearchParams(location.search);
       const armorQ = q.get('armor');
       const h = createHumanoid({ kind: o.kind, seed: o.seed, weapon: o.weapon, offhand: o.offhand, helmet: q.get('helmet') === '0' ? false : o.helmet, armor: armorQ !== null ? Number(armorQ) : o.armor });
+      const lodQ = Number(q.get('lod') ?? 0); // &lod=1|2 previews the reduced geometry
+      if (lodQ === 1 || lodQ === 2) {
+        h.assets.ensureLods?.(); // LOD1/2 are built lazily: make sure they exist before the swap
+        h.setLod(lodQ);
+      }
       const holder = new THREE.Group();
       holder.add(h.root);
+      const portrait = q.get('portrait') ? addHeadFraming(holder, h) : null;
+      portrait?.();
       console.info(`[lab] ${name}: ${h.triangles} tris (LOD0), assets ${h.buildMs.toFixed(0)} ms`, h.assets.lods.map((l) => l.tris));
       ((window as unknown as { __ub?: Record<string, unknown> }).__ub ??= {})[name] = { buildMs: Math.round(h.buildMs), tris: h.triangles, lods: h.assets.lods.map((l) => l.tris) };
       return {
         object: holder,
         height: h.height,
         animations: ANIMS,
-        pose: (anim, t) => poseAt(h, anim, t, o.attack ?? 'slash'),
+        pose: (anim, t) => {
+          poseAt(h, anim, t, o.attack ?? 'slash');
+          portrait?.();
+        },
         dispose: () => h.dispose(),
       };
     },
