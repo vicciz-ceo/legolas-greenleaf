@@ -9,6 +9,7 @@ import { ARROW_GRAVITY, ballisticDir, leadTarget, spreadDir, angleBetween } from
 import { BaseCombatant, rayCapsule, rayDisc, raySphere } from '../actors/combatant';
 import { createRegistry } from './registry';
 import { createProjectiles, type ProjectilesExt } from './projectiles';
+import { createFocus, type FocusHost } from './focus';
 import { createPhysics } from '../physics/world';
 import { createRivalry, gimliTarget, numberWord } from '../game/rivalry';
 import { attackTokenCount, releaseAttackToken, requestAttackToken, resetCombatQueues } from '../actors/npc';
@@ -314,6 +315,85 @@ test('attack tokens: survive a clock reset, never leak through dead/disposed hol
   resetCombatQueues();
   ok(attackTokenCount(P) === 0, 'level unload clears every token');
   ok(requestAttackToken(P, 0, 0.65, 2, b) && requestAttackToken(P, 0.7, 0.65, 2, c), 'both slots free again');
+});
+
+test('projectiles: an arrow absorbed by the player i-frames leaves no wound and keeps flying', () => {
+  const ctx = fakeCtx();
+  const p = createProjectiles(ctx) as ProjectilesExt;
+  class Dasher extends Dummy {
+    protected filterDamage(): number {
+      return 0;
+    }
+  }
+  const t = new Dasher('player', V(0, 0, 10), 100);
+  ctx.combatants.add(t);
+  let hits = 0;
+  p.fire({ origin: V(0, 1.2, 0), dir: V(0, 0, 1), speed: 70, damage: 10, team: 'enemy', owner: null, gravity: 0, onHit: () => hits++ });
+  for (let i = 0; i < 60; i++) {
+    t.update(1 / 60);
+    p.update(1 / 60);
+  }
+  ok(t.hp === 100, 'hp unchanged');
+  ok(hits === 0, 'no on-hit proc');
+  ok(p.stuck === 0, `arrow not stuck in the dodging player (${p.stuck})`);
+});
+
+function focusRig() {
+  const ctx = fakeCtx();
+  const scales: number[] = [];
+  (ctx.time as unknown as { setScale(s: number): void }).setScale = (s) => scales.push(s);
+  const self = new Dummy('player', V(0, 0, 0), 100);
+  const host = { self, focus: 100, stats: { focusMax: 100, focusTargets: 4, arrowDamage: 34 }, bowOrigin: (o: THREE.Vector3) => o.set(0, 1.5, 0), onShot() {}, onArrowHit() {} } as unknown as FocusHost;
+  const f = createFocus(ctx, host);
+  const inp = (pressed: boolean, held: boolean) => ({ focusPressed: pressed, focusHeld: held, focusReleased: false, device: 'kbm' }) as never;
+  return { f, inp, scales };
+}
+
+test('focus: a press swallowed by a swing starts Focus once the gate opens while Q is held', () => {
+  const { f, inp } = focusRig();
+  f.update(1 / 60, inp(true, true), false); // press edge while knifing
+  f.update(1 / 60, inp(false, true), false);
+  ok(f.state === 'idle', 'still idle while the gate is shut');
+  f.update(1 / 60, inp(false, true), true); // swing over, still held, inside 0.3 s
+  ok(f.state === 'active', `started from the buffered press (${f.state})`);
+});
+
+test('focus: a released or stale press does not fire late', () => {
+  const a = focusRig();
+  a.f.update(1 / 60, a.inp(true, true), false);
+  a.f.update(1 / 60, a.inp(false, false), true); // tap already released
+  ok(a.f.state === 'idle', 'released tap stays idle');
+  const b = focusRig();
+  b.f.update(1 / 60, b.inp(true, true), false);
+  for (let i = 0; i < 30; i++) b.f.update(1 / 60, b.inp(false, true), false); // 0.5 s > buffer
+  b.f.update(1 / 60, b.inp(false, true), true);
+  ok(b.f.state === 'idle', 'expired buffer does nothing while merely held');
+});
+
+test('focus: only the volley arrow own kill counts as a volley kill', () => {
+  const ctx = fakeCtx();
+  ctx.projectiles = createProjectiles(ctx);
+  const self = new Dummy('player', V(0, 0, 0), 100);
+  const t = new Dummy('enemy', V(0, 0, 12), 1000);
+  ctx.combatants.add(self);
+  ctx.combatants.add(t);
+  const host = { self, focus: 100, stats: { focusMax: 100, focusTargets: 4, arrowDamage: 34 }, bowOrigin: (o: THREE.Vector3) => o.set(0, 1.5, 0), onShot() {}, onArrowHit() {} } as unknown as FocusHost;
+  const f = createFocus(ctx, host);
+  (ctx.engine.camera as THREE.PerspectiveCamera).lookAt(0, 1.2, 12);
+  ctx.engine.camera.updateMatrixWorld(true);
+  const inp = (pressed: boolean, held: boolean) => ({ focusPressed: pressed, focusHeld: held, focusReleased: !held, device: 'gamepad' }) as never;
+  f.update(1 / 60, inp(true, true), true);
+  for (let i = 0; i < 40 && f.marks.length === 0; i++) f.update(1 / 60, inp(false, true), true);
+  ok(f.marks.length === 1, `target marked (${f.marks.length})`);
+  f.update(1 / 60, inp(false, false), true); // release -> volley, arrow loosed at once
+  ok(f.wasVolleyTarget(t), 'credited while its volley arrow is in flight');
+  for (let i = 0; i < 60; i++) {
+    f.update(1 / 60, inp(false, false), true);
+    t.update(1 / 60);
+    (ctx.projectiles as ProjectilesExt).update(1 / 60);
+  }
+  ok(t.alive && t.hp < 1000, `survived the volley arrow (${t.hp})`);
+  ok(!f.wasVolleyTarget(t), 'a survivor killed later gives the full refill');
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);
