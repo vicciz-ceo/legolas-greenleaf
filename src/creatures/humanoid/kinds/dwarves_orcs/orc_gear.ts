@@ -140,14 +140,15 @@ export function longBracers(ctx: KindContext, o: { color: number; color2: number
 }
 
 /** bunched cloth wraps on the shins (sheet: wrapped to just under the knee, ragged top and bottom) */
-export function shinWraps(ctx: KindContext, o: { color: number; color2: number; top: number; bottom: number; inflate: number; mat?: SurfaceSpec; /** wrap the feet too (boots of wraps) */ feet?: boolean; /** foot wrap thickness (default: same as the shin) */ footInflate?: number }) {
+export function shinWraps(ctx: KindContext, o: { color: number; color2: number; top: number; bottom: number; inflate: number; mat?: SurfaceSpec; /** wrap the feet too (boots of wraps) */ feet?: boolean | 'instep'; /** foot wrap thickness (default: same as the shin) */ footInflate?: number }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const parts = anatomyParts(P);
   s.group('union', 0.004 * sc, () => {
-    if (o.feet) emitParts(s, parts, ['foot', 'toes'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.footInflate ?? o.inflate });
+    // 'instep': wrap the heel and instep only, so the toes stay bare skin (the sheet's wrapped sandals)
+    if (o.feet) emitParts(s, parts, o.feet === 'instep' ? ['foot'] : ['foot', 'toes'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.footInflate ?? o.inflate });
     emitParts(s, parts, ['shin', 'calf'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.inflate, noise: { amp: 0.003 * sc, freq: 40 / sc, type: 'ridged' } });
-    slab(s, o.feet ? null : o.bottom, o.top, 0.006 * sc);
+    slab(s, o.feet === true ? null : o.bottom, o.top, 0.006 * sc);
     s.plane([0, 1, 0], o.top, { op: 'paint', seam: 0, k: 0.002 });
   });
 }
