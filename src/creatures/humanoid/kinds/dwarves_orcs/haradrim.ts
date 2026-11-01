@@ -40,7 +40,7 @@ const PALETTE = {
   sclera: 0xcfc2b0, // dim warm eye whites
   brows: 0x1c1410,
   beard: 0x1c1917, // black beard (hair #2a231b, lit #342d2a): a matte dark grey-black
-  paint: 0xc4b8a4, // white strokes, a little dimmed so they do not glare
+  paint: 0xe0d4c0, // white strokes, a little dimmed so they do not glare
 };
 
 const RED_COAT = surface('cloth', { rough: 0.9, sheen: 0.3, pat: { weave: 1.3, wrinkles: 0.15 } });
@@ -70,12 +70,12 @@ const LOOKS: Look[] = [
 function browsAndFace(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
-  s.mirrored(() => s.ellipsoid(P.h(0.17, -0.2, 0.31), [0.1 * u, 0.08 * u, 0.06 * u], { op: 'paint', color: PALETTE.brows, mat: 'skin', bone: 'head', k: 0.05 * u, strength: 0.8 }));
+  s.mirrored(() => s.ellipsoid(P.h(0.17, 0.09, 0.34), [0.13 * u, 0.035 * u, 0.07 * u], { op: 'paint', color: PALETTE.brows, mat: 'skin', bone: 'head', k: 0.03 * u, strength: 0.75 }));
 }
 
 /** war paint as thin soft strokes (anything thinner than the head mesh cell would vanish; anything stronger leaves white specks) */
 function paintStrokes(ctx: KindContext, strokes: [number, number][][], r: number) {
-  for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.5 });
+  for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.4 });
 }
 
 /** the sheet's paint: a short brow line and a chevron on each cheek (the forehead diamond sits under the turban) */

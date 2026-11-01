@@ -178,7 +178,7 @@ function helmet(ctx: KindContext, look: Look) {
   domeHelm(ctx, { color: hc, trim: look.trim, mat, trimMat: GILT, profile: dome, ridge: true, cheeks: true, rivets: 0, neck: 'plates', tilt: -0.08, y: 0.03, band: false });
   faceMask(ctx, { color: hc, trim: look.trim, mat, lift: 0.085, slit: [-0.12, -0.0], top: 0.12, mouth: false, bottom: -0.56, half: 0.36 });
   // the face behind the T-slot is in shadow: paint it near black so no skin shows through
-  s.ellipsoid(P.h(0, -0.15, 0.32), [0.34 * u, 0.42 * u, 0.3 * u], { op: 'paint', color: 0x14100d, mat: 'skin', bone: 'head', k: 0.03 * u, strength: 1 });
+  s.ellipsoid(P.h(0, -0.18, 0.22), [0.42 * u, 0.46 * u, 0.42 * u], { op: 'paint', color: 0x14100d, mat: 'skin', bone: 'head', k: 0.03 * u, strength: 1 });
   // the two brow-band bosses at the temples
   const bosses: V3[] = [];
   for (const sd of [1, -1]) bosses.push(P.h(sd * 0.395, 0.05, 0.12), P.h(sd * 0.38, -0.06, 0.1));
