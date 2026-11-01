@@ -153,7 +153,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   const tone = skinTone ?? [G.skin, G.skin2, [0xa88a78, 0x705a4e, 0x96705e]];
   skinTint(ctx, { color: tone[0], color2: tone[1], noise: 0.55, torso: true, legs: true, sleeve: 0, legRange: [0.15, 0.95] });
   skinMottle(ctx, rng, tone[2], { n: 12, torso: true, strength: 0.4 });
-  armMass(ctx, { color: tone[0], color2: tone[1], inflate: 0.01 * sc });
+  armMass(ctx, { color: tone[0], color2: tone[1], inflate: devNum('armmass', 0.013) * sc });
   eyeRings(ctx, 0x24160f, 0.85);
   {
     // heavy dark brow ridge shading above the big amber eyes
@@ -164,14 +164,14 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   orcTeeth(ctx, rng, { n: 10, big: 0.8, color: 0xd8cca0 });
   if (b === 3) boneNecklace(ctx, { rng, n: 9 });
   // ── rag wrap over the torso (sleeveless), diagonal tie, waist binding
-  ragTunic(ctx, { color: b === 1 ? 0x3a3026 : G.wrap, color2: G.wrapTrim, inflate: 0.012 * sc, sleeve: 0.6, hemY: hipY - 0.02 * sc, cowl: true });
+  ragTunic(ctx, { color: b === 1 ? 0x3a3026 : G.wrap, color2: G.wrapTrim, inflate: 0.012 * sc, sleeve: 0, hemY: hipY + 0.045 * sc, cowl: true });
   const lowerBeltY = hipY + 0.045 * sc;
   beltBand(ctx, { y: hipY + 0.1 * sc, hw: 0.026 * sc, color: G.binding, color2: G.wrapTrim, mat: RAGS, inflate: 0.0215 * sc });
   beltBand(ctx, { y: lowerBeltY, hw: 0.014 * sc, color: G.binding, color2: G.wrapTrim, mat: STRAP, inflate: 0.0245 * sc });
   // wrapped ankles and feet
   const shinBottom = P.ankleH - 0.004 * sc;
   const shinTop = P.ankleH + 0.075 * sc;
-  shinWraps(ctx, { color: G.wrap, color2: G.wrapTrim, top: shinTop, bottom: shinBottom, inflate: 0.011 * sc, feet: true });
+  shinWraps(ctx, { color: G.wrap, color2: G.wrapTrim, top: shinTop, bottom: shinBottom, inflate: 0.011 * sc });
   // ── rusty plate strapped to the left shoulder
   rustPauldron(ctx, 'l', { iron: G.iron, rust: G.rust, rng, size: 0.62, lames: 1 });
   batEars(ctx, tone[0]);
@@ -179,11 +179,11 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   // ── sparse long stringy hair (the sheet's crown is nearly bald)
   const hg = makeOrcHair(
     ctx,
-    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.2 : 0.17) * sc, count: ctx.helmet ? 8 : 12, width: 0.008, wave: 0.5, wild: 0.3, comb: 0.3, front: 0.45, back: -0.42, gravity: 7, segments: 5, maxY: 0.0, maxZ: -0.02 },
+    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.32 : 0.28) * sc, count: ctx.helmet ? 12 : b === 1 ? 30 : 60, width: 0.006, wave: 0.35, wild: 0.2, comb: 0.1, front: 0.45, back: -0.42, gravity: 10, segments: 5, maxZ: -0.02 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());
-  orcFittings(ctx, { rng, beltY: hipY + 0.1 * sc, lowerBeltY, cord: G.cord, leather: G.binding, iron: G.iron, rust: G.rust, shinTop, shinBottom, bracerLen: 0.7, plate: true, plateX: 0.1, plateScale: 0.75, noCords: true, sleeve: 0.6, tunicEdge: G.wrap, collar: true });
+  orcFittings(ctx, { rng, beltY: hipY + 0.1 * sc, lowerBeltY, cord: G.cord, leather: G.binding, iron: G.iron, rust: G.rust, shinTop, shinBottom, bracerLen: 0.7, plate: true, plateX: 0.1, plateScale: 0.75, noCords: true, noFringe: true, sleeve: 0, tunicEdge: G.wrap, collar: true });
 }
 
 export function goblinExtras(ctx: KindContext) {
@@ -194,9 +194,9 @@ export function goblinExtras(ctx: KindContext) {
 
 export const goblinDef: KindDef = {
   label: 'Moria goblin',
-  height: devNum('h', 1.48),
+  height: devNum('h', 1.46),
   // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
-  build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.32), legLength: devNum('leg', 0.9), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
+  build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.32), legLength: devNum('leg', 0.95), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: devNum('hand', 1.7), footSize: 1.2, muscle: 0.45 },
   face: FACE,
   skin: { color: G.skin, color2: G.skin2, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x7a5a54, brows: 0x3a3028, surface: 'skin_orc', scatter: 0xb08070 },
   // large glinting amber eyes (#bb8b32)
@@ -205,14 +205,14 @@ export const goblinDef: KindDef = {
   beard: null,
   outfit: [
     // the kilt: a ragged rag skirt to the knees (the torso wrap and binding are sculpted in extras)
-    { type: 'skirt', color: G.kilt, color2: G.kiltUnder, mat: 'rags', length: devNum('kilt', 0.66), thickness: 0.012, tatter: 0.05 },
+    { type: 'skirt', color: G.kilt, color2: G.kiltUnder, mat: 'rags', length: devNum('kilt', 0.55), thickness: 0.012, tatter: 0.05 },
   ],
   armor: [],
   // the sheet's blade is short, curved and serrated, with a wrapped grip: the orc scimitar, scaled down
   weapons: { right: 'scimitar', style: 'orc' },
   palette: GOBLIN_PALETTE,
   // sheet: a deep scrambling crouch
-  anim: { hunch: devNum('hunch', 0.3), swagger: 0.3, aggression: 0.9, stance: devNum('stance', 1.4), cadence: 1.2, armSwing: 1.3, crouch: devNum('crouch', 0.9), lean: devNum('lean', 0.3) },
+  anim: { hunch: devNum('hunch', 0.15), swagger: 0.3, aggression: 0.9, stance: devNum('stance', 1.8), cadence: 1.2, armSwing: 1.3, crouch: devNum('crouch', 1.0), lean: devNum('lean', 0.3) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
   detail: { res: devNum('res', 0.058), headRes: devNum('headRes', 0.0135), faceRes: 0, detailScale: 0.9 },
   sfx: { voice: 'goblin', grunt: 'goblin_screech', die: 'orc_die', roar: 'goblin_screech', weight: 0.35 },
