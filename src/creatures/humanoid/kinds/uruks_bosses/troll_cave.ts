@@ -1,6 +1,8 @@
 /**
  * Cave troll details (docs/refs/cave_troll): warts over the whole hide, the coarse bristles on the
- * shoulders and scalp, and the riveted iron shackle on the RIGHT ankle with its short chain.
+ * trapezius and scalp, and the riveted iron shackle on the RIGHT ankle with its short chain.
+ * Every piece is skinned to the bone whose surface it sits on, and casts that could land on a neighbouring
+ * body part (an arm beside the torso) are rejected so nothing floats when the arms move.
  */
 import * as THREE from 'three';
 import { Rng } from '../../../../core/rng';
@@ -26,12 +28,14 @@ interface WartZone {
   count: number;
   /** cast distance outside the axis */
   reach: number;
-  /** angular window (radians around the axis; 0 = the first perpendicular) or all */
-  win?: [number, number];
+  /** angular windows (radians around the axis; 0 = the first perpendicular) or all round */
+  win?: [number, number][];
+  /** reject hits that belong to a neighbouring part (a torso hit from an arm zone, the other leg…) */
+  reject?: (p: THREE.Vector3, axisPoint: THREE.Vector3) => boolean;
 }
 
 /** warts scattered over a limb/torso segment: cast inward from outside so every wart sits on the real surface */
-function zoneWarts(proj: Projector, gear: GearFn, z: WartZone, rng: Rng, sc: number, color: number, big: number) {
+function zoneWarts(proj: Projector, gear: GearFn, z: WartZone, rng: Rng, sc: number) {
   const axis = z.b.clone().sub(z.a);
   const len = axis.length();
   axis.normalize();
@@ -39,16 +43,19 @@ function zoneWarts(proj: Projector, gear: GearFn, z: WartZone, rng: Rng, sc: num
   const p = V(), n = V();
   for (let i = 0; i < z.count; i++) {
     const t = rng.float();
-    const th = z.win ? rng.range(z.win[0], z.win[1]) : rng.range(0, Math.PI * 2);
+    const win = z.win ? z.win[Math.floor(rng.float() * z.win.length)] : ([0, Math.PI * 2] as [number, number]);
+    const th = rng.range(win[0], win[1]);
     const dir = u.clone().multiplyScalar(Math.cos(th)).addScaledVector(w, Math.sin(th));
     const c = z.a.clone().addScaledVector(axis, t * len);
     const o = c.clone().addScaledVector(dir, z.reach);
     if (!proj.cast(o, dir.clone().negate(), z.reach * 1.1, p, n)) continue;
-    // pores and warts: mostly small, a few big pink-tipped ones
-    const r = (rng.float() < 0.1 ? rng.range(0.016, 0.03) * big : rng.range(0.006, 0.014)) * sc;
+    if (z.reject?.(p, c)) continue;
+    // mostly small pores, a good number of mid-size warts, a few big ones
+    const k = rng.float();
+    const r = (k < 0.5 ? rng.range(0.006, 0.012) : k < 0.88 ? rng.range(0.012, 0.022) : rng.range(0.022, 0.034)) * sc;
     const g = WART_GEO.clone().scale(r, r * 0.75, r);
     const m = placeAlong(p.clone().addScaledVector(n, -r * 0.18), n.clone(), V(0, 0, 1));
-    gear(g, { bone: z.bone, color: rng.float() < 0.25 ? 0x7a6450 : color, mat: HIDE, matrix: m, small: true, ao: 0.8 });
+    gear(g, { bone: z.bone, color: rng.float() < 0.08 ? TROLL_PAL.ear : TROLL_PAL.wart, mat: HIDE, matrix: m, small: true, ao: 0.8 });
   }
 }
 
@@ -58,56 +65,56 @@ export function caveWarts(ctx: KindContext, gear: GearFn, proj: Projector, bucke
   const j = P.j;
   const rng = new Rng(7000 + bucket);
   const J = (k: string) => V(...j[k]);
-  const col = TROLL_PAL.wart;
+  const front = Math.PI, back = 0, half = 1.15;
+  const sides: [number, number][] = [[back - half, back + half], [front - half, front + half]];
   const zones: WartZone[] = [
-    // torso: shoulders and upper back are the most warty (detail tile "skin"), the belly less
-    { a: J('chest').add(V(0, 0.15 * sc, 0)), b: J('chest').add(V(0, -0.1 * sc, 0)), bone: 'chest', count: 70, reach: 1.4 },
-    { a: J('spine'), b: J('chest'), bone: 'spine', count: 30, reach: 1.4 },
-    { a: J('neck'), b: J('neck').add(V(0, 0.1 * sc, 0)), bone: 'chest', count: 14, reach: 0.8 },
+    // torso: front and back only (the sides would land on the arms); shoulders and upper back are the warty parts
+    { a: J('chest').add(V(0, 0.15 * sc, 0)), b: J('chest').add(V(0, -0.1 * sc, 0)), bone: 'chest', count: 80, reach: 1.4, win: sides },
+    { a: J('spine'), b: J('chest'), bone: 'spine', count: 34, reach: 1.4, win: sides },
   ];
   for (const sd of ['l', 'r'] as const) {
+    const sx = sd === 'l' ? 1 : -1;
+    // arms: reject anything inboard of the limb axis (that is the torso or the other limb)
+    const armReject = (p: THREE.Vector3, c: THREE.Vector3) => (p.x - c.x) * sx < -0.12 * sc;
+    const legReject = (p: THREE.Vector3, c: THREE.Vector3) => (p.x - c.x) * sx < -0.1 * sc;
     zones.push(
-      { a: J(`upperarm_${sd}`), b: J(`forearm_${sd}`), bone: `upperarm_${sd}`, count: 55, reach: 0.9 },
-      { a: J(`forearm_${sd}`), b: J(`hand_${sd}`), bone: `forearm_${sd}`, count: 36, reach: 0.8 },
-      { a: J(`thigh_${sd}`), b: J(`shin_${sd}`), bone: `thigh_${sd}`, count: 30, reach: 0.9 },
-      { a: J(`shin_${sd}`), b: J(`foot_${sd}`), bone: `shin_${sd}`, count: 24, reach: 0.8 },
+      { a: J(`upperarm_${sd}`), b: J(`forearm_${sd}`), bone: `upperarm_${sd}`, count: 60, reach: 0.9, reject: armReject },
+      { a: J(`forearm_${sd}`), b: J(`hand_${sd}`), bone: `forearm_${sd}`, count: 40, reach: 0.8, reject: armReject },
+      { a: J(`thigh_${sd}`), b: J(`shin_${sd}`), bone: `thigh_${sd}`, count: 32, reach: 0.9, reject: legReject },
+      { a: J(`shin_${sd}`), b: J(`foot_${sd}`), bone: `shin_${sd}`, count: 24, reach: 0.8, reject: legReject },
     );
   }
-  for (const z of zones) zoneWarts(proj, gear, { ...z, count: Math.round(z.count * density) }, rng, sc, col, 1);
+  for (const z of zones) zoneWarts(proj, gear, { ...z, count: Math.round(z.count * density) }, rng, sc);
 }
 
-/** coarse dark bristles rooted on the trapezius, shoulders and the crown (details tile "hair / bristles") */
+/** coarse dark bristles on the crown and the trapezius (details tile "hair / bristles"): a short, dense, slightly curved mat */
 export function caveBristles(ctx: KindContext, gear: GearFn, proj: Projector, bucket: number) {
   const { P } = ctx;
   const sc = P.s;
   const j = P.j;
   const rng = new Rng(8100 + bucket);
   const p = V(), n = V();
-  const tuft = (len: number, r: number, _bend: number) => spike(r, len, 3);
-  const put = (o: THREE.Vector3, d: THREE.Vector3, count: number, bone: string, lenMul = 1) => {
-    for (let i = 0; i < count; i++) {
-      const oo = o.clone().add(V(rng.range(-1, 1) * 0.35 * sc, rng.range(-0.1, 0.1) * sc, rng.range(-0.5, 0.2) * sc));
-      if (!proj.cast(oo, d, 1.2, p, n)) continue;
-      const len = rng.range(0.03, 0.065) * sc * lenMul;
-      const dir = n.clone().multiplyScalar(0.8).add(V(0, 0.5, -0.1)).normalize();
-      gear(tuft(len, 0.0045 * sc, 0.25), { bone, color: rng.float() < 0.5 ? TROLL_PAL.bristle : 0x3a3c30, mat: HIDE, matrix: placeAlong(p.clone().addScaledVector(n, -0.004 * sc), dir, V(0, 0, 1)), small: true });
-    }
+  const tuft = (bone: string, len: number) => {
+    const dir = n.clone().multiplyScalar(0.7).add(V(0, 0.55, -0.15)).normalize();
+    gear(spike(0.0042 * sc, len, 3, 0.3), { bone, color: rng.float() < 0.5 ? TROLL_PAL.bristle : 0x2e2a24, mat: HIDE, matrix: placeAlong(p.clone().addScaledVector(n, -0.004 * sc), dir, V(0, 0, 1)), small: true });
   };
-  // trapezius humps and the top of both shoulders, from above
-  for (const sx of [1, -1]) {
-    const o = V(sx * 0.52 * sc * P.build.shoulders, j.upperarm_l[1] + 0.45 * sc, -0.03 * sc);
-    put(o, V(0, -1, 0), 40, 'chest');
-  }
-  // a few coarse bristles on the crown and brow ridge ("sparse coarse bristles on scalp", hair detail tile)
-  for (let i = 0; i < 14; i++) {
+  // crown, over the skull from above (bone: head)
+  for (let i = 0; i < 22; i++) {
     const a = rng.range(0, Math.PI * 2);
-    const rr = rng.range(0.05, 0.3);
-    const o = V(...P.h(Math.sin(a) * rr, 0.9, Math.cos(a) * rr - 0.08));
+    const rr = rng.range(0.03, 0.32);
+    const o = V(...P.h(Math.sin(a) * rr, 0.95, Math.cos(a) * rr - 0.1));
     if (!proj.cast(o, V(0, -1, 0), 0.9 * P.headH, p, n)) continue;
-    gear(spike(0.0035 * sc, rng.range(0.015, 0.03) * sc, 3), { bone: 'head', color: 0x3c352c, mat: HIDE, matrix: placeAlong(p.clone().addScaledVector(n, -0.003 * sc), n.clone().add(V(0, 0.4, -0.2)).normalize(), V(0, 0, 1)), small: true });
+    tuft('head', rng.range(0.02, 0.04) * sc);
   }
-  // upper back between the shoulder blades, from behind
-  put(V(0, j.chest[1] + 0.02 * sc, -0.9 * sc), V(0, 0, 1), 26, 'chest', 0.8);
+  // trapezius humps, from above: only hits that really are on the torso/neck mass (not the arm below)
+  for (const sx of [1, -1]) {
+    for (let i = 0; i < 14; i++) {
+      const o = V(sx * rng.range(0.1, 0.34) * sc * P.build.shoulders, j.upperarm_l[1] + 0.5 * sc, rng.range(-0.25, 0.1) * sc);
+      if (!proj.cast(o, V(0, -1, 0), 1.2, p, n)) continue;
+      if (Math.abs(p.x) > 0.36 * sc * P.build.shoulders || p.y < j.upperarm_l[1] - 0.05 * sc) continue;
+      tuft('chest', rng.range(0.03, 0.06) * sc);
+    }
+  }
 }
 
 /** riveted iron band round the right ankle with a short chain hanging from its lug (detail tile "weapon / worn metal") */
@@ -136,6 +143,8 @@ export function ankleShackle(ctx: KindContext, gear: GearFn, proj: Projector) {
   const zf = march(0, 1);
   const zb = march(0, -1);
   const ox = (march(1, 0) - march(-1, 0)) / 2;
+  // no leg here (a zero-radius band would collapse to a point)
+  if (rx < 0.03 * sc || zf < 0.03 * sc || zb < 0.03 * sc) return;
   const h = 0.085 * sc;
   const thick = 0.012 * sc;
   const seg = 28;
@@ -148,21 +157,13 @@ export function ankleShackle(ctx: KindContext, gear: GearFn, proj: Projector) {
   geo.computeVertexNormals();
   geo.translate(cx + ox, y0, cz);
   gear(geo, { bone: `shin_${side}`, color: TROLL_PAL.shackle, mat: IRON_RUSTY, ao: 0.85 });
-  // flat rims top and bottom (the band is a strap, not a tube)
-  for (const sgn of [-1, 1]) {
-    const rim = new THREE.TorusGeometry(1, 0.0075 * sc, 4, seg).rotateX(Math.PI / 2);
-    const rp = rim.attributes.position as THREE.BufferAttribute;
-    for (let i = 0; i < rp.count; i++) rp.setXYZ(i, rp.getX(i) * (rx + thick), rp.getY(i), rp.getZ(i) * ((rp.getZ(i) > 0 ? zf : zb) + thick));
-    rim.translate(cx + ox, y0 + sgn * h / 2, cz);
-    gear(rim, { bone: `shin_${side}`, color: TROLL_PAL.shackle, mat: IRON_RUSTY, small: true });
-  }
   // rivet heads along the band's front
   for (let i = 0; i < 4; i++) {
     const a = (i - 1.5) * 0.42;
     const px = cx + ox + Math.sin(a) * (rx + thick);
     const pz = cz + Math.cos(a) * (zf + thick);
     const nn = V(Math.sin(a), 0, Math.cos(a)).normalize();
-    gear(rivet(0.009 * sc, 6), { bone: `shin_${side}`, color: 0x7a6048, mat: IRON_RUSTY, matrix: placeAlong(V(px, y0 + (i % 2 ? 0.02 : -0.02) * sc, pz), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+    gear(rivet(0.009 * sc, 6), { bone: `shin_${side}`, color: 0x8a6a4a, mat: IRON_RUSTY, matrix: placeAlong(V(px, y0 + (i % 2 ? 0.02 : -0.02) * sc, pz), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
   }
   // lug and ring on the outer side, chain hanging from it (short, ends in a broken link)
   const lugA = V(cx + ox - (rx + thick) * 0.98, y0 - h * 0.35, cz + zf * 0.25);

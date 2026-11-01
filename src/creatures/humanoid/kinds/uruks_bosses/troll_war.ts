@@ -183,10 +183,10 @@ export function warHelm(ctx: KindContext, gear: GearFn, bucket: number) {
       0.012 * sc,
       { outerOnly: true, noInner: false, thickFn: (_u, v) => 1 + 0.5 * (1 - smooth(0, 0.1, v)) },
     );
-    gear(cheek, { bone: 'head', color: TROLL_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
+    gear(cheek, { bone: 'head', color: TROLL_PAL.iron, mat: IRON, ao: 0.85 });
     for (let k = 0; k < 4; k++) {
       const q = H(side * 0.33, -0.05 - k * 0.12, 0.17);
-      gear(rivet(0.009 * sc, 5), { bone: 'head', color: 0x6a5a4a, mat: IRON, matrix: placeAlong(q, V(side, 0, 0.3), V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+      gear(rivet(0.009 * sc, 5), { bone: 'head', color: TROLL_PAL.rust, mat: IRON_RUSTY, matrix: placeAlong(q, V(side, 0, 0.3), V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
     }
   }
 }
@@ -226,28 +226,27 @@ export function warHarness(ctx: KindContext, gear: GearFn, proj: Projector, belt
   const th = 0.014 * sc;
   const bone = (y: number) => (y > j.chest[1] - 0.08 * sc ? 'chest' : 'spine');
 
-  const plate = (a0: number, a1: number, na: number, back: boolean) => {
-    const g = surfaceGrid(proj, a0, a1, yTop, yBot, na, 8, lift);
+  // one continuous shell (no stacked bands): a smooth plate with a centre ridge and rivets along its edges
+  const plate = (a0: number, a1: number, na: number) => {
+    const g = surfaceGrid(proj, a0, a1, yTop, yBot, na, 10, lift);
     gear(gridPlate(g, th), { bone: 'chest', color: TROLL_PAL.plate, mat: IRON, ao: 0.85 });
-    // horizontal lames: raised bands through the lower rows
-    for (const jr of [4, 6]) {
-      gear(ribbonThrough(g.P[jr], g.N[jr], th, 0.036 * sc, 0.01 * sc), { bone: bone(g.P[jr][0].y), color: TROLL_PAL.plate, mat: IRON, small: true });
-    }
     // centre ridge
     const col = Math.round(na / 2);
     const cp = g.P.map((r) => r[col]);
     const cn = g.N.map((r) => r[col]);
     gear(ribbonThrough(cp, cn, th, 0.026 * sc, 0.012 * sc), { bone: 'chest', color: TROLL_PAL.iron, mat: IRON, small: true });
-    // rivets along both side edges and the top
-    for (let jr = 1; jr < 8; jr += 3) {
+    // rivets along both side edges
+    for (let jr = 1; jr < 10; jr += 3) {
       for (const ci of [1, na - 1]) {
-        gear(rivet(0.0085 * sc, 5), { bone: bone(g.P[jr][ci].y), color: 0x6a5a4a, mat: IRON, matrix: placeAlong(g.P[jr][ci].clone().addScaledVector(g.N[jr][ci], th), g.N[jr][ci], V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+        gear(rivet(0.0085 * sc, 5), { bone: bone(g.P[jr][ci].y), color: TROLL_PAL.rust, mat: IRON_RUSTY, matrix: placeAlong(g.P[jr][ci].clone().addScaledVector(g.N[jr][ci], th), g.N[jr][ci], V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
       }
     }
+    // rust only as a streak along the lower edge
+    gear(ribbonThrough(g.P[10], g.N[10], th, 0.02 * sc, 0.008 * sc), { bone: bone(g.P[10][0].y), color: TROLL_PAL.rust, mat: IRON_RUSTY, small: true });
     return g;
   };
-  const front = plate(-1.3, 1.3, 14, false);
-  plate(Math.PI - 1.3, Math.PI + 1.3, 12, true);
+  const front = plate(-1.3, 1.3, 14);
+  plate(Math.PI - 1.3, Math.PI + 1.3, 12);
 
   // crossed leather straps over the front plate (shoulder → opposite side of the waist)
   for (const sx of [1, -1]) {
@@ -331,7 +330,7 @@ export function warFootWraps(ctx: KindContext) {
   const sc = P.s;
   const j = P.j;
   const parts = anatomyParts(P);
-  const top = greaveBottom(ctx) + 0.03 * sc;
+  const top = greaveBottom(ctx) + 0.04 * sc;
   s.group('union', 0.006 * sc, () => {
     emitParts(s, parts, ['foot', 'toes'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.03 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
     emitParts(s, parts, ['shin', 'calf'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.03 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
@@ -349,7 +348,7 @@ export function warFootWraps(ctx: KindContext) {
 
 export function greaveBottom(ctx: KindContext): number {
   const { P } = ctx;
-  return P.ankleH + 0.16 * P.s;
+  return P.ankleH + 0.1 * P.s;
 }
 
 export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
@@ -367,7 +366,7 @@ export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
       return [f.x + (kn.x - f.x) * t, f.z + (kn.z - f.z) * t] as const;
     };
     const lift = 0.016 * sc;
-    const nrows = 6;
+    const nrows = 8;
     // gather a grid whose centre line follows the shin axis row by row
     const P2: THREE.Vector3[][] = [], N2: THREE.Vector3[][] = [];
     const na = 14;
@@ -394,15 +393,16 @@ export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
     const bone = `shin_${sd}`;
     gear(gridPlate(g, 0.014 * sc, { closedU: true, thickFn: (_u, v) => 1 + 0.6 * (1 - smooth(0, 0.1, v)) }), { bone, color: TROLL_PAL.ironDark, mat: IRON_DARK, ao: 0.85 });
     // two leather straps round the greave with iron buckles on the outside
-    for (const rr of [2, 5]) {
+    for (const rr of [2, 6]) {
       gear(ribbonThrough(P2[rr], N2[rr], 0.014 * sc, 0.034 * sc, 0.01 * sc), { bone, color: TROLL_PAL.leather, mat: STRAP, small: true });
-      const ob = Math.round(na * (sd === 'l' ? 0.75 : 0.25));
+      // azimuth 0 = front, + toward +X: the outer side of the left leg (+X) is a quarter turn, the right leg's three quarters
+      const ob = Math.round(na * (sd === 'l' ? 0.25 : 0.75));
       gear(hexBolt(0.018 * sc, 0.016 * sc), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(P2[rr][ob].clone().addScaledVector(N2[rr][ob], 0.024 * sc), N2[rr][ob], V(0, 1, 0)), small: true });
     }
     // spikes up the outer side and a row of rivets along the front splint
     for (let k = 0; k < 4; k++) {
       const rr = 1 + k * 2 - (k === 3 ? 1 : 0);
-      const ci = Math.round(na * (sd === 'l' ? 0.78 : 0.22));
+      const ci = Math.round(na * (sd === 'l' ? 0.25 : 0.75));
       const p = P2[rr][ci].clone().addScaledVector(N2[rr][ci], 0.012 * sc);
       gear(spike(0.02 * sc, (k === 3 ? 0.13 : 0.1) * sc, 5), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(p, N2[rr][ci], V(0, 0, 1)), small: true });
     }
@@ -425,7 +425,11 @@ export function warBracers(ctx: KindContext, gear: GearFn, proj: Projector) {
     axis.normalize();
     const lift = 0.014 * sc;
     const na = 14, nr = 5;
-    const [u, w] = [V(sx, 0, 0).sub(axis.clone().multiplyScalar(axis.x * sx)).normalize(), V(0, 0, 1)];
+    // outward direction perpendicular to the forearm (guard the degenerate case of an arm lying along X)
+    const u = V(sx, 0, 0).sub(axis.clone().multiplyScalar(axis.x * sx));
+    if (u.lengthSq() < 1e-6) u.set(0, 0, 1);
+    u.normalize();
+    const w = new THREE.Vector3().crossVectors(axis, u).normalize();
     const Pg: THREE.Vector3[][] = [], Ng: THREE.Vector3[][] = [];
     const p = V(), n = V();
     const t0 = 0.08, t1 = 0.92;
@@ -451,90 +455,14 @@ export function warBracers(ctx: KindContext, gear: GearFn, proj: Projector) {
     }
     const g: Grid = { P: Pg, N: Ng, na, ny: nr };
     const bone = `forearm_${sd}`;
-    gear(gridPlate(g, 0.016 * sc, { closedU: true, thickFn: (_u, v) => 1 + 0.8 * (1 - smooth(0, 0.08, Math.min(v, 1 - v))) }), { bone, color: TROLL_PAL.bracer, mat: IRON_RUSTY, ao: 0.85 });
-    // iron rings at both ends and the middle, rivet rows
-    for (const rr of [0, 3, nr]) gear(ribbonThrough(Pg[rr], Ng[rr], 0.016 * sc, 0.03 * sc, 0.012 * sc), { bone, color: TROLL_PAL.iron, mat: IRON, small: true });
-    // spikes along the outer side (away from the body) in two rows
-    const outI = 0; // the cast direction `u` points outward along +x for the left forearm
-    for (let r = 1; r < nr; r++) {
-      for (const ci of [outI, 2, na - 2]) {
-        const pp = Pg[r][ci].clone().addScaledVector(Ng[r][ci], 0.014 * sc);
-        gear(spike(0.017 * sc, ci === outI ? 0.11 * sc : 0.07 * sc, 5), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(pp, Ng[r][ci], V(0, 0, 1)), small: true });
-      }
+    gear(gridPlate(g, 0.016 * sc, { closedU: true, thickFn: (_u, v) => 1 + 0.8 * (1 - smooth(0, 0.08, Math.min(v, 1 - v))) }), { bone, color: TROLL_PAL.bracer, mat: IRON, ao: 0.85 });
+    // iron rings at both ends and the middle (rust as an edge accent on the end rings)
+    for (const rr of [0, 3, nr]) gear(ribbonThrough(Pg[rr], Ng[rr], 0.016 * sc, 0.03 * sc, 0.012 * sc), { bone, color: rr === 3 ? TROLL_PAL.iron : TROLL_PAL.rust, mat: rr === 3 ? IRON : IRON_RUSTY, small: true });
+    // a few spikes along the outer ridge, standing along the surface normal (away from the body)
+    const outI = 0; // the cast direction `u` points outward for either forearm
+    for (const r of [1, 2, 4]) {
+      const pp = Pg[r][outI].clone().addScaledVector(Ng[r][outI], 0.014 * sc);
+      gear(spike(0.017 * sc, 0.1 * sc, 5), { bone, color: TROLL_PAL.iron, mat: IRON, matrix: placeAlong(pp, Ng[r][outI], V(0, 0, 1)), small: true });
     }
   }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// the hammer
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * The shared warhammer prop is a small box on a haft; at troll size the sheet's block head (about 0.75 x 0.45 x
- * 0.45 m, spiked, banded) needs a bigger head. A marker in the hand socket finds the held `warhammer` object the
- * first time it updates, scales the haft (`S`, haft thicker and shorter) and hangs the big head on it, in
- * unscaled weapon units (the prop's own small head is inside the block).
- */
-export function bigHammerHead(ctx: KindContext, hand: 'hand_r' | 'hand_l', size: [number, number, number], S: [number, number, number]) {
-  ctx.object(
-    () => {
-      const g = new THREE.Group();
-      g.name = 'hammer_head_marker';
-      g.updateMatrixWorld = function (force?: boolean) {
-        const par = this.parent;
-        if (par) {
-          for (const c of par.children) {
-            if (c !== this && c.userData.kind === 'warhammer' && !c.userData.bigHead) {
-              c.userData.bigHead = true;
-              c.scale.set(c.scale.x * S[0], c.scale.y * S[1], c.scale.z * S[2]);
-              const h = makeHammerHead(size);
-              h.position.set(0.045, 0.8, 0);
-              h.scale.set(1 / S[0], 1 / S[1], 1 / S[2]);
-              c.add(h);
-            }
-          }
-        }
-        THREE.Object3D.prototype.updateMatrixWorld.call(this, force);
-      };
-      return g;
-    },
-    { socket: hand },
-  );
-}
-
-function makeHammerHead(size: [number, number, number]): THREE.Object3D {
-  const [sx, sy, sz] = size;
-  const grp = new THREE.Group();
-  grp.name = 'war_hammer_head';
-  const iron = new THREE.MeshStandardMaterial({ color: 0x4a4440, roughness: 0.55, metalness: 0.85 });
-  const dark = new THREE.MeshStandardMaterial({ color: 0x2c2420, roughness: 0.7, metalness: 0.7 });
-  const spk = new THREE.MeshStandardMaterial({ color: 0x5a524a, roughness: 0.5, metalness: 0.9 });
-  grp.add(new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), iron));
-  // two iron collars near the ends and the haft's binding below the head
-  for (const s of [-1, 1]) {
-    const band = new THREE.Mesh(new THREE.BoxGeometry(sx * 0.08, sy * 1.08, sz * 1.08), dark);
-    band.position.x = s * sx * 0.3;
-    grp.add(band);
-  }
-  const bind = new THREE.Mesh(new THREE.CylinderGeometry(sy * 0.2, sy * 0.2, sy * 0.2, 8), dark);
-  bind.position.y = -sy * 0.5;
-  grp.add(bind);
-  // studs: a spike on every face (two on the long sides), the end faces carry one big one
-  const cone = (r: number, h: number) => new THREE.ConeGeometry(r, h, 4);
-  const add = (geo: THREE.BufferGeometry, pos: [number, number, number], rot: [number, number, number]) => {
-    const m = new THREE.Mesh(geo, spk);
-    m.position.set(...pos);
-    m.rotation.set(...rot);
-    grp.add(m);
-  };
-  const h = sy * 0.3;
-  for (const o of [-0.2, 0.2]) {
-    add(cone(sy * 0.1, h), [o * sx, 0, sz / 2 + h / 2], [Math.PI / 2, 0, 0]);
-    add(cone(sy * 0.1, h), [o * sx, 0, -sz / 2 - h / 2], [-Math.PI / 2, 0, 0]);
-    add(cone(sy * 0.1, h), [o * sx, sy / 2 + h / 2, 0], [0, 0, 0]);
-    add(cone(sy * 0.1, h), [o * sx, -sy / 2 - h / 2, 0], [Math.PI, 0, 0]);
-  }
-  add(cone(sy * 0.14, h * 1.2), [sx / 2 + h * 0.6, 0, 0], [0, 0, -Math.PI / 2]);
-  add(cone(sy * 0.14, h * 1.2), [-sx / 2 - h * 0.6, 0, 0], [0, 0, Math.PI / 2]);
-  return grp;
 }

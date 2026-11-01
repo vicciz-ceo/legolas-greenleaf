@@ -8,21 +8,21 @@
  *                 pointed helm, breast and back plates with crossed straps, huge spiked pauldrons, spiked
  *                 vambraces, strapped greaves over wrapped feet, a double belt with a ring buckle over a
  *                 leather kilt, and a spiked block warhammer in the right hand.
- * Chapter authors: `trollSeed('cave' | 'war')` gives a seed for each look; pass `weapon: 'warhammer'`
- * for the war troll (the KindDef default is the club).
+ * Chapter authors: pass `weapon: 'warhammer'` for the war troll (the KindDef default is the club); `trollVariant(seed)` tells the looks apart.
  *
  * Files: `troll_pal.ts` (palette, surfaces), `troll_cave.ts` (warts, bristles, shackle), `troll_war.ts`
- * (helm, plates, belts, limb armour, hammer head).
+ * (helm, plates, belts, limb armour); `troll_weapon.ts` hangs the held club or hammer at the side.
  */
 import * as THREE from 'three';
 import type { KindContext, KindDef } from '../../types';
 import { surface } from '../../../kit/surfaces';
-import { V, bucketOf, gearOf, makeProjector, spike, placeAlong, scaleHeldWeapon, type GearFn } from './common';
+import { V, bucketOf, gearOf, makeProjector, spike, placeAlong, type GearFn } from './common';
 import { skinOpts } from './body';
 import { pauldron } from './uruk';
-import { TROLL_PAL, HIDE } from './troll_pal';
+import { TROLL_PAL, HIDE, HEAD_SKIN } from './troll_pal';
+import { fitHeldWeapon } from './troll_weapon';
 import { caveWarts, caveBristles, ankleShackle } from './troll_cave';
-import { warHelm, warMane, warHarness, warBelts, trollBelt, warFootWraps, warGreaves, warBracers, bigHammerHead } from './troll_war';
+import { warHelm, warMane, warHarness, warBelts, trollBelt, warFootWraps, warGreaves, warBracers } from './troll_war';
 
 export { TROLL_PAL };
 
@@ -39,8 +39,9 @@ const TROLL_FACE = {
   cheekbones: 1.0,
   nose: { length: 0.9, width: 1.7, bridge: 0.5, hook: 0, tip: 1.4, flat: 0.9 },
   lips: { width: 1.3, fullness: 0.7 },
-  ears: 'small' as const,
-  earSize: 0.9,
+  // big pointed ears (cave sheet face views)
+  ears: 'orc' as const,
+  earSize: 1.25,
   eyeSize: 1.2,
   eyeSpacing: 0.95,
   eyeTilt: -0.12,
@@ -56,9 +57,10 @@ const TROLL_FACE = {
 // body
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** belt height (m) from the sheets' calibrated rows: cave 2.2 m, war 2.74 m (longer legs and a higher waist), scaled with the troll */
+/** belt height (m): just above the hip joints for the cave troll, a hand's breadth higher for the war troll (sheet rows: cave 2.2 m,
+ *  war 2.74 m over a leg of 2.0 / 2.25 m) */
 function beltHeight(ctx: KindContext, variant: TrollVariant): number {
-  return (variant === 'war' ? 2.74 : 2.2) * (ctx.P.H / 4.52);
+  return ctx.P.j.thigh_l[1] + (variant === 'war' ? 0.2 : 0.08) * ctx.P.s;
 }
 
 function trollBody(ctx: KindContext, variant: TrollVariant) {
@@ -85,15 +87,15 @@ function trollBody(ctx: KindContext, variant: TrollVariant) {
     // war troll: the waist between the hip joints and the high belt
     if (variant === 'war' && beltY > hipY + 0.1 * sc) s.ellipsoid([0, (hipY + beltY) / 2, 0.0], [0.19 * sc * g, (beltY - hipY) / 2 + 0.05 * sc, 0.15 * sc * g], { bone: 'spine', k: 0.1 * sc });
     // trapezius / neck hump: the head sits forward between two sloping masses that rise toward the ears
-    s.ellipsoid([0, j.neck[1] - 0.01 * sc, -0.08 * sc], [0.19 * sc * g, 0.1 * sc, 0.13 * sc * g], { bone: 'chest', k: 0.1 * sc });
-    s.mirrored(() => s.cone([0.06 * sc, j.neck[1] + 0.02 * sc, -0.03 * sc], [0.2 * sc * P.build.shoulders, shY + 0.03 * sc, -0.02 * sc], 0.1 * sc, 0.085 * sc, { bone: 'chest', bone2: 'shoulder_l', blend: [0.6, 1], k: 0.1 * sc }));
+    s.ellipsoid([0, j.neck[1] + 0.02 * sc, -0.09 * sc], [0.22 * sc * g, 0.14 * sc, 0.15 * sc * g], { bone: 'chest', k: 0.12 * sc });
+    s.mirrored(() => s.cone([0.07 * sc, j.neck[1] + 0.05 * sc, -0.04 * sc], [0.2 * sc * P.build.shoulders, shY + 0.04 * sc, -0.02 * sc], 0.12 * sc, 0.09 * sc, { bone: 'chest', bone2: 'shoulder_l', blend: [0.6, 1], k: 0.1 * sc }));
     // deltoids and arms
     s.mirrored(() => {
       const c: [number, number, number] = [j.upperarm_l[0] + L.x * 0.05 * sc, j.upperarm_l[1] + L.y * 0.05 * sc + 0.02 * sc, j.upperarm_l[2]];
       s.ellipsoid(c, [0.11 * sc * g, 0.12 * sc, 0.1 * sc * g], { bone: 'upperarm_l', k: 0.08 * sc, rot: [0, 0, 0.6] });
       const a: [number, number, number] = [j.forearm_l[0] + L.x * 0.05 * sc, j.forearm_l[1] + L.y * 0.05 * sc, j.forearm_l[2]];
       const b: [number, number, number] = [j.hand_l[0] - L.x * 0.08 * sc, j.hand_l[1] - L.y * 0.08 * sc, j.hand_l[2]];
-      s.cone(a, b, 0.09 * sc * g, 0.055 * sc * g, { bone: 'forearm_l', k: 0.06 * sc });
+      s.cone(a, b, 0.085 * sc * g, 0.045 * sc * g, { bone: 'forearm_l', k: 0.06 * sc });
     });
     // big flat feet: fill the gap between the ankle and the toe plate
     s.mirrored(() => {
@@ -114,24 +116,20 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
   const H = (x: number, y: number, z: number) => P.h(x, y, z);
-  const sk = skinOpts(ctx);
+  // the head gets the finer pore pattern instead of the body's mud-crack look
+  const sk = { ...skinOpts(ctx), mat: HEAD_SKIN };
   s.with({ ...sk, bone: 'head', k: 0.05 * u }, () => {
     // brow shelf
     s.mirrored(() => s.cone(H(0.2, 0.01, 0.3), H(0.02, 0.03, 0.43), 0.07 * u, 0.065 * u, { k: 0.08 * u }));
     // cheek masses
     s.mirrored(() => s.ellipsoid(H(0.2, -0.2, 0.2), [0.12 * u, 0.1 * u, 0.12 * u], { k: 0.08 * u }));
     // wide flat nose
-    s.ellipsoid(H(0, -0.21, 0.46), [0.12 * u, 0.09 * u, 0.07 * u], { k: 0.05 * u });
+    s.ellipsoid(H(0, -0.2, 0.46), [0.12 * u, 0.08 * u, 0.05 * u], { k: 0.06 * u });
   });
   s.with({ ...sk, bone: 'jaw', k: 0.06 * u }, () => {
     // massive lower jaw jutting forward
     s.ellipsoid(H(0, -0.5, 0.36), [0.26 * u, 0.12 * u, 0.2 * u], { k: 0.09 * u });
     s.mirrored(() => s.cone(H(0.2, -0.36, 0.1), H(0.12, -0.55, 0.38), 0.075 * u, 0.07 * u, { k: 0.08 * u }));
-  });
-  // fleshy ears
-  s.with({ ...sk, bone: 'head', k: 0.05 * u }, () => {
-    s.mirrored(() => s.ellipsoid(H(0.36, -0.08, -0.03), [0.05 * u, 0.14 * u, 0.085 * u], { rot: [-0.2, 0.35, 0] }));
-    s.mirrored(() => s.sphere(H(0.37, -0.22, -0.01), 0.04 * u, { k: 0.04 * u }));
   });
   // re-open the eye sockets after the brow and cheek masses
   const ex = 0.135 * 0.95;
@@ -141,16 +139,16 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
     s.ellipsoid([c[0], c[1] + 0.2 * eR, c[2] + 0.9 * eR], [1.7 * eR, 1.15 * eR, 1.7 * eR], { op: 'subtract', k: 0.9 * eR, bone: 'head' });
   });
   // lower tusks, cream, rising from the under-slung jaw (face sheet: short and blunt)
-  s.mirrored(() => s.cone(H(0.14, -0.45, 0.46), H(0.155, -0.27, 0.5), 0.04 * u, 0.014 * u, { bone: 'jaw', color: TROLL_PAL.tusk, mat: 'teeth', k: 0.01 * u }));
+  s.mirrored(() => s.cone(H(0.14, -0.45, 0.46), H(0.155, -0.31, 0.5), 0.04 * u, 0.016 * u, { bone: 'jaw', color: TROLL_PAL.tusk, mat: 'teeth', k: 0.01 * u }));
   // nose, ears and the cheeks over the cheekbones are pinker than the hide (face sheet)
-  const pink = { op: 'paint' as const, color: TROLL_PAL.nose, mat: 'skin_troll' as const, bone: 'head', strength: 0.55 };
-  s.ellipsoid(H(0, -0.2, 0.5), [0.1 * u, 0.1 * u, 0.1 * u], { ...pink, k: 0.05 * u });
-  s.mirrored(() => s.ellipsoid(H(0.37, -0.1, -0.03), [0.07 * u, 0.15 * u, 0.1 * u], { ...pink, k: 0.04 * u }));
-  s.mirrored(() => s.ellipsoid(H(0.2, -0.2, 0.3), [0.09 * u, 0.07 * u, 0.06 * u], { ...pink, strength: 0.35, k: 0.06 * u }));
+  const pink = { op: 'paint' as const, color: TROLL_PAL.nose, mat: HEAD_SKIN, bone: 'head', strength: 0.35 };
+  s.ellipsoid(H(0, -0.2, 0.48), [0.1 * u, 0.09 * u, 0.08 * u], { ...pink, k: 0.05 * u });
+  s.mirrored(() => s.ellipsoid(H(0.38, -0.12, -0.03), [0.09 * u, 0.2 * u, 0.12 * u], { ...pink, color: TROLL_PAL.ear, strength: 0.7, k: 0.04 * u }));
+  s.mirrored(() => s.ellipsoid(H(0.2, -0.2, 0.3), [0.09 * u, 0.07 * u, 0.06 * u], { ...pink, color: TROLL_PAL.ear, strength: 0.25, k: 0.06 * u }));
   if (variant === 'cave') {
     // warts on the face
     for (const [x, y, z, r] of [[0.1, 0.08, 0.35, 0.03], [-0.14, -0.2, 0.34, 0.028], [0.22, -0.22, 0.26, 0.032], [-0.04, 0.2, 0.3, 0.025]] as [number, number, number, number][]) {
-      s.sphere(H(x, y, z), r * u, { color: TROLL_PAL.wart, mat: 'skin_troll', bone: 'head', k: 0.02 * u });
+      s.sphere(H(x, y, z), r * u, { color: TROLL_PAL.wart, mat: HEAD_SKIN, bone: 'head', k: 0.02 * u });
     }
   }
 }
@@ -193,18 +191,21 @@ function trollExtras(ctx: KindContext) {
     // the war sheet's hide is dark warm brown (lit sample #4a3424); tint the whole body
     s.ellipsoid([0, P.H / 2, 0], [2.6 * sc, P.H * 0.7, 2.6 * sc], { op: 'paint', color: bucket === 3 ? 0x362920 : TROLL_PAL.warSkin, color2: TROLL_PAL.warSkin2, colorNoise: 0.45, colorFreq: 2.5 / sc, mat: 'skin_troll', strength: 1, k: 0.2 * sc });
     if (ctx.armor >= 0.25) warFootWraps(ctx);
+  } else {
+    // the cave troll's belly and chest are paler and pinker than his back
+    s.ellipsoid([0, beltY + 0.35 * sc, 0.3 * sc], [0.3 * sc, 0.4 * sc, 0.3 * sc], { op: 'paint', color: TROLL_PAL.belly, mat: 'skin_troll', strength: 0.3, k: 0.12 * sc });
   }
 
   const proj = makeProjector(s, box);
   if (!proj) return;
   trollHands(ctx, gear);
   if (variant === 'cave') {
-    caveWarts(ctx, gear, proj, bucket, 0.55);
+    caveWarts(ctx, gear, proj, bucket, 0.6);
     caveBristles(ctx, gear, proj, bucket);
     ankleShackle(ctx, gear, proj);
     trollBelt(ctx, gear, proj, beltY, { width: 0.085 });
-    // the club (sheet): a huge knobbly head, 2.5 m overall
-    scaleHeldWeapon(ctx, 'hand_r', ['club'], [1.55, 0.92, 1.55]);
+    // the club hangs at the side, shaft ~25 deg off vertical, with a big knobbly head (sheet: 2.5 m overall)
+    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.6, 0.62, 1.6], out: 25, fwd: 8 });
   } else {
     if (ctx.helmet) warHelm(ctx, gear, bucket);
     warMane(ctx, gear, proj, bucket);
@@ -215,15 +216,17 @@ function trollExtras(ctx: KindContext) {
       warGreaves(ctx, gear, proj);
       warBracers(ctx, gear, proj);
     }
-      // the war sheet's spaulders ride higher than the joint (spike tips at about 4.3 m): lift them as they are built
-      const lift = new THREE.Matrix4().makeTranslation(0, 0.06 * sc, 0);
-      const liftedGear: GearFn = (geo, o) => gear(geo, { ...o, matrix: o.matrix ? lift.clone().multiply(o.matrix) : lift });
     if (ctx.armor >= 0.5) {
-      pauldron(ctx, liftedGear, 1, { lames: 3, spikes: 5, scale: 1.6, rusty: false, color: TROLL_PAL.pauldron, reach: 2.2, half: 80, ry: 1.0 });
-      pauldron(ctx, liftedGear, -1, { lames: 3, spikes: 5, scale: 1.6, rusty: false, color: TROLL_PAL.pauldron, reach: 2.2, half: 80, ry: 1.0 });
+      // spaulders: stacked flat lames with a crown of rim spikes, riding a little above the joint
+      const lift = new THREE.Matrix4().makeTranslation(0, 0.05 * sc, 0);
+      const liftedGear: GearFn = (geo, o) => gear(geo, { ...o, matrix: o.matrix ? lift.clone().multiply(o.matrix) : lift });
+      const pd = { lames: 4, spikes: 6, scale: 1.9, rusty: false, color: TROLL_PAL.pauldron, reach: 1.5, half: 64, ry: 0.8 };
+      pauldron(ctx, liftedGear, 1, pd);
+      pauldron(ctx, liftedGear, -1, pd);
     }
     caveWarts(ctx, gear, proj, bucket + 10, 0.08);
-    bigHammerHead(ctx, 'hand_r', [0.36, 0.2, 0.2], [1.3, 0.8, 1.3]);
+    // the warhammer: a heavier haft, hanging at the side like the club
+    fitHeldWeapon(ctx, 'hand_r', ['warhammer'], { scale: [2.2, 0.72, 2.2], out: 22, fwd: 8 });
   }
 }
 
@@ -231,14 +234,15 @@ export const trollKind: KindDef = {
   label: 'Troll',
   // crown height of the 4.5 m sheets once the hunch has taken its share (the war troll's helm rises to 4.95 m)
   height: 4.52,
-  build: { shoulders: 1.85, hips: 1.7, bulk: 1.45, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 0.93, headSize: 1.3, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 1.45, footSize: 1.45, muscle: 0.6 },
+  build: { shoulders: 1.6, hips: 1.45, bulk: 1.35, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 1.03, headSize: 1.38, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 1.6, footSize: 1.2, muscle: 0.6 },
   face: TROLL_FACE,
   skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.45, blemish: 0.5, scars: 3, warts: 0.38, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3a2c, surface: 'skin_troll', scatter: TROLL_PAL.scatter },
   eyes: { color: TROLL_PAL.eyes, glow: 0.2, sclera: 0xa8a070 },
-  hair: { style: 'bald', color: TROLL_PAL.bristle },
+  // no scalp cap: the bristles are separate strands (the cave sheet shows sparse coarse hair, the war helm covers the crown)
+  hair: null,
   // knee-length ragged kilt on a broad leather belt at the waist (both sheets)
   outfit: [
-    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.84, mat: 'rags', thickness: 0.075, tatter: 0.02 },
+    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.88, mat: 'rags', thickness: 0.075, tatter: 0.025 },
   ],
   armor: [],
   weapons: { right: 'club' },
