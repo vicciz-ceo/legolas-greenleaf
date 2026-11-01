@@ -27,6 +27,18 @@ export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: nu
   const top = j.neck[1] + 0.005 * sc;
   const bottom = P.ankleH + (1 - o.length) * (j.shin_l[1] - P.ankleH) * 1.8;
   const zc = -0.03 * sc;
+  // squeeze the last quad row to a 3 cm hem band (the sheet's colour lerps from the row above to the trim row), so the trim is a
+  // narrow border rather than a 5-10 cm haze
+  {
+    const row = 17; // the kit cloak sheet has 16 columns
+    const rows = Math.round(pos.count / row);
+    // (the kit colours the last two rows (v > 0.96) with the trim: pull the three last rows together)
+    for (let iu = 0; iu < row; iu++) {
+      const y = pos.getY((rows - 1) * row + iu);
+      pos.setY((rows - 2) * row + iu, y + 0.03 * sc);
+      pos.setY((rows - 3) * row + iu, y + 0.06 * sc);
+    }
+  }
   for (let i = 0; i < pos.count; i++) {
     const t = Math.min(1, Math.max(0, (top - pos.getY(i)) / (top - bottom)));
     const f = Math.min(1, Math.max(0, (t - 0.2) / 0.8));
@@ -40,6 +52,9 @@ export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: nu
     pos.setZ(i, pos.getZ(i) + Math.cos(ang) * fold);
   }
   geo.computeVertexNormals();
+  // the kit's automatic edge wear lightens a cloth edge to a tan haze on dark wool: keep the border to the trim colour alone
+  const seam = geo.attributes.seam;
+  if (seam) for (let i = 0; i < seam.count; i++) seam.setX(i, -0.03);
   attachSkinned(ctx, geo, 'body', { small: false, name: 'cloak' });
   if (o.hood) {
     // a small hood bunched at the back of the neck
@@ -124,7 +139,7 @@ export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: 
   };
   const r = (v: number) => v * h * 0.1 * o.thin;
   const geos: THREE.BufferGeometry[] = [];
-  const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length * 2, radial: 4 }));
+  const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length, radial: 4 }));
   // trunk and roots
   stroke([[0, base + 0.03 * h], [0, base + 0.2 * h], [0, base + 0.42 * h]], 0.2, 0.1);
   for (const sx of [-1, 1]) stroke([[sx * 0.01 * h, base + 0.07 * h], [sx * 0.07 * h, base + 0.03 * h], [sx * 0.16 * h, base - 0.005 * h]], 0.12, 0.04);
@@ -160,7 +175,7 @@ export function helmWings(ctx: KindContext, o: { root: number; tip: number; mat:
   const geos: THREE.BufferGeometry[] = [];
   const rootC = new THREE.Color().setHex(o.root, THREE.SRGBColorSpace);
   const tipC = new THREE.Color().setHex(o.tip, THREE.SRGBColorSpace);
-  const feathers = 6;
+  const feathers = 5;
   let y0 = Infinity;
   let y1 = -Infinity;
   for (const sx of [1, -1]) {

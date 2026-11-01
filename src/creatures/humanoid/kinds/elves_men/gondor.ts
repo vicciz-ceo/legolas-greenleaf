@@ -46,9 +46,9 @@ const PAL = {
   tunic: 0x23252b, // Boromir: blue-grey wool #474f64, observed #383537 (it renders much lighter than the albedo)
   tunicTrim: 0x84704a, // bronze embroidery
   cloak: 0x1f2024, // #383837, observed #413731: opaque dark twill
-  cloakTrim: 0x6b5a44, // 3-4 cm bronze hem trim
+  cloakTrim: 0x6b5a44, // 3 cm bronze hem trim
   fur: 0x4a3a2c, // coarse fur: dark brown base with pale tips (#786451, observed #5e4639)
-  fur2: 0x8a7358,
+  fur2: 0x6d5a45,
   bracers: 0x5a4332, // engraved brown leather #614d37, observed #554744
   bronze: 0x8a7550,
   ivory: 0xd9ceb4,
@@ -60,7 +60,7 @@ const WOOL_TUNIC = surface('twill', { rough: 0.88, sheen: 0.3 });
 const WOOL_BLACK = surface('twill', { rough: 0.9, sheen: 0.35, pat: { weave: -0.7 } });
 const CLOAK_WOOL = surface('twill', { rough: 0.95, sheen: 0.1 });
 /** worn pewter plate (greaves, pauldrons, helm): darker than polished steel, with scratches */
-const PEWTER = surface('metal', { rough: 0.45, metal: 0.92, pat: { scratches: 1.3, pores: 0.3 } });
+const PEWTER = surface('metal', { rough: 0.5, metal: 0.7, pat: { scratches: 1.3, pores: 0.3 } });
 /** belt height above the kit default (sheet: Boromir ~1.17 m, soldiers ~1.2 m) */
 const BELT_UP = 0.15;
 const LEATHER = surface('leather_worn', { rough: 0.66, sheen: 0.1 });
@@ -163,7 +163,7 @@ function elbowCouters(ctx: KindContext) {
   const sc = P.s;
   for (const sd of ['l', 'r'] as const) {
     const e = P.j[`forearm_${sd}`];
-    const geo = new THREE.SphereGeometry(1, 8, 5).scale(0.05 * sc, 0.046 * sc, 0.05 * sc).translate(e[0], e[1] + 0.004 * sc, e[2] - 0.012 * sc);
+    const geo = new THREE.SphereGeometry(1, 6, 4).scale(0.05 * sc, 0.046 * sc, 0.05 * sc).translate(e[0], e[1] + 0.004 * sc, e[2] - 0.012 * sc);
     put(ctx, geo, { bone: `forearm_${sd}`, color: PAL.pewter, mat: PEWTER, small: true });
   }
 }
@@ -175,7 +175,7 @@ function kneeCops(ctx: KindContext) {
   const g = Math.sqrt(P.build.bulk);
   for (const sd of ['l', 'r'] as const) {
     const k = P.j[`shin_${sd}`];
-    const geo = new THREE.SphereGeometry(1, 9, 6).scale(0.062 * sc * g, 0.05 * sc, 0.036 * sc).translate(k[0], k[1] + 0.006 * sc, k[2] + 0.052 * sc * g);
+    const geo = new THREE.SphereGeometry(1, 7, 4).scale(0.062 * sc * g, 0.05 * sc, 0.036 * sc).translate(k[0], k[1] + 0.006 * sc, k[2] + 0.052 * sc * g);
     put(ctx, geo, { bone: `shin_${sd}`, color: PAL.pewter, mat: PEWTER, small: true });
   }
 }
