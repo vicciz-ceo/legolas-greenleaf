@@ -893,6 +893,7 @@ export const chapter: ChapterDef = {
       if (!quick) await level.say('Legolas', 'The orcs are breaking. The battle is turning.', 3);
       else await level.wait(1.7);
       level.cameraShot(null);
+      await level.wait(0.5); // let the 0.6 s camera glide finish before control returns
       level.cinematic(false);
       level.complete();
     }

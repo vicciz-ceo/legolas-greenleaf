@@ -99,8 +99,15 @@ export class PadNav {
   private pad(): Gamepad | null {
     if (typeof navigator.getGamepads !== 'function') return null;
     const l = navigator.getGamepads();
-    for (let i = 0; i < l.length; i++) if (l[i] && l[i]!.connected) return l[i];
-    return null;
+    // same choice as input.ts activePad: prefer a pad with the standard layout, else the first connected one
+    let first: Gamepad | null = null;
+    for (let i = 0; i < l.length; i++) {
+      const g = l[i];
+      if (!g || !g.connected) continue;
+      if (g.mapping === 'standard') return g;
+      if (!first) first = g;
+    }
+    return first;
   }
 
   private tick = (): void => {

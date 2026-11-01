@@ -609,6 +609,7 @@ export const chapter: ChapterDef = {
         level.cameraShot({ position: camAt.clone().add(V(0, 0.6, 0)), lookAt: tr.clone().add(V(0, 9, 0)), fov: 44, blend: 1.4 });
         await level.wait(1.3);
         level.cameraShot(null);
+        await level.wait(0.5); // let the 0.6 s camera glide finish before control returns
         level.cinematic(false);
         for (const x of paused) if (x.alive) x.aiEnabled = true;
       }
