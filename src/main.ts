@@ -274,6 +274,11 @@ async function boot(): Promise<void> {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) g.pause();
   });
+  // losing window focus pauses too (alt-tab with the pointer unlocked leaves the tab visible);
+  // never while the autopilot drives, so headless / smoke runs cannot stall on a stray blur
+  window.addEventListener('blur', () => {
+    if (g.mode === 'playing' && !bot.active) g.pause();
+  });
   const unlock = (): void => audio.unlock();
   for (const ev of ['pointerdown', 'keydown', 'touchstart'] as const) window.addEventListener(ev, unlock, { once: true, capture: true });
 

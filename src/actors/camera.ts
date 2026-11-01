@@ -82,6 +82,8 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
   let aimCombatant: Combatant | null = null;
   let aimZone: HitZone | null = null;
   let curDist = DEFAULT_CAMERA.distance;
+  let presetDist = DEFAULT_CAMERA.distance; // smoothed non-aim preset distance (eases out when a mover preset ends)
+  let shoulderOcc = 0; // how much a side obstruction currently shortens the shoulder offset
   let aimBlend = 0;
   let focusBlend = 0;
   let sprintBlend = 0;
@@ -109,7 +111,10 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
   function computePlayerPose(dt: number) {
     const mc = subject.mover?.camera;
     const base = rig.params;
-    const pd = mc?.distance ?? base.distance;
+    const pdTarget = mc?.distance ?? base.distance;
+    // growth is eased by curDist below; shrinking (a mover preset ending) is eased here, teleports/respawns still cut
+    presetDist = snapNext || pdTarget >= presetDist ? pdTarget : damp(presetDist, pdTarget, 5, dt);
+    const pd = presetDist;
     const ph = mc?.height ?? base.height;
     const ps = mc?.shoulder ?? base.shoulder;
     const pf = mc?.fov ?? base.fov;
@@ -157,7 +162,12 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
     const sDir = shoulder >= 0 ? 1 : -1;
     _tmp.copy(_right).multiplyScalar(sDir);
     const sh = ctx.physics.raycast(pivot, _tmp, Math.abs(shoulder) + 0.25, 'camera');
-    const sLen = sh ? Math.max(0, sh.t - 0.25) : Math.abs(shoulder);
+    const sAbs = Math.abs(shoulder);
+    const occTarget = sh ? sAbs - Math.max(0, sh.t - 0.25) : 0;
+    // pull in instantly (never clip into the wall), ease back out once the obstruction is gone
+    if (snapNext || occTarget > shoulderOcc) shoulderOcc = occTarget;
+    else shoulderOcc = damp(shoulderOcc, occTarget, 7, dt);
+    const sLen = Math.max(0, sAbs - shoulderOcc);
     _shoulder.addScaledVector(_tmp, sLen);
 
     // boom
@@ -246,8 +256,16 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
       return aimBlend;
     },
     shake(amount, duration) {
-      trauma = clamp(Math.max(trauma, amount), 0, 1);
-      traumaDecay = Math.max(traumaDecay * 0.5, trauma / Math.max(0.05, duration));
+      // a stronger shake owns the decay; a weaker-but-longer one only stretches the remaining time;
+      // a weaker-and-shorter one (arrow release, melee hit) is absorbed and leaves the decay untouched
+      const a = clamp(amount, 0, 1);
+      const d = Math.max(0.05, duration);
+      if (a >= trauma) {
+        trauma = a;
+        traumaDecay = a / d;
+      } else if (d > trauma / traumaDecay) {
+        traumaDecay = trauma / d;
+      }
     },
     recoil(rad) {
       recoilP += rad;
@@ -269,7 +287,9 @@ export function createCameraRig(ctx: GameContext, subject: CameraSubject): Camer
         fromPos.copy(c.position);
         fromQuat.copy(c.quaternion);
         fromFov = c.fov;
-        blendDur = shot ? shot.blend ?? 0.6 : lastShot?.blend ?? 0.6;
+        // blend-in uses the shot's own time; the hand-back to the player view is capped at the 0.6 s default
+        // (a long cinematic blend-in must not leave the controls live under a slow glide); blendOut overrides
+        blendDur = shot ? shot.blend ?? 0.6 : lastShot?.blendOut ?? Math.min(lastShot?.blend ?? 0.6, 0.6);
         blendT = blendDur <= 0 ? 1 : 0;
         lastShot = shot;
         shotActive = !!shot;

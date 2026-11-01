@@ -247,6 +247,8 @@ export interface InputState {
   dash: boolean;
   interact: boolean;
   nextArrow: boolean;
+  /** edge: step to the previous arrow type (mouse wheel up). Optional: a missing value means false */
+  prevArrow?: boolean;
   pause: boolean;
   /** 0 = none chosen this frame, 1..3 = arrow slot */
   arrowSlot: 0 | 1 | 2 | 3;
@@ -758,6 +760,8 @@ export interface CameraShot {
   follow?: THREE.Object3D;
   /** seconds to blend in (default 0.6) */
   blend?: number;
+  /** seconds to glide back to the player view when this shot is cleared (default: min(blend, 0.6)) */
+  blendOut?: number;
 }
 
 export interface CameraRig {
@@ -835,6 +839,8 @@ export interface PlayerAPI extends Combatant {
    * `{ lunge: true, damage: true }` for the gameplay stroke.
    */
   playMelee?(hit: 1 | 2 | 3, opts?: { lunge?: boolean; damage?: boolean }): void;
+  /** abandon a bow draw without loosing it (pause, cinematic start); melee, dash and focus are untouched */
+  cancelDraw?(): void;
 }
 
 /** a timed player stat modifier (PlayerAPI.addModifier) */
