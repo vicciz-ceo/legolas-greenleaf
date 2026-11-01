@@ -132,7 +132,7 @@ function tauriExtras(ctx: KindContext) {
   // the pale green cowl sits on the shoulders, a hood bunched at the back
   cowl(ctx);
   // small green wool capelets over both shoulder points
-  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.0095 * sc, reach: 0.4 });
+  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.011 * sc, reach: 0.42 });
   // tooled corset from just under the belt to the bust
   corset(ctx, { y0: beltY - 0.05 * sc, y1: cy + 0.115 * sc, inflate: 0.0145 * sc });
   // baldric across the chest for the quiver (right shoulder to left hip)
@@ -202,7 +202,7 @@ function tauriExtras(ctx: KindContext) {
       hand: side > 0 ? 'hand_l' : 'hand_r',
       pos: [side * (P.hipX + 0.145 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.08 * sc],
       dir: [side * 0.07, -0.85, -0.52],
-      len: 0.33,
+      len: 0.3,
       r: 0.025 * sc,
       flat: 0.75,
       color: PAL.sheath,
@@ -232,7 +232,7 @@ function tauriExtras(ctx: KindContext) {
 export const taurielDef: KindDef = {
   label: 'Tauriel',
   height: 1.78,
-  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.03 },
+  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.05 },
   face: {
     jaw: 0.8,
     jawLength: 0.96,
@@ -265,8 +265,8 @@ export const taurielDef: KindDef = {
       color2: PAL.tunic,
       mat: TWILL,
       length: 0.28,
-      thickness: -0.026,
-      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.hemBronze, mat: TWILL, width: 0.14, length: 1.35, phase: 0 },
+      thickness: -0.022,
+      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.hemBronze, mat: TWILL, width: 0.14, length: 1.42, phase: 0 },
     },
     { type: 'bracers', color: PAL.bracers, color2: PAL.bracersTrim, length: 0.86, thickness: 0.003, mat: TOOLED },
     { type: 'belt', color: PAL.belt, offset: BELT_RAISE, mat: 'leather_worn' },

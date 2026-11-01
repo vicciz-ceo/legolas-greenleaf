@@ -30,7 +30,6 @@ export function sheathedStyled(
       const w = createWeapon(o.kind, o.seed ?? 3, o.style);
       w.position.set(o.pos[0], o.pos[1], o.pos[2]);
       w.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d);
-      if (HILT_OVERLAY) addHiltOverlay(w);
       w.userData.stowFor = { hand: o.hand, weapon: o.kind };
       return w;
     },
@@ -57,24 +56,4 @@ function flatTube(a: V3, b: V3, r0: number, r1: number, flat: number): THREE.Buf
   }
   g.computeVertexNormals();
   return g;
-}
-
-/**
- * Until the elven knife look (brown leather-wrapped grip, brass guard and pommel) is merged, the stowed
- * knife is dressed with a dark leather grip sleeve, a brass guard and pommel so it reads as a sheathed
- * knife, not a white sliver. These are children of the weapon, so they hide when the knife is drawn.
- * Set to false (or delete) once `createWeapon('elven_knives', seed, 'elven')` has its own hilt.
- */
-const HILT_OVERLAY = true;
-
-function addHiltOverlay(w: THREE.Object3D) {
-  const leather = new THREE.MeshStandardMaterial({ color: 0x3a2a1c, roughness: 0.75, metalness: 0 });
-  const brass = new THREE.MeshStandardMaterial({ color: 0x9a8444, roughness: 0.35, metalness: 0.9 });
-  const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.0155, 0.0155, 0.14, 8).translate(0, -0.04, 0), leather);
-  const pommel = new THREE.Mesh(new THREE.SphereGeometry(0.0145, 8, 6).translate(0, -0.118, 0), brass);
-  const guard = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.009, 0.02).translate(0, 0.052, 0), brass);
-  for (const m of [grip, pommel, guard]) {
-    m.castShadow = true;
-    w.add(m);
-  }
 }
