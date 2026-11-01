@@ -353,7 +353,7 @@ export function leafPauldron(ctx: KindContext, side: 'l' | 'r', o: { iron: numbe
     const t0 = -0.55 + k * 0.62;
     const t1 = t0 + 1.0 + k * 0.05;
     const len = (0.19 - k * 0.012) * sc * size;
-    const geo = arcSheet(rr, t0, t1, len, 0.008 * sc, sx, 5, 6, 0.28);
+    const geo = arcSheet(rr, t0, t1, len, 0.008 * sc, sx, 5, 4, 0.28);
     const m = new THREE.Matrix4().makeTranslation(cx, cy - k * 0.026 * sc, zc);
     put(ctx, geo, { bone: `upperarm_${side}`, color: o.iron, mat: IRON_DARK, matrix: m, colorFn: col });
     if (k < 3) for (const tt of [t0 + 0.25, t0 + 0.7]) for (const zz of [-0.07, 0.0, 0.07]) rimPts.push([cx + sx * (rr + 0.009 * sc) * Math.sin(tt), cy - k * 0.026 * sc + (rr + 0.009 * sc) * Math.cos(tt), zc + zz * sc * size]);

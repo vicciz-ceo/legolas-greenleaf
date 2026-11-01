@@ -15,7 +15,7 @@ import type { KindContext, KindDef } from '../../types';
 import { box, put, spike } from './armor';
 import { scaleHeldWeapon } from '../uruks_bosses/common';
 import { attachSkinned, ctxBucket, devNum, recipeRng } from './common';
-import { makeHairdo } from './hair';
+import { makeOrcHair } from './orc_hair';
 import { IRON, domeHelm } from './headgear';
 import { faceStroke } from './markings';
 import { RAGS, STRAP, beltBand, orcFittings, ragTunic, rustPauldron, shinWraps } from './orc_gear';
@@ -176,9 +176,9 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   batEars(ctx, tone[0]);
   addons(ctx, b);
   // ── sparse long stringy hair (the sheet's crown is nearly bald)
-  const hg = makeHairdo(
+  const hg = makeOrcHair(
     ctx,
-    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.34 : 0.28) * sc, count: ctx.helmet ? 8 : b === 1 ? 10 : 20, width: 0.012, wave: 0.8, wild: 0.9, comb: 0.8, front: 0.45, back: -0.42, gravity: 7, segments: 5, maxY: 0.2 },
+    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.34 : 0.28) * sc, count: ctx.helmet ? 8 : b === 1 ? 10 : 20, width: 0.012, wave: 0.8, wild: 0.9, comb: 0.8, front: 0.45, back: -0.42, gravity: 7, segments: 5, maxY: 0.2, maxZ: 0.05 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());

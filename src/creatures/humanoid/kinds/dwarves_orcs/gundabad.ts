@@ -15,7 +15,7 @@ import { createHairMaterial } from '../../../kit/hair';
 import type { KindContext, KindDef } from '../../types';
 import { box, put, spike } from './armor';
 import { attachSkinned, ctxBucket, devNum, mix, recipeRng } from './common';
-import { makeHairdo } from './hair';
+import { makeOrcHair } from './orc_hair';
 import { DOME_CONICAL, DOME_POINTED, DOME_ROUND, IRON, STEEL, domeHelm, hornPair } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
 import { ORC_FACE } from './orc';
@@ -29,8 +29,8 @@ import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcpar
  * (arm #8c7e7f, face #b7a9ae), iris #baa24f (the face crop shows amber-orange).
  */
 export const GUNDABAD_PALETTE = {
-  kilt: 0x6a4e30, // outer burlap
-  kiltHem: 0x7e6240,
+  kilt: 0x57402a, // outer burlap (#6a4e30 design-ish; the lab renders it paler)
+  kiltHem: 0x6a5238,
   kiltUnder: 0x3e2e1f, // inner dark layer (thigh cloth) and the leather strips
   wrap: 0x3c2c1e, // boots of wraps
   leather: 0x40322a, // waist bindings
@@ -151,9 +151,9 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   }
   if (ctx.helmet) helmet(ctx, b);
   // ── hair: long, loose, dark
-  const hg = makeHairdo(
+  const hg = makeOrcHair(
     ctx,
-    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6 },
+    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.1 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, gundabadHairMaterial());
@@ -206,7 +206,7 @@ export const gundabadDef: KindDef = {
   palette: GUNDABAD_PALETTE,
   anim: { hunch: 0.25, swagger: 0.5, aggression: 0.85, stance: devNum('stance', 1.25), lean: devNum('lean', 0.7) },
   variation: { height: 0.04, bulk: 0.08, skin: 0.35 },
-  detail: { res: devNum('res', 0.064), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
+  detail: { res: devNum('res', 0.072), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.75 },
   extras: gundabadExtras,
 };

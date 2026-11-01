@@ -17,7 +17,7 @@ import { put, spike } from './armor';
 import { ctxBucket, devNum, recipeRng, shade } from './common';
 import { createHairMaterial } from '../../../kit/hair';
 import { attachSkinned } from './common';
-import { makeHairdo } from './hair';
+import { makeOrcHair } from './orc_hair';
 import { DOME_POINTED, DOME_ROUND, IRON, domeHelm } from './headgear';
 import { faceStroke } from './markings';
 import { eyeRings, orcTeeth, scrapBreastplate, skinMottle, skinTint } from './orcparts';
@@ -38,7 +38,7 @@ export const ORC_FACE = {
  * warmer than the hex values.
  */
 export const ORC_PALETTE = {
-  tunic: 0x553a24, // design #554333; turnaround chest #523b2a (lit); a warmer, more orange albedo so the cloth stops reading as flat plastic
+  tunic: 0x4c3322, // design #554333; turnaround chest #523b2a (lit); a warmer, more orange albedo so the cloth stops reading as flat plastic
   tunicTrim: 0x7c5e38, // ochre mottle
   kilt: 0x4c3524, // turnaround kilt #523e30
   kiltHem: 0x60472e, // lighter, worn hem edges
@@ -174,9 +174,9 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   if (bucket === 3 && A >= 0.75) scrapBreastplate(ctx, { color: pal.iron, rng, half: 0.55, y0: P.j.chest[1] - 0.02 * sc, y1: P.j.chest[1] + 0.12 * sc, jag: 0.03, seed: 7, mat: IRON });
   if (ctx.helmet) helmet(ctx, look.helm);
   // ── hair: long and stringy, parted over the brow
-  const hairGeo = makeHairdo(
+  const hairGeo = makeOrcHair(
     ctx,
-    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6 },
+    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6, maxZ: 0.1 },
     rng,
   );
   if (hairGeo) attachSkinned(ctx, hairGeo, orcHairMaterial());
@@ -220,7 +220,7 @@ export const orcDef: KindDef = {
   palette: ORC_PALETTE,
   anim: { hunch: devNum('hunch', 0.35), swagger: 0.6, aggression: 0.75, stance: devNum('stance', 1.25), cadence: 1.1, lean: devNum('lean', 0.85) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
-  detail: { res: devNum('res', 0.052), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
+  detail: { res: devNum('res', 0.056), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.5 },
   extras: orcExtras,
 };
