@@ -18,8 +18,10 @@ import { ctxBucket, devNum, devSkip, mix, recipeRng } from './common';
 import { addBrows, sculptBeardMass, withHair, type BeardOpts } from './hair';
 import { DOME_ROUND, domeHelm } from './headgear';
 import {
+  beltStrap,
   bodyLayer,
   chinBraids,
+  crotchBridge,
   crossStrap,
   feltHat,
   hipHatchet,
@@ -41,7 +43,7 @@ const BELT_RAISE = 0.263;
 const LEATHER = surface('leather_worn', { rough: 0.72, sheen: 0.08 });
 const VEST_LEATHER = surface('leather_worn', { rough: 0.66, sheen: 0.12 });
 const WOOL = surface('wool', { rough: 0.9, sheen: 0.3 });
-const RED_WOOL = surface('wool', { rough: 0.92, sheen: 0.1 });
+const RED_WOOL = surface('wool', { rough: 0.94, sheen: 0.05 });
 const TWILL = surface('twill', { rough: 0.88, sheen: 0.3 });
 const TROUSER = surface('twill', { rough: 0.92, sheen: 0.2, pat: { weave: -0.6 } });
 const QUILT = surface('wool', { rough: 0.95, sheen: 0.18, pat: { weave: 0.3 } });
@@ -86,7 +88,7 @@ const PAL = {
     vest: 0x35261f, // padded vest, observed leather #483127
     felt: 0x6a4d2c,
     felt2: 0x7e5d38,
-    quilt: 0x291d18, // channel lines about 25 % below the vest
+    quilt: 0x3e2c25, // tone-on-tone channels: the tubes render darker than their colour, so this sits just above the vest value
     beard: 0x6e4428, // chestnut #70452b
     beardTip: 0x8a5a38,
     beardDeep: 0x3f2410,
@@ -101,20 +103,20 @@ const PAL = {
     beardTip: 0xcfc8ba,
     beardDeep: 0xbab3a6,
     brow: 0xcfc9bc,
-    belt: 0x4a3424,
+    belt: 0x6a4a30,
     buckle: 0xb08a3a,
   },
   red: {
-    tunic: 0x6c261f, // design cloth #74412c (observed #6d2e1d): deep brick, it renders salmon when lighter
+    tunic: 0x5a1e18, // design cloth #74412c (observed #6d2e1d): deep brick, it renders salmon when lighter
     vest: 0x4a3626, // observed leather #533b2e
     vest2: 0x34261d,
-    beard: 0xa04818, // copper #8f4424 (observed hair #702c13): bright outer ribbons
-    beardMid: 0x8c3a12,
-    beardTip: 0xae5219,
-    beardDeep: 0x6a2a0e, // darker interior of the fan, never near-black
+    beard: 0x8a3a1c, // copper #8f4424 (observed hair #702c13): the outer ribbons
+    beardMid: 0x6e2c14,
+    beardTip: 0xa84a24,
+    beardDeep: 0x4a1e10, // darker interior of the fan and the roots
     brow: 0x7a2f12,
-    belt: 0x3e2e22,
-    buckle: 0x6f695d,
+    belt: 0x2e2018, // prominent dark belt
+    buckle: 0x9a7a38, // square brass
   },
 };
 
@@ -160,6 +162,7 @@ function warrior(ctx: KindContext, rng: Rng) {
   // bald: the thin cap painted back to skin
   s.ellipsoid(P.h(0, 0.045, -0.055), [0.35 * u, 0.43 * u, 0.455 * u], { op: 'paint', color: PAL.common.skin, mat: 'skin_weathered', bone: 'head', k: 0.02 * u, strength: 1 });
   faceCommon(ctx, { brow: C.brow, blush: 0.4, scars: 2, browLen: 0.085 }, rng);
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
   // beard: dark brown, compact and dense, a heavy moustache; the three braids are real geometry (below)
   const hs = new HairSet();
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.12 * sc, width: 1.04, fullness: 1.15 });
@@ -212,8 +215,9 @@ function jester(ctx: KindContext, rng: Rng) {
   const { sc, k, beltY } = stance(ctx);
   // curls at the sides and nape under the hat, a full curly beard to the chest, a moustache that joins it
   const hs = new HairSet();
-  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.2 * sc, count: 30, width: 0.055, segments: 4, wave: 1.2, wild: 0.5, comb: 0.4, front: 0.15, back: -0.45, gravity: 6, maxY: 0.1 }, rng);
+  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.2 * sc, count: 30, width: 0.055, segments: 4, wave: 1.2, wild: 0.5, comb: 0.4, front: 0.15, back: -0.45, gravity: 6, maxY: -0.02 }, rng);
   faceCommon(ctx, { brow: C.brow, blush: 0.7 }, rng);
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.14 * sc, width: 1.06, fullness: 1.2 });
   hs.beard(ctx, {
     clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.17 * sc, locks: 10, perLock: 5, segments: 4, shape: 'round', spread: 1.1, cheeks: true, wave: 1.3, width: 0.068, gravity: 5,
@@ -235,7 +239,7 @@ function jester(ctx: KindContext, rng: Rng) {
     skirt(ctx, proj, { yTop: beltY - 0.012 * sc, yRef, yBot: 0.46 * k, color: C.tunic, mat: WOOL, flare: 0.04, out: 0.004, thick: 0.012, seg: 26 });
     skirt(ctx, proj, { yTop: beltY - 0.02 * sc, yRef, yBot: 0.55 * k, color: C.vest, mat: QUILT, flare: 0.05, out: 0.012, thick: 0.014, seg: 26 });
     squareBuckle(ctx, proj, beltY, C.buckle, { w: 0.056, h: 0.046, mat: 'gold' });
-    if (!devSkip('quilt')) quiltGrid(ctx, proj, { cols: [-0.09 * k, -0.03 * k, 0.03 * k, 0.09 * k], rows: [0.58 * k, 0.64 * k, 0.8 * k, 0.86 * k], y0: 0.57 * k, y1: 1.0 * k, halfW: 0.13 * k, color: C.quilt, radius: 0.0034, skipY: [beltY - 0.035 * sc, beltY + 0.035 * sc] });
+    if (!devSkip('quilt')) quiltGrid(ctx, proj, { cols: [-0.09 * k, -0.03 * k, 0.03 * k, 0.09 * k], rows: [0.58 * k, 0.64 * k, 0.8 * k, 0.86 * k], y0: 0.57 * k, y1: 1.0 * k, halfW: 0.13 * k, color: C.quilt, radius: 0.0042, lift: 0.0014, skipY: [beltY - 0.035 * sc, beltY + 0.035 * sc] });
   }
 }
 
@@ -247,12 +251,12 @@ function elder(ctx: KindContext, rng: Rng) {
   const C = PAL.elder;
   const { sc, k, beltY } = stance(ctx);
   faceCommon(ctx, { brow: C.brow, blush: 0.55, browLen: 0.09 }, rng);
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
 
   // dark blue wool tunic with long sleeves and a flared hem, short solid leather vest open in front, brass buckle
   const hem = beltY - 0.05 * sc;
   bodyLayer(ctx, { color: C.tunic, mat: TWILL, inflate: 0.012, sleeveInflate: 0.022, sleeve: 2, hemY: hem, pad: { rx: 0.18, rz: 0.155, y: beltY } });
   sculptVest(ctx, { color: C.vest, mat: ELDER_LEATHER, inflate: 0.022, hemY: beltY - 0.03 * sc, open: 0.1, openY: P.j.chest[1] - 0.2 * sc, neckUp: 0.004, armLean: 0.5 });
-  sculptBelt(ctx, { y: beltY, hw: 0.021, color: C.belt, mat: LEATHER, inflate: 0.034, pad: { rx: 0.192, rz: 0.166 } });
   // the beard's mass and the hair dome go in before the sculpt is sampled, so the ribbons lie on them
   sculptBeardMass(ctx, { color: mix(C.beard, C.beardDeep, 0.3), color2: C.beardTip, length: 0.5 * sc, width: 1.0, fullness: 1.1 });
   if (!devSkip('dome')) sculptHairDome(ctx, { color: C.beardTip, color2: C.beardDeep });
@@ -261,7 +265,7 @@ function elder(ctx: KindContext, rng: Rng) {
   const f = sc / 0.735;
   if (proj) {
     // long wavy white beard to the belt: wide overlapping ribbons in three layers, standing off the chest
-    hs.add(ribbonBeard(ctx, proj, rng, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.8 * sc, locks: 11, layers: 3, width: 0.078, spread: 0.38, shape: 'spade', amp: 0.013, waveLen: 0.1, clear: 0.012, stand: 0.03 * f }));
+    hs.add(ribbonBeard(ctx, proj, rng, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.8 * sc, locks: 11, layers: 3, width: 0.074, spread: 0.3, shape: 'spade', amp: 0.013, waveLen: 0.1, clear: 0.012, stand: 0.03 * f }));
     // the bald crown stays; a full mass of white hair from the ears and nape down to the shoulder blades, swept back
     const locks: { az: number; el: number; drop: number }[] = [];
     [1.3, 1.65, 2.0, 2.4, 2.75].forEach((az, i) => {
@@ -271,7 +275,8 @@ function elder(ctx: KindContext, rng: Rng) {
     hs.add(hangLocks(ctx, proj, rng, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, locks, width: 0.06, amp: 0.009, waveLen: 0.1, clear: 0.01, layers: 2 }));
     const yRef = beltY - 0.021 * sc - 0.012 * sc;
     skirt(ctx, proj, { yTop: beltY - 0.012 * sc, yRef, yBot: 0.5 * k, color: C.tunic, mat: TWILL, flare: 0.065, out: 0.008, thick: 0.012, seg: 28 });
-    squareBuckle(ctx, proj, beltY, C.buckle, { w: 0.066, h: 0.054, mat: 'gold' });
+    beltStrap(ctx, proj, { y: beltY, width: 0.042 * sc, thick: 0.008 * sc, color: C.belt, mat: LEATHER });
+    squareBuckle(ctx, proj, beltY, C.buckle, { w: 0.066, h: 0.054, mat: 'gold', lift: 0.009 });
   } else {
     // no projector (sampling failed): plain strand cards so the elder is never bald-faced
     hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.3 * sc, count: 60, width: 0.05, segments: 4, wave: 0.7, wild: 0.2, comb: 1.0, front: 0.15, back: -0.4, gravity: 5, maxY: 0.1 }, rng);
@@ -290,12 +295,12 @@ function redbeard(ctx: KindContext, rng: Rng) {
   const { sc, k, beltY } = stance(ctx);
   sculptHairCap(s, P, { style: 'wild', color: C.beard, tipColor: C.beardTip, length: 1, density: 1 });
   faceCommon(ctx, { brow: C.brow, blush: 0.8, scars: 1, browLen: 0.085 }, rng);
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
 
   // deep brick-red tunic with long sleeves, a heavy mottled leather vest as ONE panel from the shoulders to the hip, thick belt
   const hem = beltY - 0.05 * sc;
   bodyLayer(ctx, { color: C.tunic, mat: RED_WOOL, inflate: 0.013, sleeveInflate: 0.026, sleeve: 2, hemY: hem, pad: { rx: 0.2, rz: 0.16, y: beltY } });
   sculptVest(ctx, { color: C.vest, color2: C.vest2, mat: VEST_LEATHER, inflate: 0.028, hemY: hem, open: 0.06, openY: P.j.chest[1] - 0.12 * sc, neckUp: 0.006, skirtParts: true });
-  sculptBelt(ctx, { y: beltY, hw: 0.024, color: C.belt, mat: LEATHER, inflate: 0.04, pad: { rx: 0.213, rz: 0.174 } });
   sleeveCuffs(ctx, { color: C.tunic, mat: RED_WOOL });
   sculptBeardMass(ctx, { color: C.beardDeep, color2: C.beardMid, length: 0.45 * sc, width: 1.18, fullness: 1.3 });
   const proj = makeProjector(s, sampleBox(ctx));
@@ -312,7 +317,8 @@ function redbeard(ctx: KindContext, rng: Rng) {
     const yRef = beltY - 0.024 * sc - 0.012 * sc;
     skirt(ctx, proj, { yTop: beltY - 0.012 * sc, yRef, yBot: 0.5 * k, color: C.tunic, mat: RED_WOOL, flare: 0.04, out: 0.004, thick: 0.012, seg: 26 });
     skirt(ctx, proj, { yTop: beltY - 0.02 * sc, yRef, yBot: 0.55 * k, color: C.vest, mat: VEST_LEATHER, flare: 0.05, out: 0.012, thick: 0.016, seg: 26 });
-    squareBuckle(ctx, proj, beltY, C.buckle, { w: 0.06, h: 0.05, mat: 'metal_dark' });
+    beltStrap(ctx, proj, { y: beltY, width: 0.05 * sc, thick: 0.009 * sc, color: C.belt, mat: LEATHER });
+    squareBuckle(ctx, proj, beltY, C.buckle, { w: 0.062, h: 0.052, mat: 'gold', lift: 0.01 });
   } else {
     hs.beard(ctx, { clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.45 * sc, locks: 14, perLock: 6, segments: 4, shape: 'round', spread: 1.2, cheeks: true, wave: 1.0, width: 0.06, gravity: 5, moustache: { length: 0.16 * sc, droop: 0.55, curl: 0.7 } }, rng);
   }
