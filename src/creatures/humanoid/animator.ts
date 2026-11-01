@@ -13,7 +13,7 @@ import type { Proportions } from './proportions';
 import type { AnimStyle } from './types';
 import {
   F, newPose, neutralPose, idlePose, locomotionPose, airPose, landOverlay, specialPose, attackOverlay, hitOverlay,
-  deathPose, mixInto, newHeldCarry, type BodyMetrics, type HeldCarry, type Pose,
+  deathPose, mixInto, mixTurning, applyCarry, runWeight, newHeldCarry, type BodyMetrics, type HeldCarry, type Pose,
 } from './poses';
 
 const _v1 = new THREE.Vector3();
@@ -50,6 +50,10 @@ export class HumanoidAnimator {
   private t = 0;
   private phase = 0;
   private airTime = 0;
+  /** how much of the air pose is in the base: in over the first 0.1 s of air time, out over 0.1 s after the landing (the last airborne state is kept for it) */
+  private airW = 0;
+  private airVy = 0;
+  private airT = 0;
   private landT = 9;
   private wasGrounded = true;
   private specialW = 0;
@@ -175,6 +179,7 @@ export class HumanoidAnimator {
     this.t = time;
     this.phase = phase;
     this.airTime = 0;
+    this.airW = this.airVy = this.airT = 0;
     this.landT = 9;
     this.wasGrounded = true;
     this.specialW = 0;
@@ -214,13 +219,23 @@ export class HumanoidAnimator {
       idlePose(B, t, this.tmp, held);
       mixInto(base, this.tmp, 1 - speed / 0.6);
     }
+    // the air layer: in over the first 0.1 s in the air, and out over 0.1 s after the landing instead of at once (on the first grounded
+    // frame the hands, the pelvis of a crouched body and the feet would all snap to the ground pose: a hand 130 deg, a goblin's pelvis 21 cm)
     if (!grounded) {
-      airPose(B, inp.vy ?? 0, this.airTime, t, this.tmp, held);
-      mixInto(base, this.tmp, Math.min(1, this.airTime * 10));
+      this.airVy = inp.vy ?? 0;
+      this.airT = this.airTime;
+      this.airW = Math.min(1, this.airTime * 10);
+    } else if (this.airW > 0) this.airW = Math.max(0, this.airW - dt * 10);
+    if (this.airW > 0) {
+      airPose(B, this.airVy, this.airT, t, this.tmp, held, speed);
+      mixInto(base, this.tmp, this.airW);
     }
     if (this.landT < 0.4 && grounded) {
       const k = this.landT < 0.08 ? this.landT / 0.08 : 1 - (this.landT - 0.08) / 0.32;
       landOverlay(B, Math.max(0, k), base);
+      // the overlay lowered the wrist after the carry solved its ground clearance: solve it again, for hands that only hold (a hand turning to
+      // the run's fist has no blade hanging to clear)
+      if (k > 0 && runWeight(B, speed) <= 0) applyCarry(B, base, held, 0);
     }
     // ── special poses ──────────────────────────────────────────────────────
     if (inp.special) this.lastSpecial = inp.special;
@@ -228,7 +243,8 @@ export class HumanoidAnimator {
     this.specialW += (sTarget - this.specialW) * Math.min(1, dt * 7);
     if (this.specialW > 0.001) {
       specialPose(B, this.lastSpecial, inp.specialT ?? t * 0.8, t, this.tmp);
-      mixInto(base, this.tmp, this.specialW);
+      // (the hands' frames turn to the special's: a lerp from a carried hold whips the hand through the opposite side)
+      mixTurning(base, this.tmp, this.specialW);
     }
     // ── attacks ───────────────────────────────────────────────────────────
     let aim = Math.min(1, Math.max(0, inp.aim ?? 0));
@@ -272,7 +288,7 @@ export class HumanoidAnimator {
     // ── death ──────────────────────────────────────────────────────────────
     if (dead > 0) {
       deathPose(B, inp.deathVariant ?? 0, Math.min(1, dead), this.tmp);
-      mixInto(base, this.tmp, Math.min(1, dead * 5));
+      mixTurning(base, this.tmp, Math.min(1, dead * 5));
     }
     // carrying a bow at rest: forearm a little forward, wrist flexed so the bow stands tilted up-forward
     if (this.hasBow && dead <= 0) {
