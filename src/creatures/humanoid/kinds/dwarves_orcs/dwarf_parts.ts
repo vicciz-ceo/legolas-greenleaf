@@ -6,7 +6,7 @@
  * freely without touching the Gimli / orc / Easterling kinds.
  */
 import * as THREE from 'three';
-import type { Sculpt, V3 } from '../../../kit/sdf';
+import type { V3 } from '../../../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { anatomyParts, emitParts, type PartTag } from '../../anatomy';
 import type { KindContext } from '../../types';
@@ -20,20 +20,12 @@ import {
   smooth,
   type Projector,
 } from '../uruks_bosses/common';
-import { put as putGear, type PutOpts } from './armor';
+import { put } from './armor';
 import { slab } from './garments';
 import { scalpPoint } from './markings';
 
 type Mat = SurfaceName | SurfaceSpec;
 
-/** `put` that also logs the triangle count under ?gearlog (window.__gearLog) for budgeting */
-function put(ctx: KindContext, geo: THREE.BufferGeometry, o: PutOpts) {
-  if (typeof location !== 'undefined' && location.search.includes('gearlog')) {
-    const w = window as unknown as { __gearLog?: string[] };
-    (w.__gearLog ??= []).push(`${o.bone}:${Math.round((geo.index ? geo.index.count : geo.attributes.position.count) / 3)}:${o.color.toString(16)}`);
-  }
-  putGear(ctx, geo, o);
-}
 
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.max(0, Math.min(1, (x - a) / (b - a || 1e-9)));
@@ -62,6 +54,8 @@ export interface VestOpts {
   armLean?: number;
   /** also cover the pelvis / glutes down to the hem (a short jacket body) */
   skirtParts?: boolean;
+  /** surface relief (pillowed quilting) */
+  noise?: { amp: number; freq: number; type: 'cells' | 'dents' | 'ridged' | 'fbm'; octaves?: number };
 }
 
 /** a sleeveless vest: wraps the torso, open at the shoulder joints and (optionally) in a V at the front */
@@ -71,7 +65,7 @@ export function sculptVest(ctx: KindContext, o: VestOpts) {
   const j = P.j;
   const parts = anatomyParts(P);
   const tags: PartTag[] = ['waist', 'belly', 'ribs', 'chest', 'pecs', 'back', 'trap', 'neck', ...(o.skirtParts ? (['pelvis', 'glutes'] as PartTag[]) : [])];
-  const opt = { color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.45 : 0, colorFreq: 30 / sc, mat: o.mat, inflate: o.inflate * sc };
+  const opt = { color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.45 : 0, colorFreq: 30 / sc, mat: o.mat, inflate: o.inflate * sc, noise: o.noise ? { ...o.noise, amp: o.noise.amp * sc, freq: o.noise.freq / sc } : undefined };
   s.group('union', 0.0025 * sc, () => {
     emitParts(s, parts, tags, opt);
     slab(s, o.hemY, j.neck[1] + (o.neckUp ?? 0.012) * sc, 0.005 * sc);
@@ -204,7 +198,6 @@ export function hipHatchet(ctx: KindContext, side: 1 | -1, beltY: number, o: { s
   const sc = P.s;
   const g = Math.sqrt(P.build.bulk);
   const rx = 0.158 * sc * g * (0.9 + 0.1 * P.build.hips);
-  const list: THREE.BufferGeometry[] = [];
   // head: a thin crescent blade shape extruded a little
   const sh = new THREE.Shape();
   sh.moveTo(0, 0);
@@ -216,14 +209,13 @@ export function hipHatchet(ctx: KindContext, side: 1 | -1, beltY: number, o: { s
   blade.translate(0, 0, -0.003);
   blade.scale(0.62 * sc, 0.62 * sc, 0.62 * sc);
   // the head sits low at the hip, blade pointing outward and down; haft is the sheath strip going up
-  const headM = new THREE.Matrix4().compose(new THREE.Vector3(side * (rx + 0.006 * sc), beltY - 0.045 * sc, 0.035 * sc), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, side * Math.PI / 2, side * 0.12)), new THREE.Vector3(1, 1, 1));
+  const headM = new THREE.Matrix4().compose(new THREE.Vector3(side * (rx + 0.006 * sc), beltY - 0.045 * sc, 0.035 * sc), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, -Math.PI / 2, side * 0.12)), new THREE.Vector3(1, 1, 1));
   put(ctx, blade, { bone: 'hips', color: o.steel, mat: 'metal_hammered', matrix: headM, small: true });
   const sheathLen = 0.1 * sc;
   const sheath = new THREE.BoxGeometry(0.02 * sc, sheathLen, 0.016 * sc).translate(side * (rx + 0.004 * sc), beltY - 0.02 * sc, 0.03 * sc);
   put(ctx, sheath, { bone: 'hips', color: o.leather, mat: 'leather_worn', small: true });
   const haft = new THREE.CylinderGeometry(0.0075 * sc, 0.0075 * sc, 0.085 * sc, 5).translate(side * (rx + 0.008 * sc), beltY + 0.045 * sc, 0.03 * sc);
   put(ctx, haft, { bone: 'hips', color: o.haft, mat: 'wood', small: true });
-  void list;
 }
 
 /**
@@ -383,7 +375,7 @@ export function knotTattoos(ctx: KindContext, proj: Projector, o: { ink: number;
   const { P } = ctx;
   const k = P.s / 0.735; // the designs below are drawn for a 1.36 m dwarf
   const kh = P.headH / 0.218;
-  const dec = (frame: THREE.Matrix4, w: number, h: number, mask: (x: number, y: number) => number, bone: string, lift: number, cell = 0.0062 * k) => {
+  const dec = (frame: THREE.Matrix4, w: number, h: number, mask: (x: number, y: number) => number, bone: string, lift: number, cell = 0.0072 * k) => {
     const r = inkDecal({ proj, frame, w, h, cell, mask, lift, paint: o.ink, skin: o.skin });
     if (!r) return;
     put(ctx, r.geo, { bone, color: o.skin, mat: o.skinMat ?? 'skin_weathered', colorFn: r.colorFn, small: true });
@@ -422,74 +414,6 @@ export function knotTattoos(ctx: KindContext, proj: Projector, o: { ink: number;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// quilting
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** thin stitched channel lines of a padded vest: short horizontal runs and vertical lines on the chest and back, snapped to the sculpt */
-export function quiltLines(ctx: KindContext, proj: Projector, o: { rows: number[]; cols: number[]; y0: number; y1: number; color: number; radius?: number; skipY?: [number, number]; halfW?: number }) {
-  const { P } = ctx;
-  const sc = P.s;
-  const k = sc / 0.735;
-  const r = (o.radius ?? 0.0022) * k;
-  const lines: THREE.Vector3[][] = [];
-  const p = V();
-  const n = V();
-  const lift = 0.0012 * k;
-  const halfW = o.halfW ?? 0.14 * k;
-  for (const mode of ['f', 'b'] as const) {
-    for (const y of o.rows) {
-      const row: THREE.Vector3[] = [];
-      for (let x = -halfW; x <= halfW + 1e-6; x += 0.035 * k) {
-        if (snapPoint(proj, [x, y, 0], mode, p, n)) row.push(p.clone().addScaledVector(n, lift));
-      }
-      if (row.length > 1) lines.push(row);
-    }
-    for (const x of o.cols) {
-      let col: THREE.Vector3[] = [];
-      for (let y = o.y0; y <= o.y1 + 1e-6; y += 0.04 * k) {
-        if (o.skipY && y > o.skipY[0] && y < o.skipY[1]) {
-          if (col.length > 1) lines.push(col);
-          col = [];
-          continue;
-        }
-        if (snapPoint(proj, [x, y, 0], mode, p, n)) col.push(p.clone().addScaledVector(n, lift));
-      }
-      if (col.length > 1) lines.push(col);
-    }
-  }
-  const list: THREE.BufferGeometry[] = [];
-  for (const l of lines) {
-    const curve = new THREE.CatmullRomCurve3(l, false, 'centripetal');
-    list.push(new THREE.TubeGeometry(curve, Math.max(2, l.length - 1), r, 3, false));
-  }
-  if (!list.length) return;
-  put(ctx, mergeIndexed(list), { bone: 'chest', color: o.color, mat: 'leather_worn', small: true });
-}
-
-function mergeIndexed(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
-  const pos: number[] = [];
-  const nor: number[] = [];
-  const idx: number[] = [];
-  for (const g of list) {
-    const base = pos.length / 3;
-    const p = g.attributes.position;
-    const n = g.attributes.normal;
-    for (let i = 0; i < p.count; i++) {
-      pos.push(p.getX(i), p.getY(i), p.getZ(i));
-      nor.push(n.getX(i), n.getY(i), n.getZ(i));
-    }
-    const ix = g.index!;
-    for (let i = 0; i < ix.count; i++) idx.push(base + ix.getX(i));
-    g.dispose();
-  }
-  const out = new THREE.BufferGeometry();
-  out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-  out.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
-  out.setIndex(idx);
-  return out;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // the floppy felt hat
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -501,39 +425,41 @@ export interface FeltHatOpts {
   brim?: number;
   /** how far the side and back brim droop (head units) */
   droop?: number;
-  /** height of the hat on the head (head units) */
+  /** height of the hat's band on the head (head units; the brow is at 0.075) */
   y?: number;
   band?: number;
 }
 
 /**
- * A soft felt hat: a wide drooping brim and a tall crown that folds over and hangs its tip down
- * behind the left ear (sheet: front view tip to the viewer's right, profile tip hangs to the back).
+ * A soft felt hat: a modest brim at brow level with a rolled edge, and a tall crown that folds over
+ * and hangs its tip down behind the left ear (sheet: front view tip to the viewer's right, profile
+ * tip hangs to the back).
  */
 export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   const { P } = ctx;
   const u = P.headH;
   const h = P.h;
-  const y0 = o.y ?? 0.14;
+  const y0 = o.y ?? 0.1;
   const zOff = -0.07;
-  const brim = o.brim ?? 0.95;
-  const droop = o.droop ?? 0.22;
+  const brim = o.brim ?? 0.58;
+  const droop = o.droop ?? 0.12;
   const Rh = 0.41;
-  // crown spine (head units, relative to the hat's base centre)
+  // crown spine (head units, relative to the hat's base centre): rises, folds over, flops back and down
   const spine = new THREE.CatmullRomCurve3(
     [
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0.2, -0.02),
-      new THREE.Vector3(0.03, 0.36, -0.08),
-      new THREE.Vector3(0.14, 0.44, -0.2),
-      new THREE.Vector3(0.3, 0.4, -0.36),
-      new THREE.Vector3(0.42, 0.24, -0.48),
+      new THREE.Vector3(0.02, 0.4, -0.04),
+      new THREE.Vector3(0.1, 0.55, -0.1),
+      new THREE.Vector3(0.3, 0.52, -0.2),
+      new THREE.Vector3(0.5, 0.34, -0.28),
+      new THREE.Vector3(0.62, 0.14, -0.3),
     ],
     false,
     'catmullrom',
     0.5,
   );
-  const nS = 14;
+  const nS = 16;
   const nR = 14;
   const frames = spine.computeFrenetFrames(nS, false);
   const pos: number[] = [];
@@ -541,8 +467,7 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   for (let i = 0; i <= nS; i++) {
     const t = i / nS;
     const c = spine.getPointAt(t);
-    // radius profile: wide at the head ring, bulging a touch, then tapering to a soft tip
-    const r = Rh * (1 - 0.7 * Math.pow(t, 1.15)) * (1 + 0.12 * Math.sin(t * Math.PI)) + 0.03 * (1 - t);
+    const r = Rh * (1 - 0.74 * Math.pow(t, 1.1)) * (1 + 0.12 * Math.sin(t * Math.PI)) + 0.03 * (1 - t);
     for (let j = 0; j <= nR; j++) {
       const a = (j / nR) * Math.PI * 2;
       const nrm = frames.normals[i];
@@ -564,22 +489,23 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   crown.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   crown.setIndex(idx);
   crown.computeVertexNormals();
-  // the brim: an annulus whose side and back droop and whose front is lifted
+  // the brim: an annulus whose sides and back droop a little; the front stays low and flat so the eyes show
   const bp: number[] = [];
   const bi: number[] = [];
   const nPh = 30;
   const nT = 3;
+  const edge: THREE.Vector3[] = [];
   for (let i = 0; i <= nT; i++) {
     const t = i / nT;
     for (let j = 0; j <= nPh; j++) {
       const ph = (j / nPh) * Math.PI * 2;
       const r = Rh * 0.98 + (brim - Rh * 0.98) * t;
-      const flop = 0.55 + 0.45 * Math.sin(ph * 2 + 1.7) * Math.cos(ph + 1);
       const side = Math.abs(Math.sin(ph));
-      let y = -droop * Math.pow(t, 1.5) * (0.35 + 0.65 * side + 0.25 * flop) + 0.02 * Math.sin(t * 5 + ph * 3);
-      y += 0.16 * Math.max(0, Math.cos(ph)) * Math.pow(t, 0.9);
+      const back = Math.max(0, -Math.cos(ph));
+      const y = -droop * Math.pow(t, 1.5) * (0.3 + 0.7 * side + 0.4 * back) + 0.04 * Math.max(0, Math.cos(ph)) * t;
       const q = h(Math.sin(ph) * r, y0 + y + 0.01, zOff + Math.cos(ph) * r * 1.12);
       bp.push(q[0], q[1], q[2]);
+      if (i === nT && j < nPh) edge.push(new THREE.Vector3(q[0], q[1], q[2]));
     }
   }
   for (let i = 0; i < nT; i++)
@@ -597,12 +523,15 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   const cc = new THREE.Color();
   const top = P.headC[1] + 0.22 * u;
   const colorFn = (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
-    // sun-faded crown, darker worn brim edge
+    // sun-faded crown
     const f = smoothstep(top, top + 0.5 * u, p.y);
-    c.copy(cc.copy(c1).lerp(c2, f * 0.7));
+    c.copy(cc.copy(c1).lerp(c2, f * 0.6));
   };
   put(ctx, crown, { bone: 'head', color: o.color, mat: o.mat, colorFn });
   put(ctx, brimG, { bone: 'head', color: o.color, mat: o.mat, colorFn });
+  // rolled edge of the brim: a thin tube in the crown's wool
+  const roll = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(edge, true, 'centripetal'), 36, 0.02 * u, 5, true);
+  put(ctx, roll, { bone: 'head', color: o.color, mat: o.mat, small: true });
   if (o.band) {
     const ring = new THREE.TorusGeometry(Rh * 1.01 * u, 0.022 * u, 4, 24).rotateX(Math.PI / 2).scale(1, 1, 1.12);
     ring.translate(...h(0, y0 + 0.03, zOff));
@@ -707,44 +636,4 @@ export function sculptBelt(ctx: KindContext, o: { y: number; hw: number; color: 
     s.plane([0, 1, 0], o.y + o.hw * sc, { op: 'paint', seam: 0, k: 0.002 });
     s.plane([0, -1, 0], -(o.y - o.hw * sc), { op: 'paint', seam: 0, k: 0.002 });
   });
-}
-
-
-// ─────────────────────────────────────────────────────────────────────────────
-// mane (sculpted hair mass behind the head and over the back) and hair material
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * A solid mass of hair behind the head that falls over the shoulders and back: the strand cards
- * alone leave the back view empty (sheet: redbeard's mane reaches the shoulder blades, the elder's
- * hair frames the nape). `drop` 0..1 sets how far it falls (1 = to mid back).
- */
-export function sculptMane(ctx: KindContext, o: { color: number; color2?: number; drop: number; width?: number }) {
-  const { P, sculpt: s } = ctx;
-  const sc = P.s;
-  const u = P.headH;
-  const shY = P.j.upperarm_l[1];
-  const w = o.width ?? 1;
-  const g = Math.sqrt(P.build.bulk);
-  s.with({ color: o.color, color2: o.color2 ?? o.color, colorNoise: 0.6, colorFreq: 40 / sc, mat: 'hair', noise: { amp: 0.0035 * sc, freq: 55 / sc, type: 'ridged', octaves: 2 } }, () => {
-    s.group('union', 0.035 * sc, () => {
-      s.ellipsoid(P.h(0, -0.2, -0.3), [0.31 * u * w, 0.34 * u, 0.2 * u], { bone: 'head', k: 0.04 * sc });
-      if (o.drop > 0.2) {
-        const back = -0.12 * sc * P.build.chest * g - 0.025 * sc;
-        s.ellipsoid([0, shY - 0.03 * sc, back], [0.15 * sc * w * g, 0.12 * sc, 0.06 * sc], { bone: 'chest', k: 0.04 * sc });
-        if (o.drop > 0.5) s.ellipsoid([0, shY - 0.16 * sc, back - 0.005 * sc], [0.13 * sc * w * g, 0.13 * sc, 0.055 * sc], { bone: 'chest', k: 0.04 * sc });
-        if (o.drop > 0.8) s.ellipsoid([0, shY - 0.3 * sc, back - 0.005 * sc], [0.09 * sc * w * g, 0.13 * sc, 0.045 * sc], { bone: 'chest', k: 0.04 * sc });
-      }
-    });
-  });
-}
-
-/** fuller, less glossy hair for a colour's shared hair material (dark hair lit by the sky reads grey otherwise) */
-export function tuneHair(material: THREE.MeshPhysicalMaterial, o: { spec: number; alpha?: number }) {
-  material.specularIntensity = 0.04 * o.spec;
-  material.sheen = 0.04;
-  material.roughness = 0.9;
-  if (o.alpha !== undefined) material.alphaTest = o.alpha;
-  const u = material.userData.hairUniforms as { hairSpec: { value: number } } | undefined;
-  if (u) u.hairSpec.value = 0.12 * o.spec;
 }
