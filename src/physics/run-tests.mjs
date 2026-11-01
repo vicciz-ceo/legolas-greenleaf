@@ -8,7 +8,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const tests = [resolve(here, 'physics.test.ts'), resolve(here, '../combat/combat.test.ts'), resolve(here, '../game/shell.test.ts'), resolve(here, '../game/finishing.test.ts'), resolve(here, '../actors/player.test.ts'), resolve(here, '../creatures/weapons.test.ts'), resolve(here, '../creatures/humanoid/stance.test.ts')];
+const tests = [resolve(here, 'physics.test.ts'), resolve(here, '../combat/combat.test.ts'), resolve(here, '../game/shell.test.ts'), resolve(here, '../game/finishing.test.ts'), resolve(here, '../actors/player.test.ts'), resolve(here, '../creatures/weapons.test.ts'), resolve(here, '../creatures/humanoid/stance.test.ts'), resolve(here, '../creatures/kit/mesher.test.ts')];
 // the player imports the humanoid registry, which uses Vite's import.meta.glob: swap it for explicit imports
 const globPlugin = {
   name: 'vite-glob-shim',

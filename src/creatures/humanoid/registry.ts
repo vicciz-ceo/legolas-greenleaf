@@ -57,6 +57,8 @@ export const DEFAULT_ANIM: AnimStyle = {
   armSwing: 1,
   cadence: 1,
   grace: 0.3,
+  crouch: 0,
+  lean: 0,
 };
 
 const DEFAULT_KIND: KindDef = {
