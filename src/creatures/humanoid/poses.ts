@@ -83,6 +83,60 @@ export function mixInto(out: Pose, src: Pose, w: number) {
   for (let i = 0; i < F.COUNT; i++) out[i] += (src[i] - out[i]) * w;
 }
 
+const _hs = new Float32Array(F.hrtz + 1 - F.hldx);
+/**
+ * `mixInto` with the hands' frames (knuckles and thumbs) turned instead of lerped: a lerp of two frames far apart passes through near-zero
+ * vectors and the solved hand whips across the body (a hanging blade and a special pose's or a death pose's hand are nearly opposite:
+ * 60-90 deg in one frame as the weight crosses a half). The frames turn the way `turnHand` takes them, by way of the neutral hand, one
+ * short leg after the other, and are exact at w = 1. Not for blends of like frames (idle into walk): there the turn only distorts.
+ */
+export function mixTurning(out: Pose, src: Pose, w: number) {
+  if (w <= 0) return;
+  if (w >= 1) {
+    out.set(src);
+    return;
+  }
+  _hs.set(out.subarray(F.hldx, F.hrtz + 1));
+  for (let i = 0; i < F.COUNT; i++) out[i] += (src[i] - out[i]) * w;
+  out.set(_hs, F.hldx);
+  blendHand(out, F.hldx, F.hltx, src[F.hldx], src[F.hldx + 1], src[F.hldx + 2], src[F.hltx], src[F.hltx + 1], src[F.hltx + 2], w, 1);
+  blendHand(out, F.hrdx, F.hrtx, src[F.hrdx], src[F.hrdx + 1], src[F.hrdx + 2], src[F.hrtx], src[F.hrtx + 1], src[F.hrtx + 2], w, -1);
+}
+
+/** the angle (rad) of the short way between two unit quaternions */
+const quatAngle = (a: Float64Array, b: Float64Array) => 2 * Math.acos(Math.min(1, Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3])));
+const _qd = new Float64Array(4), _qv = new Float64Array(4);
+/**
+ * Turn the pose's hand frame (slots `dd`, `tt`) to the frame (d, t) by weight `w` (0 = as it is, 1 = the frame), eased, at a steady
+ * rate and without a flip. Two frames less than 120 deg apart turn the short way (a slerp). Two frames nearly opposite (a hold turned
+ * up and a hand overhead) have no short way: the half revolution flips from one side to the other with the smallest change of either.
+ * So the turn is two slerps, to a waypoint and on from it, each between fixed ends, each given its share of the weight by its length:
+ * the waypoint is the middle of the short way, and from 120 to 165 deg apart moves over to the neutral hand (the pose a hand always
+ * has a short way to), so a hand that starts at the neutral hand turns straight to the frame.
+ */
+function blendHand(p: Pose, dd: number, tt: number, dx: number, dy: number, dz: number, tx: number, ty: number, tz: number, w: number, sx: number) {
+  orthoPair(_fb, dx, dy, dz, tx, ty, tz);
+  if (w >= 1) {
+    p[dd] = _fb[0]; p[dd + 1] = _fb[1]; p[dd + 2] = _fb[2];
+    p[tt] = _fb[3]; p[tt + 1] = _fb[4]; p[tt + 2] = _fb[5];
+    return;
+  }
+  if (!(w > 0)) return;
+  orthoPair(_fa, p[dd], p[dd + 1], p[dd + 2], p[tt], p[tt + 1], p[tt + 2]);
+  pairQuat(_qa, _fa);
+  pairQuat(_qb, _fb);
+  slerpQ(_qd, _qa, _qb, 0.5); // the middle of the short way
+  const far = (quatAngle(_qa, _qb) - 2.094) / (2.88 - 2.094); // 120 deg .. 165 deg
+  if (far > 0) slerpQ(_qd, _qd, _qn[sx > 0 ? 0 : 1], far >= 1 ? 1 : far * far * (3 - 2 * far));
+  const l1 = quatAngle(_qa, _qd), l2 = quatAngle(_qd, _qb);
+  const d = w * w * (3 - 2 * w) * (l1 + l2);
+  if (d <= l1 && l1 > 1e-6) slerpQ(_qv, _qa, _qd, d / l1);
+  else slerpQ(_qv, _qd, _qb, l2 > 1e-6 ? Math.min(1, (d - l1) / l2) : 1);
+  const x = _qv[0], y = _qv[1], z = _qv[2], q = _qv[3];
+  p[dd] = 1 - 2 * (y * y + z * z); p[dd + 1] = 2 * (x * y + z * q); p[dd + 2] = 2 * (x * z - y * q);
+  p[tt] = 2 * (x * y - z * q); p[tt + 1] = 1 - 2 * (x * x + z * z); p[tt + 2] = 2 * (y * z + x * q);
+}
+
 function setV(p: Pose, i: number, x: number, y: number, z: number) {
   p[i] = x;
   p[i + 1] = y;
@@ -339,10 +393,11 @@ export const HOLDS: Record<Exclude<Carry, 'none'>, HoldDef> = {
   // the shield rests on the forearm with its face turned toward the front, as every sheet holds it, not straight out (a face-out shield is an
   // edge-on sliver from the front, where the emblem is the identity cue). The sheets disagree on how far: their fronts and backs show the face
   // ~60 deg off the view, their profiles and three-quarters near edge-on. Swept against the calibrated turnarounds (scripts/sheet-compare.py, idle,
-  // the five shield bearers): the mean IoU of the four views peaks at 15..30 deg and is no better than the old hold beyond 60. 40 deg is the
-  // turn that clears the walking thigh: the front edge swings in toward the body as the face turns forward and meets the thigh that swings
-  // forward in a stride, unless the elbow is bent (the wrist raised to 0.75 of the arm below the shoulder and held 0.2 ahead of it): the shield
-  // then stands in front of the stride, as a person rests it on the arm
+  // the five shield bearers): the mean IoU of the four views peaks at 15..30 deg and is no better than the old hold beyond 60. Turned to the
+  // front, the shield's front edge swings in toward the body and meets the thigh that swings forward in a stride (a Rohirrim disc cut 5-15 cm
+  // into it) unless the elbow is bent: the wrist is held 0.2 ahead of the shoulder and no lower than 0.75 of the arm below it, and the shield
+  // then stands in front of the stride, as a person rests it on the arm. 40 deg gives up ~0.01 of the best IoU for margin there (35 clears
+  // too, 30 touches an orc's thigh)
   shield: { tilt: -7, azim: 90, dir: 1, knuckle: [0, 0, 1], face: 40, minOut: 0.3, minFwd: 0.2, maxDrop: 0.75, maxTilt: 0 },
 };
 /** the point of a carried item keeps this far (× body height) above the ground */
@@ -573,7 +628,23 @@ function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: n
   if (w >= 1) {
     p[dd] = _cL[0]; p[dd + 1] = _cL[1]; p[dd + 2] = _cL[2];
     p[tt] = _cT[0]; p[tt + 1] = _cT[1]; p[tt + 2] = _cT[2];
-  } else turnHand(p, dd, tt, _cL[0], _cL[1], _cL[2], _cT[0], _cT[1], _cT[2], w, sx);
+  } else {
+    turnHand(p, dd, tt, _cL[0], _cL[1], _cL[2], _cT[0], _cT[1], _cT[2], w, sx);
+    if (ext > 1e-3 && def.maxTilt > 0) {
+      // between the hanging blade and the run's fist the blade has neither the tilt solved above nor the fist's, and the hand's run swing
+      // is at its lowest: where the point of what is held would reach the ground, lift the wrist (a goblin's club went 14 cm through the floor at 2.5 m/s)
+      const clear = CARRY_CLEAR * B.height;
+      for (let it = 0; it < 2; it++) {
+        mulV(_W, _Rm, p[hx] * R, p[hx + 1] * R, p[hx + 2] * R);
+        mulV(_T, _Rm, p[tt], p[tt + 1], p[tt + 2]);
+        mulV(_L, _Rm, p[dd], p[dd + 1], p[dd + 2]);
+        const ny = sx * (_L[2] * _T[0] - _L[0] * _T[2]);
+        const tip = _W[1] + S[1] + B.gripAlong * _L[1] + B.gripOut * ny + _T[1] * ext;
+        if (tip >= clear) break;
+        p[hx + 1] += (clear - tip) / (R * Math.max(0.3, _Rm[4]));
+      }
+    }
+  }
 }
 
 /**
@@ -638,6 +709,11 @@ export function idlePose(B: BodyMetrics, t: number, p: Pose, held?: HeldCarry): 
 }
 
 const _gait: BipedGaitSample = makeBipedSample();
+
+/** how far the gait at `speed` is a run (0 = a walk .. 1 = a run): the weight the carry takes a hanging blade back to the run's fist by */
+export function runWeight(B: BodyMetrics, speed: number): number {
+  return speed > 0.02 ? bipedGait(0, speed, B.legLen, _gait).run : 0;
+}
 
 /** walk / run / sprint / dash with planted feet. phase in cycles; moveDir local (x right, z forward). */
 export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx: number, mdz: number, t: number, p: Pose, held?: HeldCarry): Pose {
@@ -730,8 +806,11 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
   return p;
 }
 
-/** airborne: tuck on the way up, reach for the ground on the way down */
-export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, p: Pose, held?: HeldCarry): Pose {
+/**
+ * airborne: tuck on the way up, reach for the ground on the way down. `speed` is the horizontal speed (it sets how far the carry has gone
+ * from a hanging blade to the run's fist, as on the ground: the hand must not change its frame as the air layer comes and goes)
+ */
+export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, p: Pose, held?: HeldCarry, speed = 0): Pose {
   standPose(B, t, p);
   const s = B.s;
   const up = Math.min(1, Math.max(0, (vy + 1) / 6));
@@ -749,11 +828,13 @@ export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, 
   p[F.sp] = 0.08 * tuck;
   p[F.cp] = 0.06 * tuck - 0.05 * down;
   p[F.np] = -0.05;
+  // the head keeps its own pitch: standPose counter-pitched it for the crouch and lean it put in the torso, which this pose has just replaced
+  p[F.hp] = -0.12 * B.style.hunch;
   // arms: up and forward rising; out to the sides falling
   hands(p, 0.25 + 0.3 * down, -0.55 + 0.25 * up + 0.2 * down, 0.35 * up + 0.05 * down, 0.25 + 0.3 * down, -0.6 + 0.2 * up + 0.2 * down, 0.3 * up);
   elbows(p, 0.6, -0.2, -0.8, 0.6, -0.2, -0.8);
   void s;
-  if (held) applyCarry(B, p, held, 0);
+  if (held) applyCarry(B, p, held, runWeight(B, speed));
   return p;
 }
 

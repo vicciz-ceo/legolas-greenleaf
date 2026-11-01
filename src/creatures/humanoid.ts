@@ -248,6 +248,9 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
       reach[hand].down = Math.max(0, -_box.min.y);
       sockets[hand].add(obj);
       cur.obj = obj;
+      // a kind scales and fits what its hands hold when the socket's matrices update (scaleHeldWeapon, fitHeldWeapon: by default the first
+      // render): do it now, or the first pose is solved for the prop unscaled and the hand jumps a frame later (a goblin's scimitar x0.5: 41 deg)
+      sockets[hand].updateMatrixWorld(true);
     } else reach[hand].up = reach[hand].down = 0;
     refreshStow();
   };

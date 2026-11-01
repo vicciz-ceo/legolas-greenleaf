@@ -12,7 +12,9 @@
  *               blade stays off the ground however long it is,
  *   untouched   a hand that holds nothing (or a bow, a crossbow) keeps the neutral hand bit for bit, an attack at its
  *               first and last instant is the carried rest pose, and its own keys are not changed by the carry,
- *   continuous  the hand's orientation varies smoothly with time, speed and the attack's progress (no flips, no jumps),
+ *   continuous  the hand's orientation varies smoothly with time, speed and the attack's progress (no flips, no jumps), and through the
+ *               layers blended over the rest pose: special poses in and out, death, a jump and its landing (the hand, the pelvis, the
+ *               point of a hanging blade), the walk-to-run band, the first pose with a prop the kind rescales,
  *   finite      no NaN anywhere, in any state,
  *   consistent  the trunk estimate the carry places the hands with equals the solver's, left and right mirror each
  *               other, a run takes a hanging blade back to the fist, every LOD shows the same carry.
@@ -492,6 +494,149 @@ test('attacks turn a carried hand no more sharply than they turn the neutral han
   }
 });
 
+// ── the layers blended over the carried rest pose: specials, death, jumps and landings ──────────────────────────────
+/** the largest turn (deg) of each hand between consecutive frames of n updates, `f(i)` feeding frame i */
+function handTurns(A: HumanoidAnimator, n: number, f: (i: number) => void) {
+  const max = { l: 0, r: 0 };
+  const at = { l: -1, r: -1 };
+  const prev: Record<Side, THREE.Quaternion | null> = { l: null, r: null };
+  for (let i = 0; i < n; i++) {
+    f(i);
+    for (const sd of SIDES) {
+      const q = handQ(A, sd);
+      const d = prev[sd] ? turn(prev[sd]!, q) : 0;
+      if (d > max[sd]) {
+        max[sd] = d;
+        at[sd] = i;
+      }
+      prev[sd] = q;
+    }
+  }
+  return { max, at };
+}
+/** a sword in the right hand, a shield in the left (the sheets' bearers, Lurtz's boss move), or nothing */
+function armed(P: Proportions, A: HumanoidAnimator, carried: boolean) {
+  empty(A);
+  if (carried) {
+    give(P, A, 'r', 'sword');
+    give(P, A, 'l', 'shield');
+  }
+}
+
+test('a special pose blends in and out without whipping a carried hand (every special, 1/60 frames)', () => {
+  for (const kind of ['man', 'goblin', 'troll'] as const) {
+    const { P, A } = make(resolveKind(kind));
+    for (const sp of SPECIALS) {
+      const run = (carried: boolean) => {
+        armed(P, A, carried);
+        A.reset(0, 0);
+        // 1 s of idle, the special on for 1.2 s, then off again for 1.2 s
+        return handTurns(A, 260, (i) => A.update(i === 0 ? 0 : 1 / 60, { speed: 0, grounded: true, special: i >= 60 && i < 140 ? sp : undefined, specialT: i / 60 }));
+      };
+      const c = run(true), n = run(false);
+      for (const sd of SIDES) {
+        cal(`${kind} ${sp} ${sd}: carried ${c.max[sd].toFixed(1)} (#${c.at[sd]}), neutral ${n.max[sd].toFixed(1)}`);
+        // the special's own frames turn the neutral hand too; the carry adds the turn from the hold to the special and back: bounded
+        // by the blend's weight (<= 0.12 of a half revolution per frame), not the 60-90 deg of a lerp through near-zero vectors
+        ok(c.max[sd] <= Math.max(n.max[sd] * 1.8, 20), `${kind} ${sp} ${sd}: a carried hand turns at most ${c.max[sd].toFixed(1)} deg per frame (#${c.at[sd]}; the neutral hand ${n.max[sd].toFixed(1)})`);
+      }
+    }
+  }
+});
+
+test('death blends in without whipping a carried hand (every variant)', () => {
+  const { P, A } = make(resolveKind('man'));
+  for (const v of [0, 1, 2, 3]) {
+    const run = (carried: boolean) => {
+      armed(P, A, carried);
+      A.reset(0, 0);
+      // the lab's fall: dead 0 -> 1 over 1.3 s
+      return handTurns(A, 140, (i) => A.update(i === 0 ? 0 : 1 / 60, { speed: 0, grounded: true, dead: Math.min(1, Math.max(0, (i - 20) / 78)), deathVariant: v }));
+    };
+    const c = run(true), n = run(false);
+    for (const sd of SIDES) {
+      cal(`death ${v} ${sd}: carried ${c.max[sd].toFixed(1)} (#${c.at[sd]}), neutral ${n.max[sd].toFixed(1)}`);
+      ok(c.max[sd] <= Math.max(n.max[sd] * 1.8, 20), `death variant ${v} ${sd}: a carried hand turns at most ${c.max[sd].toFixed(1)} deg per frame (the neutral hand ${n.max[sd].toFixed(1)})`);
+    }
+  }
+});
+
+test('a jump and its landing keep a carried hand turning smoothly, standing and running', () => {
+  for (const kind of ['man', 'goblin', 'gimli'] as const) {
+    const { P, A } = make(resolveKind(kind));
+    for (const speed of [0, 1.5, 3.5, 6, 9]) {
+      const run = (carried: boolean) => {
+        armed(P, A, carried);
+        A.reset(0, 0);
+        const mv = speed > 0 ? { x: 0, z: 1 } : undefined;
+        // 1 s on the ground, 25 frames in the air (up, then down), 1 s on the ground
+        return handTurns(A, 145, (i) => {
+          const air = i >= 60 && i < 85;
+          A.update(i === 0 ? 0 : 1 / 60, air ? { speed, grounded: false, vy: 5 - (i - 60) * 0.5, moveDir: mv } : { speed, grounded: true, moveDir: mv });
+        });
+      };
+      const c = run(true), n = run(false);
+      for (const sd of SIDES) {
+        cal(`${kind} jump at ${speed} ${sd}: carried ${c.max[sd].toFixed(1)} (#${c.at[sd]}), neutral ${n.max[sd].toFixed(1)}`);
+        ok(c.max[sd] <= Math.max(n.max[sd] * 1.8, 20), `${kind} jump at ${speed} m/s ${sd}: a carried hand turns at most ${c.max[sd].toFixed(1)} deg per frame (#${c.at[sd]}; the neutral hand ${n.max[sd].toFixed(1)})`);
+      }
+    }
+  }
+});
+
+test('the pelvis does not pop on landing, a crouched body included', () => {
+  for (const kind of ['man', 'goblin', 'gimli', 'troll'] as const) {
+    const def = resolveKind(kind);
+    const { P, A } = make(def);
+    for (const speed of [0, 3]) {
+      armed(P, A, false);
+      A.reset(0, 0);
+      const mv = speed > 0 ? { x: 0, z: 1 } : undefined;
+      const hips = A.ps.i('hips');
+      let prev = -1, worst = 0, at = -1;
+      for (let i = 0; i < 160; i++) {
+        const air = i >= 60 && i < 90;
+        A.update(i === 0 ? 0 : 1 / 60, air ? { speed, grounded: false, vy: 4 - (i - 60) * 0.5, moveDir: mv } : { speed, grounded: true, moveDir: mv });
+        const y = A.ps.modelP[hips].y;
+        if (prev >= 0 && Math.abs(y - prev) > worst) {
+          worst = Math.abs(y - prev);
+          at = i;
+        }
+        prev = y;
+      }
+      const lim = 0.12 * A.B.legLen;
+      cal(`${kind} landing at ${speed}: the pelvis moves at most ${(worst * 100).toFixed(1)} cm per frame (#${at}), limit ${(lim * 100).toFixed(1)}`);
+      ok(worst <= lim, `${kind} jump at ${speed} m/s: the pelvis moves ${(worst * 100).toFixed(1)} cm in one frame (#${at}), at most ${(lim * 100).toFixed(1)}`);
+    }
+  }
+});
+
+test('a hanging blade keeps its point off the ground through a landing', () => {
+  const cases: [string, WeaponKind][] = [['man', 'sword'], ['goblin', 'cleaver'], ['gimli', 'dwarf_axe'], ['dwarf', 'axe'], ['aragorn', 'sword']];
+  for (const [kind, w] of cases) {
+    const def = resolveKind(kind as HumanoidKind);
+    const { P, A } = make(def);
+    const sc = KIND_SCALE[kind]?.[w] ?? 1;
+    empty(A);
+    give(P, A, 'r', w, sc, def.weapons.style);
+    A.reset(0, 0);
+    let rest = Infinity, low = Infinity, lowAt = -1;
+    for (let i = 0; i < 200; i++) {
+      const air = i >= 60 && i < 100;
+      A.update(i === 0 ? 0 : 1 / 60, air ? { speed: 0, grounded: false, vy: 4 - (i - 60) * 0.5 } : { speed: 0, grounded: true });
+      if (air) continue;
+      const lowest = probe(P, A, 'r', w, sc, def.weapons.style).lowest;
+      if (i < 60) rest = Math.min(rest, lowest);
+      else if (lowest < low) {
+        low = lowest;
+        lowAt = i;
+      }
+    }
+    cal(`${kind} ${w}: the point at rest ${(rest * 100).toFixed(1)} cm, lowest after landing ${(low * 100).toFixed(1)} cm (#${lowAt})`);
+    ok(low >= 0, `${kind} ${w}: the point goes ${(low * 100).toFixed(1)} cm under the ground after landing (at rest ${(rest * 100).toFixed(1)} cm)`);
+  }
+});
+
 // ── finite ───────────────────────────────────────────────────────────────────
 test('no NaN in any state, with any item in either hand, for every kind, at every LOD', () => {
   const styles = [{}, { hunch: 1, crouch: 1, lean: 1, aggression: 1, stance: 1.8 }];
@@ -647,15 +792,39 @@ test('every real humanoid carries its props as promised, with the kinds\' own sc
   ok(n >= 20, `props probed (${n})`);
 });
 
+test('the first pose with a prop is solved for the prop as its kind scales it: no jump of the hand a frame later', () => {
+  // scaleHeldWeapon and fitHeldWeapon rescale the prop when the socket's matrices update; the carry's ground clearance depends on its length
+  const cases: [HumanoidKind, WeaponKind | undefined][] = [['goblin', undefined], ['goblin', 'scimitar'], ['gimli', undefined], ['troll', undefined], ['bolg', undefined], ['berserker', undefined]];
+  for (const [kind, weapon] of cases) {
+    for (const how of ['created', 'swapped'] as const) {
+      const h = createHumanoid({ kind, seed: 0, weapon: how === 'created' ? weapon : 'none' });
+      if (how === 'swapped') {
+        for (let i = 0; i < 4; i++) h.animate(1 / 60, IDLE);
+        h.root.updateMatrixWorld(true);
+        h.setWeapon('hand_r', weapon ?? ((resolveKind(kind).weapons.right ?? 'none') as WeaponKind));
+      }
+      h.animate(1 / 60, IDLE); // the first pose with the prop: no render has updated the matrices yet
+      const first = h.bones.hand_r.quaternion.clone();
+      h.root.updateMatrixWorld(true);
+      h.animate(1 / 60, IDLE);
+      const second = h.bones.hand_r.quaternion.clone();
+      const d = turn(first, second);
+      cal(`${kind}${weapon ? `/${weapon}` : ''} ${how}: the hand turns ${d.toFixed(2)} deg between the first two frames`);
+      ok(d < 3, `${kind}${weapon ? `/${weapon}` : ''} ${how}: the hand turns ${d.toFixed(1)} deg between its first two poses with the prop (the idle's own motion is < 1)`);
+      h.dispose();
+    }
+  }
+});
+
 test('a walking humanoid keeps the point of its hanging prop off the ground (real props, real gait)', () => {
   const walkers: [HumanoidKind, WeaponKind | undefined][] = [['man', undefined], ['goblin', undefined], ['goblin', 'cleaver'], ['goblin', 'club'], ['troll', undefined], ['berserker', undefined], ['gimli', undefined], ['bolg', undefined]];
   for (const [kind, weapon] of walkers) {
     const h = real(kind, weapon);
     const o = h.weaponObject('hand_r')!;
     let lowest = Infinity;
-    // walking speeds, below every body's run onset (a goblin's is ~2 m/s): in the blend between the hanging blade and the run's fist a
-    // long prop on a low, crouched hand can dip a few cm into the ground for a few frames, the swing of such a hand is ~40 cm
-    for (const speed of [0.8, 1.5]) {
+    // walking speeds and the walk-to-run band (a goblin's run begins at ~2 m/s, a man's at 2.6): in the blend between the hanging blade and
+    // the run's fist the blade has neither the solved tilt nor the fist's, and the swing of a crouched hand is ~40 cm: the carry lifts the wrist
+    for (const speed of [0.8, 1.5, 2.25, 2.5, 2.75, 3.25]) {
       h.resetAnimation(0, 0);
       let low = Infinity;
       for (let i = 0; i < 150; i++) {
@@ -668,7 +837,7 @@ test('a walking humanoid keeps the point of its hanging prop off the ground (rea
       lowest = Math.min(lowest, low);
     }
     cal(`${kind}${weapon ? `/${weapon}` : ''} walking: lowest point ${(lowest * 100).toFixed(1)} cm`);
-    ok(lowest >= -0.02 * h.height, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking`);
+    ok(lowest >= 0, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking and running up`);
   }
 });
 
