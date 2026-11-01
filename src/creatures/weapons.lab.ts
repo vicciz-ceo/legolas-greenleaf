@@ -212,7 +212,21 @@ function pass4Row(): LabInstance {
   return sheetRow([pick('rohan_shield'), pick('cave_troll_club'), pick('war_hammer'), pick('orc_cleaver'), pick('gimli_axe')], 1.6);
 }
 
+/** pass 5 props in a row: Uruk falchion, Haradrim scimitar, berserker greatsword, Gimli axe, Tauriel's bow, Galadhrim bow */
+function pass5Row(): LabInstance {
+  const items: SheetItem[] = [
+    { name: 'falchion', kind: 'sword', style: 'uruk', flip: true, extent: 0.85 },
+    { name: 'haradrim_scimitar', kind: 'scimitar', style: 'haradrim', flip: true, extent: 0.95 },
+    { name: 'berserker_sword', kind: 'sword', style: 'berserker', extent: 1.1 },
+    { name: 'gimli_axe', kind: 'dwarf_axe', style: 'gimli', extent: 1.15 },
+    { name: 'tauriel_bow', kind: 'elven_bow', style: 'elven', bow: true, extent: 1.6 },
+    { name: 'galadhrim_bow', kind: 'elven_bow', bow: true, extent: 1.6 },
+  ];
+  return sheetRow(items, 0.8);
+}
+
 export const subjects: LabSubject[] = [
+  { name: 'weapons_pass5', category: 'prop', create: pass5Row },
   { name: 'weapons_pass4', category: 'prop', create: pass4Row },
   { name: 'weapons_shields', category: 'prop', create: shieldRow },
   { name: 'weapons_knives', category: 'prop', create: () => sheetRow([{ name: 'k_default', kind: 'elven_knives', flip: true, count: 2, extent: 0.65 }, { name: 'k_elven', kind: 'elven_knives', style: 'elven', flip: true, count: 2, extent: 0.65 }], 0.5) },
