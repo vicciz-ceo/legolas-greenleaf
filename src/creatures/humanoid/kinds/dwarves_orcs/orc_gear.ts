@@ -597,3 +597,17 @@ export function thighCloth(ctx: KindContext, o: { color: number; color2: number;
     slab(s, o.bottom, o.top, 0.008 * sc);
   });
 }
+
+/**
+ * Skin-coloured mass over the arms. The anatomy's arm is thin (3 to 4 cm radius) and at crowd
+ * resolution the mesher turns a limb thinner than about one cell into a twisted ribbon (the
+ * "corkscrew" forearm); a slightly fatter arm meshes as a smooth tube. Add it AFTER the skin tint.
+ */
+export function armMass(ctx: KindContext, o: { color: number; color2: number; inflate: number; forearm?: boolean }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  s.group('union', 0.01 * sc, () => {
+    emitParts(s, parts, o.forearm === false ? ['upperarm'] : ['upperarm', 'forearm'], { color: o.color, color2: o.color2, colorNoise: 0.5, colorFreq: 16 / sc, mat: 'skin_orc', inflate: o.inflate });
+  });
+}

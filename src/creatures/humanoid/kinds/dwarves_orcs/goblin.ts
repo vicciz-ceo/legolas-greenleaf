@@ -18,7 +18,7 @@ import { attachSkinned, ctxBucket, devNum, recipeRng } from './common';
 import { makeOrcHair } from './orc_hair';
 import { IRON, domeHelm } from './headgear';
 import { faceStroke } from './markings';
-import { RAGS, STRAP, beltBand, orcFittings, ragTunic, rustPauldron, shinWraps } from './orc_gear';
+import { RAGS, STRAP, armMass, beltBand, orcFittings, ragTunic, rustPauldron, shinWraps } from './orc_gear';
 import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
 
 const FACE = {
@@ -153,6 +153,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   const tone = skinTone ?? [G.skin, G.skin2, [0xa88a78, 0x705a4e, 0x96705e]];
   skinTint(ctx, { color: tone[0], color2: tone[1], noise: 0.55, torso: true, legs: true, sleeve: 0, legRange: [0.15, 0.95] });
   skinMottle(ctx, rng, tone[2], { n: 12, torso: true, strength: 0.4 });
+  armMass(ctx, { color: tone[0], color2: tone[1], inflate: 0.01 * sc });
   eyeRings(ctx, 0x24160f, 0.85);
   {
     // heavy dark brow ridge shading above the big amber eyes
