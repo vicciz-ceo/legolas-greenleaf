@@ -134,7 +134,7 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   skinTint(ctx, { color: look.skin, color2: look.skin2, noise: 0.6, torso: false, legs: true, legRange: [0.25, 0.92], sleeve: 0.5 });
   skinMottle(ctx, rng, look.mottle, { n: 12 });
   eyeRings(ctx, 0x2a1a14, 0.6);
-  orcTeeth(ctx, rng, { n: 7, big: 1.1 });
+  orcTeeth(ctx, rng, { n: 7, big: 1.25, thick: 1.6 });
   faceScars(ctx, rng, look.scars);
   void bodyMarks;
   // ── rag tunic: short torn sleeves, cowl at the throat, hem hidden under the belts and kilt

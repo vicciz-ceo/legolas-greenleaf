@@ -118,7 +118,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   skinTint(ctx, { dim: 1, color: look.skin, color2: look.skin2, noise: 0.55, torso: true, legs: true, legRange: [0.25, 0.9], sleeve: 0 });
   skinMottle(ctx, rng, look.mottle, { n: 14, torso: true, strength: 0.4 });
   eyeRings(ctx, 0x4a2a30, 0.55);
-  orcTeeth(ctx, rng, { n: 8, big: 1.5, color: 0xd6c08a });
+  orcTeeth(ctx, rng, { n: 8, big: 1.7, color: 0xd6c08a, thick: 2.2 });
   // scars: pink-red healed cuts across the face and chest (sheet), plus ink on the brutes
   const scar = (pts: [number, number][], r: number) => faceStroke(ctx, pts, { color: P_.scar, r, mat: 'skin_orc', strength: 0.85 });
   scar([[0.13, 0.26], [0.07, 0.17], [0.03, 0.1]], 0.011);
