@@ -33,6 +33,8 @@ export interface OrcHairOpts {
   maxZ?: number;
   /** half-width of a centre part (head units): no roots on the crown line */
   part?: number;
+  /** let strands fall free off the scalp instead of hugging the skull until it curves away (lank hair) */
+  free?: boolean;
 }
 
 export function makeOrcHair(ctx: KindContext, o: OrcHairOpts, rng: Rng): THREE.BufferGeometry | null {
@@ -129,7 +131,7 @@ export function makeOrcHair(ctx: KindContext, o: OrcHairOpts, rng: Rng): THREE.B
     seed: rng.int(1, 1e6),
     taper: 0.4,
     wave: o.wave ? { amp: 0.016 * s * o.wave, length: 0.11 * s } : undefined,
-    hug: 0,
+    hug: o.free ? undefined : 0,
     hugUntil: -0.3,
   });
   if (!strands.length) return null;

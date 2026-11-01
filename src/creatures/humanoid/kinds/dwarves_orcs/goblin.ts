@@ -18,7 +18,7 @@ import { attachSkinned, ctxBucket, devNum, recipeRng } from './common';
 import { makeOrcHair } from './orc_hair';
 import { IRON, domeHelm } from './headgear';
 import { faceStroke } from './markings';
-import { RAGS, STRAP, armMass, beltBand, orcFittings, ragTunic, rustPauldron, shinWraps } from './orc_gear';
+import { RAGS, STRAP, armMass, beltBand, thighCloth, orcFittings, ragTunic, rustPauldron, shinWraps } from './orc_gear';
 import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
 
 const FACE = {
@@ -153,6 +153,20 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   const tone = skinTone ?? [G.skin, G.skin2, [0xa88a78, 0x705a4e, 0x96705e]];
   skinTint(ctx, { color: tone[0], color2: tone[1], noise: 0.55, torso: true, legs: true, sleeve: 0, legRange: [0.15, 0.95] });
   skinMottle(ctx, rng, tone[2], { n: 12, torso: true, strength: 0.4 });
+  const s2 = ctx.sculpt;
+  // darker, warmer, blotchy thighs and shins (they read as pale tubes otherwise)
+  for (const sd of ['l', 'r'] as const) {
+    const t0 = P.j[`thigh_${sd}`], k0 = P.j[`shin_${sd}`], f0 = P.j[`foot_${sd}`];
+    for (let i = 0; i < 7; i++) {
+      const u = 0.1 + 0.8 * (i / 6);
+      const w = u < 0.5 ? u * 2 : (u - 0.5) * 2;
+      const pa = u < 0.5 ? t0 : k0;
+      const pb = u < 0.5 ? k0 : f0;
+      const c: [number, number, number] = [pa[0] + (pb[0] - pa[0]) * w + (rng.float() - 0.5) * 0.03 * sc, pa[1] + (pb[1] - pa[1]) * w, pa[2] + (pb[2] - pa[2]) * w + (rng.float() - 0.5) * 0.03 * sc];
+      const r = (0.045 + rng.float() * 0.03) * sc;
+      s2.ellipsoid(c, [r, r * 1.5, r], { op: 'paint', color: tone[2][i % 3], mat: 'skin_orc', bone: u < 0.5 ? `thigh_${sd}` : `shin_${sd}`, k: 0.03 * sc, strength: 0.55 });
+    }
+  }
   armMass(ctx, { color: tone[0], color2: tone[1], inflate: devNum('armmass', 0.013) * sc });
   eyeRings(ctx, 0x24160f, 0.85);
   {
@@ -168,6 +182,8 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   const lowerBeltY = hipY + 0.045 * sc;
   beltBand(ctx, { y: hipY + 0.1 * sc, hw: 0.026 * sc, color: G.binding, color2: G.wrapTrim, mat: RAGS, inflate: 0.0215 * sc });
   beltBand(ctx, { y: lowerBeltY, hw: 0.014 * sc, color: G.binding, color2: G.wrapTrim, mat: STRAP, inflate: 0.0245 * sc });
+  // an under-layer of ragged breeches over the hips and upper thighs (it follows the thigh bones, so it covers them in the squat)
+  thighCloth(ctx, { color: G.kiltUnder, color2: G.wrapTrim, bottom: hipY - 0.55 * (hipY - P.j.shin_l[1]), top: hipY + 0.03 * sc, inflate: 0.011 * sc });
   // wrapped ankles and feet
   const shinBottom = P.ankleH - 0.004 * sc;
   const shinTop = P.ankleH + 0.075 * sc;
@@ -179,7 +195,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   // ── sparse long stringy hair (the sheet's crown is nearly bald)
   const hg = makeOrcHair(
     ctx,
-    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.32 : 0.28) * sc, count: ctx.helmet ? 12 : b === 1 ? 30 : 60, width: 0.006, wave: 0.35, wild: 0.2, comb: 0.1, front: 0.45, back: -0.42, gravity: 10, segments: 5, maxZ: -0.02 },
+    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.55 : 0.5) * sc, count: ctx.helmet ? 12 : b === 1 ? 36 : 70, width: 0.006, wave: 0.5, wild: 0.3, comb: 0.05, front: 0.45, back: -0.42, gravity: 12, segments: 6, maxZ: -0.02, free: true },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());
@@ -189,6 +205,8 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
 export function goblinExtras(ctx: KindContext) {
   const rng = recipeRng(ctx, 'goblin');
   scaleHeldWeapon(ctx, 'hand_r', ['scimitar'], [0.5, 0.5, 0.5]);
+  // the crowd's other weapons at goblin size too (visual only; carry.test.ts KIND_SCALE mirrors these)
+  scaleHeldWeapon(ctx, 'hand_r', ['cleaver', 'club'], [0.58, 0.58, 0.58]);
   dressGoblin(ctx, rng, ctxBucket(ctx));
 }
 
@@ -196,7 +214,7 @@ export const goblinDef: KindDef = {
   label: 'Moria goblin',
   height: devNum('h', 1.46),
   // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
-  build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.32), legLength: devNum('leg', 0.95), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: devNum('hand', 1.7), footSize: 1.2, muscle: 0.45 },
+  build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.45), legLength: devNum('leg', 0.95), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: devNum('hand', 1.9), footSize: 1.2, muscle: 0.45 },
   face: FACE,
   skin: { color: G.skin, color2: G.skin2, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x7a5a54, brows: 0x3a3028, surface: 'skin_orc', scatter: 0xb08070 },
   // large glinting amber eyes (#bb8b32)
@@ -205,7 +223,7 @@ export const goblinDef: KindDef = {
   beard: null,
   outfit: [
     // the kilt: a ragged rag skirt to the knees (the torso wrap and binding are sculpted in extras)
-    { type: 'skirt', color: G.kilt, color2: G.kiltUnder, mat: 'rags', length: devNum('kilt', 0.55), thickness: 0.012, tatter: 0.05 },
+    { type: 'skirt', color: G.kilt, color2: G.kiltUnder, mat: 'rags', length: devNum('kilt', 0.7), thickness: 0.012, tatter: 0.05 },
   ],
   armor: [],
   // the sheet's blade is short, curved and serrated, with a wrapped grip: the orc scimitar, scaled down
