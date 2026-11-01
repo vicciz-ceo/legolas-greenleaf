@@ -18,17 +18,19 @@
 import * as THREE from 'three';
 import { Rng, hashSeed } from '../../../../core/rng';
 import { mergeKitGeometries } from '../../../kit/geometry';
+import { createHairMaterial } from '../../../kit/hair';
 import { surface } from '../../../kit/surfaces';
 import { skirtGeometry } from '../../cloth';
 import { quiverGear, type QuiverOpts } from '../../gear';
 import type { KindContext, KindDef } from '../../types';
-import { devNum, withHair, ctxBucket, attachSkinned } from './common';
+import { devNum, ctxBucket, attachSkinned, mix } from './common';
 import { SKIRT_PANELS } from './cloth';
 import { leafBuckle } from './armor';
-import { elfCuirass, elfPauldrons } from './elf_armor';
+import { elfCrest, elfCuirass, elfPauldrons } from './elf_armor';
 import { elfCloak, leafTassets, type TassetLeaf } from './elf_cloth';
 import { elvenHelm, leafCirclet } from './headgear';
-import { addHair, noKitHair } from './hair';
+import { noKitHair } from './hair';
+import { buildHair, sculptHairCap } from '../../hairstyles';
 import { sculptTorso } from './garments';
 import { addGlaiveHead } from './glaive';
 
@@ -39,12 +41,14 @@ const WOOL = surface('twill', { rough: 0.9, sheen: 0.25, pat: { weave: -0.6 } })
 /** dense wool twill (tunic): sheen tinted by the albedo, so the green stays deep instead of minty */
 const TWILL = surface('twill', { rough: 0.85, sheen: 0.4 });
 /** heavy wool cloak */
-const CLOAK_WOOL = surface('wool', { rough: 0.92, sheen: 0.5 });
+const CLOAK_WOOL = surface('wool', { rough: 0.95, sheen: 0, pat: { weave: 1, fur: 0.5 } });
 /** crushed red velvet (Galadhrim cloak) */
-const VELVET = surface('wool', { rough: 0.9, sheen: 0.55, pat: { fur: 0.2 } });
+const VELVET = surface('wool', { rough: 0.9, sheen: 0.35, pat: { fur: 0.25 } });
 /** antique bronze (Mirkwood) and gold (Galadhrim) leaf plate: shallow dents, a little less metal so the
  *  sky reflection does not turn it into yellow chrome */
 const ELF_BRONZE = surface('gold', { rough: 0.5, metal: 0.82, pat: { scales: -0.35, scratches: 0.6 } });
+/** the dark vein grooves of the cuirass */
+const VEIN = surface('gold', { rough: 0.62, metal: 0.45, pat: { scratches: 0.3 } });
 const ELF_GOLD = surface('gold', { rough: 0.46, metal: 0.82, pat: { scales: -0.3, scratches: 0.5 } });
 
 /** belt raised from the hips to the natural waist (sheets: belt ≈ 1.16 m on a 1.85 m figure) */
@@ -56,9 +60,13 @@ interface ElfLook {
   tunicTrim: number;
   metal: number;
   trim: number;
+  /** vein groove colour of the cuirass */
+  vein: number;
   cloak: number;
   cloakTrim: number;
-  /** gold line work on the cloak */
+  /** colour in the cloak's pleat troughs (the lining) */
+  cloakFold: number;
+  /** gold embroidery on the cloak (Galadhrim) */
   cloakGold?: number;
   hair: number;
   hairTip: number;
@@ -70,29 +78,44 @@ interface ElfLook {
 // the lit `observed.samples` and the turnarounds. Greens are desaturated and darkened (they render
 // mint under the lab's sky light), the sheen follows the albedo.
 const LOOKS: ElfLook[] = [
-  // Mirkwood: tunic #4c6137 (lit #534e3f incl. gold), cloak #4c6137 (lit #303427), metal #a07e39, hair #493728 (lit #2c1f18)
-  { galadhrim: false, tunic: 0x2d3b22, tunicTrim: 0x8c7236, metal: 0xa07e39, trim: 0x7d6530, cloak: 0x2f4a2a, cloakTrim: 0x34502e, hair: 0x3a2b1f, hairTip: 0x4a3828, braids: false, hairLen: 1.35 },
+  // Mirkwood: tunic #4c6137 (lit #534e3f incl. gold), cloak #4c6137 (lit #303427: dark grey-green felted wool), metal #a07e39, hair #493728 (lit #2c1f18)
+  { galadhrim: false, tunic: 0x2d3b22, tunicTrim: 0x8c7236, metal: 0x8a6a32, trim: 0x7d6530, vein: 0x4a3818, cloak: 0x25362b, cloakTrim: 0x273829, cloakFold: 0x18241b, hair: 0x3a2b1f, hairTip: 0x4a3828, braids: false, hairLen: 1.35 },
   // Galadhrim: tunic dark olive #424832 (lit #322416), cloak deep red #74242c (lit #531216), metal #ae8c4b, hair #c7b18a (lit #c5945b)
-  { galadhrim: true, tunic: 0x3d4130, tunicTrim: 0xa88a48, metal: 0xae8c4b, trim: 0x9a8040, cloak: 0x6a1520, cloakTrim: 0x5c121c, cloakGold: 0xb08c44, hair: 0xb98a44, hairTip: 0xd2a65c, braids: true, hairLen: 1.35 },
+  { galadhrim: true, tunic: 0x3d4130, tunicTrim: 0xa88a48, metal: 0xb4893a, trim: 0x9a8040, vein: 0x6a4a1c, cloak: 0x5a1019, cloakTrim: 0x4a0c14, cloakFold: 0x3c0910, cloakGold: 0xb89448, hair: 0xb98a44, hairTip: 0xd2a65c, braids: true, hairLen: 1.35 },
   // Mirkwood variant: amber-brown tunic with green trim, auburn hair
-  { galadhrim: false, tunic: 0x58401f, tunicTrim: 0x7a8a3c, metal: 0x8d6b32, trim: 0x7d6530, cloak: 0x6a4a1f, cloakTrim: 0x35452a, hair: 0x6b3419, hairTip: 0x844626, braids: false, hairLen: 1.3 },
+  { galadhrim: false, tunic: 0x58401f, tunicTrim: 0x7a8a3c, metal: 0x7d5f2c, trim: 0x7d6530, vein: 0x45321a, cloak: 0x6a4a1f, cloakTrim: 0x35452a, cloakFold: 0x3e2a12, hair: 0x6b3419, hairTip: 0x844626, braids: false, hairLen: 1.3 },
   // Galadhrim variant: slate tunic, black hair
-  { galadhrim: true, tunic: 0x3a4650, tunicTrim: 0xa09060, metal: 0xae8c4b, trim: 0x9a8040, cloak: 0x641420, cloakTrim: 0x561019, cloakGold: 0xb08c44, hair: 0x1d1814, hairTip: 0x2c241d, braids: true, hairLen: 1.35 },
+  { galadhrim: true, tunic: 0x3a4650, tunicTrim: 0xa09060, metal: 0xb4893a, trim: 0x9a8040, vein: 0x6a4a1c, cloak: 0x540f18, cloakTrim: 0x44090f, cloakFold: 0x38080e, cloakGold: 0xb89448, hair: 0x1d1814, hairTip: 0x2c241d, braids: true, hairLen: 1.35 },
 ];
+
+const hairMats = new Map<number, THREE.MeshPhysicalMaterial>();
+/** hair material: dark hair gets a brown (not white-blue) strand highlight, little sheen and spec */
+function elfHairMaterial(color: number): THREE.MeshPhysicalMaterial {
+  let m = hairMats.get(color);
+  if (!m) {
+    const dark = ((color >> 16) & 255) + ((color >> 8) & 255) + (color & 255) < 330;
+    m = createHairMaterial({ roughness: dark ? 0.78 : 0.62, anisotropy: dark ? 0.3 : 0.6, sheen: dark ? 0.04 : 0.2, sheenColor: color, highlight: dark ? mix(color, 0x806040, 0.45) : 0xf0dcb0 });
+    m.specularIntensity = dark ? 0.08 : 0.2;
+    m.userData.shared = true;
+    hairMats.set(color, m);
+  }
+  return m;
+}
 
 const PALETTE = {
   skin: 0xd8ae92, // sheet #e0baa0 / #e2c3a9, a little warmer and deeper (a pale albedo renders as clay)
-  skin2: 0xc79a7e,
+  skin2: 0xb98466,
   lips: 0xb9796c,
   brows: 0x5b4330,
   eyes: 0x6188a8, // sheet iris #5d8bb5, a touch greyer
-  boots: 0x5a4229, // sheet leather #62462e / #584231
+  boots: 0x4a3522, // sheet leather #62462e / #584231
   bootsTrim: 0x3b2a1b,
   bracers: 0x57402a,
   bracersTrim: 0x3a2a1c,
   belt: 0x4c3524,
-  leggings: 0x3b3d2d, // sheet trousers #383d30 / #424832
-  quiver: 0x55402b,
+  leggings: 0x2c2b24, // sheet trousers #383d30 / #424832
+  quiver: 0x6a4a2c,
+  quiverTrim: 0x8c6a3c,
   fletch: 0xece8de,
   shaft: 0xb9a37b,
   buckle: 0xd2ad58,
@@ -109,10 +132,14 @@ function elfExtras(ctx: KindContext) {
   const cy = j.chest[1];
   const beltY = hipY + (0.07 + BELT_RAISE) * sc;
 
-  // ── hair: long and wavy (Mirkwood loose, Galadhrim with temple braids meeting at the back) ──
-  withHair(ctx, () => {
-    addHair(ctx, { hair: { style: 'long_straight', color: L.hair, tipColor: L.hairTip, length: L.hairLen, density: devNum('density', L.galadhrim ? 0.4 : 0.44), braids: L.braids ? 'temple' : 'none' }, rng: new Rng(hashSeed('elf', 'hair', bucket)), lod: 1, backClear: 1.8 });
-  });
+  // ── hair: long (Mirkwood loose, Galadhrim with temple braids meeting at the back), lying over the cloak ──
+  {
+    const hair = { style: 'long_straight' as const, color: L.hair, tipColor: L.hairTip, length: L.hairLen, density: devNum('density', L.galadhrim ? 0.41 : 0.44), braids: (L.braids ? 'temple' : 'none') as 'temple' | 'none' };
+    sculptHairCap(ctx.sculpt, P, hair, false);
+    const Pm = { ...P, build: { ...P.build, chest: P.build.chest * (L.galadhrim ? 1.9 : 1.8) } } as typeof P;
+    const geo = buildHair(Pm, ctx.rig, hair, null, new Rng(hashSeed('elf', 'hair', bucket)), 1, false).geo;
+    if (geo) attachSkinned(ctx, geo, elfHairMaterial(L.hair), { name: 'hair2' });
+  }
 
   // ── tunic: long sleeves, high stand collar, hem to mid thigh ──
   sculptTorso(ctx, { color: L.tunic, mat: TWILL, inflate: 0.0066 * sc, hem: 0.5, sleeve: 2, neck: true, neckTop: 0.036 * sc, seams: true, color2: L.tunicTrim, colorNoise: 0.12 });
@@ -121,16 +148,23 @@ function elfExtras(ctx: KindContext) {
   const skirtTop = hipY + 0.035 * sc;
   const skirtBottom = hipY - (hipY - j.shin_l[1]) * 0.58 * 1.05;
   const cloth: THREE.BufferGeometry[] = [];
-  cloth.push(skirtGeometry(P, ctx.rig, { top: skirtTop, bottom: skirtBottom, color: L.tunic, color2: L.tunicTrim, mat: TWILL, panels: SKIRT_PANELS, flare: 0.045 * sc, seed: bucket }));
+  // tunic skirt: a longer centre-front panel, side panels 8 cm higher, the back a little shorter
+  SKIRT_PANELS.forEach((pn, i) => {
+    const bottom = skirtBottom + [-0.04, 0.08, 0.02, 0.08][i] * sc;
+    cloth.push(skirtGeometry(P, ctx.rig, { top: skirtTop, bottom, color: L.tunic, color2: L.tunicTrim, mat: TWILL, panels: [pn], flare: 0.035 * sc, seed: bucket + i }));
+  });
   cloth.push(
     elfCloak(P, ctx.rig, {
       color: L.cloak,
       trim: L.cloakTrim,
+      fold: L.cloakFold,
       mat: L.galadhrim ? VELVET : CLOAK_WOOL,
       hem: L.galadhrim ? 0.12 : 0.14,
-      pleats: L.galadhrim ? 6 : 8,
-      pleatDepth: L.galadhrim ? 0.03 : 0.036,
-      embroider: L.cloakGold ? { color: L.cloakGold, at: [0.07, 0.93], from: 0.35, mix: 0.7 } : undefined,
+      pleats: L.galadhrim ? 7 : 9,
+      pleatDepth: 0.035,
+      aoFloor: L.galadhrim ? 0.7 : 0.62,
+      tweed: L.galadhrim ? 0.04 : 0.1,
+      vine: L.cloakGold,
       seed: bucket,
     }),
   );
@@ -155,19 +189,19 @@ function elfExtras(ctx: KindContext) {
   attachSkinned(ctx, merged, 'body', { small: false, name: 'cloth' });
 
   // ── armour by level ──
+  const metalMat = L.galadhrim ? ELF_GOLD : ELF_BRONZE;
   if (A >= 0.5) {
-    elfCuirass(ctx, { color: L.metal, trim: L.trim, mat: L.galadhrim ? ELF_GOLD : ELF_BRONZE, trimMat: L.galadhrim ? ELF_GOLD : ELF_BRONZE, beltY, fluted: L.galadhrim });
-    leafBuckle(ctx, { y: beltY, color: L.trim });
+    elfCuirass(ctx, { color: L.metal, trim: L.trim, mat: metalMat, veinColor: L.vein, veinMat: VEIN, beltY, bottom: L.galadhrim ? 0.0 : 0.045, fluted: L.galadhrim, chevron: !L.galadhrim });
+    leafBuckle(ctx, { y: beltY, color: L.trim, mat: metalMat });
   }
-  if (A >= 0.75) {
-    elfPauldrons(ctx, { color: L.metal, trim: L.trim, mat: L.galadhrim ? ELF_GOLD : ELF_BRONZE, trimMat: 'gold' });
-  }
+  if (A >= 0.75) elfPauldrons(ctx, { color: L.metal, mat: metalMat });
 
-  // ── head ──
-  // the Galadhrim go bare-headed in every bucket (sheet: blond hair with temple braids, no helm)
+  // ── head: the Mirkwood helm with a tall crest of stacked leaf blades; the Galadhrim go bare-headed ──
   if (!L.galadhrim) {
-    if (ctx.helmet) elvenHelm(ctx, { color: L.metal, trim: L.trim, mat: ELF_BRONZE, trimMat: 'gold', crest: 0.9, wings: false });
-    else leafCirclet(ctx, { color: L.trim });
+    if (ctx.helmet) {
+      elvenHelm(ctx, { color: L.metal, trim: L.trim, mat: ELF_BRONZE, trimMat: 'gold', crest: 0.01, wings: false });
+      elfCrest(ctx, { color: L.metal, mat: ELF_BRONZE });
+    } else leafCirclet(ctx, { color: L.trim });
   }
 
   // ── the Mirkwood guard's glaive: a curved leaf blade over the spear head (only while a spear is held) ──
@@ -181,7 +215,7 @@ function elfExtras(ctx: KindContext) {
     length: 0.48 * sc,
     radius: 0.034 * sc,
     color: PALETTE.quiver,
-    trim: L.cloakTrim,
+    trim: PALETTE.quiverTrim,
     mat: TOOLED,
     arrows: 6,
     fletch: PALETTE.fletch,
@@ -199,18 +233,19 @@ export const elfDef: KindDef = {
   build: { shoulders: 0.98, hips: 0.95, bulk: 0.9, chest: 0.95, armLength: 1.0, legLength: 1.03, headSize: 0.96, neck: 1.05, neckThick: 0.9, muscle: 0.4, handSize: 0.97, footSize: 0.97 },
   face: {
     jaw: 0.9,
-    chin: 1.08,
+    chin: 0.95,
+    jawLength: 0.95,
     brow: 0.85,
     cheekbones: 1.12,
-    nose: { length: 1.0, width: 0.86, bridge: 1.08, tip: 0.85 },
-    lips: { width: 0.97, fullness: 0.95 },
+    nose: { length: 0.8, width: 0.84, bridge: 1.05, tip: 0.85 },
+    lips: { width: 0.9, fullness: 0.8 },
     ears: 'pointed',
     eyeSize: 1.08,
     eyeTilt: 0.1,
     eyeOpen: 1.0,
     foreheadSlope: 0.08,
   },
-  skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.08, blemish: 0.02, wrinkles: 0, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xc87866, surface: 'skin' },
+  skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.04, blemish: 0.01, wrinkles: 0, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xc87866, surface: 'skin' },
   eyes: { color: PALETTE.eyes, sclera: 0xeee9e0 },
   hair: noKitHair(PALETTE.skin),
   beard: null,
@@ -230,6 +265,6 @@ export const elfDef: KindDef = {
   sfx: { voice: 'elf', weight: 0.4 },
   anim: { grace: 0.9, aggression: 0.3, stance: 0.97, armSwing: 0.9 },
   variation: { height: 0.025, bulk: 0.05, skin: 0.05 },
-  detail: { detailScale: 1, res: devNum('res', 0.064), headRes: devNum('headRes', 0.016), faceRes: 0 },
+  detail: { detailScale: 1, res: devNum('res', 0.068), headRes: devNum('headRes', 0.016), faceRes: 0 },
   extras: elfExtras,
 };
