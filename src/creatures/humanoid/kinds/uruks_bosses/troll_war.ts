@@ -201,7 +201,8 @@ export function warFootWraps(ctx: KindContext) {
       const f = j.foot_l;
       const t = j.toe_l;
       const wrap = { color: TROLL_PAL.wrap, mat: WRAP, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' as const } };
-      s.cone([f[0], f[1] + 0.02 * sc, f[2]], [t[0], t[1] + 0.03 * sc, t[2] + 0.07 * sc], 0.072 * sc + 0.03 * sc, 0.058 * sc + 0.03 * sc, { ...wrap, bone: 'foot_l', bone2: 'toe_l', blend: [0.55, 0.95], k: 0.04 * sc });
+      s.cone([f[0], f[1] + 0.02 * sc, f[2]], [t[0] + 0.05 * sc, t[1] + 0.03 * sc, t[2] + 0.07 * sc + 0.1 * (t[2] - f[2])], 0.094 * sc + 0.03 * sc, 0.075 * sc + 0.03 * sc, { ...wrap, bone: 'foot_l', bone2: 'toe_l', blend: [0.45, 0.95], k: 0.04 * sc });
+      s.cone([j.shin_l[0], j.shin_l[1] - 0.2 * sc, j.shin_l[2] - 0.03 * sc], [f[0], f[1] + 0.04 * sc, f[2] + 0.01 * sc], 0.095 * sc * P.build.bulk + 0.03 * sc, 0.074 * sc * P.build.bulk + 0.03 * sc, { ...wrap, bone: 'shin_l', bone2: 'foot_l', blend: [0.4, 1], k: 0.07 * sc });
       s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.12 * sc, j.shin_l[2] - 0.04 * sc], [0.095 * sc * P.build.bulk + 0.03 * sc, 0.13 * sc, 0.1 * sc * P.build.bulk + 0.03 * sc], { ...wrap, bone: 'shin_l', k: 0.07 * sc });
     });
     s.plane([0, 1, 0], top, { op: 'intersect', k: 0.012 * sc });
