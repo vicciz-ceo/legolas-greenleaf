@@ -273,8 +273,9 @@ export function stylePose(st: AnimStyle, p: Pose) {
  * neutral hand points the thumb straight ahead, so at rest every blade lay across the body and every shield lay
  * flat like a flag. The carry turns the hand about the wrist so the item sits the way a person carries it:
  *   hang     one-handed blades, axes, maces, clubs and hammers hang point-down beside the thigh, tilted forward
- *            and out (further forward where the point would otherwise reach the ground)
- *   upright  spears, pikes and torches stand in the fist, head up
+ *            and out (further forward where the point would otherwise reach the ground: a goblin's cleaver at knee
+ *            height lies ~60 deg out of the vertical, forward and down)
+ *   upright  spears, pikes and torches stand in the fist, head up (a butt may stand in the ground)
  *   shield   a shield stands vertical on the forearm, its face out
  *   none     empty hands, bows (the animator carries those) and crossbows keep the neutral hand
  * It is part of the rest pose (idle, walking, jumping), so attacks blend from it and keep their own keys. A run
@@ -325,7 +326,9 @@ export interface HoldDef {
 /** the holds' tuning table (exported for the tools and tests that preview and sweep it) */
 export const HOLDS: Record<Exclude<Carry, 'none'>, HoldDef> = {
   hang: { tilt: 24, azim: 26, dir: -1, knuckle: [0.1, -0.35, -0.93], minOut: 0.16, maxTilt: 75 },
-  upright: { tilt: 7, azim: 30, dir: 1, knuckle: [-0.2, 0, 1], minOut: 0.16, maxTilt: 45 },
+  // no clearance tilt for a haft: its butt may stand in the ground (a planted spear). Lifting a butt by tilting near vertical takes a big turn
+  // for a small gain, and a pumping hand (a crouched goblin's run swings 40 cm) then snapped the haft by 35 deg in a frame
+  upright: { tilt: 7, azim: 30, dir: 1, knuckle: [-0.2, 0, 1], minOut: 0.16, maxTilt: 0 },
   shield: { tilt: -7, azim: 90, dir: 1, knuckle: [0, 0, 1], minOut: 0.3, maxTilt: 0 },
 };
 /** the point of a carried item keeps this far (× body height) above the ground */

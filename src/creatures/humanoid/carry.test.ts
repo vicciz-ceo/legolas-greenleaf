@@ -23,7 +23,9 @@ import { computeProportions, buildRig, type Proportions } from './proportions';
 import { HumanoidAnimator } from './animator';
 import { F, carryOf, idlePose, locomotionPose, newHeldCarry, newPose, trunkFrames, type Carry } from './poses';
 import { createWeapon } from '../weapons';
-import type { AnimInput, AttackAnim, SpecialPose, WeaponKind } from '../../core/types';
+import { createHumanoid, type HumanoidExt } from '../humanoid';
+import { seedForBucket } from './kinds/uruks_bosses';
+import type { AnimInput, AttackAnim, HumanoidKind, SpecialPose, WeaponKind } from '../../core/types';
 import type { ResolvedKind } from './types';
 
 let failed = 0;
@@ -61,8 +63,17 @@ const KINDS_OF: Record<Carry, WeaponKind[]> = {
   shield: ['shield'],
   none: ['elven_bow', 'orc_bow', 'uruk_bow', 'crossbow', 'none'],
 };
-/** the scale the kinds' extras give a held item (scaleHeldWeapon in gimli.ts, bolg.ts, uruk.ts) */
-const KIND_SCALE: Record<string, Partial<Record<WeaponKind, number>>> = { gimli: { dwarf_axe: 0.65 }, bolg: { mace: 0.9 }, berserker: { sword: 1.12 } };
+/**
+ * the scale along its long axis that the kinds' extras give a held item (scaleHeldWeapon in goblin.ts, gimli.ts, bolg.ts, uruk.ts,
+ * fitHeldWeapon in troll.ts): the model-only tests use it, and the real-humanoid test below checks it against the real props
+ */
+const KIND_SCALE: Record<string, Partial<Record<WeaponKind, number>>> = {
+  goblin: { scimitar: 0.5 },
+  gimli: { dwarf_axe: 0.65 },
+  bolg: { mace: 0.9 },
+  berserker: { sword: 1.12 },
+  troll: { club: 0.66, warhammer: 0.75 },
+};
 
 // ── bodies ───────────────────────────────────────────────────────────────────
 const handScaleOf = (P: Proportions) => (P.s >= 1.2 ? P.s : 1);
@@ -508,20 +519,95 @@ test('every LOD shows the same carry (the cheap solves keep hanging blades and s
   }
 });
 
-test('a hanging prop points well below the horizontal at idle (kinds that re-orient a horizontal prop leave it alone)', () => {
-  // troll_weapon.ts's fitHeldWeapon turns the prop only while the socket's +Y is near horizontal (weight
-  // 1 - smoothstep(|y|, 0.35, 0.75)): at idle every hanging item must be steeper than that
-  for (const kind of ALL_KINDS) {
-    const def = resolveKind(kind);
-    const w = (def.weapons.right ?? 'none') as WeaponKind;
-    if (carryOf(w) !== 'hang') continue;
-    const { P, A } = make(def);
-    give(P, A, 'r', w, KIND_SCALE[kind]?.[w] ?? 1, def.weapons.style);
-    for (const t of [0, 1.7, 9.3]) {
-      idle(A, t);
-      const ay = Math.abs(frame(P, A, 'r').axis.y);
-      ok(ay >= 0.75, `${kind} ${w} t=${t}: |axis.y| ${ay.toFixed(2)} must be >= 0.75`);
+// ── the real thing: createHumanoid, with the kinds' own prop hooks ───────────────────────────
+// scaleHeldWeapon (goblin, Gimli, Bolg, the berserker) and fitHeldWeapon (the trolls) rescale and re-orient the held prop
+// at the first matrix update, and the animator measures the reach from the prop every frame: the carry has to come out
+// right with the real, scaled prop. These build the real humanoids (~0.5 s a kind).
+
+const IDLE: AnimInput = { speed: 0, grounded: true };
+function real(kind: HumanoidKind, weapon?: WeaponKind, seed = 0): HumanoidExt {
+  const h = createHumanoid({ kind, seed, weapon });
+  // the hooks act at the first matrix update: animate, update, animate again
+  for (let i = 0; i < 4; i++) h.animate(1 / 60, IDLE);
+  h.root.updateMatrixWorld(true);
+  for (let i = 0; i < 60; i++) h.animate(1 / 60, IDLE);
+  h.root.updateMatrixWorld(true);
+  return h;
+}
+const _pq = new THREE.Quaternion();
+/** the prop's long axis and face in world space (the humanoid stands at the origin facing +Z), and its tip's height */
+function propFrame(o: THREE.Object3D) {
+  o.getWorldQuaternion(_pq);
+  const tip = o.userData.tip as THREE.Object3D | undefined;
+  return { axis: new THREE.Vector3(0, 1, 0).applyQuaternion(_pq), face: new THREE.Vector3(1, 0, 0).applyQuaternion(_pq), tipY: tip ? tip.getWorldPosition(new THREE.Vector3()).y : null };
+}
+
+test('every real humanoid carries its props as promised, with the kinds\' own scaling and fitting hooks', () => {
+  const cases: [HumanoidKind, WeaponKind | undefined, number][] = [];
+  for (const k of ALL_KINDS) {
+    const w = resolveKind(k).weapons;
+    if (carryOf(w.left ?? 'none') !== 'none' || carryOf(w.right ?? 'none') !== 'none') cases.push([k, undefined, 0]);
+  }
+  cases.push(['troll', 'warhammer', seedForBucket(2)]); // the war troll
+  for (const w of ['cleaver', 'club', 'spear'] as WeaponKind[]) cases.push(['goblin', w, 0]); // the crowd's other weapons, on a crouched, short-armed body
+  let n = 0;
+  for (const [kind, weapon, seed] of cases) {
+    const h = real(kind, weapon, seed);
+    for (const hand of ['hand_l', 'hand_r'] as const) {
+      const o = h.weaponObject(hand);
+      if (!o) continue;
+      const w = o.userData.kind as WeaponKind;
+      const c = carryOf(w);
+      if (c === 'none') continue;
+      n++;
+      const f = propFrame(o);
+      const outward = hand === 'hand_l' ? 1 : -1;
+      const tilt = Math.acos(Math.min(1, Math.abs(f.axis.y))) * DEG;
+      const what = `${kind}${weapon ? `/${weapon}` : ''} ${hand} ${w}`;
+      // the table of the kinds' prop scales that the model-only tests use
+      const want = KIND_SCALE[kind]?.[w] ?? 1;
+      ok(Math.abs(o.scale.y / want - 1) < 0.01, `${what}: the prop is scaled ${o.scale.y.toFixed(3)} on its long axis, KIND_SCALE says ${want}`);
+      cal(`${what}: tilt ${tilt.toFixed(1)} tip ${f.tipY?.toFixed(3)} scale ${o.scale.y.toFixed(2)}`);
+      if (c === 'hang') {
+        ok(tilt >= 15 && tilt <= 75 && f.axis.y < 0, `${what}: a hanging prop points down within 15..75 deg of vertical, got ${tilt.toFixed(1)}`);
+        ok(f.axis.z > 0.1 && f.axis.x * outward > 0, `${what}: it leans forward (${f.axis.z.toFixed(2)}) and out (${(f.axis.x * outward).toFixed(2)})`);
+        if (f.tipY !== null) ok(f.tipY >= 0.015 * h.height, `${what}: the point stays off the ground, ${(f.tipY * 100).toFixed(1)} cm`);
+      } else if (c === 'upright') {
+        ok(tilt <= 25 && f.axis.y > 0, `${what}: an upright haft stands within 25 deg of vertical, got ${tilt.toFixed(1)}`);
+      } else {
+        ok(tilt <= 15 && f.axis.y > 0 && f.face.x * outward > 0.9, `${what}: a shield stands (${tilt.toFixed(1)} deg) face out (${(f.face.x * outward).toFixed(2)})`);
+      }
+      // kinds that re-orient their prop in the socket (troll_weapon.ts fitHeldWeapon) fade out by how close the socket's +Y is to
+      // the old forward carry (in the pelvis frame; their weight is smoothstep(dot, 0.82, 0.95)): at idle it must be zero, or
+      // the prop is turned on top of the carry (and sinks into the ground, since the turn undoes the clearance tilt)
+      if (kind === 'troll') ok(Math.abs(o.quaternion.w) > 1 - 1e-9, `${what}: the troll's fit must leave the prop as modelled at idle, it turned it by ${(2 * Math.acos(Math.min(1, Math.abs(o.quaternion.w))) * DEG).toFixed(2)} deg`);
     }
+  }
+  ok(n >= 20, `props probed (${n})`);
+});
+
+test('a walking humanoid keeps the point of its hanging prop off the ground (real props, real gait)', () => {
+  const walkers: [HumanoidKind, WeaponKind | undefined][] = [['man', undefined], ['goblin', undefined], ['goblin', 'cleaver'], ['goblin', 'club'], ['troll', undefined], ['berserker', undefined], ['gimli', undefined], ['bolg', undefined]];
+  for (const [kind, weapon] of walkers) {
+    const h = real(kind, weapon);
+    const o = h.weaponObject('hand_r')!;
+    let lowest = Infinity;
+    // walking speeds, below every body's run onset (a goblin's is ~2 m/s): in the blend between the hanging blade and the run's fist a
+    // long prop on a low, crouched hand can dip a few cm into the ground for a few frames, the swing of such a hand is ~40 cm
+    for (const speed of [0.8, 1.5]) {
+      h.resetAnimation(0, 0);
+      let low = Infinity;
+      for (let i = 0; i < 150; i++) {
+        h.animate(1 / 60, { speed, grounded: true, moveDir: { x: 0, z: 1 } });
+        h.root.updateMatrixWorld(true);
+        const tip = o.userData.tip as THREE.Object3D | undefined;
+        if (tip) low = Math.min(low, tip.getWorldPosition(new THREE.Vector3()).y);
+      }
+      cal(`${kind}${weapon ? `/${weapon}` : ''} at ${speed} m/s: lowest point ${(low * 100).toFixed(1)} cm`);
+      lowest = Math.min(lowest, low);
+    }
+    cal(`${kind}${weapon ? `/${weapon}` : ''} walking: lowest point ${(lowest * 100).toFixed(1)} cm`);
+    ok(lowest >= -0.02 * h.height, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking`);
   }
 });
 
