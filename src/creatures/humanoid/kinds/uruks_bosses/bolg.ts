@@ -279,7 +279,7 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
   };
   const el0 = (a: number) => lerp(0.42, -0.62, (outw(a) + 1) / 2) - jag(a);
   const lfn = ellipsoidFn(c, [R * 1.12, R * 0.78, R * 1.1], [-Math.PI, Math.PI], [el0, Math.PI / 2 - 0.05], { rot });
-  gear(shellPatch(lfn, 36, 5, 0.007 * sc, { closedU: true, skip: ['v1'] }), { bone, color: BOLG_PAL.leatherDark, mat: LEATHER, ao: 0.8 });
+  gear(shellPatch(lfn, 26, 4, 0.007 * sc, { closedU: true, skip: ['v1'] }), { bone, color: BOLG_PAL.leatherDark, mat: LEATHER, ao: 0.8 });
   // iron lames, top dome first, each lower one shifted down the arm
   for (let k = 0; k < 3; k++) {
     const axis = top.clone().lerp(L, k * 0.2).normalize();
@@ -290,8 +290,8 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
     const fn = ellipsoidFn(ck, [Rk * 1.14, Rk * LY, Rk * 1.16], [-Math.PI, Math.PI], [Math.PI / 2 - half, Math.PI / 2], { rot: rk });
     gear(shellPatch(fn, 14, 3, 0.009 * sc, { closedU: true, noInner: true, thickFn: (_u, v) => 1 + 1.2 * (1 - smooth(0, 0.18, v)), skip: ['v1'] }), { bone, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.82 });
     // rivets along the lower rim
-    for (let i = 0; i < 7; i++) {
-      const a = ((i + 0.5) / 7) * Math.PI * 2;
+    for (let i = 0; i < 5; i++) {
+      const a = ((i + 0.5) / 5) * Math.PI * 2;
       const e = Math.PI / 2 - half + 0.1;
       const d = V(Math.cos(e) * Math.sin(a) * Rk * 1.14, Math.sin(e) * Rk * LY, Math.cos(e) * Math.cos(a) * Rk * 1.16);
       const nn = V(Math.cos(e) * Math.sin(a) / 1.14, Math.sin(e) / LY, Math.cos(e) * Math.cos(a) / 1.16).normalize().applyQuaternion(rk);
@@ -372,7 +372,7 @@ function bolgBelt(ctx: KindContext, parts: ReturnType<typeof anatomyParts>, gear
     s.plane([0, -1, 0], -ym, { op: 'paint', seam: 0, k: 0.002 });
   });
   // rivets along both tiers
-  const n0 = 16;
+  const n0 = 12;
   for (let i = 0; i < n0; i++) {
     const a = (i / n0) * Math.PI * 2 + 0.07;
     for (const [yy, lift] of [[y0 + 0.022 * sc, 0.0], [(ym + y1 - 0.012 * sc) / 2, 0.009 * sc]] as [number, number][]) {
@@ -418,10 +418,10 @@ function bolgGreaves(ctx: KindContext, gear: GearFn) {
     const ry = (yTop - yBot) / 2;
     // leather shaft: the whole way round
     const shaft = ellipsoidFn(cs, [0.088 * sc * g, ry * 1.06, 0.098 * sc * g], [-Math.PI, Math.PI], [-0.9, 0.9], { radial });
-    gear(shellPatch(shaft, 16, 6, 0.009 * sc, { closedU: true, noInner: true }), { bone, color: BOLG_PAL.leatherDark, mat: surface('leather_worn', { rough: 0.62, pat: { leather: -0.4 } }), ao: 0.85 });
+    gear(shellPatch(shaft, 12, 5, 0.009 * sc, { closedU: true, noInner: true }), { bone, color: BOLG_PAL.leatherDark, mat: surface('leather_worn', { rough: 0.62, pat: { leather: -0.4 } }), ao: 0.85 });
     // riveted iron plate over the front of the shin
     const plate = ellipsoidFn(c0, [0.092 * sc * g, ry * 1.0, 0.098 * sc * g], [-0.95, 0.95], [-0.85, 0.85], { radial });
-    gear(shellPatch(plate, 10, 8, 0.009 * sc, { noInner: true }), { bone, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
+    gear(shellPatch(plate, 8, 6, 0.009 * sc, { noInner: true }), { bone, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.85 });
     for (const [a, t] of [[-0.72, 0.1], [0.72, 0.1], [-0.72, 0.9], [0.72, 0.9], [0, 0.5]] as [number, number][]) {
       const y = yTop - (yTop - yBot) * t;
       const cc = axis(y);
@@ -441,7 +441,7 @@ function bolgGreaves(ctx: KindContext, gear: GearFn) {
       gear(band, { bone, color: BOLG_PAL.leather, mat: LEATHER, matrix: new THREE.Matrix4().makeTranslation(cc.x, cc.y, cc.z), small: t !== 0.52 });
     }
     // layered ankle wraps below the shaft
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 3; i++) {
       const y = yBot - 0.012 * sc - i * 0.022 * sc;
       const cc = axis(y);
       const r = (0.074 - i * 0.002) * sc * g;
@@ -523,14 +523,14 @@ function bolgHipPanels(ctx: KindContext, gear: GearFn) {
   // front plate: pointed at the centre
   kiltPanel(ctx, env, gear, { ...base, a0: -0.5, a1: 0.5, len: (u) => (0.3 - 0.2 * Math.abs(2 * u - 1)) * sc, rivets: 2 });
   // the rust centre strap down the long front tongue
-  kiltPanel(ctx, env, gear, { ...base, a0: -0.07, a1: 0.07, len: () => 0.52 * sc, out: 0.026 * sc, rivets: 4 });
+  kiltPanel(ctx, env, gear, { ...base, a0: -0.07, a1: 0.07, len: () => 0.52 * sc, out: 0.026 * sc, rivets: 2 });
   // leather panel at the back
-  kiltPanel(ctx, env, gear, { ...base, a0: Math.PI - 0.55, a1: Math.PI + 0.55, len: (u) => (0.3 - 0.16 * Math.abs(2 * u - 1)) * sc, rivets: 2 });
+  kiltPanel(ctx, env, gear, { ...base, a0: Math.PI - 0.55, a1: Math.PI + 0.55, len: (u) => (0.3 - 0.16 * Math.abs(2 * u - 1)) * sc, rivets: 0 });
   // flank panels: squared, with a ragged lower edge
   for (const sg of [1, -1]) {
     const a0 = sg > 0 ? 0.85 : -1.5;
     const a1 = sg > 0 ? 1.5 : -0.85;
-    kiltPanel(ctx, env, gear, { ...base, a0, a1, len: (u) => (0.26 + 0.03 * Math.sin(u * 17)) * sc, out: 0.03 * sc, rivets: 2 });
+    kiltPanel(ctx, env, gear, { ...base, a0, a1, len: (u) => (0.26 + 0.03 * Math.sin(u * 17)) * sc, out: 0.03 * sc, rivets: 1 });
   }
 }
 
@@ -663,7 +663,7 @@ function bolgExtras(ctx: KindContext) {
 }
 
 /** the outfit kilt's length and clearance; the rigid hip panels in bolgHipPanels follow it */
-const KILT = { length: 0.72, thickness: 0.01 };
+const KILT = { length: 0.72, thickness: 0.02 };
 
 export const bolgKind: KindDef = {
   label: 'Bolg',
