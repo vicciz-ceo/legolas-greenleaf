@@ -1,6 +1,15 @@
 /**
  * Lab subjects for the humanoid system: 'legolas' (full animation set), 'humanoid_lineup' (every
  * kind side by side at true scale) and one 'humanoid_<kind>' subject per kind for the dressers.
+ *
+ * Lab-only additions (nothing here touches gameplay animation; see humanoid/sheetPose.ts):
+ *  - `anim=sheet`: the reference sheets' relaxed stance (feet hip-to-shoulder apart, arms ~18 deg
+ *    out, one-handed weapons hanging blade-down beside the thigh, bows/shields vertical at the grip,
+ *    spears upright). Use it with `view=turn&ref=<id>` so the calibrated silhouette compares body
+ *    and not pose. Available on every humanoid lab subject (also in the dwarves_orcs, elves_men and
+ *    uruks_bosses lab files, which share the pose code).
+ *  - `&portrait=1&focus=head&zoom=0.15`: frames the face from the head bone's world position, so it
+ *    works for hunched bosses, trolls and short dwarves/goblins alike (`addHeadFraming`).
  */
 import * as THREE from 'three';
 import type { AnimInput, HumanoidKind, LabInstance, LabSubject, SpecialPose, WeaponKind } from '../core/types';
@@ -9,14 +18,15 @@ import { clearHumanoidCache, prebuildStats } from './humanoid/build';
 import { clearKitCache, kitCacheStats } from './kit/cache';
 import { meshWorkerCount } from './kit/workers';
 import { HumanoidAnimator } from './humanoid/animator';
+import { addHeadFraming, poseSheet, restoreSheet } from './humanoid/sheetPose';
 import { ALL_KINDS, resolveKind, registerKind } from './humanoid/registry';
 import { kinds as placeholderKinds } from './humanoid/kinds/_placeholders';
 
 export const LEGOLAS_ANIMS = [
   'idle', 'rest', 'walk', 'run', 'sprint', 'strafe', 'back', 'jump', 'aim', 'draw', 'shoot', 'knife_combo', 'dash', 'hit', 'death',
-  'surf', 'climb', 'hang', 'barrel', 'ride', 'swing', 'run_wall', 'crouch', 'kneel', 'sit', 'cheer', 'roar', 'block', 'stagger', 'look',
+  'surf', 'climb', 'hang', 'barrel', 'ride', 'swing', 'run_wall', 'crouch', 'kneel', 'sit', 'cheer', 'roar', 'block', 'stagger', 'look', 'sheet',
 ];
-export const NPC_ANIMS = ['idle', 'walk', 'run', 'slash', 'backslash', 'thrust', 'overhead', 'slam', 'sweep', 'shoot', 'throw', 'punch', 'stomp', 'bite', 'hit', 'death', 'block', 'roar', 'cheer', 'stagger', 'crouch'];
+export const NPC_ANIMS = ['idle', 'walk', 'run', 'slash', 'backslash', 'thrust', 'overhead', 'slam', 'sweep', 'shoot', 'throw', 'punch', 'stomp', 'bite', 'hit', 'death', 'block', 'roar', 'cheer', 'stagger', 'crouch', 'sheet'];
 
 const SPECIALS: SpecialPose[] = ['surf', 'climb', 'hang', 'ride', 'sit', 'crouch', 'cheer', 'roar', 'block', 'stagger', 'barrel', 'kneel', 'run_wall', 'swing'];
 const ATTACKS = ['slash', 'backslash', 'thrust', 'overhead', 'knife1', 'knife2', 'knife3', 'punch', 'slam', 'sweep', 'throw', 'shoot', 'bite', 'stomp'];
@@ -29,27 +39,6 @@ interface Frame {
 }
 
 const _look = new THREE.Vector3();
-
-/**
- * `&portrait=1&focus=head`: the lab frames `focus=head` from the bounding box top, which quivers,
- * bows and helmets push off the face. Add an invisible two-point helper that makes the box centre
- * land on the face (zoom ≈ 0.28 fills the frame with the head).
- */
-function addPortraitFraming(holder: THREE.Group, h: HumanoidExt) {
-  holder.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(holder, true);
-  const P = h.assets.P;
-  const f = P.h(0, -0.12, 0.2);
-  const top = Math.max(box.max.y, P.H) + 0.4; // above anything a pose can raise
-  const W = 1.5;
-  const lowY = (f[1] - 0.9 * top) / 0.1;
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute([f[0] - W, lowY, f[2] - W, f[0] + W, top, f[2] + W], 3));
-  const pts = new THREE.Points(g, new THREE.PointsMaterial({ size: 0 }));
-  pts.visible = false;
-  pts.name = 'portrait-framing';
-  holder.add(pts);
-}
 
 /** deterministic AnimInput timeline for a lab animation name at time t */
 export function labFrame(anim: string, t: number, h: HumanoidExt): Frame {
@@ -139,6 +128,13 @@ export function poseHumanoid(h: HumanoidExt, anim: string, t: number, defaults: 
   const w = f0.weapons ?? defaults;
   if (h.weaponObject('hand_r')?.userData.kind !== w.r && !(w.r === 'none' && !h.weaponObject('hand_r'))) h.setWeapon('hand_r', w.r);
   if (h.weaponObject('hand_l')?.userData.kind !== w.l && !(w.l === 'none' && !h.weaponObject('hand_l'))) h.setWeapon('hand_l', w.l);
+  if (anim !== 'sheet') restoreSheet(h); // put a shield the sheet pose turned face-forward back
+  if (anim === 'sheet') {
+    // reference-sheet stance (lab only, time independent): see humanoid/sheetPose.ts
+    if (lift) lift.position.y = 0;
+    poseSheet(h);
+    return;
+  }
   const dt = 1 / 60;
   const steps = Math.max(1, Math.round(pre / dt));
   for (let i = 0; i <= steps; i++) {
@@ -171,7 +167,9 @@ function humanoidSubject(name: string, kind: HumanoidKind, category: LabSubject[
       const holder = new THREE.Group();
       holder.add(h.root);
       if (noW) h.socket('back').visible = false;
-      if (new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('portrait')) addPortraitFraming(holder, h);
+      // &portrait=1 + focus=head: frame the head bone's world position (re-aimed after every pose)
+      const portrait = new URLSearchParams(typeof location !== 'undefined' ? location.search : '').get('portrait') ? addHeadFraming(holder, h) : null;
+      portrait?.();
       console.info(`[lab] ${name}: ${h.triangles} tris (LOD0), assets ${h.buildMs.toFixed(0)} ms`, h.assets.lods.map((l) => l.tris));
       return {
         object: holder,
@@ -179,6 +177,7 @@ function humanoidSubject(name: string, kind: HumanoidKind, category: LabSubject[
         animations: anims,
         pose(anim, t) {
           poseHumanoid(h, anim, t, defaults, h.root);
+          portrait?.();
         },
         dispose: () => h.dispose(),
       };
