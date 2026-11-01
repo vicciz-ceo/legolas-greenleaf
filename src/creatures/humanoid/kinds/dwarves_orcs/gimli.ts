@@ -562,7 +562,7 @@ export const gimliDef: KindDef = {
     { type: 'bracers', color: GIMLI.bracers, color2: GIMLI.belt, length: 0.95, thickness: 0.016, mat: LEATHER },
   ],
   armor: [],
-  weapons: { right: 'dwarf_axe', style: 'dwarf' },
+  weapons: { right: 'dwarf_axe', style: 'gimli' },
   palette: GIMLI,
   anim: { swagger: 0.5, aggression: 0.55, stance: 1.2, cadence: 1.05, armSwing: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
