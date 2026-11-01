@@ -116,7 +116,7 @@ function embroideredVines(ctx: KindContext, shape: SkirtShape) {
   };
   const vine = (bone: 'skirt_f' | 'skirt_b', a0: number, a1: number, v0: number, v1: number, step: number, size: number, phase = 0) => {
     const grp = groups[bone];
-    const n = 24;
+    const n = 16;
     const pts: V3[] = [];
     const P3: THREE.Vector3[] = [];
     for (let i = 0; i <= n; i++) {
@@ -182,7 +182,7 @@ function elvenCrown(ctx: KindContext, rng: Rng) {
   const twigs2: THREE.BufferGeometry[] = [];
   const leaves: THREE.Matrix4[] = [];
   const berries: V3[] = [];
-  const leafGeo = leaf(0.1 * u, 0.04 * u, { droop: 0.3, cup: 0.4, rows: 3, rib: 0.3 });
+  const leafGeo = leaf(0.1 * u, 0.04 * u, { droop: 0.3, cup: 0.4, rows: 2, rib: 0.3 });
   const addLeaf = (p: V3, dir: V3) => leaves.push(along(p, dir, [rng.range(-1, 1), 0.3, rng.range(-1, 1)], rng.range(0.8, 1.3)));
   // azimuth a from the front: clusters at the temples, a few short sprigs front and back
   const specs: { a: number; h: number }[] = [];
@@ -209,7 +209,7 @@ function elvenCrown(ctx: KindContext, rng: Rng) {
       const end: V3 = [base[0] + (side * 0.15 + sx * 0.1) * u, base[1] + 0.14 * u, base[2] - 0.04 * u];
       twigs2.push(taperedTube([base, [(base[0] + end[0]) / 2 + side * 0.02 * u, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], end], 0.0058 * u, 0.0024 * u, { seg: 6, radial: 3 }));
       addLeaf(end, [end[0] - base[0], end[1] - base[1], end[2] - base[2]]);
-      addLeaf([(base[0] + end[0]) / 2, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], [side * 0.8, 0.5, 0.3]);
+      if (f % 2 === 0) addLeaf([(base[0] + end[0]) / 2, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], [side * 0.8, 0.5, 0.3]);
       if (berries.length < 14 && rng.float() < 0.45) berries.push([end[0] + 0.004 * u, end[1] - 0.012 * u, end[2]]);
     }
     addLeaf(tip, [tip[0] - mid[0], tip[1] - mid[1], tip[2] - mid[2]]);
@@ -239,7 +239,7 @@ function thranduilExtras(ctx: KindContext) {
 
   withHair(ctx, () => {
     // long hair that hangs over the coat
-    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.55), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.45 });
+    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.46), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.45 });
   });
 
   // ── the crown ──
