@@ -186,6 +186,6 @@ export const rohirrimDef: KindDef = {
   sfx: { voice: 'man', weight: 0.55 },
   anim: { swagger: 0.2, aggression: 0.4, stance: 1.04 },
   variation: { height: 0.04, bulk: 0.07, skin: 0.08 },
-  detail: { detailScale: 1, res: devNum('res', 0.06), headRes: devNum('headRes', 0.0165), faceRes: 0 },
+  detail: { detailScale: 1, res: devNum('res', 0.06), headRes: devNum('headRes', 0.017), faceRes: 0 },
   extras: rohirrimExtras,
 };

@@ -82,7 +82,7 @@ export function rohirrimHelm(ctx: KindContext, o: RohirrimHelm) {
       [0.2 * f + w, -0.95 * len, -0.6],
     ];
     const pts = rel.map((r) => [base.x + r[0] * u, base.y + r[1] * u, base.z + r[2] * u] as V3);
-    list.push(taperedTube(pts, 0.11 * u, 0.028 * u, { seg: 10, radial: 3 }));
+    list.push(taperedTube(pts, 0.11 * u, 0.028 * u, { seg: 8, radial: 3 }));
   }
   put(ctx, mergeAll(list), { bone: 'head', color: o.crest, mat: surface('wool', { rough: 0.7, pat: { fur: 0.9, weave: 0 } }), small: true });
 }

@@ -162,7 +162,7 @@ function manExtras(ctx: KindContext) {
 export const manDef: KindDef = {
   label: 'Man',
   // 1.77 (not 1.75): the lab's idle pose lifts a foot and bends a knee at some heights (1.74, 1.75, 1.76 seen)
-  height: 1.77,
+  height: devNum('height', 1.77),
   build: { shoulders: 1.0, bulk: 1.0, muscle: 0.4 },
   face: { jaw: 1.02, chin: 1.0, brow: 1.08, cheekbones: 1.0, nose: { length: 1.04, width: 1.0, bridge: 1.0 }, lips: { fullness: 1.0 }, ears: 'round', eyeOpen: 0.92, foreheadSlope: 0.14, asym: 0.05 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.3, blemish: 0.2, wrinkles: 0.3, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xc87055, surface: 'skin_weathered' },
