@@ -134,7 +134,7 @@ function rohirrimExtras(ctx: KindContext) {
     const sh = P.j[sd > 0 ? 'upperarm_l' : 'upperarm_r'];
     const dir: [number, number, number] = [sd * arm.x, arm.y, arm.z];
     const c: [number, number, number] = [sh[0] + dir[0] * P.upperArm * MAIL_SLEEVE, sh[1] + dir[1] * P.upperArm * MAIL_SLEEVE, sh[2]];
-    ctx.gear(ring(c, dir, 0.056 * sc * Math.sqrt(P.build.bulk) + MAIL_INFLATE * sc * 0.85, 0.004 * sc, 8, 3), { bone: sd > 0 ? 'upperarm_l' : 'upperarm_r', color: PALETTE.braid, mat: BRONZE, small: true });
+    ctx.gear(ring(c, dir, 0.056 * sc * Math.sqrt(P.build.bulk) + MAIL_INFLATE * sc * 0.85, 0.004 * sc, 6, 3), { bone: sd > 0 ? 'upperarm_l' : 'upperarm_r', color: PALETTE.braid, mat: BRONZE, small: true });
   }
   // the green skirt hangs from the hips under the mail hem to mid-thigh (sheet: mail hem ~0.85 m, skirt hem ~0.67 m);
   // `grow < 0` keeps it inside the hauberk's hips so the mail reads as the outer layer; the braid is a separate strip
@@ -167,7 +167,7 @@ function rohirrimExtras(ctx: KindContext) {
   // belt boss and two hanging tails
   const zb = torsoCentreFront(P, beltY) + 0.027 * sc - (0.0185 - MAIL_INFLATE) * sc;
   ctx.gear(new THREE.CylinderGeometry(0.03 * sc, 0.03 * sc, 0.008 * sc, 12).rotateX(Math.PI / 2).translate(0, beltY, zb + 0.004 * sc), { bone: 'hips', color: PALETTE.bronze, mat: BRONZE, small: true });
-  for (const [x, len] of [[0.026, 0.3], [0.056, 0.26]] as [number, number][]) {
+  for (const [x, len] of [[0.03, 0.3], [0.058, 0.26]] as [number, number][]) {
     const top = beltY - 0.012 * sc;
     const zTop = zb + 0.002 * sc;
     const zBot = zTop + 0.034 * sc;
@@ -192,7 +192,7 @@ const BOOT_LEN = 0.87;
 export const rohirrimDef: KindDef = {
   label: 'Rohirrim',
   height: 1.82,
-  build: { shoulders: 1.1, bulk: 1.15, chest: 1.0, neckThick: 1.05, muscle: 0.3, handSize: 1.04 },
+  build: { shoulders: 1.1, bulk: 1.2, chest: 1.0, neckThick: 1.05, muscle: 0.3, handSize: 1.04 },
   face: { jaw: 1.05, chin: 1.0, brow: 1.05, cheekbones: 1.02, nose: { length: 1.0, width: 0.98, bridge: 1.03 }, lips: { fullness: 0.95 }, ears: 'round', eyeOpen: 0.95, foreheadSlope: 0.12, asym: 0.05 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.28, blemish: 0.12, wrinkles: 0.22, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xcf7860, surface: 'skin_weathered' },
   eyes: { color: PALETTE.eyes, sclera: 0xe8e2d6 },
@@ -215,6 +215,6 @@ export const rohirrimDef: KindDef = {
   sfx: { voice: 'man', weight: 0.55 },
   anim: { swagger: 0.2, aggression: 0.4, stance: 1.04 },
   variation: { height: 0.04, bulk: 0.07, skin: 0.08 },
-  detail: { detailScale: 1, res: devNum('res', 0.06), headRes: devNum('headRes', 0.017), faceRes: 0 },
+  detail: { detailScale: 1, res: devNum('res', 0.065), headRes: devNum('headRes', 0.017), faceRes: 0 },
   extras: rohirrimExtras,
 };

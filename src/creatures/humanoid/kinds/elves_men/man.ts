@@ -179,7 +179,7 @@ export const manDef: KindDef = {
   label: 'Man',
   // the sheet's 1.75 m (the kit mesher dropped a leg slab at 1.70-1.82 m until the hole fix)
   height: 1.75,
-  build: { shoulders: 1.0, bulk: 1.0, muscle: 0.2 },
+  build: { shoulders: 1.03, bulk: 1.05, muscle: 0.2 },
   face: { jaw: 1.02, chin: 1.0, brow: 1.08, cheekbones: 1.0, nose: { length: 1.04, width: 1.0, bridge: 1.0 }, lips: { fullness: 1.0 }, ears: 'round', eyeOpen: 0.92, foreheadSlope: 0.14, asym: 0.05 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.3, blemish: 0.2, wrinkles: 0.3, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xc87055, surface: 'skin_weathered' },
   eyes: { color: PALETTE.eyes, sclera: 0xe4ddd0 },

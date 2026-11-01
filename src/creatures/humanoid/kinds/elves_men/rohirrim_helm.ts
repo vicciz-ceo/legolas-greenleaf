@@ -45,12 +45,12 @@ export function rohirrimHelm(ctx: KindContext, o: RohirrimHelm) {
   const u = P.headH;
   const mat = o.mat ?? STEEL;
   helmDome(ctx, { ...DOME, color: o.color, trim: o.trim, mat, trimMat: BRASS, rim: RIM, nape: NAPE });
-  // a broad brass brow band with seven rivets on its front half
+  // a broad brass brow band with six rivets on its front half
   const band: V3[] = [];
   for (let i = 0; i < 20; i++) band.push(bandPoint(P, (i / 20) * Math.PI * 2, 1.012, 0.012));
   put(ctx, tube(band, 0.013 * u, { seg: 20, radial: 3, closed: true }), { bone: 'head', color: o.trim, mat: BRASS, small: true });
   const rivets: V3[] = [];
-  for (let i = 0; i < 7; i++) rivets.push(bandPoint(P, -Math.PI * 0.78 + (i / 6) * Math.PI * 1.56, 1.03, 0.012));
+  for (let i = 0; i < 6; i++) rivets.push(bandPoint(P, -Math.PI * 0.75 + (i / 5) * Math.PI * 1.5, 1.03, 0.012));
   put(ctx, studs(rivets, 0.011 * u, 0.7), { bone: 'head', color: shadeUp(o.trim), mat: BRASS, small: true });
   // nasal bar: curved to follow the bridge, a little closer to the nose than the stock bar
   const nz = 0.457;
