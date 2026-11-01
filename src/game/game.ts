@@ -830,6 +830,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   // ── pause ─────────────────────────────────────────────────────────────────
   function pause(): void {
     if (mode !== 'playing') return;
+    ctx.player.cancelDraw?.(); // a draw in progress is abandoned, not loosed on resume
     setMode('paused');
     input.enabled = false;
     input.unlockPointer();
