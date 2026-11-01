@@ -11,7 +11,6 @@
 import * as THREE from 'three';
 import { Rng, hashSeed } from '../../../../core/rng';
 import { surface } from '../../../kit/surfaces';
-import type { V3 } from '../../../kit/sdf';
 import { anatomyParts, emitParts } from '../../anatomy';
 import type { HairDef, KindContext, KindDef } from '../../types';
 import { ctxBucket, devNum, withHair } from './common';
@@ -19,10 +18,10 @@ import { addSkirt } from './cloth';
 import { paintScar, placketLine, sheathed } from './detail';
 import { addHair, noKitHair, paintStubble, sculptBeard } from './hair';
 import { sculptFurCollar, sculptPouch, sculptStrap, sculptTorso } from './garments';
-import { POLISHED, STEEL, limbGuards, pauldrons } from './armor';
+import { POLISHED, limbGuards, pauldrons } from './armor';
 import { gondorHelm } from './headgear';
 import { put } from './geo';
-import { addFlaredCloak, helmWings, hornOfGondor, matteHair, medallion, treeEmblem } from './gondor_parts';
+import { addFlaredCloak, captainBoots, helmWings, hornOfGondor, matteHair, medallion, treeEmblem } from './gondor_parts';
 
 const BLACK = 0x242326; // surcoat/tabard: sheet #292929 design, observed #19191a (it renders darker than it looks)
 const SILVER = 0xb2b4ba;
@@ -36,17 +35,20 @@ const PAL = {
   brows: 0x3e2c1d,
   eyes: 0x6e5240, // Boromir's hazel #765640 (the soldiers' #5d8bb5 would need a per-bucket eye)
   trousers: 0x3a322b, // Boromir #413a32, soldiers' #292929: dark brown-grey wool
-  boots: 0x5a4430, // tall brown leather (#614d37 / #574735, observed #4d3e37)
-  bootsTrim: 0x3a2b1e,
+  boots: 0x3b2b22, // soldiers: dark brown leather (#574735 design, observed #463b36)
+  bootsTrim: 0x2a1e17,
+  captainBoots: 0x614d37, // Boromir: tall brown leather (#614d37, observed #4d3e37)
   belt: 0x4c3828, // #614d37 / #574735 (observed #4b3833)
   gloves: 0x4a3a2e, // soldiers' leather gauntlets (observed #483d3b)
-  mail: 0x58585d, // dark aged mail (observed #61534d / #4f4b4a), not the bright silver it first read as
+  mail: 0x58585d, // Boromir's mail sleeves (observed #61534d)
+  mailSoldier: 0x4a4b4f, // soldiers' mail (observed #4f4b4a)
+  pewter: 0x7d7f84, // worn pewter plate (design #969c9d; it renders brighter than the albedo)
   tunic: 0x23252b, // Boromir: blue-grey wool #474f64, observed #383537 (it renders much lighter than the albedo)
   tunicTrim: 0x84704a, // bronze embroidery
-  cloak: 0x2a2a2c, // #383837, observed #413731
-  cloakTrim: 0x5e5038,
-  fur: 0x45362a, // coarse brown fur #786451, observed #5e4639
-  fur2: 0x2c2219,
+  cloak: 0x1f2024, // #383837, observed #413731: opaque dark twill
+  cloakTrim: 0x6b5a44, // 3-4 cm bronze hem trim
+  fur: 0x4a3a2c, // coarse fur: dark brown base with pale tips (#786451, observed #5e4639)
+  fur2: 0x8a7358,
   bracers: 0x5a4332, // engraved brown leather #614d37, observed #554744
   bronze: 0x8a7550,
   ivory: 0xd9ceb4,
@@ -56,13 +58,17 @@ const PAL = {
 
 const WOOL_TUNIC = surface('twill', { rough: 0.88, sheen: 0.3 });
 const WOOL_BLACK = surface('twill', { rough: 0.9, sheen: 0.35, pat: { weave: -0.7 } });
-const CLOAK_WOOL = surface('wool', { rough: 0.92 });
+const CLOAK_WOOL = surface('twill', { rough: 0.95, sheen: 0.1 });
+/** worn pewter plate (greaves, pauldrons, helm): darker than polished steel, with scratches */
+const PEWTER = surface('metal', { rough: 0.45, metal: 0.92, pat: { scratches: 1.3, pores: 0.3 } });
+/** belt height above the kit default (sheet: Boromir ~1.17 m, soldiers ~1.2 m) */
+const BELT_UP = 0.15;
 const LEATHER = surface('leather_worn', { rough: 0.66, sheen: 0.1 });
 const TOOLED = surface('leather_tooled', { rough: 0.6, sheen: 0.1 });
 
 interface GonLook {
   hair: HairDef;
-  beard?: { color: number; thick: number; cheeks: number; chin?: number; mustache?: boolean; stubble?: boolean };
+  beard?: { color: number; color2?: number; thick: number; cheeks: number; chin?: number; mustache?: boolean; stubble?: boolean };
 }
 
 function gondorExtras(ctx: KindContext) {
@@ -73,12 +79,11 @@ function gondorExtras(ctx: KindContext) {
   const b = ctxBucket(ctx);
   const captain = b === 0;
   const cy = j.chest[1];
-  const ny = j.neck[1];
   const hipY = j.thigh_l[1];
-  const beltY = hipY + 0.07 * sc;
+  const beltY = hipY + (0.07 + BELT_UP) * sc;
   const mailMat = surface('mail', { rough: 0.58, pat: { scales: 1.5, scratches: 0.5 } });
-    const looks: GonLook[] = [
-    { hair: { style: 'shoulder', color: 0x4a3220, tipColor: 0x4e3523, length: 0.95, density: 0.85 }, beard: { color: 0x45301f, thick: 0.058, cheeks: 0.6, chin: 0.02, mustache: true } },
+  const looks: GonLook[] = [
+    { hair: { style: 'shoulder', color: 0x4a3220, tipColor: 0x4e3523, length: 0.95, density: 0.85 }, beard: { color: 0x45301f, color2: 0x8f8a80, thick: 0.058, cheeks: 0.6, chin: 0.02, mustache: true } },
     { hair: { style: 'short', color: 0x3e2c1d, length: 1, density: 0.7 } },
     { hair: { style: 'short', color: 0x20170f, length: 1, density: 0.7 }, beard: { color: 0x1d150f, thick: 0.035, cheeks: 0.3, mustache: true } },
     { hair: { style: 'short', color: 0x8b8880, length: 0.9, density: 0.7 }, beard: { color: 0x96938b, thick: 0.03, cheeks: 0, mustache: true } },
@@ -89,62 +94,81 @@ function gondorExtras(ctx: KindContext) {
   // ── face ──
   if (L.beard) {
     paintStubble(ctx, { color: L.beard.color, paint: captain ? 0.45 : 0.3, mustache: L.beard.mustache !== false, cheeks: 0.7 });
-    sculptBeard(ctx, { color: L.beard.color, thick: L.beard.thick, cheeks: L.beard.cheeks, chin: L.beard.chin ?? 0, mustache: L.beard.mustache !== false });
+    sculptBeard(ctx, { color: L.beard.color, color2: L.beard.color2, thick: L.beard.thick, cheeks: L.beard.cheeks, chin: L.beard.chin ?? 0, mustache: L.beard.mustache !== false });
   }
   if (b === 2) paintScar(ctx, { from: [0.12, 0.0], to: [0.19, -0.27] });
 
   // ── hair ──
   if (captain) matteHair(L.hair.color);
   withHair(ctx, () => {
-    addHair(ctx, { hair: L.hair, rng: new Rng(hashSeed('gondor', 'hair', b)), lod: captain ? 0 : 1, backClear: captain ? 1.35 : 1.0, cap: !helmed });
+    if (!helmed) addHair(ctx, { hair: L.hair, rng: new Rng(hashSeed('gondor', 'hair', b)), lod: captain ? 0 : 1, backClear: captain ? 1.35 : 1.0, cap: true });
   });
 
   // ── mail ──
-  sculptTorso(ctx, { color: PAL.mail, mat: mailMat, inflate: 0.0115 * sc, hem: 0.45, sleeve: captain ? 1.4 : 1.6, neck: true, neckTop: captain ? 0.06 * sc : undefined, seams: false });
-  if (!captain) addSkirt(ctx, { color: PAL.mail, mat: mailMat, length: 0.72, ragged: 0.004 * sc });
+  sculptTorso(ctx, { color: captain ? PAL.mail : PAL.mailSoldier, mat: mailMat, inflate: 0.0115 * sc, hem: 0.45, sleeve: captain ? 1.4 : 1.6, neck: true, neckTop: captain ? 0.06 * sc : undefined, seams: false });
+  if (!captain) addSkirt(ctx, { color: PAL.mailSoldier, mat: mailMat, length: 0.72, ragged: 0.004 * sc });
 
   if (captain) {
     // the blue-grey embroidered tunic: short sleeves over the mail, falling to above the knee, bronze trim
     sculptTorso(ctx, { color: PAL.tunic, mat: WOOL_TUNIC, inflate: 0.0185 * sc, hem: 0.08, sleeve: 0.5, neck: false, shoulders: true, seams: true });
     addSkirt(ctx, { color: PAL.tunic, color2: PAL.tunicTrim, mat: WOOL_TUNIC, length: 0.68, flare: 0.03 * sc, ragged: 0.004 * sc, panels: [[-0.75, -0.1], [0.1, 0.75], [0.9, 2.3], [2.45, 3.83], [3.98, 5.4]] });
     // bronze embroidery: the tree on the chest and a band down the front
-    treeEmblem(ctx, { cy: cy + 0.02 * sc, h: 0.2 * sc, color: PAL.tunicTrim, inflate: 0.0215 * sc, mat: surface('cloth', { rough: 0.55, sheen: 0.7 }), thin: 0.7 });
+    treeEmblem(ctx, { cy: cy + 0.02 * sc, h: 0.28 * sc, color: PAL.tunicTrim, inflate: 0.0215 * sc, mat: surface('cloth', { rough: 0.55, sheen: 0.7 }), thin: 0.8 });
     placketLine(ctx, { y0: beltY + 0.03 * sc, y1: cy - 0.09 * sc, inflate: 0.0185 * sc, color: PAL.tunicTrim, x: 0, width: 0.0028 * sc });
-    sculptFurCollar(ctx, { color: PAL.fur, color2: PAL.fur2, thick: 0.03, drop: 0.07 });
+    sculptFurCollar(ctx, { color: PAL.fur, color2: PAL.fur2, thick: 0.03, drop: 0.07, open: 0.5 });
     // a long dark cloak, wide at the hem, with a bronze-trimmed border
-    addFlaredCloak(ctx, { color: PAL.cloak, color2: PAL.cloakTrim, mat: CLOAK_WOOL, length: 0.78, flareX: 0.75, flareZ: 0.5, ragged: 0.02 * sc, mantle: false });
+    addFlaredCloak(ctx, { color: PAL.cloak, color2: PAL.cloakTrim, mat: CLOAK_WOOL, length: 0.78, flareX: 0.75, flareZ: 0.9, ragged: 0.02 * sc, mantle: false });
     // the baldric from the left shoulder to the right hip, the Horn of Gondor hanging on it
     sculptStrap(ctx, { color: PAL.belt, mat: LEATHER, width: 0.034 * sc, inflate: 0.026 * sc, sign: -1 });
-    hornOfGondor(ctx, { side: -1, ivory: PAL.ivory, silver: PAL.silver, bronze: PAL.bronze, leather: PAL.belt, metalMat: POLISHED, leatherMat: LEATHER });
+    hornOfGondor(ctx, { side: -1, mouthY: beltY - 0.02 * sc, ivory: PAL.ivory, silver: PAL.silver, bronze: PAL.bronze, leather: PAL.belt, metalMat: POLISHED, leatherMat: LEATHER });
     // the sword in its scabbard on the left hip
-    sheathed(ctx, { kind: 'sword', hand: 'hand_r', pos: [P.hipX + 0.14 * sc, hipY + 0.05 * sc, -0.01 * sc], dir: [0.07, -0.93, -0.3], len: 0.9, r: 0.027 * sc, color: PAL.scabbard, trim: PAL.bronze, mat: TOOLED, seed: 3, weaponStart: 0.09 });
+    sheathed(ctx, { kind: 'sword', hand: 'hand_r', pos: [P.hipX + 0.14 * sc, beltY - 0.04 * sc, -0.01 * sc], dir: [0.07, -0.93, -0.3], len: 0.82, r: 0.027 * sc, color: PAL.scabbard, trim: PAL.bronze, mat: TOOLED, seed: 3, weaponStart: 0.09 });
     // round bronze belt medallion
     medallion(ctx, { y: beltY, z: 0.108 * sc * P.build.bulk * (1 + P.build.belly * 0.4) + 0.034 * sc, r: 0.02 * sc, color: PAL.bronze, mat: 'gold' });
     sculptPouch(ctx, { x: -0.13 * sc, z: -0.1 * sc, size: 0.8, color: 0x2a1e14, drop: 0.05 });
+    captainBoots(ctx, { color: PAL.captainBoots, strap: PAL.bootsTrim, buckle: PAL.bronze, mat: TOOLED, metalMat: 'gold' });
     // engraved brown leather bracers over the mail
     limbGuards(ctx, { kind: 'vambrace', color: PAL.bracers, trim: PAL.bronze, mat: TOOLED, trimMat: 'gold', length: 0.5 });
   } else {
     // black tabard with silver trim and the white tree; mail shows in the slit below
     sculptTorso(ctx, { color: BLACK, mat: WOOL_BLACK, inflate: 0.0195 * sc, hem: 0.3, sleeve: 0, neck: false, shoulders: false, seams: true, color2: 0x2c2b30, colorNoise: 0.2 });
     addSkirt(ctx, { color: BLACK, color2: SILVER, mat: WOOL_BLACK, length: 0.58, flare: 0.05 * sc, panels: [[-3.0, -0.25], [0.25, 3.0]] });
-    treeEmblem(ctx, { cy: cy - 0.02 * sc, h: 0.34 * sc, color: 0xd6d6d0, inflate: 0.0225 * sc, mat: surface('cloth', { rough: 0.5, sheen: 0.9 }), thin: 1.7 });
+    treeEmblem(ctx, { cy: cy - 0.02 * sc, h: 0.4 * sc, color: 0xd6d6d0, inflate: 0.0225 * sc, mat: surface('cloth', { rough: 0.5, sheen: 0.9 }), thin: 1.7 });
+    // silver edge trim down both sides of the tabard front
+    for (const x of [-0.115 * sc, 0.115 * sc]) placketLine(ctx, { y0: beltY + 0.02 * sc, y1: cy + 0.11 * sc, inflate: 0.0165 * sc, color: SILVER, x, width: 0.0034 * sc, mat: PEWTER });
     sculptPouch(ctx, { x: 0.13 * sc, z: 0.06 * sc, size: 0.85, color: 0x2a1e14, drop: 0.05 });
     // black cloak with the shoulder mantle
-    addFlaredCloak(ctx, { color: BLACK, color2: 0x33312f, mat: CLOAK_WOOL, length: 0.8, flareX: 0.4, flareZ: 0.3, ragged: 0.015 * sc });
+    addFlaredCloak(ctx, { color: BLACK, color2: 0x33312f, mat: CLOAK_WOOL, length: 0.7, flareX: 0.4, flareZ: 0.3, ragged: 0.015 * sc, hood: true });
     // leather gauntlets
     leatherGauntlets(ctx);
-    if (A >= 0.5) pauldrons(ctx, { color: 0x8e9096, trim: SILVER, mat: STEEL, trimMat: POLISHED, lames: 3, size: 0.95, cap: true });
+    if (A >= 0.5) pauldrons(ctx, { color: PAL.pewter, trim: 0x9a9ca2, mat: PEWTER, trimMat: PEWTER, lames: 3, size: 0.95, cap: true });
     if (A >= 0.5) {
-      limbGuards(ctx, { kind: 'greave', color: 0x8e9096, trim: SILVER, mat: STEEL, trimMat: POLISHED, length: 1.12 });
+      limbGuards(ctx, { kind: 'greave', color: PAL.pewter, trim: 0x9a9ca2, mat: PEWTER, trimMat: PEWTER, length: 1.12 });
       kneeCops(ctx);
     }
-    if (A >= 0.75) limbGuards(ctx, { kind: 'vambrace', color: PAL.bracers, trim: SILVER, mat: TOOLED, trimMat: POLISHED, length: 0.55 });
-    if (helmed) gondorHelm(ctx, { color: 0xb9bbc0, trim: 0xd2d4d8, mat: POLISHED, trimMat: POLISHED, wing: 0.02 });
-    if (helmed) helmWings(ctx, { color: 0xc9cbcc, mat: surface('metal', { rough: 0.24, pat: { scratches: 0.5 } }) });
+    if (A >= 0.5) {
+      limbGuards(ctx, { kind: 'vambrace', color: PAL.bracers, trim: 0x9a9ca2, mat: TOOLED, trimMat: PEWTER, length: 0.55 });
+      elbowCouters(ctx);
+    }
+    if (helmed) {
+      gondorHelm(ctx, { color: 0x8a8c92, trim: 0xa4a6ac, mat: PEWTER, trimMat: PEWTER, wing: 0.02 });
+      helmWings(ctx, { root: 0x5c5e63, tip: 0xb4b7bd, mat: PEWTER });
+    }
   }
 }
 
-/** polished knee cops: flattened domes over the knees (the greaves end under them) */
+/** pewter elbow couters: flattened domes over the elbows, on the vambraces' upper edge */
+function elbowCouters(ctx: KindContext) {
+  const { P } = ctx;
+  const sc = P.s;
+  for (const sd of ['l', 'r'] as const) {
+    const e = P.j[`forearm_${sd}`];
+    const geo = new THREE.SphereGeometry(1, 8, 5).scale(0.05 * sc, 0.046 * sc, 0.05 * sc).translate(e[0], e[1] + 0.004 * sc, e[2] - 0.012 * sc);
+    put(ctx, geo, { bone: `forearm_${sd}`, color: PAL.pewter, mat: PEWTER, small: true });
+  }
+}
+
+/** pewter knee cops: flattened domes over the knees (the greaves end under them) */
 function kneeCops(ctx: KindContext) {
   const { P } = ctx;
   const sc = P.s;
@@ -152,7 +176,7 @@ function kneeCops(ctx: KindContext) {
   for (const sd of ['l', 'r'] as const) {
     const k = P.j[`shin_${sd}`];
     const geo = new THREE.SphereGeometry(1, 9, 6).scale(0.062 * sc * g, 0.05 * sc, 0.036 * sc).translate(k[0], k[1] + 0.006 * sc, k[2] + 0.052 * sc * g);
-    put(ctx, geo, { bone: `shin_${sd}`, color: 0xa0a2a8, mat: POLISHED, small: true });
+    put(ctx, geo, { bone: `shin_${sd}`, color: PAL.pewter, mat: PEWTER, small: true });
   }
 }
 
@@ -178,7 +202,7 @@ export const gondorDef: KindDef = {
   outfit: [
     { type: 'leggings', color: PAL.trousers },
     { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 0.92, mat: TOOLED },
-    { type: 'belt', color: PAL.belt, mat: LEATHER },
+    { type: 'belt', color: PAL.belt, offset: BELT_UP, mat: LEATHER },
     // spring bones only: hem panels and the cloaks are built in extras
     { type: 'skirt', color: BLACK, chance: 0 },
     { type: 'cloak', color: PAL.cloak, chance: 0 },

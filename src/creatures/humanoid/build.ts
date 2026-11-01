@@ -138,7 +138,7 @@ export function prepareHumanoid(spec: HumanoidSpec): Prepared {
   const bucket = seedBucket(spec.seed);
   // per-bucket detail overrides (KindDef.bucketDetail); kinds without any keep the very same object
   const bd = def0.bucketDetail?.[bucket as 0 | 1 | 2 | 3];
-  const def: ResolvedKind = bd ? { ...def0, detail: { ...def0.detail, ...bd } as ResolvedKind['detail'] } : def0;
+  const def: ResolvedKind = bd ? { ...def0, detail: { ...def0.detail, ...Object.fromEntries(Object.entries(bd).filter(([, v]) => v !== undefined)) } as ResolvedKind['detail'] } : def0;
   const armor = Math.round((spec.armor ?? 0.5) * 4) / 4;
   const helmet = spec.helmet !== false;
   const rng = new Rng(hashSeed(spec.kind, bucket, 'humanoid'));
