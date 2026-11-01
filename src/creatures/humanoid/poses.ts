@@ -628,21 +628,21 @@ function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: n
   if (w >= 1) {
     p[dd] = _cL[0]; p[dd + 1] = _cL[1]; p[dd + 2] = _cL[2];
     p[tt] = _cT[0]; p[tt + 1] = _cT[1]; p[tt + 2] = _cT[2];
-  } else {
-    turnHand(p, dd, tt, _cL[0], _cL[1], _cL[2], _cT[0], _cT[1], _cT[2], w, sx);
-    if (ext > 1e-3 && def.maxTilt > 0) {
-      // between the hanging blade and the run's fist the blade has neither the tilt solved above nor the fist's, and the hand's run swing
-      // is at its lowest: where the point of what is held would reach the ground, lift the wrist (a goblin's club went 14 cm through the floor at 2.5 m/s)
-      const clear = CARRY_CLEAR * B.height;
-      for (let it = 0; it < 2; it++) {
-        mulV(_W, _Rm, p[hx] * R, p[hx + 1] * R, p[hx + 2] * R);
-        mulV(_T, _Rm, p[tt], p[tt + 1], p[tt + 2]);
-        mulV(_L, _Rm, p[dd], p[dd + 1], p[dd + 2]);
-        const ny = sx * (_L[2] * _T[0] - _L[0] * _T[2]);
-        const tip = _W[1] + S[1] + B.gripAlong * _L[1] + B.gripOut * ny + _T[1] * ext;
-        if (tip >= clear) break;
-        p[hx + 1] += (clear - tip) / (R * Math.max(0.3, _Rm[4]));
-      }
+  } else turnHand(p, dd, tt, _cL[0], _cL[1], _cL[2], _cT[0], _cT[1], _cT[2], w, sx);
+  if (ext > 1e-3 && def.maxTilt > 0) {
+    // Where the point of what is held would still reach the ground, lift the wrist by what is missing. The tilt solved above stops at maxTilt: a
+    // low hand with a long blade (a long-armed crouched goblin's swinging hand is 10 cm off the ground) has no tilt that clears. And between the
+    // hanging blade and the run's fist the frame is neither that tilt nor the fist's, at the hand's lowest swing (a goblin's club went 14 cm
+    // through the floor at 2.5 m/s). The frame in the pose is what the hand will have: measure the point from it.
+    const clear = CARRY_CLEAR * B.height;
+    for (let it = 0; it < 2; it++) {
+      mulV(_W, _Rm, p[hx] * R, p[hx + 1] * R, p[hx + 2] * R);
+      mulV(_T, _Rm, p[tt], p[tt + 1], p[tt + 2]);
+      mulV(_L, _Rm, p[dd], p[dd + 1], p[dd + 2]);
+      const ny = sx * (_L[2] * _T[0] - _L[0] * _T[2]);
+      const tip = _W[1] + S[1] + B.gripAlong * _L[1] + B.gripOut * ny + _T[1] * ext;
+      if (tip >= clear) break;
+      p[hx + 1] += (clear - tip) / (R * Math.max(0.3, _Rm[4]));
     }
   }
 }
