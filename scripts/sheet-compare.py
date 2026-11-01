@@ -79,10 +79,20 @@ def lab_mask_and_visual(lab):
               '(grey backgrounds lose lit grey cloth)', file=sys.stderr)
     thresh = 60 if magenta else 14
     mask = dist > thresh
-    alpha = np.clip(dist / (thresh * 2.5), 0, 1)[..., None] if magenta else mask[..., None].astype(np.float32)
-    # replace the background's share of each pixel with the sheet grey (un-premultiply), so anti-aliased edges
-    # (hair cards, bow strings) do not keep a magenta/violet fringe that reads as a colour defect
-    vis = arr + (1 - alpha) * (GREY - bg) if magenta else arr
+    if magenta:
+        # Replace the background's share of each anti-aliased EDGE pixel with the sheet grey (un-premultiply),
+        # so hair cards and strings do not keep a violet fringe. Only the thin ring around the silhouette is
+        # touched: the coverage estimate is unreliable for pink/magenta-ish surface colours (pale skin), and
+        # applying it inside the silhouette tinted such skin green.
+        mimg = Image.fromarray((mask * 255).astype(np.uint8))
+        interior = np.asarray(mimg.filter(ImageFilter.MinFilter(5))) > 0
+        near = np.asarray(mimg.filter(ImageFilter.MaxFilter(5))) > 0
+        alpha = np.clip(dist / (thresh * 2.5), 0, 1)
+        alpha[interior] = 1.0
+        alpha[~near] = 0.0
+        vis = arr + (1 - alpha[..., None]) * (GREY - bg)
+    else:
+        vis = arr
     # fill pinholes, drop specks
     m = Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
     m = m.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3))
