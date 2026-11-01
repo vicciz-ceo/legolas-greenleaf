@@ -193,9 +193,9 @@ export function goblinExtras(ctx: KindContext) {
 
 export const goblinDef: KindDef = {
   label: 'Moria goblin',
-  height: devNum('h', 1.34), // spec nominal 1.48; the standing lab pose is shorter until the base crouch exists (a crouched 1.1 m silhouette is the target)
+  height: devNum('h', 1.4), // spec nominal 1.48; the standing lab pose is shorter until the base crouch exists (a crouched 1.1 m silhouette is the target)
   // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
-  build: { shoulders: devNum('sh', 1.05), hips: devNum('hips', 1.2), bulk: devNum('bulk', 0.78), belly: 0.0, chest: 0.88, armLength: devNum('arm', 1.42), legLength: devNum('leg', 0.82), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
+  build: { shoulders: devNum('sh', 1.35), hips: devNum('hips', 1.2), bulk: devNum('bulk', 1.2), belly: 0.0, chest: 0.88, armLength: devNum('arm', 1.6), legLength: devNum('leg', 0.86), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
   face: FACE,
   skin: { color: G.skin, color2: G.skin2, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x7a5a54, brows: 0x3a3028, surface: 'skin_orc', scatter: 0xb08070 },
   // large glinting amber eyes (#bb8b32)

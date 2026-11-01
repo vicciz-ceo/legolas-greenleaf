@@ -38,10 +38,10 @@ export const ORC_FACE = {
  * warmer than the hex values.
  */
 export const ORC_PALETTE = {
-  tunic: 0x654529, // design #554333; turnaround chest #523b2a (lit); a warmer, more orange albedo so the cloth stops reading as flat plastic
-  tunicTrim: 0x8a6a42, // ochre mottle
-  kilt: 0x5a3f2a, // turnaround kilt #523e30
-  kiltHem: 0x8a6a42, // lighter, worn hem edges
+  tunic: 0x553a24, // design #554333; turnaround chest #523b2a (lit); a warmer, more orange albedo so the cloth stops reading as flat plastic
+  tunicTrim: 0x7c5e38, // ochre mottle
+  kilt: 0x4c3524, // turnaround kilt #523e30
+  kiltHem: 0x60472e, // lighter, worn hem edges
   kiltUnder: 0x34241b, // the darker, redder inner panels / strips of the kilt (details image)
   leather: 0x47341f, // design #55412c
   leatherDark: 0x2e2116,
@@ -73,13 +73,13 @@ interface Look {
 
 const LOOKS: Look[] = [
   // wiry / grey-green, long stringy hair
-  { skin: 0x766148, skin2: 0x56402c, mottle: [0x7e7048, 0x5a4630, 0x6a5238], hairLen: 0.85, hairCount: 80, wild: 0.55, wave: 0.9, comb: 0.8, front: 0.42, scars: 2, helm: 'cap' },
+  { skin: 0x726848, skin2: 0x524632, mottle: [0x7c7650, 0x584a34, 0x665a3c], hairLen: 0.85, hairCount: 80, wild: 0.55, wave: 0.9, comb: 0.8, front: 0.6, scars: 2, helm: 'cap' },
   // brown, heavy brow, short messy hair
-  { skin: 0x7c5e42, skin2: 0x5a4028, mottle: [0x86684a, 0x5e4630, 0x6e543a], hairLen: 0.17, hairCount: 60, wild: 0.85, wave: 0.5, comb: 0.3, front: 0.44, scars: 3, helm: 'dome' },
+  { skin: 0x7a6444, skin2: 0x58442c, mottle: [0x84704c, 0x5e4a32, 0x6c5a3c], hairLen: 0.17, hairCount: 60, wild: 0.85, wave: 0.5, comb: 0.3, front: 0.6, scars: 3, helm: 'dome' },
   // scarred, pale mottle, shoulder-length hair
-  { skin: 0x86704e, skin2: 0x5e4a32, mottle: [0x947a58, 0x664e38, 0x78643f], hairLen: 0.4, hairCount: 70, wild: 0.7, wave: 0.8, comb: 0.4, front: 0.42, scars: 6, helm: 'band' },
+  { skin: 0x867450, skin2: 0x5e4e36, mottle: [0x928058, 0x66523a, 0x786844], hairLen: 0.4, hairCount: 70, wild: 0.7, wave: 0.8, comb: 0.4, front: 0.6, scars: 6, helm: 'band' },
   // matted, long hair
-  { skin: 0x6e5a40, skin2: 0x4e3e2a, mottle: [0x76684a, 0x544432, 0x62503a], hairLen: 0.9, hairCount: 90, wild: 0.75, wave: 1.0, comb: 0.85, front: 0.42, scars: 3, helm: 'pointed' },
+  { skin: 0x6c6244, skin2: 0x4c4430, mottle: [0x767050, 0x544a34, 0x605238], hairLen: 0.9, hairCount: 90, wild: 0.75, wave: 1.0, comb: 0.85, front: 0.6, scars: 3, helm: 'pointed' },
 ];
 
 /** old scars across the brow and cheek (sheet: a diagonal gash over the forehead, nicks on the cheeks) */
@@ -98,11 +98,11 @@ function faceScars(ctx: KindContext, rng: Rng, n: number) {
 function flush(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
-  const o = { op: 'paint' as const, color: ORC_PALETTE.flush, mat: 'skin_orc' as const, bone: 'head', k: 0.05 * u, strength: 0.5 };
-  s.ellipsoid(P.h(0, -0.1, 0.42), [0.08 * u, 0.07 * u, 0.06 * u], { ...o, strength: 0.6 });
+  const o = { op: 'paint' as const, color: ORC_PALETTE.flush, mat: 'skin_orc' as const, bone: 'head', k: 0.05 * u, strength: 0.3 };
+  s.ellipsoid(P.h(0, -0.1, 0.42), [0.08 * u, 0.07 * u, 0.06 * u], { ...o, strength: 0.4 });
   s.mirrored(() => s.ellipsoid(P.h(0.2, -0.12, 0.3), [0.09 * u, 0.07 * u, 0.07 * u], o));
-  s.mirrored(() => s.ellipsoid(P.h(0.16, 0.08, 0.36), [0.1 * u, 0.04 * u, 0.06 * u], { ...o, strength: 0.4 }));
-  s.mirrored(() => s.ellipsoid(P.h(0.36, -0.05, -0.02), [0.06 * u, 0.14 * u, 0.1 * u], { ...o, strength: 0.55 }));
+  s.mirrored(() => s.ellipsoid(P.h(0.16, 0.08, 0.36), [0.1 * u, 0.04 * u, 0.06 * u], { ...o, strength: 0.25 }));
+  s.mirrored(() => s.ellipsoid(P.h(0.36, -0.05, -0.02), [0.06 * u, 0.14 * u, 0.1 * u], { ...o, strength: 0.35 }));
 }
 
 /** rusty plate over the character's LEFT shoulder (sheet) or both for heavy armour */
@@ -206,7 +206,7 @@ export const orcDef: KindDef = {
   height: devNum('h', 1.77),
   build: { shoulders: devNum('sh', 1.2), hips: 1.02, bulk: devNum('bulk', 0.9), belly: devNum('belly', 0.0), chest: devNum('chest', 1.05), armLength: devNum('arm', 1.15), legLength: devNum('leg', 1.0), headSize: 1.02, neck: 0.6, neckThick: 1.5, hunch: 0.55, handSize: 1.3, footSize: 1.35, muscle: 0.8 },
   face: { ...ORC_FACE, earSize: 1.9, tusks: 0.75 },
-  skin: { color: 0x766148, color2: 0x56402c, blotch: devNum('blotch', 0.9), blemish: devNum('blemish', 0.6), scars: 3, warts: 0.3, wrinkles: 0.7, lips: 0x5a3c34, brows: 0x1a1612, surface: 'skin_orc', scatter: 0x9a5a40 },
+  skin: { color: 0x726848, color2: 0x524632, blotch: devNum('blotch', 0.9), blemish: devNum('blemish', 0.6), scars: 3, warts: 0.3, wrinkles: 0.7, lips: 0x5a3c34, brows: 0x1a1612, surface: 'skin_orc', scatter: 0x9a5a40 },
   eyes: { color: 0xd19a2a, glow: 0.25, sclera: 0x8a7a58 },
   hair: { style: 'stringy', color: 0x1d1612, density: 0 },
   beard: null,
