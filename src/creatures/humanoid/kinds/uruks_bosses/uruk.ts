@@ -18,6 +18,7 @@ import {
   type GearFn, type Projector, lathe, handStrips, frameAt, snapPoint, type SnapMode, scaleHeldWeapon, strapSnapped,
 } from './common';
 import { bareTorso } from './body';
+import { URUK_SHEET_PAL as SP, SHEET_IRON, SHEET_LEATHER, greaves, greaveLames, beltAndFaulds, chestLames, berserkerBelt, legWraps } from './uruk_sheet';
 
 export const URUK_PAL = {
   skin: 0x3d3027,
@@ -60,7 +61,8 @@ export interface UrukLook {
 }
 
 const LOOKS: UrukLook[] = [
-  { cuirass: 'plate', pauldrons: 'r', helm: 'dome', hand: 'helm', nasal: true, cheeks: true, vambraces: true, wraps: false, scar: false, earring: false, gorget: false, trophy: false, spikes: 0 },
+  // bucket 0 is the sheet's Uruk: plate cuirass, layered pauldrons on both shoulders, open dome helm with the white hand
+  { cuirass: 'plate', pauldrons: 'both', helm: 'dome', hand: 'helm', nasal: false, cheeks: true, vambraces: true, wraps: false, scar: false, earring: false, gorget: false, trophy: false, spikes: 0 },
   { cuirass: 'studded', pauldrons: 'both', helm: 'ridge', hand: 'helm', nasal: false, cheeks: true, vambraces: false, wraps: true, scar: true, earring: true, gorget: false, trophy: false, spikes: 3 },
   { cuirass: 'plate', pauldrons: 'l', helm: 'cap', hand: 'chest', nasal: true, cheeks: false, vambraces: true, wraps: false, scar: true, earring: false, gorget: true, trophy: true, spikes: 0 },
   { cuirass: 'mail', pauldrons: 'l', helm: 'none', hand: 'chest', nasal: true, cheeks: true, vambraces: true, wraps: true, scar: true, earring: true, gorget: true, trophy: false, spikes: 0 },
@@ -82,7 +84,8 @@ export interface BerserkLook {
   scar: boolean;
 }
 const BERSERK_LOOKS: BerserkLook[] = [
-  { spikes: 9, crest: 1, shoulder: 'l', bandolier: 1, prints: [0, 1, 2, 3, 4, 5], flip: false, mask: 'plate', cheekSpikes: true, scar: true },
+  // bucket 0 is the sheet's berserker: bare shoulders, no bandolier, handprints on both shoulders, chest and back
+  { spikes: 9, crest: 1, shoulder: 'none', bandolier: 0, prints: [0, 1, 3, 4, 5], flip: false, mask: 'plate', cheekSpikes: false, scar: false },
   { spikes: 7, crest: 1.35, shoulder: 'r', bandolier: -1, prints: [0, 2, 3, 4], flip: true, mask: 'plate', cheekSpikes: false, scar: false },
   { spikes: 11, crest: 0.8, shoulder: 'both', bandolier: 0, prints: [0, 1, 2, 3, 5], flip: false, mask: 'cage', cheekSpikes: true, scar: true },
   { spikes: 5, crest: 1.6, shoulder: 'none', bandolier: 1, prints: [1, 2, 3, 4, 5], flip: true, mask: 'cage', cheekSpikes: false, scar: false },
@@ -96,7 +99,7 @@ export function berserkLook(bucket: number): BerserkLook {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** layered shoulder plate (spaulder). side +1 = left (+X). */
-export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lames: number; spikes: number; scale?: number; color?: number; rusty?: boolean; reach?: number; half?: number; ry?: number }) {
+export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lames: number; spikes: number; scale?: number; color?: number; rusty?: boolean; reach?: number; half?: number; ry?: number; mat?: typeof IRON }) {
   const { P } = ctx;
   const sc = P.s;
   const g = Math.sqrt(P.build.bulk);
@@ -106,7 +109,7 @@ export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lame
   L.x *= side;
   const top = new THREE.Vector3(0.6 * side, 0.8, 0.05).normalize();
   const k0 = o.scale ?? 1;
-  const mat = o.rusty ? IRON_RUSTY : IRON;
+  const mat = o.mat ?? (o.rusty ? IRON_RUSTY : IRON);
   for (let k = 0; k < o.lames; k++) {
     const axis = top.clone().lerp(L, k * 0.22).normalize();
     const rot = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), axis);
@@ -129,20 +132,20 @@ export function pauldron(ctx: KindContext, gear: GearFn, side: 1 | -1, o: { lame
     const a = ((i + 0.5) / o.spikes) * Math.PI * 2;
     const d = V(Math.sin(a) * 1.05, 0.7, Math.cos(a) * 1.1).normalize().applyQuaternion(rot);
     const p = c0.clone().add(V(d.x * R0 * 0.98, d.y * R0 * 0.98, d.z * R0 * 0.98));
-    gear(spike(0.013 * sc, 0.07 * sc, 5), { bone, color: URUK_PAL.iron2, mat: IRON, matrix: placeAlong(p, d, V(0, 0, 1)), small: true });
+    gear(spike(0.013 * sc, 0.07 * sc, 5), { bone, color: URUK_PAL.iron2, mat, matrix: placeAlong(p, d, V(0, 0, 1)), small: true });
   }
 }
 
 /** SDF part of the torso armour; returns the lower edge height */
-export function cuirassSdf(ctx: KindContext, look: Pick<UrukLook, 'cuirass'>, parts: Part[], o: { rusty?: boolean; color?: number; lats?: number } = {}) {
+export function cuirassSdf(ctx: KindContext, look: Pick<UrukLook, 'cuirass'>, parts: Part[], o: { rusty?: boolean; color?: number; lats?: number; mat?: typeof IRON; raise?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const j = P.j;
   const hipY = j.thigh_l[1];
-  const botY = hipY + 0.14 * sc;
+  const botY = hipY + (0.14 + (o.raise ?? 0)) * sc;
   const kind = look.cuirass;
   const plate = kind === 'plate';
-  const mat = plate ? (o.rusty ? IRON_RUSTY : IRON) : kind === 'mail' ? surface('mail', { rough: 0.5 }) : LEATHER;
+  const mat = plate ? (o.mat ?? (o.rusty ? IRON_RUSTY : IRON)) : kind === 'mail' ? surface('mail', { rough: 0.5 }) : LEATHER;
   const color = o.color ?? (plate ? URUK_PAL.iron : kind === 'mail' ? 0x35353a : URUK_PAL.leather);
   const infl = (plate ? 0.021 : kind === 'mail' ? 0.014 : 0.018) * sc;
   s.group('union', 0.003 * sc, () => {
@@ -171,14 +174,15 @@ export function cuirassSdf(ctx: KindContext, look: Pick<UrukLook, 'cuirass'>, pa
 }
 
 /** rigid parts of the torso armour (needs a projector for the finished sculpt) */
-export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, look: Pick<UrukLook, 'cuirass'>, botY: number) {
+export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, look: Pick<UrukLook, 'cuirass'>, botY: number, o: { noBelly?: boolean; mat?: typeof IRON } = {}) {
   const { P } = ctx;
   const sc = P.s;
   const j = P.j;
   const plate = look.cuirass === 'plate';
   const hipY = j.thigh_l[1];
   // belly lames (overlapping elliptical bands from the cuirass edge down to the belt)
-  const n = plate ? 3 : look.cuirass === 'mail' ? 2 : 0;
+  const n = o.noBelly ? 0 : plate ? 3 : look.cuirass === 'mail' ? 2 : 0;
+  const IRON_M = o.mat ?? IRON;
   const hBand = 0.058 * sc;
   for (let k = 0; k < n; k++) {
     const yTop = botY + 0.012 * sc - k * 0.045 * sc;
@@ -187,7 +191,7 @@ export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, loo
     const rb = ringRadii(proj, yBot);
     const m = new THREE.Matrix4().makeTranslation(0, (yTop + yBot) / 2, 0);
     const g = ellipticalBand(rt.rx + 0.012 * sc, (rt.zf + rt.zb) / 2 + 0.012 * sc, rb.rx + 0.022 * sc, (rb.zf + rb.zb) / 2 + 0.022 * sc, hBand, 0.0065 * sc, 22, 0, Math.PI * 2, (rt.zf - rt.zb) / 2);
-    gear(g, { bone: 'spine', color: URUK_PAL.iron, mat: IRON, matrix: m, ao: 0.85 });
+    gear(g, { bone: 'spine', color: URUK_PAL.iron, mat: IRON_M, matrix: m, ao: 0.85 });
   }
   void hipY;
   // front ridge
@@ -203,7 +207,7 @@ export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, loo
       pts.push(p);
       nrm.push(nn.clone());
     }
-    if (pts.length > 3) gear(ribbon(pts, nrm, 0.03 * sc, 0.011 * sc, 1, { outerOnly: true, noInner: true }), { bone: 'chest', color: URUK_PAL.iron2, mat: IRON, small: true });
+    if (pts.length > 3) gear(ribbon(pts, nrm, 0.03 * sc, 0.011 * sc, 1, { outerOnly: true, noInner: true }), { bone: 'chest', color: URUK_PAL.iron2, mat: IRON_M, small: true });
   }
   // shoulder straps (front plate → back plate over the trapezius)
   for (const sx of [1, -1]) {
@@ -234,7 +238,7 @@ export function cuirassGear(ctx: KindContext, gear: GearFn, proj: Projector, loo
         const p = V(sx * (0.095 - r * 0.012) * sc * P.build.shoulders, j.upperarm_l[1] - (0.045 + r * 0.075) * sc, 0.2 * sc);
         const nn = V();
         if (!proj.project(p, nn)) continue;
-        gear(rivet(0.0085 * sc, 5), { bone: 'chest', color: URUK_PAL.ironLt, mat: IRON, matrix: placeAlong(p, nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+        gear(rivet(0.0085 * sc, 5), { bone: 'chest', color: URUK_PAL.ironLt, mat: IRON_M, matrix: placeAlong(p, nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
       }
   }
 }
@@ -245,18 +249,18 @@ function limbCut(s: Sculpt, L: THREE.Vector3, at: [number, number, number], keep
 }
 
 /** forearm guards (plate / leather) or bandage wraps */
-export function forearms(ctx: KindContext, parts: Part[], kind: 'plate' | 'wraps' | 'leather', grow = 1) {
+export function forearms(ctx: KindContext, parts: Part[], kind: 'plate' | 'wraps' | 'leather', grow = 1, o: { mat?: typeof IRON; color?: number; from?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const L = P.hand.l.L;
   const j = P.j;
   const plate = kind === 'plate';
-  const from = kind === 'plate' ? 0.2 : kind === 'leather' ? 0.12 : 0.4;
+  const from = o.from ?? (kind === 'plate' ? 0.2 : kind === 'leather' ? 0.12 : 0.4);
   s.mirrored(() =>
     s.group('union', 0.002 * sc, () => {
       emitParts(s, parts, ['forearm'], {
-        color: plate ? URUK_PAL.iron : kind === 'leather' ? 0x1e1712 : 0x4a4236,
-        mat: plate ? IRON : kind === 'leather' ? LEATHER : surface('rags', { rough: 0.95 }),
+        color: o.color ?? (plate ? URUK_PAL.iron : kind === 'leather' ? 0x1e1712 : 0x4a4236),
+        mat: plate ? o.mat ?? IRON : kind === 'leather' ? LEATHER : surface('rags', { rough: 0.95 }),
         inflate: (plate ? 0.011 : kind === 'leather' ? 0.01 : 0.007) * sc + (grow - 1) * 0.045 * sc * P.build.bulk,
         k: 0.014 * sc,
         oneSide: true,
@@ -268,12 +272,12 @@ export function forearms(ctx: KindContext, parts: Part[], kind: 'plate' | 'wraps
   );
 }
 
-export function gorget(ctx: KindContext, parts: Part[]) {
+export function gorget(ctx: KindContext, parts: Part[], o: { mat?: typeof IRON; color?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const j = P.j;
   s.group('union', 0.004 * sc, () => {
-    emitParts(s, parts, ['neck', 'trap'], { color: URUK_PAL.iron, mat: IRON, inflate: 0.016 * sc, k: 0.02 * sc });
+    emitParts(s, parts, ['neck', 'trap'], { color: o.color ?? URUK_PAL.iron, mat: o.mat ?? IRON, inflate: 0.016 * sc, k: 0.02 * sc });
     s.plane([0, 1, 0], j.neck[1] + 0.075 * sc, { op: 'intersect', k: 0.006 * sc });
     s.plane([0, -1, 0], -(j.neck[1] - 0.022 * sc), { op: 'intersect', k: 0.006 * sc });
   });
@@ -292,12 +296,13 @@ export interface HelmetInfo {
 }
 
 /** Isengard helmet. Dome sized to enclose the scalp hair, flared neck guard, comb ridge, nasal bar, cheek plates. */
-export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['helm']; nasal: boolean; cheeks: boolean; spikes?: number; color?: number; crest?: number; brow?: boolean }): HelmetInfo {
+export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['helm']; nasal: boolean; cheeks: boolean; spikes?: number; color?: number; crest?: number; brow?: boolean; mat?: typeof IRON; cheekDrop?: number; rivets?: number; domeSeg?: [number, number] }): HelmetInfo {
   const { P } = ctx;
   const u = P.headH;
   const sc = P.s;
   const H = (x: number, y: number, z: number) => v3(P.h(x, y, z));
   const iron = o.color ?? URUK_PAL.iron;
+  const IM = o.mat ?? IRON;
   const C = H(0, 0.045, -0.05);
   const R: [number, number, number] = [0.405 * u, 0.48 * u, 0.505 * u];
   const cyHead = 0.045;
@@ -317,7 +322,7 @@ export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['hel
     k += 0.1 * smooth(2.2, 3.0, t) * smooth(0, -0.4, e);
     return k;
   };
-  const shell = shellPatch(ellipsoidFn(C, R, [-Math.PI, Math.PI], [elOf, Math.PI / 2 - 1e-3], { radial }), 20, 5, 0.011 * sc, {
+  const shell = shellPatch(ellipsoidFn(C, R, [-Math.PI, Math.PI], [elOf, Math.PI / 2 - 1e-3], { radial }), o.domeSeg?.[0] ?? 20, o.domeSeg?.[1] ?? 5, 0.011 * sc, {
     closedU: true,
     noInner: true,
     thickFn: (_u2, v) => 1 + 0.9 * (1 - smooth(0, 0.12, v)),
@@ -327,7 +332,7 @@ export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['hel
     const rel = (p.y - C.y) / u;
     c.multiplyScalar(1 + 0.6 * smooth(0.0, -0.25, rel));
   };
-  gear(shell, { bone: 'head', color: iron, mat: IRON, ao: 0.9, colorFn: wearFn });
+  gear(shell, { bone: 'head', color: iron, mat: IM, ao: 0.9, colorFn: wearFn });
 
   if (o.style === 'dome' || o.style === 'ridge') {
     const pts: THREE.Vector3[] = [];
@@ -338,26 +343,27 @@ export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['hel
       pts.push(V(0, Math.sin(e) * R[1] * 1.03, Math.cos(e) * R[2] * 1.03).add(C));
       nrm.push(V(0, Math.sin(e) / R[1], Math.cos(e) / R[2]).normalize());
     }
-    gear(ribbon(pts, nrm, 0.05 * u * (o.style === 'ridge' ? 1.3 : 1), (o.style === 'ridge' ? 0.07 : 0.035) * u, 1, { outerOnly: true, noInner: true }), { bone: 'head', color: URUK_PAL.iron2, mat: IRON, ao: 0.9 });
+    gear(ribbon(pts, nrm, 0.05 * u * (o.style === 'ridge' ? 1.3 : 1), (o.style === 'ridge' ? 0.07 : 0.035) * u, 1, { outerOnly: true, noInner: true }), { bone: 'head', color: URUK_PAL.iron2, mat: IM, ao: 0.9 });
   }
-  for (let i = 0; i < 9; i++) {
-    const a = lerp(-2.6, 2.6, i / 8);
+  const nRiv = o.rivets ?? 9;
+  for (let i = 0; i < nRiv; i++) {
+    const a = lerp(-2.6, 2.6, i / Math.max(1, nRiv - 1));
     const e = elOf(a) + 0.12;
     const d = V(Math.cos(e) * Math.sin(a), Math.sin(e), Math.cos(e) * Math.cos(a));
     const k = radial(a, e);
     const p = V(d.x * R[0] * k, d.y * R[1] * k, d.z * R[2] * k).add(C);
     const nn = V(d.x / R[0], d.y / R[1], d.z / R[2]).normalize();
-    gear(rivet(0.0075 * sc, 5), { bone: 'head', color: URUK_PAL.ironLt, mat: IRON, matrix: placeAlong(p.addScaledVector(nn, 0.005 * sc), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+    gear(rivet(0.0075 * sc, 5), { bone: 'head', color: URUK_PAL.ironLt, mat: IM, matrix: placeAlong(p.addScaledVector(nn, 0.005 * sc), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
   }
   if (o.nasal) {
     const pts = [H(0, 0.04, 0.458), H(0, -0.07, 0.505), H(0, -0.2, 0.545)];
     const nrm = [V(0, 0.15, 1).normalize(), V(0, 0, 1), V(0, -0.2, 1).normalize()];
-    gear(ribbon(pts, nrm, 0.05 * u, 0.012 * sc, 1, { outerOnly: true }), { bone: 'head', color: iron, mat: IRON, small: true });
+    gear(ribbon(pts, nrm, 0.05 * u, 0.012 * sc, 1, { outerOnly: true }), { bone: 'head', color: iron, mat: IM, small: true });
   }
   if (o.cheeks) {
     for (const sx of [1, -1]) {
-      const fn = ellipsoidFn(H(0, -0.16, 0.03), [0.41 * u, 0.5 * u, 0.45 * u], sx > 0 ? [0.95, 1.5] : [-1.5, -0.95], [-0.5, 0.1]);
-      gear(shellPatch(fn, 5, 5, 0.008 * sc, { noInner: true }), { bone: 'head', color: iron, mat: IRON, small: true, ao: 0.9 });
+      const fn = ellipsoidFn(H(0, -0.16, 0.03), [0.41 * u, 0.5 * u, 0.45 * u], sx > 0 ? [0.95, 1.5] : [-1.5, -0.95], [-0.5 - (o.cheekDrop ?? 0), 0.1]);
+      gear(shellPatch(fn, 5, 5 + Math.round((o.cheekDrop ?? 0) * 6), 0.008 * sc, { noInner: true }), { bone: 'head', color: iron, mat: IM, small: true, ao: 0.9 });
     }
   }
   const spikes = o.spikes ?? 0;
@@ -367,13 +373,14 @@ export function helmet(ctx: KindContext, gear: GearFn, o: { style: UrukLook['hel
     const p = V(0, Math.sin(e) * R[1], Math.cos(e) * R[2]).add(C);
     const nn = V(0, Math.sin(e) / R[1], Math.cos(e) / R[2]).normalize();
     const hgt = (0.16 + 0.14 * Math.sin(t * Math.PI)) * u * (o.crest ?? 1);
-    gear(spike(0.034 * u, hgt, 6), { bone: 'head', color: URUK_PAL.iron2, mat: IRON, matrix: placeAlong(p, nn, V(0, 0, 1)), small: true });
+    gear(spike(0.034 * u, hgt, 6), { bone: 'head', color: URUK_PAL.iron2, mat: IM, matrix: placeAlong(p, nn, V(0, 0, 1)), small: true });
   }
   return { C, R, rimY, elOf, radial };
 }
 
 /** berserker face mask: a riveted iron faceplate with eye slits, a vent grille and a movable chin plate */
-export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' | 'cage'; cheekSpikes?: boolean; color?: number } = {}) {
+export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' | 'cage'; cheekSpikes?: boolean; color?: number; mat?: typeof IRON } = {}) {
+  const IM = o.mat ?? IRON;
   const color = o.color ?? URUK_PAL.iron;
   const { P } = ctx;
   const u = P.headH;
@@ -390,12 +397,12 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
     return false;
   };
   if ((o.style ?? 'plate') === 'plate') {
-    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 18, 12, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
-    gear(upper, { bone: 'head', color, mat: IRON, ao: 0.85 });
+    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 14, 9, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
+    gear(upper, { bone: 'head', color, mat: IM, ao: 0.85 });
   } else {
     // cage: a brow band over the eyes and vertical bars down the face
     const brow = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [0.18, 0.5]), 14, 2, 0.012 * sc, { noInner: true });
-    gear(brow, { bone: 'head', color, mat: IRON, ao: 0.85 });
+    gear(brow, { bone: 'head', color, mat: IM, ao: 0.85 });
     for (let k = -2; k <= 2; k++) {
       const az = k * 0.3;
       const pts: THREE.Vector3[] = [];
@@ -406,14 +413,14 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
         pts.push(V(d.x * R[0], d.y * R[1], d.z * R[2]).add(cc));
         nrm.push(V(d.x / R[0], d.y / R[1], d.z / R[2]).normalize());
       }
-      gear(ribbon(pts, nrm, 0.04 * u, 0.012 * sc, 1, { outerOnly: true, noInner: true }, 5), { bone: 'head', color, mat: IRON, ao: 0.85 });
+      gear(ribbon(pts, nrm, 0.04 * u, 0.012 * sc, 1, { outerOnly: true, noInner: true }, 5), { bone: 'head', color, mat: IM, ao: 0.85 });
     }
   }
   const lower = shellPatch(ellipsoidFn(cc, R, [-0.8, 0.8], [-0.82, -0.52], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 14, 4, 0.011 * sc, { noInner: true });
-  gear(lower, { bone: 'jaw', color, mat: IRON, ao: 0.85 });
+  gear(lower, { bone: 'jaw', color, mat: IM, ao: 0.85 });
   // central nose ridge and cheek rivets
   const pts = [H(0, 0.02, 0.57), H(0, -0.12, 0.62), H(0, -0.28, 0.63)];
-  gear(ribbon(pts, [V(0, 0.2, 1).normalize(), V(0, 0, 1), V(0, -0.15, 1).normalize()], 0.06 * u, 0.026 * sc, 1, { outerOnly: true }), { bone: 'head', color: URUK_PAL.iron2, mat: IRON, small: true });
+  gear(ribbon(pts, [V(0, 0.2, 1).normalize(), V(0, 0, 1), V(0, -0.15, 1).normalize()], 0.06 * u, 0.026 * sc, 1, { outerOnly: true }), { bone: 'head', color: URUK_PAL.iron2, mat: IM, small: true });
   for (const sx of [1, -1])
     for (let k = 0; k < 3; k++) {
       const a = sx * (0.6 + k * 0.12);
@@ -421,7 +428,7 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
       const d = V(Math.cos(el) * Math.sin(a), Math.sin(el), Math.cos(el) * Math.cos(a));
       const p = V(d.x * R[0], d.y * R[1], d.z * R[2]).add(cc);
       const nn = V(d.x / R[0], d.y / R[1], d.z / R[2]).normalize();
-      gear(rivet(0.0085 * sc, 4), { bone: 'head', color: URUK_PAL.ironLt, mat: IRON, matrix: placeAlong(p.addScaledVector(nn, 0.005 * sc), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+      gear(rivet(0.0085 * sc, 4), { bone: 'head', color: URUK_PAL.ironLt, mat: IM, matrix: placeAlong(p.addScaledVector(nn, 0.005 * sc), nn, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
     }
   // cheek spikes
   for (const sx of o.cheekSpikes === false ? [] : [1, -1]) {
@@ -429,7 +436,7 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
     const el = -0.35;
     const d = V(Math.cos(el) * Math.sin(a), Math.sin(el), Math.cos(el) * Math.cos(a));
     const p = V(d.x * R[0], d.y * R[1], d.z * R[2]).add(cc);
-    gear(spike(0.022 * u, 0.12 * u, 5), { bone: 'head', color: URUK_PAL.iron2, mat: IRON, matrix: placeAlong(p, V(sx * 1, -0.1, 0.4), V(0, 0, 1)), small: true });
+    gear(spike(0.022 * u, 0.12 * u, 5), { bone: 'head', color: URUK_PAL.iron2, mat: IM, matrix: placeAlong(p, V(sx * 1, -0.1, 0.4), V(0, 0, 1)), small: true });
   }
 }
 
@@ -496,14 +503,27 @@ function urukExtras(berserker: boolean) {
     const u = P.headH;
     const box = { min: [-0.7, 0, -0.5] as [number, number, number], max: [0.7, P.H + 0.2, 0.6] as [number, number, number] };
 
-    brawnBody(ctx, berserker ? { traps: 1.15, lats: 1.2, delts: 1.15, forearm: 1.12, thigh: 1.2, calf: 1.12, biceps: 1.1 } : { traps: 1.05, lats: 1.0, delts: 1.0, forearm: 1.05, thigh: 1.2, calf: 1.12 });
+    brawnBody(ctx, berserker ? { traps: 1.2, lats: 1.25, delts: 1.2, forearm: 1.12, thigh: 1.3, calf: 1.22, biceps: 1.15 } : { traps: 1.08, lats: 1.05, delts: 1.05, forearm: 1.05, thigh: 1.3, calf: 1.18 });
 
+    // sheet landmarks (metres above the sole at the sheet's scale): belt ~1.19 (uruk) / ~1.27 (berserker)
+    const hipY = j.thigh_l[1];
+    const beltY = hipY + (berserker ? 0.19 : 0.125) * sc;
     let botY = 0;
     const doCuirass = !berserker && armor >= 0.25 && look.cuirass !== 'none';
-    if (doCuirass) botY = cuirassSdf(ctx, look, parts, { lats: 1.0 }).botY;
-    if (!berserker && look.gorget && armor >= 0.5) gorget(ctx, parts);
-    if (!berserker && armor >= 0.25 && look.vambraces) forearms(ctx, parts, 'plate', 1.05);
-    else if (look.wraps || berserker) forearms(ctx, parts, 'wraps', berserker ? 1.12 : 1.05);
+    if (doCuirass) botY = cuirassSdf(ctx, look, parts, { lats: 1.0, mat: SHEET_IRON, color: look.cuirass === 'plate' ? SP.iron : look.cuirass === 'mail' ? SP.mail : SP.strap, raise: 0.015 }).botY;
+    if (!berserker && look.gorget && armor >= 0.5) gorget(ctx, parts, { mat: SHEET_IRON, color: SP.iron });
+    if (!berserker && armor >= 0.25 && look.vambraces) forearms(ctx, parts, 'plate', 1.12, { mat: SHEET_IRON, color: SP.iron, from: 0.08 });
+    else if (!berserker && look.wraps) forearms(ctx, parts, 'wraps', 1.05);
+    // greaves over the boots (sheet: plated shins and knee cops)
+    if (!berserker && armor >= 0.25) greaves(ctx, parts);
+    // the berserker's kilt hangs from the high belt: cloth wrapped round the waist up to the belt
+    if (berserker) {
+      s.group('union', 0.004 * sc, () => {
+        emitParts(s, parts, ['pelvis', 'glutes', 'waist', 'belly'], { color: SP.bkilt, color2: SP.bkilt2, colorNoise: 0.5, colorFreq: 30 / sc, mat: surface('rags', { rough: 0.95 }), inflate: 0.014 * sc + 0.02 * sc * P.build.bulk, k: 0.03 * sc });
+        s.plane([0, 1, 0], beltY + 0.035 * sc, { op: 'intersect', k: 0.004 * sc });
+        s.plane([0, -1, 0], -(hipY - 0.02 * sc), { op: 'intersect', k: 0.004 * sc });
+      });
+    }
 
     // bare chests get defined abdominals and ribs
     if (berserker || !doCuirass) {
@@ -519,18 +539,29 @@ function urukExtras(berserker: boolean) {
 
     // ── rigid gear (needs the finished sculpt for placement) ──
     const proj = makeProjector(s, box);
-    if (proj && doCuirass) cuirassGear(ctx, gear, proj, look, botY);
+    if (proj && doCuirass) {
+      const plate = look.cuirass === 'plate';
+      cuirassGear(ctx, gear, proj, look, botY, { noBelly: true, mat: SHEET_IRON });
+      if (plate) chestLames(ctx, gear, proj, botY);
+    }
+    if (proj && !berserker && armor >= 0.25) {
+      beltAndFaulds(ctx, gear, proj, { beltY, lames: 2 });
+      greaveLames(ctx, gear, proj, { n: 2 });
+    }
 
     if (armor >= 0.5 && !berserker) {
       const pa = look.pauldrons;
-      if (pa === 'r' || pa === 'both') pauldron(ctx, gear, -1, { lames: 3, spikes: look.spikes, scale: 1.05 });
-      if (pa === 'l' || pa === 'both') pauldron(ctx, gear, 1, { lames: pa === 'both' ? 2 : 3, spikes: 0, scale: pa === 'both' ? 0.92 : 1.05 });
+      const po = { color: SP.iron, mat: SHEET_IRON, reach: 1.25 };
+      if (pa === 'r' || pa === 'both') pauldron(ctx, gear, -1, { lames: 3, spikes: look.spikes, scale: 1.22, ...po });
+      if (pa === 'l' || pa === 'both') pauldron(ctx, gear, 1, { lames: 3, spikes: 0, scale: pa === 'both' ? 1.18 : 1.1, ...po });
     }
 
     if (berserker && proj) {
+      berserkerBelt(ctx, gear, proj, beltY);
+      legWraps(ctx, gear, proj);
       if (armor >= 0.25) {
-        if (bl.shoulder === 'l' || bl.shoulder === 'both') pauldron(ctx, gear, 1, { lames: 2, spikes: 5, scale: 0.9, rusty: true });
-        if (bl.shoulder === 'r' || bl.shoulder === 'both') pauldron(ctx, gear, -1, { lames: 2, spikes: 5, scale: 0.9, rusty: true });
+        if (bl.shoulder === 'l' || bl.shoulder === 'both') pauldron(ctx, gear, 1, { lames: 2, spikes: 5, scale: 0.9, rusty: true, mat: SHEET_IRON, color: SP.iron });
+        if (bl.shoulder === 'r' || bl.shoulder === 'both') pauldron(ctx, gear, -1, { lames: 2, spikes: 5, scale: 0.9, rusty: true, mat: SHEET_IRON, color: SP.iron });
         // leather bandolier across the chest
         if (bl.bandolier !== 0) {
           const sx = bl.bandolier;
@@ -545,7 +576,7 @@ function urukExtras(berserker: boolean) {
             ],
             0.042 * sc,
             0.009 * sc,
-            { bone: 'chest', color: 0x17110d, mat: LEATHER },
+            { bone: 'chest', color: SP.strap, mat: SHEET_LEATHER },
           );
         }
       }
@@ -557,12 +588,12 @@ function urukExtras(berserker: boolean) {
         { pos: [0.1 * f * sc, dy - 0.03 * sc, 0.3 * sc], size: 0.18 * sc, rot: -0.35 * f, bone: 'chest' },
         { pos: [0.015 * sc, j.chest[1] - 0.075 * sc, 0.3 * sc], size: 0.2 * sc, rot: 0.1 * f, bone: 'spine' },
         { pos: [0.0, dy - 0.1 * sc, -0.3 * sc], mode: 'b', size: 0.26 * sc, rot: -0.2 * f, bone: 'chest' },
-        { pos: [P.shoulderX * 1.05 + 0.18 * sc, dy - 0.1 * sc, 0.0], mode: 'l', up: [0, 1, 0], size: 0.15 * sc, rot: (Math.PI / 2) * f, bone: 'upperarm_l' },
-        { pos: [-(P.shoulderX * 1.05 + 0.18 * sc), dy - 0.12 * sc, 0.0], mode: 'r', up: [0, 1, 0], size: 0.15 * sc, rot: (-Math.PI / 2) * f, bone: 'upperarm_r' },
+        { pos: [P.shoulderX * 1.0, dy + 0.0 * sc, 0.12 * sc], mode: 'f', up: [0, 1, 0], size: 0.16 * sc, rot: -0.3 * f, bone: 'upperarm_l' },
+        { pos: [-(P.shoulderX * 1.0), dy + 0.0 * sc, 0.12 * sc], mode: 'f', up: [0, 1, 0], size: 0.16 * sc, rot: 0.3 * f, bone: 'upperarm_r' },
       ];
       bl.prints.forEach((pi, i) => printHand(ctx, gear, proj, { ...prints[pi], seed: i + 1 + bucket * 5, wrist: true }));
       // huge two-handed sword
-      scaleHeldWeapon(ctx, 'hand_r', ['sword'], [1.9, 1.7, 1.6]);
+      scaleHeldWeapon(ctx, 'hand_r', ['sword'], [1.9, 1.25, 1.9]);
     }
 
     if (ctx.helmet && (berserker || look.helm !== 'none')) {
@@ -571,10 +602,15 @@ function urukExtras(berserker: boolean) {
         style,
         nasal: !berserker && look.nasal,
         cheeks: !berserker && look.cheeks,
+        cheekDrop: 0.4,
+        rivets: 6,
         spikes: berserker ? bl.spikes : style === 'cap' ? 5 : 0,
         crest: berserker ? bl.crest : 1,
+        color: berserker ? SP.bhelm : SP.iron,
+        mat: SHEET_IRON,
+        ...(berserker ? { rivets: 5, domeSeg: [16, 5] as [number, number] } : {}),
       });
-      if (berserker) muzzleMask(ctx, gear, { style: bl.mask, cheekSpikes: bl.cheekSpikes });
+      if (berserker) muzzleMask(ctx, gear, { style: bl.mask, cheekSpikes: bl.cheekSpikes, color: SP.bhelm, mat: SHEET_IRON });
       if (look.hand === 'helm' || berserker) helmetHand(ctx, gear, h, berserker ? 1.1 : 1);
     }
     if (proj && look.hand === 'chest' && doCuirass) {
@@ -613,27 +649,35 @@ const URUK_FACE = {
   eyeSpacing: 1.0,
   eyeTilt: -0.07,
   eyeOpen: 0.72,
-  tusks: 0.25,
+  tusks: 0.42, // sheet face: two prominent lower fangs
   underbite: 0.5,
   foreheadSlope: 0.5,
   asym: 0.3,
   cranium: 0.94,
 };
 
+const SHEET_TROUSERS = surface('leather_worn', { rough: 0.8 });
+const SHEET_KILT = surface('rags', { rough: 0.95 });
+const SHEET_BOOT = surface('leather_worn', { rough: 0.78 });
+
 export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
   uruk: {
     label: 'Uruk-hai',
-    height: 2.0,
-    build: { shoulders: 1.3, hips: 1.02, bulk: 1.12, chest: 1.12, belly: 0.0, armLength: 1.07, legLength: 0.98, headSize: 0.98, neck: 0.8, neckThick: 1.4, hunch: 0.14, handSize: 1.2, footSize: 1.12, muscle: 0.95 },
+    // sheet: 2.0 m anatomy + helmet = 2.14 m overall; the helmet sits inside the head's height here
+    height: 2.12,
+    build: { shoulders: 1.36, hips: 1.04, bulk: 1.16, chest: 1.14, belly: 0.0, armLength: 1.07, legLength: 0.98, headSize: 0.98, neck: 0.8, neckThick: 1.4, hunch: 0.14, handSize: 1.2, footSize: 1.12, muscle: 0.95 },
     face: URUK_FACE,
-    skin: { color: URUK_PAL.skin, color2: URUK_PAL.skin2, blotch: 0.5, blemish: 0.45, scars: 2, warts: 0.1, wrinkles: 0.5, lips: URUK_PAL.lips, brows: 0x120e0b, surface: 'skin_brute', scatter: URUK_PAL.scatter },
-    eyes: { color: URUK_PAL.eyes, glow: 0.35, sclera: 0xb8a878 },
+    skin: { color: SP.skin, color2: SP.skin2, blotch: 0.5, blemish: 0.45, scars: 2, warts: 0.1, wrinkles: 0.5, lips: SP.lips, brows: 0x120e0b, surface: 'skin_brute', scatter: SP.scatter },
+    eyes: { color: SP.eyes, glow: 0.35, sclera: 0xb8a878 },
     hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 0.8 },
     outfit: [
-      { type: 'trousers', color: URUK_PAL.cloth, mat: 'leather_worn' },
-      { type: 'boots', color: 0x1a1613, color2: 0x120f0d, length: 0.9 },
-      { type: 'belt', color: 0x17120f },
-      { type: 'loincloth', color: 0x211913, mat: 'leather_worn', length: 0.55 },
+      { type: 'trousers', color: SP.trousers, mat: SHEET_TROUSERS },
+      { type: 'boots', color: SP.boots, color2: SP.boots2, mat: SHEET_BOOT, length: 0.92 },
+      // belt raised to the sheet's ~1.19 m; the plate straps are sculpted over it in extras
+      { type: 'belt', color: SP.belt, offset: 0.055 },
+      // knee-length ragged black kilt with hanging leather strips over it (sheet details: cloth/leather)
+      // front and back cloth panels only (the hip lames cover the sides), leather strips hang over them
+      { type: 'loincloth', color: SP.kilt, color2: SP.kilt2, mat: SHEET_KILT, length: 0.88, thickness: 0.018, strips: { count: 5, color: SP.strip, color2: SP.strip2, mat: 'leather_worn', width: 0.05, length: 0.8, phase: 0.25 } },
     ],
     armor: [],
     weapons: { right: 'sword', left: 'shield', style: 'uruk' },
@@ -641,30 +685,33 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.7 },
     anim: { hunch: 0.14, swagger: 0.4, aggression: 0.8, stance: 1.15, armSwing: 1.0, cadence: 1.0 },
     variation: { height: 0.025, bulk: 0.06, skin: 0.12 },
-    detail: { faceRes: 0, res: 0.06, headRes: 0.0175 },
+    detail: { faceRes: 0, res: 0.078, headRes: 0.0175 },
     extras: urukExtras(false),
   },
   berserker: {
     label: 'Uruk berserker',
-    height: 2.1,
-    build: { shoulders: 1.36, hips: 1.02, bulk: 1.22, chest: 1.15, belly: 0.0, armLength: 1.08, legLength: 0.97, headSize: 0.98, neck: 0.78, neckThick: 1.5, hunch: 0.16, handSize: 1.25, footSize: 1.15, muscle: 1.0 },
+    // sheet: 2.10 m anatomy + spiked helmet = 2.25 m overall
+    height: 2.18,
+    build: { shoulders: 1.4, hips: 1.02, bulk: 1.24, chest: 1.17, belly: 0.0, armLength: 1.08, legLength: 0.97, headSize: 0.98, neck: 0.78, neckThick: 1.5, hunch: 0.16, handSize: 1.25, footSize: 1.15, muscle: 1.0 },
     face: URUK_FACE,
-    skin: { color: 0x3c2a21, color2: 0x271b15, blotch: 0.5, blemish: 0.45, scars: 3, warts: 0.1, wrinkles: 0.5, lips: URUK_PAL.lips, brows: 0x120e0b, surface: 'skin_brute', scatter: 0x6a3224 },
+    skin: { color: SP.bskin, color2: SP.bskin2, blotch: 0.5, blemish: 0.45, scars: 3, warts: 0.1, wrinkles: 0.5, lips: URUK_PAL.lips, brows: 0x120e0b, surface: 'skin_brute', scatter: SP.bscatter },
     eyes: { color: 0xd0a030, glow: 0.5, sclera: 0xb8a878 },
     hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 0.8 },
     outfit: [
-      { type: 'trousers', color: URUK_PAL.cloth, mat: 'leather_worn' },
-      { type: 'boots', color: 0x1a1613, color2: 0x120f0d, length: 0.9 },
-      { type: 'belt', color: 0x17120f },
-      { type: 'loincloth', color: 0x211913, mat: 'leather_worn', length: 0.6, tatter: 0.03 },
+      // bare thighs and calves; sandals with wrapped lower legs (wraps are strapped on in extras)
+      { type: 'boots', color: SP.bwrap, color2: SP.bwrap2, mat: SHEET_BOOT, length: 0.98 },
+      { type: 'belt', color: SP.bbelt, offset: 0.12 },
+      // thick black cloth kilt to the knee with a torn hem
+      { type: 'skirt', color: SP.bkilt, color2: SP.bkilt2, mat: SHEET_KILT, length: 0.88, thickness: 0.02 },
     ],
     armor: [],
-    weapons: { right: 'sword', left: 'none', style: 'uruk' },
+    // the sheet's two-handed sword is a straight broadsword, not the falchion
+    weapons: { right: 'sword', left: 'none' },
     palette: URUK_PAL,
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
     anim: { hunch: 0.16, swagger: 0.55, aggression: 1, stance: 1.2, armSwing: 1.1, cadence: 1.0 },
     variation: { height: 0.02, bulk: 0.05, skin: 0.1 },
-    detail: { faceRes: 0, res: 0.062, headRes: 0.0175 },
+    detail: { faceRes: 0, res: 0.066, headRes: 0.0175 },
     extras: urukExtras(true),
   },
 };
