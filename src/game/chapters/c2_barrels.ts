@@ -362,6 +362,7 @@ export const chapter: ChapterDef = {
       await level.say('Tauriel', 'Go, Legolas! Run the bank beside them. I will be right behind you.', 3.0);
       await level.wait(1.0);
       level.cameraShot(null);
+      await level.wait(0.5); // let the 0.6 s camera glide finish before control returns
       level.cinematic(false);
       tauriel?.gesture('point');
     }
@@ -669,6 +670,7 @@ export const chapter: ChapterDef = {
       level.cameraShot({ position: cam(SC - 2, -13, 2.8), lookAt: look(mid, 1.3), fov: 42, blend: 1.4 });
       await level.say('Tauriel', 'The dwarves go to Lake-town. So do we.', 2.6);
       level.cameraShot(null);
+      await level.wait(0.5); // let the 0.6 s camera glide finish before control returns
       level.cinematic(false);
       level.complete();
     }

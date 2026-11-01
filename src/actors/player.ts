@@ -107,6 +107,8 @@ const ZERO_INPUT: InputState = {
   device: 'kbm',
 };
 
+/** the head point may sit this far (m) from the crosshair hit and still count as aimed at */
+const HEAD_AIM_NEAR = 0.6;
 const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
 const _wish = new THREE.Vector3();
@@ -377,6 +379,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     this.drawing = false;
     this.charge = 0;
     this.drawBuffer = 0;
+    this.dashBuffer = 0;
   }
 
   private resetActionState() {
@@ -517,7 +520,13 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
   /** the crosshair is on this target's head / weak point (and it exposes one) */
   private aimsAtHead(t: Combatant): boolean {
     const z = this.camera.aimZone;
-    return (z === 'head' || z === 'weakpoint') && this.camera.aimCombatant === t && !!(t as HeadAimable).headPoint;
+    if (!((z === 'head' || z === 'weakpoint') && this.camera.aimCombatant === t)) return false;
+    const hp = (t as HeadAimable).headPoint;
+    if (!hp) return false;
+    // headPoint() is the FIRST head / weak-point zone: with several (fell beast + rider) it may be another
+    // one than the crosshair is on, so only trust it when it lies at the crosshair hit
+    hp.call(t, _v2);
+    return _v2.distanceToSquared(this.camera.aimTarget) <= HEAD_AIM_NEAR * HEAD_AIM_NEAR;
   }
 
   /**
@@ -604,7 +613,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     this.stun = Math.max(0, this.stun - dt);
     this.jumpBuffer -= dt;
     this.dashBuffer -= dtReal;
-    this.drawBuffer -= dtReal;
+    this.drawBuffer -= dt; // game clock, like nock
     this.nock -= dt;
     this.comboWindow -= dt;
     this.meleeRecover -= dt;
@@ -613,7 +622,12 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     if (inp.jump) this.jumpBuffer = JUMP_BUFFER;
     if (inp.dash) this.dashBuffer = DASH_BUFFER;
     // input cut off mid-draw (cinematic, scripted control-off): abandon the draw, never loose it
-    if (live && inp === ZERO_INPUT && this.drawing) this.cancelDraw();
+    if (inp === ZERO_INPUT) {
+      // a press made just before the cut-off must not fire when control returns
+      this.dashBuffer = 0;
+      this.drawBuffer = 0;
+      if (live && this.drawing) this.cancelDraw();
+    }
 
     // ── look (real-time deltas) ──
     const assist = this.assistEnabled(inp.device);
@@ -848,7 +862,8 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       const mag = this.stun > 0 ? 0 : this.wishDir(inp, _wish);
       const aimingMove = this.aimHeld || this.drawing || this.focusCtl.engaged;
       // sprint in any direction but dominantly backward (A, D, W+A, W+D sprint; S, S+A, S+D do not)
-      const wantSprint = inp.sprintHeld && inp.moveY > -0.35 && !aimingMove && m.grounded && this.meleeHit === 0;
+      const wishLen = Math.hypot(inp.moveX, inp.moveY);
+      const wantSprint = inp.sprintHeld && inp.moveY > -0.5 * wishLen && !aimingMove && m.grounded && this.meleeHit === 0;
       // airborne: the takeoff sprint is latched, so a sprint jump keeps its speed and the camera does not pulse
       if (m.grounded) this.sprint = damp(this.sprint, wantSprint && mag > 0.5 ? 1 : 0, 5, dt);
       let speed = aimingMove ? AIM_MOVE_SPEED * this.modMove : lerp(stats.moveSpeed, stats.moveSpeed * SPRINT_MUL, this.sprint);
@@ -1265,6 +1280,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       const dx = _kdx[k];
       const dz = _kdz[k];
       _kc[k] = null;
+      if (!c.alive) continue; // killed by an earlier hit of this same swing (or its splash)
       c.aimPoint(_v);
       _dir.set(dx, 0, dz).normalize();
       c.takeDamage({

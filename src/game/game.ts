@@ -849,6 +849,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   function consumeFrameInput(s: InputState): void {
     s.lookX = s.lookY = 0;
     s.drawReleased = s.melee = s.jump = s.dash = s.interact = s.nextArrow = s.pause = false;
+    s.prevArrow = false;
     s.arrowSlot = 0;
     s.focusPressed = s.focusReleased = false;
   }

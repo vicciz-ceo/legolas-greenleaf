@@ -396,5 +396,26 @@ test('focus: only the volley arrow own kill counts as a volley kill', () => {
   ok(!f.wasVolleyTarget(t), 'a survivor killed later gives the full refill');
 });
 
+test('focus: a long-range volley arrow still counts as the volley kill after 2 s', () => {
+  const ctx = fakeCtx();
+  ctx.projectiles = createProjectiles(ctx);
+  const self = new Dummy('player', V(0, 0, 0), 100);
+  const t = new Dummy('enemy', V(0, 0, 12), 1000);
+  ctx.combatants.add(self);
+  ctx.combatants.add(t);
+  const host = { self, focus: 100, stats: { focusMax: 100, focusTargets: 4, arrowDamage: 34 }, bowOrigin: (o: THREE.Vector3) => o.set(0, 1.5, 0), onShot() {}, onArrowHit() {} } as unknown as FocusHost;
+  const f = createFocus(ctx, host);
+  (ctx.engine.camera as THREE.PerspectiveCamera).lookAt(0, 1.2, 12);
+  ctx.engine.camera.updateMatrixWorld(true);
+  const inp = (pressed: boolean, held: boolean) => ({ focusPressed: pressed, focusHeld: held, focusReleased: !held, device: 'gamepad' }) as never;
+  f.update(1 / 60, inp(true, true), true);
+  for (let i = 0; i < 40 && f.marks.length === 0; i++) f.update(1 / 60, inp(false, true), true);
+  f.update(1 / 60, inp(false, false), true); // volley loosed; the arrow is never advanced (still in flight)
+  for (let i = 0; i < 120; i++) f.update(1 / 60, inp(false, false), true); // 2 s
+  ok(f.wasVolleyTarget(t), 'credit survives 2 s of flight');
+  for (let i = 0; i < 90; i++) f.update(1 / 60, inp(false, false), true); // 3.5 s total
+  ok(!f.wasVolleyTarget(t), 'credit expires after the 3 s TTL');
+});
+
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed) (globalThis as unknown as { process: { exitCode: number } }).process.exitCode = 1;
