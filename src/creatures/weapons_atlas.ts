@@ -6,13 +6,13 @@
  * no `uv` attribute reads the white texel at uv (0,0), so only the shield faces see the paint. Regions
  * are painted lazily the first time a shield of that emblem is built.
  *
- * Layout (px, 1024²):  rohan 512,0,512,512 · gondor 0,400,256,584 · uruk 264,400,244,584 · orc 520,524,248,248 · easterling 776,524,244,480 · white 0,992,32,32 (uv (0,0) is the bottom-left
+ * Layout (px, 1024²):  rohan 512,0,512,512 · gondor 0,400,256,584 · uruk 264,400,244,584 · orc 520,524,248,248 · easterling 776,524,244,480 · haradrim 524,780,240,240 · white 0,992,32,32 (uv (0,0) is the bottom-left
  * corner of the canvas, because the texture is flipped)
  */
 import * as THREE from 'three';
 import { Rng } from '../core/rng';
 
-export type Emblem = 'rohan' | 'gondor' | 'uruk' | 'orc' | 'easterling';
+export type Emblem = 'rohan' | 'gondor' | 'uruk' | 'orc' | 'easterling' | 'haradrim';
 export interface AtlasRect { x: number; y: number; w: number; h: number }
 
 const SIZE = 1024;
@@ -22,6 +22,7 @@ export const ATLAS_RECTS: Record<Emblem, AtlasRect> = {
   uruk: { x: 264, y: 400, w: 244, h: 584 },
   orc: { x: 520, y: 524, w: 248, h: 248 },
   easterling: { x: 776, y: 524, w: 244, h: 480 },
+  haradrim: { x: 524, y: 780, w: 240, h: 240 },
 };
 
 interface Atlas {
@@ -80,7 +81,8 @@ export function ensureEmblem(e: Emblem): void {
   else if (e === 'gondor') paintGondor(ctx, r.w, r.h);
   else if (e === 'uruk') paintUruk(ctx, r.w, r.h);
   else if (e === 'orc') paintOrc(ctx, r.w, r.h);
-  else paintEasterling(ctx, r.w, r.h);
+  else if (e === 'easterling') paintEasterling(ctx, r.w, r.h);
+  else paintHaradrim(ctx, r.w, r.h);
   ctx.restore();
   A.texture!.needsUpdate = true;
 }
@@ -325,6 +327,39 @@ function paintGondor(ctx: Ctx, w: number, h: number) {
   ctx.lineWidth = 2;
   ctx.strokeRect(10, 10, w - 20, h - 20);
   weather(ctx, w, h, 8, 'rgba(120,124,130,A)', 'rgba(190,194,200,1)', 0.5);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Haradrim: concentric red, black and gold rings (their coat colours) round a gold boss
+// ─────────────────────────────────────────────────────────────────────────────
+function paintHaradrim(ctx: Ctx, w: number, h: number) {
+  const cx = w / 2, cy = h / 2, R = w / 2;
+  const ring = (r0: number, r1: number, col: string) => {
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r1 * R, 0, Math.PI * 2);
+    ctx.arc(cx, cy, r0 * R, 0, Math.PI * 2, true);
+    ctx.fill();
+  };
+  ctx.fillStyle = '#852d2a';
+  ctx.fillRect(0, 0, w, h);
+  ring(0.0, 0.5, '#8d302a');
+  ring(0.5, 0.56, '#b58d3d');
+  ring(0.56, 0.74, '#1e1b19');
+  ring(0.74, 0.8, '#b58d3d');
+  ring(0.8, 0.9, '#852d2a');
+  ring(0.9, 1.01, '#24211f');
+  // black spokes between the gold rings
+  ctx.fillStyle = '#1e1b19';
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(a);
+    ctx.fillRect(R * 0.18, -w * 0.012, R * 0.3, w * 0.024);
+    ctx.restore();
+  }
+  weather(ctx, w, h, 23, 'rgba(60,40,28,A)', 'rgba(190,160,110,1)', 0.5);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

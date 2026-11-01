@@ -15,7 +15,7 @@
  *   fireAnchor: Object3D at the torch head (pass to fx.torch)
  *   tip:        Object3D at the blade tip (trails)
  *   stowFor:    not set here: the kind's gear sets it on the objects it stows (KINDS.md)
- * Elven knives are sized to their sheaths: the tip is 0.355 m from the grip and the sabre sweep small.
+ * Elven knives are sized to their sheaths: tip <= 0.33 m from the grip, blade within 0.015 m of the axis.
  */
 import * as THREE from 'three';
 import type { WeaponKind } from '../core/types';
@@ -28,8 +28,9 @@ import { SURFACES, surface, type SurfaceName, type SurfaceSpec } from './kit/sur
 type Part = THREE.BufferGeometry;
 
 /** optional look variant (KindDef.weapons.style): e.g. the Uruk-hai falchion and white-hand shield; 'elven' = Tauriel's
- *  brass-fitted, leather-hilted knives (elven_knives only; bows ignore it, Legolas keeps the default cream bone hilt) */
-export type WeaponStyle = 'default' | 'uruk' | 'orc' | 'rohan' | 'gondor' | 'elven' | 'dwarf' | 'easterling' | 'haradrim';
+ *  brass-fitted, leather-hilted knives (elven_knives only; bows ignore it, Legolas keeps the default cream bone hilt);
+ *  'gimli' = Gimli's signature knotwork double axe (dwarf_axe only; any other style is the plain dwarf double axe) */
+export type WeaponStyle = 'default' | 'uruk' | 'orc' | 'rohan' | 'gondor' | 'elven' | 'dwarf' | 'gimli' | 'easterling' | 'haradrim';
 interface PaintArgs {
   color: number;
   mat: SurfaceName | SurfaceSpec;
@@ -433,6 +434,8 @@ function buildBow(o: BowOpts): THREE.Object3D {
 
 function buildArrowMesh(fletch: number, shaft: number, crude?: boolean): THREE.Mesh {
   const k = new Kit();
+  // Held arrows are 0.72 m (the point rests at the riser at full draw); the quiver arrows in gear.ts are
+  // shorter (0.62 m): intentional, the nocked one is the hero arrow and reads at close camera.
   const L = 0.72;
   // along +Z from the nock (z=0)
   const rot = new THREE.Matrix4().makeRotationX(Math.PI / 2);
@@ -510,8 +513,8 @@ function knotwork() {
       rd[i + 3] = 255;
       const c = hv > 0.2 ? 215 : 150;
       cd[i] = c;
-      cd[i + 1] = Math.round(c * 0.95);
-      cd[i + 2] = Math.round(c * 0.85);
+      cd[i + 1] = Math.round(c * 0.97);
+      cd[i + 2] = Math.round(c * 0.94);
       cd[i + 3] = 255;
     }
   const mk = (d: Uint8Array, cs: THREE.ColorSpace) => {
@@ -669,15 +672,17 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
   const k = new Kit();
   const brass = style === 'elven';
   const s = seed & 1 ? 1 : -1;
-  // sized to the quiver sheaths and Tauriel's hip scabbards: the tip stays 0.355 m from the grip (as the
-  // first knife did) and the sabre sweep is small enough to stay inside a ~0.02 m radius tube
-  const L = 0.305;
-  const hw = (t: number) => 0.0125 + 0.0065 * Math.sin(Math.min(1, t * 2.4) * Math.PI * 0.5) - 0.0105 * smooth(0.45, 1, t) - 0.002 * t;
+  // SHEATH-SAFE (asserted in weapons.test.ts): the tip is <= 0.33 m from the grip (Legolas' quiver
+  // sheaths close 0.33 m below it, see legolas.ts / gear.ts) and no blade vertex is more than 0.015 m
+  // off the axis, so the blade stays inside the flattened ~0.015-0.02 m radius sheath tubes. The leaf
+  // blade is therefore nearly straight with a subtle sabre sweep; the length goes into the hilt.
+  const L = 0.265;
+  const hw = (t: number) => 0.0105 + 0.0025 * Math.sin(Math.min(1, t * 2.4) * Math.PI * 0.5) - 0.0095 * smooth(0.45, 1, t) - 0.0015 * t;
   const sh: [number, number][] = [];
   for (let i = 0; i < 14; i++) sh.push([i / 13, hw(i / 13)]);
   const etch = noise2(seed + 9);
   k.add(
-    blade({ len: L, width: 1, thick: 0.0045, shape: sh, curve: -0.022 * s, tip: 0.1, seed, bevel: 0.55 }),
+    blade({ len: L, width: 1, thick: 0.0045, shape: sh, curve: -0.003 * s, tip: 0.1, seed, bevel: 0.55 }),
     {
       color: 0xe4e8ee,
       mat: surface('metal', { rough: 0.22, metal: 0.82 }),
@@ -704,9 +709,9 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
   // ivory handle (Tauriel's style 'elven': a brown leather-wrapped hilt with brass fittings) with a gentle swell and olive leaf etching
   const ivory = lin(0xe8e0cc), leaf = lin(0x8a8466);
   if (brass) {
-    const wg = wrapGeo(0.0125, -0.165, 0.036, { rings: 18, seg: 7, turns: 7, ridge: 0.2 });
+    const wg = wrapGeo(0.0125, -0.13, 0.036, { rings: 14, seg: 7, turns: 7, ridge: 0.2 });
     k.add(wg.geo.scale(1, 1, 0.85), { color: 0x4a3222, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x6a4830, 0x26180f, seed) });
-  } else k.add(lathe([[0, -0.17], [0.0075, -0.168], [0.0115, -0.15], [0.0135, -0.09], [0.0125, -0.02], [0.0105, 0.01], [0.0125, 0.036], [0, 0.04]], 9).scale(1, 1, 0.82), {
+  } else k.add(lathe([[0, -0.13], [0.0075, -0.128], [0.0115, -0.115], [0.0135, -0.07], [0.0125, -0.02], [0.0105, 0.01], [0.0125, 0.036], [0, 0.04]], 9).scale(1, 1, 0.82), {
     color: 0xe8e0cc,
     mat: surface('bone', { rough: 0.45 }),
     colorFn: (p, _n, c) => {
@@ -717,7 +722,7 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
     },
   });
   // leaf-bud pommel
-  k.add(lathe([[0, -0.232], [0.004, -0.225], [0.011, -0.2], [0.0135, -0.182], [0.01, -0.17], [0, -0.168]], 8).scale(1, 1, 0.8), { color: brass ? 0xb08a4a : 0xd0d4da, mat: brass ? surface('gold', { rough: 0.38, metal: 0.6 }) : surface('metal', { rough: 0.3, metal: 0.35 }) });
+  k.add(lathe([[0, -0.158], [0.008, -0.156], [0.0135, -0.146], [0.0145, -0.135], [0.0115, -0.126], [0, -0.126]], 8).scale(1, 1, 0.8), { color: brass ? 0xb08a4a : 0xd0d4da, mat: brass ? surface('gold', { rough: 0.38, metal: 0.6 }) : surface('metal', { rough: 0.3, metal: 0.35 }) });
   return withTip(k.mesh('elven_knife'), 0.05 + L);
 }
 
@@ -799,7 +804,7 @@ function axe(kind: 'axe' | 'dwarf_axe', seed: number): THREE.Object3D {
   const k = new Kit();
   const dwarf = kind === 'dwarf_axe';
   const L = dwarf ? 0.78 : 0.7;
-  haft(k, -0.25, L, 0.017, dwarf ? 0x5a3a20 : 0x4a3424, dwarf ? 0x3a2416 : 0x2a2018);
+  haft(k, -0.25, L, 0.017, dwarf ? 0x4a2c18 : 0x4a3424, dwarf ? 0x2e1c10 : 0x2a2018);
   // steel collar & butt spike
   k.add(new THREE.CylinderGeometry(0.023, 0.023, 0.06, 8).translate(0, L - 0.06, 0), { color: 0x7a7468, mat: 'metal' });
   k.add(new THREE.ConeGeometry(0.02, 0.06, 6).rotateX(Math.PI).translate(0, -0.28, 0), { color: 0x7a7468, mat: 'metal' });
@@ -863,13 +868,14 @@ function axe(kind: 'axe' | 'dwarf_axe', seed: number): THREE.Object3D {
   mergedHead.translate(0, L - 0.07, 0);
   const tex = knotwork();
   const headMat = new THREE.MeshStandardMaterial({
-    color: dwarf ? 0xb8b0a0 : 0x8a8680,
+    color: dwarf ? 0x5c5852 : 0x8a8680,
     map: dwarf ? tex.color : null,
     metalness: 1,
-    roughness: dwarf ? 1 : 0.45,
+    roughness: dwarf ? 0.85 : 0.45,
     roughnessMap: dwarf ? tex.rough : null,
     normalMap: dwarf ? tex.normal : null,
-    normalScale: new THREE.Vector2(0.8, 0.8),
+    normalScale: new THREE.Vector2(dwarf ? 0.4 : 0.8, dwarf ? 0.4 : 0.8),
+    side: THREE.DoubleSide,
   });
   const head = new THREE.Mesh(mergedHead, headMat);
   head.name = kind + '_head';
@@ -913,18 +919,17 @@ function gimliAxe(seed: number): THREE.Object3D {
   const bit = (sx: number) => {
     const sh = new THREE.Shape();
     const X = (x: number) => x * sx * 0.82;
-    sh.moveTo(X(0.035), 0.1);
+    sh.moveTo(X(0.035), 0.125);
     sh.quadraticCurveTo(X(0.11), 0.125, X(0.17), 0.175);
-    sh.quadraticCurveTo(X(0.24), 0.215, X(0.295), 0.255);
-    sh.bezierCurveTo(X(0.4), 0.14, X(0.4), -0.12, X(0.3), -0.245);
-    sh.quadraticCurveTo(X(0.2), -0.18, X(0.14), -0.13);
-    sh.quadraticCurveTo(X(0.09), -0.115, X(0.035), -0.1);
+    sh.quadraticCurveTo(X(0.22), 0.2, X(0.285), 0.262);
+    sh.bezierCurveTo(X(0.37), 0.15, X(0.39), -0.14, X(0.3), -0.285);
+    sh.quadraticCurveTo(X(0.19), -0.17, X(0.14), -0.125);
+    sh.quadraticCurveTo(X(0.09), -0.135, X(0.035), -0.125);
     sh.closePath();
     const hole = new THREE.Path();
-    hole.moveTo(X(0.085), 0.03);
-    hole.lineTo(X(0.2), 0.065);
-    hole.lineTo(X(0.2), -0.07);
-    hole.lineTo(X(0.12), -0.07);
+    hole.moveTo(X(0.08), 0.045);
+    hole.lineTo(X(0.19), 0.0);
+    hole.lineTo(X(0.08), -0.06);
     hole.closePath();
     sh.holes.push(hole);
     return new THREE.ExtrudeGeometry(sh, { depth: 0.022, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.007, bevelSegments: 2, curveSegments: 7 }).translate(0, 0, -0.011);
@@ -1430,7 +1435,7 @@ function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   if (style === 'easterling') return kiteShield(seed, EASTERLING_SHIELD);
   const k = new Kit();
   const dwarf = style === 'dwarf', orc = style === 'orc', hara = style === 'haradrim';
-  const emblem: Emblem | null = orc ? 'orc' : dwarf || hara ? null : 'rohan';
+  const emblem: Emblem | null = orc ? 'orc' : hara ? 'haradrim' : dwarf ? null : 'rohan';
   const R = dwarf ? 0.36 : style === 'rohan' || style === 'default' ? 0.45 : hara ? 0.38 : 0.42;
   if (emblem) ensureEmblem(emblem);
   const X0 = 0.058;
@@ -1456,7 +1461,6 @@ function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   fg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   fg.setIndex(idx);
   fg.computeVertexNormals();
-  const red = lin(0x852d2a), black = lin(0x24211f), gold = lin(0xb58d3d);
   k.add(
     fg,
     emblem
@@ -1466,15 +1470,8 @@ function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
           mat: surface('wood', { rough: 0.7 }),
           colorFn: (p, _n, c) => {
             const r = Math.hypot(p.y, p.z) / R;
-            if (hara) {
-              c.copy(red);
-              if (r > 0.55 && r < 0.72) c.copy(black);
-              if (Math.abs(r - 0.8) < 0.025 || Math.abs(r - 0.5) < 0.02) c.copy(gold);
-              if (r > 0.9) c.copy(black);
-            } else {
-              c.copy(dwarf ? lin(0x5a5248) : lin(0x8a6a30));
-              if (Math.abs(Math.sin(r * 18)) > 0.92) c.multiplyScalar(0.6);
-            }
+            c.copy(dwarf ? lin(0x5a5248) : lin(0x8a6a30));
+            if (Math.abs(Math.sin(r * 18)) > 0.92) c.multiplyScalar(0.6);
             const wear = n2(p.y * 14, p.z * 14) * 0.5 + n2(p.y * 50, p.z * 50) * 0.3;
             if (wear > 0.45) c.lerp(wood, 0.8);
             c.multiplyScalar(0.92 + 0.12 * n2(p.y * 6, p.z * 60));
@@ -1528,7 +1525,7 @@ function build(kind: WeaponKind, seed: number, style: WeaponStyle = 'default'): 
     case 'axe':
       return axe(kind, seed);
     case 'dwarf_axe':
-      return gimliAxe(seed);
+      return style === 'gimli' ? gimliAxe(seed) : axe(kind, seed);
     case 'pike':
     case 'spear':
       return polearm(kind, seed);

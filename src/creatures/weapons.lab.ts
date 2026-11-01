@@ -86,7 +86,7 @@ interface SheetItem {
 const ROW1: SheetItem[] = [
   { name: 'galadhrim_bow', kind: 'elven_bow', bow: true, extent: 1.6 },
   { name: 'elven_knives', kind: 'elven_knives', flip: true, count: 2, extent: 0.65 },
-  { name: 'gimli_axe', kind: 'dwarf_axe', style: 'dwarf', extent: 1.15 },
+  { name: 'gimli_axe', kind: 'dwarf_axe', style: 'gimli', extent: 1.15 },
   { name: 'uruk_falchion', kind: 'sword', style: 'uruk', flip: true, extent: 0.85 },
   { name: 'orc_cleaver', kind: 'cleaver', style: 'orc', flip: true, extent: 0.85 },
   { name: 'orc_scimitar', kind: 'scimitar', style: 'orc', flip: true, extent: 0.95 },
@@ -156,13 +156,29 @@ function triCount(o: THREE.Object3D): number {
     const sz = box.getSize(new THREE.Vector3());
     out[it.name] = { tris: triCount(h), extent: +Math.max(sz.x, sz.y).toFixed(3), want: it.extent, size: sz.toArray().map((v) => +v.toFixed(3)) };
   }
-  const extra: [WeaponKind, WeaponStyle][] = [['sword', 'default'], ['scimitar', 'default'], ['cleaver', 'default'], ['spear', 'default'], ['orc_bow', 'default'], ['uruk_bow', 'default'], ['elven_sword', 'default'], ['axe', 'dwarf'], ['mace', 'default'], ['crossbow', 'default'], ['shield', 'dwarf'], ['shield', 'easterling'], ['shield', 'default'], ['pike', 'default'], ['warhammer', 'default']];
+  const extra: [WeaponKind, WeaponStyle][] = [['sword', 'default'], ['scimitar', 'default'], ['cleaver', 'default'], ['spear', 'default'], ['orc_bow', 'default'], ['uruk_bow', 'default'], ['elven_sword', 'default'], ['axe', 'dwarf'], ['mace', 'default'], ['crossbow', 'default'], ['shield', 'dwarf'], ['shield', 'easterling'], ['shield', 'orc'], ['shield', 'haradrim'], ['shield', 'uruk'], ['shield', 'gondor'], ['dwarf_axe', 'dwarf'], ['dwarf_axe', 'gimli'], ['club', 'orc'], ['warhammer', 'orc'], ['torch', 'default'], ['elven_knives', 'elven'], ['shield', 'default'], ['pike', 'default'], ['warhammer', 'default']];
   for (const [k, st] of extra) {
     const w = createWeapon(k, 1, st);
     const box = new THREE.Box3().setFromObject(w);
     out[`${k}/${st}`] = { tris: triCount(w), min: box.min.toArray().map((v) => +v.toFixed(3)), max: box.max.toArray().map((v) => +v.toFixed(3)) };
   }
   out.buildMs = +(performance.now() - t0).toFixed(1);
+  // a crowd of 30 armed units: what 30 weapons cost (shared cached geometry; triangles and meshes counted)
+  {
+    const mix: [WeaponKind, WeaponStyle][] = [['scimitar', 'orc'], ['cleaver', 'orc'], ['sword', 'uruk'], ['shield', 'uruk'], ['shield', 'orc'], ['pike', 'default'], ['spear', 'easterling'], ['shield', 'easterling'], ['sword', 'default'], ['shield', 'gondor'], ['shield', 'rohan'], ['torch', 'default'], ['uruk_bow', 'uruk'], ['orc_bow', 'orc'], ['scimitar', 'haradrim']];
+    let tris = 0, meshes = 0, drawCalls = 0;
+    const t1 = performance.now();
+    for (let i = 0; i < 30; i++) {
+      const [k, st] = mix[i % mix.length];
+      const w = createWeapon(k, i, st);
+      tris += triCount(w);
+      w.traverse((m) => {
+        if ((m as THREE.Mesh).isMesh) meshes++;
+      });
+      drawCalls = meshes;
+    }
+    out.crowd30 = { tris, meshes, drawCalls, avgTrisPerWeapon: Math.round(tris / 30), buildMs: +(performance.now() - t1).toFixed(1) };
+  }
   return out;
 };
 
