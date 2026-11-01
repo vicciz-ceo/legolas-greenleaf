@@ -333,33 +333,53 @@ export function forearmBand(ctx: KindContext, o: { t0: number; t1: number; color
   );
 }
 
-/** a horizontal slab of the lower leg (greaves, boot bands) between two heights */
+/** a horizontal slab of the lower leg (greaves, boot bands) between two heights, one group per leg */
 export function shinBand(ctx: KindContext, o: { y0: number; y1: number; color: number; color2?: number; mat: SurfaceName | SurfaceSpec; inflate: number; tags?: ('shin' | 'calf' | 'knee')[] }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const parts = anatomyParts(P);
-  s.group('union', 0.002 * sc, () => {
-    emitParts(s, parts, o.tags ?? ['shin', 'calf'], { color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.45 : undefined, colorFreq: 40 / sc, mat: o.mat, inflate: o.inflate, k: 0.03 * sc });
-    s.plane([0, 1, 0], o.y1, { op: 'intersect', k: 0.003 * sc });
-    s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.003 * sc });
-    s.plane([0, 1, 0], o.y1, { op: 'paint', seam: 0, k: 0.002 });
-    s.plane([0, -1, 0], -o.y0, { op: 'paint', seam: 0, k: 0.002 });
-  });
+  s.mirrored(() =>
+    s.group('union', 0.002 * sc, () => {
+      emitParts(s, parts, o.tags ?? ['shin', 'calf'], { color: o.color, color2: o.color2, colorNoise: o.color2 !== undefined ? 0.45 : undefined, colorFreq: 40 / sc, mat: o.mat, inflate: o.inflate, k: 0.03 * sc, oneSide: true });
+      s.plane([0, 1, 0], o.y1, { op: 'intersect', k: 0.003 * sc });
+      s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.003 * sc });
+      s.plane([0, 1, 0], o.y1, { op: 'paint', seam: 0, k: 0.002 });
+      s.plane([0, -1, 0], -o.y0, { op: 'paint', seam: 0, k: 0.002 });
+    }),
+  );
 }
 
-/** a cap over the front half of the knee (a gilt knee guard, not a full ring) */
+/** a cap over the front of each knee: one per leg (each leg is its own group, so they cannot blend across the gap between the knees) */
 export function kneeCap(ctx: KindContext, o: { y0: number; y1: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const parts = anatomyParts(P);
-  s.group('union', 0.002 * sc, () => {
-    emitParts(s, parts, ['knee', 'shin'], { color: o.color, mat: o.mat, inflate: o.inflate, k: 0.02 * sc });
-    s.plane([0, 1, 0], o.y1, { op: 'intersect', k: 0.003 * sc });
-    s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.003 * sc });
-    s.plane([0, 0, -1], -(P.j.shin_l[2] + 0.004 * sc), { op: 'intersect', k: 0.004 * sc });
-    s.plane([0, 1, 0], o.y1, { op: 'paint', seam: 0, k: 0.002 });
-    s.plane([0, -1, 0], -o.y0, { op: 'paint', seam: 0, k: 0.002 });
-  });
+  s.mirrored(() =>
+    s.group('union', 0.002 * sc, () => {
+      emitParts(s, parts, ['knee', 'shin'], { color: o.color, mat: o.mat, inflate: o.inflate, k: 0.006 * sc, oneSide: true });
+      s.plane([0, 1, 0], o.y1, { op: 'intersect', k: 0.003 * sc });
+      s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.003 * sc });
+      s.plane([0, 0, -1], -(P.j.shin_l[2] + 0.004 * sc), { op: 'intersect', k: 0.004 * sc });
+      s.plane([0, 1, 0], o.y1, { op: 'paint', seam: 0, k: 0.002 });
+      s.plane([0, -1, 0], -o.y0, { op: 'paint', seam: 0, k: 0.002 });
+    }),
+  );
+}
+
+/** extra padding on the thighs that tapers off on the inner side going down, so the legs part above the knee while the crotch stays closed */
+export function thighPad(ctx: KindContext, o: { color: number; mat: SurfaceName | SurfaceSpec; inflate: number; top: number; taper: number; y0: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  s.mirrored(() =>
+    s.group('union', 0.004 * sc, () => {
+      emitParts(s, parts, ['thigh'], { color: o.color, mat: o.mat, inflate: o.inflate, k: 0.03 * sc, oneSide: true });
+      // keep x >= taper * (top - y): everything at the top, only the outer part lower down
+      s.plane([-1, -o.taper, 0], -o.taper * o.top, { op: 'intersect', k: 0.01 * sc });
+      s.plane([0, 1, 0], o.top, { op: 'intersect', k: 0.004 * sc });
+      s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.004 * sc });
+    }),
+  );
 }
 
 /** a wrapped cloth scarf / cowl: stacked thick rings round the neck and over the shoulders */
