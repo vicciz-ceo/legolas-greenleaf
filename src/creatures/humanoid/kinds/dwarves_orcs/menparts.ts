@@ -10,37 +10,37 @@ import { SURFACES, surface, type SurfaceName, type SurfaceSpec } from '../../../
 import { anatomyParts, emitParts } from '../../anatomy';
 import type { Proportions } from '../../proportions';
 import type { KindContext } from '../../types';
-import { put, shell, spike, studs, taperedTube } from './armor';
+import { put, shell, spike, taperedTube } from './armor';
 import { placeAlong, snapPoint, V, type Projector } from '../uruks_bosses/common';
 
 /** gilded bronze scale armour: stippled dark bronze between big overlapping scales (sheet: worn gilt scales) */
-export const GOLD_SCALES = surface('gold', { rough: 0.5, pat: { scales: 3.2, scratches: 0.6, pores: 0.45 } });
+export const GOLD_SCALES = surface('gold', { rough: 0.55, pat: { scales: 4.2, scratches: 0.6, pores: 0.45 } });
 export const BLACK_SCALES = surface('metal_dark', { rough: 0.42, metal: 0.85, pat: { scales: 3.0, scratches: 0.5 } });
 /** worn gilt (helmets, rosettes, buckles) with hammered dents */
 export const GILT = surface('gold', { rough: 0.42, pat: { scales: -0.6, scratches: 0.7, pores: 0.4 } });
 /** woven wool/linen for the red cloth (soft sheen tinted by the albedo) */
 export const WOVEN = surface('cloth', { rough: 0.9, sheen: 0.35, pat: { weave: 1.2 } });
 
-/** layered, rounded shoulder plates with edge rings and an optional spike */
-export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; layers?: number; size?: number; spike?: number; sides?: ('l' | 'r')[]; drop?: number; tilt?: number }) {
+/** stacked, flared half-shell shoulder lames: the lowest is the biggest, each one above it `shrink` smaller and a little higher */
+export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; layers?: number; size?: number; spike?: number; sides?: ('l' | 'r')[]; rise?: number; shrink?: number; tilt?: number }) {
   const { P } = ctx;
   const s = P.s;
   const g = Math.sqrt(P.build.bulk);
   const layers = o.layers ?? 3;
   const trim = o.trim ?? o.color;
+  const th = Math.PI * 0.34;
   for (const side of o.sides ?? (['l', 'r'] as const)) {
     const sx = side === 'l' ? 1 : -1;
     const sh = P.j[`upperarm_${side}`];
     for (let k = 0; k < layers; k++) {
-      const R = (0.1 - k * 0.006) * s * g * (o.size ?? 1);
-      const th = Math.PI * (0.4 - k * 0.03);
-      const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: th, w: 10, h: 4 });
+      const R = 0.1 * s * g * (o.size ?? 1) * Math.pow(o.shrink ?? 0.83, k);
+      const geo = shell(R, R * 0.5, R * 1.05, { th0: 0, th1: th, w: 10, h: 3 });
       const m = new THREE.Matrix4()
-        .makeTranslation(sh[0] + sx * 0.018 * s, sh[1] + (0.032 - k * (o.drop ?? 0.032)) * s, sh[2])
-        .multiply(new THREE.Matrix4().makeRotationZ(-sx * ((o.tilt ?? 0.6) + k * 0.1)));
+        .makeTranslation(sh[0] + sx * 0.018 * s, sh[1] + (0.004 + k * (o.rise ?? 0.022)) * s, sh[2])
+        .multiply(new THREE.Matrix4().makeRotationZ(-sx * ((o.tilt ?? 0.55) - k * 0.05)));
       put(ctx, geo, { bone: `upperarm_${side}`, color: o.color, mat: o.mat ?? 'gold', matrix: m });
       const rg = new THREE.TorusGeometry(R * 0.99, 0.0045 * s * 1.3, 3, 12).rotateX(Math.PI / 2);
-      rg.scale(Math.sin(th), 1, Math.sin(th) * 1.05).translate(0, Math.cos(th) * R * 0.75, 0);
+      rg.scale(Math.sin(th), 1, Math.sin(th) * 1.05).translate(0, Math.cos(th) * R * 0.5, 0);
       put(ctx, rg, { bone: `upperarm_${side}`, color: trim, mat: o.trimMat ?? 'gold', matrix: m, small: true });
     }
     if (o.spike) put(ctx, spike([sh[0] + sx * 0.05 * s, sh[1] + 0.085 * s, sh[2]], [sx * 0.35, 1, 0], o.spike * s, 0.014 * s, 6), { bone: `upperarm_${side}`, color: trim, mat: o.trimMat ?? 'gold', small: true });
@@ -75,9 +75,9 @@ export function plume(ctx: KindContext, o: { color: number; length?: number; y?:
   }
 }
 
-/** a low horsehair fin along the crown of a dome helmet (Easterling helm): about `height` m tall, a thin blade centred on the
- *  ridge from just behind the brow to the back of the crown, highest toward the rear */
-export function crest(ctx: KindContext, o: { color: number; height: number; profile: [number, number][]; y?: number; zs?: number; mat?: SurfaceName }) {
+/** a low horsehair brush along the crown of a dome helmet (Easterling helm), front to back: about `height` m tall and ~3 cm wide,
+ *  highest at the back of the crown, with a ragged top edge */
+export function crest(ctx: KindContext, o: { color: number; height: number; profile: [number, number][]; y?: number; zs?: number; mat?: SurfaceName | SurfaceSpec }) {
   const { P } = ctx;
   const u = P.headH;
   const zs = o.zs ?? 1.28;
@@ -86,18 +86,19 @@ export function crest(ctx: KindContext, o: { color: number; height: number; prof
   const ridge: [number, number][] = []; // (z, y) in head units along the dome's centre line, front to back
   for (let i = 1; i <= n - 2; i++) ridge.push([prof[i][0] * zs - 0.06, prof[i][1] + 0.075 + (o.y ?? 0)]);
   for (let i = n - 2; i >= 1; i--) ridge.push([-prof[i][0] * zs - 0.06, prof[i][1] + 0.075 + (o.y ?? 0)]);
-  const i0 = Math.floor(ridge.length * 0.3);
-  const i1 = Math.ceil(ridge.length * 0.84);
+  const i0 = Math.floor(ridge.length * 0.2);
+  const i1 = Math.ceil(ridge.length * 0.9);
   const seg = ridge.slice(i0, i1 + 1);
   const pos: number[] = [];
   const idx: number[] = [];
-  const w = 0.005 * P.s;
+  const w = 0.014 * P.s;
   seg.forEach(([z, y], i) => {
     const t = i / (seg.length - 1);
-    const h = o.height * Math.pow(t, 0.55) * Math.pow(1 - t, 0.45) * 2.0;
-    const base = P.h(0, y - 0.02, z);
-    const top: V3 = [base[0], base[1] + h + 0.02 * u, base[2]];
-    for (const [x, q] of [[-w, base], [w, base], [-w, top], [w, top]] as [number, V3][]) pos.push(q[0] + x, q[1], q[2]);
+    const rag = i % 2 ? 0.82 : 1;
+    const h = o.height * Math.pow(Math.sin(Math.PI * Math.min(1, t * 0.88 + 0.06)), 0.6) * (0.55 + 0.45 * t) * rag;
+    const base = P.h(0, y - 0.03, z);
+    const top: V3 = [base[0], base[1] + h + 0.03 * u, base[2]];
+    for (const [x, q] of [[-w, base], [w, base], [-w * 0.6, top], [w * 0.6, top]] as [number, V3][]) pos.push(q[0] + x, q[1], q[2]);
   });
   for (let i = 0; i + 1 < seg.length; i++) {
     const a = i * 4;
@@ -108,23 +109,7 @@ export function crest(ctx: KindContext, o: { color: number; height: number; prof
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  put(ctx, g, { bone: 'head', color: o.color, mat: o.mat ?? 'hair', small: true });
-}
-
-/** a sash/belt with gold studs */
-export function studdedBand(ctx: KindContext, o: { y: number; color: number; n?: number; rx?: number; rz?: number }) {
-  const { P } = ctx;
-  const s = P.s;
-  const rx = o.rx ?? 0.15 * s * Math.sqrt(P.build.bulk);
-  const rz = o.rz ?? (0.108 * s * P.build.bulk * (1 + P.build.belly * 0.4) + 0.02 * s);
-  const pts: V3[] = [];
-  const n = o.n ?? 14;
-  for (let i = 0; i < n; i++) {
-    const a = -Math.PI * 0.8 + (i / (n - 1)) * Math.PI * 1.6;
-    pts.push([Math.sin(a) * rx, o.y, Math.cos(a) * rz]);
-  }
-  const g = studs(pts, 0.0065 * s);
-  if (g) put(ctx, g, { bone: 'hips', color: o.color, mat: GILT, small: true });
+  put(ctx, g, { bone: 'head', color: o.color, mat: o.mat ?? surface('hair', { rough: 0.9, sheen: 0, pat: { fur: 0.3 } }), small: true });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -362,6 +347,21 @@ export function shinBand(ctx: KindContext, o: { y0: number; y1: number; color: n
   });
 }
 
+/** a cap over the front half of the knee (a gilt knee guard, not a full ring) */
+export function kneeCap(ctx: KindContext, o: { y0: number; y1: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  s.group('union', 0.002 * sc, () => {
+    emitParts(s, parts, ['knee', 'shin'], { color: o.color, mat: o.mat, inflate: o.inflate, k: 0.02 * sc });
+    s.plane([0, 1, 0], o.y1, { op: 'intersect', k: 0.003 * sc });
+    s.plane([0, -1, 0], -o.y0, { op: 'intersect', k: 0.003 * sc });
+    s.plane([0, 0, -1], -(P.j.shin_l[2] + 0.004 * sc), { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, 1, 0], o.y1, { op: 'paint', seam: 0, k: 0.002 });
+    s.plane([0, -1, 0], -o.y0, { op: 'paint', seam: 0, k: 0.002 });
+  });
+}
+
 /** a wrapped cloth scarf / cowl: stacked thick rings round the neck and over the shoulders */
 export function cowl(ctx: KindContext, o: { color: number; color2?: number; mat?: SurfaceName | SurfaceSpec; rings?: number; thick?: number; spread?: number; lift?: number }) {
   const { P, sculpt: s } = ctx;
@@ -378,10 +378,10 @@ export function cowl(ctx: KindContext, o: { color: number; color2?: number; mat?
 }
 
 /** place a rigid disc/rosette on the sculpted surface at (x, y): snapped from the front */
-export function surfaceMatrix(proj: Projector, x: number, y: number, lift: number, up = V(0, 1, 0)): THREE.Matrix4 | null {
+export function surfaceMatrix(proj: Projector, x: number, y: number, lift: number, up = V(0, 1, 0), back = false): THREE.Matrix4 | null {
   const hp = V();
   const hn = V();
-  if (!snapPoint(proj, [x, y, 0.4], 'f', hp, hn)) return null;
+  if (!snapPoint(proj, [x, y, back ? -0.4 : 0.4], back ? 'b' : 'f', hp, hn)) return null;
   hp.addScaledVector(hn, lift);
   return placeAlong(hp, hn, up);
 }

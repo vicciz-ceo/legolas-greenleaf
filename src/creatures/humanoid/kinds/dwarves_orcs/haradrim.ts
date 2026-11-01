@@ -24,8 +24,8 @@ import { GILT, addClothSheets, cowl, forearmBand, jewelry, layeredPauldrons, plu
 /** sRGB albedos from docs/refs/haradrim/spec.json (outfit_layers, face, hair), cross-checked with the lit samples */
 const PALETTE = {
   // headwrap #852d2a / red_coat #8d302a, lit samples #632020 / #642524: deeper and less orange than the hex
-  red: 0x7a1c1c,
-  redDeep: 0x4a1010,
+  red: 0x651516,
+  redDeep: 0x36090a,
   border: 0x1c0a09, // black embroidery on the coat borders
   black: 0x131214, // black_tunic #292725 (lit #2e2b2c), darker for the lab's light
   leather: 0x4a3828, // leather_belt #584331 (lit #2c1713)
@@ -37,10 +37,11 @@ const PALETTE = {
   skin2: 0x5e3a26,
   lips: 0x5a3226,
   iris: 0x392b1e,
-  sclera: 0xcfc2b0, // dim warm eye whites
+  sclera: 0x9a8c7a, // dim warm eye whites
   brows: 0x1c1410,
-  beard: 0x1c1917, // black beard (hair #2a231b, lit #342d2a): a matte dark grey-black
-  paint: 0xe0d4c0, // white strokes, a little dimmed so they do not glare
+  beard: 0x24201e, // black beard (hair #2a231b, lit #342d2a): matte charcoal with grey flecks
+  beardFleck: 0x6a645c,
+  paint: 0xe6dccb, // white strokes
 };
 
 const RED_COAT = surface('cloth', { rough: 0.9, sheen: 0.3, pat: { weave: 1.3, wrinkles: 0.15 } });
@@ -75,27 +76,29 @@ function browsAndFace(ctx: KindContext) {
 
 /** war paint as thin soft strokes (anything thinner than the head mesh cell would vanish; anything stronger leaves white specks) */
 function paintStrokes(ctx: KindContext, strokes: [number, number][][], r: number) {
-  for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.4 });
+  for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.85 });
 }
 
 /** the sheet's paint: a short brow line and a chevron on each cheek (the forehead diamond sits under the turban) */
 function sheetPaint(ctx: KindContext) {
   const strokes: [number, number][][] = [[[0, 0.12], [0, 0.0]]];
   for (const sd of [1, -1]) strokes.push([[sd * 0.33, 0.0], [sd * 0.2, -0.1], [sd * 0.32, -0.22]], [[sd * 0.26, -0.3], [sd * 0.22, -0.36]]);
-  paintStrokes(ctx, strokes, 0.016);
+  paintStrokes(ctx, strokes, 0.022);
 }
 
-/** the short black beard (jaw, chin, sideburns) and a moustache over the mouth, sculpted: hair cards read pale and stringy at crowd distance */
+/** the short charcoal beard (chin, jaw, sideburns) built from overlapping ellipsoids, and a separate moustache bar over the closed mouth:
+ *  sculpted, because hair cards read pale and stringy at crowd distance */
 function shortBeard(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
   const h = P.h;
-  s.with({ color: PALETTE.beard, mat: BEARD, bone: 'jaw' }, () => {
+  s.with({ color: PALETTE.beard, color2: PALETTE.beardFleck, colorNoise: 0.3, colorFreq: 60 / P.s, mat: BEARD, bone: 'jaw' }, () => {
     s.group('union', 0.02 * u, () => {
-      s.ellipsoid(h(0, -0.46, 0.15), [0.285 * u, 0.17 * u, 0.29 * u], { k: 0.03 * u });
-      // the moustache sits on the upper lip and the beard rises to the lower lip: the mouth is closed
-      s.ellipsoid(h(0, -0.385, 0.415), [0.15 * u, 0.04 * u, 0.06 * u], { k: 0.025 * u });
+      s.ellipsoid(h(0, -0.53, 0.17), [0.23 * u, 0.12 * u, 0.26 * u]);
+      s.ellipsoid(h(0, -0.42, 0.12), [0.29 * u, 0.15 * u, 0.28 * u]);
+      for (const sd of [1, -1]) s.ellipsoid(h(sd * 0.26, -0.28, 0.06), [0.06 * u, 0.2 * u, 0.16 * u]);
     });
+    s.ellipsoid(h(0, -0.335, 0.425), [0.16 * u, 0.03 * u, 0.06 * u], { k: 0.01 * u });
   });
 }
 
@@ -108,8 +111,8 @@ function turban(ctx: KindContext, o: { color: number; color2: number; y?: number
   s.with({ color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 20 / P.s, mat: RED_COAT, bone: 'head', noise: { amp: 0.0035 * P.s, freq: 36 / P.s, type: 'ridged', octaves: 2 } }, () => {
     s.group('union', 0.012 * u, () => {
       s.ellipsoid(P.h(0, y0 + 0.22 * tall, -0.07), [0.43 * u, 0.36 * u * tall, 0.5 * u], { k: 0.03 * u });
-      for (let i = 0; i < 4; i++) {
-        const f = i / 3;
+      for (let i = 0; i < 5; i++) {
+        const f = i / 4;
         s.torus(P.h(0, y0 + 0.05 + f * 0.3 * tall, -0.07 - f * 0.012), 0.38 * u * (1 - f * 0.25), 0.085 * u * (1 - f * 0.2), { k: 0.02 * u, rot: [-0.3 + f * 0.25 + (i % 2 ? 0.18 : -0.12), 0, i % 2 ? 0.2 : -0.2] });
       }
     });
@@ -151,9 +154,9 @@ function clothSheets(ctx: KindContext, look: Look): SheetOpts[] {
     { a0: 4.0 + b, a1: edge - b, color: look.coat, nu: 4 },
     { a0: edge - b, a1: edge, color: look.trim, out: o },
   ];
-  const coat: SheetOpts = { cols, top, bottom: 0.27 * k, rx1: 0.38 * sc, rz1: 0.26 * sc, curve: 0.7, rows: 7, mat: RED_COAT, hem: { color: look.coatDeep, band: 0.05 }, fold: 0.006 * sc, seed: 3 };
-  const tunic: SheetOpts = { cols: [{ a0: -0.55, a1: 0.55, color: PALETTE.black, nu: 3 }], top, bottom: 0.4 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 5, mat: BLACK_CLOTH, fold: 0.004 * sc, seed: 5 };
-  const sash: SheetOpts = { cols: [{ a0: 0.2, a1: 0.42, color: look.coat, out: 0.012 * sc }], top, bottom: 0.68 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 4, mat: RED_COAT, fold: 0.003 * sc, seed: 7 };
+  const coat: SheetOpts = { cols, top, bottom: 0.28 * k, rx1: 0.35 * sc, rz1: 0.245 * sc, curve: 0.7, rows: 7, mat: RED_COAT, hem: { color: look.coatDeep, band: 0.05 }, fold: 0.006 * sc, seed: 3 + ctxBucket(ctx) };
+  const tunic: SheetOpts = { cols: [{ a0: -0.55, a1: 0.55, color: PALETTE.black, nu: 3 }], top, bottom: 0.4 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 5, mat: BLACK_CLOTH, fold: 0.004 * sc, seed: 5 + ctxBucket(ctx) };
+  const sash: SheetOpts = { cols: [{ a0: 0.2, a1: 0.42, color: look.coat, out: 0.012 * sc }], top, bottom: 0.68 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 4, mat: RED_COAT, fold: 0.003 * sc, seed: 7 + ctxBucket(ctx) };
   return [coat, tunic, sash];
 }
 
@@ -171,6 +174,7 @@ function coat(ctx: KindContext, look: Look) {
       slab(s, hemY, P.j.neck[1] + 0.05 * sc, 0.008 * sc);
       // the front is open: the black tunic and the sash show between the lapels
       s.box([0, (hemY + 1.62 * k) / 2, 0.19 * sc], [0.046 * sc, (1.62 * k - hemY) / 2, 0.13 * sc], 0.002 * sc, { op: 'subtract', k: 0.008 * sc });
+      s.ellipsoid([0, 1.43 * k, 0.2 * sc], [0.085 * sc, 0.2 * k, 0.12 * sc], { op: 'subtract', k: 0.012 * sc });
       // the embroidered borders run down both sides of the opening and either side of the back
       for (const sx of [1, -1]) s.box([sx * 0.082 * sc, (hemY + 1.55 * k) / 2, 0], [0.026 * sc, (1.55 * k - hemY) / 2, 0.3 * sc], 0.002 * sc, { op: 'paint', color: look.trim, mat: RED_COAT, strength: 0.85, k: 0.004 * sc });
     });
@@ -195,10 +199,16 @@ function dress(ctx: KindContext, look: Look) {
   const parts = anatomyParts(P);
   // baggy trousers: the legs blown out above the boot tops (~0.4 m)
   s.group('union', 0.012 * sc, () => {
-    emitParts(s, parts, ['thigh', 'knee', 'shin', 'calf'], { color: PALETTE.black, color2: 0x1c1a1d, colorNoise: 0.35, colorFreq: 30 / sc, mat: BLACK_CLOTH, inflate: 0.024 * sc, k: 0.04 * sc });
+    emitParts(s, parts, ['thigh', 'knee', 'shin', 'calf'], { color: PALETTE.black, color2: 0x1c1a1d, colorNoise: 0.35, colorFreq: 30 / sc, mat: BLACK_CLOTH, inflate: 0.03 * sc, k: 0.04 * sc });
     s.plane([0, -1, 0], -0.4 * k, { op: 'intersect', k: 0.02 * sc });
     s.plane([0, 1, 0], hipY - 0.02 * sc, { op: 'intersect', k: 0.02 * sc });
   });
+  // soft boots with a flared, slouched top (the kit boot has only a thin folded cuff)
+  for (const side of ['l', 'r'] as const) {
+    const sh = P.j[`shin_${side}`];
+    const flare = new THREE.CylinderGeometry(0.074 * sc, 0.058 * sc, 0.085 * sc, 10, 1, true).translate(sh[0], 0.4 * k, sh[2] + 0.006 * sc);
+    put(ctx, flare, { bone: `shin_${side}`, color: PALETTE.boots, mat: BOOT });
+  }
   coat(ctx, look);
   // wide leather belt (1.12-1.25 m) and a red sash over it
   sculptBand(ctx, { color: PALETTE.leather, mat: LEATHER, y0: 1.12 * k, y1: 1.24 * k, inflate: 0.034 * sc, k: 0.002 * sc });
@@ -254,7 +264,7 @@ function head(ctx: KindContext, look: Look, rng: Rng) {
     case 'turban':
       turban(ctx, { color: PALETTE.red, color2: PALETTE.redDeep });
       turbanScarf(ctx, PALETTE.red, PALETTE.redDeep);
-      cowl(ctx, { color: PALETTE.red, color2: PALETTE.redDeep, mat: RED_COAT, rings: 2, thick: 0.03, lift: 0.05 });
+      cowl(ctx, { color: PALETTE.red, color2: PALETTE.redDeep, mat: RED_COAT, rings: 2, thick: 0.03, lift: 0.02 });
       sheetPaint(ctx);
       shortBeard(ctx);
       jewelry(ctx, { color: PALETTE.gold, ears: true });
@@ -264,7 +274,7 @@ function head(ctx: KindContext, look: Look, rng: Rng) {
       addHairdo(ctx, { color: 0x100c0a, tip: 0x1e1814, deep: 0x080606, length: 0.4 * sc, count: 70, width: 0.03, wave: 0.9, wild: 0.6, comb: 0.8, front: 0.24, back: -0.4, gravity: 5, tail: 0.3 * sc, segments: 5 }, rng);
       const strokes: [number, number][][] = [[[0, 0.22], [0, -0.05]]];
       for (const sd of [1, -1]) strokes.push([[sd * 0.33, 0.0], [sd * 0.2, -0.1], [sd * 0.32, -0.22]], [[sd * 0.2, 0.08], [sd * 0.1, 0.04]]);
-      paintStrokes(ctx, strokes, 0.016);
+      paintStrokes(ctx, strokes, 0.022);
       scalpStroke(ctx, [[0, 0.5], [0, 1.0]], { color: PALETTE.paint, r: 0.01 });
       shortBeard(ctx);
       jewelry(ctx, { color: PALETTE.gold, neck: true, ears: true });
@@ -305,24 +315,24 @@ export const haradrimDef: KindDef = {
   label: 'Haradrim',
   // sheet silhouette 1.93 m with the turban on (the head top is ~1.88 m)
   height: 1.88,
-  build: { shoulders: 1.03, hips: 0.98, bulk: 0.9, chest: 0.96, muscle: 0.5, footSize: 0.92 },
+  build: { shoulders: 1.03, hips: 0.98, bulk: 0.9, chest: 0.96, muscle: 0.5, footSize: 1.1 },
   // brow > 1.5 keeps the kit's wire-like brow cards off (they poke out as black lines at crowd mesh resolution)
-  face: { jaw: 0.95, chin: 1.0, brow: 1.52, cheekbones: 1.1, nose: { length: 1.05, width: 1.0, bridge: 1.05, hook: 0.1 }, lips: { width: 1.0, fullness: 0.7 }, eyeTilt: 0.04, eyeOpen: 0.75, eyeSize: 0.7 },
-  skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.3, wrinkles: 0.2, lips: PALETTE.lips, surface: 'skin_weathered', scatter: 0xa04a30, brows: PALETTE.brows },
+  face: { jaw: 0.95, chin: 1.0, brow: 1.52, cheekbones: 1.1, nose: { length: 1.05, width: 1.0, bridge: 1.05, hook: 0.1 }, lips: { width: 1.0, fullness: 0.7 }, eyeTilt: 0.04, eyeOpen: 0.72, eyeSize: 0.64 },
+  skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.08, wrinkles: 0.2, lips: PALETTE.lips, surface: 'skin_weathered', scatter: 0xa04a30, brows: PALETTE.brows },
   eyes: { color: PALETTE.iris, sclera: PALETTE.sclera },
   hair: { style: 'stringy', color: 0x2a231b, density: 0 },
   beard: null,
   outfit: [
     { type: 'leggings', color: PALETTE.black, mat: BLACK_CLOTH },
     // tall soft boots, tops ~0.4 m
-    { type: 'boots', color: PALETTE.boots, color2: 0x241a12, length: 0.72, mat: BOOT, thickness: 0.004 },
+    { type: 'boots', color: PALETTE.boots, color2: 0x241a12, length: 0.7, mat: BOOT, thickness: 0.012 },
     // black long sleeves; the red coat and the panel hems are cloth sheets / sculpted in `dress`
     { type: 'tunic', color: PALETTE.black, mat: BLACK_CLOTH, length: 0 },
     { type: 'skirt', color: PALETTE.red, chance: 0 },
   ],
   armor: [],
   weapons: { right: 'scimitar', style: 'haradrim' },
-  anim: { swagger: 0.3, aggression: 0.55, stance: 1.05 },
+  anim: { swagger: 0.3, aggression: 0.55, stance: 1.2 },
   variation: { height: 0.04, bulk: 0.08, skin: 0.14 },
   detail: { res: devNum('res', 0.055), headRes: devNum('headRes', 0.0145), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'man', weight: 0.5 },
