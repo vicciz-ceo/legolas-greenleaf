@@ -17,6 +17,11 @@ export interface InputOptions {
 const MOUSE_RAD_PER_PX = 0.002;
 const TOUCH_RAD_PER_PX = 0.0052;
 const PAD_LOOK_RATE = 3.1; // rad/s at full deflection, before sensitivity & acceleration
+/** unlocked mouse: the cursor stops at the window edge, so an edge band keeps turning the view */
+const EDGE_BAND_FRAC = 0.07;
+const EDGE_BAND_MIN_PX = 28;
+const EDGE_YAW_RATE = 2.4; // rad/s at the very edge, before sensitivity
+const EDGE_PITCH_RATE = 1.4;
 const LS_DEAD = 0.2;
 const RS_DEAD = 0.16;
 
@@ -75,6 +80,11 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   let focusLatch = false;
   let mdx = 0;
   let mdy = 0;
+  // last cursor position (client px) while unlocked; curValid=false means "unknown / outside the window"
+  let curX = 0;
+  let curY = 0;
+  let curValid = false;
+  let cursorHidden = false;
   let wheelAcc = 0;
   let lastWheelT = 0;
   const pend = { melee: false, jump: false, dash: false, interact: false, next: false, pause: false, slot: 0 as 0 | 1 | 2 | 3 };
@@ -146,7 +156,14 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   const onKeyUp = (e: KeyboardEvent): void => {
     keys.delete(e.code);
   };
+  const resetCursor = (): void => {
+    curValid = false;
+  };
+  const onDocOut = (e: MouseEvent): void => {
+    if (!e.relatedTarget) resetCursor(); // the cursor left the window
+  };
   const onBlur = (): void => {
+    resetCursor();
     keys.clear();
     mouseL = mouseR = false;
     drawLatch = focusLatch = false;
@@ -159,10 +176,22 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     if (ax > 600 || ay > 600) return; // pointer-lock jump bug guard
     if (ax + ay > 2) setDevice('kbm');
     if (!enabled) return;
-    if (locked || (dragFallback && (mouseL || mouseR))) {
+    if (locked) {
       mdx += e.movementX;
       mdy += e.movementY;
+      curValid = false;
+      return;
     }
+    // unlocked: judge by the canvas rect (HUD overlays the canvas, so the event target says nothing)
+    const r = canvas.getBoundingClientRect();
+    const inside = e.clientX >= r.left && e.clientX < r.right && e.clientY >= r.top && e.clientY < r.bottom;
+    if (inside) {
+      curX = e.clientX;
+      curY = e.clientY;
+      curValid = true;
+      mdx += e.movementX;
+      mdy += e.movementY;
+    } else curValid = false;
   };
 
   const onMouseDown = (e: MouseEvent): void => {
@@ -233,6 +262,8 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
   window.addEventListener('blur', onBlur);
+  document.addEventListener('mouseout', onDocOut);
+  document.documentElement.addEventListener('mouseleave', resetCursor);
   window.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('mousedown', onMouseDown);
   window.addEventListener('mouseup', onMouseUp);
@@ -291,6 +322,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     pend.slot = 0;
     drawLatch = focusLatch = false;
     mdx = mdy = 0;
+    curValid = false;
     wheelAcc = 0;
     touch.consumeLook(lookTmp);
     touch.st.drawTap = touch.st.focusTap = false;
@@ -307,6 +339,11 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     const dt = Math.min(0.1, Math.max(0.001, (now - lastT) / 1000));
     lastT = now;
     state.device = getDevice();
+    const hide = enabled && !(touchSeen && state.device === 'touch');
+    if (hide !== cursorHidden) {
+      cursorHidden = hide;
+      canvas.style.cursor = hide ? 'none' : '';
+    }
     if (!enabled) {
       zero();
       return;
@@ -350,6 +387,24 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
       lookX += mdx * MOUSE_RAD_PER_PX;
       lookY += -mdy * MOUSE_RAD_PER_PX;
       mdx = mdy = 0;
+    }
+    // edge turning: unlocked, cursor parked in the outer band of the canvas
+    if (!locked && curValid) {
+      const r = canvas.getBoundingClientRect();
+      const w = r.width;
+      const h = r.height;
+      if (w > 0 && h > 0) {
+        const bx = Math.max(EDGE_BAND_MIN_PX, w * EDGE_BAND_FRAC);
+        const by = Math.max(EDGE_BAND_MIN_PX, h * EDGE_BAND_FRAC);
+        const px = curX - r.left;
+        const py = curY - r.top;
+        const dl = Math.min(1, Math.max(0, (bx - px) / bx));
+        const dr = Math.min(1, Math.max(0, (px - (w - bx)) / bx));
+        const dtp = Math.min(1, Math.max(0, (by - py) / by));
+        const db = Math.min(1, Math.max(0, (py - (h - by)) / by));
+        lookX += (dr - dl) * EDGE_YAW_RATE * dt;
+        lookY += (dtp - db) * EDGE_PITCH_RATE * dt;
+      }
     }
 
     // gamepad -----------------------------------------------------------------
@@ -516,8 +571,11 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     set enabled(v: boolean) {
       if (v === enabled) return;
       enabled = v;
-      if (!v) zero();
-      else {
+      if (!v) {
+        zero();
+        cursorHidden = false;
+        canvas.style.cursor = '';
+      } else {
         // fresh start: ignore buttons that are still held from before (the gamepad Start / A press
         // that resumed from a menu must not fire pause / jump on the first poll)
         prevDraw = prevFocus = false;
@@ -555,6 +613,9 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('keyup', onKeyUp);
       window.removeEventListener('blur', onBlur);
+      document.removeEventListener('mouseout', onDocOut);
+      document.documentElement.removeEventListener('mouseleave', resetCursor);
+      canvas.style.cursor = '';
       window.removeEventListener('mousemove', onMouseMove);
       canvas.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mouseup', onMouseUp);
