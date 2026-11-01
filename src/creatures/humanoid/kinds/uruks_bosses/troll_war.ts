@@ -85,7 +85,7 @@ export function warMane(ctx: KindContext, gear: GearFn, proj: Projector, bucket:
   const rng = new Rng(9100 + bucket);
   const p = V(), n = V();
   const H = (x: number, y: number, z: number) => V(...P.h(x, y, z));
-  for (let i = 0; i < 72; i++) {
+  for (let i = 0; i < 40; i++) {
     // rooted around the back and sides of the skull below the helm rim, cast onto the real surface
     const a = rng.range(1.1, 5.2);
     const y = rng.range(-0.28, -0.02);
@@ -272,7 +272,7 @@ export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
       gear(spike(0.02 * sc, h * sc, 5), { bone, color: TROLL_PAL.edge, mat: IRON, matrix: placeAlong(p, N2[rr][ci], V(0, 0, 1)), small: true });
     }
     const ci = 0;
-    for (let rr = 1; rr < nrows; rr += 2) gear(rivet(0.009 * sc, 5), { bone, color: TROLL_PAL.edge, mat: IRON, matrix: placeAlong(P2[rr][ci].clone().addScaledVector(N2[rr][ci], 0.014 * sc), N2[rr][ci], V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
+    for (let rr = 1; rr < nrows; rr += 3) gear(rivet(0.009 * sc, 5), { bone, color: TROLL_PAL.edge, mat: IRON, matrix: placeAlong(P2[rr][ci].clone().addScaledVector(N2[rr][ci], 0.014 * sc), N2[rr][ci], V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
   }
 }
 

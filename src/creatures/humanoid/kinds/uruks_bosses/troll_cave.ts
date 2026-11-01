@@ -80,7 +80,8 @@ export function caveWarts(ctx: KindContext, gear: GearFn, proj: Projector, bucke
     zones.push(
       { a: J(`upperarm_${sd}`), b: J(`forearm_${sd}`), bone: `upperarm_${sd}`, count: 60, reach: 0.9, reject: armReject },
       { a: J(`forearm_${sd}`), b: J(`hand_${sd}`), bone: `forearm_${sd}`, count: 40, reach: 0.8, reject: armReject },
-      { a: J(`thigh_${sd}`), b: J(`shin_${sd}`), bone: `thigh_${sd}`, count: 32, reach: 0.9, reject: legReject },
+      // (the lower thigh only: the upper part sits under the kilt, and a wart there pokes through the cloth)
+      { a: J(`thigh_${sd}`).lerp(J(`shin_${sd}`), 0.6), b: J(`shin_${sd}`), bone: `thigh_${sd}`, count: 18, reach: 0.9, reject: legReject },
       { a: J(`shin_${sd}`), b: J(`foot_${sd}`), bone: `shin_${sd}`, count: 24, reach: 0.8, reject: legReject },
     );
   }
