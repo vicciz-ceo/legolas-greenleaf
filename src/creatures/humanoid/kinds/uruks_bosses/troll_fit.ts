@@ -144,3 +144,4 @@ export function rustGear(gear: GearFn, amount = 0.55, freq = 4.5): GearFn {
   const f = rustPatches(TROLL_PAL.rust, amount, freq);
   return (geo, o) => gear(geo, o.color === TROLL_PAL.edge || o.colorFn ? o : { ...o, colorFn: f });
 }
+

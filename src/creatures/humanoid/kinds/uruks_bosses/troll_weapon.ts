@@ -26,7 +26,10 @@ export function fitHeldWeapon(ctx: KindContext, hand: 'hand_r' | 'hand_l', kinds
   const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir);
   const qId = new THREE.Quaternion();
   const wq = new THREE.Quaternion();
+  const hq = new THREE.Quaternion();
   const yAxis = new THREE.Vector3();
+  // the relaxed carry holds the shaft forward and a little down in model space
+  const carry = new THREE.Vector3(0, -0.2, 0.98).normalize();
   ctx.object(
     () => {
       const g = new THREE.Group();
@@ -35,13 +38,18 @@ export function fitHeldWeapon(ctx: KindContext, hand: 'hand_r' | 'hand_l', kinds
         const par = this.parent;
         if (par) {
           par.updateWorldMatrix(true, false);
-          // how horizontal the carried shaft is: the relaxed carry holds it forward (socket +Y near horizontal), and
-          // that is the pose that lies across the thighs; poses that already hang it (the lab sheet stance, a
-          // downward thrust) keep the prop as modelled
+          // how close the pose is to that relaxed carry (the only pose where the prop lies across the thighs): the
+          // socket's +Y in the pelvis frame against the carry direction. Swings, thrusts and the lab sheet stance
+          // (shaft already hanging) leave the prop as modelled.
+          let hips: THREE.Object3D | null = par;
+          while (hips && hips.name !== 'hips') hips = hips.parent;
           par.getWorldQuaternion(wq);
           yAxis.set(0, 1, 0).applyQuaternion(wq);
-          const el = Math.abs(yAxis.y);
-          const w = 1 - THREE.MathUtils.smoothstep(el, 0.35, 0.75);
+          if (hips) {
+            hips.getWorldQuaternion(hq);
+            yAxis.applyQuaternion(hq.invert());
+          }
+          const w = THREE.MathUtils.smoothstep(yAxis.dot(carry), 0.82, 0.95);
           for (const c of par.children) {
             if (c === this || typeof c.userData.kind !== 'string' || !kinds.includes(c.userData.kind)) continue;
             if (!c.userData.fitBy) {
