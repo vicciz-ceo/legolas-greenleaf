@@ -187,7 +187,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   // wrapped ankles and feet
   const shinBottom = P.ankleH - 0.004 * sc;
   const shinTop = P.ankleH + 0.1 * sc;
-  shinWraps(ctx, { color: G.binding, color2: G.wrapTrim, top: shinTop, bottom: shinBottom, inflate: 0.012 * sc, feet: 'instep', footInflate: 0.01 * sc });
+  shinWraps(ctx, { color: G.binding, color2: G.wrapTrim, top: shinTop, bottom: shinBottom, inflate: 0.012 * sc, feet: true, footInflate: 0.012 * sc });
   // ── rusty plate strapped to the left shoulder
   rustPauldron(ctx, 'l', { iron: G.iron, rust: G.rust, rng, size: 0.62, lames: 1 });
   batEars(ctx, tone[0]);
@@ -199,17 +199,6 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());
-  // two strap rings across the midfoot of each wrapped sandal (toes stay bare)
-  for (const sd of ['l', 'r'] as const) {
-    const f = P.j[`foot_${sd}`];
-    const fs = P.build.footSize * sc;
-    const rx = 0.04 * fs * Math.sqrt(P.build.bulk) + 0.014 * sc;
-    const ry = f[1] * 0.52 + 0.012 * sc;
-    for (const dz of [0.0, 0.055 * sc]) {
-      const ring = new THREE.TorusGeometry(rx, 0.0055 * sc, 3, 10).scale(1, ry / rx, 1);
-      put(ctx, ring, { bone: `foot_${sd}`, color: G.cord, mat: STRAP, matrix: new THREE.Matrix4().makeTranslation(f[0] + 0.003 * sc * (sd === 'l' ? 1 : -1), f[1] * 0.55, f[2] + P.footLen * 0.2 + dz), small: true });
-    }
-  }
   orcFittings(ctx, { rng, beltY: hipY + 0.1 * sc, lowerBeltY, cord: G.cord, leather: G.binding, iron: G.iron, rust: G.rust, shinTop, shinBottom, bracerLen: 0.7, plate: true, plateX: 0.1, plateScale: 0.75, noCords: true, noFringe: true, sleeve: 0, tunicEdge: G.wrap, collar: true });
 }
 
