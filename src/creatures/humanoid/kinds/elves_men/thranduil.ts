@@ -17,11 +17,11 @@ import { skirtGeometry } from '../../cloth';
 import { along, instances, leaf, mergeAll, put, ring, studs, taperedTube, torsoSection, tube } from './geo';
 import { POLISHED } from './armor';
 import { addHair, noKitHair } from './hair';
-import { limbCutAfter, limbCutBefore, sculptShoulderCap, sculptTorso } from './garments';
+import { limbCutAfter, limbCutBefore, sculptTorso } from './garments';
 
 const PAL = {
-  hair: 0xc9c2b6, // sheet: platinum-silver, root #bdbcb4 → tip #e1e0d8 (warm so it doesn't render blue-grey)
-  hairTip: 0xeae6de,
+  hair: 0xdcd6ca, // sheet: platinum-silver, root #bdbcb4 → tip #e1e0d8 (warm so it doesn't render blue-grey)
+  hairTip: 0xe6e1d8,
   // sheet skin #e7c7b7 (observed lit #e8bcae), ivory rather than pink
   skin: 0xe3c6b0,
   skin2: 0xd3b09a,
@@ -34,15 +34,14 @@ const PAL = {
   robeTrim: 0x9b9a92,
   cloak: 0x5a1020,
   cloakTrim: 0x9d9a90, // silver-grey vine work (the gold of the earlier pass read as tan)
-  belt: 0x6e5d3c,
   silver: 0xc4c4cc,
   gold: 0xc8a860,
-  collar: 0x4a0c18, // velvet #6c192e deepened (the velvet sheen lifts it)
+  collar: 0x641221, // velvet #6c192e, a little deeper (the sheen lifts it)
   embroidery: 0x6f6c63, // dull silver-grey thread
   leafRed: 0x8a4a22, // a few muted orange autumn leaves in the embroidery
   leafOlive: 0x5b5a3a, // olive leaves
-  hemTrim: 0x56544f, // thin silver-grey hem border
   twig: 0x3a2a1e, // crown wood (observed #382219)
+  berry: 0xb01a1a, // glossy red berries
 };
 
 /** the geometry of the coat skirt surface, as skirtGeometry builds it plus the stretch applied below */
@@ -51,12 +50,15 @@ interface SkirtShape {
   bottom: number;
   widen: number;
   train: number;
+  /** extra rear sweep (m) towards the hem on the back half */
+  push: number;
   at(a: number, v: number): THREE.Vector3;
 }
 
-function skirtShape(ctx: KindContext, top: number, bottom: number, flare: number, widen: number, train: number, grow = 0): SkirtShape {
+function skirtShape(ctx: KindContext, top: number, bottom: number, flare: number, widen: number, train: number, grow = 0, push = 0): SkirtShape {
   const { P } = ctx;
   const s = P.s;
+  const seed = ctx.spec.seed ?? 0;
   const g = P.build.bulk;
   const hips = P.build.hips;
   const rx0 = 0.158 * s * hips * Math.sqrt(g) + 0.012 * s + grow;
@@ -70,11 +72,16 @@ function skirtShape(ctx: KindContext, top: number, bottom: number, flare: number
     bottom,
     widen,
     train,
+    push,
     at(a, v) {
-      const rx = (rx0 + (rx1 - rx0) * Math.sqrt(v)) * (1 + widen * Math.pow(v, 1.05));
-      const rz = rz0 + (rz1 - rz0) * Math.sqrt(v);
-      const z = Math.cos(a) * rz - 0.01 * s;
+      // the kit's soft fold term (skirtGeometry), so things placed on the skirt follow its surface
+      const ease = v * v * (3 - 2 * v);
+      const fold = Math.sin(a * 9 + seed) * 0.006 * s * ease;
+      const rx = (rx0 + (rx1 - rx0) * Math.sqrt(v) + fold) * (1 + widen * Math.pow(v, 1.05));
+      const rz = rz0 + (rz1 - rz0) * Math.sqrt(v) + fold;
+      let z = Math.cos(a) * rz - 0.01 * s;
       const back = Math.min(1, Math.max(0, -z / 0.2));
+      z -= push * back * v * v;
       const y = Math.max(0.012, top - H * v - train * back * Math.pow(v, 3));
       return new THREE.Vector3(Math.sin(a) * rx, y, z);
     },
@@ -95,6 +102,7 @@ function wideSkirt(ctx: KindContext, shape: SkirtShape, o: { color: number; colo
     const z = pos.getZ(i);
     const back = Math.min(1, Math.max(0, -z / 0.2));
     pos.setY(i, Math.max(0.012, pos.getY(i) - shape.train * back * Math.pow(t, 3)));
+    pos.setZ(i, z - shape.push * back * t * t);
   }
   pos.needsUpdate = true;
   geo.computeVertexNormals();
@@ -109,7 +117,7 @@ function embroideredVines(ctx: KindContext, shape: SkirtShape) {
   const sc = P.s;
   const thread = surface('cloth', { sheen: 0.1, rough: 0.85, pat: { weave: 0.5 } });
   const leafGeo = leaf(0.045 * sc, 0.016 * sc, { droop: 0.1, cup: 0.3, rows: 2, rib: 0.3 });
-  const lift = 0.0035 * sc;
+  const lift = 0.007 * sc;
   const groups: Record<string, { stems: THREE.BufferGeometry[]; olive: THREE.Matrix4[]; red: THREE.Matrix4[] }> = {
     skirt_f: { stems: [], olive: [], red: [] },
     skirt_b: { stems: [], olive: [], red: [] },
@@ -157,15 +165,44 @@ function embroideredVines(ctx: KindContext, shape: SkirtShape) {
   }
 }
 
-/** the Elvenking's crown: a low woven twig ring with forked branches tilted outward (tall clusters at the
- *  temples, short sprigs front and back), deep autumn leaves and a few red berries */
+/** a thin silver-grey border ring just above the coat's hem (a tube, so it stays a clean line), skinned to
+ *  the skirt spring bones like the vines */
+function hemEdge(ctx: KindContext, shape: SkirtShape) {
+  const sc = ctx.P.s;
+  const thread = surface('cloth', { sheen: 0.2, rough: 0.8, pat: { weave: 0.5 } });
+  const arc = (bone: 'skirt_f' | 'skirt_b', a0: number, a1: number) => {
+    const pts: V3[] = [];
+    const n = 28;
+    for (let i = 0; i <= n; i++) {
+      const p = shape.at(a0 + ((a1 - a0) * i) / n, 0.985);
+      const nrm = new THREE.Vector3(p.x, 0, p.z).normalize();
+      p.addScaledVector(nrm, 0.005 * sc);
+      pts.push([p.x, p.y, p.z]);
+    }
+    put(ctx, tube(pts, 0.004 * sc, { seg: n, radial: 3 }), { bone, color: PAL.embroidery, mat: thread, small: true });
+  };
+  arc('skirt_f', 0.36, 1.95);
+  arc('skirt_f', Math.PI * 2 - 1.95, Math.PI * 2 - 0.36);
+  arc('skirt_b', 1.95, Math.PI * 2 - 1.95);
+}
+
+/** a bent three-lobed autumn leaf (a centre lobe and two smaller side lobes), pointing along +Y */
+function lobedLeaf(u: number): THREE.BufferGeometry {
+  const centre = leaf(0.085 * u, 0.033 * u, { droop: 0.3, cup: 0.4, rows: 2, rib: 0.3 });
+  const side = (sg: number) => leaf(0.055 * u, 0.024 * u, { droop: 0.35, cup: 0.4, rows: 2, rib: 0.3 }).rotateZ(-sg * 0.8).translate(0, 0.02 * u, 0);
+  return mergeAll([centre, side(1), side(-1)]) as THREE.BufferGeometry;
+}
+
+/** the Elvenking's crown (sheet): a low woven twig ring at the brow and two antler-like clusters of forked
+ *  twigs, one at each temple, splayed outward with a bare parting between them; red and orange three-lobed
+ *  leaves and clusters of glossy red berries at the base of each side */
 function elvenCrown(ctx: KindContext, rng: Rng) {
   const { P } = ctx;
   const u = P.headH;
   const bandR = 0.35;
   const wood = PAL.twig;
   const woodMat = surface('wood', { rough: 0.7, pat: { wrinkles: 1.3 } });
-  const leafMat = surface('cloth', { rough: 0.7, sheen: 0.2, pat: { weave: 0 } });
+  const leafMat = surface('cloth', { rough: 0.7, sheen: 0.25, pat: { weave: 0 } });
   const woven: THREE.BufferGeometry[] = [];
   for (let k = 0; k < 3; k++) {
     const pts: V3[] = [];
@@ -182,46 +219,48 @@ function elvenCrown(ctx: KindContext, rng: Rng) {
   const twigs2: THREE.BufferGeometry[] = [];
   const leaves: THREE.Matrix4[] = [];
   const berries: V3[] = [];
-  const leafGeo = leaf(0.1 * u, 0.04 * u, { droop: 0.3, cup: 0.4, rows: 2, rib: 0.3 });
-  const addLeaf = (p: V3, dir: V3) => leaves.push(along(p, dir, [rng.range(-1, 1), 0.3, rng.range(-1, 1)], rng.range(0.8, 1.3)));
-  // azimuth a from the front: clusters at the temples, a few short sprigs front and back
+  const leafGeo = lobedLeaf(u);
+  const addLeaf = (p: V3, dir: V3) => leaves.push(along(p, dir, [rng.range(-1, 1), 0.3, rng.range(-1, 1)], rng.range(0.95, 1.3)));
+  // azimuth a from the front: six twigs per side at about +-(0.95..1.8); nothing at the centre
   const specs: { a: number; h: number }[] = [];
-  for (const sd of [1, -1]) for (let k = 0; k < 6; k++) specs.push({ a: sd * (0.95 + k * 0.17 + rng.range(-0.04, 0.04)), h: (0.82 - Math.abs(k - 2.4) * 0.06) * (0.9 + 0.2 * rng.float()) });
-  for (const a of [Math.PI - 0.3, Math.PI + 0.35]) specs.push({ a, h: 0.2 });
-  // a front-centre fork and upright twigs between it and the temple clusters
-  specs.push({ a: 0, h: 0.5 }, { a: 0.4, h: 0.55 }, { a: -0.4, h: 0.55 }, { a: 0.68, h: 0.6 }, { a: -0.68, h: 0.6 });
+  for (const sd of [1, -1]) for (let k = 0; k < 6; k++) specs.push({ a: sd * (0.95 + k * 0.17 + rng.range(-0.04, 0.04)), h: (0.74 - Math.abs(k - 2.4) * 0.054) * (0.9 + 0.2 * rng.float()) });
   for (const sp of specs) {
     const sx = Math.sin(sp.a);
     const cz = Math.cos(sp.a);
     const root: V3 = P.h(sx * bandR, 0.19, -0.055 + cz * 0.455);
-    // tilt 20-35 degrees outward (radially) from the ring
-    const lean = Math.tan(0.18 + 0.22 * rng.float()) * sp.h;
+    // splayed outward (radially) from the ring
+    const lean = Math.tan(0.25 + 0.25 * rng.float()) * sp.h;
     const ox = sx * lean * u;
     const oz = (cz > 0 ? 0.55 : 1) * (cz * lean * u) - 0.02 * u;
     const mid: V3 = [root[0] + ox * 0.5, root[1] + sp.h * u * 0.5, root[2] + oz * 0.5];
     const tip: V3 = [root[0] + ox, root[1] + sp.h * u, root[2] + oz];
     twigs.push(taperedTube([root, mid, tip], 0.0115 * u, 0.0035 * u, { seg: 10, radial: 4 }));
-    const forks = sp.h > 0.3 ? 4 : 1;
-    for (let f = 0; f < forks; f++) {
-      const t = 0.2 + f * 0.19;
+    for (let f = 0; f < 3; f++) {
+      const t = 0.25 + f * 0.22;
       const base: V3 = [root[0] + (tip[0] - root[0]) * t, root[1] + (tip[1] - root[1]) * t, root[2] + (tip[2] - root[2]) * t];
       const side = f % 2 ? -1 : 1;
       const end: V3 = [base[0] + (side * 0.15 + sx * 0.1) * u, base[1] + 0.14 * u, base[2] - 0.04 * u];
       twigs2.push(taperedTube([base, [(base[0] + end[0]) / 2 + side * 0.02 * u, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], end], 0.0058 * u, 0.0024 * u, { seg: 6, radial: 3 }));
       addLeaf(end, [end[0] - base[0], end[1] - base[1], end[2] - base[2]]);
-      if (f % 2 === 0) addLeaf([(base[0] + end[0]) / 2, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2], [side * 0.8, 0.5, 0.3]);
-      if (berries.length < 14 && rng.float() < 0.45) berries.push([end[0] + 0.004 * u, end[1] - 0.012 * u, end[2]]);
     }
     addLeaf(tip, [tip[0] - mid[0], tip[1] - mid[1], tip[2] - mid[2]]);
-    addLeaf(mid, [sx * 0.7, 0.5, 0.2]);
+  }
+  // clusters of red berries at the base of each side
+  for (const sd of [1, -1]) {
+    for (let i = 0; i < 20; i++) {
+      const a = sd * (0.9 + rng.float() * 0.95);
+      const rr = bandR + 0.012 + rng.float() * 0.02;
+      berries.push(P.h(Math.sin(a) * rr, 0.2 + rng.float() * 0.07, -0.055 + Math.cos(a) * (0.455 + 0.04 * rr)));
+    }
   }
   put(ctx, mergeAll(twigs), { bone: 'head', color: wood, mat: woodMat, small: true });
   put(ctx, mergeAll(twigs2), { bone: 'head', color: 0x5a4632, mat: woodMat, small: true });
-  [0x9a3a18, 0xb04a1c, 0x7e2412, 0xa8561f].forEach((c, ci, all) => {
+  // red and orange leaves, mixed
+  [0x9a2a18, 0xc23d1c, 0xd0642a, 0xa8561f].forEach((c, ci, all) => {
     const sub = leaves.filter((_, i) => i % all.length === ci);
     if (sub.length) put(ctx, instances(leafGeo, sub), { bone: 'head', color: c, mat: leafMat, small: true });
   });
-  if (berries.length) put(ctx, studs(berries, 0.0085 * u, 1), { bone: 'head', color: 0xa31f1f, mat: surface('lips', { rough: 0.3 }), small: true });
+  put(ctx, studs(berries, 0.0105 * u, 1), { bone: 'head', color: PAL.berry, mat: surface('lips', { rough: 0.18 }), small: true });
 }
 
 function thranduilExtras(ctx: KindContext) {
@@ -234,12 +273,12 @@ function thranduilExtras(ctx: KindContext) {
   const L = P.hand.l.L;
   const parts = anatomyParts(P);
   // velvet: a soft, albedo-tinted sheen over a fine nap
-  const wine = surface('cloth', { sheen: 0.7, rough: 0.78, pat: { weave: 0.35 } });
+  const wine = surface('cloth', { sheen: 0.9, rough: 0.7, pat: { weave: 0.35 } });
   const brocade = surface('linen', { sheen: 0.75, rough: 0.5, pat: { weave: 1.2 } });
 
   withHair(ctx, () => {
     // long hair that hangs over the coat
-    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.46), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.45 });
+    addHair(ctx, { hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, length: 1.14, density: devNum('density', 0.55), braids: 'none' }, rng: new Rng(hashSeed('thranduil', 'hair')), backClear: 1.3 });
   });
 
   // ── the crown ──
@@ -249,12 +288,12 @@ function thranduilExtras(ctx: KindContext) {
   // the join is hidden inside the torso hem; both hems are the collar colour.
   const skirtTop = hipY - 0.04 * sc;
   // ── silver brocade under-robe: a close tunic and one continuous panel from the belt to the hem ──
-  sculptTorso(ctx, { color: PAL.robe, mat: brocade, inflate: 0.003 * sc, hem: 0.45, sleeve: 0, neck: true, seams: false, color2: PAL.robe, colorNoise: 0 });
+  sculptTorso(ctx, { color: PAL.robe, mat: brocade, inflate: 0.002 * sc, hem: 0.45, sleeve: 0, neck: true, seams: false, color2: PAL.robe, colorNoise: 0 });
   const robeShape = skirtShape(ctx, skirtTop, P.ankleH + 0.07 * sc, 0.02 * sc, 0.35, 0, 0);
   wideSkirt(ctx, robeShape, { color: PAL.robe, color2: PAL.robeTrim, mat: brocade, flare: 0.02 * sc, panels: [[-0.8, 0.8]], grow: 0 });
 
   // ── the wine-red coat: sleeves to the wrist, open down the front, floor-length skirts ──
-  sculptTorso(ctx, { color: PAL.collar, mat: wine, inflate: 0.0095 * sc, hem: 0.45, sleeve: 2, neck: false, seams: false, thighs: true, frontOpen: { top: 0.07 * sc, bottom: 0.046 * sc, y1: ny + 0.0 * sc } });
+  sculptTorso(ctx, { color: PAL.collar, mat: wine, inflate: 0.0074 * sc, hem: 0.45, sleeve: 2, neck: false, seams: false, thighs: true, frontOpen: { top: 0.07 * sc, bottom: 0.046 * sc, y1: ny + 0.0 * sc } });
   // silver vine along both edges of the opening on the torso
   {
     const yTop = ny - 0.02 * sc;
@@ -273,34 +312,32 @@ function thranduilExtras(ctx: KindContext) {
       put(ctx, tube(pts, 0.0028 * sc, { seg: 14, radial: 3 }), { bone: 'chest', color: PAL.cloakTrim, mat: brocade, small: true });
     }
   }
-  // the coat's skirts: an A-line from the waist, one panel round the back (no centre slit), a short train
-  const coatShape = skirtShape(ctx, skirtTop, P.ankleH + 0.04 * sc, 0.085 * sc, 0.62, 0.08 * sc, 0.004 * sc);
-  wideSkirt(ctx, coatShape, { color: PAL.collar, color2: PAL.hemTrim, mat: wine, flare: 0.085 * sc, panels: [[0.34, Math.PI * 2 - 0.34]], grow: 0.004 * sc });
+  // the coat's skirts: an A-line from the waist, one panel round the back (no centre slit), a train sweeping behind the heels
+  const coatShape = skirtShape(ctx, skirtTop, P.ankleH + 0.04 * sc, 0.085 * sc, 0.62, 0.25 * sc, 0.004 * sc, 0.12 * sc);
+  wideSkirt(ctx, coatShape, { color: PAL.collar, color2: PAL.collar, mat: wine, flare: 0.085 * sc, panels: [[0.34, Math.PI * 2 - 0.34]], grow: 0.004 * sc });
   embroideredVines(ctx, coatShape);
+  hemEdge(ctx, coatShape);
 
-  // ── stiff high collar of the coat, flaring up behind the neck to about ear height ──
-  s.group('union', 0.012 * sc, () => {
-    s.ellipsoid([0, ny + 0.09 * sc, -0.05 * sc], [0.12 * sc * g, 0.14 * sc, 0.085 * sc], { color: PAL.collar, mat: wine, bone: 'chest', k: 0.02 * sc });
-    s.mirrored(() => s.ellipsoid([0.085 * sc * g, ny + 0.075 * sc, -0.045 * sc], [0.028 * sc, 0.09 * sc, 0.05 * sc], { color: PAL.collar, mat: wine, bone: 'chest', k: 0.015 * sc }));
-    s.ellipsoid([0, ny + 0.09 * sc, 0.0], [0.07 * sc * P.build.neckThick, 0.2 * sc, 0.088 * sc], { op: 'subtract', k: 0.014 * sc });
-    s.ellipsoid([0, ny + 0.06 * sc, 0.11 * sc], [0.06 * sc, 0.13 * sc, 0.075 * sc], { op: 'subtract', k: 0.02 * sc });
-    s.plane([0, 1, 0], ny + 0.21 * sc, { op: 'intersect', k: 0.01 * sc });
-    s.plane([0, 1, 0], ny + 0.21 * sc, { op: 'paint', seam: 0, k: 0.002 });
+  // ── narrow upright stand collar of the coat hugging the neck to ear height, open at the front, silver edge ──
+  s.group('union', 0.008 * sc, () => {
+    s.cone([0, ny - 0.01 * sc, -0.016 * sc], [0, ny + 0.2 * sc, -0.02 * sc], 0.076 * sc * g, 0.064 * sc * g, { color: PAL.collar, mat: wine, bone: 'chest', k: 0.01 * sc });
+    s.cone([0, ny - 0.02 * sc, -0.016 * sc], [0, ny + 0.22 * sc, -0.02 * sc], 0.062 * sc * g, 0.051 * sc * g, { op: 'subtract', k: 0.006 * sc });
+    // the front is open in a V so the throat and jaw show
+    s.ellipsoid([0, ny + 0.11 * sc, 0.085 * sc], [0.05 * sc, 0.15 * sc, 0.075 * sc], { op: 'subtract', k: 0.014 * sc });
+    s.plane([0, 1, 0], ny + 0.2 * sc, { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, 1, 0], ny + 0.2 * sc, { op: 'paint', seam: 0, k: 0.002 });
   });
   {
     const pts: V3[] = [];
     for (let i = 0; i <= 22; i++) {
-      const a = -Math.PI * 0.82 + (i / 22) * Math.PI * 1.64;
-      pts.push([Math.sin(a) * 0.088 * sc * g * 1.2, ny + 0.205 * sc, -0.05 * sc + Math.cos(a) * 0.07 * sc * 1.1]);
+      const a = -Math.PI * 0.8 + (i / 22) * Math.PI * 1.6;
+      pts.push([Math.sin(a) * 0.0685 * sc * g, ny + 0.2 * sc, -0.02 * sc + Math.cos(a) * 0.0685 * sc * g]);
     }
-    put(ctx, tube(pts, 0.0026 * sc, { seg: 30, radial: 3 }), { bone: 'chest', color: PAL.cloakTrim, mat: brocade, small: true });
+    put(ctx, tube(pts, 0.0022 * sc, { seg: 30, radial: 3 }), { bone: 'chest', color: PAL.silver, mat: brocade, small: true });
   }
 
-  // ── shoulder yokes in the coat's wine velvet with silver-grey embroidery (no metal) ──
-  sculptShoulderCap(ctx, { color: PAL.collar, mat: wine, side: 'both', inflate: 0.009 * sc, reach: 0.25 });
-
-  // ── flared embroidered cuffs: a raised silver-grey band at each wrist, the sleeve end flaring ──
-  for (const [t0, t1, inf, col] of [[0.8, 0.99, 0.0165, PAL.collar], [0.9, 0.97, 0.0185, PAL.embroidery]] as [number, number, number, number][]) {
+  // ── flared embroidered cuffs: a bell flare at each wrist with a thin silver-grey band ──
+  for (const [t0, t1, inf, col] of [[0.74, 0.86, 0.011, PAL.collar], [0.86, 0.94, 0.0145, PAL.collar], [0.94, 0.995, 0.019, PAL.collar], [0.925, 0.94, 0.0165, PAL.embroidery]] as [number, number, number, number][]) {
     s.mirrored(() =>
       s.group('union', 0.0015 * sc, () => {
         emitParts(s, parts, ['forearm'], { color: col, mat: col === PAL.embroidery ? brocade : wine, inflate: inf * sc, k: 0.02 * sc, oneSide: true });
@@ -326,6 +363,36 @@ function thranduilExtras(ctx: KindContext) {
   mats.push(along([0, by + 0.004 * sc, zf], [0, 1, 0], [0, 0, 1], 0.55), along([0, by - 0.004 * sc, zf], [0, -1, 0], [0, 0, 1], 0.55));
   put(ctx, instances(plate, mats), { bone: 'chest', color: PAL.silver, mat: POLISHED, small: true });
   put(ctx, ring([0, by, zf + 0.0045 * sc], [0, 0, 1], 0.0125 * sc, 0.002 * sc, 14, 3), { bone: 'chest', color: PAL.gold, mat: 'gold', small: true });
+
+  // ── two thick front falls of platinum hair: bundles of tapered strands from the temples over the chest to
+  // about 1.25 m, hugging the torso surface ──
+  {
+    const yEnd = 1.25 * (sc / 1.027);
+    const strands: THREE.BufferGeometry[] = [];
+    const strands2: THREE.BufferGeometry[] = [];
+    for (const sg of [1, -1]) {
+      for (let i = 0; i < 5; i++) {
+        const dx = (i - 2) * 0.011 * sc;
+        const yE = yEnd + ((i * 5) % 3) * 0.035 * sc;
+        const pts: V3[] = [
+          [sg * 0.092 * sc + dx * 0.4, ny + 0.14 * sc, 0.005 * sc],
+          [sg * 0.102 * sc + dx * 0.7, ny + 0.1 * sc, 0.035 * sc],
+        ];
+        const n = 6;
+        for (let k = 0; k <= n; k++) {
+          const y = ny + (yE - ny) * (k / n);
+          const sec = torsoSection(P, y);
+          const x = 0.108 * sc * (1 - 0.05 * (k / n)) + dx;
+          const fx = Math.min(0.9, Math.abs(x) / sec.rx);
+          const zc = (sec.zf + sec.zb) / 2 + ((sec.zf - sec.zb) / 2) * Math.sqrt(1 - fx * fx);
+          pts.push([sg * x, y, Math.max(0.062 * sc * 0.9, zc) + 0.012 * sc + (i % 2) * 0.003 * sc]);
+        }
+        (i % 2 ? strands2 : strands).push(taperedTube(pts, 0.0078 * sc, 0.0022 * sc, { seg: 14, radial: 3 }));
+      }
+    }
+    put(ctx, mergeAll(strands), { bone: 'chest', color: PAL.hair, mat: 'hair', small: true });
+    put(ctx, mergeAll(strands2), { bone: 'chest', color: PAL.hairTip, mat: 'hair', small: true });
+  }
 
   // ── brooch holding the cloak at the throat ──
   put(ctx, new THREE.SphereGeometry(0.015 * sc, 8, 5).scale(1, 1, 0.5).translate(0, ny - 0.045 * sc, 0.084 * sc), { bone: 'chest', color: PAL.gold, mat: 'gold', small: true });
@@ -357,7 +424,7 @@ export const thranduilDef: KindDef = {
   hair: noKitHair(PAL.skin),
   beard: null,
   outfit: [
-    { type: 'leggings', color: PAL.robe, mat: surface('linen', { sheen: 0.75, rough: 0.5, pat: { weave: 1.2 } }) }, // under the coat: the brocade colour, so anything poking through the open front matches
+    { type: 'leggings', color: PAL.robe, thickness: -0.0022, mat: surface('linen', { sheen: 0.75, rough: 0.5, pat: { weave: 1.2 } }) }, // under the coat: the brocade colour, so anything poking through the open front matches
     { type: 'boots', color: PAL.boots, color2: 0x1e1b19, length: 0.9 },
     // spring bones only: the skirt and cloak sheets are built in extras
     { type: 'skirt', color: PAL.robe, chance: 0 },
