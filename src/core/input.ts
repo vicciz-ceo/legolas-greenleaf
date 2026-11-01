@@ -195,7 +195,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     // pointer lost without a deliberate pause (an Esc, Esc round trip: Esc is not an activation key so
     // the resume could not re-lock). Any other key press is, so take the pointer back here. Not a
     // "gesture" request: a refusal must never switch on drag-look.
-    if (!locked && !dragFallback && e.code !== 'Escape' && !(touchSeen && getDevice() === 'touch')) {
+    if (!locked && !dragFallback && e.code !== 'Escape' && e.code !== 'KeyP' && !(touchSeen && getDevice() === 'touch')) {
       const t0 = performance.now();
       if (t0 - lastUserUnlockT > RELOCK_COOLDOWN_MS && t0 - lastKeyLockT > RELOCK_COOLDOWN_MS) {
         lastKeyLockT = t0;
@@ -295,7 +295,14 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   const onLockChange = (): void => {
     const was = locked;
     locked = document.pointerLockElement === canvas;
-    if (locked) dragFallback = false;
+    if (locked) {
+      dragFallback = false;
+      if (!enabled) {
+        // a lock that resolved after input was cut (pause / cinematic): give the cursor back at once
+        wantUnlock = true;
+        document.exitPointerLock();
+      }
+    }
     if (was && !locked) {
       // the browser takes the pointer back on Esc: treat it as a pause request
       if (!wantUnlock) lastUserUnlockT = performance.now();
@@ -447,7 +454,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     let dash = pend.dash;
     let interact = pend.interact;
     let next = pend.next;
-    const prev = pend.prev && !next;
+    const prevWheel = pend.prev;
     let pause = pend.pause;
     let slot = pend.slot;
     let drawTap = drawLatch;
@@ -601,7 +608,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     s.dash = dash;
     s.interact = interact;
     s.nextArrow = next;
-    s.prevArrow = prev;
+    s.prevArrow = prevWheel && !next;
     s.pause = pause;
     s.arrowSlot = slot as 0 | 1 | 2 | 3;
     s.device = getDevice();

@@ -309,7 +309,7 @@ function createLabInput(canvas: HTMLCanvasElement): Input & { held: Held; script
         held.draw = lmb;
         held.melee = k('KeyF') || k('KeyV');
         held.jump = k('Space');
-        held.dash = k('KeyC') || k('AltLeft') || k('ControlLeft');
+        held.dash = k('KeyC');
         held.focus = k('KeyQ');
         held.sprint = k('ShiftLeft');
         held.next = k('Tab');

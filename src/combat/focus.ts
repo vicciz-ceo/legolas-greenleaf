@@ -51,7 +51,7 @@ const TRAIL_COLOR = 0xcfeeff;
 /** a Focus press made this long (real s) before the gate opens (swing, stun, cooldown) still starts Focus while Q is held */
 const PRESS_BUFFER = 0.3;
 /** a volley arrow that never lands stops counting as "volley credit" after this long (real s) */
-const VOLLEY_CREDIT_TTL = 1.5;
+const VOLLEY_CREDIT_TTL = 3;
 
 const _v = new THREE.Vector3();
 const _o = new THREE.Vector3();
@@ -166,7 +166,8 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
       onHit: (c, hit) => {
         host.onArrowHit(c, hit);
         // the killing blow (credited inside takeDamage, before onHit) is the only +3 kill
-        volleyTargets.delete(c);
+        // (only this arrow's own homing target: it may graze another combatant on the way)
+        if (c === target) volleyTargets.delete(c);
       },
     };
     ctx.projectiles.fire(shot);

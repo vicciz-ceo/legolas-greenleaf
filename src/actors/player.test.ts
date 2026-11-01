@@ -1,7 +1,7 @@
 /**
  * Player feel tests (node, no browser): drives the real Player with a stub context.
  * The player pulls in the humanoid registry (import.meta.glob), so these run through their own
- * runner:  node src/actors/run-player-test.mjs   (also run by `npm run smoke` is NOT assumed)
+ * runner, standalone: node src/actors/run-player-test.mjs (also run by node src/physics/run-tests.mjs)
  */
 import * as THREE from 'three';
 import type { Combatant, GameContext, InputState, PlayerAPI } from '../core/types';
@@ -141,6 +141,53 @@ test('dash is buffered through the cooldown and the stagger', () => {
   h.inp.dash = false;
   h.tick(1 / 60, 10); // cooldown ends within 0.15 s of the press
   ok(dashes() === 4, `a press just before the cooldown ends fires when it does (${dashes()})`);
+});
+
+test('dash and draw presses buffered before a pause or cinematic do not fire afterwards', () => {
+  const h = playerHarness();
+  h.inp.moveY = 1;
+  const dashes = () => h.plays.filter((n) => n === 'dash').length;
+  h.inp.dash = true;
+  h.tick(1 / 60, 1);
+  h.inp.dash = false;
+  h.tick(1 / 60, 30); // 0.2 s of cooldown left
+  h.inp.dash = true;
+  h.tick(1 / 60, 1); // buffered press
+  h.inp.dash = false;
+  h.player.controlsEnabled = false; // cinematic starts inside the buffer window
+  h.tick(1 / 60, 20);
+  h.player.controlsEnabled = true;
+  h.tick(1 / 60, 30);
+  ok(dashes() === 1, `the buffered dash was dropped by the control cut-off (${dashes()})`);
+  // pause: cancelDraw() also drops the dash buffer
+  const p = playerHarness();
+  p.inp.moveY = 1;
+  const pd = () => p.plays.filter((n) => n === 'dash').length;
+  p.inp.dash = true;
+  p.tick(1 / 60, 1);
+  p.inp.dash = false;
+  p.tick(1 / 60, 30);
+  p.inp.dash = true;
+  p.tick(1 / 60, 1);
+  p.inp.dash = false;
+  p.player.cancelDraw?.();
+  p.tick(1 / 60, 30);
+  ok(pd() === 1, `cancelDraw drops the buffered dash (${pd()})`);
+});
+
+test('sprint gate uses the normalised wish direction', () => {
+  const h = playerHarness();
+  h.inp.moveX = 0.94;
+  h.inp.moveY = -0.34; // mostly sideways, slightly back: sprints
+  h.inp.sprintHeld = true;
+  h.tick(1 / 60, 90);
+  near(hspeed(h.player), 9, 0.3, 'strafe with a slight back component sprints');
+  const b = playerHarness();
+  b.inp.moveX = 0.6;
+  b.inp.moveY = -0.8; // dominantly back: does not
+  b.inp.sprintHeld = true;
+  b.tick(1 / 60, 90);
+  near(hspeed(b.player), 6.5, 0.3, 'mostly backward does not sprint');
 });
 
 test('a draw cut off by pause or a cinematic is cancelled, not loosed', () => {
