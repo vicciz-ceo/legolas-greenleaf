@@ -72,7 +72,7 @@ const KIND_SCALE: Record<string, Partial<Record<WeaponKind, number>>> = {
   gimli: { dwarf_axe: 0.65 },
   bolg: { mace: 0.9 },
   berserker: { sword: 1.12 },
-  troll: { club: 0.66, warhammer: 0.75 },
+  troll: { club: 0.58, warhammer: 0.62 },
 };
 
 // ── bodies ───────────────────────────────────────────────────────────────────
