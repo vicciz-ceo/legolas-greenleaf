@@ -12,7 +12,9 @@
  *     upright on the arm with their FACE TO THE FRONT, as every sheet shows them (the game's rest hold
  *     has the face outward; the lab turns the shield object about its own up axis and nudges it out, and
  *     puts it back for every other animation, `restoreSheet`);
- *   - spears and pikes are held upright; two-handed heads (war hammer, club) hang low and forward.
+ *   - spears and pikes are held upright; two-handed heads (war hammer, club) hang low and forward;
+ *   - a kind that sets the `crouch` / `lean` anim styles is posed crouched / leaning, as in game (the goblin
+ *     sheet is a deep squat): `bodyPose` uses the animator's own `crouchWish` / `stanceDrop` / `stylePose`.
  *
  * How it works: a second `HumanoidAnimator` (never the game's own instance) drives the SAME bones
  * with a hand-built pose; the pose vector and the arm targets are written in the animator's own
@@ -29,7 +31,7 @@ import * as THREE from 'three';
 import type { WeaponKind } from '../../core/types';
 import type { HumanoidExt } from '../humanoid';
 import { HumanoidAnimator } from './animator';
-import { F, neutralPose, newPose, type Pose } from './poses';
+import { F, crouchLimit, crouchWish, neutralPose, newPose, stanceDrop, stylePose, type Pose } from './poses';
 
 type Side = 'l' | 'r';
 type V3t = [number, number, number];
@@ -93,8 +95,8 @@ const _b = new THREE.Vector3();
 const _c = new THREE.Vector3();
 const _box = new THREE.Box3();
 
-/** the sheet stance of the body (no arms): feet, pelvis, spine, head */
-function bodyPose(sa: HumanoidAnimator, p: Pose) {
+/** the sheet stance of the body (no arms): feet, pelvis, spine, head (exported for the tests) */
+export function bodyPose(sa: HumanoidAnimator, p: Pose) {
   const B = sa.B;
   const st = B.style;
   const s = B.s;
@@ -112,7 +114,18 @@ function bodyPose(sa: HumanoidAnimator, p: Pose) {
   p[F.flyaw] = 0.1;
   p[F.fryaw] = -0.1;
   p[F.kl] = p[F.kr] = 0.1;
+  // the `crouch` and `lean` styles, posed as in game (a crouching kind compares crouched against its sheet): the pelvis
+  // sinks inside the crouch's knee limit for these feet, the torso pitches over them, neck and head keep the gaze
+  // level, knees and toes turn out. `stance` needs nothing here (the feet already stand at the sheets' width). A
+  // kind that sets neither style is untouched.
+  if (st.crouch > 0) p[F.py] = stanceDrop(B, crouchWish(B, p[F.py], st.crouch), [[B.ankleDX + p[F.flx], B.ankleDZ], [B.ankleDX - p[F.frx], B.ankleDZ]], crouchLimit(st));
+  stylePose(st, p);
 }
+
+/** a 0..1 style value (missing = 0) */
+const u01 = (x: number | undefined) => (x !== undefined && x > 0 ? Math.min(x, 1) : 0);
+/** the share of `hunch` the arms' forward hang gets from the crouch and lean styles (the game puts 0.12 / 0.1 of reach forward) */
+export const armHunch = (st: { hunch: number; crouch?: number; lean?: number }) => st.hunch + (0.12 * u01(st.crouch) + 0.1 * u01(st.lean)) / 0.18;
 
 /** arms: wrist target and hand frame from a hold (model space → chest space through the solved chest) */
 function armPose(sa: HumanoidAnimator, p: Pose, side: Side, hold: Hold | null, tilt: number, hunch: number) {
@@ -233,7 +246,7 @@ export function poseSheet(h: HumanoidExt): void {
   };
   const big = h.assets.P.s >= 1.5;
   const holds: Record<Side, Hold | null> = { l: holdFor(held.l, big), r: holdFor(held.r, big) };
-  const hunch = sa.B.style.hunch;
+  const hunch = armHunch(sa.B.style);
   for (const sd of ['l', 'r'] as const) if (held[sd] === 'shield') faceShieldForward(h.weaponObject(sd === 'l' ? 'hand_l' : 'hand_r')!);
   const key = `${held.l}|${held.r}`;
   const p = newPose();

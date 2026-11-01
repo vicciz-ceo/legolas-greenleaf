@@ -22,6 +22,7 @@ import * as THREE from 'three';
 import { ALL_KINDS, DEFAULT_ANIM, DEFAULT_BUILD, resolveKind } from './registry';
 import { computeProportions, buildRig, type Proportions } from './proportions';
 import { HumanoidAnimator } from './animator';
+import { armHunch, bodyPose } from './sheetPose';
 import { CROUCH_MAX_FLEX, F, MAX_STANCE_FLEX, idlePose, locomotionPose, newPose, stanceDrop, stanceFlexLimit, type BodyMetrics } from './poses';
 import type { AnimStyle, BodyBuild, ResolvedKind } from './types';
 
@@ -496,6 +497,64 @@ test('crouched, wide and leaning walks stay planted and never stretch more than 
         }
       }
     }
+  }
+});
+
+// ── the lab's sheet pose (anim=sheet) ────────────────────────────────────────
+/** the sheet pose of the body alone (what `anim=sheet` builds first), solved through the animator */
+function sheetBody(P: Proportions, A: HumanoidAnimator): Stance {
+  const p = newPose();
+  bodyPose(A, p);
+  (A as unknown as { solve: (p: Float32Array, aim: number, draw: number, pitch: number, look: null, dt: number) => void }).solve(p, 0, 0, 0, null, 1 / 60);
+  return measure(P, A);
+}
+/** bodyPose of the synthetic bodies, recorded before the sheet pose knew the crouch and lean styles */
+const SHEET_GOLDEN: Record<string, string> = { man: 'da8d63f0', elf: '94e474af', brute: '6491e4ad', goblin: '4f21adc2', troll: '2e12f224', dwarf: '1fa33a34', gaunt: '10ae02ec' };
+
+test('the sheet pose of a body without crouch and lean is unchanged', () => {
+  for (const b of BODIES) {
+    const { A } = body(synth(b), b.h);
+    const p = newPose();
+    bodyPose(A, p);
+    const hash = hashPoses([p]);
+    cal(`sheet golden ${b.name}: ${hash}`);
+    ok(hash === SHEET_GOLDEN[b.name], `${b.name}: the sheet's body pose changed (${hash}, frozen ${SHEET_GOLDEN[b.name]}); only update SHEET_GOLDEN for an intended change of the sheet stance`);
+    ok(armHunch(A.B.style) === A.B.style.hunch, `${b.name}: without the styles the sheet's arms hang as before`);
+  }
+});
+
+test('the sheet pose crouches and leans like the game: planted, inside the crouch limit, level gaze', () => {
+  for (const b of BODIES) {
+    for (const lean of [0, 1]) {
+      const at = (crouch: number) => {
+        const { P, A } = body(synth(b, { crouch, lean }), b.h);
+        const s = sheetBody(P, A);
+        return { s, q: posture(P, A), py: A.ps.offset[A.ps.i('hips')].y };
+      };
+      const stand = at(0);
+      let prev = stand;
+      for (let c = 0.1; c <= 1 + 1e-9; c += 0.1) {
+        const cur = at(c);
+        const what = `${b.name} sheet crouch=${c.toFixed(1)} lean=${lean}`;
+        sane(cur.s, what, c);
+        ok(cur.py <= prev.py + 1e-6, `${what}: a deeper crouch lowers the pelvis (${prev.py.toFixed(3)} -> ${cur.py.toFixed(3)})`);
+        ok(cur.q.torso >= prev.q.torso - 0.05, `${what}: a deeper crouch pitches the torso forward`);
+        ok(Math.abs(cur.q.gaze - stand.q.gaze) <= 1, `${what}: the gaze stays level (head pitch moved ${(cur.q.gaze - stand.q.gaze).toFixed(2)} deg)`);
+        prev = cur;
+      }
+      const ratio = prev.q.crown / stand.q.crown;
+      cal(`${b.name} sheet lean=${lean}: crouch 1 -> flexion ${mx(prev.s).toFixed(1)} deg, crown ${(100 * ratio).toFixed(1)} %, torso +${(prev.q.torso - stand.q.torso).toFixed(1)}`);
+      ok(mx(prev.s) >= 70, `${b.name}: the sheet's full crouch bends the knees deeply (${mx(prev.s).toFixed(1)} deg)`);
+      ok(ratio >= 0.7 && ratio <= 0.9, `${b.name}: the sheet's full crouch lowers the head to ~78 % (${(100 * ratio).toFixed(1)} %)`);
+    }
+    // lean alone: torso pitch ~15 deg
+    const lq = (lean: number) => {
+      const { P, A } = body(synth(b, { lean }), b.h);
+      sheetBody(P, A);
+      return posture(P, A);
+    };
+    ok(lq(1).torso - lq(0).torso >= 13.5 && lq(1).torso - lq(0).torso <= 16.5, `${b.name}: a full lean pitches the sheet's chest ~15 deg`);
+    ok(armHunch({ hunch: 0.3, crouch: 1, lean: 1 }) > 0.3 + 1, `armHunch must hang the arms further forward for a crouch and a lean`);
   }
 });
 

@@ -1,7 +1,7 @@
 /**
  * Humanoid animator: AnimInput → layered pose → IK solve → spring bones → THREE.Bones.
  *
- * Layers (in order): locomotion (idle/walk/run/sprint/strafe/back, planted feet) or air
+ * Layers (in order): locomotion (idle/walk/run/sprint/strafe/back, planted feet, what the hands carry) or air
  * (jump/fall) + landing → special pose → attack → bow aim (torso twist + exact bow/draw hand IK)
  * → hit flinch → death (overrides) → look-at → springs (hair, skirt, cloak, quiver, beard).
  */
@@ -13,7 +13,7 @@ import type { Proportions } from './proportions';
 import type { AnimStyle } from './types';
 import {
   F, newPose, neutralPose, idlePose, locomotionPose, airPose, landOverlay, specialPose, attackOverlay, hitOverlay,
-  deathPose, mixInto, type BodyMetrics, type Pose,
+  deathPose, mixInto, newHeldCarry, type BodyMetrics, type HeldCarry, type Pose,
 } from './poses';
 
 const _v1 = new THREE.Vector3();
@@ -70,6 +70,12 @@ export class HumanoidAnimator {
   /** hand holds something (closes the fist) */
   gripL = false;
   gripR = false;
+  /**
+   * What each hand holds, for the rest pose (humanoid.ts keeps it current, with the item's reach): a blade hangs,
+   * a spear stands, a shield stands on the forearm instead of every item pointing straight ahead (poses.ts, `Carry`).
+   * Attacks blend from it. All 'none' (the default) is the neutral hand.
+   */
+  readonly held: HeldCarry = newHeldCarry();
   /** last computed values for consumers */
   drawPull = 0;
   /**
@@ -105,6 +111,10 @@ export class HumanoidAnimator {
       ankleDX: P.j.foot_l[0] - P.j.thigh_l[0],
       ankleDZ: P.j.foot_l[2] - P.j.thigh_l[2],
       pelvisUp: P.j.hips[1] - P.j.thigh_l[1],
+      // the trunk chain and the hand's grip point (humanoid.ts mounts a held item at wrist + L * 0.78 palm + N * 0.022 s)
+      trunk: { hips: P.j.hips, spine: P.j.spine, chest: P.j.chest, arm: P.j.upperarm_l },
+      gripAlong: P.palm * 0.78,
+      gripOut: 0.022 * P.s,
     };
     this.restL = { l: P.hand.l.L.clone(), r: P.hand.r.L.clone() };
     const n = rig.count;
@@ -196,15 +206,16 @@ export class HumanoidAnimator {
     // ── base layer ─────────────────────────────────────────────────────────
     const base = this.base;
     const md = inp.moveDir ?? { x: 0, z: 1 };
-    if (speed > 0.02) locomotionPose(B, this.phase, speed, md.x, md.z, t, base);
-    else idlePose(B, t, base);
+    const held = this.held;
+    if (speed > 0.02) locomotionPose(B, this.phase, speed, md.x, md.z, t, base, held);
+    else idlePose(B, t, base, held);
     if (speed > 0.02 && speed < 0.6) {
       // ease from idle into walking
-      idlePose(B, t, this.tmp);
+      idlePose(B, t, this.tmp, held);
       mixInto(base, this.tmp, 1 - speed / 0.6);
     }
     if (!grounded) {
-      airPose(B, inp.vy ?? 0, this.airTime, t, this.tmp);
+      airPose(B, inp.vy ?? 0, this.airTime, t, this.tmp, held);
       mixInto(base, this.tmp, Math.min(1, this.airTime * 10));
     }
     if (this.landT < 0.4 && grounded) {
@@ -229,7 +240,7 @@ export class HumanoidAnimator {
         draw = at < 0.7 ? Math.min(1, Math.max(0, (at - 0.12) / 0.5)) : Math.max(0, 1 - (at - 0.7) / 0.06);
       } else {
         this.tmp2.set(base);
-        attackOverlay(B, inp.attack.kind, Math.min(1, Math.max(0, inp.attack.t)), base, this.tmp2);
+        attackOverlay(B, inp.attack.kind, Math.min(1, Math.max(0, inp.attack.t)), base, this.tmp2, held);
       }
     }
     // ── bow aim stance (torso) ─────────────────────────────────────────────
@@ -336,7 +347,9 @@ export class HumanoidAnimator {
       if (p[pw] > 0) tgt.lerp(_v2.set(p[pw + 1], p[pw + 2], p[pw + 3]), Math.min(1, p[pw]));
       const pole = _v2.set(p[ex], p[ex + 1], p[ex + 2]).normalize().applyQuaternion(chestQ).multiplyScalar(0.5 * s).add(sh);
       let end: THREE.Quaternion | null = null;
-      if (this.lod === 1 && (sd === 'l' ? this.gripL : this.gripR)) {
+      // hand frames: a gripped hand at LOD 1; at LOD 2 only a hand with a carry (a hanging blade, a shield on the forearm must not
+      // swing round to point straight ahead where the crowd gets small)
+      if (this.lod === 1 ? (sd === 'l' ? this.gripL : this.gripR) : (sd === 'l' ? this.held.l.carry : this.held.r.carry) !== 'none') {
         const dx = sd === 'l' ? F.hldx : F.hrdx;
         const tx = sd === 'l' ? F.hltx : F.hrtx;
         const dir = _v3.set(p[dx], p[dx + 1], p[dx + 2]).normalize().applyQuaternion(chestQ);
