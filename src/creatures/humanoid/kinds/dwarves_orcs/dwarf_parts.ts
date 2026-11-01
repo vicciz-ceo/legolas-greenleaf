@@ -19,6 +19,7 @@ import {
   Builder,
   smooth,
   ribbon,
+  ringSnap,
   snapPath,
   type Projector,
   type SnapPoint,
@@ -152,12 +153,12 @@ export function skirt(ctx: KindContext, proj: Projector, o: SkirtOpts) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** a square cast buckle (frame, tongue bar) on the belt front, snapped to the finished sculpt */
-export function squareBuckle(ctx: KindContext, proj: Projector, beltY: number, color: number, o: { w?: number; h?: number; mat?: Mat; x?: number } = {}) {
+export function squareBuckle(ctx: KindContext, proj: Projector, beltY: number, color: number, o: { w?: number; h?: number; mat?: Mat; x?: number; lift?: number } = {}) {
   const sc = ctx.P.s;
   const p = V();
   const n = V();
   if (!snapPoint(proj, [o.x ?? 0, beltY, 0.3], 'f', p, n)) return;
-  const m = frameAt(p.addScaledVector(n, 0.0015 * sc), n, V(0, 1, 0));
+  const m = frameAt(p.addScaledVector(n, (o.lift ?? 0.0015) * sc), n, V(0, 1, 0));
   const w = (o.w ?? 0.056) * sc;
   const h = (o.h ?? 0.046) * sc;
   const t = 0.0085 * sc;
@@ -457,10 +458,10 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, 0.22, -0.02),
       new THREE.Vector3(0.03, 0.42, -0.04),
-      new THREE.Vector3(0.15, 0.53, -0.06),
-      new THREE.Vector3(0.38, 0.43, -0.08),
-      new THREE.Vector3(0.62, 0.2, -0.08),
-      new THREE.Vector3(0.74, -0.08, -0.08),
+      new THREE.Vector3(0.15, 0.57, -0.06),
+      new THREE.Vector3(0.38, 0.47, -0.08),
+      new THREE.Vector3(0.64, 0.22, -0.08),
+      new THREE.Vector3(0.78, -0.12, -0.08),
     ],
     false,
     'catmullrom',
@@ -468,17 +469,29 @@ export function feltHat(ctx: KindContext, o: FeltHatOpts) {
   );
   const nS = 16;
   const nR = 14;
-  const frames = spine.computeFrenetFrames(nS, false);
+  // parallel-transport frames: the Frenet frame flips where the crown folds and leaves a crack-like seam
+  const fN: THREE.Vector3[] = [];
+  const fB: THREE.Vector3[] = [];
+  {
+    const t0 = spine.getTangentAt(0);
+    let nPrev = new THREE.Vector3(1, 0, 0).addScaledVector(t0, -t0.x).normalize();
+    for (let i = 0; i <= nS; i++) {
+      const tg = spine.getTangentAt(i / nS);
+      nPrev = nPrev.clone().addScaledVector(tg, -nPrev.dot(tg)).normalize();
+      fN.push(nPrev);
+      fB.push(new THREE.Vector3().crossVectors(tg, nPrev).normalize());
+    }
+  }
   const pos: number[] = [];
   const idx: number[] = [];
   for (let i = 0; i <= nS; i++) {
     const t = i / nS;
     const c = spine.getPointAt(t);
-    const r = Rh * Math.pow(1 - 0.82 * Math.pow(t, 0.9), 1.0) * (1 + 0.1 * Math.sin(t * Math.PI)) + 0.025 * (1 - t);
+    const r = Rh * Math.pow(1 - 0.82 * Math.pow(t, 0.65), 1.0) * (1 + 0.1 * Math.sin(t * Math.PI)) * 1.03 + 0.025 * (1 - t) + 0.012 * (1 - t);
     for (let j = 0; j <= nR; j++) {
       const a = (j / nR) * Math.PI * 2;
-      const nrm = frames.normals[i];
-      const bin = frames.binormals[i];
+      const nrm = fN[i];
+      const bin = fB[i];
       const x = c.x + (nrm.x * Math.cos(a) + bin.x * Math.sin(a)) * r;
       const y = c.y + (nrm.y * Math.cos(a) + bin.y * Math.sin(a)) * r;
       const z = c.z + (nrm.z * Math.cos(a) + bin.z * Math.sin(a)) * r * 1.1;
@@ -583,13 +596,13 @@ function mergeIndexed(list: THREE.BufferGeometry[]): THREE.BufferGeometry {
  * snapped to the sculpt and pressed half into it. Thicker and lighter than a stitch line so they read
  * at game distance without turning into a black wireframe.
  */
-export function quiltGrid(ctx: KindContext, proj: Projector, o: { cols: number[]; rows: number[]; y0: number; y1: number; halfW: number; color: number; radius: number; skipY?: [number, number] }) {
+export function quiltGrid(ctx: KindContext, proj: Projector, o: { cols: number[]; rows: number[]; y0: number; y1: number; halfW: number; color: number; radius: number; lift?: number; skipY?: [number, number] }) {
   const { P } = ctx;
   const k = P.s / 0.735;
   const lines: THREE.Vector3[][] = [];
   const p = V();
   const n = V();
-  const lift = 0.0006 * k;
+  const lift = (o.lift ?? 0.0006) * k;
   for (const mode of ['f', 'b'] as const) {
     for (const y of o.rows) {
       const row: THREE.Vector3[] = [];
@@ -666,6 +679,36 @@ export function chinBraids(ctx: KindContext, proj: Projector, o: { color: number
       put(ctx, ring([c.x, c.y, c.z], [d.x, d.y, d.z], o.radius * 1.12 * k * (1 - 0.25 * t), 0.0045 * k, 6), { bone: 'jaw', color: o.brass, mat: 'gold', small: true });
     }
   });
+}
+
+
+/** the two trouser legs joined at the crotch: each leg carries a half, so the gap between the inner thighs closes without sticking to the hips when the legs swing */
+export function crotchBridge(ctx: KindContext, o: { color: number; mat: Mat }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const g = Math.sqrt(P.build.bulk);
+  const hipY = P.j.thigh_l[1];
+  const kneeY = P.j.shin_l[1];
+  // stops 4 cm above the knee so the gap between the lower legs stays (the sheets show it)
+  const y0 = kneeY + 0.04 * sc;
+  const yc = (hipY + y0) / 2 + 0.01 * sc;
+  s.mirrored(() => s.ellipsoid([P.hipX * 0.5, yc, 0.004 * sc], [P.hipX * 0.5 + 0.075 * sc * g, (hipY - y0) / 2 + 0.02 * sc, 0.1 * sc * g], { color: o.color, mat: o.mat, bone: 'thigh_l', k: 0.03 * sc }));
+}
+
+/** a belt as one continuous strap laid round the finished body at height y (the seam is at the front, under the buckle) */
+export function beltStrap(ctx: KindContext, proj: Projector, o: { y: number; width: number; thick: number; color: number; mat: Mat }) {
+  const k = ctx.P.s / 0.735;
+  const pts: THREE.Vector3[] = [];
+  const nrm: THREE.Vector3[] = [];
+  const N = 28;
+  for (let i = 0; i <= N; i++) {
+    const r = ringSnap(proj, (i / N) * Math.PI * 2, o.y);
+    if (!r) continue;
+    pts.push(r.p.clone().addScaledVector(r.n, 0.002 * k));
+    nrm.push(r.n.clone());
+  }
+  if (pts.length < 8) return;
+  put(ctx, ribbon(pts, nrm, o.width, o.thick, 1, { outerOnly: true, noInner: true }, N), { bone: 'hips', color: o.color, mat: o.mat });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
