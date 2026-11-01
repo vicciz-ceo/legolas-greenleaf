@@ -195,7 +195,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   // ── sparse long stringy hair (the sheet's crown is nearly bald)
   const hg = makeOrcHair(
     ctx,
-    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.62 : 0.58) * sc, count: ctx.helmet ? 12 : b === 1 ? 50 : 100, width: 0.004, wave: 0.12, wild: 0.5, comb: 0.05, front: 0.45, back: -0.42, gravity: 12, segments: 6, maxZ: -0.02, free: true },
+    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.62 : 0.58) * sc, count: ctx.helmet ? 10 : b === 1 ? 40 : 80, width: 0.004, wave: 0.12, wild: 0.5, comb: 0.05, front: 0.45, back: -0.42, gravity: 12, segments: 5, maxZ: -0.02, free: true },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());
@@ -206,7 +206,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
     const rx = 0.04 * fs * Math.sqrt(P.build.bulk) + 0.014 * sc;
     const ry = f[1] * 0.52 + 0.012 * sc;
     for (const dz of [0.0, 0.055 * sc]) {
-      const ring = new THREE.TorusGeometry(rx, 0.0055 * sc, 4, 14).scale(1, ry / rx, 1);
+      const ring = new THREE.TorusGeometry(rx, 0.0055 * sc, 3, 10).scale(1, ry / rx, 1);
       put(ctx, ring, { bone: `foot_${sd}`, color: G.cord, mat: STRAP, matrix: new THREE.Matrix4().makeTranslation(f[0] + 0.003 * sc * (sd === 'l' ? 1 : -1), f[1] * 0.55, f[2] + P.footLen * 0.2 + dz), small: true });
     }
   }
@@ -223,7 +223,7 @@ export function goblinExtras(ctx: KindContext) {
 
 export const goblinDef: KindDef = {
   label: 'Moria goblin',
-  height: devNum('h', 1.46),
+  height: devNum('h', 1.4),
   // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
   build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.45), legLength: devNum('leg', 0.95), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.95, handSize: devNum('hand', 1.9), footSize: devNum('foot', 1.45), muscle: 0.45 },
   face: FACE,
@@ -241,7 +241,7 @@ export const goblinDef: KindDef = {
   weapons: { right: 'scimitar', style: 'orc' },
   palette: GOBLIN_PALETTE,
   // sheet: a deep scrambling crouch
-  anim: { hunch: devNum('hunch', 0.4), swagger: 0.3, aggression: 0.9, stance: devNum('stance', 1.8), cadence: 1.2, armSwing: 1.3, crouch: devNum('crouch', 0.85), lean: devNum('lean', 0.5) },
+  anim: { hunch: devNum('hunch', 0.4), swagger: 0.3, aggression: 0.9, stance: devNum('stance', 1.8), cadence: 1.2, armSwing: 1.3, crouch: devNum('crouch', 0.92), lean: devNum('lean', 0.5) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
   detail: { res: devNum('res', 0.058), headRes: devNum('headRes', 0.0135), faceRes: 0, detailScale: 0.9 },
   sfx: { voice: 'goblin', grunt: 'goblin_screech', die: 'orc_die', roar: 'goblin_screech', weight: 0.35 },
