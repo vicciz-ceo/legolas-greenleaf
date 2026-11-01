@@ -8,6 +8,7 @@ import { yawOf } from '../../../core/math';
 import type { BaseCombatant } from '../../../actors/combatant';
 import type { Humanoid } from '../../../core/types';
 import { createHumanoid } from '../../../creatures/humanoid';
+import { BOROMIR } from '../../../creatures/humanoid/kinds/elves_men';
 
 export interface Cast {
   aragorn: Ally;
@@ -25,14 +26,19 @@ export function spawnCast(level: LevelAPI, near: THREE.Vector3, facing: number):
 
 type Swappable = BaseCombatant & { body: Humanoid; motor?: { height: number; radius: number }; facing: number; playSpecial(pose: string, seconds: number): void };
 
-/** a helmetless Gondor man (not in the preload: build it behind the loading screen, hand it to spawnBoromir) */
+/**
+ * Boromir's body: the captain look of the 'gondor' kind (bareheaded, brown hair and beard, fur-collared cloak,
+ * the Horn, and the fine face region). That look belongs to seed bucket 0 only, so it has to be BOROMIR (seed 0):
+ * the 11 this used to pass hashes into bucket 1, a plain soldier. Not in the chapter's preload (a different
+ * cache key): build it behind the loading screen, hand it to spawnBoromir.
+ */
 export function makeBoromirBody(): Humanoid {
-  return createHumanoid({ kind: 'gondor', seed: 11, weapon: 'sword', offhand: 'shield', helmet: false });
+  return createHumanoid({ ...BOROMIR });
 }
 
 /**
- * Boromir kneels where he fell, bareheaded (a Gondor man; the stock soldier wears a helmet, so the body is
- * swapped for a helmetless one, the same trick Lurtz uses). Not targetable, never moves on his own.
+ * Boromir kneels where he fell, bareheaded (the stock Gondor soldier from spawnAlly is hash-seeded and helmeted,
+ * so its body is swapped for the captain's, the same trick Lurtz uses). Not targetable, never moves on his own.
  */
 export function spawnBoromir(level: LevelAPI, at: THREE.Vector3, facing: number, body?: Humanoid): Ally {
   const b = level.spawnAlly({ kind: 'gondor', name: 'Boromir', anchor: at.clone() }, at, facing);

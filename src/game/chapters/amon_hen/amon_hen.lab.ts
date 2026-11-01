@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import type { AnimInput, HumanoidKind, LabInstance, LabSubject, WeaponKind } from '../../../core/types';
 import { createHumanoid, type HumanoidExt } from '../../../creatures/humanoid';
 import { seedForBucket } from '../../../creatures/humanoid/kinds/uruks_bosses';
+import { BOROMIR } from '../../../creatures/humanoid/kinds/elves_men';
 
 const ANIMS = ['idle', 'walk', 'run', 'slash', 'overhead', 'thrust', 'throw', 'punch', 'shoot', 'block', 'roar', 'stagger', 'kneel', 'sit', 'crouch', 'hit', 'death'];
 const SPECIAL = ['block', 'roar', 'stagger', 'kneel', 'sit', 'crouch', 'cheer'];
@@ -46,13 +47,20 @@ function pose(h: HumanoidExt, anim: string, t: number, bow: boolean): void {
   for (let i = 0; i <= steps; i++) h.animate(i === 0 ? 0 : dt, frame(anim, start + i * dt, bow));
 }
 
-function subject(name: string, kind: HumanoidKind, o: { seed?: number; weapon: WeaponKind; offhand: WeaponKind; helmet?: boolean }): LabSubject {
+function subject(name: string, kind: HumanoidKind, o: { seed?: number; weapon: WeaponKind; offhand: WeaponKind; helmet?: boolean; armor?: number }): LabSubject {
   const bow = o.offhand === 'uruk_bow' || o.weapon === 'uruk_bow';
   return {
     name,
     category: 'enemy',
     create(): LabInstance {
-      const h = createHumanoid({ kind, seed: o.seed, weapon: o.weapon, offhand: o.offhand, ...(o.helmet === undefined ? {} : { helmet: o.helmet }) }) as HumanoidExt;
+      const h = createHumanoid({
+        kind,
+        seed: o.seed,
+        weapon: o.weapon,
+        offhand: o.offhand,
+        ...(o.helmet === undefined ? {} : { helmet: o.helmet }),
+        ...(o.armor === undefined ? {} : { armor: o.armor }),
+      }) as HumanoidExt;
       const holder = new THREE.Group();
       holder.add(h.root);
       return { object: holder, height: h.height, animations: ANIMS, pose: (a, t) => pose(h, a, t, bow), dispose: () => h.dispose() };
@@ -65,7 +73,7 @@ export const subjects: LabSubject[] = [
   subject('lurtz_blade', 'lurtz', { seed: 2, weapon: 'sword', offhand: 'shield' }),
   subject('amon_uruk_shield', 'uruk', { seed: seedForBucket(1), weapon: 'sword', offhand: 'shield' }),
   subject('amon_uruk_pike', 'uruk', { seed: seedForBucket(2), weapon: 'pike', offhand: 'none' }),
-  // exactly the chapter's Boromir (cast.ts makeBoromirBody): seed 11, bareheaded
-  subject('amon_boromir', 'gondor', { seed: 11, weapon: 'sword', offhand: 'shield', helmet: false }),
+  // exactly the chapter's Boromir (cast.ts makeBoromirBody): BOROMIR, the seed-0 captain of the 'gondor' kind, bareheaded
+  subject('amon_boromir', BOROMIR.kind, { seed: BOROMIR.seed, weapon: BOROMIR.weapon ?? 'sword', offhand: BOROMIR.offhand ?? 'shield', helmet: BOROMIR.helmet, armor: BOROMIR.armor }),
   subject('amon_uruk_archer', 'uruk', { seed: seedForBucket(3), weapon: 'uruk_bow', offhand: 'none' }),
 ];
