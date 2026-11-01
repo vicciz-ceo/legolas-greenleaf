@@ -742,8 +742,9 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
       { type: 'skirt', color: SP.bkilt, color2: SP.bkilt, mat: 'rags', length: 0.88, thickness: 0.045 },
     ],
     armor: [],
-    // the sheet's two-handed sword is a straight broadsword, not the falchion
-    weapons: { right: 'sword', left: 'none' },
+    // the sheet's two-handed sword is a straight broadsword, not the falchion: style 'berserker' is the dark
+    // pitted, rust-spotted greatsword with exactly the default sword()'s length, grip and tip (weapons.ts)
+    weapons: { right: 'sword', left: 'none', style: 'berserker' },
     palette: URUK_PAL,
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
     anim: { hunch: 0.16, swagger: 0.55, aggression: 1, stance: 1.4, armSwing: 1.1, cadence: 1.0 },
