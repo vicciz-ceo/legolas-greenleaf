@@ -224,6 +224,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   };
   const resetCursor = (): void => {
     curValid = false;
+    curX = curY = 0;
   };
   const onDocOut = (e: MouseEvent): void => {
     if (!e.relatedTarget) resetCursor(); // the cursor left the window
@@ -252,9 +253,13 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     const r = canvas.getBoundingClientRect();
     const inside = e.clientX >= r.left && e.clientX < r.right && e.clientY >= r.top && e.clientY < r.bottom;
     if (inside) {
-      curX = e.clientX;
-      curY = e.clientY;
-      curValid = true;
+      // only keyboard + mouse parks a cursor (edge turning): a sub-threshold nudge or a synthetic move
+      // under a pad or touch is not "the mouse is in use" (a real move flipped the device just above)
+      if (getDevice() === 'kbm') {
+        curX = e.clientX;
+        curY = e.clientY;
+        curValid = true;
+      } else resetCursor();
       mdx += e.movementX;
       mdy += e.movementY;
     } else curValid = false;
@@ -416,6 +421,10 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     const dt = Math.min(0.1, Math.max(0.001, (now - lastT) / 1000));
     lastT = now;
     state.device = getDevice();
+    // the parked cursor only means something on keyboard + mouse. The pointer stays unlocked for a pad or
+    // touch player too, so a 1-2 px nudge or a synthetic mousemove leaves a position behind: forget it for as
+    // long as another device is active, so it cannot turn the view now or resume when the mouse comes back
+    if (state.device !== 'kbm') resetCursor();
     const hide = enabled && !(touchSeen && state.device === 'touch');
     if (hide !== cursorHidden) {
       cursorHidden = hide;
@@ -466,8 +475,8 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
       lookY += -mdy * MOUSE_RAD_PER_PX;
       mdx = mdy = 0;
     }
-    // edge turning: unlocked, cursor parked in the outer band of the canvas
-    if (!locked && curValid) {
+    // edge turning: unlocked, cursor parked in the outer band of the canvas (keyboard + mouse only)
+    if (!locked && curValid && state.device === 'kbm') {
       const r = canvas.getBoundingClientRect();
       const w = r.width;
       const h = r.height;
