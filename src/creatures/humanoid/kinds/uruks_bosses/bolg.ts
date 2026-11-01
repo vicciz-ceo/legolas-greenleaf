@@ -8,17 +8,15 @@
  */
 import * as THREE from 'three';
 import type { KindContext, KindDef } from '../../types';
-import { anatomyParts } from '../../anatomy';
+import { anatomyParts, emitParts } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
 import type { PrimOpts } from '../../../kit/sdf';
 import {
-  V, v3, snapPoint, gearOf, makeProjector, carveSnapped, paintSnapped, scarTube, spike, placeAlong, hexBolt, shellPatch, ellipsoidFn, ribbon, lerp, smooth, ringSnap, densePath, ellipticalBand, rivet, tup, type SnapPoint, type GearFn, type Projector,
+  V, v3, snapPoint, gearOf, makeProjector, carveSnapped, paintSnapped, scarTube, spike, placeAlong, shellPatch, ellipsoidFn, ribbon, lerp, smooth, ringSnap, densePath, ellipticalBand, rivet, tup, type SnapPoint, type GearFn, type Projector,
 } from './common';
 import { brawnBody, bareTorso, skinOpts } from './body';
 import { scaleHeldWeapon } from './common';
-import { URUK_PAL } from './uruk';
 import { kiltEnvelope, kiltPanel } from './bolg_kilt';
-import { emitParts } from '../../anatomy';
 
 /** rusted, hammered iron: rust blooms in the pits and crevices (kit shader) */
 const IRON_RUSTY = surface('iron_rusty', { rough: 0.66 });
@@ -44,8 +42,8 @@ export const BOLG_PAL = {
   leatherDark: 0x40291b,
   kilt: 0x3a3430, // charcoal cloth (sheet #3c332b design, lit #433a36): not pure black
   kilt2: 0x2a2622,
-  stubble: 0x3a2e26,
-  ivory: 0xd8c890, // fangs // sheet beard: dark brown stubble-fuzz, not black
+  stubble: 0x4a3626, // sheet beard: warm brown stubble-fuzz, not black
+  ivory: 0xc9ad6a, // fangs: warm ivory
 };
 
 /** height where the two chest straps cross (sternum, between the pecs) */
@@ -117,7 +115,7 @@ const BOLG_FACE = {
   eyeTilt: -0.12,
   eyeOpen: 0.72,
   tusks: 0, // the face's own cone rendered as a tiny dark peg: ivory fangs are gear (bolgFangs)
-  underbite: 0.7, // (0.9 opened a dark slot under the nose)
+  underbite: 0.55, // (0.9 opened a dark slot under the nose)
   foreheadSlope: 0.4,
   asym: 0.5,
   cranium: 1.0,
@@ -206,18 +204,21 @@ function bolgFaceScars(ctx: KindContext, proj: NonNullable<ReturnType<typeof mak
   carveSnapped(s, proj, [H(0.12, -0.2), H(0.21, -0.27), H(0.26, -0.36)], 0.0065 * u, 0.003 * u, o);
   // dark stubble beard (sheet face views): a short thick beard that follows the jaw from the ear to
   // the chin and climbs the cheek, a chin patch and a moustache; the lips themselves stay clear
-  const stub: PrimOpts = { color: BOLG_PAL.stubble, mat: surface('skin_scarred', { rough: 0.82, pat: { fur: 1.5, pores: -0.5 } }), k: 0.032 * u, strength: 0.88 };
+  const stub: PrimOpts = { color: BOLG_PAL.stubble, mat: surface('skin_scarred', { rough: 0.82, pat: { fur: 1.5, pores: -0.5 } }), k: 0.03 * u, strength: 0.86 };
   for (const sx of [1, -1]) {
-    paintSnapped(s, proj, [H(0.27 * sx, -0.16), H(0.255 * sx, -0.28), H(0.2 * sx, -0.38), H(0.11 * sx, -0.44), H(0.0, -0.45)], [0.03 * u, 0.04 * u, 0.045 * u, 0.05 * u, 0.05 * u], { ...stub, bone: 'head' });
+    // sideburn → along the jaw → chin
+    paintSnapped(s, proj, [H(0.27 * sx, -0.14), H(0.26 * sx, -0.26), H(0.215 * sx, -0.37), H(0.12 * sx, -0.45), H(0.03 * sx, -0.49)], [0.032 * u, 0.045 * u, 0.05 * u, 0.055 * u, 0.055 * u], { ...stub, bone: 'head' });
   }
-  paintSnapped(s, proj, [H(-0.1, -0.43), H(0.0, -0.45), H(0.1, -0.43)], 0.055 * u, { ...stub, bone: 'jaw' });
-  // chin centre: a soft-edged fill so no pale gap shows under the strokes
-  paintSnapped(s, proj, [H(-0.07, -0.5), H(0.0, -0.51), H(0.07, -0.5)], 0.04 * u, { ...stub, bone: 'jaw', k: 0.05 * u, strength: 0.75 });
+  paintSnapped(s, proj, [H(-0.12, -0.47), H(0.0, -0.5), H(0.12, -0.47)], 0.06 * u, { ...stub, bone: 'jaw' });
+  // chin centre and the point of the chin: no pale blob under the strokes
+  paintSnapped(s, proj, [H(-0.06, -0.52), H(0.0, -0.535), H(0.06, -0.52)], 0.04 * u, { ...stub, bone: 'jaw', k: 0.05 * u, strength: 0.8 });
+  // moustache
+  paintSnapped(s, proj, [H(-0.11, -0.345), H(0.0, -0.335), H(0.11, -0.345)], 0.022 * u, { ...stub, bone: 'head', strength: 0.8 });
   // light mottling round the eye sockets (soft and shallow: a hard disc read as a ghost ring)
   for (const sx of [1, -1]) paintSnapped(s, proj, [H(0.13 * sx, -0.07), H(0.18 * sx, -0.08)], 0.034 * u, { color: 0x6a5048, mat: 'skin_scarred', bone: 'head', k: 0.05 * u, strength: 0.3 });
-  paintSnapped(s, proj, [H(-0.1, -0.345), H(0.0, -0.335), H(0.1, -0.345)], 0.016 * u, { ...stub, bone: 'head', strength: 0.5 });
-  // re-assert the lips over the beard
+  // re-assert the lips over the beard, and close the dark slot under the nose with the lip colour
   s.ellipsoid(P.h(0, -0.415, 0.39), [0.07 * u, 0.02 * u, 0.04 * u], { color: BOLG_PAL.lips, mat: 'lips', bone: 'jaw', op: 'paint', k: 0.012 * u, strength: 0.85 });
+  s.ellipsoid(P.h(0, -0.392, 0.392), [0.07 * u, 0.012 * u, 0.04 * u], { color: BOLG_PAL.lips, mat: 'lips', bone: 'head', op: 'paint', k: 0.012 * u, strength: 0.95 });
 }
 
 /** big pecs, serratus and a thick neck on top of brawnBody (the sheet's heavy definition) */
@@ -267,14 +268,14 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
   const rot = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), top);
   const R = 0.128 * sc * g;
   /** dome height of the lames (flat layered plates, not domes) */
-  const LY = 0.86;
-  const c = J.clone().addScaledVector(L, 0.025 * sc).add(V(-0.043 * side * sc, 0.012 * sc, 0));
+  const LY = 0.72;
+  const c = J.clone().addScaledVector(L, 0.025 * sc).add(V(-0.043 * side * sc, 0.0, 0));
   // outward-ness of an azimuth (local +X is outward for the left, inward for the right shoulder)
   const outw = (a: number) => Math.sin(a) * side;
   // torn edge: deep on the outside of the arm, shallow toward the neck; saw-tooth tatters
   const jag = (a: number) => {
     const f = ((a * 2.9) % 1 + 1) % 1;
-    return 0.16 * Math.abs(f - 0.5) * 2 + 0.06 * Math.sin(a * 11.3) + 0.04 * Math.sin(a * 23.1);
+    return 0.24 * Math.abs(f - 0.5) * 2 + 0.07 * Math.sin(a * 11.3) + 0.05 * Math.sin(a * 23.1);
   };
   const el0 = (a: number) => lerp(0.42, -0.62, (outw(a) + 1) / 2) - jag(a);
   const lfn = ellipsoidFn(c, [R * 1.12, R * 0.78, R * 1.1], [-Math.PI, Math.PI], [el0, Math.PI / 2 - 0.05], { rot });
@@ -284,7 +285,7 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
     const axis = top.clone().lerp(L, k * 0.2).normalize();
     const rk = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), axis);
     const Rk = R * (1.1 - k * 0.035);
-    const ck = c.clone().addScaledVector(L, k * 0.042 * sc);
+    const ck = c.clone().addScaledVector(L, k * 0.058 * sc);
     const half = (64 - k * 6) * (Math.PI / 180);
     const fn = ellipsoidFn(ck, [Rk * 1.14, Rk * LY, Rk * 1.16], [-Math.PI, Math.PI], [Math.PI / 2 - half, Math.PI / 2], { rot: rk });
     gear(shellPatch(fn, 14, 3, 0.009 * sc, { closedU: true, noInner: true, thickFn: (_u, v) => 1 + 1.2 * (1 - smooth(0, 0.18, v)), skip: ['v1'] }), { bone, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.82 });
@@ -388,7 +389,6 @@ function bolgBelt(ctx: KindContext, parts: ReturnType<typeof anatomyParts>, gear
     p.y -= 0.035 * sc;
     gear(new THREE.TorusGeometry(0.034 * sc, 0.0075 * sc, 6, 18), { bone: 'hips', color: BOLG_PAL.iron, mat: IRON_RUSTY, matrix: new THREE.Matrix4().makeTranslation(p.x, p.y, p.z) });
   }
-  return y0;
 }
 
 /** greaves as the sheet draws them: plated, strapped boots from the ankle wraps up to a flared knee
@@ -451,7 +451,8 @@ function bolgGreaves(ctx: KindContext, gear: GearFn) {
   }
 }
 
-/** sandals: a thick dark sole and leather straps wrapped round the foot, instep and ankle (sheet) */
+/** sandals: a thick dark sole, the foot tinted toward the body's warm skin, and two wide leather
+ *  bands (ankle and instep): thin repeated straps aliased into black-and-white stripes on the pale foot */
 function bolgSandals(ctx: KindContext, gear: GearFn) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
@@ -460,8 +461,8 @@ function bolgSandals(ctx: KindContext, gear: GearFn) {
   s.mirrored(() => {
     const f = j.foot_l;
     const toe = j.toe_l;
-    s.box([f[0] + 0.004 * sc, 0.014 * sc, (f[2] + toe[2]) / 2 + 0.018 * sc], [0.058 * sc * fs, 0.015 * sc, P.footLen * 0.56], 0.008 * sc, {
-      color: 0x2e2016,
+    s.box([f[0] + 0.004 * sc, 0.016 * sc, (f[2] + toe[2]) / 2 + 0.018 * sc], [0.06 * sc * fs, 0.022 * sc, P.footLen * 0.57], 0.01 * sc, {
+      color: 0x2a1d13,
       mat: LEATHER,
       bone: 'foot_l',
       bone2: 'toe_l',
@@ -469,18 +470,19 @@ function bolgSandals(ctx: KindContext, gear: GearFn) {
       blend: [0.5, 0.8],
       k: 0.006 * sc,
     });
+    // warm tint on the foot itself (the pale foot read as a white boot)
+    s.ellipsoid([f[0] + 0.004 * sc, 0.07 * sc, (f[2] + toe[2]) / 2 + 0.018 * sc], [0.07 * sc * fs, 0.08 * sc, P.footLen * 0.6], { op: 'paint', color: BOLG_PAL.skin2, mat: 'skin_scarred', bone: 'foot_l', bone2: 'toe_l', blendAxis: [[0, 0, f[2]], [0, 0, toe[2] + 0.02 * sc]], blend: [0.5, 0.8], k: 0.04 * sc, strength: 0.6 });
   });
   for (const side of [1, -1]) {
     const sfx = side > 0 ? 'l' : 'r';
     const f = v3(j[`foot_${sfx}`]);
     const toe = v3(j[`toe_${sfx}`]);
-    // four straps across the foot (axis along z), the first round the ankle
-    for (const [t, rx, ry, hh] of [[0.0, 0.066, 0.07, 0.022], [0.22, 0.06, 0.052, 0.017], [0.46, 0.057, 0.042, 0.015], [0.7, 0.054, 0.034, 0.014]] as [number, number, number, number][]) {
+    for (const [t, rx, ry, hh] of [[0.0, 0.066, 0.07, 0.04], [0.36, 0.058, 0.048, 0.034]] as [number, number, number, number][]) {
       const z = f.z + (toe.z - f.z) * t + 0.012 * sc;
       const x = f.x + (toe.x - f.x) * t;
       const y = Math.max(0.03 * sc, f.y * (1 - t) * 0.62 + 0.03 * sc * t) + 0.012 * sc;
-      const band = ellipticalBand(rx * sc * fs, ry * sc, rx * sc * fs, ry * sc, hh * sc, 0.004 * sc, 16);
-      gear(band, { bone: `foot_${sfx}`, color: 0x35241a, mat: LEATHER, matrix: new THREE.Matrix4().makeTranslation(x, y, z).multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2)), small: t > 0.5 });
+      const band = ellipticalBand(rx * sc * fs, ry * sc, rx * sc * fs, ry * sc, hh * sc, 0.005 * sc, 16);
+      gear(band, { bone: `foot_${sfx}`, color: 0x5a3b28, mat: LEATHER, matrix: new THREE.Matrix4().makeTranslation(x, y, z).multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2)), small: t > 0.2 });
     }
   }
 }
@@ -493,8 +495,7 @@ function bolgKiltLiner(ctx: KindContext, parts: ReturnType<typeof anatomyParts>)
   const sc = P.s;
   const hipY = P.j.thigh_l[1];
   const kneeY = P.j.shin_l[1];
-  // (the greave's flared top plate starts at the knee joint + 0.07 sc)
-  const bottom = kneeY + 0.045 * sc;
+  const bottom = hipY - (hipY - kneeY) * KILT.length * 1.1 + 0.01 * sc;
   s.group('union', 0.003 * sc, () => {
     emitParts(s, parts, ['thigh', 'knee', 'glutes', 'pelvis'], { color: BOLG_PAL.kilt2, mat: surface('rags', { rough: 0.95 }), inflate: 0.05 * sc * Math.sqrt(P.build.bulk), k: 0.02 * sc });
     s.plane([0, 1, 0], hipY + 0.05 * sc, { op: 'intersect', k: 0.004 * sc });
@@ -502,15 +503,14 @@ function bolgKiltLiner(ctx: KindContext, parts: ReturnType<typeof anatomyParts>)
   });
 }
 
-/** ivory lower fangs standing up over the lip (sheet face views) */
+/** ivory lower fangs standing up out of the lower lip, a little outward (sheet face views) */
 function bolgFangs(ctx: KindContext, gear: GearFn) {
   const { P } = ctx;
   const u = P.headH;
   for (const sx of [1, -1]) {
-    const base = P.h(0.075 * sx, -0.43, 0.395);
-    const tip = P.h(0.09 * sx, -0.285, 0.44);
-    const d = v3(tip).sub(v3(base));
-    gear(spike(0.022 * u, d.length(), 6, 0.02), { bone: 'jaw', color: BOLG_PAL.ivory, mat: surface('bone', { rough: 0.45 }), matrix: placeAlong(v3(base), d.normalize(), V(0, 0, 1)), small: true });
+    const base = v3(P.h(0.072 * sx, -0.43, 0.392));
+    const dir = V(0.2 * sx, 1, 0.3).normalize();
+    gear(spike(0.033 * u, 0.09 * u, 6, 0.02), { bone: 'jaw', color: BOLG_PAL.ivory, mat: surface('bone', { rough: 0.45 }), matrix: placeAlong(base, dir, V(0, 0, 1)), small: true });
   }
 }
 
@@ -522,6 +522,10 @@ function bolgHipPanels(ctx: KindContext, gear: GearFn) {
   const base = { color: BOLG_PAL.leather, mat: LEATHER, rivetColor: 0x6a4a34, rivetMat: IRON };
   // front plate: pointed at the centre
   kiltPanel(ctx, env, gear, { ...base, a0: -0.5, a1: 0.5, len: (u) => (0.3 - 0.2 * Math.abs(2 * u - 1)) * sc, rivets: 2 });
+  // the rust centre strap down the long front tongue
+  kiltPanel(ctx, env, gear, { ...base, a0: -0.07, a1: 0.07, len: () => 0.52 * sc, out: 0.026 * sc, rivets: 4 });
+  // leather panel at the back
+  kiltPanel(ctx, env, gear, { ...base, a0: Math.PI - 0.55, a1: Math.PI + 0.55, len: (u) => (0.3 - 0.16 * Math.abs(2 * u - 1)) * sc, rivets: 2 });
   // flank panels: squared, with a ragged lower edge
   for (const sg of [1, -1]) {
     const a0 = sg > 0 ? 0.85 : -1.5;
@@ -656,21 +660,17 @@ function bolgExtras(ctx: KindContext) {
     const t = scarTube(proj, w, 0.0045 * sc, 0.0006);
     if (t) gear(t, { bone, color: SCAR, mat: surface('skin_scarred', { rough: 0.45, skin: 0.4 }), small: true });
   }
-  void densePath;
-  void ribbon;
-  void hexBolt;
-  void URUK_PAL;
 }
 
 /** the outfit kilt's length and clearance; the rigid hip panels in bolgHipPanels follow it */
-const KILT = { length: 0.6, thickness: 0.03 };
+const KILT = { length: 0.72, thickness: 0.01 };
 
 export const bolgKind: KindDef = {
   label: 'Bolg',
   // legLength 1.08 puts the hip, and so the belt, at the sheet's 1.45-1.65 m (it was 0.15 m low).
   // 2.64: the hunch and the idle sag put the crown at 2.557 m in the calibrated lab for 2.6 (sheet 2.6)
-  height: 2.64,
-  build: { shoulders: 1.3, hips: 1.08, bulk: 1.25, chest: 1.18, belly: 0.03, armLength: 1.1, legLength: 1.08, headSize: 1.12, neck: 0.72, neckThick: 1.55, hunch: 0.15, handSize: 1.25, footSize: 1.2, muscle: 1.0 },
+  height: 2.66,
+  build: { shoulders: 1.3, hips: 1.08, bulk: 1.25, chest: 1.18, belly: 0.03, armLength: 1.1, legLength: 1.08, headSize: 1.12, neck: 0.8, neckThick: 1.55, hunch: 0.15, handSize: 1.25, footSize: 1.2, muscle: 1.0 },
   face: BOLG_FACE,
   skin: { color: BOLG_PAL.skin, color2: BOLG_PAL.skin2, blotch: 0.3, blemish: 0.4, scars: 5, warts: 0.06, wrinkles: 0.6, lips: BOLG_PAL.lips, brows: 0x4a4440, surface: 'skin_scarred', scatter: BOLG_PAL.scatter },
   eyes: { color: BOLG_PAL.eyes, glow: 0.2, sclera: 0xc8bba4 },
@@ -678,9 +678,9 @@ export const bolgKind: KindDef = {
   // bare legs under a tattered, layered knee-length kilt; shins and feet in worn wraps (sheet)
   outfit: [
     { type: 'wraps', color: 0x4f3e2e, thickness: 0.02 },
-    // charcoal cloth to just above the knee at the sides; six long dark points make the front-heavy V
+    // charcoal cloth to just above the knee at the sides; two long pointed tongues (front and back) make the V
     // (strips, ≈ 0.5 m at the centre), the rust leather is only the belt hangers
-    { type: 'skirt', color: BOLG_PAL.kilt, color2: BOLG_PAL.kilt2, mat: 'rags', length: KILT.length, thickness: KILT.thickness, tatter: 0.08, strips: { count: 6, color: 0x2e2a27, color2: BOLG_PAL.kilt2, mat: 'rags', width: 0.11, length: 2.0, phase: 0 } },
+    { type: 'skirt', color: BOLG_PAL.kilt, color2: BOLG_PAL.kilt2, mat: 'rags', length: KILT.length, thickness: KILT.thickness, tatter: 0.08, strips: { count: 2, color: 0x2e2a27, color2: BOLG_PAL.kilt2, mat: 'rags', width: 0.2, length: 1.7, phase: 0 } },
   ],
   armor: [],
   // the 'orc' look turns the mace into a spiked morning star (sheet)
