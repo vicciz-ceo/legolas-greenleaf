@@ -218,7 +218,7 @@ export const orcDef: KindDef = {
   armor: [],
   weapons: { right: 'cleaver', style: 'orc' },
   palette: ORC_PALETTE,
-  anim: { hunch: devNum('hunch', 0.9), swagger: 0.6, aggression: 0.75, stance: devNum('stance', 1.4), cadence: 1.1 },
+  anim: { hunch: devNum('hunch', 0.35), swagger: 0.6, aggression: 0.75, stance: devNum('stance', 1.25), cadence: 1.1, lean: devNum('lean', 0.85) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
   detail: { res: devNum('res', 0.052), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.5 },

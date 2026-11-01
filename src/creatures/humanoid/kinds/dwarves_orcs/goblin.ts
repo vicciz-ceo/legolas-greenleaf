@@ -193,9 +193,9 @@ export function goblinExtras(ctx: KindContext) {
 
 export const goblinDef: KindDef = {
   label: 'Moria goblin',
-  height: devNum('h', 1.4), // spec nominal 1.48; the standing lab pose is shorter until the base crouch exists (a crouched 1.1 m silhouette is the target)
+  height: devNum('h', 1.48),
   // sheet: lean and wiry with long limbs (bulk 0.15), deep crouch, big head, bat ears
-  build: { shoulders: devNum('sh', 1.35), hips: devNum('hips', 1.2), bulk: devNum('bulk', 1.2), belly: 0.0, chest: 0.88, armLength: devNum('arm', 1.6), legLength: devNum('leg', 0.86), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
+  build: { shoulders: devNum('sh', 0.95), hips: devNum('hips', 0.9), bulk: devNum('bulk', 0.8), belly: 0.0, chest: 0.9, armLength: devNum('arm', 1.32), legLength: devNum('leg', 0.9), headSize: 1.26, neck: 0.75, neckThick: 0.8, hunch: 0.78, handSize: 1.45, footSize: 1.25, muscle: 0.45 },
   face: FACE,
   skin: { color: G.skin, color2: G.skin2, blotch: 0.5, blemish: 0.5, scars: 2, warts: 0.6, wrinkles: 0.7, lips: 0x7a5a54, brows: 0x3a3028, surface: 'skin_orc', scatter: 0xb08070 },
   // large glinting amber eyes (#bb8b32)
@@ -211,7 +211,7 @@ export const goblinDef: KindDef = {
   weapons: { right: 'scimitar', style: 'orc' },
   palette: GOBLIN_PALETTE,
   // sheet: a deep scrambling crouch
-  anim: { hunch: 0.92, swagger: 0.3, aggression: 0.9, stance: 1.36, cadence: 1.2, armSwing: 1.3 },
+  anim: { hunch: devNum('hunch', 0.3), swagger: 0.3, aggression: 0.9, stance: devNum('stance', 1.4), cadence: 1.2, armSwing: 1.3, crouch: devNum('crouch', 0.9), lean: devNum('lean', 0.3) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
   detail: { res: devNum('res', 0.058), headRes: devNum('headRes', 0.0135), faceRes: 0, detailScale: 0.9 },
   sfx: { voice: 'goblin', grunt: 'goblin_screech', die: 'orc_die', roar: 'goblin_screech', weight: 0.35 },

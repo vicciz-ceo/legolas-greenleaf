@@ -204,7 +204,7 @@ export const gundabadDef: KindDef = {
   armor: [],
   weapons: { right: 'mace', style: 'orc' },
   palette: GUNDABAD_PALETTE,
-  anim: { hunch: 0.3, swagger: 0.5, aggression: 0.85, stance: 1.3 },
+  anim: { hunch: 0.25, swagger: 0.5, aggression: 0.85, stance: devNum('stance', 1.25), lean: devNum('lean', 0.7) },
   variation: { height: 0.04, bulk: 0.08, skin: 0.35 },
   detail: { res: devNum('res', 0.064), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.75 },
