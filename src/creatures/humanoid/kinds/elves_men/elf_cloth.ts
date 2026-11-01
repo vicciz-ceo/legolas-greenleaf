@@ -108,27 +108,38 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
   const a0 = Math.PI * 0.4;
   const a1 = Math.PI * 1.6;
   const nv = Math.max(9, Math.round(H / (0.1 * s)));
-  const nu = 24; // embroidery columns sit on k / 24
   const pleats = o.pleats ?? 7;
   const w: [number, number][] = [];
-  const rxTop = P.shoulderX * 0.62 + 0.03 * s;
-  const rzTop = 0.105 * s * Math.sqrt(g) * P.build.chest + 0.03 * s;
-  const rxMid = (o.rxMid ?? 0.3) * s;
+  const rxTop = P.shoulderX * 0.5 + 0.02 * s; // narrow at the clasp
+  const rzTop = 0.105 * s * Math.sqrt(g) * P.build.chest + 0.025 * s;
+  const rxMid = (o.rxMid ?? 0.28) * s;
   const rzMid = 0.17 * s * g;
   const rxHem = (o.rxHem ?? 0.43) * s;
   const rzHem = (o.rzHem ?? 0.25) * s;
   // rows: even steps down the cloak, then two close rows at the hem so the trim band has a crisp edge
   const vs: number[] = [];
-  for (let i = 0; i < nv - 1; i++) vs.push((i / (nv - 1)) * 0.95);
-  vs.push(0.957, 1);
+  for (let i = 0; i < nv - 1; i++) vs.push((i / (nv - 1)) * 0.96);
+  vs.push(0.97, 0.976, 1);
+  // columns: even steps across, a crisp trim strip at each front edge, and a thin inset line (three
+  // close columns) wherever there is embroidery
+  const embAt = o.embroider?.at ?? [];
+  const us: number[] = [0, 0.03, 0.034, 0.966, 0.97, 1];
+  const NU = 22;
+  for (let k = 1; k < NU; k++) {
+    const u = k / NU;
+    if (u > 0.05 && u < 0.95 && !embAt.some((e) => Math.abs(u - e) < 0.03)) us.push(u);
+  }
+  for (const e of embAt) us.push(e - 0.006, e, e + 0.006);
+  us.sort((x, y) => x - y);
+  const nu = us.length - 1;
   for (const v of vs) {
-    const sh = Math.min(1, v * 4.5); // shoulders -> hanging
+    const sh = Math.min(1, v * 3.4); // shoulders -> hanging
     const lo = Math.pow(v, 1.15); // hanging -> flared hem
     const rx = rxTop + (rxMid - rxTop) * Math.sqrt(sh) + (rxHem - rxMid) * lo;
     const rz = rzTop + (rzMid - rzTop) * Math.sqrt(sh) + (rzHem - rzMid) * lo;
     const amp = ((o.pleatDepth ?? 0.03) * Math.min(1, v * 1.6) + 0.005) * s;
     for (let iu = 0; iu <= nu; iu++) {
-      const u = iu / nu;
+      const u = us[iu];
       const a = a0 + (a1 - a0) * u;
       const ph = Math.sin(u * Math.PI * pleats);
       const fold = ph * amp * Math.min(1, v * 3);
@@ -138,13 +149,12 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
       const p = new THREE.Vector3(Math.sin(a) * (rx + fold), y, Math.cos(a) * (rz + fold) - 0.03 * s);
       _c.copy(base);
       // tone follows the pleat: crests lighter, troughs darker
-      _c.multiplyScalar(1 + 0.09 * ph * Math.min(1, v * 2.5) + 0.04 * n2(u * 13, 2.7));
-      const edge = u < 0.035 || u > 0.965;
-      if (v > 0.956 || edge) _c.lerp(trim, 0.75);
+      _c.multiplyScalar(1 + 0.09 * ph * Math.min(1, v * 2.5) + 0.04 * n2(u * 13, 2.7) + 0.05 * n2(u * 41, v * 7 + 1.3));
+      const edge = u <= 0.0301 || u >= 0.9699;
+      if (v > 0.9755 || edge) _c.lerp(trim, 0.7);
       if (emb && o.embroider) {
         for (const at of o.embroider.at) {
-          const d = Math.abs(u - at);
-          if (d < 0.02 && v > (o.embroider.from ?? 0.3) && v < 0.95) _c.lerp(_g.copy(emb), o.embroider.mix ?? 0.5);
+          if (Math.abs(u - at) < 0.002 && v > (o.embroider.from ?? 0.3) && v < 0.965) _c.lerp(_g.copy(emb), o.embroider.mix ?? 0.5);
         }
       }
       _t.copy(_c);
@@ -165,7 +175,7 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
         if (chains[1][k] >= 0) w.push([chains[1][k], cw * blendLR]);
       }
       const arcC = (a1 - a0) * (rxTop + rxHem) * 0.5;
-      pushVertex(b, p, _t, spec, 0.5 + 0.5 * Math.min(1, v * 2) - 0.12 * (0.5 - 0.5 * ph) * Math.min(1, v * 2), w, Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
+      pushVertex(b, p, _t, spec, 0.78 + 0.22 * Math.min(1, v * 2) - 0.08 * (0.5 - 0.5 * ph) * Math.min(1, v * 2), w, Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
     }
   }
   for (let iv = 0; iv < vs.length - 1; iv++)
