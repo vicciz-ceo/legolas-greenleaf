@@ -232,7 +232,9 @@ export function berserkerBelt(ctx: KindContext, gear: GearFn, proj: Projector, b
   // the long tongue of the belt: hangs from the buckle down the front of the kilt, a little to the left
   const x0 = 0.05 * sc;
   const y0 = beltY - 0.02 * sc;
-  const len = 0.86 * sc;
+  // down to a hand's width above the kilt's hem (hem = hip height minus 0.97 of the thigh length)
+  const hemY = P.j.thigh_l[1] - (P.j.thigh_l[1] - P.j.shin_l[1]) * 0.97;
+  const len = Math.max(0.3 * sc, y0 - (hemY + 0.08 * sc));
   const zk = r.zf + 0.055 * sc;
   const pts: THREE.Vector3[] = [];
   const nrm: THREE.Vector3[] = [];
