@@ -63,6 +63,9 @@ const LEAP_V = 7.9; // elven leap (second jump)
 const LEAP_BOOST = 1.6;
 const COYOTE = 0.12;
 const JUMP_BUFFER = 0.15;
+const DASH_BUFFER = 0.15;
+/** a click made during the nock window still draws (or quick-shoots) when it ends */
+const DRAW_BUFFER = 0.2;
 const DASH_DIST = 6;
 const DASH_TIME = 0.24;
 const DASH_IFRAMES = 0.3;
@@ -104,6 +107,8 @@ const ZERO_INPUT: InputState = {
   device: 'kbm',
 };
 
+/** the head point may sit this far (m) from the crosshair hit and still count as aimed at */
+const HEAD_AIM_NEAR = 0.6;
 const _v = new THREE.Vector3();
 const _v2 = new THREE.Vector3();
 const _wish = new THREE.Vector3();
@@ -112,6 +117,13 @@ const _aim = new THREE.Vector3();
 const _dir = new THREE.Vector3();
 const _lc = new THREE.Vector3();
 const _ld = new THREE.Vector3();
+
+/** the three best knife targets of a swing (lunge target first), reused: no per-swing allocation */
+const _kc: (Combatant | null)[] = [null, null, null];
+const _ks = [0, 0, 0];
+const _kdx = [0, 0, 0];
+const _kdz = [0, 0, 0];
+type HeadAimable = Combatant & { headPoint?: (o: THREE.Vector3) => THREE.Vector3 };
 
 type Tally = { kills: number; shots: number; hits: number; headshots: number; damageTaken: number };
 
@@ -142,6 +154,9 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
   // timers / state
   private lastReal = -1;
   private jumpBuffer = 0;
+  private dashBuffer = 0;
+  private drawBuffer = 0;
+  private prevDrawHeld = false;
   private jumpsUsed = 0;
   private airDashUsed = false;
   private dashT = -1;
@@ -356,10 +371,23 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     this.focus = Math.min(this.focus, n.focusMax);
   }
 
+  /**
+   * Abandon a bow draw without loosing (PlayerAPI.cancelDraw): pause, cinematics and other
+   * control cut-offs must not read as a release. Melee, dash and focus are untouched.
+   */
+  cancelDraw(): void {
+    this.drawing = false;
+    this.charge = 0;
+    this.drawBuffer = 0;
+    this.dashBuffer = 0;
+  }
+
   private resetActionState() {
     this.drawing = false;
     this.charge = 0;
     this.nock = 0;
+    this.drawBuffer = 0;
+    this.dashBuffer = 0;
     this.meleeHit = 0;
     this.meleeQueued = false;
     this.comboWindow = 0;
@@ -489,6 +517,30 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     return this.ctx.physics.raycast(from, _lc, Math.max(0, dist - 0.3), 'arrows') === null;
   }
 
+  /** the crosshair is on this target's head / weak point (and it exposes one) */
+  private aimsAtHead(t: Combatant): boolean {
+    const z = this.camera.aimZone;
+    if (!((z === 'head' || z === 'weakpoint') && this.camera.aimCombatant === t)) return false;
+    const hp = (t as HeadAimable).headPoint;
+    if (!hp) return false;
+    // headPoint() is the FIRST head / weak-point zone: with several (fell beast + rider) it may be another
+    // one than the crosshair is on, so only trust it when it lies at the crosshair hit
+    hp.call(t, _v2);
+    return _v2.distanceToSquared(this.camera.aimTarget) <= HEAD_AIM_NEAR * HEAD_AIM_NEAR;
+  }
+
+  /**
+   * Aim solution at `t` (head or chest point, led and ballistic-corrected) from the bow origin `_o`:
+   * leaves the led point in `_ld` and the launch direction in `_v2`; returns its angle from `_dir`.
+   */
+  private assistSolve(t: Combatant, speed: number, head: boolean): number {
+    if (head) (t as HeadAimable).headPoint!(_v);
+    else t.aimPoint(_v);
+    leadTarget(_o, _v, t.velocity, speed, _ld, 1);
+    ballisticDir(_o, _ld, speed, ARROW_GRAVITY, _v2);
+    return angleBetween(_dir, _v2);
+  }
+
   private assistEnabled(device: InputState['device']): boolean {
     return !!this.ctx.settings?.aimAssist || device !== 'kbm';
   }
@@ -560,12 +612,22 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     this.iframes -= dt;
     this.stun = Math.max(0, this.stun - dt);
     this.jumpBuffer -= dt;
+    this.dashBuffer -= dtReal;
+    this.drawBuffer -= dt; // game clock, like nock
     this.nock -= dt;
     this.comboWindow -= dt;
     this.meleeRecover -= dt;
     this.lockedHintT -= dtReal;
     this.hitReact = Math.max(0, this.hitReact - dt * 4);
     if (inp.jump) this.jumpBuffer = JUMP_BUFFER;
+    if (inp.dash) this.dashBuffer = DASH_BUFFER;
+    // input cut off mid-draw (cinematic, scripted control-off): abandon the draw, never loose it
+    if (inp === ZERO_INPUT) {
+      // a press made just before the cut-off must not fire when control returns
+      this.dashBuffer = 0;
+      this.drawBuffer = 0;
+      if (live && this.drawing) this.cancelDraw();
+    }
 
     // ── look (real-time deltas) ──
     const assist = this.assistEnabled(inp.device);
@@ -586,16 +648,16 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     }
 
     // ── arrow type ──
-    if (inp.arrowSlot || inp.nextArrow) this.switchArrow(inp);
+    if (inp.arrowSlot || inp.nextArrow || (inp as { prevArrow?: boolean }).prevArrow) this.switchArrow(inp);
 
     // ── focus ──
     this.focusCtl.update(dtReal, inp, canShoot && this.meleeHit === 0);
 
     // ── dash ──
-    if (inp.dash && canDash && this.dashCd <= 0 && this.dashT < 0 && (this.motor.grounded || !this.airDashUsed)) this.startDash(inp);
+    if (this.dashBuffer > 0 && canDash && this.dashCd <= 0 && this.dashT < 0 && (this.motor.grounded || !this.airDashUsed)) this.startDash(inp);
 
     // ── jump (also cancels a dash after its first frames: dash-jump keeps the momentum) ──
-    if (this.jumpBuffer > 0 && canJump && this.dashT >= 0.08 && !mover) {
+    if (this.jumpBuffer > 0 && canJump && this.dashT >= 0.08 && !mover && this.jumpAvailable()) {
       this.dashT = -1;
       const carry = this._stats.moveSpeed * 1.35;
       this.velocity.x = this.dashDir.x * carry;
@@ -693,7 +755,8 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       }
     } else {
       const i = unlocked.indexOf(this.arrowType);
-      this.arrowType = unlocked[(i + 1) % unlocked.length];
+      const back = !inp.nextArrow && !!(inp as { prevArrow?: boolean }).prevArrow;
+      this.arrowType = unlocked[(i + (back ? unlocked.length - 1 : 1)) % unlocked.length];
     }
     if (this.arrowType !== before) this.ctx.audio.play('ui_click', { volume: 0.5 });
   }
@@ -710,6 +773,7 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
   }
 
   private startDash(inp: InputState) {
+    this.dashBuffer = 0;
     const mag = this.wishDir(inp, this.dashDir);
     if (mag < 0.2) this.dashDir.set(Math.sin(this.facing), 0, Math.cos(this.facing));
     this.dashT = 0;
@@ -726,6 +790,12 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     if (this.motor.grounded) this.ctx.fx.dust(this.position, 6, this.dustColor());
     this.camera.punch(4);
     this.ctx.input.rumble(0.2, 80);
+  }
+
+  /** side-effect-free mirror of tryJump's conditions */
+  private jumpAvailable(): boolean {
+    const m = this.motor;
+    return ((m.grounded || m.airTime < COYOTE) && this.jumpsUsed === 0) || (!m.grounded && this.jumpsUsed < 2);
   }
 
   private tryJump(inp: InputState) {
@@ -791,8 +861,11 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     } else {
       const mag = this.stun > 0 ? 0 : this.wishDir(inp, _wish);
       const aimingMove = this.aimHeld || this.drawing || this.focusCtl.engaged;
-      const wantSprint = inp.sprintHeld && inp.moveY > 0.35 && !aimingMove && m.grounded && this.meleeHit === 0;
-      this.sprint = damp(this.sprint, wantSprint && mag > 0.5 ? 1 : 0, 5, dt);
+      // sprint in any direction but dominantly backward (A, D, W+A, W+D sprint; S, S+A, S+D do not)
+      const wishLen = Math.hypot(inp.moveX, inp.moveY);
+      const wantSprint = inp.sprintHeld && inp.moveY > -0.5 * wishLen && !aimingMove && m.grounded && this.meleeHit === 0;
+      // airborne: the takeoff sprint is latched, so a sprint jump keeps its speed and the camera does not pulse
+      if (m.grounded) this.sprint = damp(this.sprint, wantSprint && mag > 0.5 ? 1 : 0, 5, dt);
       let speed = aimingMove ? AIM_MOVE_SPEED * this.modMove : lerp(stats.moveSpeed, stats.moveSpeed * SPRINT_MUL, this.sprint);
       if (this.meleeHit > 0) speed *= 0.35;
       const tx = _wish.x * speed * mag;
@@ -929,7 +1002,10 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
 
   // ── bow ────────────────────────────────────────────────────────────────────
   private updateBow(dt: number, inp: InputState, can: boolean) {
+    const drawEdge = inp.drawHeld && !this.prevDrawHeld;
+    this.prevDrawHeld = inp.drawHeld;
     if (!can) {
+      this.drawBuffer = 0;
       if (this.drawing && !this.alive) this.drawing = false;
       if (this.drawing && this.stun > 0) this.drawing = false;
       if (this.drawing && (this.meleeHit > 0 || this.dashT >= 0 || this.focusCtl.engaged)) {
@@ -942,8 +1018,11 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       }
       return;
     }
-    if (!this.drawing && inp.drawHeld && this.nock <= 0) {
+    // a click that lands inside the nock window is kept: it draws (or quick-shoots) when nock ends
+    if (drawEdge && !this.drawing && this.nock > 0) this.drawBuffer = DRAW_BUFFER;
+    if (!this.drawing && (inp.drawHeld || this.drawBuffer > 0) && this.nock <= 0) {
       this.drawing = true;
+      this.drawBuffer = 0;
       this.charge = 0;
       if (this.knivesOut) this.holsterKnives();
       this.ctx.audio.play('bow_draw', { pos: this.position, volume: 0.7 });
@@ -991,22 +1070,28 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     if (this.assistEnabled(inp.device)) {
       let best: Combatant | null = null;
       let bestA = AIM_ASSIST_MAX;
+      let bestHead = false;
       for (const t of ctx.combatants.all()) {
         if (!t.alive || !t.targetable || !hostile(this.team, t.team)) continue;
         t.aimPoint(_v);
         if (_v.distanceToSquared(_o) > 80 * 80) continue;
-        leadTarget(_o, _v, t.velocity, speed, _ld, 1);
-        ballisticDir(_o, _ld, speed, ARROW_GRAVITY, _v2);
-        const a = angleBetween(_dir, _v2);
-        if (a < bestA && this.bowLineClear(_o, _ld, t)) {
+        // pointing at the head: assist toward the head (a chest snap would turn every headshot into x1)
+        let head = this.aimsAtHead(t);
+        let a = this.assistSolve(t, speed, head);
+        let clear = this.bowLineClear(_o, _ld, t);
+        if (head && !clear) {
+          head = false; // head line blocked: fall back to the chest
+          a = this.assistSolve(t, speed, false);
+          clear = this.bowLineClear(_o, _ld, t);
+        }
+        if (a < bestA && clear) {
           bestA = a;
           best = t;
+          bestHead = head;
         }
       }
       if (best) {
-        best.aimPoint(_v);
-        leadTarget(_o, _v, best.velocity, speed, _ld, 1);
-        ballisticDir(_o, _ld, speed, ARROW_GRAVITY, _v2);
+        this.assistSolve(best, speed, bestHead);
         rotateToward(_dir, _v2, AIM_ASSIST_MAX, _dir);
       }
     }
@@ -1158,6 +1243,10 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
     const fz = Math.cos(this.facing);
     let hits = 0;
     let killed = false;
+    // gather every combatant the swing can reach, keep the 3 best by (distance + angle) so the
+    // lunge target (nearest, dead ahead) is always struck, not whoever spawned first
+    _kc[0] = _kc[1] = _kc[2] = null;
+    _ks[0] = _ks[1] = _ks[2] = Infinity;
     for (const c of ctx.combatants.all()) {
       if (!c.alive || !hostile(this.team, c.team)) continue;
       const dx = c.position.x - this.position.x;
@@ -1170,6 +1259,28 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
         if (cos < Math.cos(KNIFE_CONE)) continue;
       }
       if (!meleeLineClear(ctx.physics, this, c)) continue;
+      const score = d - c.radius + Math.abs(wrapAngle(yawOf(dx, dz) - this.facing)) * 1.2;
+      if (score >= _ks[2]) continue;
+      let k = 2;
+      while (k > 0 && score < _ks[k - 1]) {
+        _kc[k] = _kc[k - 1];
+        _ks[k] = _ks[k - 1];
+        _kdx[k] = _kdx[k - 1];
+        _kdz[k] = _kdz[k - 1];
+        k--;
+      }
+      _kc[k] = c;
+      _ks[k] = score;
+      _kdx[k] = dx;
+      _kdz[k] = dz;
+    }
+    for (let k = 0; k < 3; k++) {
+      const c = _kc[k];
+      if (!c) break;
+      const dx = _kdx[k];
+      const dz = _kdz[k];
+      _kc[k] = null;
+      if (!c.alive) continue; // killed by an earlier hit of this same swing (or its splash)
       c.aimPoint(_v);
       _dir.set(dx, 0, dz).normalize();
       c.takeDamage({
@@ -1186,7 +1297,6 @@ class Player extends BaseCombatant implements PlayerAPI, CameraSubject {
       ctx.fx.blood(_v, _dir, bk, n === 3 ? 1.2 : 0.7);
       if (!c.alive) killed = true;
       hits++;
-      if (hits >= 3) break;
     }
     if (hits) {
       ctx.audio.play('knife_hit', { pos: this.position, volume: 1, pitch: 0.95 + n * 0.05 });
