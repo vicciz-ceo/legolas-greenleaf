@@ -40,8 +40,8 @@ export const BOLG_PAL = {
   fur: 0x241d17,
   leather: 0x5a3b28, // coarse leather #4f3827 (lit #674539)
   leatherDark: 0x40291b,
-  kilt: 0x3a3430, // charcoal cloth (sheet #3c332b design, lit #433a36): not pure black
-  kilt2: 0x2a2622,
+  kilt: 0x2f2923, // dark charcoal-brown cloth (sheet #3c332b design, lit #433a36)
+  kilt2: 0x211d19,
   stubble: 0x4a3626, // sheet beard: warm brown stubble-fuzz, not black
   ivory: 0xc9ad6a, // fangs: warm ivory
 };
@@ -268,14 +268,14 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
   const rot = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), top);
   const R = 0.128 * sc * g;
   /** dome height of the lames (flat layered plates, not domes) */
-  const LY = 0.72;
-  const c = J.clone().addScaledVector(L, 0.025 * sc).add(V(-0.043 * side * sc, 0.0, 0));
+  const LY = 0.86;
+  const c = J.clone().addScaledVector(L, 0.025 * sc).add(V(-0.043 * side * sc, 0.012 * sc, 0));
   // outward-ness of an azimuth (local +X is outward for the left, inward for the right shoulder)
   const outw = (a: number) => Math.sin(a) * side;
   // torn edge: deep on the outside of the arm, shallow toward the neck; saw-tooth tatters
   const jag = (a: number) => {
     const f = ((a * 2.9) % 1 + 1) % 1;
-    return 0.24 * Math.abs(f - 0.5) * 2 + 0.07 * Math.sin(a * 11.3) + 0.05 * Math.sin(a * 23.1);
+    return 0.16 * Math.abs(f - 0.5) * 2 + 0.06 * Math.sin(a * 11.3) + 0.04 * Math.sin(a * 23.1);
   };
   const el0 = (a: number) => lerp(0.42, -0.62, (outw(a) + 1) / 2) - jag(a);
   const lfn = ellipsoidFn(c, [R * 1.12, R * 0.78, R * 1.1], [-Math.PI, Math.PI], [el0, Math.PI / 2 - 0.05], { rot });
@@ -285,7 +285,7 @@ function bolgPauldron(ctx: KindContext, gear: GearFn, side: 1 | -1) {
     const axis = top.clone().lerp(L, k * 0.2).normalize();
     const rk = new THREE.Quaternion().setFromUnitVectors(V(0, 1, 0), axis);
     const Rk = R * (1.1 - k * 0.035);
-    const ck = c.clone().addScaledVector(L, k * 0.058 * sc);
+    const ck = c.clone().addScaledVector(L, k * 0.042 * sc);
     const half = (64 - k * 6) * (Math.PI / 180);
     const fn = ellipsoidFn(ck, [Rk * 1.14, Rk * LY, Rk * 1.16], [-Math.PI, Math.PI], [Math.PI / 2 - half, Math.PI / 2], { rot: rk });
     gear(shellPatch(fn, 14, 3, 0.009 * sc, { closedU: true, noInner: true, thickFn: (_u, v) => 1 + 1.2 * (1 - smooth(0, 0.18, v)), skip: ['v1'] }), { bone, color: BOLG_PAL.iron, mat: IRON_RUSTY, ao: 0.82 });
@@ -495,7 +495,8 @@ function bolgKiltLiner(ctx: KindContext, parts: ReturnType<typeof anatomyParts>)
   const sc = P.s;
   const hipY = P.j.thigh_l[1];
   const kneeY = P.j.shin_l[1];
-  const bottom = hipY - (hipY - kneeY) * KILT.length * 1.1 + 0.01 * sc;
+  // (pass 3) down to the greave tops: a shorter liner left bare thigh between hem and greaves
+  const bottom = kneeY + 0.045 * sc;
   s.group('union', 0.003 * sc, () => {
     emitParts(s, parts, ['thigh', 'knee', 'glutes', 'pelvis'], { color: BOLG_PAL.kilt2, mat: surface('rags', { rough: 0.95 }), inflate: 0.05 * sc * Math.sqrt(P.build.bulk), k: 0.02 * sc });
     s.plane([0, 1, 0], hipY + 0.05 * sc, { op: 'intersect', k: 0.004 * sc });
@@ -522,10 +523,10 @@ function bolgHipPanels(ctx: KindContext, gear: GearFn) {
   const base = { color: BOLG_PAL.leather, mat: LEATHER, rivetColor: 0x6a4a34, rivetMat: IRON };
   // front plate: pointed at the centre
   kiltPanel(ctx, env, gear, { ...base, a0: -0.5, a1: 0.5, len: (u) => (0.3 - 0.2 * Math.abs(2 * u - 1)) * sc, rivets: 2 });
-  // the rust centre strap down the long front tongue
+  // the rust centre strap down the front of the kilt
   kiltPanel(ctx, env, gear, { ...base, a0: -0.07, a1: 0.07, len: () => 0.52 * sc, out: 0.026 * sc, rivets: 2 });
-  // leather panel at the back
-  kiltPanel(ctx, env, gear, { ...base, a0: Math.PI - 0.55, a1: Math.PI + 0.55, len: (u) => (0.3 - 0.16 * Math.abs(2 * u - 1)) * sc, rivets: 0 });
+  // two thin vertical straps at the back (the sheet's back kilt hangers)
+  for (const d of [-0.3, 0.3]) kiltPanel(ctx, env, gear, { ...base, a0: Math.PI + d - 0.06, a1: Math.PI + d + 0.06, len: () => 0.34 * sc, out: 0.02 * sc, rivets: 0 });
   // flank panels: squared, with a ragged lower edge
   for (const sg of [1, -1]) {
     const a0 = sg > 0 ? 0.85 : -1.5;
@@ -663,7 +664,7 @@ function bolgExtras(ctx: KindContext) {
 }
 
 /** the outfit kilt's length and clearance; the rigid hip panels in bolgHipPanels follow it */
-const KILT = { length: 0.72, thickness: 0.02 };
+const KILT = { length: 0.6, thickness: 0.03 }; // (pass-3 layering: six long strips over the cloth)
 
 export const bolgKind: KindDef = {
   label: 'Bolg',
@@ -678,9 +679,9 @@ export const bolgKind: KindDef = {
   // bare legs under a tattered, layered knee-length kilt; shins and feet in worn wraps (sheet)
   outfit: [
     { type: 'wraps', color: 0x4f3e2e, thickness: 0.02 },
-    // charcoal cloth to just above the knee at the sides; two long pointed tongues (front and back) make the V
+    // charcoal cloth to just above the knee at the sides; six long dark points make the V
     // (strips, ≈ 0.5 m at the centre), the rust leather is only the belt hangers
-    { type: 'skirt', color: BOLG_PAL.kilt, color2: BOLG_PAL.kilt2, mat: 'rags', length: KILT.length, thickness: KILT.thickness, tatter: 0.08, strips: { count: 2, color: 0x2e2a27, color2: BOLG_PAL.kilt2, mat: 'rags', width: 0.2, length: 1.7, phase: 0 } },
+    { type: 'skirt', color: BOLG_PAL.kilt, color2: BOLG_PAL.kilt2, mat: 'rags', length: KILT.length, thickness: KILT.thickness, tatter: 0.08, strips: { count: 6, color: 0x2a2520, color2: BOLG_PAL.kilt2, mat: 'rags', width: 0.11, length: 2.0, phase: 0 } },
   ],
   armor: [],
   // the 'orc' look turns the mace into a spiked morning star (sheet)

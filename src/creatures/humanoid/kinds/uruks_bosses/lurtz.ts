@@ -193,8 +193,9 @@ export const lurtzKind: KindDef = {
   outfit: [
     // wrapped boots to ≈ 0.44 m (the raised bands are sculpted in lurtz_parts); a bare calf shows above
     { type: 'boots', color: LURTZ_PAL.wrap, color2: 0x1c1712, length: LURTZ_BOOT_LENGTH },
-    // near-black charcoal kilt: sides to ≈ 0.55 m, the grimy brown central flap makes the V to ≈ 0.45 m
-    { type: 'skirt', color: LURTZ_PAL.kilt, color2: LURTZ_PAL.kilt2, mat: 'rags', length: LURTZ_KILT.length, thickness: LURTZ_KILT.thickness, tatter: 0.05, strips: { count: 2, color: LURTZ_PAL.flap, color2: LURTZ_PAL.beltDark, mat: 'rags', width: 0.09, length: 1.25, phase: 0 } },
+    // near-black charcoal kilt (sides to ≈ 0.55 m) with one grimy brown flap down the front (pass-3 strip:
+    // two strips, or a wider one, read as a codpiece with a pale tab)
+    { type: 'skirt', color: LURTZ_PAL.kilt, color2: LURTZ_PAL.kilt2, mat: 'rags', length: LURTZ_KILT.length, thickness: LURTZ_KILT.thickness, tatter: 0.05, strips: { count: 1, color: LURTZ_PAL.flap, color2: LURTZ_PAL.beltDark, mat: 'rags', width: 0.09, length: 1.25, phase: 0 } },
   ],
   armor: [],
   weapons: { right: 'sword', left: 'uruk_bow', back: ['shield'], style: 'uruk' },

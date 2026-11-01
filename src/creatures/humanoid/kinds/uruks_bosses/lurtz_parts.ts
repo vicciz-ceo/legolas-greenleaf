@@ -127,12 +127,15 @@ export function lurtzBelt(ctx: KindContext, parts: ReturnType<typeof anatomyPart
   }
 }
 
+/** boot height as a fraction of knee-above-ankle: shared by the outfit layer and the wrap bands */
+export const LURTZ_BOOT_LENGTH = 0.7;
+
 /** raised binding bands over the boots (sheet: layered cloth/leather wraps from the ankle to
  *  ≈ 0.44 m on a 2.1 m figure; the calf is bare above and below the kilt hem) */
 export function lurtzBootWraps(ctx: KindContext, parts: ReturnType<typeof anatomyParts>) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  const bootTop = P.ankleH + (P.j.shin_l[1] - P.ankleH) * LURTZ_BOOT_LENGTH; // the 'boots' outfit layer (length 0.7)
+  const bootTop = P.ankleH + (P.j.shin_l[1] - P.ankleH) * LURTZ_BOOT_LENGTH; // the 'boots' outfit layer (LURTZ_BOOT_LENGTH)
   const n = 5;
   const y0 = P.ankleH + 0.025 * sc;
   const step = (bootTop - 0.02 * sc - y0) / n;
@@ -148,9 +151,6 @@ export function lurtzBootWraps(ctx: KindContext, parts: ReturnType<typeof anatom
     });
   }
 }
-
-/** boot height as a fraction of knee-above-ankle: shared by the outfit layer and the wrap bands */
-export const LURTZ_BOOT_LENGTH = 0.7;
 
 /** the kilt as the outfit layer builds it (see lurtz.ts) */
 export const LURTZ_KILT = { length: 0.8, thickness: 0.03 };
@@ -190,7 +190,7 @@ export function lurtzFangs(ctx: KindContext, gear: GearFn) {
 }
 
 /** chunky black locks (sheet: a big loose mane that frames the face, covers the neck and falls past the
- *  shoulders): three per side from ear height to the chest, and five behind the neck down the back */
+ *  shoulders): three per side from ear height to the chest, (the back mass was removed: it cut skyline-shaped holes through the shield on the back) */
 export function lurtzHairLocks(ctx: KindContext, gear: GearFn) {
   const { P } = ctx;
   const sc = P.s;
@@ -211,15 +211,5 @@ export function lurtzHairLocks(ctx: KindContext, gear: GearFn) {
       ];
       lock(pts, V(sx * 0.6, 0, 0.8).normalize(), 0.06 * sc, 0.03 * sc, 'head');
     }
-  }
-  for (let i = 0; i < 5; i++) {
-    const x = (i - 2) * 0.05 * sc;
-    const pts = [
-      V(...P.h((i - 2) * 0.12, -0.38, -0.42)),
-      V(x, j.neck[1] - 0.01 * sc, -0.085 * sc),
-      V(x * 1.15, chestY - 0.1 * sc, -0.14 * sc),
-      V(x * 1.3, chestY - 0.3 * sc, -0.15 * sc),
-    ];
-    lock(pts, V(0, 0, -1), 0.065 * sc, 0.035 * sc, 'chest');
   }
 }
