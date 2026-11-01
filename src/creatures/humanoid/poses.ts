@@ -50,6 +50,12 @@ export interface BodyMetrics {
   footLen: number;
   height: number;
   style: AnimStyle;
+  /** true bone lengths of the leg chain (hip joint → knee → ankle); `legLen` is only the vertical span */
+  thighLen: number;
+  shinLen: number;
+  /** rest ankle relative to its hip joint, horizontal (m): outward distance (left leg) and forward offset */
+  ankleDX: number;
+  ankleDZ: number;
 }
 
 export function lerpPose(out: Pose, a: Pose, b: Pose, t: number): Pose {
@@ -113,15 +119,46 @@ export function neutralPose(B: BodyMetrics, p: Pose): Pose {
 // Idle & locomotion
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Deepest knee flexion (rad, 0 = straight leg) that a standing stance (idle, the base of the walk)
+ * may take. The style terms (hunch, aggression) lower the pelvis by multiples of the BODY SCALE and
+ * know nothing of the leg length, so a short-legged or very hunched kind used to fold both knees
+ * into a squat (trolls idled at 49-57 deg, goblins 53 deg; a man stands at ~27 deg).
+ */
+export const MAX_STANCE_FLEX = (40 * Math.PI) / 180;
+
+/** the idle's weight shift: pelvis sway (× body scale) and roll (rad) at full shift */
+const IDLE_SWAY = 0.016;
+const IDLE_ROLL = 0.028;
+
+/**
+ * Pelvis offset (m, ≤ 0) of a standing stance: the style's wish `want`, but never so low that a knee
+ * flexes past MAX_STANCE_FLEX. Each leg is a two-bone chain from its hip joint to the ankle target, so
+ * the flexion follows from the hip→ankle distance D (law of cosines): D² = thigh² + shin² + 2·thigh·shin·cos(flex).
+ * `feet` are the horizontal offsets [dx, dz] (m) of each ankle target from its hip joint; `swayX` / `swayY`
+ * (m) are how far the hips may drift sideways / drop below the pelvis offset (the idle's weight shift),
+ * so the limit also holds at the worst moment of the sway. Exact for any build and height and free of
+ * thresholds: the stance changes continuously with the proportions (a kind under the limit is untouched).
+ */
+export function stanceDrop(B: BodyMetrics, want: number, feet: readonly (readonly [number, number])[], swayX = 0, swayY = 0): number {
+  const dMin2 = B.thighLen * B.thighLen + B.shinLen * B.shinLen + 2 * B.thighLen * B.shinLen * Math.cos(MAX_STANCE_FLEX);
+  let need = 0;
+  for (const [dx, dz] of feet) {
+    const h = Math.hypot(Math.max(0, Math.abs(dx) - swayX), dz);
+    need = Math.max(need, Math.sqrt(Math.max(0, dMin2 - h * h))); // the foot straight below its hip needs the most height
+  }
+  const floor = Math.min(0, need + swayY - (B.hipY - B.ankleH));
+  return Math.max(want, floor);
+}
+
 export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   neutralPose(B, p);
   const st = B.style;
   const s = B.s;
   const breath = Math.sin((t * Math.PI * 2) / 4.2);
   const shift = Math.sin(t * 0.37) * 0.7 + Math.sin(t * 0.13 + 1.3) * 0.3;
-  p[F.px] = 0.016 * s * shift;
-  p[F.pr] = -0.028 * shift;
-  p[F.py] = -0.012 * s - 0.03 * s * st.aggression - 0.04 * s * st.hunch;
+  p[F.px] = IDLE_SWAY * s * shift;
+  p[F.pr] = -IDLE_ROLL * shift;
   p[F.sp] = 0.06 * st.hunch + 0.01 * breath;
   p[F.cp] = -0.018 * breath + 0.18 * st.hunch;
   p[F.cr] = 0.02 * shift;
@@ -137,6 +174,14 @@ export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   p[F.frz] = -0.02 * s;
   p[F.flyaw] = 0.12;
   p[F.fryaw] = -0.22;
+  // pelvis drop: the style's crouch, kept inside the knee-flexion limit for these feet (and for the sway above)
+  p[F.py] = stanceDrop(
+    B,
+    -0.012 * s - 0.03 * s * st.aggression - 0.04 * s * st.hunch,
+    [[B.ankleDX + p[F.flx], B.ankleDZ + p[F.flz]], [B.ankleDX - p[F.frx], B.ankleDZ + p[F.frz]]],
+    IDLE_SWAY * s,
+    IDLE_ROLL * B.hipX,
+  );
   // arms: aggression → arms out and forward; hunch → arms hang forward
   const ao = st.aggression;
   hands(p, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch);
@@ -177,7 +222,9 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
   // pelvis & torso
   const sw = 1 + st.swagger * 1.5;
   p[F.px] = 0;
-  p[F.py] = g.pelvisY * (1 - st.grace * 0.3) - 0.012 * s - 0.03 * s * st.aggression - 0.05 * s * st.hunch;
+  // base crouch of the style, kept inside the knee-flexion limit for feet under the hips (the gait's stride only adds reach)
+  const under: [number, number] = [B.ankleDX, B.ankleDZ];
+  p[F.py] = g.pelvisY * (1 - st.grace * 0.3) + stanceDrop(B, -0.012 * s - 0.03 * s * st.aggression - 0.05 * s * st.hunch, [under, under]);
   p[F.pr] = g.pelvisRoll * sw;
   p[F.pyaw] = g.pelvisYaw * (0.6 + 0.4 * Math.abs(fwd)) * Math.sign(fwd || 1) * (1 + st.swagger * 0.5);
   const lean = (0.03 + 0.17 * run + 0.06 * Math.max(0, speed - 7) / 2) * fwd;
