@@ -50,7 +50,7 @@ Most of the older docs were written for parallel Claude Code subagents.
 npm run dev                         # http://127.0.0.1:3000  (/?chapter=<id>&cp=<n>&skipIntro=1&god=1&bot=1, /lab/)
 npm run typecheck
 npm run build
-node src/physics/run-tests.mjs      # 359 unit tests, all must pass
+node src/physics/run-tests.mjs      # 13 suites, all must pass (counts in docs/handoff/STATUS.md)
 ```
 `node_modules` and Playwright's Chromium are already installed. Do **not** run `npm ci` unless `package-lock.json`
 changed and you have network, because it deletes `node_modules` first. On a fresh machine:

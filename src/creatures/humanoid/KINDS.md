@@ -212,7 +212,21 @@ Lessons that cost passes:
 * **Shared helpers have contracts:** a change to an exported helper (`uruk.ts` `pauldron()`, `ORC_FACE`) needs a
   0-pixel diff on every importer (Lurtz, Bolg, trolls) before it merges.
 * **Held props:** sizes are fixed by `weapons.test.ts`; scale per character with `scaleHeldWeapon`, and stow
-  copies by measuring the guard's wide axis (Tauriel's sheath roll) rather than a fixed angle.
+  copies by measuring the guard's wide axis (Tauriel's sheath roll) rather than a fixed angle. Every per-kind
+  prop scale is mirrored in `carry.test.ts` `KIND_SCALE`; update that row with the kind, or the test fails. Scale
+  crowd props to the body: a full-size cleaver on a 1.1 m goblin or a 1.4 m dwarf hangs diagonally into the floor.
+* **Fused legs:** close a crotch hole with a short bridge at the crotch only (a few cm). A bridge down the inner
+  thighs fuses the legs into one block (the dwarves' pass 4). The mesher hole fix made most bridges unnecessary.
+* **Smooth blends cross gaps:** parts emitted in one group with a large blend radius merge across the gap
+  between the legs (the Easterling's knee cops became one gold band). Emit per-leg parts in their own mirrored
+  group (`s.mirrored`, `oneSide`) with a small `k`.
+* **The idle style can kneel a kind:** `anim.hunch` / `aggression` / `stance` ask for a pelvis drop that the
+  40° stance cap clamps; at high values the cap is hit every idle and a big kind reads as kneeling (the trolls'
+  pass 4). Check the real idle knee flex before blaming leg length.
+* **Readability over IoU:** slimmer, separated legs or a hanging prop can cost IoU while reading closer to the
+  sheet; the panel's judgement wins, and a drop is fine when the reason is named.
+* **Lank hair:** `makeOrcHair` hugs the skull by default (`hug: 0`); the `free` option lets strands fall (the
+  goblin). Kit strand hair needs real length to clear the skull before gravity shows.
 
 ## Performance rules of thumb
 

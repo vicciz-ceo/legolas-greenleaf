@@ -1,5 +1,7 @@
 # Handoff: continuing Greenleaf on your machine
 
+> **2026-11-01:** a cloud session continued on branch `claude/fervent-archimedes-2puz7y`: mouse look without buttons, gameplay fixes, and every humanoid refined against its reference sheet. Results, gates and follow-ups: [`docs/handoff/STATUS.md`](docs/handoff/STATUS.md) (last section).
+>
 > **Superseded on 2026-10-11 by [`docs/handoff/CODEX_HANDOFF.md`](docs/handoff/CODEX_HANDOFF.md)** (handoff to Codex). This file is kept for its quick start, URLs and history. Its "✅ done" art rows did not hold up to the owner's review: re-verify any visual claim against `docs/refs/`.
 
 Snapshot taken 2026-10-11, when the cloud build session was stopped.
@@ -52,7 +54,7 @@ Chapter ids, in story order: `mirkwood`, `barrels`, `laketown`, `ravenhill`, `mo
 ```bash
 npm run typecheck
 npm run build
-node src/physics/run-tests.mjs      # physics 61, combat 54, shell 208, finishing 36: all must pass
+node src/physics/run-tests.mjs      # 13 suites (physics, combat, shell, finishing, player, weapons, stance, carry, attack, mesher, input, victory, boromir): all must pass
 ```
 
 Headless snapshots and the smoke test need Chromium:
