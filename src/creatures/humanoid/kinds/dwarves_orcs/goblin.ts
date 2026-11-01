@@ -42,9 +42,9 @@ export const GOBLIN_PALETTE = {
   iron: 0x4a3f34,
   rust: 0x7a4a2c,
   cord: 0x6a5238,
-  hair: 0x2a221b,
-  hairTip: 0x3a2f26,
-  skin: 0x9a7a6a, // warmer than the lit pinkish grey: the kit's skin shader adds a green cast to orc skin
+  hair: 0x2a2420,
+  hairTip: 0x2a2420,
+  skin: 0x8e7c70, // warmer than the lit pinkish grey: the kit's skin shader adds a green cast to orc skin
   skin2: 0x705a4e,
   scar: 0x8a4a40,
 };
@@ -178,7 +178,7 @@ function dressGoblin(ctx: KindContext, rng: Rng, b: number) {
   // ── sparse long stringy hair (the sheet's crown is nearly bald)
   const hg = makeOrcHair(
     ctx,
-    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.34 : 0.28) * sc, count: ctx.helmet ? 8 : b === 1 ? 10 : 20, width: 0.012, wave: 0.8, wild: 0.9, comb: 0.8, front: 0.45, back: -0.42, gravity: 7, segments: 5, maxY: 0.2, maxZ: 0.05 },
+    { color: G.hair, tip: G.hairTip, deep: 0x1a140f, length: (b === 3 ? 0.2 : 0.17) * sc, count: ctx.helmet ? 8 : 12, width: 0.008, wave: 0.5, wild: 0.3, comb: 0.3, front: 0.45, back: -0.42, gravity: 7, segments: 5, maxY: 0.0, maxZ: -0.02 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, goblinHairMaterial());

@@ -20,6 +20,7 @@ import { DOME_CONICAL, DOME_POINTED, DOME_ROUND, IRON, STEEL, domeHelm, hornPair
 import { faceStroke, scalpStroke } from './markings';
 import { ORC_FACE } from './orc';
 import { STRAP, armSpikes, beltBand, greaves, leafPauldron, longBracers, orcFittings, orcProjector, shinWraps, strapBand, thighCloth } from './orc_gear';
+import { anatomyParts, emitParts } from '../../anatomy';
 import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
 
 /**
@@ -29,9 +30,9 @@ import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcpar
  * (arm #8c7e7f, face #b7a9ae), iris #baa24f (the face crop shows amber-orange).
  */
 export const GUNDABAD_PALETTE = {
-  kilt: 0x57402a, // outer burlap (#6a4e30 design-ish; the lab renders it paler)
-  kiltHem: 0x6a5238,
-  kiltUnder: 0x3e2e1f, // inner dark layer (thigh cloth) and the leather strips
+  kilt: 0x45331f, // outer burlap: dark and desaturated (the lab renders it ~#6a4e30)
+  kiltHem: 0x4f3b28,
+  kiltUnder: 0x3a2b1d, // inner dark layer (thigh cloth) and the leather strips
   wrap: 0x3c2c1e, // boots of wraps
   leather: 0x40322a, // waist bindings
   leatherDark: 0x2a2019,
@@ -118,6 +119,14 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   // skin first: the bare chest is part of the look (torso tint), garments come after
   skinTint(ctx, { dim: 1, color: look.skin, color2: look.skin2, noise: 0.55, torso: true, legs: true, legRange: [0.25, 0.9], sleeve: 0 });
   skinMottle(ctx, rng, look.mottle, { n: 14, torso: true, strength: 0.4 });
+  // a little more upper-arm and shoulder mass (the sheet's arms are huge)
+  {
+    const { sculpt: s } = ctx;
+    const parts = anatomyParts(P);
+    s.group('union', 0.01 * sc, () => {
+      emitParts(s, parts, ['upperarm', 'deltoid'], { color: look.skin, color2: look.skin2, colorNoise: 0.5, colorFreq: 16 / sc, mat: 'skin_orc', inflate: 0.012 * sc });
+    });
+  }
   eyeRings(ctx, 0x4a2a30, 0.55);
   orcTeeth(ctx, rng, { n: 8, big: 1.9, color: 0xdcc47c, thick: 2.6 });
   // scars: pink-red healed cuts across the face and chest (sheet), plus ink on the brutes
@@ -139,21 +148,22 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   // inner layer of the kilt: dark cloth over the thighs, so no skin shows through the panels
   const kiltBottom = hipY - (hipY - kneeY) * 0.86 * 1.1;
   thighCloth(ctx, { color: P_.kiltUnder, color2: 0x2e2218, bottom: kiltBottom + 0.07 * sc, top: hipY + 0.05 * sc, inflate: 0.012 * sc });
-  longBracers(ctx, { color: P_.leather, color2: P_.leatherDark, length: 0.8, inflate: 0.013 * sc });
+  // huge bracers from wrist to elbow, standing well off the arm
+  longBracers(ctx, { color: P_.leather, color2: P_.leatherDark, length: 0.85, inflate: 0.03 * sc });
   const shinBottom = P.ankleH - 0.004 * sc;
   const shinTop = kneeY - 0.03 * sc;
   shinWraps(ctx, { color: P_.wrap, color2: P_.leatherDark, top: shinTop, bottom: shinBottom, inflate: 0.015 * sc, feet: true });
   boneNecklace(ctx, { rng, n: 6 });
   // ── armour tiers: spiked pauldrons, then greaves / bracer spikes / the chest plate
   if (A >= 0.25) {
-    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 5 });
-    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 5 });
+    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.05, layers: ctx.helmet ? 3 : 4, spikes: ctx.helmet ? 3 : 5 });
+    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.05, layers: ctx.helmet ? 3 : 4, spikes: ctx.helmet ? 3 : 5 });
   }
   if (ctx.helmet) helmet(ctx, b);
   // ── hair: long, loose, dark
   const hg = makeOrcHair(
     ctx,
-    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.1 },
+    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.35, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.0, maxY: 0.22, part: 0.03 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, gundabadHairMaterial());
@@ -162,7 +172,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   if (proj) {
     if (A >= 0.5) {
       greaves(ctx, proj, { iron: P_.iron, rust: P_.rust, rng, top: shinTop - 0.01 * sc, bottom: shinBottom + 0.14 * sc, spikes: 3, size: 1.3, knee: true });
-      armSpikes(ctx, proj, { iron: P_.iron, count: 3, from: 0.28, to: 0.78, len: 0.034 });
+      armSpikes(ctx, proj, { iron: P_.iron, count: ctx.helmet ? 4 : 6, from: 0.22, to: 0.84, len: 0.038 });
       // spiked plate on the breastbone where the harness crosses
       const hp = new THREE.Vector3(), hn = new THREE.Vector3();
       const cy = P.j.chest[1] + 0.08 * sc;
@@ -199,7 +209,7 @@ export const gundabadDef: KindDef = {
   beard: null,
   outfit: [
     // coarse brown kilt, ragged hem, with dark leather strips hanging over it (sheet)
-    { type: 'skirt', color: P_.kilt, color2: P_.kiltHem, mat: 'rags', length: devNum('kilt', 0.86), thickness: devNum('kgrow', 0.045), tatter: 0.07, strips: { count: 5, color: P_.leatherDark, color2: P_.leather, mat: STRAP, width: 0.07, length: 0.9, phase: 0.2 } },
+    { type: 'skirt', color: P_.kilt, color2: P_.kiltHem, mat: 'rags', length: devNum('kilt', 0.86), thickness: devNum('kgrow', 0.045), tatter: 0.07, strips: { count: 5, color: 0x3c2c1e, color2: 0x34261a, mat: STRAP, width: 0.07, length: 0.9, phase: 0.2 } },
   ],
   armor: [],
   weapons: { right: 'mace', style: 'orc' },

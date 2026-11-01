@@ -140,12 +140,13 @@ export function longBracers(ctx: KindContext, o: { color: number; color2: number
 }
 
 /** bunched cloth wraps on the shins (sheet: wrapped to just under the knee, ragged top and bottom) */
-export function shinWraps(ctx: KindContext, o: { color: number; color2: number; top: number; bottom: number; inflate: number; mat?: SurfaceSpec; /** wrap the feet too (boots of wraps) */ feet?: boolean }) {
+export function shinWraps(ctx: KindContext, o: { color: number; color2: number; top: number; bottom: number; inflate: number; mat?: SurfaceSpec; /** wrap the feet too (boots of wraps) */ feet?: boolean; /** foot wrap thickness (default: same as the shin) */ footInflate?: number }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const parts = anatomyParts(P);
   s.group('union', 0.004 * sc, () => {
-    emitParts(s, parts, o.feet ? ['shin', 'calf', 'foot', 'toes'] : ['shin', 'calf'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.inflate, noise: { amp: 0.003 * sc, freq: 40 / sc, type: 'ridged' } });
+    if (o.feet) emitParts(s, parts, ['foot', 'toes'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.footInflate ?? o.inflate });
+    emitParts(s, parts, ['shin', 'calf'], { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 22 / sc, mat: o.mat ?? RAGS, k: 0.02 * sc, inflate: o.inflate, noise: { amp: 0.003 * sc, freq: 40 / sc, type: 'ridged' } });
     slab(s, o.feet ? null : o.bottom, o.top, 0.006 * sc);
     s.plane([0, 1, 0], o.top, { op: 'paint', seam: 0, k: 0.002 });
   });
@@ -340,8 +341,8 @@ export function leafPauldron(ctx: KindContext, side: 'l' | 'r', o: { iron: numbe
   const L = P.hand.l.L;
   const size = o.size ?? 1;
   const g = Math.sqrt(P.build.bulk);
-  const cx = sh[0] + sx * L.x * 0.03 * sc;
-  const cy = sh[1] + L.y * 0.03 * sc;
+  const cx = sh[0] + sx * (L.x * 0.03 + 0.05 * size) * sc;
+  const cy = sh[1] + L.y * 0.03 * sc - 0.022 * sc;
   const zc = sh[2] - 0.022 * sc;
   const R = (0.052 * g * size + 0.026) * sc;
   const col = rustFn(o.iron, o.rust, 0x8a7a64, 0.62);

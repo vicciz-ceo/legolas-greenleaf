@@ -31,6 +31,8 @@ export interface OrcHairOpts {
   maxY?: number;
   /** skip roots in front of this z (head units): nothing starts over the brow */
   maxZ?: number;
+  /** half-width of a centre part (head units): no roots on the crown line */
+  part?: number;
 }
 
 export function makeOrcHair(ctx: KindContext, o: OrcHairOpts, rng: Rng): THREE.BufferGeometry | null {
@@ -86,7 +88,7 @@ export function makeOrcHair(ctx: KindContext, o: OrcHairOpts, rng: Rng): THREE.B
   const maxZ = o.maxZ ?? 9;
   const roots: GrowRoot[] = [];
   const golden = Math.PI * (3 - Math.sqrt(5));
-  const total = o.count * 7;
+  const total = o.count * 40;
   const tmp = new THREE.Color();
   for (let i = 0; i < total && roots.length < o.count; i++) {
     const yy = 1 - (i / (total - 1)) * 1.7;
@@ -101,6 +103,7 @@ export function makeOrcHair(ctx: KindContext, o: OrcHairOpts, rng: Rng): THREE.B
     if (Math.abs(hx) > 0.27 && hy < 0.03 && hz > -0.22) continue;
     if (o.maxY !== undefined && hy > o.maxY) continue;
     if (hz > maxZ) continue;
+    if (o.part !== undefined && Math.abs(hx) < o.part && hy > 0.1) continue;
     const nrm = new THREE.Vector3(dx / 0.34, dy / 0.41, dz / 0.435).normalize();
     const frontness = Math.max(0, Math.min(1, (hz + 0.1) / 0.5));
     const want = new THREE.Vector3(dx * 0.4 + (rng.float() - 0.5) * (0.2 + wild), 0.25 * frontness - 0.3 * (1 - frontness) - 0.1, -comb + (rng.float() - 0.5) * wild * 0.6);
