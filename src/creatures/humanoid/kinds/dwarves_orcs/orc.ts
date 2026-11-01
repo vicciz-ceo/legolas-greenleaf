@@ -176,7 +176,7 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   // ── hair: long and stringy, parted over the brow
   const hairGeo = makeOrcHair(
     ctx,
-    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6, maxZ: 0.1 },
+    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6, maxZ: 0.1 },
     rng,
   );
   if (hairGeo) attachSkinned(ctx, hairGeo, orcHairMaterial());

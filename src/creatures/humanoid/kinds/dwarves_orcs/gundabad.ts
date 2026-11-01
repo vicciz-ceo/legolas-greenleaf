@@ -146,14 +146,14 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   boneNecklace(ctx, { rng, n: 6 });
   // ── armour tiers: spiked pauldrons, then greaves / bracer spikes / the chest plate
   if (A >= 0.25) {
-    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 7 });
-    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 7 });
+    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 5 });
+    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 5 });
   }
   if (ctx.helmet) helmet(ctx, b);
   // ── hair: long, loose, dark
   const hg = makeOrcHair(
     ctx,
-    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.1 },
+    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.1 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, gundabadHairMaterial());
