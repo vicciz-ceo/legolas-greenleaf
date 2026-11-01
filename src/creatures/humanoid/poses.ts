@@ -5,7 +5,7 @@
  * blended linearly and solved once per frame (two-bone IK for limbs) by the animator.
  */
 import { bipedGait, makeBipedSample, envelope, type BipedGaitSample } from '../kit/anim';
-import type { AttackAnim, SpecialPose } from '../../core/types';
+import type { AttackAnim, SpecialPose, WeaponKind } from '../../core/types';
 import type { AnimStyle } from './types';
 
 export const F = {
@@ -58,7 +58,14 @@ export interface BodyMetrics {
   ankleDZ: number;
   /** the pelvis pivot (hips bone) above the hip joints (m): pitching the pelvis swings the hip joints about it */
   pelvisUp: number;
+  /** rest joints of the trunk chain, model space (the left upper arm stands for both): the carry follows them to find where a hand is */
+  trunk: { hips: V3t; spine: V3t; chest: V3t; arm: V3t };
+  /** where a held item's origin sits in the hand: this far along the fingers from the wrist, this far out of the palm (m) */
+  gripAlong: number;
+  gripOut: number;
 }
+
+type V3t = readonly [number, number, number];
 
 export function lerpPose(out: Pose, a: Pose, b: Pose, t: number): Pose {
   if (t <= 0) return out === a ? out : (out.set(a), out);
@@ -257,7 +264,294 @@ export function stylePose(st: AnimStyle, p: Pose) {
   p[F.fryaw] -= 0.15 * c;
 }
 
-export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
+// ─────────────────────────────────────────────────────────────────────────────
+// Carry: how a hand holds what it holds at rest
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * A held item's long axis is the hand's thumb axis (weapons.ts: blade along +Y, hand socket Y = thumb) and the
+ * neutral hand points the thumb straight ahead, so at rest every blade lay across the body and every shield lay
+ * flat like a flag. The carry turns the hand about the wrist so the item sits the way a person carries it:
+ *   hang     one-handed blades, axes, maces, clubs and hammers hang point-down beside the thigh, tilted forward
+ *            and out (further forward where the point would otherwise reach the ground)
+ *   upright  spears, pikes and torches stand in the fist, head up
+ *   shield   a shield stands vertical on the forearm, its face out
+ *   none     empty hands, bows (the animator carries those) and crossbows keep the neutral hand
+ * It is part of the rest pose (idle, walking, jumping), so attacks blend from it and keep their own keys. A run
+ * takes a hanging blade back to the fist held ahead (a blade hanging from a pumping arm would slap the legs);
+ * shields and spears stay up. The lab's reference-sheet stance (sheetPose.ts) has its own, similar holds, with one
+ * difference you cannot see: its hanging blades have the fingers forward, a half turn (169 deg) about the blade from
+ * the neutral hand; here they point back and down, the roll that turns the hand least (76 deg), which keeps the wrist
+ * natural and every blend between the carry and another hand (a run's fist, an attack's keys) well-conditioned.
+ */
+export type Carry = 'none' | 'hang' | 'upright' | 'shield';
+
+const CARRY_OF: Partial<Record<WeaponKind, Carry>> = {
+  sword: 'hang', elven_sword: 'hang', scimitar: 'hang', cleaver: 'hang', axe: 'hang', dwarf_axe: 'hang',
+  mace: 'hang', club: 'hang', warhammer: 'hang', elven_knives: 'hang',
+  spear: 'upright', pike: 'upright', torch: 'upright',
+  shield: 'shield',
+};
+/** the carry of a weapon kind */
+export const carryOf = (kind: string): Carry => CARRY_OF[kind as WeaponKind] ?? 'none';
+
+/** one hand's carry: what it holds and how far the item reaches beyond the grip along its long axis (m, model space) */
+export interface HandCarry {
+  carry: Carry;
+  /** toward the tip (the point of a blade, the head of a haft) and behind the grip */
+  up: number;
+  down: number;
+}
+/** what the hands hold: humanoid.ts keeps it current, the rest pose reads it */
+export interface HeldCarry {
+  l: HandCarry;
+  r: HandCarry;
+}
+export const newHeldCarry = (): HeldCarry => ({ l: { carry: 'none', up: 0, down: 0 }, r: { carry: 'none', up: 0, down: 0 } });
+
+export interface HoldDef {
+  /** least angle (deg) of the long axis from straight down / up and the way it leans: 0 = forward, 90 = outward (a negative angle leans it the other way) */
+  tilt: number;
+  azim: number;
+  /** +1 the axis points up (head up), -1 down (point down) */
+  dir: 1 | -1;
+  /** where the fingers point, x outward (mirrored per side); made perpendicular to the axis */
+  knuckle: V3t;
+  /** the wrist hangs at least this far out of the shoulder (units of arm reach) */
+  minOut: number;
+  /** the most the ground clearance may tilt the axis (deg); 0 = no clearance tilt */
+  maxTilt: number;
+}
+/** the holds' tuning table (exported for the tools and tests that preview and sweep it) */
+export const HOLDS: Record<Exclude<Carry, 'none'>, HoldDef> = {
+  hang: { tilt: 24, azim: 26, dir: -1, knuckle: [0.1, -0.35, -0.93], minOut: 0.16, maxTilt: 75 },
+  upright: { tilt: 7, azim: 30, dir: 1, knuckle: [-0.2, 0, 1], minOut: 0.16, maxTilt: 45 },
+  shield: { tilt: -7, azim: 90, dir: 1, knuckle: [0, 0, 1], minOut: 0.3, maxTilt: 0 },
+};
+/** the point of a carried item keeps this far (× body height) above the ground */
+const CARRY_CLEAR = 0.025;
+
+// rotation matrices are row-major 3x3 (Float64Array(9)); scratch, since the carry runs once per animated humanoid and frame
+const _Rh = new Float64Array(9), _Rs = new Float64Array(9), _Rc = new Float64Array(9), _Rhs = new Float64Array(9), _Rm = new Float64Array(9);
+const _Sl = new Float64Array(3), _Sr = new Float64Array(3);
+const _T = new Float64Array(3), _L = new Float64Array(3), _W = new Float64Array(3), _V = new Float64Array(3), _cL = new Float64Array(3), _cT = new Float64Array(3);
+
+/** R = Ry(y) · Rx(x) · Rz(z), three.js' 'YXZ' Euler order (how the solver turns the pose's pitch / yaw / roll into a bone rotation) */
+function eulerYXZ(o: Float64Array, x: number, y: number, z: number) {
+  const a = Math.cos(x), b = Math.sin(x), c = Math.cos(y), d = Math.sin(y), e = Math.cos(z), f = Math.sin(z);
+  o[0] = c * e + d * b * f; o[1] = -c * f + d * b * e; o[2] = d * a;
+  o[3] = a * f;             o[4] = a * e;              o[5] = -b;
+  o[6] = -d * e + c * b * f; o[7] = d * f + c * b * e; o[8] = c * a;
+}
+function mul3(o: Float64Array, a: Float64Array, b: Float64Array) {
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) o[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j];
+}
+/** o = R v */
+function mulV(o: Float64Array, R: Float64Array, x: number, y: number, z: number) {
+  o[0] = R[0] * x + R[1] * y + R[2] * z;
+  o[1] = R[3] * x + R[4] * y + R[5] * z;
+  o[2] = R[6] * x + R[7] * y + R[8] * z;
+}
+/** o = Rᵀ v */
+function mulVt(o: Float64Array, R: Float64Array, x: number, y: number, z: number) {
+  o[0] = R[0] * x + R[3] * y + R[6] * z;
+  o[1] = R[1] * x + R[4] * y + R[7] * z;
+  o[2] = R[2] * x + R[5] * y + R[8] * z;
+}
+
+/**
+ * Where the chest and the shoulders stand for this pose (model space), found the way the solver's forward
+ * kinematics does: hips → spine → chest, each turned by its own pitch / yaw / roll about its rest joint, the
+ * hips moved by the pose's offset. Returns scratch (valid until the next call): `rot` is the chest's rotation
+ * (row-major 3x3, chest space → model space), `l` / `r` the shoulder joints.
+ */
+export function trunkFrames(B: BodyMetrics, p: Pose): { rot: Float64Array; l: Float64Array; r: Float64Array } {
+  const T = B.trunk;
+  eulerYXZ(_Rh, p[F.pp], p[F.pyaw], p[F.pr]);
+  eulerYXZ(_Rs, p[F.sp], p[F.sy], p[F.sr]);
+  eulerYXZ(_Rc, p[F.cp], p[F.cy], p[F.cr]);
+  mul3(_Rhs, _Rh, _Rs);
+  mul3(_Rm, _Rhs, _Rc);
+  // hips → spine → chest → shoulder
+  const hx = T.hips[0] + p[F.px], hy = T.hips[1] + p[F.py], hz = T.hips[2] + p[F.pz];
+  mulV(_V, _Rh, T.spine[0] - T.hips[0], T.spine[1] - T.hips[1], T.spine[2] - T.hips[2]);
+  const sx = hx + _V[0], sy = hy + _V[1], sz = hz + _V[2];
+  mulV(_V, _Rhs, T.chest[0] - T.spine[0], T.chest[1] - T.spine[1], T.chest[2] - T.spine[2]);
+  const cx = sx + _V[0], cy = sy + _V[1], cz = sz + _V[2];
+  mulV(_Sl, _Rm, T.arm[0] - T.chest[0], T.arm[1] - T.chest[1], T.arm[2] - T.chest[2]);
+  mulV(_Sr, _Rm, -T.arm[0] - T.chest[0], T.arm[1] - T.chest[1], T.arm[2] - T.chest[2]);
+  _Sl[0] += cx; _Sl[1] += cy; _Sl[2] += cz;
+  _Sr[0] += cx; _Sr[1] += cy; _Sr[2] += cz;
+  return { rot: _Rm, l: _Sl, r: _Sr };
+}
+
+/** the hand frame of a hold (model space, `sx` +1 left / -1 right): long axis T at `theta` from straight down / up, fingers L perpendicular to it */
+function holdAxes(def: HoldDef, sx: number, theta: number, flip: boolean, T: Float64Array, L: Float64Array) {
+  const az = def.azim * (Math.PI / 180);
+  const st = Math.sin(theta), ct = Math.cos(theta);
+  T[0] = sx * st * Math.sin(az);
+  T[1] = def.dir * ct;
+  T[2] = st * Math.cos(az);
+  let kx = def.knuckle[0] * sx, ky = def.knuckle[1], kz = flip ? -def.knuckle[2] : def.knuckle[2];
+  const d = kx * T[0] + ky * T[1] + kz * T[2];
+  kx -= d * T[0]; ky -= d * T[1]; kz -= d * T[2];
+  const n = Math.hypot(kx, ky, kz) || 1;
+  L[0] = kx / n; L[1] = ky / n; L[2] = kz / n;
+}
+
+// unit quaternions as [x, y, z, w]
+const _qa = new Float64Array(4), _qb = new Float64Array(4), _qc = new Float64Array(4), _fa = new Float64Array(6), _fb = new Float64Array(6);
+
+/** o[0..2] = the unit knuckle direction (dx, dy, dz), o[3..5] = the thumb (tx, ty, tz) made perpendicular to it: the frame the solver reads from a hand direction pair */
+function orthoPair(o: Float64Array, dx: number, dy: number, dz: number, tx: number, ty: number, tz: number) {
+  const dn = Math.hypot(dx, dy, dz) || 1;
+  dx /= dn; dy /= dn; dz /= dn;
+  const k = tx * dx + ty * dy + tz * dz;
+  tx -= k * dx; ty -= k * dy; tz -= k * dz;
+  let tn = Math.hypot(tx, ty, tz);
+  if (tn < 1e-6) {
+    // a thumb along the knuckles: any perpendicular will do
+    if (Math.abs(dx) < 0.9) { tx = 0; ty = dz; tz = -dy; } else { tx = -dz; ty = 0; tz = dx; }
+    tn = Math.hypot(tx, ty, tz) || 1;
+  }
+  o[0] = dx; o[1] = dy; o[2] = dz;
+  o[3] = tx / tn; o[4] = ty / tn; o[5] = tz / tn;
+}
+
+/** the unit quaternion of the rotation whose first two columns are the pair `f` from `orthoPair` (the third is their cross product) */
+function pairQuat(o: Float64Array, f: Float64Array) {
+  const c2x = f[1] * f[5] - f[2] * f[4], c2y = f[2] * f[3] - f[0] * f[5], c2z = f[0] * f[4] - f[1] * f[3];
+  const m00 = f[0], m10 = f[1], m20 = f[2], m01 = f[3], m11 = f[4], m21 = f[5], m02 = c2x, m12 = c2y, m22 = c2z;
+  const tr = m00 + m11 + m22;
+  let x, y, z, w;
+  if (tr > 0) {
+    const k = Math.sqrt(tr + 1) * 2;
+    w = k / 4; x = (m21 - m12) / k; y = (m02 - m20) / k; z = (m10 - m01) / k;
+  } else if (m00 > m11 && m00 > m22) {
+    const k = Math.sqrt(1 + m00 - m11 - m22) * 2;
+    w = (m21 - m12) / k; x = k / 4; y = (m01 + m10) / k; z = (m02 + m20) / k;
+  } else if (m11 > m22) {
+    const k = Math.sqrt(1 + m11 - m00 - m22) * 2;
+    w = (m02 - m20) / k; x = (m01 + m10) / k; y = k / 4; z = (m12 + m21) / k;
+  } else {
+    const k = Math.sqrt(1 + m22 - m00 - m11) * 2;
+    w = (m10 - m01) / k; x = (m02 + m20) / k; y = (m12 + m21) / k; z = k / 4;
+  }
+  const n = Math.hypot(x, y, z, w) || 1;
+  o[0] = x / n; o[1] = y / n; o[2] = z / n; o[3] = w / n;
+}
+
+const _qn = [new Float64Array(4), new Float64Array(4)], _fn = new Float64Array(6);
+// the neutral hand (neutralPose) as a quaternion, left and right: the waypoint of every turn
+for (const [i, sx] of [[0, 1], [1, -1]] as const) {
+  orthoPair(_fn, sx * 0.12, -1, 0.12, sx * -0.15, 0.05, 1);
+  pairQuat(_qn[i], _fn);
+}
+
+/** o = the spherical blend of unit quaternions a -> b by w, the short way round (o may be a or b) */
+function slerpQ(o: Float64Array, a: Float64Array, b: Float64Array, w: number) {
+  let cos = a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
+  const sg = cos < 0 ? -1 : 1;
+  cos *= sg;
+  let ka: number, kb: number;
+  if (cos > 0.9995) {
+    ka = 1 - w;
+    kb = w * sg;
+  } else {
+    const om = Math.acos(cos), so = Math.sin(om);
+    ka = Math.sin((1 - w) * om) / so;
+    kb = (Math.sin(w * om) / so) * sg;
+  }
+  const x = a[0] * ka + b[0] * kb, y = a[1] * ka + b[1] * kb, z = a[2] * ka + b[2] * kb, q = a[3] * ka + b[3] * kb;
+  const n = Math.hypot(x, y, z, q) || 1;
+  o[0] = x / n; o[1] = y / n; o[2] = z / n; o[3] = q / n;
+}
+
+/**
+ * Turn the pose's hand frame (knuckles at slot `dd`, thumb at `tt`: chest-space directions) to the frame (d, t) by `s`
+ * (0 = as it is, 1 = the frame); `sx` is +1 for the left hand, -1 for the right. The turn goes by way of the NEUTRAL hand,
+ * the pose a hand always has to come from or go to: a hanging blade and a run's fist (or an attack's keys) are about half
+ * a revolution apart, and the short way between two such frames is not defined (it flips from one side to the other, a jump of
+ * 60+ deg in a frame, as the pose moves through it, and a straight blend of the directions passes through nothing). Both
+ * legs of the way are well short of that.
+ */
+export function turnHand(p: Pose, dd: number, tt: number, dx: number, dy: number, dz: number, tx: number, ty: number, tz: number, s: number, sx: number) {
+  orthoPair(_fb, dx, dy, dz, tx, ty, tz);
+  if (s >= 1) {
+    p[dd] = _fb[0]; p[dd + 1] = _fb[1]; p[dd + 2] = _fb[2];
+    p[tt] = _fb[3]; p[tt + 1] = _fb[4]; p[tt + 2] = _fb[5];
+    return;
+  }
+  if (!(s > 0)) return;
+  orthoPair(_fa, p[dd], p[dd + 1], p[dd + 2], p[tt], p[tt + 1], p[tt + 2]);
+  pairQuat(_qa, _fa);
+  pairQuat(_qb, _fb);
+  // frame -> neutral -> pose's own hand: weights 1 - s on both legs: s = 1 is the frame, s = 0 the hand as it is
+  slerpQ(_qc, _qb, _qn[sx > 0 ? 0 : 1], 1 - s);
+  slerpQ(_qc, _qc, _qa, 1 - s);
+  const x = _qc[0], y = _qc[1], z = _qc[2], q = _qc[3];
+  // columns 0 and 1 of its matrix: the knuckles and the thumb
+  p[dd] = 1 - 2 * (y * y + z * z); p[dd + 1] = 2 * (x * y + z * q); p[dd + 2] = 2 * (x * z - y * q);
+  p[tt] = 2 * (x * y - z * q); p[tt + 1] = 1 - 2 * (x * x + z * z); p[tt + 2] = 2 * (y * z + x * q);
+}
+
+function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: number) {
+  if (hc.carry === 'none') return;
+  const def = HOLDS[hc.carry];
+  // a hanging blade gives way to the run's fist
+  const r = run <= 0 ? 0 : run >= 1 ? 1 : run * run * (3 - 2 * run);
+  const w = hc.carry === 'hang' ? 1 - r : 1;
+  if (!(w > 0)) return;
+  const sx = left ? 1 : -1;
+  const hx = left ? F.hlx : F.hrx;
+  // the wrist hangs clear of the hip
+  const out = sx * p[hx];
+  if (out < def.minOut) p[hx] = sx * (out + (def.minOut - out) * w);
+  // the long axis: its least tilt, more where the point would reach the ground. The grip stands at the wrist target
+  // (through the solved chest, from the shoulder) plus the hand's own offset along the fingers and out of the palm
+  const S = left ? _Sl : _Sr;
+  const R = B.reach;
+  mulV(_W, _Rm, p[hx] * R, p[hx + 1] * R, p[hx + 2] * R);
+  const wristY = _W[1] + S[1];
+  const theta0 = def.tilt * (Math.PI / 180);
+  let theta = theta0;
+  const flip = hc.carry === 'shield' && !left;
+  holdAxes(def, sx, theta, flip, _T, _L);
+  const ext = hc.carry === 'hang' ? hc.up : hc.carry === 'upright' ? hc.down : 0;
+  if (ext > 1e-3 && def.maxTilt > 0) {
+    const clear = CARRY_CLEAR * B.height;
+    for (let it = 0; it < 2; it++) {
+      const ny = sx * (_L[2] * _T[0] - _L[0] * _T[2]); // palm normal (up) = L x T on the left, T x L on the right
+      const gy = wristY + B.gripAlong * _L[1] + B.gripOut * ny;
+      const c = (gy - clear) / ext;
+      const need = c >= 1 ? 0 : Math.acos(Math.max(-1, c));
+      theta = Math.min(def.maxTilt * (Math.PI / 180), Math.max(theta0, need));
+      holdAxes(def, sx, theta, flip, _T, _L);
+    }
+  }
+  // into chest space, turned over from the pose's own hand
+  const dd = left ? F.hldx : F.hrdx, tt = left ? F.hltx : F.hrtx;
+  mulVt(_cL, _Rm, _L[0], _L[1], _L[2]);
+  mulVt(_cT, _Rm, _T[0], _T[1], _T[2]);
+  if (w >= 1) {
+    p[dd] = _cL[0]; p[dd + 1] = _cL[1]; p[dd + 2] = _cL[2];
+    p[tt] = _cT[0]; p[tt + 1] = _cT[1]; p[tt + 2] = _cT[2];
+  } else turnHand(p, dd, tt, _cL[0], _cL[1], _cL[2], _cT[0], _cT[1], _cT[2], w, sx);
+}
+
+/**
+ * Put what the hands hold into the rest pose `p` (idle, walk, air): the hands' frames and wrist targets, see
+ * `Carry`. `run` (0..1) is how far the gait is a run. Call it last, once the torso and arms are set.
+ */
+export function applyCarry(B: BodyMetrics, p: Pose, held: HeldCarry, run: number) {
+  if (held.l.carry === 'none' && held.r.carry === 'none') return;
+  trunkFrames(B, p);
+  carryHand(B, p, true, held.l, run);
+  carryHand(B, p, false, held.r, run);
+}
+
+/** the standing pose of the body: the idle without what the hands hold (the walk, jump and special poses start from it) */
+function standPose(B: BodyMetrics, t: number, p: Pose): Pose {
   neutralPose(B, p);
   const st = B.style;
   const s = B.s;
@@ -299,11 +593,18 @@ export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   return p;
 }
 
+/** the idle; `held` (what the hands hold, see `Carry`) puts the carried items in the hands, without it they keep the neutral hand */
+export function idlePose(B: BodyMetrics, t: number, p: Pose, held?: HeldCarry): Pose {
+  standPose(B, t, p);
+  if (held) applyCarry(B, p, held, 0);
+  return p;
+}
+
 const _gait: BipedGaitSample = makeBipedSample();
 
 /** walk / run / sprint / dash with planted feet. phase in cycles; moveDir local (x right, z forward). */
-export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx: number, mdz: number, t: number, p: Pose): Pose {
-  idlePose(B, t, p);
+export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx: number, mdz: number, t: number, p: Pose, held?: HeldCarry): Pose {
+  standPose(B, t, p);
   const st = B.style;
   const s = B.s;
   const g = bipedGait(phase, speed, B.legLen, _gait);
@@ -388,12 +689,13 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
     p[F.np] -= 0.3 * dash;
     p[F.hp] -= 0.15 * dash;
   }
+  if (held) applyCarry(B, p, held, run);
   return p;
 }
 
 /** airborne: tuck on the way up, reach for the ground on the way down */
-export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, p: Pose): Pose {
-  idlePose(B, t, p);
+export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, p: Pose, held?: HeldCarry): Pose {
+  standPose(B, t, p);
   const s = B.s;
   const up = Math.min(1, Math.max(0, (vy + 1) / 6));
   const down = 1 - up;
@@ -414,6 +716,7 @@ export function airPose(B: BodyMetrics, vy: number, airTime: number, t: number, 
   hands(p, 0.25 + 0.3 * down, -0.55 + 0.25 * up + 0.2 * down, 0.35 * up + 0.05 * down, 0.25 + 0.3 * down, -0.6 + 0.2 * up + 0.2 * down, 0.3 * up);
   elbows(p, 0.6, -0.2, -0.8, 0.6, -0.2, -0.8);
   void s;
+  if (held) applyCarry(B, p, held, 0);
   return p;
 }
 
@@ -815,6 +1118,17 @@ const ATTACKS: Record<AttackAnim, Key[]> = {
   ],
 };
 
+/**
+ * Which hands' frames (knuckle and thumb directions) an attack's keys steer. The keys were authored against the neutral hand
+ * (a key that gives no thumb gets the pose's own, which was the neutral one): for a hand that carries something and that the
+ * keys steer, the overlay reads its keys against the neutral hand, exactly as they were authored, and turns the hand from the
+ * carry to them (and back) by the short way. A hand the keys leave alone keeps its carry through the attack: a shield stays
+ * on the forearm while the sword swings.
+ */
+const OWNS = {} as Record<AttackAnim, { l: boolean; r: boolean }>;
+for (const k of Object.keys(ATTACKS) as AttackAnim[]) OWNS[k] = { l: ATTACKS[k].some((key) => !!(key.ld || key.lt)), r: ATTACKS[k].some((key) => !!(key.rd || key.rt)) };
+export const attackOwns = (kind: AttackAnim): { l: boolean; r: boolean } => OWNS[kind] ?? { l: false, r: false };
+
 const _ka: Key = { t: 0 };
 const _vecOut: [number, number, number] = [0, 0, 0];
 const _sk = { a: _ka, b: _ka, f: 0 };
@@ -832,8 +1146,12 @@ function sampleKeys(keys: Key[], t: number): { a: Key; b: Key; f: number } {
   return _sk;
 }
 
-/** blend an attack (layered over the base pose: upper body + optional foot shifts) */
-export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Pose, base: Pose) {
+/**
+ * Blend an attack (layered over the base pose: upper body + optional foot shifts). `held` (what the hands carry, see
+ * `Carry`): a hand that carries something and that the keys steer is turned from its carry to the keys and back; the keys
+ * themselves are read against the neutral hand they were authored against.
+ */
+export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Pose, base: Pose, held?: HeldCarry) {
   const keys = ATTACKS[kind];
   if (!keys || keys.length < 2) return;
   const { a, b, f } = sampleKeys(keys, t);
@@ -855,6 +1173,18 @@ export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Po
   };
   const blend = (idx: number, v: number) => (p[idx] += (v - p[idx]) * w);
   const add = (idx: number, v: number) => (p[idx] += v * w);
+  // a carried hand the keys steer: the keys are read against the neutral hand they were authored against (key coordinates: x outward), the
+  // old blend from that hand gives the frame, and the carried hand turns to it by the envelope (the spin finisher holds its keys from the
+  // first instant, a carried hand must not jump there). Both turns are far from half a revolution: carry -> neutral ~ 75 deg, and the
+  // frame stays near the neutral hand where the envelope is not 1
+  const own = held ? OWNS[kind] : null;
+  const wd = envelope(t, 0.12, 0.25);
+  const turnTo = (kd: 'rd' | 'ld', kt: 'rt' | 'lt', dd: number, tt: number, sx: number) => {
+    let v = vec(kd, 0.12, -1, 0.12);
+    const dx = 0.12 + (v[0] - 0.12) * w, dy = -1 + (v[1] + 1) * w, dz = 0.12 + (v[2] - 0.12) * w;
+    v = vec(kt, -0.15, 0.05, 1);
+    turnHand(p, dd, tt, sx * dx, dy, dz, sx * (-0.15 + (v[0] + 0.15) * w), 0.05 + (v[1] - 0.05) * w, 1 + (v[2] - 1) * w, wd, sx);
+  };
   add(F.pyaw, num('pyaw', 0));
   add(F.cy, num('cy', 0) * ag);
   add(F.cp, num('cp', 0));
@@ -873,20 +1203,26 @@ export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Po
   if (has('rh')) {
     let v = vec('rh', -base[F.hrx], base[F.hry], base[F.hrz]);
     blend(F.hrx, -v[0]); blend(F.hry, v[1]); blend(F.hrz, v[2]);
-    v = vec('rd', -base[F.hrdx], base[F.hrdy], base[F.hrdz]);
-    blend(F.hrdx, -v[0]); blend(F.hrdy, v[1]); blend(F.hrdz, v[2]);
-    v = vec('rt', -base[F.hrtx], base[F.hrty], base[F.hrtz]);
-    blend(F.hrtx, -v[0]); blend(F.hrty, v[1]); blend(F.hrtz, v[2]);
+    if (own && own.r && held!.r.carry !== 'none') turnTo('rd', 'rt', F.hrdx, F.hrtx, -1);
+    else {
+      v = vec('rd', -base[F.hrdx], base[F.hrdy], base[F.hrdz]);
+      blend(F.hrdx, -v[0]); blend(F.hrdy, v[1]); blend(F.hrdz, v[2]);
+      v = vec('rt', -base[F.hrtx], base[F.hrty], base[F.hrtz]);
+      blend(F.hrtx, -v[0]); blend(F.hrty, v[1]); blend(F.hrtz, v[2]);
+    }
     v = vec('re', -base[F.erx], base[F.ery], base[F.erz]);
     blend(F.erx, -v[0]); blend(F.ery, v[1]); blend(F.erz, v[2]);
   }
   if (has('lh')) {
     let v = vec('lh', base[F.hlx], base[F.hly], base[F.hlz]);
     blend(F.hlx, v[0]); blend(F.hly, v[1]); blend(F.hlz, v[2]);
-    v = vec('ld', base[F.hldx], base[F.hldy], base[F.hldz]);
-    blend(F.hldx, v[0]); blend(F.hldy, v[1]); blend(F.hldz, v[2]);
-    v = vec('lt', base[F.hltx], base[F.hlty], base[F.hltz]);
-    blend(F.hltx, v[0]); blend(F.hlty, v[1]); blend(F.hltz, v[2]);
+    if (own && own.l && held!.l.carry !== 'none') turnTo('ld', 'lt', F.hldx, F.hltx, 1);
+    else {
+      v = vec('ld', base[F.hldx], base[F.hldy], base[F.hldz]);
+      blend(F.hldx, v[0]); blend(F.hldy, v[1]); blend(F.hldz, v[2]);
+      v = vec('lt', base[F.hltx], base[F.hlty], base[F.hltz]);
+      blend(F.hltx, v[0]); blend(F.hlty, v[1]); blend(F.hltz, v[2]);
+    }
     v = vec('le', base[F.elx], base[F.ely], base[F.elz]);
     blend(F.elx, v[0]); blend(F.ely, v[1]); blend(F.elz, v[2]);
   }
