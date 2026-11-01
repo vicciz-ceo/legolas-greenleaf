@@ -729,6 +729,10 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
 /** curved blades: 'scimitar' (the orc sabre: a rusted recurved blade, curled quillons, long wrapped
  *  grip, hooked pommel; styles other than 'orc' are cleaner brass-hilted steel) and the crude orc
  *  'cleaver' (a wide notched plate with a slanted point, a hole and a long wrapped haft) */
+/** orc iron: rust lives in the vertex colour (dark brown-black); pores stay low so the shader's own, much
+ *  lighter orange rust does not bloom over it (it made the cleaver read as a salmon slab) */
+const ORC_IRON = (rough = 0.62) => surface('metal_rusty', { rough, metal: 0.6, pat: { pores: 0.3 } });
+
 function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   const k = new Kit();
   const orc = style === 'orc' || style === 'uruk';
@@ -745,7 +749,7 @@ function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponSt
     k.add(
       blade({ len: L, width: 1, thick: 0.0052, single: true, edge: -1, shape: st, tipX: -0.025, tip: 0.1, bevel: 0.32, seed, jag: orc ? 0.0034 : 0.0006 }),
       orc
-        ? { color: 0x6a6866, mat: surface('metal_rusty', { rough: 0.62 }), colorFn: oxide(seed, 0x4a4846, 0x5e4430, 0x8c8880, 0.3) }
+        ? { color: 0x6a6866, mat: ORC_IRON(0.62), colorFn: oxide(seed, 0x464442, 0x4c2e1e, 0x8c8880, 0.35) }
         : { color: 0x9a9a98, mat: surface('metal', { rough: 0.3 }), colorFn: steel(0x80827f, 0xd0d2d0, 0.04, 0.12, seed) },
       new THREE.Matrix4().makeTranslation(0, 0.045, 0),
     );
@@ -765,6 +769,7 @@ function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponSt
     return withTip(k.mesh(kind), 0.045 + L);
   }
   // crude orc cleaver
+  const nzc = noise2(seed + 61);
   const L = 0.56;
   const hw = 0.115;
   // spine on -X, cutting edge (with the saw teeth) on +X; the point is cut slanted toward the edge
@@ -773,23 +778,25 @@ function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponSt
   k.add(
     blade({ len: L, width: 1, thick: 0.0075, single: true, edge: -1, shape: edgeStations(20, l, r), tipX: hw * 0.8, tip: 0.04, bevel: 0.22, jag: 0.011, seed }),
     {
-      color: 0x6a4a36,
-      mat: surface('metal_rusty', { rough: 0.7 }),
+      color: 0x4a423c,
+      mat: ORC_IRON(0.7),
       colorFn: (p, n, c) => {
-        oxide(seed, 0x6a5444, 0xa0562a, 0x9a9488, 0.42, 1.3)(p, n, c);
-        // the hole near the heel
-        const d = Math.hypot(p.x - 0.0, p.y - 0.17);
-        if (d < 0.016) c.setRGB(0.012, 0.01, 0.009);
-        else if (d < 0.022) c.multiplyScalar(0.55);
+        // dark iron under brown-black corrosion patches, with pale nicked edges
+        oxide(seed, 0x3a3733, 0x33231a, 0x9a968a, 0.4, 1.3)(p, n, c);
+        c.multiplyScalar(0.8 + 0.3 * smooth(0.3, 0.7, nzc(p.x * 18, p.y * 14) * 0.5 + 0.5));
+        // a hole punched near the tip, on the spine side
+        const d = Math.hypot(p.x - 0.055, p.y - 0.52);
+        if (d < 0.017) c.setRGB(0.01, 0.009, 0.008);
+        else if (d < 0.024) c.multiplyScalar(0.6);
       },
     },
     new THREE.Matrix4().makeTranslation(0, 0.1, 0),
   );
   const wg = wrapGeo(0.0235, -0.15, 0.115, { rings: 11, seg: 7, turns: 7, ridge: 0.2 });
-  k.add(wg.geo, { color: 0x4a3322, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x6a4630, 0x2c1c12, seed) });
-  k.add(band(0.0255, 0.108, 0.022, 7), { color: 0x4a3c34, mat: 'metal_rusty' });
-  k.add(band(0.0255, -0.155, 0.024, 7), { color: 0x4a3c34, mat: 'metal_rusty' });
-  k.add(lathe([[0, -0.19], [0.016, -0.186], [0.025, -0.168], [0.024, -0.15], [0.0, -0.148]], 7), { color: 0x4a3c34, mat: 'metal_rusty' });
+  k.add(wg.geo, { color: 0x30241a, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x3e2e22, 0x120d09, seed) });
+  k.add(band(0.0255, 0.108, 0.022, 7), { color: 0x3a3632, mat: ORC_IRON(0.7) });
+  k.add(band(0.0255, -0.155, 0.024, 7), { color: 0x3a3632, mat: ORC_IRON(0.7) });
+  k.add(lathe([[0, -0.19], [0.016, -0.186], [0.025, -0.168], [0.024, -0.15], [0.0, -0.148]], 7), { color: 0x3a3632, mat: ORC_IRON(0.7) });
   return withTip(k.mesh(kind), 0.1 + L);
 }
 
@@ -907,14 +914,22 @@ function gimliAxe(seed: number): THREE.Object3D {
   // bronze collars (upper and lower) with a diamond band, and the pommel
   for (const [y, h] of [[0.03, 0.03], [0.065, 0.045], [0.335, 0.05]] as [number, number][]) k.add(band(0.0235, y, h, 8), { color: 0x8a6a34, mat: BRONZE, colorFn: bronze });
   k.add(lathe([[0, -0.425], [0.02, -0.418], [0.036, -0.39], [0.037, -0.365], [0.026, -0.345], [0.0, -0.343]], 8), { color: 0x8a6a34, mat: BRONZE, colorFn: bronze });
-  // socket block holding the bits
-  const IRON = surface('metal_dark', { rough: 0.5, metal: 1 });
-  k.add(new THREE.BoxGeometry(0.075, 0.27, 0.075).translate(0, 0.49, 0), { color: 0x4a4640, mat: IRON, colorFn: (p, n, c) => {
-    c.copy(lin(0x4a4c50)).multiplyScalar(0.8 + 0.3 * n2(p.x * 80, p.y * 60 + p.z * 40));
-    // dark knotwork bands
+  // socket block holding the bits, bronze with a knotwork band; the knotwork stays local to the socket
+  const knot = (sx: number) => (p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => {
+    bronze(p, n, c);
+    const dd = Math.abs(((p.x * sx * 70 + p.y * 50) % 1 + 1) % 1 - 0.5);
+    const dd2 = Math.abs(((p.x * sx * 70 - p.y * 50) % 1 + 1) % 1 - 0.5);
+    if (dd < 0.09 || dd2 < 0.09) c.multiplyScalar(0.55);
+  };
+  k.add(new THREE.BoxGeometry(0.075, 0.27, 0.075).translate(0, 0.49, 0), { color: 0x8a6a34, mat: BRONZE, colorFn: (p, n, c) => {
+    bronze(p, n, c);
     if (Math.abs(Math.sin(p.y * 90)) > 0.93) c.multiplyScalar(0.55);
   } });
-  for (const y of [0.365, 0.615]) k.add(new THREE.BoxGeometry(0.095, 0.03, 0.095).translate(0, y, 0), { color: 0x4a4640, mat: IRON, colorFn: (p, n, c) => { c.copy(lin(0x4a4640)).multiplyScalar(0.8 + 0.3 * n2(p.x * 80, p.y * 60)); } });
+  for (const y of [0.365, 0.615]) k.add(new THREE.BoxGeometry(0.095, 0.03, 0.095).translate(0, y, 0), { color: 0x7a5a2c, mat: BRONZE, colorFn: bronze });
+  for (const sx of [1, -1]) {
+    k.add(new THREE.BoxGeometry(0.06, 0.16, 0.046).translate(sx * 0.066, 0.49, 0), { color: 0x7a5a2c, mat: BRONZE, colorFn: knot(sx) });
+    k.add(new THREE.BoxGeometry(0.018, 0.2, 0.044).translate(sx * 0.115, 0.49, 0), { color: 0x7a5a2c, mat: BRONZE, colorFn: knot(sx) });
+  }
   // the two bits: crescent steel with horns and a triangular cut-out
   const bit = (sx: number) => {
     const sh = new THREE.Shape();
@@ -961,24 +976,23 @@ function gimliAxe(seed: number): THREE.Object3D {
   const mergedHead = new THREE.BufferGeometry();
   mergedHead.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   mergedHead.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
-  const uvs = new Float32Array((pos.length / 3) * 2);
-  for (let i = 0; i < pos.length / 3; i++) {
-    uvs[i * 2] = pos[i * 3] * 6 + 0.5;
-    uvs[i * 2 + 1] = pos[i * 3 + 1] * 6 + 0.5;
+  // pale worn steel faces (about #747274) with bright nicked bevels, per-vertex; no texture and no normal
+  // map (the old knotwork map read as a coarse lattice and blew out in the sun), a satin metal finish
+  const cols = new Float32Array(pos.length);
+  const steelC = lin(0x4a484a), edgeC = lin(0x84827e);
+  const cc = new THREE.Color();
+  const nz = noise2(seed + 77);
+  for (let v = 0; v < pos.length / 3; v++) {
+    const rim = 1 - Math.abs(nor[v * 3 + 2]); // bevels and the outline wall face sideways
+    cc.copy(steelC).multiplyScalar(0.85 + 0.25 * (nz(pos[v * 3] * 30, pos[v * 3 + 1] * 30) * 0.5 + 0.5));
+    cc.lerp(edgeC, smooth(0.3, 0.8, rim) * 0.8);
+    cols[v * 3] = cc.r;
+    cols[v * 3 + 1] = cc.g;
+    cols[v * 3 + 2] = cc.b;
   }
-  mergedHead.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+  mergedHead.setAttribute('color', new THREE.BufferAttribute(cols, 3));
   mergedHead.translate(0, 0.49, 0);
-  const tex = knotwork();
-  const headMat = new THREE.MeshStandardMaterial({
-    color: 0x58544e,
-    map: tex.color,
-    metalness: 1,
-    roughness: 0.8,
-    roughnessMap: tex.rough,
-    normalMap: tex.normal,
-    normalScale: new THREE.Vector2(0.7, 0.7),
-    side: THREE.DoubleSide,
-  });
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, metalness: 0.3, roughness: 0.7, side: THREE.DoubleSide });
   const head = new THREE.Mesh(mergedHead, headMat);
   head.name = 'dwarf_axe_head';
   head.castShadow = true;
@@ -1011,7 +1025,7 @@ function polearm(kind: 'pike' | 'spear', seed: number): THREE.Object3D {
 function morningStar(seed: number): THREE.Object3D {
   const k = new Kit();
   const rnd = new Rng(seed + 17);
-  const RUST = surface('iron_rusty', { rough: 0.62 });
+  const RUST = surface('iron_rusty', { rough: 0.62, metal: 0.6, pat: { pores: 0.35 } });
   const ironC = lin(0x4a443e), rustC = lin(0x5e3e28);
   const n2 = noise2(seed + 5);
   const iron = (hi = 0.34): ((p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => void) => (p, _n, c) => {
@@ -1069,9 +1083,20 @@ function club(seed: number, style: WeaponStyle): THREE.Object3D {
   const sc = style === 'default' ? 1 : 0.72;
   const rnd = new Rng(seed + 3);
   const n2 = noise2(seed + 11);
+  // warm dark wood with pale worn grain; the iron is plain dark grey (no copper anywhere)
+  // (albedo about 0.55x the lit target #5a4430..#6e5238: the lab and game lighting brighten wood)
+  const woodA = lin(0x3a2a1c), woodB = lin(0x1e150d), pale = lin(0x4a3622), char = lin(0x120c08);
+  const woodFn = (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
+    const th = Math.atan2(p.z, p.x);
+    const f = n2(Math.cos(th) * 3 + p.y * 5, Math.sin(th) * 3) * 0.5 + 0.5;
+    const grain = n2(Math.cos(th) * 14, p.y * 3.4 + Math.sin(th) * 14) * 0.5 + 0.5;
+    c.copy(woodB).lerp(woodA, 0.35 + 0.65 * f).lerp(pale, smooth(0.6, 0.92, grain) * 0.5);
+    c.lerp(char, smooth(0.82, 1.0, f) * 0.45);
+  };
+  const WOOD = surface('wood', { rough: 0.88, pat: { wrinkles: 1.1, fur: 1.2 } });
+  // shaft: knob pommel, slim cord-wrapped grip, tapering up into the burl head's core
   const prof = (y: number): number => {
-    // radius along the log: knob, neck, slim cord-wrapped grip, swelling to a bulbous burl head
-    const pts: [number, number][] = [[-0.24, 0.0], [-0.236, 0.03], [-0.224, 0.05], [-0.203, 0.061], [-0.182, 0.052], [-0.165, 0.038], [-0.12, 0.03], [0.0, 0.034], [0.2, 0.05], [0.4, 0.085], [0.55, 0.125], [0.68, 0.165], [0.78, 0.172], [0.84, 0.14], [0.862, 0.07], [0.87, 0.0]];
+    const pts: [number, number][] = [[-0.24, 0.0], [-0.236, 0.03], [-0.224, 0.05], [-0.203, 0.061], [-0.182, 0.052], [-0.165, 0.038], [-0.12, 0.03], [0.0, 0.034], [0.2, 0.05], [0.4, 0.08], [0.55, 0.11], [0.7, 0.12], [0.8, 0.1], [0.87, 0.0]];
     for (let i = 0; i + 1 < pts.length; i++) {
       if (y <= pts[i + 1][0]) {
         const t = (y - pts[i][0]) / (pts[i + 1][0] - pts[i][0]);
@@ -1080,19 +1105,16 @@ function club(seed: number, style: WeaponStyle): THREE.Object3D {
     }
     return 0;
   };
-  const rings = 26, seg = 11;
+  const rings = 22, seg = 10;
   const pos: number[] = [], idx: number[] = [];
-  const lump = (y: number, th: number) => {
-    const c = Math.cos(th), s = Math.sin(th);
-    const head = smooth(0.35, 0.7, y);
-    return 1 + (0.12 + 0.2 * head) * n2(c * 1.5 + y * 2.4, s * 1.5 + y * 1.9) + 0.07 * n2(c * 4 + y * 9, s * 4 - y * 7) * (0.4 + head);
-  };
   for (let i = 0; i <= rings; i++) {
     const y = -0.24 + (i / rings) * 1.11;
     for (let j = 0; j < seg; j++) {
       const th = (j / seg) * Math.PI * 2;
-      const r = Math.max(0.004, prof(y)) * lump(y, th);
-      pos.push(Math.cos(th) * r, y, Math.sin(th) * r);
+      const c = Math.cos(th), s = Math.sin(th);
+      const lump = 1 + 0.16 * n2(c * 1.5 + y * 2.6, s * 1.5 + y * 2.0) + 0.06 * n2(c * 5 + y * 10, s * 5 - y * 8);
+      const r = Math.max(0.004, prof(y)) * lump;
+      pos.push(c * r, y, s * r);
     }
   }
   for (let i = 0; i < rings; i++)
@@ -1104,44 +1126,47 @@ function club(seed: number, style: WeaponStyle): THREE.Object3D {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  const woodA = lin(0x4e301a), woodB = lin(0x2a1a0e), char = lin(0x150e0a), pale = lin(0x6a4428);
-  k.add(g, {
-    color: 0x6a4228,
-    mat: surface('wood', { rough: 0.86, pat: { wrinkles: 1.1, fur: 1.2 } }),
-    colorFn: (p, _n, c) => {
-      const th = Math.atan2(p.z, p.x);
-      const f = n2(Math.cos(th) * 3 + p.y * 5, Math.sin(th) * 3) * 0.5 + 0.5;
-      const grain = n2(Math.cos(th) * 12, p.y * 3.2 + Math.sin(th) * 12) * 0.5 + 0.5;
-      c.copy(woodB).lerp(woodA, 0.3 + 0.7 * f).lerp(pale, smooth(0.62, 0.9, grain) * 0.4);
-      c.lerp(char, smooth(0.78, 1.0, f) * 0.5 + smooth(0.8, 0.88, p.y) * 0.3);
-    },
-  });
-  // burls: a few knobs on the head
-  for (let i = 0; i < 4; i++) {
-    const th = rnd.range(0, Math.PI * 2), y = rnd.range(0.62, 0.84), rr = prof(y) * 1.12;
-    const kn = new THREE.IcosahedronGeometry(rnd.range(0.05, 0.08), 1).scale(1, rnd.range(0.7, 1), 1);
+  k.add(g, { color: 0x3a2a1c, mat: WOOD, colorFn: woodFn });
+  // the burl head: a lumpy union of wood blobs round the core, a big one on top, with knots on the lumps
+  const blobs: [number, number, number, number][] = []; // [angle, y, radial offset, radius]
+  const nb = 6;
+  for (let i = 0; i < nb; i++) blobs.push([(i / nb) * Math.PI * 2 + rnd.range(-0.3, 0.3), 0.5 + (i % 3) * 0.12 + rnd.range(-0.03, 0.03), rnd.range(0.105, 0.135), rnd.range(0.085, 0.105)]);
+  blobs.push([0, 0.75, 0.0, 0.09]);
+  blobs.forEach(([th, y, off, rad], bi) => {
+    const kn = new THREE.IcosahedronGeometry(rad, 1).scale(1, rnd.range(0.8, 1.15), 1);
     const kp = kn.attributes.position as THREE.BufferAttribute;
     for (let v = 0; v < kp.count; v++) {
-      const kk = 1 + 0.28 * n2(kp.getX(v) * 40 + i * 7, kp.getY(v) * 40 + kp.getZ(v) * 30);
+      const kk = 1 + 0.26 * n2(kp.getX(v) * 36 + bi * 7, kp.getY(v) * 36 + kp.getZ(v) * 28);
       kp.setXYZ(v, kp.getX(v) * kk, kp.getY(v) * kk, kp.getZ(v) * kk);
     }
     kn.computeVertexNormals();
-    k.add(kn.translate(Math.cos(th) * rr, y, Math.sin(th) * rr), { color: 0x3a2616, mat: surface('wood', { rough: 0.9, pat: { wrinkles: 1.1 } }), colorFn: woodColor(0x42291a, seed + i) });
+    k.add(kn.translate(Math.cos(th) * off, y, Math.sin(th) * off), { color: 0x3a2a1c, mat: WOOD, colorFn: woodFn });
+  });
+  // knots: small dark whorls on the lumps
+  for (let i = 0; i < 4; i++) {
+    const th = rnd.range(0, Math.PI * 2), y = rnd.range(0.55, 0.8);
+    const rr = 0.12 + 0.03 * rnd.float();
+    k.add(new THREE.IcosahedronGeometry(rnd.range(0.022, 0.032), 0).translate(Math.cos(th) * rr, y, Math.sin(th) * rr), { color: 0x2a1e14, mat: WOOD, colorFn: woodFn });
   }
-  // riveted iron bands clamping the head
-  for (const [y, h] of [[0.38, 0.04], [0.52, 0.045], [0.67, 0.05]] as [number, number][]) {
-    const r = prof(y) * 1.25 + 0.006;
-    k.add(lathe([[r * 0.95, y - h * 0.6], [r, y - h * 0.5], [r, y + h * 0.5], [r * 0.95, y + h * 0.6]], 14), { color: 0x4a4440, mat: surface('iron_rusty', { rough: 0.6 }), colorFn: oxide(seed + 2, 0x4c4642, 0x7a4a2c, 0x8a8680, 0.5) });
-    for (let i = 0; i < 9; i++) {
-      const th = (i / 9) * Math.PI * 2 + y * 3;
-      k.add(new THREE.SphereGeometry(0.011, 5, 3).translate(Math.cos(th) * r, y, Math.sin(th) * r), { color: 0x8a847a, mat: 'metal_dark' });
+  // two dark iron bands round the head with round studs
+  const IRONC = lin(0x3c3a38);
+  for (const [y, h] of [[0.52, 0.045], [0.68, 0.05]] as [number, number][]) {
+    const r = 0.15;
+    k.add(lathe([[r * 0.95, y - h * 0.6], [r, y - h * 0.5], [r, y + h * 0.5], [r * 0.95, y + h * 0.6]], 12), {
+      color: 0x3c3a38,
+      mat: surface('metal_dark', { rough: 0.6, metal: 0.55 }),
+      colorFn: (p, _n, c) => { c.copy(IRONC).multiplyScalar(0.8 + 0.4 * n2(p.x * 60, p.y * 80 + p.z * 40)); },
+    });
+    for (let i = 0; i < 8; i++) {
+      const th = (i / 8) * Math.PI * 2 + y * 3;
+      k.add(new THREE.SphereGeometry(0.0125, 5, 2).translate(Math.cos(th) * (r + 0.004), y, Math.sin(th) * (r + 0.004)), { color: 0x6a6762, mat: surface('metal_dark', { metal: 0.5 }) });
     }
   }
-  // cord-wrapped grip: the wrap crosses twice
+  // leather cord-wrapped grip: the wrap crosses twice
   const wg = wrapGeo(0.037, -0.13, 0.19, { rings: 18, seg: 8, turns: 7, ridge: 0.28, strands: 1 });
-  k.add(wg.geo, { color: 0x4a3524, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x6a5038, 0x2a1c12, seed) });
+  k.add(wg.geo, { color: 0x3a2a1c, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x5a4430, 0x1e140c, seed) });
   const wg2 = wrapGeo(0.0385, -0.12, 0.18, { rings: 18, seg: 8, turns: -7, ridge: 0.2, strands: 1 });
-  k.add(wg2.geo, { color: 0x4a3524, mat: 'leather_worn', colorFn: wrapColor(wg2.ph, 0x5a4430, 0x24170e, seed + 1) });
+  k.add(wg2.geo, { color: 0x3a2a1c, mat: 'leather_worn', colorFn: wrapColor(wg2.ph, 0x4e3a28, 0x1a110a, seed + 1) });
   const m = k.mesh('club');
   if (sc !== 1) m.geometry.scale(sc, sc, sc);
   return withTip(m, 0.87 * sc);
@@ -1153,66 +1178,61 @@ function club(seed: number, style: WeaponStyle): THREE.Object3D {
 function warhammer(seed: number, style: WeaponStyle): THREE.Object3D {
   const k = new Kit();
   const sc = style === 'default' ? 1 : 0.72;
-  const RUST = surface('iron_rusty', { rough: 0.5, pat: { scales: -0.5 } });
+  // dark weathered iron: a low-metal, mid-rough surface so it never mirrors the sky white
+  const RUST = surface('iron_rusty', { rough: 0.85, metal: 0.0, pat: { scales: -0.5, pores: 0.35 } });
   const n2 = noise2(seed + 21);
-  const ironC = lin(0x4a4a4c), rustC = lin(0x74462a), dark = lin(0x242224), edgeC = lin(0x8a8a8e);
-  const Y = 0.69, HH = 0.14, HZ = 0.12;
-  // gunmetal with a little rust (about 10 %) and bright worn edges on the slab
-  const iron = (rust = 0.1, edges = true) => (p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => {
+  const ironC = lin(0x1e1d1b), rustC = lin(0x3e2618), dark = lin(0x121110), edgeC = lin(0x504d49);
+  const Y = 0.69, HH = 0.14, HZ = 0.12, HX = 0.23;
+  // dark iron with rust patches (about 30 %) and worn edges that catch the light (still mid grey)
+  const iron = (rust = 0.3, edges = true) => (p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => {
     const f = n2(p.x * 24 + p.z * 13, p.y * 22 + p.z * 11) * 0.5 + 0.5;
-    c.copy(ironC).lerp(rustC, smooth(0.6, 0.98, f) * rust * 2).multiplyScalar(0.8 + 0.35 * n2(p.x * 90 + p.y * 40, p.y * 70 + p.z * 50));
-    c.lerp(dark, smooth(0.6, 1, Math.abs(n.y)) * 0.1);
+    c.copy(ironC).lerp(rustC, smooth(0.55, 0.95, f) * rust * 2).multiplyScalar(0.75 + 0.4 * n2(p.x * 90 + p.y * 40, p.y * 70 + p.z * 50));
+    c.lerp(dark, smooth(0.6, 1, Math.abs(n.y)) * 0.15);
     if (edges) {
-      const e = Math.max(smooth(HH * 0.82, HH, Math.abs(p.y - Y)), smooth(HZ * 0.8, HZ, Math.abs(p.z)));
-      c.lerp(edgeC, e * 0.55);
+      // wear only near the edges of each face (distance in the face's own plane), never over a whole face
+      const ey = smooth(HH * 0.84, HH, Math.abs(p.y - Y)), ez = smooth(HZ * 0.8, HZ, Math.abs(p.z)), ex = smooth(HX * 0.9, HX, Math.abs(p.x));
+      const e = Math.abs(n.z) > 0.7 ? Math.max(ey, ex) : Math.abs(n.y) > 0.7 ? Math.max(ez, ex) : Math.max(ey, ez);
+      c.lerp(edgeC, e * 0.5);
     }
   };
-  // slab head: two blocks, central strap band, end plates
-  const blk = (w: number, x: number) => {
-    const g = new THREE.BoxGeometry(w, HH * 2, HZ * 2, 3, 3, 3);
-    const p = g.attributes.position as THREE.BufferAttribute;
-    for (let i = 0; i < p.count; i++) {
-      const sx = p.getX(i), sy = p.getY(i), sz = p.getZ(i);
-      const e = Math.max(0, Math.abs(sy) / HH + Math.abs(sz) / HZ - 1.4) * 0.02;
-      p.setXYZ(i, sx, sy * (1 - e * 2), sz * (1 - e * 2) + 0.004 * Math.sin(sx * 120 + sy * 80 + seed));
-    }
-    g.computeVertexNormals();
-    return g.translate(x, Y, 0);
-  };
-  k.add(blk(0.2, -0.11), { color: 0x4a4a4c, mat: RUST, colorFn: iron() });
-  k.add(blk(0.2, 0.11), { color: 0x4a4a4c, mat: RUST, colorFn: iron() });
-  // central clamp band + end bands (darker, with rivets)
-  for (const x of [0, -0.215, 0.215]) {
-    k.add(new THREE.BoxGeometry(x === 0 ? 0.05 : 0.03, HH * 2 + 0.02, HZ * 2 + 0.02).translate(x, Y, 0), { color: 0x3c3c3e, mat: RUST, colorFn: iron(0.1, false) });
-    for (const sz of [1, -1]) for (let i = 0; i < 4; i++) k.add(new THREE.SphereGeometry(0.011, 5, 3).translate(x, Y - 0.1 + i * 0.067, sz * (HZ + 0.011)), { color: 0x9a9a9c, mat: 'metal_dark' });
+  // ONE slab head with chamfered edges
+  const g = new THREE.BoxGeometry(HX * 2, HH * 2, HZ * 2, 6, 3, 3);
+  const bp = g.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < bp.count; i++) {
+    const sx = bp.getX(i), sy = bp.getY(i), sz = bp.getZ(i);
+    const e = Math.max(0, Math.abs(sy) / HH + Math.abs(sz) / HZ - 1.4) * 0.02;
+    bp.setXYZ(i, sx, sy * (1 - e * 2), sz * (1 - e * 2) + 0.004 * Math.sin(sx * 120 + sy * 80 + seed));
   }
-  // pyramid spikes: four on each broad face, big spikes on both ends
-  for (const sz of [1, -1]) for (const [x, y] of [[-0.12, 0.05], [-0.12, -0.06], [0.12, 0.05], [0.12, -0.06]]) {
-    k.add(new THREE.ConeGeometry(0.032, 0.062, 4).translate(0, 0.031, 0).rotateY(Math.PI / 4).rotateX(sz * Math.PI / 2).translate(x, Y + y, sz * HZ), { color: 0x8a8a8c, mat: RUST, colorFn: iron(0.1, false) });
+  g.computeVertexNormals();
+  k.add(g.translate(0, Y, 0), { color: 0x34322f, mat: RUST, colorFn: iron() });
+  // riveted straps clamped round the head: two across the faces and one at each end
+  for (const x of [-0.12, 0.09, -HX + 0.01, HX - 0.01]) {
+    k.add(new THREE.BoxGeometry(x === -0.12 || x === 0.09 ? 0.05 : 0.03, HH * 2 + 0.02, HZ * 2 + 0.02).translate(x, Y, 0), { color: 0x2a2826, mat: RUST, colorFn: iron(0.25, false) });
+    for (const sz of [1, -1]) for (let i = 0; i < 4; i++) k.add(new THREE.SphereGeometry(0.011, 5, 2).translate(x, Y - 0.1 + i * 0.067, sz * (HZ + 0.011)), { color: 0x5a5753, mat: surface('metal_dark', { metal: 0.4 }) });
+  }
+  // pyramid spikes: three on each broad face, four on each end, as in the reference
+  for (const sz of [1, -1]) for (const [x, y] of [[-0.16, 0.05], [0.16, 0.05], [0.0, -0.06], [-0.16, -0.07]]) {
+    k.add(new THREE.ConeGeometry(0.032, 0.062, 4).translate(0, 0.031, 0).rotateY(Math.PI / 4).rotateX(sz * Math.PI / 2).translate(x, Y + y, sz * HZ), { color: 0x4a4744, mat: RUST, colorFn: iron(0.25, false) });
   }
   for (const sx of [1, -1]) for (const [y, z] of [[0.06, 0.06], [-0.06, 0.06], [0.06, -0.06], [-0.06, -0.06]])
-    k.add(new THREE.ConeGeometry(0.026, 0.085, 4).translate(0, 0.0425, 0).rotateY(Math.PI / 4).rotateZ(-sx * Math.PI / 2).translate(sx * 0.23, Y + y, z), { color: 0x8a8a8c, mat: RUST, colorFn: iron(0.1, false) });
-  // haft: thick wood under iron-strapped wraps (about a fifth longer than before)
-  k.add(lathe([[0.0, -0.1], [0.034, -0.095], [0.03, -0.07], [0.034, Y - 0.2], [0.036, Y - 0.1]], 9), { color: 0x4a3426, mat: 'wood', colorFn: woodColor(0x4a3426, seed) });
+    k.add(new THREE.ConeGeometry(0.026, 0.085, 4).translate(0, 0.0425, 0).rotateY(Math.PI / 4).rotateZ(-sx * Math.PI / 2).translate(sx * 0.23, Y + y, z), { color: 0x4a4744, mat: RUST, colorFn: iron(0.25, false) });
+  // haft: dark wood under leather wraps, iron rings between the wraps
+  k.add(lathe([[0.0, -0.1], [0.034, -0.095], [0.03, -0.07], [0.034, Y - 0.2], [0.036, Y - 0.1]], 9), { color: 0x3a2a1e, mat: 'wood', colorFn: woodColor(0x3a2a1e, seed) });
   const wg = wrapGeo(0.0375, -0.03, Y - HH - 0.01, { rings: 28, seg: 9, turns: 11, ridge: 0.24 });
-  k.add(wg.geo, { color: 0x4a4440, mat: RUST, colorFn: (p, n, c) => {
-    wrapColor(wg.ph, 0x66666a, 0x1e1e20, seed)(p, n, c);
-    c.lerp(rustC, smooth(0.6, 1, n2(p.y * 14, Math.atan2(p.z, p.x) * 2) * 0.5 + 0.5) * 0.15);
-  } });
+  k.add(wg.geo, { color: 0x3a2a1c, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x5a4230, 0x1a110a, seed) });
   for (const y of [-0.04, 0.17, 0.35, Y - HH - 0.02]) {
-    k.add(band(0.04, y, 0.03, 9), { color: 0x3c3c3e, mat: RUST, colorFn: iron(0.1, false) });
+    k.add(band(0.04, y, 0.03, 9), { color: 0x2a2826, mat: RUST, colorFn: iron(0.25, false) });
     for (let i = 0; i < 6; i++) {
       const th = (i / 6) * Math.PI * 2 + y * 5;
-      k.add(new THREE.SphereGeometry(0.0085, 4, 3).translate(Math.cos(th) * 0.043, y, Math.sin(th) * 0.043), { color: 0x9a9a9c, mat: 'metal_dark' });
+      k.add(new THREE.SphereGeometry(0.0085, 4, 3).translate(Math.cos(th) * 0.043, y, Math.sin(th) * 0.043), { color: 0x5a5753, mat: surface('metal_dark', { metal: 0.4 }) });
     }
   }
-  // butt: a studded ferrule ending in a spike
-  k.add(lathe([[0.0, -0.17], [0.012, -0.155], [0.03, -0.115], [0.05, -0.085], [0.058, -0.065], [0.04, -0.04], [0.0, -0.04]], 9), { color: 0x4a4a4c, mat: RUST, colorFn: iron(0.1, false) });
+  // butt: a studded conical cap ending in a spike
+  k.add(lathe([[0.0, -0.17], [0.012, -0.155], [0.03, -0.115], [0.05, -0.085], [0.058, -0.065], [0.04, -0.04], [0.0, -0.04]], 9), { color: 0x34322f, mat: RUST, colorFn: iron(0.3, false) });
   const m = k.mesh('warhammer');
   if (sc !== 1) m.geometry.scale(sc, sc, sc);
   return withTip(m, (Y + HH + 0.02) * sc);
 }
-
 
 function blunt(kind: 'mace' | 'club' | 'warhammer', seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   if (kind === 'mace' && style === 'orc') return morningStar(seed);
@@ -1482,9 +1502,28 @@ function shield(seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   );
   // back: plain dark planks
   const back = lathe([[0, -0.006], [R * 0.6, -0.002], [R * 0.99, 0.004], [R, 0.014], [0, 0.012]], 20).rotateZ(-Math.PI / 2).translate(X0 - 0.012, 0, 0);
-  k.add(back, { color: 0x4a3626, mat: 'wood', colorFn: (p, n, c) => { woodColor(0x4a3626, seed)(p, n, c); c.multiplyScalar(0.8 + 0.2 * n2(p.y * 14, p.z * 4)); } });
+  const warm = style === 'rohan' || style === 'default';
+  k.add(back, { color: warm ? 0x8a6238 : 0x4a3626, mat: 'wood', colorFn: (p, n, c) => {
+    woodColor(warm ? 0x8a6238 : 0x4a3626, seed)(p, n, c);
+    if (warm) {
+      // warm wood planks: vertical boards with dark seams and a lighter grain
+      const u = ((p.z + R) / (2 * R)) * 7;
+      const board = Math.floor(u);
+      c.multiplyScalar(0.85 + 0.25 * (n2(board * 3.1, 0.5) * 0.5 + 0.5));
+      if (u - board < 0.05) c.multiplyScalar(0.45);
+    } else c.multiplyScalar(0.8 + 0.2 * n2(p.y * 14, p.z * 4));
+  } });
   // iron rim, boss and a ring of studs round the boss
-  k.add(new THREE.TorusGeometry(R, 0.0125, 4, 36).rotateY(Math.PI / 2).translate(X0 + 0.004, 0, 0), { color: 0x6a645c, mat: surface('iron_rusty', { rough: 0.55 }), colorFn: oxide(seed, 0x4a4640, 0x6a4a30, 0x7a746a, 0.3, 2) });
+  k.add(new THREE.TorusGeometry(R, 0.0125, 4, 36).rotateY(Math.PI / 2).translate(X0 + 0.004, 0, 0), warm
+    ? { color: 0x8a6a3a, mat: surface('gold', { rough: 0.5, metal: 0.55 }), colorFn: (p, _n, c) => { c.copy(lin(0x8a6a3a)).multiplyScalar(0.8 + 0.3 * n2(p.y * 30, p.z * 30)); } }
+    : { color: 0x6a645c, mat: surface('iron_rusty', { rough: 0.55 }), colorFn: oxide(seed, 0x4a4640, 0x6a4a30, 0x7a746a, 0.3, 2) });
+  if (warm) {
+    // bronze rim rivets
+    for (let i = 0; i < 24; i++) {
+      const th = (i / 24) * Math.PI * 2;
+      k.add(new THREE.ConeGeometry(0.011, 0.012, 4).rotateZ(-Math.PI / 2).translate(X0 + 0.012, Math.cos(th) * R, Math.sin(th) * R), { color: 0xb08a4a, mat: surface('gold', { rough: 0.45, metal: 0.55 }) });
+    }
+  }
   const bx = X0 + 0.036;
   const bossR = hara ? 0.06 : 0.085;
   k.add(new THREE.SphereGeometry(bossR, 10, 3, 0, Math.PI * 2, 0, Math.PI * 0.5).rotateZ(-Math.PI / 2).scale(0.62, 1, 1).translate(bx - 0.004, 0, 0), {
