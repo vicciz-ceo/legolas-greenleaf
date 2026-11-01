@@ -14,13 +14,13 @@ import type { V3 } from '../../../kit/sdf';
 import { surface } from '../../../kit/surfaces';
 import type { KindContext, KindDef } from '../../types';
 import { anatomyParts, emitParts } from '../../anatomy';
-import { arcPlate, mergeAll, put, ring, studs } from './armor';
+import { arcPlate, put, ring, studs } from './armor';
 import { domeHelm } from './headgear';
 import { devNum, mix } from './common';
 import { addBeard, addBrows, addHairdo, braidGeometry, hairMaterial, queueHair, sculptBeardMass, withHair } from './hair';
 import { limbCutAfter, limbCutBefore, sculptBand, sculptTorsoGarment, slab } from './garments';
 import { sculptHairCap } from '../../hairstyles';
-import { frameAt, makeProjector, ringSnap, snapPoint, V, type Projector } from '../uruks_bosses/common';
+import { frameAt, makeProjector, ringSnap, scaleHeldWeapon, snapPoint, V, type Projector } from '../uruks_bosses/common';
 
 /** sRGB albedos from docs/refs/gimli/spec.json, cross-checked against observed.samples (lit) and the turnaround */
 export const GIMLI = {
@@ -41,32 +41,32 @@ export const GIMLI = {
   // sheet cloth #4d382b / observed #312925: charcoal wool trousers
   trousers: 0x2e2a27,
   // sheet leather #513a28 / observed #4d3226: boots read a warm reddish brown
-  boots: 0x35231a,
-  bootsTrim: 0x2c1d13,
+  boots: 0x4a2e20,
+  bootsTrim: 0x3a2418,
   // mail: sheet charcoal (lit #312925-#4a4540); a rough, barely metallic albedo keeps the sky from washing it pale
-  mail: 0x3a3330,
+  mail: 0x342b27,
   /** the sculpted torso renders darker than the cloth skirt, so its mail albedo is lifted (sheet patch #392f2c) */
   mailBody: 0x504642,
   // quilted / tooled brown leather (sleeves, tabard, straps): sheet #513a28
   leather: 0x4a3322,
   leatherTrim: 0x5e4430,
   /** tabard and hem band (the cloth pipeline renders leather brighter: sheet patch #553d33) */
-  tabard: 0x3e2a1c,
+  tabard: 0x35231a,
   /** quilted upper-arm sleeves */
-  sleeve: 0x2e1e12,
+  sleeve: 0x4a3322,
   belt: 0x2c1f15,
   bracers: 0x3a281a,
   // sheet metal #60605a, observed #747274: worn pewter dome
-  steel: 0x4b4946,
-  steelDark: 0x3a3937,
+  steel: 0x3c3a38,
+  steelDark: 0x2e2d2c,
   // bronze fittings: observed #8c714f
-  bronze: 0x86602a,
-  brass: 0x9a7632,
+  bronze: 0x7a5424,
+  brass: 0x8a6a2c,
   buckle: 0x9b7a3c,
 };
 
 /** hammered chain: dark, rough and only a little metallic (the kit default is a bright sparkly steel) */
-const MAIL = surface('mail', { rough: 0.75, metal: 0.35 });
+const MAIL = surface('mail', { rough: 0.75, metal: 0.35, pat: { scales: 1.0 } });
 /** quilted/stitched brown leather: tooled, so the tabard and straps carry the embossed knot-work look */
 const LEATHER = surface('leather_tooled', { rough: 0.7, sheen: 0 });
 const LEATHER_PLAIN = surface('leather_worn', { rough: 0.7 });
@@ -74,16 +74,16 @@ const LEATHER_PLAIN = surface('leather_worn', { rough: 0.7 });
 const QUILT = surface('leather', { rough: 0.78, pat: { leather: 0.9 } });
 /** wool trousers: dense twill */
 const WOOL = surface('twill', { rough: 0.9, sheen: 0.2 });
-/** worn pewter: hammered iron with a low sheen (dome, pauldrons, plates) */
-const IRON = surface('metal_hammered', { rough: 0.62, metal: 0.4 });
+/** worn dark steel with fine scratches and a low sheen (dome, pauldrons, plates) */
+const IRON = surface('metal_dark', { rough: 0.6, metal: 0.45 });
 /** bronze fittings: duller and browner than the kit's bright gold */
-const BRONZE_D = surface('gold', { rough: 0.5 });
+const BRONZE_D = surface('gold', { rough: 0.62 });
 
 // ── landmark heights (m above the ground): the sheet's, scaled to the 1.37 m body ──
 const HEIGHT = 1.37;
 const HEAD_SIZE = 1.4;
 const LEG_LENGTH = 0.82;
-const FOOT_SIZE = 1.2;
+const FOOT_SIZE = 1.3;
 const SC0 = HEIGHT / 1.85;
 /** the figure the gear dimensions below were calibrated on (the 1.46 m pass); `k` scales them to the body */
 const SC_CALIBRATED = 1.46 / 1.85;
@@ -96,8 +96,7 @@ const BELT_Y = 0.745;
 const BELT_RAISE = (BELT_Y - HIP_Y) / SC0 - 0.07;
 /** mail skirt hem ~0.40 m (sheet 0.42 m) and boot tops ~0.29 m (sheet 0.30 m) */
 const SKIRT_LEN = 0.57;
-const SKIRT_GROW = 0.022;
-const HEM_Y = HIP_Y - (HIP_Y - KNEE_Y) * SKIRT_LEN * 1.1;
+const SKIRT_GROW = -0.016;
 const BOOT_LEN = (0.29 - ANKLE_Y) / (KNEE_Y - ANKLE_Y);
 /** where the crossed straps meet on the chest/back (sheet ~1.06 m front, ~1.0 m back) */
 const CROSS_Y = 0.99;
@@ -106,8 +105,17 @@ const HELM_PROFILE: [number, number][] = [
   [0.4, -0.05], [0.405, 0.03], [0.392, 0.13], [0.36, 0.26], [0.31, 0.4], [0.245, 0.52], [0.17, 0.62], [0.1, 0.71], [0.052, 0.775], [0.02, 0.845], [0.0, 0.88],
 ];
 const HELM_Y = 0.12;
+/** held battle axe: world scale relative to what weapons.ts builds (measured head ~0.55 m across, sheet ~0.36 m) */
+const HELD_AXE_SCALE = 0.65;
 /** the dome is a little wider and deeper than the head (the sheet's helm reads big), and leans back */
-const HELM_WIDE = 1.05;
+const HELM_WIDE = 1.1;
+
+/** landmark heights from the built proportions (the module constants above only feed the static KindDef) */
+function landmarks(P: KindContext['P']) {
+  const hipY = P.j.thigh_l[1];
+  const kneeY = P.j.shin_l[1];
+  return { hipY, kneeY, beltY: hipY + (0.07 + BELT_RAISE) * P.s, hemY: hipY - (hipY - kneeY) * SKIRT_LEN * 1.1 };
+}
 
 /** Gimli's pointed pewter helm: bronze brow band, central ridge, rivets */
 function dwarfHelm(ctx: KindContext) {
@@ -121,27 +129,28 @@ function helmFittings(ctx: KindContext, proj: Projector | null) {
   const C = GIMLI;
   const yBand = 0.075 + HELM_Y - 0.07 * 1.6; // bottom edge of the brow band (head units)
   const ph = 0.095 / u; // plate height 0.095 m
-  const arc = 0.065 / (0.372 * u); // plate width 0.065 m
+  const arc = 0.065 / (0.345 * u); // plate width 0.065 m
   for (const sx of [1, -1]) {
     const c = sx > 0 ? 0 : Math.PI;
-    const at = (y: number) => new THREE.Matrix4().makeTranslation(...P.h(0, y, -0.03));
+    const at = (y: number) => new THREE.Matrix4().makeTranslation(...P.h(0, y, 0.0));
     const yc = yBand - ph / 2 + 0.01;
-    put(ctx, arcPlate(0.372 * u, ph * u, arc, c, 6), { bone: 'head', color: C.steel, mat: IRON, matrix: at(yc), small: true });
+    put(ctx, arcPlate(0.345 * u, ph * u, arc, c, 6), { bone: 'head', color: C.steel, mat: IRON, matrix: at(yc), small: true });
     // bronze frame: top hinge bar, bottom bar and the two side strips
-    put(ctx, arcPlate(0.378 * u, 0.02 * u, arc + 0.08, c, 6), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yBand + 0.005), small: true });
-    put(ctx, arcPlate(0.378 * u, 0.02 * u, arc + 0.08, c, 6), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yc - ph / 2), small: true });
-    for (const d of [-arc / 2, arc / 2]) put(ctx, arcPlate(0.378 * u, ph * u, 0.05, c + d, 3), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yc), small: true });
+    put(ctx, arcPlate(0.351 * u, 0.02 * u, arc + 0.08, c, 6), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yBand + 0.005), small: true });
+    put(ctx, arcPlate(0.351 * u, 0.02 * u, arc + 0.08, c, 6), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yc - ph / 2), small: true });
+    for (const d of [-arc / 2, arc / 2]) put(ctx, arcPlate(0.351 * u, ph * u, 0.05, c + d, 3), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: at(yc), small: true });
   }
   const m = new THREE.Matrix4().makeTranslation(...P.h(0, 0.075 + HELM_Y, 0.54)).multiply(new THREE.Matrix4().makeRotationX(-0.1)).multiply(new THREE.Matrix4().makeRotationZ(Math.PI / 4));
   put(ctx, new THREE.BoxGeometry(0.1 * u, 0.1 * u, 0.012 * u), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: m, small: true });
   put(ctx, new THREE.BoxGeometry(0.056 * u, 0.056 * u, 0.012 * u).translate(0, 0, 0.007 * u), { bone: 'head', color: C.steelDark, mat: IRON, matrix: m, small: true });
-  // flat bronze nasal strip (0.03 m wide) from the brow band down the bridge of the nose
+  // bronze nasal strip (0.03 m wide, 0.014 m deep): from the lower edge of the brow band down the bridge of the nose.
+  // Needs the projector (the strip is seated on the finished sculpt); without it the strip is left out.
   if (proj) {
     const hp = V(), hn = V();
     const y = P.h(0, 0.0, 0)[1];
     if (snapPoint(proj, [0, y, 0], 'f', hp, hn)) {
-      const mm = frameAt(hp.addScaledVector(hn, 0.0025), hn);
-      put(ctx, new THREE.BoxGeometry(0.026, 0.16 * u, 0.005), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: mm, small: true });
+      const mm = frameAt(hp.addScaledVector(hn, 0.003), hn);
+      put(ctx, new THREE.BoxGeometry(0.03, 0.15 * u, 0.008), { bone: 'head', color: C.bronze, mat: BRONZE_D, matrix: mm, small: true });
     }
   }
 }
@@ -161,7 +170,7 @@ function bootFittings(ctx: KindContext) {
       const f = (y - ft[1]) / Math.max(1e-3, sh[1] - ft[1]);
       return new THREE.Matrix4().makeTranslation(ft[0] + (sh[0] - ft[0]) * f, y, ft[2] + (sh[2] - ft[2]) * f + 0.004 * k);
     };
-    const rAt = (y: number) => (0.064 + 0.01 * ((y - P.ankleH) / (top - P.ankleH))) * k * Math.sqrt(P.build.bulk / 1.3);
+    const rAt = (y: number) => (0.072 + 0.01 * ((y - P.ankleH) / (top - P.ankleH))) * k * Math.sqrt(P.build.bulk / 1.3);
     // folded cuff at the top
     put(ctx, new THREE.CylinderGeometry(rAt(top) + 0.012 * k, rAt(top) + 0.004 * k, 0.055 * k, 16, 1, true), { bone, color: C.bootsTrim, mat: LEATHER_PLAIN, matrix: at(top - 0.026 * k), small: true });
     // two buckled straps, buckle plates on the outside
@@ -203,7 +212,7 @@ function sleeves(ctx: KindContext) {
   const wr = P.j.hand_l;
   s.mirrored(() => {
     s.group('union', 0.004 * sc, () => {
-      emitParts(s, parts, ['upperarm'], { color: C.sleeve, color2: C.leather, colorNoise: 0.35, colorFreq: 26 / sc, mat: QUILT, inflate: 0.034 * sc, oneSide: true });
+      emitParts(s, parts, ['upperarm'], { color: C.sleeve, color2: 0x2e1e12, colorNoise: 0.25, colorFreq: 26 / sc, mat: QUILT, inflate: 0.034 * sc, oneSide: true });
       limbCutBefore(s, L, [el[0] + L.x * 0.012 * sc, el[1] + L.y * 0.012 * sc, el[2]], 0.006 * sc);
       limbCutAfter(s, L, [sh[0] - L.x * 0.03 * sc, sh[1] - L.y * 0.03 * sc, sh[2]], 0.01 * sc);
     });
@@ -242,14 +251,15 @@ function pauldrons(ctx: KindContext) {
     const rim = new THREE.SphereGeometry(1, 20, 2, 0, Math.PI * 2, Math.PI / 2 - 0.12, 0.12).scale(0.119 * k * g, 0.099 * k * g, 0.132 * k * g).rotateZ(-Math.PI / 2);
     put(ctx, rim, { bone, color: C.bronze, mat: BRONZE_D, matrix: at(0.03, -0.012), small: true });
     // lames stepping down the arm
+    // (the last lame ends above the elbow, so it does not clip the forearm when the arm bends)
     for (let i = 0; i < 3; i++) {
-      const along = 0.095 + 0.062 * i;
-      const r = (0.108 - 0.007 * i) * k * g;
-      const h = 0.082 * k;
-      const lame = new THREE.CylinderGeometry(r * 1.05, r * 0.96, h, 16, 1, true, -1.85 + Math.PI / 2, 3.7);
+      const along = 0.085 + 0.045 * i;
+      const r = (0.118 - 0.005 * i) * k * g;
+      const h = 0.07 * k;
+      const lame = new THREE.CylinderGeometry(r * 1.05, r * 0.97, h, 16, 1, true, -1.7 + Math.PI / 2, 3.4);
       put(ctx, lame, { bone, color: i === 2 ? C.steelDark : C.steel, mat: IRON, matrix: at(along, 0) });
-      const trim = new THREE.CylinderGeometry(r * 1.05 + 0.004 * k, r * 1.05 + 0.004 * k, 0.019 * k, 16, 1, true, -1.85 + Math.PI / 2, 3.7);
-      put(ctx, trim, { bone, color: C.bronze, mat: BRONZE_D, matrix: at(along + h / 2 - 0.006 * k, 0), small: true });
+      const trim = new THREE.CylinderGeometry(r * 1.05 + 0.004 * k, r * 1.05 + 0.004 * k, 0.03 * k, 16, 1, true, -1.7 + Math.PI / 2, 3.4);
+      put(ctx, trim, { bone, color: C.bronze, mat: BRONZE_D, matrix: at(along + h / 2 - 0.008 * k, 0), small: true });
     }
     // round boss at the front of the cap
     const boss = new THREE.SphereGeometry(0.02 * k, 8, 5, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(Math.PI / 2);
@@ -296,7 +306,7 @@ function beltGear(ctx: KindContext, proj: Projector | null) {
   const { P } = ctx;
   const k = P.s / SC_CALIBRATED;
   const C = GIMLI;
-  const by = HIP_Y + (0.07 + BELT_RAISE) * P.s;
+  const by = landmarks(P).beltY;
   if (proj) {
     const pts: V3[] = [];
     const p = V(), n = V();
@@ -320,12 +330,11 @@ function beltGear(ctx: KindContext, proj: Projector | null) {
   const slant = 0.3;
   const len = 0.26 * k;
   for (const sx of [1, -1]) {
-    const x0 = sx * 0.2 * k;
+    const x0 = sx * 0.19 * k;
     const top = by - 0.03;
-    const zz = 0.03 * k;
-    const head = throwingAxeHead(sx, k * 1.7).translate(x0, by - 0.004, zz);
-    const g = mergeAll([head]);
-    if (g) put(ctx, g, { bone: 'hips', color: C.steel, mat: IRON, small: true });
+    const zz = 0.07 * k;
+    const head = throwingAxeHead(sx, k * 1.3).translate(x0, by - 0.004, zz);
+    put(ctx, head, { bone: 'hips', color: C.steel, mat: IRON, small: true });
     const sheath = new THREE.CylinderGeometry(0.019 * k, 0.0155 * k, len, 8).translate(0, -len / 2, 0).rotateZ(sx * slant).translate(x0, top, zz);
     put(ctx, sheath, { bone: 'hips', color: 0x3a2616, mat: LEATHER_PLAIN, small: true });
     for (const t of [0.02 * k, 0.24 * k]) {
@@ -354,7 +363,8 @@ function hemBand(ctx: KindContext) {
   const rx = Math.max(rx0, P.hipX + legR + 0.03 * sc + grow) + flare + 0.004 * sc;
   const rz = Math.max(rz0, legR + 0.035 * sc + grow) + flare * 0.8 + 0.004 * sc;
   const h = 0.045 * (sc / SC_CALIBRATED);
-  const y = HEM_Y + h / 2 - 0.004;
+  const hemY = landmarks(P).hemY;
+  const y = hemY + h / 2 - 0.004;
   const arcs: { bone: string; a0: number; a1: number }[] = [
     { bone: 'skirt_f', a0: -Math.PI / 4, a1: Math.PI / 4 },
     { bone: 'thigh_l', a0: Math.PI / 4, a1: (3 * Math.PI) / 4 },
@@ -364,8 +374,8 @@ function hemBand(ctx: KindContext) {
   for (const { bone, a0, a1 } of arcs) {
     if (!ctx.rig.has(bone)) continue;
     const band = new THREE.CylinderGeometry(1, 1, h, 14, 1, true, a0, a1 - a0).scale(rx, 1, rz).translate(0, y, -0.01 * sc);
-    put(ctx, band, { bone, color: GIMLI.tabard, mat: LEATHER, small: true });
-    const edge = new THREE.CylinderGeometry(1, 1, 0.006, 14, 1, true, a0, a1 - a0).scale(rx + 0.002, 1, rz + 0.002).translate(0, HEM_Y + 0.001, -0.01 * sc);
+    put(ctx, band, { bone, color: GIMLI.tabard, mat: LEATHER_PLAIN, small: true });
+    const edge = new THREE.CylinderGeometry(1, 1, 0.006, 14, 1, true, a0, a1 - a0).scale(rx + 0.002, 1, rz + 0.002).translate(0, hemY + 0.001, -0.01 * sc);
     put(ctx, edge, { bone, color: GIMLI.bronze, mat: BRONZE_D, small: true });
     const pts: V3[] = [];
     const n = 7;
@@ -380,6 +390,7 @@ function hemBand(ctx: KindContext) {
 
 /** the two thick braids: from the chin corners in a clear V down to the belt, copper red, with two bronze clasps each */
 function beardBraids(ctx: KindContext, proj: Projector | null, beardLen: number) {
+  const beltY = landmarks(ctx.P).beltY;
   const { P, rig } = ctx;
   const u = P.headH;
   const sc = P.s;
@@ -396,8 +407,8 @@ function beardBraids(ctx: KindContext, proj: Projector | null, beardLen: number)
     const t = Math.min(1, (chinY - p.y) / span);
     out.push([iJaw, Math.max(0, 1 - t * 2)], [iB1, Math.min(1, t * 2) * (1 - t)], [iB2, t * t]);
   };
-  const radius = 0.024 * (sc / SC_CALIBRATED); // ~0.045 m thick
-  const yEnd = BELT_Y + 0.02;
+  const radius = 0.036 * (sc / SC_CALIBRATED); // ~0.065 m thick
+  const yEnd = beltY + 0.02;
   const p0 = P.h(0.19, -0.5, 0.24);
   const n = 6;
   for (const sx of [1, -1]) {
@@ -418,7 +429,11 @@ function beardBraids(ctx: KindContext, proj: Projector | null, beardLen: number)
     for (const t of [0.42, 0.97]) {
       const p = curve.getPointAt(t);
       const d = curve.getTangentAt(t);
-      put(ctx, ring([p.x, p.y, p.z], [d.x, d.y, d.z], radius * (1 - 0.3 * t * t) + 0.005, 0.0055, 10), { bone: 'beard2', color: GIMLI.bronze, mat: BRONZE_D, small: true });
+      // bind the clasp to whichever bone dominates the braid at that height (same blend as the braid's weights)
+      const tt = Math.min(1, Math.max(0, (chinY - p.y) / span));
+      const wj = Math.max(0, 1 - tt * 2), w1 = Math.min(1, tt * 2) * (1 - tt), w2 = tt * tt;
+      const bone = iB1 < 0 || p.y > chinY || (wj >= w1 && wj >= w2) ? 'jaw' : w1 >= w2 ? 'beard1' : 'beard2';
+      put(ctx, ring([p.x, p.y, p.z], [d.x, d.y, d.z], radius * (1 - 0.3 * t * t) + 0.008, 0.008, 10), { bone, color: GIMLI.bronze, mat: BRONZE_D, small: true });
     }
   }
 }
@@ -442,6 +457,8 @@ function tuneHairMaterial() {
 
 export function gimliExtras(ctx: KindContext) {
   tuneHairMaterial();
+  // weapons.ts builds his axe at the weapon sheet's size (head ~0.55 m across the bits); the character sheet's is ~0.36 m
+  scaleHeldWeapon(ctx, 'hand_r', ['dwarf_axe'], [HELD_AXE_SCALE, HELD_AXE_SCALE, HELD_AXE_SCALE]);
   withHair(ctx, () => gimliBody(ctx));
 }
 
@@ -451,7 +468,7 @@ function gimliBody(ctx: KindContext) {
   const rng = new Rng(0x61a11);
   const sc = P.s;
   const u = P.headH;
-  const beardLen = 0.36 * sc;
+  const beardLen = 0.5 * sc;
   // ── scalp cap (under the helm / hair), eyebrows and a heavier brow ──
   const hair = { style: 'long_wavy' as const, color: C.hair, tipColor: C.hairTip, length: 1.0, density: 1.25, bounce: 0.5 };
   sculptHairCap(s, P, hair);
@@ -461,26 +478,28 @@ function gimliBody(ctx: KindContext) {
   s.mirrored(() => s.ellipsoid(P.h(0.17, -0.2, 0.31), [0.1 * u, 0.08 * u, 0.06 * u], { op: 'paint', color: 0xa24a38, mat: 'skin_weathered', bone: 'head', k: 0.05 * u, strength: 0.7 }));
   s.ellipsoid(P.h(0, -0.27, 0.52), [0.075 * u, 0.06 * u, 0.06 * u], { op: 'paint', color: 0xb05444, mat: 'skin_weathered', bone: 'head', k: 0.04 * u, strength: 0.6 });
   // ── hauberk: mail yoke over the shoulders; sleeves are leather (see `sleeves`); the skirt is the outfit's `skirt` layer ──
-  sculptTorsoGarment(ctx, { color: C.mailBody, mat: MAIL, inflate: 0.036 * sc, hem: 0.0, sleeve: 0, shoulders: true });
+  sculptTorsoGarment(ctx, { color: C.mailBody, mat: MAIL, inflate: 0.046 * sc, hem: 0.0, sleeve: 0, shoulders: true });
   sleeves(ctx);
   // mail "shorts" under the skirt: the trousers' thighs would poke out at the hips and through the gaps between skirt panels
   {
     const parts = anatomyParts(P);
+    const { hipY, hemY } = landmarks(P);
     s.group('union', 0.004 * sc, () => {
-      emitParts(s, parts, ['thigh'], { color: C.mailBody, mat: MAIL, inflate: 0.03 * sc });
-      slab(s, HEM_Y + 0.015 * sc, HIP_Y + 0.05 * sc, 0.004 * sc);
+      emitParts(s, parts, ['thigh'], { color: C.mail, mat: MAIL, inflate: 0.04 * sc });
+      slab(s, hemY + 0.015 * sc, hipY + 0.05 * sc, 0.004 * sc);
     });
   }
   // leather straps crossed on chest and back
-  for (const sign of [1, -1] as const) strapAcross(ctx, { color: C.leather, mat: LEATHER, width: 0.05 * sc, inflate: 0.043 * sc, sign, cy: CROSS_Y, tilt: 0.95 });
+  for (const sign of [1, -1] as const) strapAcross(ctx, { color: C.leather, mat: LEATHER, width: 0.05 * sc, inflate: 0.053 * sc, sign, cy: CROSS_Y, tilt: 0.95 });
   // wide leather belt over the hauberk
-  sculptBand(ctx, { color: C.belt, mat: LEATHER_PLAIN, y0: BELT_Y - 0.036 * sc, y1: BELT_Y + 0.036 * sc, inflate: 0.05 * sc });
+  const beltY = landmarks(P).beltY;
+  sculptBand(ctx, { color: C.belt, mat: LEATHER_PLAIN, y0: beltY - 0.036 * sc, y1: beltY + 0.036 * sc, inflate: 0.06 * sc });
   // beard mass (forked)
-  if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.42 * sc, width: 1.1, fork: 1.2, fullness: 1.7, clear: 0.015 * sc });
+  if (!devNum('nobeard', 0)) sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.25), color2: C.hair, length: 0.56 * sc, width: 1.1, fork: 1.2, fullness: 1.7, clear: 0.015 * sc });
   // everything sculpted: snapshot the surface for the gear that sits on it
   const proj = makeProjector(s, { min: [-0.45, 0.35, -0.35], max: [0.45, 1.3, 0.4] });
   // ── hair and beard ──
-  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.74 * sc, count: 200, width: 0.05, wave: 0.9, wild: 0.8, comb: 0.9, front: 0.27, back: -0.4, gravity: 3.5, segments: 5 }, new Rng(0x517));
+  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.88 * sc, count: 210, width: 0.05, wave: 0.9, wild: 0.8, comb: 0.9, front: 0.27, back: -0.4, gravity: 3.5, segments: 5 }, new Rng(0x517));
   if (!devNum('nobeard', 0)) {
     addBeard(
       ctx,
@@ -532,7 +551,7 @@ function gimliBody(ctx: KindContext) {
 export const gimliDef: KindDef = {
   label: 'Gimli',
   height: HEIGHT,
-  build: { shoulders: 1.46, hips: 2.2, bulk: 1.3, belly: 0.5, chest: 1.7, armLength: 1.0, legLength: LEG_LENGTH, headSize: HEAD_SIZE, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: FOOT_SIZE, muscle: 0.55 },
+  build: { shoulders: 1.46, hips: 1.9, bulk: 1.3, belly: 0.5, chest: 1.7, armLength: 1.0, legLength: LEG_LENGTH, headSize: HEAD_SIZE, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: FOOT_SIZE, muscle: 0.55 },
   face: {
     jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 2.0, cheekbones: 1.2,
     nose: { length: 1.2, width: 1.5, bridge: 1.1, hook: 0.25, tip: 1.4 },
@@ -545,9 +564,9 @@ export const gimliDef: KindDef = {
   beard: { style: 'stubble', color: GIMLI.beard, length: 0.08 },
   outfit: [
     // charcoal wool trousers, thick: they show between the hauberk hem and the boot tops
-    { type: 'trousers', color: GIMLI.trousers, mat: WOOL, thickness: 0.009 },
+    { type: 'trousers', color: GIMLI.trousers, mat: WOOL, thickness: 0.012 },
     // short, thick boots with a folded cuff (top ~0.29 m)
-    { type: 'boots', color: GIMLI.boots, color2: GIMLI.bootsTrim, length: BOOT_LEN, thickness: 0.014, mat: LEATHER_PLAIN },
+    { type: 'boots', color: GIMLI.boots, color2: GIMLI.bootsTrim, length: BOOT_LEN, thickness: 0.022, mat: LEATHER_PLAIN },
     // the hauberk itself is sculpted in extras; this is the swinging mail skirt with a leather tabard front and back
     {
       type: 'skirt',
@@ -556,7 +575,7 @@ export const gimliDef: KindDef = {
       mat: MAIL,
       length: SKIRT_LEN,
       thickness: SKIRT_GROW,
-      strips: { count: 2, color: GIMLI.tabard, color2: GIMLI.leatherTrim, mat: LEATHER, width: 0.17, length: 1.0 },
+      strips: { count: 2, color: GIMLI.tabard, color2: GIMLI.leatherTrim, mat: LEATHER_PLAIN, width: 0.12, length: 1.0 },
     },
     { type: 'belt', color: GIMLI.belt, offset: BELT_RAISE, thickness: 0.006, mat: LEATHER_PLAIN },
     { type: 'bracers', color: GIMLI.bracers, color2: GIMLI.belt, length: 0.95, thickness: 0.016, mat: LEATHER },
