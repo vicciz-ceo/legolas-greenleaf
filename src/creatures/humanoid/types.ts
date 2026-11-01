@@ -285,6 +285,8 @@ export interface KindDef {
   anim?: Partial<AnimStyle>;
   variation?: VariationDef;
   detail?: DetailDef;
+  /** per seed-bucket overrides of `detail` (bucket 0 is the canonical look): e.g. a named captain inside a crowd kind gets a face region */
+  bucketDetail?: Partial<Record<0 | 1 | 2 | 3, DetailDef>>;
   /** custom sculpt primitives / attachments; runs after the standard body is sculpted */
   extras?: (ctx: KindContext) => void;
 }
@@ -307,6 +309,7 @@ export interface ResolvedKind {
   anim: AnimStyle;
   variation: Required<VariationDef>;
   detail: Required<Omit<DetailDef, 'refine' | 'hands'>> & Pick<DetailDef, 'refine' | 'hands'>;
+  bucketDetail?: KindDef['bucketDetail'];
   extras: ((ctx: KindContext) => void)[];
 }
 
