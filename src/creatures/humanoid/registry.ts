@@ -57,6 +57,8 @@ export const DEFAULT_ANIM: AnimStyle = {
   armSwing: 1,
   cadence: 1,
   grace: 0.3,
+  crouch: 0,
+  lean: 0,
 };
 
 const DEFAULT_KIND: KindDef = {
@@ -187,6 +189,7 @@ export function resolveKind(kind: HumanoidKind): ResolvedKind {
       refine: def.detail?.refine,
       hands: def.detail?.hands,
     },
+    bucketDetail: def.bucketDetail,
     extras: extras as ResolvedKind['extras'],
   };
   resolved.set(kind, r);
