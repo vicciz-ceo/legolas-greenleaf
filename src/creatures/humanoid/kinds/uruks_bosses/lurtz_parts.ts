@@ -10,24 +10,23 @@ import { surface } from '../../../kit/surfaces';
 import { V, placeAlong, rivet, ringSnap, type GearFn, type Projector } from './common';
 
 export const LURTZ_PAL = {
-  // sheet #55432f design skin, lit torso reads ≈ #6a4232..#7f645b; albedo kept darker and redder
-  // than the sheet hex because the lab/AgX lift browns toward clay
-  skin: 0x4a3027, // between the sheet's lit mid-tones (R:G:B = 1 : .78 : .73, too grey as an albedo) and the old 0x45291f (1 : .62 : .5, chocolate)
-  skin2: 0x31211b,
+  // sheet design skin #55432f, lit torso #7f645b: albedo kept darker and redder than the hex because
+  // the lab and AgX lift browns toward clay
+  skin: 0x4e3a31, // measured against the sheet's chest (111,90,85): 0x5a3a2c rendered lighter and more orange
+  skin2: 0x33261f,
   lips: 0x2e211c,
   brows: 0x14100d,
-  scatter: 0x6a3226,
-  hair: 0x1b1714, // details hair sample #1b1714 (lit), design #24211b
-  hairTip: 0x26211c,
+  scatter: 0x5e3328,
+  hair: 0x1b1714, // details hair sample #1b1714 (lit), design #24211b: near-black at root and tip
   eyes: 0xb88c39, // design iris #b88c39
-  kilt: 0x2b2622, // design #302a25 (lit #463e3a)
-  kilt2: 0x1e1a17,
-  belt: 0x3a2a1e, // design #4d3a2b (lit #463933)
-  beltDark: 0x281d15,
-  leather: 0x2c231c, // bracers: sheet reads #3a312e lit
-  leatherDark: 0x1d1611,
-  wrap: 0x372c23, // foot wraps design #40352b (lit #40362f)
-  wrap2: 0x261e18,
+  kilt: 0x2a2522, // design #302a25 (lit #463e3a): charcoal, brown only on the central flap
+  kilt2: 0x3b3029, // hem grime
+  belt: 0x30231a, // design #4d3a2b (lit #463933)
+  beltDark: 0x20160f,
+  leather: 0x2e2622, // bracers: near-black leather, sheet reads #3a312e lit
+  leatherDark: 0x1d1713,
+  wrap: 0x3a3027, // foot wraps design #40352b (lit #40362f)
+  wrap2: 0x28201a,
   iron: 0x3a352e, // blackened iron (shield #302e28, bracer fittings #6b6657 lit)
   ironLt: 0x5a554b,
   bone: 0xcbbf9d,
@@ -124,23 +123,22 @@ export function lurtzBelt(ctx: KindContext, parts: ReturnType<typeof anatomyPart
     const p = r.p.clone().addScaledVector(r.n, 0.026 * sc);
     gear(rivet(0.006 * sc, 4), { bone: 'hips', color: LURTZ_PAL.ironLt, mat: IRON, matrix: placeAlong(p, r.n, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
   }
-  return { y0, y1 };
 }
 
-/** raised spiral-ish binding bands over the shin wraps (sheet: the boots are layered cloth/leather
- *  wraps from the ankle to mid-calf, ≈ 0.47 m on a 2.1 m figure) */
+/** raised binding bands over the boots (sheet: layered cloth/leather wraps from the ankle to
+ *  ≈ 0.44 m on a 2.1 m figure; the calf is bare above and below the kilt hem) */
 export function lurtzBootWraps(ctx: KindContext, parts: ReturnType<typeof anatomyParts>) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
-  const top = P.ankleH + 0.4 * sc * 0.97;
-  const n = 6;
-  const y0 = P.ankleH + 0.03 * sc;
-  const step = (top - y0) / n;
+  const bootTop = P.ankleH + (P.j.shin_l[1] - P.ankleH) * 0.7; // the 'boots' outfit layer (length 0.7)
+  const n = 5;
+  const y0 = P.ankleH + 0.025 * sc;
+  const step = (bootTop - 0.02 * sc - y0) / n;
   for (let i = 0; i < n; i++) {
     const a = y0 + i * step;
     const b = a + step * 0.62;
     s.group('union', 0.0015 * sc, () => {
-      emitParts(s, parts, ['shin', 'calf'], { color: i % 2 ? LURTZ_PAL.wrap2 : LURTZ_PAL.wrap, mat: surface('rags', { rough: 0.9 }), inflate: 0.0215 * sc + 0.006 * sc, k: 0.012 * sc, noise: { amp: 0.0015 * sc, freq: 60 / sc, type: 'ridged' } });
+      emitParts(s, parts, ['shin', 'calf'], { color: i % 2 ? LURTZ_PAL.wrap2 : LURTZ_PAL.wrap, mat: surface('rags', { rough: 0.9 }), inflate: 0.0145 * sc, k: 0.012 * sc, noise: { amp: 0.0015 * sc, freq: 60 / sc, type: 'ridged' } });
       s.plane([0, 1, 0], b, { op: 'intersect', k: 0.002 * sc });
       s.plane([0, -1, 0], -a, { op: 'intersect', k: 0.002 * sc });
       s.plane([0, 1, 0], b, { op: 'paint', seam: 0, k: 0.002 });
