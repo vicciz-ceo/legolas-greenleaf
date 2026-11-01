@@ -50,6 +50,14 @@ export interface BodyMetrics {
   footLen: number;
   height: number;
   style: AnimStyle;
+  /** true bone lengths of the leg chain (hip joint → knee → ankle); `legLen` is only the vertical span */
+  thighLen: number;
+  shinLen: number;
+  /** rest ankle relative to its hip joint, horizontal (m): outward distance (left leg) and forward offset */
+  ankleDX: number;
+  ankleDZ: number;
+  /** the pelvis pivot (hips bone) above the hip joints (m): pitching the pelvis swings the hip joints about it */
+  pelvisUp: number;
 }
 
 export function lerpPose(out: Pose, a: Pose, b: Pose, t: number): Pose {
@@ -113,15 +121,141 @@ export function neutralPose(B: BodyMetrics, p: Pose): Pose {
 // Idle & locomotion
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Deepest knee flexion (rad, 0 = straight leg) that a standing stance (idle, the base of the walk)
+ * may take at crouch 0. The style terms (hunch, aggression) lower the pelvis by multiples of the BODY
+ * SCALE and know nothing of the leg length, so a short-legged or very hunched kind used to fold both
+ * knees into a squat (trolls idled at 49-57 deg, goblins 53 deg; a man stands at ~27 deg).
+ */
+export const MAX_STANCE_FLEX = (40 * Math.PI) / 180;
+/** the limit at crouch 1 (deep squats); in between it rises linearly with the `crouch` style */
+export const CROUCH_MAX_FLEX = (100 * Math.PI) / 180;
+/** pelvis drop of a full crouch (× leg length): the knee then bends ~99 deg (the head ends at ~78 % of the standing height) */
+const CROUCH_DEPTH = 0.35;
+/** torso pitch (rad) a full crouch adds (pelvis, spine, chest: ~46 deg in all) and a full lean adds (spine, chest: ~15 deg) */
+const CROUCH_PITCH = { pp: 0.24, sp: 0.22, cp: 0.34 };
+const LEAN_PITCH = { sp: 0.09, cp: 0.17 };
+/** the `stance` at which the feet stand as wide as the reference sheets' (shoulder width + 15 %) */
+const STANCE_SHEET = 1.4;
+
+/** the idle's weight shift: pelvis sway (× body scale) and roll (rad) at full shift */
+const IDLE_SWAY = 0.016;
+const IDLE_ROLL = 0.028;
+
+/** a 0..1 style value (missing or NaN = 0) */
+const unit = (x: number | undefined) => (x === undefined || !(x > 0) ? 0 : x > 1 ? 1 : x);
+
+/** knee-flexion limit (rad) of a standing stance with this `crouch` style */
+export function stanceFlexLimit(crouch: number | undefined): number {
+  return MAX_STANCE_FLEX + (CROUCH_MAX_FLEX - MAX_STANCE_FLEX) * unit(crouch);
+}
+
+export interface StanceLimit {
+  /** how far (m) the hips may drift sideways / drop below the pelvis offset (the idle's weight shift) */
+  swayX?: number;
+  swayY?: number;
+  /** knee-flexion limit (rad), default MAX_STANCE_FLEX */
+  flex?: number;
+  /** pelvis pitch (rad) the stance applies: it swings the hip joints back / up about the pelvis */
+  pelvisPitch?: number;
+}
+
+/**
+ * Pelvis offset (m, ≤ 0) of a standing stance: the style's wish `want`, but never so low that a knee
+ * flexes past the limit. Each leg is a two-bone chain from its hip joint to the ankle target, so the
+ * flexion follows from the hip→ankle distance D (law of cosines): D² = thigh² + shin² + 2·thigh·shin·cos(flex).
+ * `feet` are the horizontal offsets [dx, dz] (m) of each ankle target from its hip joint; `o.swayX` /
+ * `o.swayY` make the limit hold at the worst moment of the idle's weight shift. Exact for any build and
+ * height and free of thresholds: the stance changes continuously with the proportions (a kind under the
+ * limit is untouched).
+ */
+export function stanceDrop(B: BodyMetrics, want: number, feet: readonly (readonly [number, number])[], o: StanceLimit = {}): number {
+  const swayX = o.swayX ?? 0, swayY = o.swayY ?? 0;
+  const pitch = o.pelvisPitch ?? 0;
+  const dMin2 = B.thighLen * B.thighLen + B.shinLen * B.shinLen + 2 * B.thighLen * B.shinLen * Math.cos(o.flex ?? MAX_STANCE_FLEX);
+  // a forward-pitched pelvis swings its hip joints back (and a hair up) about the pelvis pivot
+  const back = B.pelvisUp * Math.sin(pitch);
+  const up = B.pelvisUp * (1 - Math.cos(pitch));
+  let need = 0;
+  for (const [dx, dz] of feet) {
+    const h = Math.hypot(Math.max(0, Math.abs(dx) - swayX), dz + back);
+    need = Math.max(need, Math.sqrt(Math.max(0, dMin2 - h * h))); // the foot straight below its hip needs the most height
+  }
+  const floor = Math.min(0, need + swayY - up - (B.hipY - B.ankleH));
+  return Math.max(want, floor);
+}
+
+/**
+ * The style's pelvis wish (m, ≤ 0) of a standing stance: `base` (hunch, aggression) and, with `crouch`,
+ * the way down to the crouch depth (never higher than `base`).
+ */
+export function crouchWish(B: BodyMetrics, base: number, crouch: number | undefined): number {
+  const c = unit(crouch);
+  if (c <= 0) return base;
+  return Math.min(base, base + (-CROUCH_DEPTH * B.legLen - base) * c);
+}
+
+/**
+ * How far (m) each foot stands further out than `standing` (its lateral distance from the midline) for
+ * the style's `stance` > 1: STANCE_SHEET puts it where the reference sheets stand, linear in between.
+ * `want` is the narrow stance's pelvis wish and `dx0` its hip joint → ankle lateral offset: the feet never
+ * spread further than 90 % of the hip→ankle distance of that stance (a legless build cannot straddle).
+ */
+export function stanceExtra(B: BodyMetrics, standing: number, want: number, dx0: number): number {
+  const stance = B.style.stance;
+  if (!(stance > 1)) return 0;
+  const sheet = Math.max(B.shoulderX * 1.15 - standing, 0.6 * standing);
+  const extra = ((Math.min(stance, 1.8) - 1) / (STANCE_SHEET - 1)) * sheet;
+  return Math.min(extra, Math.max(0, 0.9 * Math.hypot(B.hipY - B.ankleH + want, dx0) - dx0));
+}
+
+/**
+ * The pelvis wish when the feet stand `extra` further out (their hip→ankle lateral offset `dx0` grows
+ * by it): the pelvis sinks so each leg keeps the hip→ankle distance of the narrow stance, i.e. the same
+ * extension and knee bend; nothing is stretched and no foot leaves the ground.
+ */
+export function sinkForWidth(B: BodyMetrics, want: number, dx0: number, extra: number): number {
+  if (!(extra > 0)) return want;
+  const v0 = B.hipY - B.ankleH;
+  const V = v0 + want;
+  const d1 = dx0 + extra;
+  return Math.sqrt(Math.max(V * V + dx0 * dx0 - d1 * d1, 0)) - v0;
+}
+
+/**
+ * The posture the `crouch` and `lean` styles add on top of a standing pose (idle, walk): the torso
+ * pitches forward over the feet, neck and head counter-pitch so the gaze stays level (the head juts
+ * forward), the arms hang forward, the knees and toes turn out. Call it after the pose's own torso,
+ * arms and feet are set; a no-op for crouch = lean = 0.
+ */
+export function stylePose(st: AnimStyle, p: Pose) {
+  const c = unit(st.crouch), l = unit(st.lean);
+  if (c <= 0 && l <= 0) return;
+  const pp = CROUCH_PITCH.pp * c;
+  const sp = CROUCH_PITCH.sp * c + LEAN_PITCH.sp * l;
+  const cp = CROUCH_PITCH.cp * c + LEAN_PITCH.cp * l;
+  p[F.pp] += pp;
+  p[F.sp] += sp;
+  p[F.cp] += cp;
+  const tot = pp + sp + cp;
+  p[F.np] -= 0.35 * tot;
+  p[F.hp] -= 0.65 * tot;
+  const arms = 0.1 * l + 0.12 * c;
+  p[F.hlz] += arms;
+  p[F.hrz] += arms;
+  p[F.kl] = p[F.kr] = 0.1 + 0.25 * c;
+  p[F.flyaw] += 0.15 * c;
+  p[F.fryaw] -= 0.15 * c;
+}
+
 export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   neutralPose(B, p);
   const st = B.style;
   const s = B.s;
   const breath = Math.sin((t * Math.PI * 2) / 4.2);
   const shift = Math.sin(t * 0.37) * 0.7 + Math.sin(t * 0.13 + 1.3) * 0.3;
-  p[F.px] = 0.016 * s * shift;
-  p[F.pr] = -0.028 * shift;
-  p[F.py] = -0.012 * s - 0.03 * s * st.aggression - 0.04 * s * st.hunch;
+  p[F.px] = IDLE_SWAY * s * shift;
+  p[F.pr] = -IDLE_ROLL * shift;
   p[F.sp] = 0.06 * st.hunch + 0.01 * breath;
   p[F.cp] = -0.018 * breath + 0.18 * st.hunch;
   p[F.cr] = 0.02 * shift;
@@ -137,9 +271,27 @@ export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   p[F.frz] = -0.02 * s;
   p[F.flyaw] = 0.12;
   p[F.fryaw] = -0.22;
+  // pelvis wish of the narrow stance: the style's crouch
+  const wish = crouchWish(B, -0.012 * s - 0.03 * s * st.aggression - 0.04 * s * st.hunch, st.crouch);
+  // stance > 1: the feet stand further apart (the small hint in `w` above stays); measured from the stance-1 feet
+  const dx0 = B.ankleDX + p[F.flx]; // hip joint → ankle target, lateral, before widening
+  const extra = stanceExtra(B, B.hipX + B.ankleDX + 0.012 * s * (1 + 0.2 * st.aggression), wish, dx0);
+  if (extra > 0) {
+    p[F.flx] += extra;
+    p[F.frx] -= extra;
+  }
+  // pelvis drop: the wish (sinking a little for a wide stance), kept inside the knee-flexion limit for
+  // these feet, this pelvis pitch and the sway above
+  p[F.py] = stanceDrop(B, sinkForWidth(B, wish, dx0, extra), [[B.ankleDX + p[F.flx], B.ankleDZ + p[F.flz]], [B.ankleDX - p[F.frx], B.ankleDZ + p[F.frz]]], {
+    swayX: IDLE_SWAY * s,
+    swayY: IDLE_ROLL * B.hipX,
+    flex: stanceFlexLimit(st.crouch),
+    pelvisPitch: CROUCH_PITCH.pp * unit(st.crouch),
+  });
   // arms: aggression → arms out and forward; hunch → arms hang forward
   const ao = st.aggression;
   hands(p, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch);
+  stylePose(st, p);
   return p;
 }
 
@@ -174,10 +326,27 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
   const idleFeet = 1 - walkW;
   p[F.flx] += 0.012 * s * idleFeet;
   p[F.frx] -= 0.012 * s * idleFeet;
+  // base crouch of the style
+  const wish = crouchWish(B, -0.012 * s - 0.03 * s * st.aggression - 0.05 * s * st.hunch, st.crouch);
+  // stance > 1: the feet stand further apart (the gait's stride only adds reach along z). `hint` is the
+  // feet's lateral offset from their rest without the stride (the small stance hint above and the idle
+  // offsets fading out), `hint1` the same at stance 1: the widening is measured from the latter
+  const hint = 0.01 * s * (width - 1) * 3 + 0.012 * s * idleFeet;
+  const hint1 = 0.01 * s * (Math.abs(lat) * 0.6) * 3 + 0.012 * s * idleFeet;
+  const extra = stanceExtra(B, B.hipX + B.ankleDX + hint1, wish, B.ankleDX + hint);
+  if (extra > 0) {
+    p[F.flx] += extra;
+    p[F.frx] -= extra;
+  }
   // pelvis & torso
   const sw = 1 + st.swagger * 1.5;
   p[F.px] = 0;
-  p[F.py] = g.pelvisY * (1 - st.grace * 0.3) - 0.012 * s - 0.03 * s * st.aggression - 0.05 * s * st.hunch;
+  // the wish (sinking a little for a wide stance), kept inside the knee-flexion limit for feet under the
+  // hips (the gait's stride only adds reach). Only a widened stance counts the hint: stance <= 1 stays as it was
+  const under: [number, number] = [B.ankleDX + (extra > 0 ? hint + extra : 0), B.ankleDZ];
+  p[F.py] =
+    g.pelvisY * (1 - st.grace * 0.3) +
+    stanceDrop(B, sinkForWidth(B, wish, B.ankleDX + hint, extra), [under, under], { flex: stanceFlexLimit(st.crouch), pelvisPitch: CROUCH_PITCH.pp * unit(st.crouch) });
   p[F.pr] = g.pelvisRoll * sw;
   p[F.pyaw] = g.pelvisYaw * (0.6 + 0.4 * Math.abs(fwd)) * Math.sign(fwd || 1) * (1 + st.swagger * 0.5);
   const lean = (0.03 + 0.17 * run + 0.06 * Math.max(0, speed - 7) / 2) * fwd;
@@ -204,6 +373,7 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
   elbows(p, 0.3, 0, -1, 0.3, 0, -1);
   p[F.gl] = Math.max(p[F.gl], 0.35 + 0.5 * runBend);
   p[F.gr] = Math.max(p[F.gr], 0.35 + 0.5 * runBend);
+  stylePose(st, p);
   // dash: very fast → low lunge with arms trailing
   const dash = Math.min(1, Math.max(0, (speed - 11) / 3));
   if (dash > 0) {
