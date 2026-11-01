@@ -32,6 +32,61 @@ const KEY_MOVE: Record<string, [number, number]> = {
   KeyD: [1, 0], ArrowRight: [1, 0],
 };
 
+/** wheel travel (px) that counts as one arrow-type step */
+const WHEEL_STEP = 40;
+/** a pause this long between wheel events ends a gesture (inertial trackpad tails never pause) */
+const WHEEL_QUIET_MS = 150;
+/** after a user-initiated pointer-lock exit (Esc) browsers refuse a re-lock for about this long */
+const RELOCK_COOLDOWN_MS = 1300;
+
+export interface WheelGesture {
+  /** feed one wheel event; returns -1 (previous), +1 (next) or 0 (nothing yet / already switched this gesture) */
+  push(deltaY: number, deltaMode: number, now: number): -1 | 0 | 1;
+  reset(): void;
+}
+
+/**
+ * Mouse-wheel to arrow-type stepping. Deltas are normalised (Firefox reports LINE units, a notch is
+ * about 3 lines), summed until WHEEL_STEP, and one gesture gives exactly one step: after a switch,
+ * further events are swallowed until the wheel has been quiet for WHEEL_QUIET_MS (this absorbs
+ * trackpad / free-spin inertia) or the direction clearly reverses. Wheel up = previous, down = next.
+ */
+export function createWheelGesture(): WheelGesture {
+  let acc = 0;
+  let lastEvT = -1e9;
+  let latched = 0; // direction of the step this gesture already produced (0 = armed)
+  return {
+    push(deltaY, deltaMode, now) {
+      const dy = deltaY * (deltaMode === 1 ? 16 : deltaMode === 2 ? 100 : 1);
+      if (now - lastEvT > WHEEL_QUIET_MS) {
+        acc = 0;
+        latched = 0;
+      }
+      lastEvT = now;
+      if (dy === 0) return 0;
+      const dir = dy < 0 ? -1 : 1;
+      if (latched !== 0) {
+        if (dir === latched || Math.abs(dy) < WHEEL_STEP) return 0; // inertial tail / jitter
+        latched = 0; // a deliberate reversal starts a new gesture
+        acc = 0;
+      }
+      if (acc !== 0 && (acc < 0) !== (dy < 0)) acc = 0;
+      acc += dy;
+      if (Math.abs(acc) >= WHEEL_STEP) {
+        acc = 0;
+        latched = dir;
+        return dir;
+      }
+      return 0;
+    },
+    reset() {
+      acc = 0;
+      lastEvT = -1e9;
+      latched = 0;
+    },
+  };
+}
+
 /** radial deadzone with rescale; writes into out[0..1]; returns magnitude (0..1) */
 function radial(x: number, y: number, dead: number, out: number[]): number {
   const m = Math.hypot(x, y);
@@ -85,9 +140,11 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   let curY = 0;
   let curValid = false;
   let cursorHidden = false;
-  let wheelAcc = 0;
-  let lastWheelT = 0;
-  const pend = { melee: false, jump: false, dash: false, interact: false, next: false, pause: false, slot: 0 as 0 | 1 | 2 | 3 };
+  const wheel = createWheelGesture();
+  // time of the last pointer-lock loss the user caused (Esc); browsers refuse a re-lock right after it
+  let lastUserUnlockT = -1e9;
+  let lastKeyLockT = -1e9;
+  const pend = { melee: false, jump: false, dash: false, interact: false, next: false, prev: false, pause: false, slot: 0 as 0 | 1 | 2 | 3 };
 
   // ── gamepad state ─────────────────────────────────────────────────────────
   let padPrev: boolean[] = new Array(17).fill(false);
@@ -135,9 +192,18 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     // a UI layer (the menus' capture listener) already handled this key: e.g. Esc on the pause menu
     // resumes, which re-enables input before this bubble-phase listener runs, and must not re-pause
     if (!enabled || e.defaultPrevented) return;
+    // pointer lost without a deliberate pause (an Esc, Esc round trip: Esc is not an activation key so
+    // the resume could not re-lock). Any other key press is, so take the pointer back here. Not a
+    // "gesture" request: a refusal must never switch on drag-look.
+    if (!locked && !dragFallback && e.code !== 'Escape' && !(touchSeen && getDevice() === 'touch')) {
+      const t0 = performance.now();
+      if (t0 - lastUserUnlockT > RELOCK_COOLDOWN_MS && t0 - lastKeyLockT > RELOCK_COOLDOWN_MS) {
+        lastKeyLockT = t0;
+        lockPointer(false);
+      }
+    }
     switch (e.code) {
       case 'Space': pend.jump = true; e.preventDefault(); break;
-      case 'ControlLeft':
       case 'KeyC': pend.dash = true; break;
       case 'KeyE':
       case 'KeyV': pend.melee = true; break;
@@ -220,13 +286,9 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     if (!enabled) return;
     setDevice('kbm');
     e.preventDefault();
-    wheelAcc += e.deltaY;
-    const now = performance.now();
-    if (Math.abs(wheelAcc) >= 40 && now - lastWheelT > 140) {
-      pend.next = true;
-      wheelAcc = 0;
-      lastWheelT = now;
-    } else if (now - lastWheelT > 400) wheelAcc = 0;
+    const step = wheel.push(e.deltaY, e.deltaMode, performance.now());
+    if (step > 0) pend.next = true;
+    else if (step < 0) pend.prev = true;
   };
   const onContext = (e: Event): void => e.preventDefault();
 
@@ -236,6 +298,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     if (locked) dragFallback = false;
     if (was && !locked) {
       // the browser takes the pointer back on Esc: treat it as a pause request
+      if (!wantUnlock) lastUserUnlockT = performance.now();
       if (!wantUnlock && enabled) pend.pause = true;
       wantUnlock = false;
     }
@@ -243,7 +306,8 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   const onLockError = (): void => {
     // a refusal of a request made outside a user gesture proves nothing (browsers require one),
     // only a failed click-initiated request switches to drag-look
-    if (lastLockFromGesture) dragFallback = true;
+    // (also not right after an Esc exit: the browser refuses even a click then, and the next one works)
+    if (lastLockFromGesture && performance.now() - lastUserUnlockT > RELOCK_COOLDOWN_MS + 200) dragFallback = true;
   };
 
   const onTouchStartGlobal = (): void => {
@@ -284,11 +348,11 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
       const r = (canvas as HTMLElement).requestPointerLock() as unknown;
       if (r && typeof (r as Promise<void>).catch === 'function') {
         (r as Promise<void>).catch(() => {
-          if (fromGesture) dragFallback = true;
+          if (fromGesture && performance.now() - lastUserUnlockT > RELOCK_COOLDOWN_MS + 200) dragFallback = true;
         });
       }
     } catch {
-      if (fromGesture) dragFallback = true;
+      if (fromGesture && performance.now() - lastUserUnlockT > RELOCK_COOLDOWN_MS + 200) dragFallback = true;
     }
   }
   function unlockPointer(): void {
@@ -302,11 +366,16 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
   function activePad(): Gamepad | null {
     const list = typeof navigator.getGamepads === 'function' ? navigator.getGamepads() : null;
     if (!list) return null;
+    // poll() assumes the standard layout: prefer a pad that reports it (wheels, pedals, flight sticks and
+    // other odd HID devices report '' and may rest off-centre), else take the first connected pad
+    let first: Gamepad | null = null;
     for (let i = 0; i < list.length; i++) {
       const g = list[i];
-      if (g && g.connected && g.mapping !== undefined) return g;
+      if (!g || !g.connected) continue;
+      if (g.mapping === 'standard') return g;
+      if (!first) first = g;
     }
-    return null;
+    return first;
   }
 
   // ── poll ──────────────────────────────────────────────────────────────────
@@ -315,15 +384,16 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     s.moveX = s.moveY = s.lookX = s.lookY = 0;
     s.aimHeld = s.drawHeld = s.drawReleased = false;
     s.melee = s.jump = s.dash = s.interact = s.nextArrow = s.pause = false;
+    s.prevArrow = false;
     s.arrowSlot = 0;
     s.focusHeld = s.focusPressed = s.focusReleased = s.sprintHeld = false;
     prevDraw = prevFocus = false;
-    pend.melee = pend.jump = pend.dash = pend.interact = pend.next = pend.pause = false;
+    pend.melee = pend.jump = pend.dash = pend.interact = pend.next = pend.prev = pend.pause = false;
     pend.slot = 0;
     drawLatch = focusLatch = false;
     mdx = mdy = 0;
     curValid = false;
-    wheelAcc = 0;
+    wheel.reset();
     touch.consumeLook(lookTmp);
     touch.st.drawTap = touch.st.focusTap = false;
     touch.st.melee = touch.st.jump = touch.st.dash = touch.st.interact = touch.st.next = touch.st.pause = false;
@@ -377,6 +447,7 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     let dash = pend.dash;
     let interact = pend.interact;
     let next = pend.next;
+    const prev = pend.prev && !next;
     let pause = pend.pause;
     let slot = pend.slot;
     let drawTap = drawLatch;
@@ -530,12 +601,13 @@ export function createInput(canvas: HTMLElement, uiRoot: HTMLElement, opts: Inpu
     s.dash = dash;
     s.interact = interact;
     s.nextArrow = next;
+    s.prevArrow = prev;
     s.pause = pause;
     s.arrowSlot = slot as 0 | 1 | 2 | 3;
     s.device = getDevice();
 
     // consume latches
-    pend.melee = pend.jump = pend.dash = pend.interact = pend.next = pend.pause = false;
+    pend.melee = pend.jump = pend.dash = pend.interact = pend.next = pend.prev = pend.pause = false;
     pend.slot = 0;
     drawLatch = false;
     focusLatch = false;
