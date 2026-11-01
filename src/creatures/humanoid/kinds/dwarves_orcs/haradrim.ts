@@ -47,7 +47,7 @@ const RED_COAT = surface('cloth', { rough: 0.9, sheen: 0.3, pat: { weave: 1.3, w
 const BLACK_CLOTH = surface('twill', { rough: 0.95, sheen: 0.08 });
 const LEATHER = surface('leather_worn', { rough: 0.72, pat: { leather: 1.1, scratches: 0.5 } });
 const BOOT = surface('leather_worn', { rough: 0.62, sheen: 0.14, pat: { leather: 1.1, scratches: 0.7, wrinkles: 0.5 } });
-const BEARD = surface('hair', { rough: 0.9, sheen: 0.05 });
+const BEARD = surface('hair', { rough: 0.9, sheen: 0, pat: { fur: 0.15 } });
 const HELM_LEATHER = surface('leather_worn', { rough: 0.7, pat: { leather: 1.1 } });
 
 const TORSO: PartTag[] = ['pelvis', 'waist', 'belly', 'ribs', 'chest', 'pecs', 'back', 'trap', 'glutes'];
@@ -78,9 +78,9 @@ function paintStrokes(ctx: KindContext, strokes: [number, number][][], r: number
   for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.5 });
 }
 
-/** the sheet's paint: a forehead line with a diamond and a chevron on each cheek */
+/** the sheet's paint: a short brow line and a chevron on each cheek (the forehead diamond sits under the turban) */
 function sheetPaint(ctx: KindContext) {
-  const strokes: [number, number][][] = [[[0, 0.3], [0, 0.0]], [[0, 0.24], [0.045, 0.19], [0, 0.14], [-0.045, 0.19], [0, 0.24]]];
+  const strokes: [number, number][][] = [[[0, 0.12], [0, 0.0]]];
   for (const sd of [1, -1]) strokes.push([[sd * 0.33, 0.0], [sd * 0.2, -0.1], [sd * 0.32, -0.22]], [[sd * 0.26, -0.3], [sd * 0.22, -0.36]]);
   paintStrokes(ctx, strokes, 0.016);
 }
@@ -91,12 +91,11 @@ function shortBeard(ctx: KindContext) {
   const sc = P.s;
   const u = P.headH;
   const h = P.h;
-  s.with({ color: PALETTE.beard, color2: 0x2a2623, colorNoise: 0.4, colorFreq: 40 / sc, mat: BEARD, bone: 'jaw' }, () => {
+  s.with({ color: PALETTE.beard, mat: BEARD, bone: 'jaw' }, () => {
     s.group('union', 0.02 * u, () => {
       s.ellipsoid(h(0, -0.46, 0.15), [0.285 * u, 0.17 * u, 0.29 * u], { k: 0.03 * u });
       // the moustache sits on the upper lip and the beard rises to the lower lip: the mouth is closed
-      for (const sd of [1, -1]) s.cone(h(sd * 0.012, -0.325, 0.425), h(sd * 0.16, -0.395, 0.355), 0.05 * u, 0.034 * u, { k: 0.03 * u });
-      s.ellipsoid(h(0, -0.41, 0.405), [0.14 * u, 0.045 * u, 0.06 * u], { k: 0.025 * u });
+      s.ellipsoid(h(0, -0.385, 0.415), [0.15 * u, 0.04 * u, 0.06 * u], { k: 0.025 * u });
     });
   });
 }
@@ -153,7 +152,7 @@ function clothSheets(ctx: KindContext, look: Look): SheetOpts[] {
     { a0: 4.0 + b, a1: edge - b, color: look.coat, nu: 4 },
     { a0: edge - b, a1: edge, color: look.trim, out: o },
   ];
-  const coat: SheetOpts = { cols, top, bottom: 0.27 * k, rx1: 0.35 * sc, rz1: 0.245 * sc, curve: 0.7, rows: 7, mat: RED_COAT, hem: { color: look.coatDeep, band: 0.05 }, fold: 0.006 * sc, seed: 3 };
+  const coat: SheetOpts = { cols, top, bottom: 0.27 * k, rx1: 0.38 * sc, rz1: 0.26 * sc, curve: 0.7, rows: 7, mat: RED_COAT, hem: { color: look.coatDeep, band: 0.05 }, fold: 0.006 * sc, seed: 3 };
   const tunic: SheetOpts = { cols: [{ a0: -0.55, a1: 0.55, color: PALETTE.black, nu: 3 }], top, bottom: 0.4 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 5, mat: BLACK_CLOTH, fold: 0.004 * sc, seed: 5 };
   const sash: SheetOpts = { cols: [{ a0: 0.2, a1: 0.42, color: look.coat, out: 0.012 * sc }], top, bottom: 0.68 * k, rx1: 0.2 * sc, rz1: 0.17 * sc, curve: 0.8, rows: 4, mat: RED_COAT, fold: 0.003 * sc, seed: 7 };
   return [coat, tunic, sash];
@@ -307,7 +306,7 @@ export const haradrimDef: KindDef = {
   label: 'Haradrim',
   // sheet silhouette 1.93 m with the turban on (the head top is ~1.88 m)
   height: 1.88,
-  build: { shoulders: 1.0, hips: 0.98, bulk: 0.9, chest: 0.96, muscle: 0.5, footSize: 0.92 },
+  build: { shoulders: 1.03, hips: 0.98, bulk: 0.9, chest: 0.96, muscle: 0.5, footSize: 0.92 },
   // brow > 1.5 keeps the kit's wire-like brow cards off (they poke out as black lines at crowd mesh resolution)
   face: { jaw: 0.95, chin: 1.0, brow: 1.52, cheekbones: 1.1, nose: { length: 1.05, width: 1.0, bridge: 1.05, hook: 0.1 }, lips: { width: 1.0, fullness: 0.7 }, eyeTilt: 0.04, eyeOpen: 0.75, eyeSize: 0.7 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.3, wrinkles: 0.2, lips: PALETTE.lips, surface: 'skin_weathered', scatter: 0xa04a30, brows: PALETTE.brows },

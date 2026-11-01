@@ -241,7 +241,7 @@ export const easterlingDef: KindDef = {
   weapons: { right: 'spear', left: 'shield', style: 'easterling' },
   anim: { swagger: 0.3, aggression: 0.6, stance: 1.3 },
   variation: { height: 0.03, bulk: 0.08, skin: 0.1 },
-  detail: { res: devNum('res', 0.066), headRes: devNum('headRes', 0.0145), faceRes: 0, detailScale: 1.0 },
+  detail: { res: devNum('res', 0.069), headRes: devNum('headRes', 0.0145), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'man', weight: 0.55 },
   extras: easterlingExtras,
 };
