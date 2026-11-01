@@ -118,9 +118,9 @@ function helmet(ctx: KindContext, look: Look['helm']) {
     case 'cap':
       return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: [[0.38, -0.05], [0.385, 0.02], [0.36, 0.14], [0.29, 0.26], [0.2, 0.36], [0.1, 0.42], [0.0, 0.45]], band: false, ridge: false, cheeks: false, rivets: 0, nasal: true, tilt: -0.05 });
     case 'dome':
-      return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: DOME_ROUND, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 6, neck: 'plates', tilt: -0.06 });
+      return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: DOME_ROUND, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 6, tilt: -0.06 });
     case 'pointed':
-      return domeHelm(ctx, { color: shade(c, 0.85), trim, trimMat: IRON, mat: IRON, profile: DOME_POINTED, finial: 'spike', ridge: false, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.08 });
+      return domeHelm(ctx, { color: shade(c, 0.85), trim, trimMat: IRON, mat: IRON, profile: DOME_POINTED, finial: 'spike', ridge: false, cheeks: true, nasal: true, rivets: 8, tilt: -0.08 });
     case 'band': {
       // an iron band with spikes round the head (a helmet allowed, but this orc wears just the band)
       const { P } = ctx;
@@ -178,7 +178,7 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   // ── hair: long and stringy, parted over the brow
   const hairGeo = makeOrcHair(
     ctx,
-    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6, maxZ: 0.1, part: 0.03 },
+    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6, maxZ: 0.0, part: 0.03 },
     rng,
   );
   if (hairGeo) attachSkinned(ctx, hairGeo, orcHairMaterial());

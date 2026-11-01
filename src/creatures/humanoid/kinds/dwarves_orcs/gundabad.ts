@@ -85,7 +85,7 @@ function helmet(ctx: KindContext, b: number) {
   const trim = 0x1c1b1c;
   switch (b) {
     case 0:
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_POINTED, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.1 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_POINTED, finial: 'spike', ridge: false, cheeks: true, nasal: true, rivets: 8, tilt: -0.1 });
       hornPair(ctx, { color: 0xcbc3ac, length: 0.8, curl: 0.6, y: 0.18 });
       break;
     case 1: {
@@ -99,13 +99,13 @@ function helmet(ctx: KindContext, b: number) {
       break;
     }
     case 2: {
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_ROUND, finial: null, ridge: false, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.08 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_ROUND, finial: null, ridge: false, cheeks: true, nasal: true, rivets: 8, tilt: -0.08 });
       const u = P.headH;
       put(ctx, box(0.04 * u, 0.3 * u, 0.8 * u, [0, 0.0, 0]).translate(...P.h(0, 0.64, -0.08)), { bone: 'head', color: trim, mat: STEEL, small: true });
       break;
     }
     default:
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_CONICAL, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 8, neck: 'mail', tilt: -0.08 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_CONICAL, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 8, tilt: -0.08 });
   }
 }
 
