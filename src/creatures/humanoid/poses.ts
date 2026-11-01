@@ -186,6 +186,15 @@ export function stanceDrop(B: BodyMetrics, want: number, feet: readonly (readonl
 }
 
 /**
+ * What `stanceDrop` needs of a style that crouches: its raised knee-flexion limit and the pelvis pitch the
+ * crouch applies, on top of `o` (the idle's sway). Shared by every pose that places its own feet (idle, walk,
+ * the lab's sheet pose), so a crouching kind is limited the same way everywhere.
+ */
+export function crouchLimit(st: AnimStyle, o: StanceLimit = {}): StanceLimit {
+  return { ...o, flex: stanceFlexLimit(st.crouch), pelvisPitch: CROUCH_PITCH.pp * unit(st.crouch) };
+}
+
+/**
  * The style's pelvis wish (m, ≤ 0) of a standing stance: `base` (hunch, aggression) and, with `crouch`,
  * the way down to the crouch depth (never higher than `base`).
  */
@@ -282,12 +291,7 @@ export function idlePose(B: BodyMetrics, t: number, p: Pose): Pose {
   }
   // pelvis drop: the wish (sinking a little for a wide stance), kept inside the knee-flexion limit for
   // these feet, this pelvis pitch and the sway above
-  p[F.py] = stanceDrop(B, sinkForWidth(B, wish, dx0, extra), [[B.ankleDX + p[F.flx], B.ankleDZ + p[F.flz]], [B.ankleDX - p[F.frx], B.ankleDZ + p[F.frz]]], {
-    swayX: IDLE_SWAY * s,
-    swayY: IDLE_ROLL * B.hipX,
-    flex: stanceFlexLimit(st.crouch),
-    pelvisPitch: CROUCH_PITCH.pp * unit(st.crouch),
-  });
+  p[F.py] = stanceDrop(B, sinkForWidth(B, wish, dx0, extra), [[B.ankleDX + p[F.flx], B.ankleDZ + p[F.flz]], [B.ankleDX - p[F.frx], B.ankleDZ + p[F.frz]]], crouchLimit(st, { swayX: IDLE_SWAY * s, swayY: IDLE_ROLL * B.hipX }));
   // arms: aggression → arms out and forward; hunch → arms hang forward
   const ao = st.aggression;
   hands(p, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch, 0.12 + 0.12 * ao, -0.9 + 0.12 * ao + 0.01 * breath, 0.08 + 0.12 * ao + 0.2 * st.hunch);
@@ -346,7 +350,7 @@ export function locomotionPose(B: BodyMetrics, phase: number, speed: number, mdx
   const under: [number, number] = [B.ankleDX + (extra > 0 ? hint + extra : 0), B.ankleDZ];
   p[F.py] =
     g.pelvisY * (1 - st.grace * 0.3) +
-    stanceDrop(B, sinkForWidth(B, wish, B.ankleDX + hint, extra), [under, under], { flex: stanceFlexLimit(st.crouch), pelvisPitch: CROUCH_PITCH.pp * unit(st.crouch) });
+    stanceDrop(B, sinkForWidth(B, wish, B.ankleDX + hint, extra), [under, under], crouchLimit(st));
   p[F.pr] = g.pelvisRoll * sw;
   p[F.pyaw] = g.pelvisYaw * (0.6 + 0.4 * Math.abs(fwd)) * Math.sign(fwd || 1) * (1 + st.swagger * 0.5);
   const lean = (0.03 + 0.17 * run + 0.06 * Math.max(0, speed - 7) / 2) * fwd;
