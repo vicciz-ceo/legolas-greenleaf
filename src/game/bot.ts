@@ -336,6 +336,7 @@ export function createBot(ctx: GameContext, getHint: () => BotHint): Bot {
 
   function clearEdges(): void {
     state.melee = state.jump = state.dash = state.interact = state.nextArrow = state.pause = false;
+    state.prevArrow = false;
     state.drawReleased = state.focusPressed = state.focusReleased = false;
     state.arrowSlot = 0;
   }
