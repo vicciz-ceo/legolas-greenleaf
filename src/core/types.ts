@@ -247,6 +247,8 @@ export interface InputState {
   dash: boolean;
   interact: boolean;
   nextArrow: boolean;
+  /** edge: step to the previous arrow type (mouse wheel up). Optional: a missing value means false */
+  prevArrow?: boolean;
   pause: boolean;
   /** 0 = none chosen this frame, 1..3 = arrow slot */
   arrowSlot: 0 | 1 | 2 | 3;

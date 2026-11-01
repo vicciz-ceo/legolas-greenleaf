@@ -5,6 +5,7 @@
  */
 import { createProgression, sanitizeSave, scoreOf, rankOf, SAVE_KEY, UPGRADES } from './progression';
 import { createTime } from './time';
+import { createWheelGesture } from '../core/input';
 
 let failed = 0, passed = 0;
 const ok = (c: boolean, m: string) => { if (c) passed++; else { failed++; console.log('  FAIL:', m); } };
@@ -157,6 +158,30 @@ test('time: scale easing, hitStop, clocks', () => {
   near(t.step(5), 0.1, 1e-9, 'frame clamp 0.1');
   t.hitStop(100); const fr = [t.step(0.1), t.step(0.1), t.step(0.1), t.step(0.1), t.step(0.1)]; ok(fr[0] === 0 && fr[1] === 0 && fr[2] === 0 && fr[3] > 0, `hitStop capped at 0.25 s ${fr}`);
   t.resetGame(); near(t.t, 0, 1e-9, 'resetGame');
+});
+test('wheel gesture: Firefox LINE notches switch, one step per gesture, direction, inertia', () => {
+  const run = (events: Array<[number, number, number]>) => { const w = createWheelGesture(); return events.map(([dy, mode, t]) => w.push(dy, mode, t)); };
+  // 10 slow Firefox notches (LINE, 3) 300 ms apart: one next each
+  const slow = run(Array.from({ length: 10 }, (_, i) => [3, 1, 1000 + i * 300] as [number, number, number]));
+  ok(slow.filter((v) => v === 1).length === 10 && slow.every((v) => v >= 0), `firefox slow notches ${slow}`);
+  // a fast Firefox spin (20 notches, 25 ms apart) is one gesture: one step
+  const fast = run(Array.from({ length: 20 }, (_, i) => [3, 1, 1000 + i * 25] as [number, number, number]));
+  ok(fast.filter((v) => v === 1).length === 1, `firefox fast spin one step ${fast}`);
+  // Chrome notch (100 px): one step; wheel up goes back
+  ok(run([[100, 0, 500]])[0] === 1, 'chrome down = next');
+  ok(run([[-100, 0, 500]])[0] === -1, 'chrome up = previous');
+  // trackpad inertia: 60 events of 1..30 px over 1 s, same sign: exactly one step
+  const tail = run(Array.from({ length: 60 }, (_, i) => [Math.max(1, 30 - i / 2), 0, 2000 + i * 16] as [number, number, number]));
+  ok(tail.filter((v) => v !== 0).length === 1, `trackpad swipe one step ${tail.filter((v) => v !== 0)}`);
+  // small deltas accumulate across an idle-free swipe, and idle resets stray motion
+  const w = createWheelGesture();
+  ok(w.push(10, 0, 100) === 0 && w.push(10, 0, 116) === 0 && w.push(10, 0, 132) === 0 && w.push(10, 0, 148) === 1, 'accumulates 4x10');
+  const w2 = createWheelGesture();
+  w2.push(30, 0, 100);
+  ok(w2.push(30, 0, 1000) === 0, 'idle gap drops the stale accumulator');
+  // reversal right after a switch is a new gesture
+  const w3 = createWheelGesture();
+  ok(w3.push(100, 0, 100) === 1 && w3.push(-100, 0, 160) === -1, 'deliberate reversal switches back');
 });
 console.log(`\n${passed} passed, ${failed} failed`);
 (globalThis as unknown as { process?: { exitCode?: number } }).process!.exitCode = failed ? 1 : 0;
