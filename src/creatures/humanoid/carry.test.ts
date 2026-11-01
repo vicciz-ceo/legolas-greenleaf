@@ -70,6 +70,7 @@ const KINDS_OF: Record<Carry, WeaponKind[]> = {
 const KIND_SCALE: Record<string, Partial<Record<WeaponKind, number>>> = {
   goblin: { scimitar: 0.5 },
   gimli: { dwarf_axe: 0.65 },
+  dwarf: { axe: 0.7, dwarf_axe: 0.65, warhammer: 0.65, mace: 0.8, club: 0.75, sword: 0.7 },
   bolg: { mace: 0.9 },
   berserker: { sword: 1.12 },
   troll: { club: 0.66, warhammer: 0.75 },

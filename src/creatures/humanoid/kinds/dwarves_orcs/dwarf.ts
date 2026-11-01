@@ -13,7 +13,8 @@ import { Rng } from '../../../../core/rng';
 import { surface } from '../../../kit/surfaces';
 import { sculptHairCap } from '../../hairstyles';
 import type { KindContext, KindDef } from '../../types';
-import { makeProjector } from '../uruks_bosses/common';
+import type { WeaponKind } from '../../../../core/types';
+import { makeProjector, scaleHeldWeapon } from '../uruks_bosses/common';
 import { ctxBucket, devNum, devSkip, mix, recipeRng } from './common';
 import { addBrows, sculptBeardMass, withHair, type BeardOpts } from './hair';
 import { DOME_ROUND, domeHelm } from './headgear';
@@ -63,9 +64,9 @@ const PAL = {
     lips: 0x9a5650,
     eyes: 0x5b4430, // sheet iris #684f36
     sclera: 0xc4b4a0,
-    trousers: 0x483a2c, // dark brown wool (all four sheets: #4a3a2c .. #5b4636)
-    boots: 0x3e2c20,
-    bootsCuff: 0x5a4130,
+    trousers: 0x4a4038, // dark grey-brown wool (sheets: #4a3a2c .. #5b4636); clearly darker and greyer than the boots
+    boots: 0x33231a, // dark leather
+    bootsCuff: 0x6a4a30, // the folded cuff reads lighter
     belt: 0x3d2c1e,
   },
   bald: {
@@ -162,7 +163,7 @@ function warrior(ctx: KindContext, rng: Rng) {
   // bald: the thin cap painted back to skin
   s.ellipsoid(P.h(0, 0.045, -0.055), [0.35 * u, 0.43 * u, 0.455 * u], { op: 'paint', color: PAL.common.skin, mat: 'skin_weathered', bone: 'head', k: 0.02 * u, strength: 1 });
   faceCommon(ctx, { brow: C.brow, blush: 0.4, scars: 2, browLen: 0.085 }, rng);
-  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER, drop: devNum('bridge', 0.085) });
   // beard: dark brown, compact and dense, a heavy moustache; the three braids are real geometry (below)
   const hs = new HairSet();
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.12 * sc, width: 1.04, fullness: 1.15 });
@@ -217,7 +218,7 @@ function jester(ctx: KindContext, rng: Rng) {
   const hs = new HairSet();
   hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.2 * sc, count: 30, width: 0.055, segments: 4, wave: 1.2, wild: 0.5, comb: 0.4, front: 0.15, back: -0.45, gravity: 6, maxY: -0.02 }, rng);
   faceCommon(ctx, { brow: C.brow, blush: 0.7 }, rng);
-  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER, drop: devNum('bridge', 0.085) });
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.14 * sc, width: 1.06, fullness: 1.2 });
   hs.beard(ctx, {
     clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.17 * sc, locks: 10, perLock: 5, segments: 4, shape: 'round', spread: 1.1, cheeks: true, wave: 1.3, width: 0.068, gravity: 5,
@@ -251,7 +252,7 @@ function elder(ctx: KindContext, rng: Rng) {
   const C = PAL.elder;
   const { sc, k, beltY } = stance(ctx);
   faceCommon(ctx, { brow: C.brow, blush: 0.55, browLen: 0.09 }, rng);
-  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER, drop: devNum('bridge', 0.085) });
 
   // dark blue wool tunic with long sleeves and a flared hem, short solid leather vest open in front, brass buckle
   const hem = beltY - 0.05 * sc;
@@ -295,7 +296,7 @@ function redbeard(ctx: KindContext, rng: Rng) {
   const { sc, k, beltY } = stance(ctx);
   sculptHairCap(s, P, { style: 'wild', color: C.beard, tipColor: C.beardTip, length: 1, density: 1 });
   faceCommon(ctx, { brow: C.brow, blush: 0.8, scars: 1, browLen: 0.085 }, rng);
-  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER });
+  crotchBridge(ctx, { color: PAL.common.trousers, mat: TROUSER, drop: devNum('bridge', 0.085) });
 
   // deep brick-red tunic with long sleeves, a heavy mottled leather vest as ONE panel from the shoulders to the hip, thick belt
   const hem = beltY - 0.05 * sc;
@@ -326,7 +327,14 @@ function redbeard(ctx: KindContext, rng: Rng) {
   if (ctx.spec.helmet === true) domeHelm(ctx, { color: 0x5a5b5e, trim: 0x9b7432, profile: DOME_ROUND, finial: 'spike', cheeks: true, rivets: 22 });
 }
 
+/**
+ * Held props scale to a 1.3-1.4 m dwarf (the crowd props are made for 1.8 m men and hang into the ground).
+ * Mirrored in the `dwarf` row of KIND_SCALE in carry.test.ts.
+ */
+export const DWARF_PROP_SCALE: Partial<Record<WeaponKind, number>> = { axe: 0.7, dwarf_axe: 0.65, warhammer: 0.65, mace: 0.8, club: 0.75, sword: 0.7 };
+
 export function dwarfExtras(ctx: KindContext) {
+  for (const [kind, f] of Object.entries(DWARF_PROP_SCALE)) scaleHeldWeapon(ctx, 'hand_r', [kind], [f, f, f]);
   withHair(ctx, () => {
     const b = ctxBucket(ctx);
     const rng = recipeRng(ctx, 'dwarf');
@@ -343,7 +351,7 @@ export const dwarfDef: KindDef = {
   label: 'Dwarf',
   height: 1.36,
   // barrel-chested: sheet shoulders 0.56 m, hips 0.43 m at 1.35-1.46 m; short legs (hip joint ~0.48 m)
-  build: { shoulders: 1.25, hips: devNum('hips', 1.4), bulk: 1.3, belly: devNum('belly', 0.7), chest: devNum('chest', 1.0), armLength: 0.95, legLength: 0.72, headSize: 1.42, neck: 0.4, neckThick: 1.4, handSize: 1.25, footSize: devNum('foot', 1.3), muscle: 0.65 },
+  build: { shoulders: 1.25, hips: devNum('hips', 1.45), bulk: 1.3, belly: devNum('belly', 0.7), chest: devNum('chest', 1.0), armLength: 0.95, legLength: 0.72, headSize: 1.42, neck: 0.4, neckThick: 1.4, handSize: 1.25, footSize: devNum('foot', 1.25), muscle: 0.65 },
   face: {
     jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 1.6, cheekbones: 1.2,
     nose: { length: 1.15, width: 1.45, bridge: 1.1, hook: 0.2, tip: 1.35 },
@@ -356,8 +364,8 @@ export const dwarfDef: KindDef = {
   beard: { style: 'stubble', color: 0x5a3a24, length: 0.08 },
   // tunics, vests and belts are sculpted per look in extras (the outfit list is the same for every bucket)
   outfit: [
-    { type: 'trousers', color: PAL.common.trousers, mat: TROUSER, thickness: devNum('trou', 0.012) },
-    { type: 'boots', color: PAL.common.boots, color2: PAL.common.bootsCuff, length: 1.0, thickness: devNum('boot', 0.024), mat: LEATHER },
+    { type: 'trousers', color: PAL.common.trousers, mat: TROUSER, thickness: devNum('trou', 0.002) },
+    { type: 'boots', color: PAL.common.boots, color2: PAL.common.bootsCuff, length: 1.0, thickness: devNum('boot', 0.012), mat: LEATHER },
   ],
   armor: [],
   weapons: { right: 'axe', style: 'dwarf' },
