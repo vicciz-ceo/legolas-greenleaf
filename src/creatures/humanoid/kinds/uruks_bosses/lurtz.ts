@@ -9,10 +9,8 @@ import { surface } from '../../../kit/surfaces';
 import type { PrimOpts } from '../../../kit/sdf';
 import { V, v3, gearOf, makeProjector, paintSnapped, carveSnapped, strapSnapped, scarTube, snapPoint, spike, placeAlong, rivet, type SnapPoint, ringSnap, projectPath, ribbon, type Projector } from './common';
 import { brawnBody, bareTorso, skinOpts } from './body';
-import { URUK_PAL, forearms } from './uruk';
-import * as _u from './uruk';
-
-void _u;
+import { URUK_PAL } from './uruk';
+import { LURTZ_PAL, lurtzBracers, lurtzBelt, lurtzBootWraps } from './lurtz_parts';
 
 const WHITE_SKIN = surface('skin_orc', { rough: 0.8, skin: 0.25 });
 const LEATHER = surface('leather_worn', { rough: 0.68 });
@@ -39,7 +37,9 @@ export const LURTZ_FACE = {
   cranium: 0.95,
 };
 
-/** the white hand across the face: palm over nose and cheeks, fingers up over the brow and forehead */
+/** the white hand (sheet face views): an upright handprint on the forehead — palm over the brows,
+ *  four fingers fanned up toward the hairline — and two white streaks from the inner eyes down
+ *  beside the nose to the corners of the mouth (the left one longer); the eyes stay clear */
 function lurtzFacePaint(ctx: KindContext, proj: Projector) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
@@ -47,24 +47,25 @@ function lurtzFacePaint(ctx: KindContext, proj: Projector) {
     const q = P.h(x, y, 0.5);
     return [q[0], q[1], q[2], 'f'];
   };
-  const paint: PrimOpts = { color: 0xe7e2d3, color2: 0xa8a090, colorNoise: 0.4, colorFreq: 45 / P.s, mat: WHITE_SKIN, bone: 'head', k: 0.012 * u, strength: 0.97 };
-  const tilt = 0.1; // the hand leans a little
-  const fx = (x: number, y: number) => x + tilt * y;
-  // palm: a dense fan of strokes
-  for (let r = 0; r < 4; r++) {
-    const y = -0.28 + r * 0.075;
-    paintSnapped(s, proj, [H(fx(-0.2, y), y), H(fx(0.2, y), y)], 0.058 * u, paint);
+  const paint: PrimOpts = { color: 0xe4e0d4, color2: 0xa8a090, colorNoise: 0.4, colorFreq: 45 / P.s, mat: WHITE_SKIN, bone: 'head', k: 0.008 * u, strength: 0.97 };
+  // palm: two rows across the brow ridge (the hairline sits low: everything stays below y ≈ 0.3)
+  for (let r = 0; r < 2; r++) {
+    const y = 0.035 + r * 0.06;
+    paintSnapped(s, proj, [H(-0.15, y), H(0.15, y)], 0.034 * u, paint);
   }
-  // fingers (index→little, character's right→left), thumb and wrist
-  const fingers: [number, number, number, number, number][] = [
-    [-0.19, 0.0, -0.27, 0.3, 0.052],
-    [-0.065, 0.02, -0.08, 0.37, 0.055],
-    [0.065, 0.02, 0.1, 0.34, 0.054],
-    [0.185, -0.02, 0.28, 0.24, 0.045],
+  // fingers fanned up from the palm: index → little (character's right → left), thumb to the side
+  const fingers: [number, number, number, number][] = [
+    [-0.13, 0.1, -0.2, 0.25],
+    [-0.045, 0.11, -0.06, 0.29],
+    [0.045, 0.11, 0.07, 0.28],
+    [0.13, 0.1, 0.19, 0.23],
   ];
-  for (const [x0, y0, x1, y1, r] of fingers) paintSnapped(s, proj, [H(fx(x0, y0), y0), H(fx((x0 + x1) / 2, (y0 + y1) / 2), (y0 + y1) / 2), H(fx(x1, y1), y1)], r * u, paint);
-  paintSnapped(s, proj, [H(-0.22, -0.2), H(-0.33, -0.1), H(-0.38, 0.0)], 0.05 * u, paint);
-  paintSnapped(s, proj, [H(0.03, -0.36), H(0.05, -0.5), H(0.05, -0.58)], 0.09 * u, paint);
+  for (const [x0, y0, x1, y1] of fingers) paintSnapped(s, proj, [H(x0, y0), H((x0 + x1) / 2, (y0 + y1) / 2), H(x1, y1)], 0.02 * u, paint);
+  paintSnapped(s, proj, [H(-0.17, 0.05), H(-0.23, 0.1)], 0.022 * u, paint);
+  // nose bridge, then the streaks beside the nose down to the mouth corners
+  paintSnapped(s, proj, [H(0, 0.0), H(0, -0.08)], 0.022 * u, paint);
+  paintSnapped(s, proj, [H(-0.085, -0.12), H(-0.125, -0.24), H(-0.17, -0.34), H(-0.19, -0.4)], [0.026 * u, 0.026 * u, 0.022 * u, 0.014 * u], paint);
+  paintSnapped(s, proj, [H(0.085, -0.12), H(0.12, -0.22), H(0.15, -0.3)], [0.022 * u, 0.02 * u, 0.012 * u], paint);
   // grime around the eyes
   const dark: PrimOpts = { color: 0x2a1f19, mat: 'skin_orc', bone: 'head', k: 0.012 * u, strength: 0.5 };
   for (const sx of [1, -1]) paintSnapped(s, proj, [H(0.135 * sx, -0.075), H(0.17 * sx, -0.07)], 0.045 * u, dark);
@@ -93,7 +94,6 @@ function lurtzExtras(ctx: KindContext) {
   const box = { min: [-0.8, 0, -0.6] as [number, number, number], max: [0.8, P.H + 0.3, 0.7] as [number, number, number] };
 
   brawnBody(ctx, { traps: 1.15, lats: 1.15, delts: 1.15, forearm: 1.1, thigh: 1.22, calf: 1.15, biceps: 1.1 });
-  forearms(ctx, parts, 'leather', 1.1);
 
   const proj0 = makeProjector(s, box);
   if (proj0) {
@@ -105,69 +105,34 @@ function lurtzExtras(ctx: KindContext) {
   // ── gear (needs the finished sculpt) ──
   const proj = makeProjector(s, box);
   if (!proj) return;
+  lurtzBracers(ctx, parts, gear);
+  lurtzBelt(ctx, parts, gear, proj);
+  lurtzBootWraps(ctx, parts);
   const sh = P.build.shoulders;
   const yS = j.upperarm_l[1];
   const chestY = j.chest[1];
   const hipY = j.thigh_l[1];
-  const strapMat = { bone: 'chest', color: 0x1c1511, mat: LEATHER } as const;
-  // crossed harness straps (front), over the shoulders to the back
+  const strapMat = { bone: 'chest', color: 0x120d0a, mat: LEATHER } as const;
+  // shield harness (sheet: bare chest, no front straps; they come over the top of the shoulders
+  // and run down the back to the shield)
   for (const sx of [1, -1]) {
-    const pts: SnapPoint[] = [
-      [sx * 0.07 * sc * sh, yS + 0.06 * sc, -0.05 * sc, 't'],
-      [sx * 0.085 * sc * sh, yS - 0.01 * sc, 0.12 * sc, 'f'],
-      [sx * 0.03 * sc, yS - 0.12 * sc, 0.2 * sc, 'f'],
-      [-sx * 0.04 * sc, chestY - 0.1 * sc, 0.2 * sc, 'f'],
-      [-sx * 0.12 * sc, hipY + 0.17 * sc, 0.18 * sc, 'f'],
-    ];
-    strapSnapped(gear, proj, pts, 0.04 * sc, 0.009 * sc, strapMat);
-    // back strap
     strapSnapped(
       gear,
       proj,
       [
-        [sx * 0.07 * sc * sh, yS + 0.06 * sc, -0.05 * sc, 't'],
-        [sx * 0.085 * sc * sh, yS - 0.02 * sc, -0.12 * sc, 'b'],
-        [sx * 0.05 * sc, yS - 0.14 * sc, -0.16 * sc, 'b'],
-        [-sx * 0.04 * sc, chestY - 0.1 * sc, -0.17 * sc, 'b'],
-        [-sx * 0.1 * sc, hipY + 0.17 * sc, -0.15 * sc, 'b'],
+        [sx * 0.075 * sc * sh, yS + 0.062 * sc, -0.06 * sc, 't'],
+        [sx * 0.09 * sc * sh, yS - 0.02 * sc, -0.12 * sc, 'b'],
+        [sx * 0.075 * sc, yS - 0.14 * sc, -0.16 * sc, 'b'],
+        [sx * 0.06 * sc, chestY - 0.12 * sc, -0.17 * sc, 'b'],
+        [sx * 0.07 * sc, hipY + 0.2 * sc, -0.15 * sc, 'b'],
       ],
-      0.04 * sc,
+      0.036 * sc,
       0.009 * sc,
       strapMat,
     );
   }
-  // iron ring where the straps cross, and a belt of studs
-  {
-    const p = V(), n = V();
-    if (snapPoint(proj, [0, yS - 0.12 * sc, 0], 'f', p, n)) {
-      const g = new THREE.TorusGeometry(0.03 * sc, 0.0065 * sc, 5, 12);
-      gear(g, { bone: 'chest', color: URUK_PAL.ironLt, mat: surface('metal_dark', { rough: 0.45 }), matrix: placeAlong(p.clone().addScaledVector(n, 0.008 * sc), V(0, 1, 0), n.clone()).multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2)), small: true });
-    }
-    for (let i = 0; i < 6; i++) {
-      const a = -0.5 + i * 0.2;
-      const q = ringSnap(proj, a * 1.4, hipY + 0.11 * sc);
-      if (!q) continue;
-      gear(rivet(0.008 * sc, 4), { bone: 'hips', color: URUK_PAL.ironLt, mat: LEATHER, matrix: placeAlong(q.p, q.n, V(0, 1, 0)).multiply(new THREE.Matrix4().makeRotationX(-Math.PI / 2)), small: true });
-    }
-  }
-  // fang necklace on a cord
-  {
-    const pts: SnapPoint[] = [];
-    const cy = j.neck[1] - 0.012 * sc;
-    for (let i = 0; i <= 10; i++) {
-      const a = -1.5 + (i / 10) * 3.0;
-      const y = cy - 0.03 * sc * (1 - Math.abs(a) / 1.5) - 0.04 * sc * Math.exp(-a * a * 2.5);
-      const q = ringSnap(proj, a, y, 0, -0.012 * sc);
-      if (q) pts.push([q.p.x, q.p.y, q.p.z]);
-    }
-    if (pts.length > 4) {
-      const path = projectPath(proj, pts.map((q) => [q[0], q[1], q[2]] as [number, number, number]), 0.003 * sc);
-      gear(ribbon(path.p, path.n, 0.012 * sc, 0.005 * sc, 1, { outerOnly: true, noInner: true }), { bone: 'chest', color: 0x1a130e, mat: LEATHER, small: true });
-      for (let i = 1; i < path.p.length - 1; i += 2) {
-        gear(spike(0.008 * sc, 0.04 * sc * (i % 4 === 1 ? 1 : 0.75), 5), { bone: 'chest', color: URUK_PAL.bone, mat: BONE, matrix: placeAlong(path.p[i], V(0.1 * (path.p[i].x > 0 ? -1 : 1), -1, 0.35), path.n[i]).multiply(new THREE.Matrix4().makeRotationX(Math.PI)), small: true });
-      }
-    }
-  }
+  // belt across the back under the shield and a chest strap tying the harness
+  strapSnapped(gear, proj, [[-0.2 * sc, chestY - 0.14 * sc, -0.12 * sc, 'b'], [0, chestY - 0.14 * sc, -0.19 * sc, 'b'], [0.2 * sc, chestY - 0.14 * sc, -0.12 * sc, 'b']], 0.034 * sc, 0.008 * sc, strapMat);
   // scars: raised welts across the chest and back
   const welts: SnapPoint[][] = [
     [[0.14 * sc, yS - 0.04 * sc, 0.16 * sc, 'f'], [0.07 * sc, yS - 0.1 * sc, 0.2 * sc, 'f'], [0.02 * sc, yS - 0.17 * sc, 0.2 * sc, 'f']],
@@ -184,24 +149,23 @@ function lurtzExtras(ctx: KindContext) {
 
 export const lurtzKind: KindDef = {
   label: 'Lurtz',
-  height: 2.1,
+  height: 2.115, // crown 2.088 m in the calibrated lab for 2.1 (sheet 2.1)
   build: { shoulders: 1.34, hips: 1.04, bulk: 1.12, chest: 1.15, belly: 0, armLength: 1.08, legLength: 0.98, headSize: 0.96, neck: 0.82, neckThick: 1.4, hunch: 0.16, handSize: 1.22, footSize: 1.14, muscle: 1.0 },
   face: LURTZ_FACE,
-  // sheet: dark brown-black skin (#55432f lit), long loose black hair, bare torso, ragged dark
-  // knee-length kilt (#302a25), wrapped shins and feet (#40352b), black iron shield on the back
-  // (a warmer red-brown and a sweaty sheen: the turnaround's skin reads #6a4232 where lit)
-  skin: { color: 0x48302a, color2: 0x2e1f1a, blotch: 0.5, blemish: 0.5, scars: 3, warts: 0.06, wrinkles: 0.5, lips: 0x30221d, brows: 0x14100d, surface: 'skin_brute', scatter: 0x7a3626 },
-  eyes: { color: 0xd8a830, glow: 0.45, sclera: 0xb8aa80 },
-  hair: { style: 'mane', color: 0x16130f, tipColor: 0x24211b, length: 1.15, density: 0.75 },
+  // sheet (docs/refs/lurtz): design skin #55432f, lit torso #7f645b → a ruddy dark brown with a
+  // sweaty sheen; the albedo is kept darker/redder than the hex (the lab lifts browns toward clay)
+  skin: { color: LURTZ_PAL.skin, color2: LURTZ_PAL.skin2, blotch: 0.5, blemish: 0.5, scars: 3, warts: 0.06, wrinkles: 0.5, lips: LURTZ_PAL.lips, brows: LURTZ_PAL.brows, surface: 'skin_orc', scatter: LURTZ_PAL.scatter },
+  eyes: { color: LURTZ_PAL.eyes, glow: 0.45, sclera: 0xb8aa80 },
+  // sheet: long, loose, wavy black hair to the middle of the chest
+  hair: { style: 'mane', color: LURTZ_PAL.hair, tipColor: LURTZ_PAL.hairTip, length: 1.35, density: 1.0 },
   outfit: [
-    { type: 'wraps', color: 0x40352b, thickness: 0.014 },
+    { type: 'wraps', color: LURTZ_PAL.wrap, thickness: 0.014 },
     { type: 'shoes', color: 0x2e261f, color2: 0x1c1712 },
-    { type: 'belt', color: 0x3a2c20, thickness: 0.006 },
-    { type: 'skirt', color: 0x302a25, color2: 0x221d19, mat: 'rags', length: 0.85, tatter: 0.04, strips: { count: 7, color: 0x3a2c20, color2: 0x281e16, mat: 'leather_worn', width: 0.06, length: 0.78, phase: 0.3 } },
+    { type: 'skirt', color: LURTZ_PAL.kilt, color2: LURTZ_PAL.kilt2, mat: 'rags', length: 0.85, thickness: 0.03, tatter: 0.04, strips: { count: 7, color: LURTZ_PAL.belt, color2: LURTZ_PAL.beltDark, mat: 'leather_worn', width: 0.06, length: 0.78, phase: 0.3 } },
   ],
   armor: [],
   weapons: { right: 'sword', left: 'uruk_bow', back: ['shield'], style: 'uruk' },
-  palette: URUK_PAL,
+  palette: { ...URUK_PAL, ...LURTZ_PAL },
   sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
   anim: { hunch: 0.16, swagger: 0.5, aggression: 1, stance: 1.18, armSwing: 1.05, cadence: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
