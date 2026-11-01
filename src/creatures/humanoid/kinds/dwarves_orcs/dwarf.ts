@@ -159,7 +159,7 @@ function warrior(ctx: KindContext, rng: Rng) {
   const hs = new HairSet();
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.15 * sc, width: 1.02, fullness: 1.05 });
   const beard: BeardOpts = {
-    clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.16 * sc, locks: 12, perLock: 7, shape: 'round', spread: 1.05, cheeks: true, wave: 0.55, width: 0.055,
+    clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.16 * sc, locks: 12, perLock: 6, segments: 4, shape: 'round', spread: 1.05, cheeks: true, wave: 0.55, width: 0.058,
     moustache: { length: 0.12 * sc, droop: 0.5, curl: 0.3 },
     braids: [{ x: 0.1, length: 0.13 * sc, radius: 0.026 }, { x: 0, length: 0.17 * sc, radius: 0.026 }, { x: -0.1, length: 0.13 * sc, radius: 0.026 }],
   };
@@ -210,11 +210,11 @@ function jester(ctx: KindContext, rng: Rng) {
   const { sc, k, beltY } = stance(ctx);
   // curls at the sides and nape under the hat, a full curly beard to the chest, a moustache that joins it
   const hs = new HairSet();
-  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.2 * sc, count: 80, width: 0.042, wave: 1.2, wild: 0.5, comb: 0.4, front: 0.02, back: -0.45, gravity: 6, maxY: 0.1 }, rng);
+  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.2 * sc, count: 48, width: 0.05, segments: 4, wave: 1.2, wild: 0.5, comb: 0.4, front: 0.15, back: -0.45, gravity: 6, maxY: 0.1 }, rng);
   faceCommon(ctx, { brow: C.brow, blush: 0.7 }, rng);
   sculptBeardMass(ctx, { color: mix(C.beard, 0x000000, 0.2), color2: C.beard, length: 0.14 * sc, width: 1.04, fullness: 1.0 });
   hs.beard(ctx, {
-    clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.17 * sc, locks: 16, perLock: 8, shape: 'round', spread: 1.08, cheeks: true, wave: 1.3, width: 0.05, gravity: 5,
+    clear: 0.05 * sc, color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.17 * sc, locks: 12, perLock: 6, segments: 4, shape: 'round', spread: 1.08, cheeks: true, wave: 1.3, width: 0.06, gravity: 5,
     moustache: { length: 0.13 * sc, droop: 0.45, curl: 1.0 },
   }, rng);
   hs.attach(ctx, dwarfHairMaterial('dwarf1', { color: C.beard, spec: 0.7, alpha: 0.3 }));
@@ -289,7 +289,7 @@ function redbeard(ctx: KindContext, rng: Rng) {
   const proj = makeProjector(s, sampleBox(ctx));
   const hs = new HairSet();
   // thick copper hair on top and a mane over the shoulders and back
-  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.3 * sc, count: 70, width: 0.052, wave: 1.0, wild: 0.5, comb: 0.8, front: 0.25, back: -0.4, gravity: 4 }, rng);
+  hs.hairdo(ctx, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.3 * sc, count: 40, width: 0.06, segments: 4, wave: 1.0, wild: 0.5, comb: 0.8, front: 0.25, back: -0.4, gravity: 4 }, rng);
   if (proj) {
     hs.add(ribbonBeard(ctx, proj, rng, { color: C.beard, tip: C.beardTip, deep: C.beardDeep, length: 0.46 * sc, locks: 15, layers: 2, width: 0.064, spread: 0.3, shape: 'round', amp: 0.016, waveLen: 0.08, clear: 0.014 }));
     const f = sc / 0.735;
