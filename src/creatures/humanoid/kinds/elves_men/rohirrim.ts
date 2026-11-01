@@ -10,7 +10,8 @@
  *   1  brown tunic, dark hair, moustache, black crest, brown mantle
  *   2  green-grey tunic, long red-auburn hair and beard, rust crest, brown cloak, a scar
  *   3  brown tunic with red trim, grey hair with side braids, grey beard, white crest, green mantle
- * Armour level adds leather shoulder caps (0.75).
+ * Armour level adds leather shoulder caps (0.75). The old armour-level vambraces are gone: the sheet
+ * always wears tooled leather bracers, so they are a plain outfit layer for every bucket.
  */
 import * as THREE from 'three';
 import { Rng, hashSeed } from '../../../../core/rng';
@@ -20,8 +21,9 @@ import { ctxBucket, devNum, mix, shade, withHair } from './common';
 import { addCloak } from './cloth';
 import { paintScar } from './detail';
 import { addHair, noKitHair, paintStubble, sculptBeard } from './hair';
-import { sculptShoulderCap, sculptTorso } from './garments';
+import { sculptBand, sculptShoulderCap, sculptTorso } from './garments';
 import { ring, torsoCentreFront } from './geo';
+import { bootCollars } from './man_parts';
 import { rohirrimHelm } from './rohirrim_helm';
 import { addHemSkirt, sculptHelmHair, sculptMantle, torsoRibbon, torsoSurface } from './rohirrim_gear';
 
@@ -36,7 +38,7 @@ const TOOLED = surface('leather_tooled', { rough: 0.66, sheen: 0.1 });
 /** bronze fittings: rough enough that they do not throw white specular hot spots */
 const BRONZE = surface('metal', { rough: 0.5 });
 /** dark mail: a fine ring pattern (a third of the stock cell size), half metal */
-const MAIL = surface('mail', { rough: 0.55, metal: 0.75, pat: { scales: 0.9, scratches: 0.25 } });
+const MAIL = surface('mail', { rough: 0.55, metal: 0.85, pat: { scales: 1.1, scratches: 0.3 } });
 
 /** belt raised to the sheet's waist (belt centre ~1.07 m, the hip joint is at 0.93 m) */
 const BELT_RAISE = 0.06;
@@ -45,6 +47,8 @@ const MAIL_HEM = 0.12;
 const SKIRT_LEN = 0.585;
 /** the hauberk's inflation over the body; the strap, brooch and belt hardware ride on it */
 const MAIL_INFLATE = 0.016;
+/** the mail sleeve ends just above the elbow (fraction of the upper arm) */
+const MAIL_SLEEVE = 0.82;
 
 // sRGB from docs/refs/rohirrim/spec.json, corrected for how the lab renders colours
 const PALETTE = {
@@ -55,15 +59,15 @@ const PALETTE = {
   brows: 0x5a4430,
   eyes: 0x77785a, // sheet iris #817454: grey-green hazel, a touch greyer
   // outfit_layers tunic #4d593c (lit #434437): a muted, dark wool so it does not render mint
-  tunic: 0x3f4a31,
+  tunic: 0x4a5538,
   trousers: 0x3f352c, // sheet #483d33, lit #3a312d: charcoal brown
   leather: 0x372716, // #67503b design, belt/strap lit #583a2b/#574436
   leatherDark: 0x30231a,
   bracers: 0x47331f,
-  boots: 0x5a3f2c, // lit #5d4338
-  bootsTrim: 0x5e432f,
+  boots: 0x50382a, // lit #5d4338
+  bootsTrim: 0x543b2c,
   // armor metal #8a8980 / steel_mail lit #413a32: the mail is dark gunmetal-brown with bright rings
-  mail: 0x544b41,
+  mail: 0x5c5850,
   bronze: 0xb08d4e, // shield rim / brooch / belt boss / helm trim, lit #6b584f
   braid: 0x8a6e3a, // the gold-brown braid border
   hair: 0x57402a, // sheet root #614b31, lit #6e462b: dark golden brown, not copper
@@ -99,7 +103,6 @@ function rohirrimExtras(ctx: KindContext) {
   const helmed = ctx.helmet;
   const hipY = P.j.thigh_l[1];
   const kneeY = P.j.shin_l[1];
-  const neckY = P.j.neck[1];
 
   // ── face ──
   if (L.beard) {
@@ -120,15 +123,26 @@ function rohirrimExtras(ctx: KindContext) {
 
   // ── the under-tunic (long sleeves to the wrist), the mail hauberk over it ──
   sculptTorso(ctx, { color: L.tunic, mat: TWILL, inflate: 0.011 * sc, hem: 0.3, sleeve: 2, neck: false, thighs: true, seams: true, color2: mix(L.tunic, L.trim, 0.3), colorNoise: 0.12 });
-  // short mail sleeves to mid-biceps, so the green under-sleeve reads as a band down to the bracer
-  sculptTorso(ctx, { color: PALETTE.mail, mat: MAIL, inflate: MAIL_INFLATE * sc, hem: MAIL_HEM, sleeve: 0.5, neck: false, thighs: true, seams: true });
+  // the mail covers the shoulders and the upper arms to just above the elbow: green shows only on the forearm
+  sculptTorso(ctx, { color: PALETTE.mail, mat: MAIL, inflate: MAIL_INFLATE * sc, hem: MAIL_HEM, sleeve: MAIL_SLEEVE, neck: false, thighs: true, seams: true });
+  // a darker band at the hem separates the hauberk from the green skirt
+  const mailHemY = hipY - (hipY - kneeY) * MAIL_HEM - 0.03 * sc;
+  sculptBand(ctx, { color: shade(PALETTE.mail, 0.55), mat: MAIL, y0: mailHemY, y1: mailHemY + 0.022 * sc, inflate: (MAIL_INFLATE + 0.0015) * sc, tags: ['pelvis', 'waist', 'belly', 'ribs', 'glutes', 'thigh'], k: 0.002 * sc });
+  // a thin braid-coloured ring where each mail sleeve ends
+  const arm = P.hand.l.L;
+  for (const sd of [1, -1] as const) {
+    const sh = P.j[sd > 0 ? 'upperarm_l' : 'upperarm_r'];
+    const dir: [number, number, number] = [sd * arm.x, arm.y, arm.z];
+    const c: [number, number, number] = [sh[0] + dir[0] * P.upperArm * MAIL_SLEEVE, sh[1] + dir[1] * P.upperArm * MAIL_SLEEVE, sh[2]];
+    ctx.gear(ring(c, dir, 0.056 * sc * Math.sqrt(P.build.bulk) + MAIL_INFLATE * sc * 0.85, 0.004 * sc, 8, 3), { bone: sd > 0 ? 'upperarm_l' : 'upperarm_r', color: PALETTE.braid, mat: BRONZE, small: true });
+  }
   // the green skirt hangs from the hips under the mail hem to mid-thigh (sheet: mail hem ~0.85 m, skirt hem ~0.67 m);
-  // `grow < 0` keeps it inside the hauberk's hips so the mail reads as the outer layer; a darker hem, no tan fade
-  addHemSkirt(ctx, { top: hipY + 0.035 * sc, bottom: hipY - (hipY - kneeY) * SKIRT_LEN * 1.05, color: L.tunic, color2: mix(L.tunic, L.trim, 0.22), mat: TWILL, flare: 0.07 * sc, grow: -0.01 * sc });
+  // `grow < 0` keeps it inside the hauberk's hips so the mail reads as the outer layer; the braid is a separate strip
+  addHemSkirt(ctx, { top: hipY + 0.035 * sc, bottom: hipY - (hipY - kneeY) * SKIRT_LEN * 1.05, color: L.tunic, mat: TWILL, flare: 0.07 * sc, grow: -0.01 * sc, trim: { color: L.trim, height: 0.024 * sc } });
   if (L.cloak !== undefined) addCloak(ctx, { color: L.cloak, color2: shade(L.cloak, 0.7), mat: wool, length: 0.6, mantle: true });
   // a thin flat mantle (hood worn down) over the shoulder tops, in the tunic family
-  const mantleY0 = P.j.upperarm_l[1] - 0.04 * sc;
-  if (L.mantle !== undefined) sculptMantle(ctx, { color: L.mantle, color2: shade(L.mantle, 0.8), mat: TWILL, inflate: (MAIL_INFLATE + 0.006) * sc, y0: mantleY0 });
+  const mantleY0 = P.j.upperarm_l[1] - 0.02 * sc;
+  if (L.mantle !== undefined) sculptMantle(ctx, { color: L.mantle, color2: shade(L.mantle, 0.8), mat: TWILL, inflate: (MAIL_INFLATE + 0.004) * sc, y0: mantleY0 });
   if (A >= 0.75) sculptShoulderCap(ctx, { color: 0x4a3626, mat: 'leather_worn', side: 'both', inflate: 0.024 * sc, reach: 0.3 });
 
   // ── rigid leather and bronze on the torso (a 3 cm strap cannot live in the 6 cm body mesh) ──
@@ -161,18 +175,9 @@ function rohirrimExtras(ctx: KindContext) {
     const g = new THREE.BoxGeometry(0.02 * sc, len * sc, 0.005 * sc).rotateX(-lean).translate(x * sc, top - (len * sc) / 2, (zTop + zBot) / 2);
     ctx.gear(g, { bone: 'hips', color: PALETTE.leather, mat: LEATHER, small: true });
   }
-  // dark strap bands round each boot: the cuff at the top and one below
+  // the boot cuff folds out at the top
   const bootTop = P.ankleH + (kneeY - P.ankleH) * BOOT_LEN;
-  for (const sd of ['l', 'r'] as const) {
-    const knee = P.j[`shin_${sd}`];
-    const foot = P.j[`foot_${sd}`];
-    const ax: [number, number, number] = [knee[0] - foot[0], knee[1] - foot[1], knee[2] - foot[2]];
-    for (const yb of [bootTop - 0.012 * sc]) {
-      const t = (yb - foot[1]) / (knee[1] - foot[1]);
-      const c: [number, number, number] = [foot[0] + ax[0] * t, yb, foot[2] + ax[2] * t - 0.008 * sc];
-      ctx.gear(ring(c, ax, 0.067 * sc * Math.sqrt(P.build.bulk), 0.0045 * sc, 8, 3), { bone: `shin_${sd}`, color: PALETTE.leatherDark, mat: LEATHER, small: true });
-    }
-  }
+  bootCollars(ctx, { color: PALETTE.boots, mat: LEATHER, y: bootTop - 0.012 * sc, radius: 0.066 * sc * Math.sqrt(P.build.bulk), flare: 0.011 * sc, height: 0.03 * sc });
 
   // ── the helm with its horsehair plume ──
   if (helmed) {
@@ -181,13 +186,13 @@ function rohirrimExtras(ctx: KindContext) {
   }
 }
 
-/** boot shaft: fraction of the ankle→knee distance (the stock default is 0.82; the sheet's boots reach the knee) */
-const BOOT_LEN = 0.97;
+/** boot shaft: fraction of the ankle→knee distance (the stock default is 0.82; the sheet's boot top is ~0.45 m) */
+const BOOT_LEN = 0.87;
 
 export const rohirrimDef: KindDef = {
   label: 'Rohirrim',
   height: 1.82,
-  build: { shoulders: 1.08, bulk: 1.02, chest: 1.0, neckThick: 1.05, muscle: 0.3, handSize: 1.04 },
+  build: { shoulders: 1.1, bulk: 1.15, chest: 1.0, neckThick: 1.05, muscle: 0.3, handSize: 1.04 },
   face: { jaw: 1.05, chin: 1.0, brow: 1.05, cheekbones: 1.02, nose: { length: 1.0, width: 0.98, bridge: 1.03 }, lips: { fullness: 0.95 }, ears: 'round', eyeOpen: 0.95, foreheadSlope: 0.12, asym: 0.05 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.28, blemish: 0.12, wrinkles: 0.22, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xcf7860, surface: 'skin_weathered' },
   eyes: { color: PALETTE.eyes, sclera: 0xe8e2d6 },

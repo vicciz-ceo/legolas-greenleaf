@@ -1,14 +1,17 @@
 /**
- * Rigid trim for the Lake-town man (docs/refs/laketown_man): the dark binding on the jacket's
- * front edges and hem with a few toggles, the rolled brim of the knit cap, and the flared boot
- * collars. Placed from the anatomy section ellipses, not the 6 cm body mesh.
+ * Rigid and sculpted trim for the Lake-town man (docs/refs/laketown_man): the dark binding on the
+ * jacket's front edges and hem with a few toggles, faint vertical quilting channels, a cuff binding,
+ * the rolled brim of the knit cap and the flared boot collars. Placed from the anatomy section
+ * ellipses, not the 6 cm body mesh.
  */
 import * as THREE from 'three';
 import type { V3 } from '../../../kit/sdf';
 import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
+import { anatomyParts, emitParts } from '../../anatomy';
 import type { KindContext } from '../../types';
+import { limbCutAfter, limbCutBefore } from './garments';
 import { put, torsoCentreFront, torsoSection, tube } from './geo';
-import { torsoRibbon, torsoSurface } from './rohirrim_gear';
+import { torsoRibbon } from './rohirrim_gear';
 
 interface Mat {
   color: number;
@@ -45,8 +48,39 @@ export function jacketBinding(ctx: KindContext, o: Mat & { yTop: number; yHem: n
     const y = o.yTop - 0.045 * sc - ((o.yTop - o.yHem - 0.16 * sc) * i) / Math.max(1, n - 1);
     const w = o.slit[0] + (o.slit[1] - o.slit[0]) * ((o.yTop - y) / (o.yTop - o.yHem));
     const z = torsoCentreFront(P, y) + o.inflate + 0.005 * sc;
-    put(ctx, new THREE.BoxGeometry((w * 2 + 0.014 * sc), 0.007 * sc, 0.006 * sc).translate(0, y, z), { bone: 'chest', color: o.toggleColor ?? o.color, mat: o.mat, small: true });
+    put(ctx, new THREE.BoxGeometry(w * 2 + 0.014 * sc, 0.007 * sc, 0.006 * sc).translate(0, y, z), { bone: 'chest', color: o.toggleColor ?? o.color, mat: o.mat, small: true });
   }
+}
+
+/** faint vertical quilting channels: thin darker ribbons down the jacket's back and sides of the front (the shader has no directional pattern) */
+export function quiltLines(ctx: KindContext, o: Mat & { yTop: number; yHem: number; inflate: number; slit: number }) {
+  const { P } = ctx;
+  const sc = P.s;
+  const col = (x: number, side: 1 | -1) => {
+    const path: [number, number][] = [];
+    for (let i = 0; i <= 3; i++) path.push([x, o.yTop + (o.yHem - o.yTop) * (i / 3)]);
+    put(ctx, torsoRibbon(P, path, side, 0.005 * sc, o.inflate + 0.0035 * sc), { bone: 'chest', color: o.color, mat: o.mat, small: true });
+  };
+  for (const sx of [1, -1]) {
+    for (const x of [0.07, 0.115, 0.16]) if (x > o.slit + 0.02 * sc) col(sx * x * sc, 1);
+  }
+  for (let k = -3; k <= 3; k++) col(k * 0.04 * sc, -1);
+}
+
+/** a dark binding round each wrist, over the jacket's sleeve end: `fraction` of the forearm from the wrist */
+export function cuffBinding(ctx: KindContext, o: Mat & { inflate: number; fraction: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  const L = P.hand.l.L;
+  s.mirrored(() =>
+    s.group('union', 0.002 * sc, () => {
+      emitParts(s, parts, ['forearm'], { color: o.color, mat: o.mat, inflate: o.inflate, oneSide: true, k: 0.02 * sc });
+      limbCutBefore(s, L, [P.j.hand_l[0] - L.x * 0.008 * sc, P.j.hand_l[1] - L.y * 0.008 * sc, P.j.hand_l[2]], 0.004 * sc, true);
+      const from = 1 - o.fraction;
+      limbCutAfter(s, L, [P.j.forearm_l[0] + L.x * P.foreArm * from, P.j.forearm_l[1] + L.y * P.foreArm * from, P.j.forearm_l[2]], 0.004 * sc, true);
+    }),
+  );
 }
 
 /** the rolled brim of a knit cap: a thick tube round the head just above the brow */
@@ -54,7 +88,7 @@ export function capRoll(ctx: KindContext, o: Mat & { radius?: number }) {
   const { P } = ctx;
   const u = P.headH;
   const pts: V3[] = [];
-  for (let i = 0; i <= 20; i++) {
+  for (let i = 0; i < 20; i++) {
     const a = (i / 20) * Math.PI * 2; // 0 = front
     const rimY = 0.095 - 0.2 * ((1 - Math.cos(a)) / 2);
     pts.push(P.h(Math.sin(a) * 0.372, rimY, -0.06 + Math.cos(a) * 0.482));
@@ -75,5 +109,3 @@ export function bootCollars(ctx: KindContext, o: Mat & { y: number; radius: numb
     put(ctx, g, { bone: `shin_${sd}`, color: o.color, mat: o.mat, small: true });
   }
 }
-
-export { torsoSurface };

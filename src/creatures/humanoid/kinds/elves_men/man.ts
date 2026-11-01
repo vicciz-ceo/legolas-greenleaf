@@ -23,7 +23,7 @@ import { sculptCowl, sculptPouch, sculptShoulderCap, sculptTorso } from './garme
 import { ironCap, sculptWoolCap } from './headgear';
 import { DARK_STEEL, STEEL, limbGuards } from './armor';
 import { torsoCentreFront } from './geo';
-import { bootCollars, capRoll, jacketBinding } from './man_parts';
+import { bootCollars, capRoll, cuffBinding, jacketBinding, quiltLines } from './man_parts';
 import { addHemSkirt, sculptCapCurls, torsoSurface } from './rohirrim_gear';
 
 /** coarse beige linen (tunic) */
@@ -48,12 +48,12 @@ const PALETTE = {
   hair: 0x4a3524, // root #61452f, lit #2c1e15 (dark): between the two
   hairTip: 0x5c432c,
   beard: 0x4a3a2c, // a fuller dark mass with some grey
-  jacket: 0x3a4150, // design #566473 (lit #3c3e45): a greyer, darker slate blue so it does not render royal blue
+  jacket: 0x4a5262, // design #566473 (lit #3c3e45): a greyer, darker slate blue so it does not render royal blue
   binding: 0x4a3a2a, // brown binding on the hem and front edges
   tunic: 0xa89878, // design #b5a58b, lit #c3ab92
   trousers: 0x4a3e32, // design #493f35, lit #382e28
   cap: 0x52402c, // design #685444, a dark wool brown
-  capBrim: 0x3e2e1e,
+  capBrim: 0x4a392a,
   leather: 0x4a3524, // belt, pouch, boots: design #5c4431, belt lit #674b33
   boots: 0x4e3d2c, // lit #483e34
   buckle: 0x8a8a84, // pouch_fastening_metal, dull iron
@@ -63,14 +63,15 @@ const BELT_RAISE = 0.045;
 /** jacket hem (fraction of hip→knee below the hip joint) → ~0.82 m; the tunic skirt ends ~0.07 m lower */
 const JACKET_HEM = 0.13;
 const TUNIC_LEN = 0.37;
-const JACKET_INFLATE = 0.0185;
-const TUNIC_INFLATE = 0.0125;
-/** boot shaft (fraction of ankle→knee): the collar flares at ~0.40 m */
-const BOOT_LEN = 0.75;
+const JACKET_INFLATE = 0.0205;
+const TUNIC_INFLATE = 0.0145;
+/** boot shaft (fraction of ankle→knee, all buckets): the top is at ~0.41 m, where bucket 0's collar flares */
+const BOOT_LEN = 0.8;
 
 interface ManLook {
-  hair: HairDef;
-  beard?: { color: number; thick: number; cheeks: number; chin?: number; mustache?: boolean; stubble?: boolean };
+  /** strand-card hair (bucket 0 has sculpted curls instead) */
+  hair?: HairDef;
+  beard?: { color: number; thick: number; cheeks: number; chin?: number; mustache?: boolean };
 }
 
 function manExtras(ctx: KindContext) {
@@ -86,7 +87,7 @@ function manExtras(ctx: KindContext) {
   const cloth = surface('cloth', { rough: 0.88, sheen: 0.6 });
 
   const looks: ManLook[] = [
-    { hair: { style: 'shoulder', color: PALETTE.hair, tipColor: PALETTE.hairTip, length: 1, density: 0.7 }, beard: { color: PALETTE.beard, thick: 0.062, cheeks: 0.75, chin: 0.035, mustache: true } },
+    { beard: { color: PALETTE.beard, thick: 0.062, cheeks: 0.75, chin: 0.035, mustache: true } },
     { hair: { style: 'short', color: 0x211812, length: 1, density: devNum('density', 0.7) }, beard: { color: 0x1c140e, thick: 0.028, cheeks: 0.2, mustache: true } },
     { hair: { style: 'short', color: 0xa88a52, length: 0.9, density: devNum('density', 0.7) }, beard: { color: 0x9a7e4a, thick: 0.03, cheeks: 0.0, chin: 0.02 } },
     { hair: { style: 'shoulder', color: 0x908c85, length: 0.75, density: devNum('density', 0.6) }, beard: { color: 0x9a968e, thick: 0.075, cheeks: 0.9, chin: 0.05 } },
@@ -96,7 +97,7 @@ function manExtras(ctx: KindContext) {
 
   // ── face: beard, stubble, scars ──
   if (L.beard) {
-    paintStubble(ctx, { color: L.beard.color, paint: L.beard.stubble ? 0.55 : 0.35, mustache: L.beard.mustache !== false, cheeks: 0.7 });
+    paintStubble(ctx, { color: L.beard.color, paint: 0.35, mustache: L.beard.mustache !== false, cheeks: 0.7 });
     // bucket 0: ~25 % grey flecks, but never lighter than the skin (pale facets)
     sculptBeard(ctx, { color: L.beard.color, color2: b === 0 ? 0x5b4f43 : undefined, thick: L.beard.thick, cheeks: L.beard.cheeks, chin: L.beard.chin ?? 0, mustache: L.beard.mustache !== false });
   }
@@ -112,14 +113,16 @@ function manExtras(ctx: KindContext) {
   // ── clothing per bucket ──
   switch (b) {
     case 0: {
-      // a crisp jacket layer (flat hem ~0.82 m) over a beige linen tunic with its own straight skirt
+      // a crisp jacket layer (flat hem ~0.82 m) over a beige linen tunic whose own straight skirt shows ~6 cm below it
       const hemJ = hipY - (hipY - kneeY) * JACKET_HEM - 0.03 * sc;
-      sculptTorso(ctx, { color: PALETTE.tunic, mat: LINEN, inflate: TUNIC_INFLATE * sc, hem: 0.23, sleeve: 2, neck: true, thighs: true, seams: true, neckTop: 0.012 * sc });
-      addHemSkirt(ctx, { top: hemJ + 0.04 * sc, bottom: hipY - (hipY - kneeY) * TUNIC_LEN * 1.05, color: PALETTE.tunic, color2: shade(PALETTE.tunic, 0.9), mat: LINEN, flare: 0.03 * sc, grow: -0.01 * sc });
+      sculptTorso(ctx, { color: PALETTE.tunic, mat: LINEN, inflate: TUNIC_INFLATE * sc, hem: 0.1, sleeve: 2, neck: true, thighs: true, seams: true, neckTop: 0.012 * sc });
+      addHemSkirt(ctx, { top: hemJ + 0.012 * sc, bottom: hemJ - 0.058 * sc, color: PALETTE.tunic, mat: LINEN, flare: 0.035 * sc, grow: -0.004 * sc });
       sculptTorso(ctx, { color: PALETTE.jacket, mat: QUILT, inflate: JACKET_INFLATE * sc, hem: JACKET_HEM, sleeve: 2, neck: false, thighs: true, seams: true, frontOpen: { top: 0.034 * sc, bottom: 0.03 * sc, y1: ny - 0.015 * sc, y0: hemJ - 0.02 * sc } });
       jacketBinding(ctx, { color: PALETTE.binding, mat: LEATHER, yTop: ny - 0.03 * sc, yHem: hemJ, slit: [0.034 * sc, 0.03 * sc], inflate: JACKET_INFLATE * sc, toggles: 4, toggleColor: 0x5a4228 });
+      quiltLines(ctx, { color: shade(PALETTE.jacket, 0.78), mat: QUILT, yTop: ny - 0.03 * sc, yHem: hemJ + 0.03 * sc, inflate: JACKET_INFLATE * sc, slit: 0.034 * sc });
+      cuffBinding(ctx, { color: PALETTE.binding, mat: LEATHER, inflate: JACKET_INFLATE * 0.85 * sc + 0.003 * sc, fraction: 0.12 });
       sculptWoolCap(ctx, { color: PALETTE.cap, color2: shade(PALETTE.cap, 0.85), pull: 0.1, droop: 0 });
-      capRoll(ctx, { color: PALETTE.capBrim, mat: surface('wool', { rough: 0.92 }), radius: 0.11 * P.headH });
+      capRoll(ctx, { color: PALETTE.capBrim, mat: surface('wool', { rough: 0.95 }), radius: 0.085 * P.headH });
       break;
     }
     case 1: {
@@ -161,7 +164,7 @@ function manExtras(ctx: KindContext) {
     box(0.135, 0.065, 0.014, 0.04, 0.03, shade(PALETTE.leather, 1.12)); // flap
     box(0.02, 0.08, 0.01, -0.005, 0.038, shade(PALETTE.leather, 0.8)); // strap
     // short boots with a flared collar
-    bootCollars(ctx, { color: PALETTE.boots, mat: LEATHER, y: P.ankleH + (kneeY - P.ankleH) * BOOT_LEN, radius: 0.057 * sc, flare: 0.014 * sc, height: 0.035 * sc });
+    bootCollars(ctx, { color: PALETTE.boots, mat: LEATHER, y: P.ankleH + (kneeY - P.ankleH) * BOOT_LEN - 0.012 * sc, radius: 0.058 * sc, flare: 0.014 * sc, height: 0.035 * sc });
   } else sculptPouch(ctx, { x: b === 3 ? -0.13 * sc : 0.135 * sc, z: 0.06 * sc, size: 0.9, color: 0x3a2a1c, drop: 0.05 });
 
   // ── armour by level (the town guard of the sheet wears none) ──
@@ -174,8 +177,8 @@ function manExtras(ctx: KindContext) {
 
 export const manDef: KindDef = {
   label: 'Man',
-  // 1.77 (not 1.75): the lab's idle pose lifts a foot and bends a knee at some heights (1.74, 1.75, 1.76 seen)
-  height: devNum('height', 1.77),
+  // the sheet's 1.75 m (the kit mesher dropped a leg slab at 1.70-1.82 m until the hole fix)
+  height: 1.75,
   build: { shoulders: 1.0, bulk: 1.0, muscle: 0.2 },
   face: { jaw: 1.02, chin: 1.0, brow: 1.08, cheekbones: 1.0, nose: { length: 1.04, width: 1.0, bridge: 1.0 }, lips: { fullness: 1.0 }, ears: 'round', eyeOpen: 0.92, foreheadSlope: 0.14, asym: 0.05 },
   skin: { color: PALETTE.skin, color2: PALETTE.skin2, blotch: 0.3, blemish: 0.2, wrinkles: 0.3, lips: PALETTE.lips, brows: PALETTE.brows, scatter: 0xc87055, surface: 'skin_weathered' },
@@ -183,11 +186,9 @@ export const manDef: KindDef = {
   hair: noKitHair(PALETTE.skin),
   beard: null,
   outfit: [
-    // a little slimmer than stock, so the tunic and jacket stand clear of them (layers closer than ~4 mm blend their colours in the 6 cm mesh)
-    { type: 'trousers', color: PALETTE.trousers, thickness: -0.002, mat: WOOL },
+    // about stock: the tunic and jacket stand 3.5 and 9 mm proud of them (layers closer than ~4 mm blend their colours in the 6 cm mesh)
+    { type: 'trousers', color: PALETTE.trousers, thickness: 0.001, mat: WOOL },
     { type: 'boots', color: PALETTE.boots, color2: PALETTE.boots, length: BOOT_LEN, thickness: 0.004, mat: LEATHER },
-    // a dark brown binding at each jacket cuff
-    { type: 'bracers', color: PALETTE.binding, length: 0.12, thickness: 0.008, mat: LEATHER },
     { type: 'belt', color: PALETTE.leather, offset: BELT_RAISE, thickness: 0.011, mat: LEATHER },
     // spring bones only: the hem panels are built per bucket in extras
     { type: 'skirt', color: PALETTE.tunic, chance: 0 },
