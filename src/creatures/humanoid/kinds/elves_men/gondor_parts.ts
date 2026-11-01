@@ -8,6 +8,7 @@ import type { SurfaceName, SurfaceSpec } from '../../../kit/surfaces';
 import { cloakGeometry } from '../../cloth';
 import { anatomyParts, emitParts } from '../../anatomy';
 import type { KindContext } from '../../types';
+import { Rng, hashSeed } from '../../../../core/rng';
 import { attachSkinned, hairMaterial } from './common';
 import { slab } from './garments';
 import { mergeAll, put, taperedTube, torsoSection } from './geo';
@@ -111,27 +112,50 @@ export function hornOfGondor(ctx: KindContext, o: { side: 1 | -1; mouthY: number
 }
 
 /**
- * A thick fur collar over the shoulders and upper chest/back (a copy of garments.sculptFurCollar with a finer
- * colour noise, a base/tip two-tone and a closed throat): the shared one's 40 / sc colour noise reads as coarse
- * blotches at game distance.
+ * A deep, lumpy two-tone fur collar: the shoulder cap (25 % thicker than the shared collar), a raised ring up toward
+ * the jaw that runs down the back to the shoulder blades, and many small tuft ellipsoids in three tones (tips, base,
+ * dark) for a ragged outline. A copy of garments.sculptFurCollar with a finer colour noise; the throat stays open.
  */
-export function furMantle(ctx: KindContext, o: { color: number; tip: number; thick?: number; drop?: number }) {
+export function furMantle(ctx: KindContext, o: { color: number; tip: number; dark: number; thick?: number; drop?: number }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
+  const g = Math.sqrt(P.build.bulk);
   const parts = anatomyParts(P);
+  const ny = P.j.neck[1];
   const y0 = P.j.upperarm_l[1] - (o.drop ?? 0.1) * sc;
+  const rng = new Rng(hashSeed('gondor', 'fur'));
   s.group('union', 0.006 * sc, () => {
+    // the shoulder cap and the upper back
     emitParts(s, parts, ['trap', 'chest', 'back', 'deltoid', 'ribs'], {
       color: o.color,
       color2: o.tip,
-      colorNoise: 0.3,
-      colorFreq: 220 / sc,
+      colorNoise: 0.35,
+      colorFreq: 160 / sc,
       mat: 'fur',
       k: 0.05 * sc,
-      noise: { amp: 0.006 * sc, freq: 60 / sc, type: 'fbm', octaves: 3 },
-      inflate: (o.thick ?? 0.032) * sc,
+      noise: { amp: 0.007 * sc, freq: 50 / sc, type: 'fbm', octaves: 3 },
+      inflate: (o.thick ?? 0.032) * 1.25 * sc,
     });
     slab(s, y0, null, 0.02 * sc);
+    // the raised collar ring: up toward the jaw, a little lower at the throat
+    s.torus([0, ny + 0.02 * sc, -0.012 * sc], 0.1 * sc * g, 0.042 * sc, { color: o.color, color2: o.tip, colorNoise: 0.4, colorFreq: 160 / sc, mat: 'fur', bone: 'chest', k: 0.02 * sc, noise: { amp: 0.006 * sc, freq: 50 / sc, type: 'fbm', octaves: 2 } });
+    // the collar runs down the back to the shoulder blades
+    s.ellipsoid([0, ny - 0.1 * sc, -0.085 * sc * g], [0.13 * sc * g, 0.14 * sc, 0.06 * sc], { color: o.color, color2: o.tip, colorNoise: 0.4, colorFreq: 160 / sc, mat: 'fur', bone: 'chest', k: 0.03 * sc });
+  });
+  // tufts: a ragged outline of small ellipsoids over the shoulder yoke, three tones
+  const tones = [o.tip, o.color, o.color, o.dark];
+  s.group('union', 0.004 * sc, () => {
+    for (let i = 0; i < 100; i++) {
+      const th = (rng.float() * 2 - 1) * Math.PI * 0.92;
+      const R = (0.1 + 0.1 * Math.pow(rng.float(), 0.7)) * sc * g;
+      const x = Math.sin(th) * R * 1.25;
+      const front = Math.cos(th);
+      const z = front * R * (front > 0 ? 0.55 : 0.8) - 0.012 * sc;
+      const y = ny + 0.015 * sc - (R / sc - 0.1) * 0.9 * sc - 0.01 * sc * rng.float();
+      if (front > 0.7 && Math.abs(x) < 0.06 * sc) continue; // throat stays open
+      const sz = (0.018 + 0.018 * rng.float()) * sc;
+      s.ellipsoid([x, y, z], [sz, sz * 1.1, sz], { color: tones[Math.floor(rng.float() * 4)], mat: 'fur', bone: 'chest', k: 0.008 * sc });
+    }
   });
 }
 
@@ -144,9 +168,10 @@ export function medallion(ctx: KindContext, o: { y: number; z: number; r: number
 }
 
 /**
- * The White Tree of Gondor as thin tapered capsules laid on the torso front at height `cy`: one contiguous
- * trunk that forks into mirrored branches (three pairs and a leader) with a short twig on the outer pairs.
- * `h` is the tree's height, `thin` scales the stroke radius, `roots` adds the root flare at the foot.
+ * The White Tree of Gondor as tapered capsules laid on the torso front at height `cy`: one contiguous trunk
+ * rising to a leader, four tiers of mirrored V-branches (shorter and steeper towards the top, each with a twig),
+ * small leaf ellipsoids at the branch tips for the canopy, and short root strokes at the foot. `h` is the tree's
+ * height and `thin` scales the stroke radius.
  */
 export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number; thin: number; roots?: boolean }) {
   const { P } = ctx;
@@ -161,24 +186,37 @@ export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: 
   };
   const r = (v: number) => v * h * 0.1 * o.thin;
   const geos: THREE.BufferGeometry[] = [];
-  const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length, radial: 4 }));
-  // trunk (continuous from the foot to the fork) and the leader
-  stroke([[0, base], [0, base + 0.2 * h], [0, base + 0.4 * h]], 0.2, 0.12);
-  stroke([[0, base + 0.4 * h], [0, base + 0.7 * h], [0, base + 0.96 * h]], 0.12, 0.03);
-  if (o.roots) for (const sx of [-1, 1]) stroke([[0, base + 0.05 * h], [sx * 0.07 * h, base + 0.01 * h], [sx * 0.15 * h, base - 0.01 * h]], 0.1, 0.03);
-  // three mirrored branch pairs, each leaving the trunk higher and leaning less
-  const pairs: [number, number, number][] = [[0.4, 1.12, 0.46], [0.5, 0.8, 0.42], [0.6, 0.44, 0.36]];
-  for (const [yf, lean, len] of pairs) {
+  const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length * 2, radial: 4 }));
+  const leaf = (x: number, y: number, size: number) => {
+    const c = surf(x, y);
+    geos.push(new THREE.SphereGeometry(1, 5, 3).scale(size * h, size * h * 1.5, size * h * 0.4).translate(c[0], c[1], c[2]));
+  };
+  // trunk: continuous from the foot to the top of the canopy
+  stroke([[0, base + 0.04 * h], [0, base + 0.2 * h], [0, base + 0.45 * h], [0, base + 0.7 * h], [0, base + 0.95 * h]], 0.24, 0.03);
+  // roots
+  if (o.roots !== false) {
+    for (const sx of [-1, 1]) {
+      stroke([[0, base + 0.08 * h], [sx * 0.07 * h, base + 0.03 * h], [sx * 0.16 * h, base - 0.01 * h]], 0.12, 0.03);
+      stroke([[sx * 0.01 * h, base + 0.06 * h], [sx * 0.03 * h, base + 0.0 * h], [sx * 0.05 * h, base - 0.05 * h]], 0.08, 0.025);
+    }
+  }
+  // four tiers of V-branches (height on the trunk, lean from vertical, length)
+  const tiers: [number, number, number][] = [[0.26, 1.12, 0.38], [0.42, 0.95, 0.31], [0.58, 0.78, 0.24], [0.73, 0.6, 0.16]];
+  for (const [yf, lean, len] of tiers) {
     for (const sx of [-1, 1]) {
       const y0 = base + yf * h;
       const dx = Math.sin(lean) * len * h;
       const dy = Math.cos(lean) * len * h;
       const mid: [number, number] = [sx * dx * 0.5, y0 + dy * 0.5];
       const tip: [number, number] = [sx * dx, y0 + dy];
-      stroke([[0, y0], mid, tip], 0.1, 0.03);
-      if (lean > 0.6) stroke([mid, [mid[0] + sx * 0.1 * h, mid[1] + 0.08 * h]], 0.05, 0.02);
+      stroke([[0, y0], mid, tip], 0.11, 0.03);
+      // a twig off the middle, steeper than the branch
+      stroke([mid, [mid[0] + sx * 0.07 * h, mid[1] + 0.09 * h]], 0.06, 0.02);
+      leaf(tip[0], tip[1], 0.022);
+      leaf(mid[0] + sx * 0.07 * h, mid[1] + 0.09 * h, 0.018);
     }
   }
+  leaf(0, base + 0.97 * h, 0.022);
   put(ctx, mergeAll(geos), { bone: 'chest', color: o.color, mat: o.mat, small: true });
 }
 
