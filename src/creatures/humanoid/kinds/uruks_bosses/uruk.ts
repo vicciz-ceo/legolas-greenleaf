@@ -418,7 +418,7 @@ export function muzzleMask(ctx: KindContext, gear: GearFn, o: { style?: 'plate' 
     return false;
   };
   if ((o.style ?? 'plate') === 'plate') {
-    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 14, 9, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
+    const upper = shellPatch(ellipsoidFn(cc, R, [-0.95, 0.95], [-0.5, 0.5], { radial: (a) => 1 + 0.05 * Math.cos(a * 2) }), 18, 12, 0.011 * sc, { noInner: true, cull: (p) => eyeSlit(p) || vent(p) });
     gear(upper, { bone: 'head', color, mat: IM, ao: 0.85 });
   } else {
     // cage: a brow band over the eyes and vertical bars down the face
@@ -578,9 +578,9 @@ function urukExtras(berserker: boolean) {
     if (armor >= 0.5 && !berserker) {
       const pa = look.pauldrons;
       // flatter plates stepping down over the shoulder, riveted along each lame
-      const po = { color: SP.iron, mat: SHEET_IRON, reach: 1.45, ry: 0.42, half: 66, rivets: 2 };
-      if (pa === 'r' || pa === 'both') pauldron(ctx, gear, -1, { lames: 4, spikes: look.spikes, scale: 1.12, ...po });
-      if (pa === 'l' || pa === 'both') pauldron(ctx, gear, 1, { lames: 4, spikes: 0, scale: pa === 'both' ? 1.08 : 1.12, ...po });
+      const po = { color: SP.iron, mat: SHEET_IRON, reach: 1.25, ry: 0.45, half: 62, rivets: 2 };
+      if (pa === 'r' || pa === 'both') pauldron(ctx, gear, -1, { lames: 4, spikes: look.spikes, scale: 0.92, ...po });
+      if (pa === 'l' || pa === 'both') pauldron(ctx, gear, 1, { lames: 4, spikes: 0, scale: pa === 'both' ? 0.88 : 0.92, ...po });
     }
 
     if (berserker && proj) {
@@ -697,11 +697,11 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     label: 'Uruk-hai',
     // sheet: 2.0 m anatomy + helmet = 2.14 m overall; the helmet sits inside the head's height here
     height: 2.15,
-    build: { shoulders: 1.3, hips: 1.04, bulk: 1.16, chest: 1.14, belly: 0.0, armLength: 1.07, legLength: 0.98, headSize: 1.03, neck: 0.92, neckThick: 1.3, hunch: 0.14, handSize: 1.2, footSize: 1.12, muscle: 0.95 },
+    build: { shoulders: 1.3, hips: 1.04, bulk: 1.16, chest: 1.2, belly: 0.0, armLength: 1.07, legLength: 0.98, headSize: 1.03, neck: 0.92, neckThick: 1.3, hunch: 0.14, handSize: 1.2, footSize: 1.12, muscle: 0.95 },
     face: URUK_FACE,
     skin: { color: SP.skin, color2: SP.skin2, blotch: 0.5, blemish: 0.45, scars: 0, warts: 0.1, wrinkles: 0.5, lips: SP.lips, brows: 0x0d0a08, surface: URUK_SKIN, scatter: SP.scatter },
     eyes: { color: SP.eyes, glow: 0.35, sclera: 0xb8a878 },
-    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 0.95 },
+    hair: { style: 'long_straight', color: URUK_PAL.hair, density: 0.12, length: 1.1 },
     outfit: [
       { type: 'trousers', color: SP.trousers, mat: SHEET_TROUSERS },
       { type: 'boots', color: SP.boots, color2: SP.boots2, mat: SHEET_BOOT, length: 0.92 },
@@ -709,7 +709,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
       { type: 'belt', color: SP.belt, offset: 0.055 },
       // knee-length ragged black kilt with hanging leather strips over it (sheet details: cloth/leather)
       // front and back cloth panels only (the hip lames cover the sides), leather strips hang over them
-      { type: 'loincloth', color: SP.kilt, color2: SP.kilt2, mat: SHEET_KILT, length: 0.88, thickness: 0.045, strips: { count: 5, color: SP.strip, color2: SP.strip2, mat: 'leather_worn', width: 0.05, length: 0.8, phase: 0.25 } },
+      { type: 'loincloth', color: SP.kilt, color2: SP.kilt2, mat: SHEET_KILT, length: 0.88, thickness: 0.045, strips: { count: 4, color: SP.strip, color2: SP.strip2, mat: 'leather_worn', width: 0.05, length: 0.8, phase: 0.25 } },
     ],
     armor: [],
     weapons: { right: 'sword', left: 'shield', style: 'uruk' },
@@ -717,7 +717,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.7 },
     anim: { hunch: 0.14, swagger: 0.4, aggression: 0.8, stance: 1.35, armSwing: 1.0, cadence: 1.0 },
     variation: { height: 0.025, bulk: 0.06, skin: 0.12 },
-    detail: { faceRes: 0, res: 0.094, headRes: 0.0175 },
+    detail: { faceRes: 0, res: 0.097, headRes: 0.0175 },
     extras: urukExtras(false),
   },
   berserker: {
@@ -744,7 +744,7 @@ export const urukKinds: Record<'uruk' | 'berserker', KindDef> = {
     sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
     anim: { hunch: 0.16, swagger: 0.55, aggression: 1, stance: 1.4, armSwing: 1.1, cadence: 1.0 },
     variation: { height: 0.02, bulk: 0.05, skin: 0.1 },
-    detail: { faceRes: 0, res: 0.078, headRes: 0.0175 },
+    detail: { faceRes: 0, res: 0.084, headRes: 0.0175 },
     extras: urukExtras(true),
   },
 };

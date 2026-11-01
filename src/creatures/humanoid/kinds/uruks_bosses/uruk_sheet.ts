@@ -178,11 +178,15 @@ export function chestLames(ctx: KindContext, gear: GearFn, proj: Projector, botY
   const step = 0.07 * sc;
   const n = Math.max(2, Math.floor((topY - botY) / step));
   const iron = URUK_SHEET_PAL.iron;
+  // never wider than the chest itself (at shoulder height the delts and traps would flare the top lame into a saucer)
+  const cap = torso(proj, j.chest[1]).rx * 1.06;
   for (let k = 0; k < n; k++) {
     const yB = botY + 0.006 * sc + k * step;
     const h = step + 0.014 * sc;
     const rt = torso(proj, yB + h);
     const rb = torso(proj, yB);
+    rt.rx = Math.min(rt.rx, cap);
+    rb.rx = Math.min(rb.rx, cap);
     const e = 0.01 * sc;
     const g = ellipticalBand(rt.rx + e * 0.6, (rt.zf + rt.zb) / 2 + e * 0.6, rb.rx + e * 1.5, (rb.zf + rb.zb) / 2 + e * 1.5, h, 0.006 * sc, 12, 0, Math.PI * 2, (rt.zf - rt.zb) / 2);
     gear(g, { bone: 'spine', color: iron, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(0, yB + h / 2, 0), ao: 0.85, colorFn: rimWear(yB, h, URUK_SHEET_PAL.ironEdge) });
