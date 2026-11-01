@@ -95,24 +95,25 @@ export function caveBristles(ctx: KindContext, gear: GearFn, proj: Projector, bu
   const rng = new Rng(8100 + bucket);
   const p = V(), n = V();
   const tuft = (bone: string, len: number) => {
-    const dir = n.clone().multiplyScalar(0.7).add(V(0, 0.55, -0.15)).normalize();
-    gear(spike(0.0042 * sc, len, 3, 0.3), { bone, color: rng.float() < 0.5 ? TROLL_PAL.bristle : 0x2e2a24, mat: HIDE, matrix: placeAlong(p.clone().addScaledVector(n, -0.004 * sc), dir, V(0, 0, 1)), small: true });
+    // lean tangentially (back and along the surface) instead of standing straight out
+    const dir = n.clone().multiplyScalar(0.4).add(V(0, 0.2, -0.45)).normalize();
+    gear(spike(0.0022 * sc, len, 3, 0.35), { bone, color: rng.float() < 0.5 ? TROLL_PAL.bristle : 0x4a3e32, mat: HIDE, matrix: placeAlong(p.clone().addScaledVector(n, -0.004 * sc), dir, V(0, 0, 1)), small: true });
   };
   // crown, over the skull from above (bone: head)
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < 30; i++) {
     const a = rng.range(0, Math.PI * 2);
     const rr = rng.range(0.03, 0.32);
     const o = V(...P.h(Math.sin(a) * rr, 0.95, Math.cos(a) * rr - 0.1));
     if (!proj.cast(o, V(0, -1, 0), 0.9 * P.headH, p, n)) continue;
-    tuft('head', rng.range(0.02, 0.04) * sc);
+    tuft('head', rng.range(0.016, 0.03) * sc);
   }
   // trapezius humps, from above: only hits that really are on the torso/neck mass (not the arm below)
   for (const sx of [1, -1]) {
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 18; i++) {
       const o = V(sx * rng.range(0.1, 0.34) * sc * P.build.shoulders, j.upperarm_l[1] + 0.5 * sc, rng.range(-0.25, 0.1) * sc);
       if (!proj.cast(o, V(0, -1, 0), 1.2, p, n)) continue;
       if (Math.abs(p.x) > 0.36 * sc * P.build.shoulders || p.y < j.upperarm_l[1] - 0.05 * sc) continue;
-      tuft('chest', rng.range(0.03, 0.06) * sc);
+      tuft('chest', rng.range(0.018, 0.034) * sc);
     }
   }
 }

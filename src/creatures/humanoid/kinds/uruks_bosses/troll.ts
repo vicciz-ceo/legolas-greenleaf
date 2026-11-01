@@ -22,7 +22,8 @@ import { pauldron } from './uruk';
 import { TROLL_PAL, HIDE, HEAD_SKIN } from './troll_pal';
 import { fitHeldWeapon } from './troll_weapon';
 import { caveWarts, caveBristles, ankleShackle } from './troll_cave';
-import { warHelm, warMane, warHarness, warBelts, trollBelt, warFootWraps, warGreaves, warBracers } from './troll_war';
+import { warHelm, warMane, warHarness, warBelts, warFootWraps, warGreaves, warBracers } from './troll_war';
+import { trollBelt, rustGear } from './troll_fit';
 
 export { TROLL_PAL };
 
@@ -60,7 +61,7 @@ const TROLL_FACE = {
 /** belt height (m): just above the hip joints for the cave troll, a hand's breadth higher for the war troll (sheet rows: cave 2.2 m,
  *  war 2.74 m over a leg of 2.0 / 2.25 m) */
 function beltHeight(ctx: KindContext, variant: TrollVariant): number {
-  return ctx.P.j.thigh_l[1] + (variant === 'war' ? 0.2 : 0.08) * ctx.P.s;
+  return ctx.P.j.thigh_l[1] + (variant === 'war' ? 0.1 : 0.08) * ctx.P.s;
 }
 
 function trollBody(ctx: KindContext, variant: TrollVariant) {
@@ -74,11 +75,11 @@ function trollBody(ctx: KindContext, variant: TrollVariant) {
   const beltY = beltHeight(ctx, variant);
   // the war troll is a little leaner in the belly (sheet: hip width 1.2 m against the cave troll's 1.4 m)
   const lean = variant === 'war' ? 0.9 : 1;
-  s.with({ ...skinOpts(ctx), k: 0.14 * sc }, () => {
+  s.with({ ...skinOpts(ctx), mat: HEAD_SKIN, k: 0.14 * sc }, () => {
     // barrel chest: one massive volume from the collar down to the belt
     const lump = { amp: 0.014 * sc, freq: 5 / sc, type: 'fbm' as const, octaves: 3, seed: 3 };
     const cTop = shY + 0.1 * sc;
-    const cBot = beltY - 0.1 * sc;
+    const cBot = beltY - 0.02 * sc;
     s.ellipsoid([0, (cTop + cBot) / 2, 0.02 * sc], [0.215 * sc * g, (cTop - cBot) / 2, 0.17 * sc * g], { bone: 'spine', bone2: 'chest', blend: [0.3, 1], k: 0.16 * sc, noise: lump });
     // hanging belly: a soft mass above the belt that overhangs it (sheet side view: carried well forward of the chest)
     s.ellipsoid([0, beltY + 0.3 * sc, 0.1 * sc * g * lean], [0.2 * sc * g * lean, 0.17 * sc, 0.2 * sc * g * lean], { bone: 'spine', k: 0.14 * sc, noise: { ...lump, seed: 5 } });
@@ -101,7 +102,14 @@ function trollBody(ctx: KindContext, variant: TrollVariant) {
     s.mirrored(() => {
       const f = j.foot_l;
       const t = j.toe_l;
-      s.cone([f[0], f[1] + 0.02 * sc, f[2]], [t[0], t[1] + 0.03 * sc, t[2] + 0.07 * sc], 0.072 * sc, 0.058 * sc, { bone: 'foot_l', bone2: 'toe_l', blend: [0.55, 0.95], k: 0.04 * sc });
+      // long broad foot splayed a little outward, ending in a row of four toes
+      const tipZ = t[2] + 0.07 * sc + 0.26 * (t[2] - f[2]);
+      const tip: [number, number, number] = [t[0] + 0.05 * sc, t[1] + 0.03 * sc, tipZ];
+      s.cone([f[0], f[1] + 0.02 * sc, f[2]], tip, 0.094 * sc, 0.075 * sc, { bone: 'foot_l', bone2: 'toe_l', blend: [0.45, 0.95], k: 0.04 * sc });
+      for (let i = 0; i < 4; i++) {
+        const lx = (i - 1.5) * 0.05 * sc;
+        s.ellipsoid([tip[0] + lx + (i - 1.5) * 0.004 * sc, tip[1] - 0.005 * sc, tipZ + 0.035 * sc - Math.abs(i - 1.5) * 0.012 * sc], [0.027 * sc, 0.026 * sc, 0.05 * sc], { bone: 'toe_l', k: 0.016 * sc, rot: [0, (i - 1.5) * 0.12, 0] });
+      }
     });
     // thighs / calves (thick: the sheet legs are pillars)
     s.mirrored(() => {
@@ -190,35 +198,38 @@ function trollExtras(ctx: KindContext) {
     s.ellipsoid([0, P.H / 2, 0], [2.6 * sc, P.H * 0.7, 2.6 * sc], { op: 'paint', color: bucket === 3 ? 0x362920 : TROLL_PAL.warSkin, color2: TROLL_PAL.warSkin2, colorNoise: 0.45, colorFreq: 2.5 / sc, mat: 'skin_troll', strength: 1, k: 0.2 * sc });
     if (ctx.armor >= 0.25) warFootWraps(ctx);
   } else {
-    // the cave troll's belly and chest are paler and pinker than his back
-    s.ellipsoid([0, beltY + 0.35 * sc, 0.3 * sc], [0.3 * sc, 0.4 * sc, 0.3 * sc], { op: 'paint', color: TROLL_PAL.belly, mat: 'skin_troll', strength: 0.3, k: 0.12 * sc });
+    // the cave troll's belly and chest are paler than his back; the shoulders and back carry a darker olive mottle
+    s.ellipsoid([0, beltY + 0.35 * sc, 0.3 * sc], [0.3 * sc, 0.4 * sc, 0.3 * sc], { op: 'paint', color: TROLL_PAL.belly, mat: HEAD_SKIN, strength: 0.35, k: 0.12 * sc });
+    s.ellipsoid([0, P.j.chest[1] + 0.1 * sc, -0.42 * sc], [1.0 * sc, 0.55 * sc, 0.35 * sc], { op: 'paint', color: TROLL_PAL.back, color2: TROLL_PAL.skin2, colorNoise: 0.5, colorFreq: 3 / sc, mat: HEAD_SKIN, strength: 0.5, k: 0.18 * sc });
   }
 
   const proj = makeProjector(s, box);
   if (!proj) return;
   trollHands(ctx, gear);
   if (variant === 'cave') {
-    caveWarts(ctx, gear, proj, bucket, 0.6);
+    caveWarts(ctx, gear, proj, bucket, 0.5);
     caveBristles(ctx, gear, proj, bucket);
     ankleShackle(ctx, gear, proj);
-    trollBelt(ctx, gear, proj, beltY, { width: 0.085 });
+    trollBelt(ctx, gear, proj, beltY, { width: bucket === 1 ? 0.095 : 0.085 });
     // the club hangs at the side, shaft ~25 deg off vertical, with a big knobbly head (sheet: 2.5 m overall)
-    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.58, 1.1], out: 28, fwd: 6 });
+    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.68, 1.1], out: bucket === 1 ? 24 : 28, fwd: bucket === 1 ? 10 : 6 });
   } else {
-    if (ctx.helmet) warHelm(ctx, gear, bucket);
+    // all war metal goes through one sink that adds the rust patches
+    const metal = rustGear(gear);
+    if (ctx.helmet) warHelm(ctx, metal, bucket);
     warMane(ctx, gear, proj, bucket);
     if (ctx.armor >= 0.25) {
-      warHarness(ctx, gear, proj, beltY);
-      trollBelt(ctx, gear, proj, beltY, { width: 0.085 });
+      warHarness(ctx, metal, proj, beltY);
+      trollBelt(ctx, gear, proj, beltY, { width: 0.085, edges: false });
       warBelts(ctx, gear, proj, beltY);
-      warGreaves(ctx, gear, proj);
-      warBracers(ctx, gear, proj);
+      warGreaves(ctx, metal, proj);
+      warBracers(ctx, metal, proj);
     }
     if (ctx.armor >= 0.5) {
       // spaulders: stacked flat lames with a crown of rim spikes, riding a little above the joint
       const lift = new THREE.Matrix4().makeTranslation(0, 0.05 * sc, 0);
-      const liftedGear: GearFn = (geo, o) => gear(geo, { ...o, matrix: o.matrix ? lift.clone().multiply(o.matrix) : lift });
-      const pd = { lames: 4, spikes: 6, scale: 1.9, rusty: false, color: TROLL_PAL.pauldron, reach: 1.5, half: 64, ry: 0.8 };
+      const liftedGear: GearFn = (geo, o) => metal(geo, { ...o, matrix: o.matrix ? lift.clone().multiply(o.matrix) : lift });
+      const pd = { lames: 4, spikes: 6, scale: 1.7, rusty: false, color: TROLL_PAL.pauldron, reach: 1.5, half: 60, ry: 0.7 };
       pauldron(ctx, liftedGear, 1, pd);
       pauldron(ctx, liftedGear, -1, pd);
     }
@@ -232,7 +243,7 @@ export const trollKind: KindDef = {
   label: 'Troll',
   // crown height of the 4.5 m sheets once the hunch has taken its share (the war troll's helm rises to 4.95 m)
   height: 4.52,
-  build: { shoulders: 1.6, hips: 1.45, bulk: 1.35, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 1.03, headSize: 1.38, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 1.6, footSize: 1.2, muscle: 0.6 },
+  build: { shoulders: 1.6, hips: 1.45, bulk: 1.35, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 1.03, headSize: 1.38, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 2.0, footSize: 1.2, muscle: 0.6 },
   face: TROLL_FACE,
   skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.45, blemish: 0.5, scars: 3, warts: 0.38, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3a2c, surface: 'skin_troll', scatter: TROLL_PAL.scatter },
   eyes: { color: TROLL_PAL.eyes, glow: 0.2, sclera: 0xa8a070 },
@@ -240,7 +251,7 @@ export const trollKind: KindDef = {
   hair: null,
   // knee-length ragged kilt on a broad leather belt at the waist (both sheets)
   outfit: [
-    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.88, mat: 'rags', thickness: 0.075, tatter: 0.025 },
+    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.88, mat: 'rags', thickness: 0.1, tatter: 0.03 },
   ],
   armor: [],
   weapons: { right: 'club' },
