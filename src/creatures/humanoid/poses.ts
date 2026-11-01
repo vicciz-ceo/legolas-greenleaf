@@ -1040,8 +1040,10 @@ export const ATTACKS: Record<AttackAnim, Key[]> = {
   thrust: [
     { t: 0 },
     { t: 0.4, cy: -0.4, pyaw: -0.2, rh: [0.3, -0.35, -0.15], rd: [0, 0, 1], rt: [0, 1, 0.2], re: [0.5, -0.5, -1], cp: -0.05 },
-    { t: 0.58, cy: 0.15, pyaw: 0.15, rh: [0.1, -0.1, 0.98], rd: [0, 0, 1], rt: [0, 0.3, 1], re: [0.4, -1, 0], cp: 0.2, flz: 0.22, frz: -0.1 },
-    { t: 0.8, cy: 0.1, rh: [0.15, -0.15, 0.85], rd: [0, 0, 1], rt: [0, 0.3, 1], cp: 0.15, flz: 0.2 },
+    // the knuckles are perpendicular to the thumb (the blade, forward and a little up): the pair the solver reads is then the one authored.
+    // (They were given forward, parallel to the thumb, and the solver read the blade as straight up.)
+    { t: 0.58, cy: 0.15, pyaw: 0.15, rh: [0.1, -0.1, 0.98], rd: [0, -1, 0.3], rt: [0, 0.3, 1], re: [0.4, -1, 0], cp: 0.2, flz: 0.22, frz: -0.1 },
+    { t: 0.8, cy: 0.1, rh: [0.15, -0.15, 0.85], rd: [0, -1, 0.3], rt: [0, 0.3, 1], cp: 0.15, flz: 0.2 },
     { t: 1 },
   ],
   // knuckle (d) and thumb/blade (t) directions are authored perpendicular: the blade follows the

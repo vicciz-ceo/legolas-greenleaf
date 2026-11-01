@@ -144,9 +144,8 @@ test('at a key\'s own time the hand has the frame the key authors (the hit poses
   ok(n >= 15, `keys checked (${n})`);
 });
 
-test('every authored pair keeps the thumb well clear of the knuckles (sin >= 0.5)', () => {
+test('every authored pair keeps the thumb well clear of the knuckles (sin >= 0.5), and a thrust points its blade forward', () => {
   for (const kind of KINDS) {
-    if (kind === 'thrust') continue; // its knuckles are parallel to its thumb until the next commit
     for (const side of ['r', 'l'] as const) {
       const [kd, kt] = KEYS[side];
       for (const key of ATTACKS[kind]) {
@@ -159,6 +158,9 @@ test('every authored pair keeps the thumb well clear of the knuckles (sin >= 0.5
       }
     }
   }
+  // the thrust: at its hit the blade (the thumb the solver reads) points forward and the sword's edge is not turned to the sky
+  const hit = handAt('thrust', 0.58, 'r');
+  ok(hit.t.z > 0.9 && Math.abs(hit.t.y) < 0.45, `thrust hit: the blade points ${hit.t.toArray().map((x) => x.toFixed(2))}, it must point forward`);
 });
 
 test('through the whole animator the sword hand and the shield hand turn at most 25 deg per 1/240 of an attack, carried or empty', () => {
