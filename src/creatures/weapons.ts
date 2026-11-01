@@ -692,7 +692,7 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
     sh2.bezierCurveTo(sx * 0.02, -0.013, sx * 0.05, -0.006, sx * 0.064, 0.04);
     sh2.bezierCurveTo(sx * 0.05, 0.02, sx * 0.022, 0.014, 0, 0.014);
     sh2.closePath();
-    k.add(new THREE.ExtrudeGeometry(sh2, { depth: 0.007, bevelEnabled: true, bevelSize: 0.0014, bevelThickness: 0.0014, bevelSegments: 1, curveSegments: 5 }).translate(0, 0.04, -0.0035), { color: brass ? 0xb08a4a : 0xd2d6dc, mat: brass ? surface('gold', { rough: 0.38 }) : surface('metal', { rough: 0.22 }) });
+    k.add(new THREE.ExtrudeGeometry(sh2, { depth: 0.007, bevelEnabled: true, bevelSize: 0.0014, bevelThickness: 0.0014, bevelSegments: 1, curveSegments: 5 }).translate(0, 0.04, -0.0035), { color: brass ? 0xb08a4a : 0xd2d6dc, mat: brass ? surface('gold', { rough: 0.38 }) : surface('metal', { rough: 0.3, metal: 0.65 }) });
   }
   k.add(lathe([[0, 0.03], [0.012, 0.034], [0.012, 0.048], [0.006, 0.058], [0, 0.058]], 8).scale(1.1, 1, 0.7), { color: brass ? 0xb08a4a : 0xd6dade, mat: brass ? 'gold' : 'metal' });
   // ivory handle (Tauriel's style 'elven': a brown leather-wrapped hilt with brass fittings) with a gentle swell and olive leaf etching
