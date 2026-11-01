@@ -10,10 +10,10 @@ export const TROLL_PAL = {
   // ── cave troll ─────────────────────────────────────────────────────────────
   // hide: the design hex #717866 and the sheet image are an olive grey-tan; the lit skin sample (#87725c) is warmer.
   // The albedo is a desaturated tan-olive khaki (greens render minty under sky light); the shoulders and back get a darker olive mottle
-  skin: 0x584b32,
-  skin2: 0x453f2c,
+  skin: 0x52452c,
+  skin2: 0x3e3826,
   // belly and chest skin is paler and pinker than the back (turnaround, front view)
-  belly: 0x675a42,
+  belly: 0x5f5238,
   /** darker olive mottle over the shoulders and back */
   back: 0x403e2a,
   lips: 0x6a463c,

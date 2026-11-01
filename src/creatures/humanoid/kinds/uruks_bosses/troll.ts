@@ -113,7 +113,8 @@ function trollBody(ctx: KindContext, variant: TrollVariant) {
     });
     // thighs / calves (thick: the sheet legs are pillars)
     s.mirrored(() => {
-      s.ellipsoid([j.thigh_l[0] + 0.02 * sc, (j.thigh_l[1] + j.shin_l[1]) / 2 + 0.06 * sc, 0.02 * sc], [0.15 * sc * g, 0.22 * sc, 0.15 * sc * g], { bone: 'thigh_l', k: 0.08 * sc });
+      // (centred below the hip joint: a thigh mass reaching above it swings forward with the leg and pokes through the kilt)
+      s.ellipsoid([j.thigh_l[0] + 0.02 * sc, (j.thigh_l[1] + j.shin_l[1]) / 2 - 0.03 * sc, 0.02 * sc], [0.15 * sc * g, 0.2 * sc, 0.15 * sc * g], { bone: 'thigh_l', k: 0.08 * sc });
       s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.12 * sc, j.shin_l[2] - 0.04 * sc], [0.11 * sc * g, 0.14 * sc, 0.115 * sc * g], { bone: 'shin_l', k: 0.07 * sc });
     });
   });
@@ -212,7 +213,7 @@ function trollExtras(ctx: KindContext) {
     ankleShackle(ctx, gear, proj);
     trollBelt(ctx, gear, proj, beltY, { width: bucket === 1 ? 0.095 : 0.085 });
     // the club hangs at the side, shaft ~25 deg off vertical, with a big knobbly head (sheet: 2.5 m overall)
-    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.68, 1.1], out: bucket === 1 ? 24 : 28, fwd: bucket === 1 ? 10 : 6 });
+    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.78, 1.1], out: bucket === 1 ? 24 : 28, fwd: bucket === 1 ? 10 : 6 });
   } else {
     // all war metal goes through one sink that adds the rust patches
     const metal = rustGear(gear);
@@ -251,7 +252,7 @@ export const trollKind: KindDef = {
   hair: null,
   // knee-length ragged kilt on a broad leather belt at the waist (both sheets)
   outfit: [
-    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.88, mat: 'rags', thickness: 0.1, tatter: 0.03 },
+    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.88, mat: 'rags', thickness: 0.13, tatter: 0.03 },
   ],
   armor: [],
   weapons: { right: 'club' },
