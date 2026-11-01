@@ -276,7 +276,7 @@ export function stylePose(st: AnimStyle, p: Pose) {
  *            and out (further forward where the point would otherwise reach the ground: a goblin's cleaver at knee
  *            height lies ~60 deg out of the vertical, forward and down)
  *   upright  spears, pikes and torches stand in the fist, head up (a butt may stand in the ground)
- *   shield   a shield stands vertical on the forearm, its face out
+ *   shield   a shield stands vertical on the bent forearm, its face turned toward the front-left (HOLDS.shield)
  *   none     empty hands, bows (the animator carries those) and crossbows keep the neutral hand
  * It is part of the rest pose (idle, walking, jumping), so attacks blend from it and keep their own keys. A run
  * takes a hanging blade back to the fist held ahead (a blade hanging from a pumping arm would slap the legs);
@@ -318,8 +318,15 @@ export interface HoldDef {
   dir: 1 | -1;
   /** where the fingers point, x outward (mirrored per side); made perpendicular to the axis */
   knuckle: V3t;
+  /** a hold with a face (a shield): the face (the item's +X, T x L) looks this many degrees out of straight ahead toward the outside
+   *  (90 = straight out, 0 = forward); the fingers then point where the face needs them (L = N x T), and `knuckle` is not used */
+  face?: number;
   /** the wrist hangs at least this far out of the shoulder (units of arm reach) */
   minOut: number;
+  /** a forearm held forward (the shield on the arm): the wrist at least this far ahead of the shoulder, and no further than `maxDrop` below it
+   *  (units of arm reach), so the elbow bends and the item stands clear of the thigh that swings forward in a stride */
+  minFwd?: number;
+  maxDrop?: number;
   /** the most the ground clearance may tilt the axis (deg); 0 = no clearance tilt */
   maxTilt: number;
 }
@@ -329,7 +336,14 @@ export const HOLDS: Record<Exclude<Carry, 'none'>, HoldDef> = {
   // no clearance tilt for a haft: its butt may stand in the ground (a planted spear). Lifting a butt by tilting near vertical takes a big turn
   // for a small gain, and a pumping hand (a crouched goblin's run swings 40 cm) then snapped the haft by 35 deg in a frame
   upright: { tilt: 7, azim: 30, dir: 1, knuckle: [-0.2, 0, 1], minOut: 0.16, maxTilt: 0 },
-  shield: { tilt: -7, azim: 90, dir: 1, knuckle: [0, 0, 1], minOut: 0.3, maxTilt: 0 },
+  // the shield rests on the forearm with its face turned toward the front, as every sheet holds it, not straight out (a face-out shield is an
+  // edge-on sliver from the front, where the emblem is the identity cue). The sheets disagree on how far: their fronts and backs show the face
+  // ~60 deg off the view, their profiles and three-quarters near edge-on. Swept against the calibrated turnarounds (scripts/sheet-compare.py, idle,
+  // the five shield bearers): the mean IoU of the four views peaks at 15..30 deg and is no better than the old hold beyond 60. 40 deg is the
+  // turn that clears the walking thigh: the front edge swings in toward the body as the face turns forward and meets the thigh that swings
+  // forward in a stride, unless the elbow is bent (the wrist raised to 0.75 of the arm below the shoulder and held 0.2 ahead of it): the shield
+  // then stands in front of the stride, as a person rests it on the arm
+  shield: { tilt: -7, azim: 90, dir: 1, knuckle: [0, 0, 1], face: 40, minOut: 0.3, minFwd: 0.2, maxDrop: 0.75, maxTilt: 0 },
 };
 /** the point of a carried item keeps this far (× body height) above the ground */
 const CARRY_CLEAR = 0.025;
@@ -388,16 +402,28 @@ export function trunkFrames(B: BodyMetrics, p: Pose): { rot: Float64Array; l: Fl
   return { rot: _Rm, l: _Sl, r: _Sr };
 }
 
-/** the hand frame of a hold (model space, `sx` +1 left / -1 right): long axis T at `theta` from straight down / up, fingers L perpendicular to it */
-function holdAxes(def: HoldDef, sx: number, theta: number, flip: boolean, T: Float64Array, L: Float64Array) {
+/**
+ * the hand frame of a hold (model space, `sx` +1 left / -1 right): long axis T at `theta` from straight down / up, fingers L perpendicular to it
+ * (from the knuckle direction, or from `face`, the deg the item's face looks out of straight ahead, when the hold has one)
+ */
+function holdAxes(def: HoldDef, face: number | undefined, sx: number, theta: number, flip: boolean, T: Float64Array, L: Float64Array) {
   const az = def.azim * (Math.PI / 180);
   const st = Math.sin(theta), ct = Math.cos(theta);
   T[0] = sx * st * Math.sin(az);
   T[1] = def.dir * ct;
   T[2] = st * Math.cos(az);
-  let kx = def.knuckle[0] * sx, ky = def.knuckle[1], kz = flip ? -def.knuckle[2] : def.knuckle[2];
-  const d = kx * T[0] + ky * T[1] + kz * T[2];
-  kx -= d * T[0]; ky -= d * T[1]; kz -= d * T[2];
+  let kx: number, ky: number, kz: number;
+  if (face !== undefined) {
+    // the face normal N looks `face` deg out of straight ahead toward the outside, made perpendicular to the axis; L = N x T
+    const fa = face * (Math.PI / 180), nx = sx * Math.sin(fa), nz = Math.cos(fa);
+    const dn = nx * T[0] + nz * T[2];
+    const px = nx - dn * T[0], py = -dn * T[1], pz = nz - dn * T[2];
+    kx = py * T[2] - pz * T[1]; ky = pz * T[0] - px * T[2]; kz = px * T[1] - py * T[0];
+  } else {
+    kx = def.knuckle[0] * sx; ky = def.knuckle[1]; kz = flip ? -def.knuckle[2] : def.knuckle[2];
+    const d = kx * T[0] + ky * T[1] + kz * T[2];
+    kx -= d * T[0]; ky -= d * T[1]; kz -= d * T[2];
+  }
   const n = Math.hypot(kx, ky, kz) || 1;
   L[0] = kx / n; L[1] = ky / n; L[2] = kz / n;
 }
@@ -511,6 +537,12 @@ function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: n
   // the wrist hangs clear of the hip
   const out = sx * p[hx];
   if (out < def.minOut) p[hx] = sx * (out + (def.minOut - out) * w);
+  // a crouched body (the goblin) keeps a shield at its side, face out, as before: its knees stand forward where a shield held up in front
+  // and turned to the front would hang, and its shield is as big as it is
+  const open = def.face === undefined ? 0 : unit(B.style.crouch);
+  const wf = w * (1 - open);
+  if (def.minFwd !== undefined && p[hx + 2] < def.minFwd) p[hx + 2] += (def.minFwd - p[hx + 2]) * wf;
+  if (def.maxDrop !== undefined && p[hx + 1] < -def.maxDrop) p[hx + 1] += (-def.maxDrop - p[hx + 1]) * wf;
   // the long axis: its least tilt, more where the point would reach the ground. The grip stands at the wrist target
   // (through the solved chest, from the shoulder) plus the hand's own offset along the fingers and out of the palm
   const S = left ? _Sl : _Sr;
@@ -520,7 +552,8 @@ function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: n
   const theta0 = def.tilt * (Math.PI / 180);
   let theta = theta0;
   const flip = hc.carry === 'shield' && !left;
-  holdAxes(def, sx, theta, flip, _T, _L);
+  const face = def.face === undefined ? undefined : def.face + (90 - def.face) * open;
+  holdAxes(def, face, sx, theta, flip, _T, _L);
   const ext = hc.carry === 'hang' ? hc.up : hc.carry === 'upright' ? hc.down : 0;
   if (ext > 1e-3 && def.maxTilt > 0) {
     const clear = CARRY_CLEAR * B.height;
@@ -530,7 +563,7 @@ function carryHand(B: BodyMetrics, p: Pose, left: boolean, hc: HandCarry, run: n
       const c = (gy - clear) / ext;
       const need = c >= 1 ? 0 : Math.acos(Math.max(-1, c));
       theta = Math.min(def.maxTilt * (Math.PI / 180), Math.max(theta0, need));
-      holdAxes(def, sx, theta, flip, _T, _L);
+      holdAxes(def, face, sx, theta, flip, _T, _L);
     }
   }
   // into chest space, turned over from the pose's own hand

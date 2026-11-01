@@ -17,7 +17,7 @@
  *    pose and returned afterwards (weaponObject('hand_l') still returns it).
  *  - a crossbow in either hand: aim / 'shoot' shoulders it with both hands (no string draw).
  *  - held items are carried at rest (idle, walk, jump): one-handed blades, axes, maces and clubs hang beside the
- *    thigh, spears, pikes and torches stand, a shield stands on the forearm face out; attacks blend from there
+ *    thigh, spears, pikes and torches stand, a shield rests on the forearm, its face turned toward the front-left; attacks blend from there
  *    (humanoid/poses.ts `Carry`; this file keeps `anim.held` in step with the weapons and their reach).
  *  - setLod(1|2) also switches to the cheap animation path (no springs/look-at, swing-only IK).
  *  - bones are driven by quaternions: `bone.rotation` (Euler) is not kept in sync (fastBones).
