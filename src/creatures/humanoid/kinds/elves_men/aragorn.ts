@@ -16,7 +16,7 @@ import { attachSkinned, devNum, devSkip, withHair } from './common';
 import { sheathed } from './detail';
 import { put, studs, taperedTube, torsoSection, tube } from './geo';
 import { addHair, noKitHair, paintStubble, sculptBeard } from './hair';
-import { bandAt, matteHair } from './gondor_parts';
+import { matteHair, tallBoots } from './gondor_parts';
 import { sculptBand, sculptTorso } from './garments';
 import { limbGuards } from './armor';
 
@@ -31,15 +31,15 @@ const PAL = {
   lips: 0x95584e,
   brows: 0x33241a,
   eyes: 0x72806f, // sheet #778077, grey-green
-  trousers: 0x3a3836, // dark grey wool (observed #332b20); a distinct value from the boots and the coat
+  trousers: 0x2b2620, // dark wool breeches (observed #332b20); a distinct value from the boots and the coat
   boots: 0x5a3a28, // warm mid-brown worn leather (observed #524037)
   bootsTrim: 0x3d2a1c,
-  shirt: 0x3a3836, // observed #3c3837 dark charcoal
+  shirt: 0x2c2a29, // observed #3c3837 dark charcoal
   jerkin: 0x5c3b2b, // reddish-brown stitched vest (observed #452e22 in shade)
   jerkinTrim: 0x3e281c,
-  coat: 0x5a5c44, // faded grey-olive wool, darker than the boots' brown (sheet #565b4b; observed #665c4b)
-  coatTrim: 0x4d4f3a,
-  coatFray: 0x626448, // frayed cord along the hems and lapels: only ~9 % lighter than the coat
+  coat: 0x4f4a3b, // weathered grey-olive/khaki wool (sheet #565b4b, observed #665c4b lit): it renders greener and lighter than the albedo, so warm and dark
+  coatTrim: 0x433f31,
+  coatFray: 0x6e6347, // tan frayed hem band and lapel cord
   bracers: 0x5d4231, // tooled brown leather (the sheet's bracers are brown, not black; observed #67534e)
   bracersTrim: 0x3a291d,
   belt: 0x4a3322,
@@ -56,10 +56,10 @@ const LEATHER = surface('leather_worn', { rough: 0.66, sheen: 0.1 });
 const TOOLED = surface('leather_tooled', { rough: 0.6, sheen: 0.1 });
 const LINEN = surface('linen', { rough: 0.9, sheen: 0.12 });
 
-/** coat hem height (m; sheet: front ~0.5, back ~0.52) */
-const COAT_HEM = 0.5;
-/** belt height above the kit default (sheet: ~1.2 m) */
-const BELT_UP = 0.13;
+/** coat hem height as a multiple of the body scale (sheet: front ~0.5 m, back ~0.52 m at 1.88 m) */
+const COAT_HEM = 0.492;
+/** belt height above the kit default (sheet buckle ~1.17 m; measured on the calibrated compare) */
+const BELT_UP = 0.15;
 
 /**
  * Extra locks of chestnut wavy hair (rigid, on the chest bone) that carry the kit's shoulder-length hair
@@ -74,14 +74,27 @@ function hairLocks(ctx: KindContext) {
   const mat = surface('hair', { rough: 0.85, sheen: 0.08 });
   const sec = (y: number) => torsoSection(P, Math.min(y, ny - 0.01 * sc));
   const top = ny + 0.05 * sc;
-  const n = 15;
+  const n = 24;
+  // a darker undercoat first: wide, shallow locks hugging the back, so neither skin nor coat shows between the locks
+  for (let k = 0; k < 10; k++) {
+    const f = k / 9;
+    const x0 = (-0.115 + 0.23 * f) * sc;
+    const y1 = ny - (0.14 + 0.06 * rng.float()) * sc;
+    const pts: V3[] = [];
+    for (let i = 0; i <= 6; i++) {
+      const t = i / 6;
+      const y = top + (y1 - top) * t;
+      pts.push([x0 * (1 + 0.05 * t), y, sec(y).zb - 0.02 * sc]);
+    }
+    put(ctx, taperedTube(pts, 0.022 * sc, 0.008 * sc, { seg: 8, radial: 4 }), { bone: 'chest', color: 0x2e1f16, mat, small: true });
+  }
   for (let k = 0; k < n; k++) {
     const f = k / (n - 1);
-    const x0 = (-0.125 + 0.25 * f) * sc * (1 - 0.1 * Math.abs(f - 0.5));
-    const y1 = ny - (0.17 + 0.11 * rng.float()) * sc;
+    const x0 = (-0.13 + 0.26 * f) * sc * (1 - 0.1 * Math.abs(f - 0.5));
+    const y1 = ny - (0.15 + 0.14 * rng.float()) * sc;
     const phase = k * 1.9;
-    const wave = (0.01 + 0.005 * rng.float()) * sc;
-    const depth = (0.03 + (k % 2) * 0.01) * sc;
+    const wave = (0.008 + 0.005 * rng.float()) * sc;
+    const depth = (0.03 + (k % 3) * 0.008) * sc;
     const pts: V3[] = [];
     const m = 8;
     for (let i = 0; i <= m; i++) {
@@ -90,10 +103,11 @@ function hairLocks(ctx: KindContext) {
       const x = x0 * (1 + 0.08 * t) + Math.sin(t * 8 + phase) * wave * t;
       pts.push([x, y, sec(y).zb - depth + Math.cos(t * 6 + phase) * 0.005 * sc * t]);
     }
-    const color = mix3(0x4e3524, 0x61442e, rng.float());
-    // swells out of the hair above, then tapers to a tip: two tapered halves
-    put(ctx, taperedTube(pts.slice(0, 4), 0.006 * sc, 0.0125 * sc, { seg: 6, radial: 5 }), { bone: 'chest', color, mat, small: true });
-    put(ctx, taperedTube(pts.slice(3), 0.0125 * sc, 0.0025 * sc, { seg: 10, radial: 5 }), { bone: 'chest', color, mat, small: true });
+    const root = mix3(0x3d2a1e, 0x4e3524, rng.float());
+    const tip = mix3(0x5a402c, 0x6e4e36, rng.float());
+    // swells out of the hair above (dark root), then tapers to a lighter tip: two tapered halves
+    put(ctx, taperedTube(pts.slice(0, 4), 0.006 * sc, 0.011 * sc, { seg: 6, radial: 5 }), { bone: 'chest', color: root, mat, small: true });
+    put(ctx, taperedTube(pts.slice(3), 0.011 * sc, 0.002 * sc, { seg: 10, radial: 5 }), { bone: 'chest', color: tip, mat, small: true });
   }
 }
 
@@ -127,23 +141,26 @@ function aragornExtras(ctx: KindContext) {
   sculptBeard(ctx, { color: 0x2c1f16, color2: 0x3d2b1e, thick: devNum('beard', 0.022), cheeks: 0.35, chin: 0.01 });
 
   // ── the shirt: dark linen, long sleeves, open at the throat ──
-  sculptTorso(ctx, { color: PAL.shirt, mat: LINEN, inflate: 0.0066 * sc, hem: 0.15, sleeve: 2, neck: true, seams: true });
+  sculptTorso(ctx, { color: PAL.shirt, mat: LINEN, inflate: 0.0066 * sc, hem: 0.1, sleeve: 2, neck: true, seams: true });
 
   // ── the coat: knee-length, open down the front (vest and shirt show), long sleeves ──
-  sculptTorso(ctx, { color: PAL.coat, color2: PAL.coatTrim, mat: COAT, inflate: 0.0175 * sc, hem: 0.2, sleeve: 2, neck: false, seams: true, frontOpen: { top: 0.07 * sc, bottom: 0.055 * sc, y1: ny } });
+  sculptTorso(ctx, { color: PAL.coat, color2: PAL.coatTrim, mat: COAT, inflate: 0.0185 * sc, hem: 0.2, sleeve: 2, neck: false, seams: true, frontOpen: { top: 0.07 * sc, bottom: 0.03 * sc, y1: ny } });
   if (!devSkip('skirt')) {
-    const geo = skirtGeometry(P, rig, { top: hipY + 0.035 * sc, bottom: COAT_HEM, color: PAL.coat, color2: PAL.coatFray, mat: COAT, panels: [[-3.05, -0.5], [0.5, 3.05]], flare: 0.07 * sc, ragged: 0.008 * sc, tatter: 0.011 * sc, seed: spec.seed ?? 0 });
-    attachSkinned(ctx, geo, 'body', { small: false, name: 'skirt' });
+    const skirtTop = beltY - 0.03 * sc;
+    const skirt = { top: skirtTop, bottom: COAT_HEM * sc, color: PAL.coat, color2: PAL.coatFray, mat: COAT, flare: 0.07 * sc, ragged: 0.008 * sc, tatter: 0.011 * sc, seed: spec.seed ?? 0 };
+    // two long panels from the belt to the hem, the front open a little, plus a short patch closing the back vent down to 0.75 m
+    attachSkinned(ctx, skirtGeometry(P, rig, { ...skirt, panels: [[-3.05, -0.3], [0.3, 3.05]] }), 'body', { small: false, name: 'skirt' });
+    attachSkinned(ctx, skirtGeometry(P, rig, { ...skirt, bottom: 0.75 * sc, tatter: 0, panels: [[3.0, 3.28]] }), 'body', { small: false, name: 'skirt-back' });
   }
   // flat folded-back lapels (rolled, frayed edges) and a low collar at the nape
   {
     const zAt = (y: number) => torsoSection(P, y).zf + 0.021 * sc;
     const lap: V3[] = [];
-    const n = 5;
+    const n = 7;
     for (let i = 0; i <= n; i++) {
       const f = i / n;
-      const y = ny + 0.015 * sc - f * (ny - cy + 0.2 * sc);
-      lap.push([0.052 * sc + f * 0.085 * sc, y, zAt(y) - 0.004 * sc]);
+      const y = ny + 0.015 * sc - f * (ny - cy + 0.3 * sc);
+      lap.push([0.052 * sc + f * 0.095 * sc, y, zAt(y) - 0.004 * sc]);
     }
     s.mirrored(() => s.tube(lap, lap.map(() => 0.0125 * sc), { color: PAL.coatFray, color2: PAL.coat, colorNoise: 0.5, colorFreq: 60 / sc, mat: COAT, bone: 'chest', k: 0.006 * sc }));
     s.group('union', 0.01 * sc, () => {
@@ -223,32 +240,15 @@ function aragornExtras(ctx: KindContext) {
     seed: 2,
     weaponStart: 0.09,
   });
-  // tall boots: a wide folded cuff at the knee and two buckled straps round the calf
-  {
-    const kneeY = j.shin_l[1];
-    const top = P.ankleH + (kneeY - P.ankleH) * 0.95;
-    for (const sd of ['l', 'r'] as const) {
-      const k = j[`shin_${sd}`];
-      const f = j[`foot_${sd}`];
-      const at = (y: number): V3 => {
-        const t = (y - f[1]) / (k[1] - f[1]);
-        return [f[0] + (k[0] - f[0]) * t, y, f[2] + (k[2] - f[2]) * t];
-      };
-      const c0 = at(top - 0.02 * sc);
-      put(ctx, bandAt(c0, [0, 1, 0], 0.0665 * sc, 0.05 * sc, 14), { bone: `shin_${sd}`, color: 0x6a4630, mat: LEATHER, small: true });
-      for (const y of [top - 0.1 * sc, top - 0.175 * sc]) {
-        const c = at(y);
-        put(ctx, bandAt(c, [0, 1, 0], 0.0605 * sc, 0.022 * sc, 14), { bone: `shin_${sd}`, color: PAL.bootsTrim, mat: LEATHER, small: true });
-        put(ctx, new THREE.BoxGeometry(0.017 * sc, 0.021 * sc, 0.006 * sc).translate(c[0], c[1], c[2] + 0.064 * sc), { bone: `shin_${sd}`, color: PAL.steel, mat: 'metal', small: true });
-      }
-    }
-  }
+  // tall boots: warm brown mottled shafts to just under the coat hem, a folded cuff in a lighter tone, two buckled straps,
+  // a dark toe cap and a small heel (re-emitted over the kit's boot layer so the shaft colour wins at the shin)
+  tallBoots(ctx, { color: PAL.boots, color2: 0x6b4630, cuff: 0x7a5236, strap: PAL.bootsTrim, buckle: PAL.steel, toe: 0x35241a, top: 1.0, mat: LEATHER, metalMat: 'metal' });
 }
 
 export const aragornDef: KindDef = {
   label: 'Aragorn',
   height: 1.88,
-  build: { shoulders: 1.04, hips: 0.98, bulk: 1.02, chest: 1.0, armLength: 1.01, legLength: 1.0, headSize: 0.98, neck: 1.0, neckThick: 1.12, handSize: 1.05, footSize: 1.03, muscle: 0.3 },
+  build: { shoulders: 1.04, hips: 0.98, bulk: 1.02, chest: 1.0, armLength: 1.01, legLength: 1.0, headSize: 0.98, neck: 1.0, neckThick: 1.12, handSize: 1.05, footSize: 1.03, muscle: 0.15 },
   face: {
     jaw: 1.08,
     jawLength: 1.03,
@@ -273,7 +273,7 @@ export const aragornDef: KindDef = {
   beard: null,
   outfit: [
     { type: 'trousers', color: PAL.trousers },
-    { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 0.95, mat: LEATHER },
+    { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 1.0, mat: LEATHER },
     { type: 'jerkin', color: PAL.jerkin, color2: PAL.jerkinTrim, mat: LEATHER, length: -2.3 },
     { type: 'bracers', color: PAL.bracers, color2: PAL.bracersTrim, mat: TOOLED },
     { type: 'belt', color: PAL.belt, offset: BELT_UP, mat: LEATHER },

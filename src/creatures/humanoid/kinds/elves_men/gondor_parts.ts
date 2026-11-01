@@ -17,7 +17,7 @@ import { mergeAll, put, taperedTube, torsoSection } from './geo';
  * and attached as a skinned extra; the shoulder mantle is sculpted into the body.
  * `flareX` / `flareZ` are the extra fractions of the sheet's width / depth at the hem.
  */
-export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: number; mat?: SurfaceName | SurfaceSpec; length: number; ragged?: number; flareX: number; flareZ: number; mantle?: boolean; hood?: boolean }) {
+export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: number; mat?: SurfaceName | SurfaceSpec; length: number; ragged?: number; flareX: number; flareZ: number; mantle?: boolean; hood?: boolean; foldAmp?: number }) {
   const { P, rig, sculpt: s, spec } = ctx;
   const sc = P.s;
   const j = P.j;
@@ -47,7 +47,7 @@ export function addFlaredCloak(ctx: KindContext, o: { color: number; color2?: nu
     pos.setZ(i, zc + (pos.getZ(i) - zc) * (1 + o.flareZ * e));
     // long soft folds that deepen towards the hem
     const ang = Math.atan2(pos.getX(i), pos.getZ(i) - zc);
-    const fold = Math.sin(ang * 8) * 0.02 * sc * e;
+    const fold = Math.sin(ang * 8) * (o.foldAmp ?? 0.02) * sc * e;
     pos.setX(i, pos.getX(i) + Math.sin(ang) * fold);
     pos.setZ(i, pos.getZ(i) + Math.cos(ang) * fold);
   }
@@ -108,25 +108,47 @@ export function hornOfGondor(ctx: KindContext, o: { side: 1 | -1; mouthY: number
   put(ctx, bandAt(mid.p, mid.d, mid.r * 1.14, 0.022 * sc, 10), { bone: 'hips', color: o.bronze, mat: o.metalMat, small: true });
   const tip = at(0.05);
   put(ctx, bandAt(tip.p, tip.d, tip.r * 1.25, 0.03 * sc, 8), { bone: 'hips', color: o.silver, mat: o.metalMat, small: true });
-  // the strap: a leather loop from the mouth band up to the baldric
-  const m1 = at(0.9);
-  const strap: V3[] = [m1.p, [m1.p[0] + sd * 0.01 * sc, m1.p[1] + 0.08 * sc, m1.p[2] - 0.02 * sc], [m1.p[0] - sd * 0.02 * sc, m1.p[1] + 0.2 * sc, m1.p[2] - 0.045 * sc]];
-  put(ctx, taperedTube(strap, 0.006 * sc, 0.006 * sc, { seg: 6, radial: 4 }), { bone: 'hips', color: o.leather, mat: o.leatherMat, small: true });
-}
-
-/** a round belt medallion (bronze) at the front of the belt */
-export function medallion(ctx: KindContext, o: { y: number; z: number; r: number; color: number; mat: SurfaceName | SurfaceSpec }) {
-  const g = new THREE.CylinderGeometry(o.r, o.r * 1.05, 0.006 * ctx.P.s, 14).rotateX(Math.PI / 2).translate(0, o.y, o.z);
-  put(ctx, g, { bone: 'hips', color: o.color, mat: o.mat, small: true });
-  const r = new THREE.TorusGeometry(o.r * 0.62, 0.0022 * ctx.P.s, 4, 12).translate(0, o.y, o.z + 0.0045 * ctx.P.s);
-  put(ctx, r, { bone: 'hips', color: o.color, mat: o.mat, small: true });
 }
 
 /**
- * The White Tree of Gondor as tapered capsules (a trunk, roots and a fan of branches with twigs)
- * laid on the front of the torso at height `cy`; `h` is the tree's height, `thin` scales the stroke radius.
+ * A thick fur collar over the shoulders and upper chest/back (a copy of garments.sculptFurCollar with a finer
+ * colour noise, a base/tip two-tone and a closed throat): the shared one's 40 / sc colour noise reads as coarse
+ * blotches at game distance.
  */
-export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number; thin: number }) {
+export function furMantle(ctx: KindContext, o: { color: number; tip: number; thick?: number; drop?: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  const y0 = P.j.upperarm_l[1] - (o.drop ?? 0.1) * sc;
+  s.group('union', 0.006 * sc, () => {
+    emitParts(s, parts, ['trap', 'chest', 'back', 'deltoid', 'ribs'], {
+      color: o.color,
+      color2: o.tip,
+      colorNoise: 0.3,
+      colorFreq: 220 / sc,
+      mat: 'fur',
+      k: 0.05 * sc,
+      noise: { amp: 0.006 * sc, freq: 60 / sc, type: 'fbm', octaves: 3 },
+      inflate: (o.thick ?? 0.032) * sc,
+    });
+    slab(s, y0, null, 0.02 * sc);
+  });
+}
+
+/** a round belt medallion (bronze) at the front of the belt */
+export function medallion(ctx: KindContext, o: { y: number; z: number; r: number; color: number; mat: SurfaceName | SurfaceSpec; bone?: string }) {
+  const g = new THREE.CylinderGeometry(o.r, o.r * 1.05, 0.006 * ctx.P.s, 14).rotateX(Math.PI / 2).translate(0, o.y, o.z);
+  put(ctx, g, { bone: o.bone ?? 'hips', color: o.color, mat: o.mat, small: true });
+  const r = new THREE.TorusGeometry(o.r * 0.62, 0.0022 * ctx.P.s, 4, 12).translate(0, o.y, o.z + 0.0045 * ctx.P.s);
+  put(ctx, r, { bone: o.bone ?? 'hips', color: o.color, mat: o.mat, small: true });
+}
+
+/**
+ * The White Tree of Gondor as thin tapered capsules laid on the torso front at height `cy`: one contiguous
+ * trunk that forks into mirrored branches (three pairs and a leader) with a short twig on the outer pairs.
+ * `h` is the tree's height, `thin` scales the stroke radius, `roots` adds the root flare at the foot.
+ */
+export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: number; mat: SurfaceName | SurfaceSpec; inflate: number; thin: number; roots?: boolean }) {
   const { P } = ctx;
   const h = o.h;
   const base = o.cy - h * 0.5;
@@ -140,34 +162,34 @@ export function treeEmblem(ctx: KindContext, o: { cy: number; h: number; color: 
   const r = (v: number) => v * h * 0.1 * o.thin;
   const geos: THREE.BufferGeometry[] = [];
   const stroke = (pts: [number, number][], r0: number, r1: number) => geos.push(taperedTube(pts.map(([x, y]) => surf(x, y)), r(r0), r(r1), { seg: pts.length, radial: 4 }));
-  // trunk and roots
-  stroke([[0, base + 0.03 * h], [0, base + 0.2 * h], [0, base + 0.42 * h]], 0.2, 0.1);
-  for (const sx of [-1, 1]) stroke([[sx * 0.01 * h, base + 0.07 * h], [sx * 0.07 * h, base + 0.03 * h], [sx * 0.16 * h, base - 0.005 * h]], 0.12, 0.04);
-  stroke([[0, base + 0.06 * h], [0, base + 0.01 * h], [0, base - 0.02 * h]], 0.1, 0.04);
-  // branches: seven fanned from the top of the trunk
-  const fan = [-1.18, -0.82, -0.46, 0, 0.46, 0.82, 1.18];
-  fan.forEach((a, k) => {
-    const sx = Math.sin(a);
-    const cx = Math.cos(a);
-    const ys = base + (0.34 + 0.05 * Math.abs(a)) * h;
-    const L = h * (0.5 - 0.09 * Math.abs(a));
-    const mid: [number, number] = [sx * L * 0.5 * 0.95, ys + cx * L * 0.5];
-    const tip: [number, number] = [sx * L * 0.95, ys + cx * L];
-    stroke([[sx * 0.02 * h, ys], mid, tip], 0.1, 0.035);
-    if (Math.abs(a) < 0.5) {
-      // a twig either side near the tip
-      for (const t of [-1, 1]) stroke([mid, [mid[0] + (sx + t * 0.7) * L * 0.2, mid[1] + (cx + t * 0.1) * L * 0.22]], 0.05, 0.02);
+  // trunk (continuous from the foot to the fork) and the leader
+  stroke([[0, base], [0, base + 0.2 * h], [0, base + 0.4 * h]], 0.2, 0.12);
+  stroke([[0, base + 0.4 * h], [0, base + 0.7 * h], [0, base + 0.96 * h]], 0.12, 0.03);
+  if (o.roots) for (const sx of [-1, 1]) stroke([[0, base + 0.05 * h], [sx * 0.07 * h, base + 0.01 * h], [sx * 0.15 * h, base - 0.01 * h]], 0.1, 0.03);
+  // three mirrored branch pairs, each leaving the trunk higher and leaning less
+  const pairs: [number, number, number][] = [[0.4, 1.12, 0.46], [0.5, 0.8, 0.42], [0.6, 0.44, 0.36]];
+  for (const [yf, lean, len] of pairs) {
+    for (const sx of [-1, 1]) {
+      const y0 = base + yf * h;
+      const dx = Math.sin(lean) * len * h;
+      const dy = Math.cos(lean) * len * h;
+      const mid: [number, number] = [sx * dx * 0.5, y0 + dy * 0.5];
+      const tip: [number, number] = [sx * dx, y0 + dy];
+      stroke([[0, y0], mid, tip], 0.1, 0.03);
+      if (lean > 0.6) stroke([mid, [mid[0] + sx * 0.1 * h, mid[1] + 0.08 * h]], 0.05, 0.02);
     }
-  });
+  }
   put(ctx, mergeAll(geos), { bone: 'chest', color: o.color, mat: o.mat, small: true });
 }
 
 /**
- * The Minas Tirith helm's two tall feathered wings: seven overlapping flattened-ellipsoid feathers per
- * side, their wide faces turned forward and out (so they show in the front and back views, not edge-on),
- * fanned inside the wing plane and splayed ~0.3 rad from the wing-root plates above the temples
- * (head-unit x = ±0.325); pewter with a darker root and a lighter tip. The shared helm's own wings are
- * turned down to a stub (`wing: 0.02`) when these are used.
+ * The Minas Tirith helm's two feathered wings (sheet: in the front and back views a narrow, near-vertical crest
+ * hugging the side of the helm, its tip only a few cm outside the helm's width; in profile the broad face, a fan
+ * of feathers sweeping up and back). So each wing is eight flattened-ellipsoid feathers in a plane parallel to the
+ * side of the head (faces pointing left/right), splayed ~7 degrees outward, fanned in the side plane from nearly
+ * vertical to nearly horizontal-back, each a little offset sideways so they overlap like layers. Feather
+ * half-width is a fraction of the head height `u`. The shared helm's own wings are turned down to a stub
+ * (`wing: 0.02`) when these are used. Steel with a dark root and a lighter tip.
  */
 export function helmWings(ctx: KindContext, o: { root: number; tip: number; mat: SurfaceName | SurfaceSpec }) {
   const { P } = ctx;
@@ -175,21 +197,24 @@ export function helmWings(ctx: KindContext, o: { root: number; tip: number; mat:
   const geos: THREE.BufferGeometry[] = [];
   const rootC = new THREE.Color().setHex(o.root, THREE.SRGBColorSpace);
   const tipC = new THREE.Color().setHex(o.tip, THREE.SRGBColorSpace);
-  const feathers = 5;
+  const feathers = 8;
+  const splay = 0.12;
   let y0 = Infinity;
   let y1 = -Infinity;
   for (const sx of [1, -1]) {
-    const root = P.h(sx * 0.325, 0.08, 0.02);
-    // wing-plane normal: the wide face looks forward and outward (about 0.65 rad from the lateral axis)
-    const n = new THREE.Vector3(sx * Math.cos(0.65), 0, Math.sin(0.65)).normalize();
-    const base = new THREE.Vector3(sx * Math.sin(0.3), Math.cos(0.3), -0.1).normalize();
+    const root = P.h(sx * 0.335, 0.02, -0.08);
+    const n = new THREE.Vector3(sx * Math.cos(splay), 0, Math.sin(splay) * 0.2).normalize();
     for (let k = 0; k < feathers; k++) {
-      const fan = (k - (feathers - 1) / 2) * 0.115;
-      const dir = base.clone().applyAxisAngle(n, fan).normalize();
-      const L = (1.45 - 0.06 * Math.abs(k - 3)) * u;
+      const f = k / (feathers - 1);
+      // angle from straight up, toward the back (-z): the top feather leans a little forward
+      const phi = -0.05 + 1.2 * f;
+      const dir = new THREE.Vector3(sx * Math.sin(splay) * (1 - 0.5 * f), Math.cos(phi), -Math.sin(phi)).normalize();
+      const L = (1.55 - 0.5 * f) * u;
+      // slight inward curl at the tips: the ellipsoid is straight, so lean the whole feather a touch inward
       const w = new THREE.Vector3().crossVectors(dir, n).normalize();
-      const m = new THREE.Matrix4().makeBasis(n.clone().multiplyScalar(0.01 * u), dir.clone().multiplyScalar(L / 2), w.multiplyScalar(0.035));
-      m.setPosition(root[0] + dir.x * L * 0.46, root[1] + dir.y * L * 0.46, root[2] + dir.z * L * 0.46);
+      const m = new THREE.Matrix4().makeBasis(n.clone().multiplyScalar(0.02 * u), dir.clone().multiplyScalar(L / 2), w.multiplyScalar(0.095 * u));
+      const lift = sx * 0.012 * u * (feathers - 1 - k);
+      m.setPosition(root[0] + dir.x * L * 0.5 + lift, root[1] + dir.y * L * 0.5, root[2] + dir.z * L * 0.5);
       geos.push(new THREE.SphereGeometry(1, 6, 4).applyMatrix4(m));
       y0 = Math.min(y0, root[1]);
       y1 = Math.max(y1, root[1] + dir.y * L);
@@ -208,29 +233,45 @@ export function helmWings(ctx: KindContext, o: { root: number; tip: number; mat:
   });
 }
 
-/** boots in the captain's brown (the kit boot layer is the soldiers' dark brown), with two buckled straps on each calf */
-export function captainBoots(ctx: KindContext, o: { color: number; strap: number; buckle: number; mat: SurfaceName | SurfaceSpec; metalMat: SurfaceName | SurfaceSpec }) {
+/**
+ * Tall boots re-emitted over the kit's boot layer (a little thicker, so they win): a mottled shaft up to `top`
+ * (fraction of ankle -> knee), a folded cuff band of a different tone, two buckled straps, a dark squared toe
+ * cap and a small heel. `calf` widens the calf (0.15 = 15 %).
+ */
+export function tallBoots(ctx: KindContext, o: { color: number; color2?: number; cuff: number; strap: number; buckle: number; toe: number; top?: number; calf?: number; mat: SurfaceName | SurfaceSpec; metalMat: SurfaceName | SurfaceSpec }) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
+  const j = P.j;
   const parts = anatomyParts(P);
-  const kneeY = P.j.shin_l[1];
-  const top = P.ankleH + (kneeY - P.ankleH) * 0.92;
+  const kneeY = j.shin_l[1];
+  const top = P.ankleH + (kneeY - P.ankleH) * (o.top ?? 0.92);
+  const mottle = o.color2 !== undefined ? { color2: o.color2, colorNoise: 0.5, colorFreq: 70 / sc } : {};
   s.group('union', 0.0035 * sc, () => {
-    emitParts(s, parts, ['foot', 'toes'], { color: o.color, mat: o.mat, inflate: 0.0095 * sc, k: 0.03 * sc });
-    emitParts(s, parts, ['shin', 'calf'], { color: o.color, mat: o.mat, inflate: 0.0115 * sc, k: 0.03 * sc });
+    emitParts(s, parts, ['foot', 'toes'], { color: o.color, mat: o.mat, inflate: 0.0105 * sc, k: 0.03 * sc, ...mottle });
+    emitParts(s, parts, ['shin', 'calf'], { color: o.color, mat: o.mat, inflate: (0.0125 + 0.05 * (o.calf ?? 0)) * sc, k: 0.03 * sc, ...mottle });
     slab(s, null, top, 0.006 * sc, true);
   });
+  // squared, darker toe cap and a small heel
+  s.mirrored(() => {
+    const f = j.foot_l;
+    const t = j.toe_l;
+    s.ellipsoid([t[0], t[1] + 0.008 * sc, t[2] + 0.028 * sc], [0.046 * sc * P.build.footSize, 0.03 * sc, 0.05 * sc], { color: o.toe, mat: o.mat, bone: 'toe_l', k: 0.01 * sc });
+    s.box([f[0], 0.014 * sc, f[2] - 0.034 * sc], [0.04 * sc, 0.014 * sc, 0.036 * sc], 0.008 * sc, { color: o.toe, mat: o.mat, bone: 'foot_l', k: 0.006 * sc });
+  });
+  const wide = 1 + (o.calf ?? 0);
   for (const sd of ['l', 'r'] as const) {
-    const k = P.j[`shin_${sd}`];
-    const f = P.j[`foot_${sd}`];
+    const k = j[`shin_${sd}`];
+    const f = j[`foot_${sd}`];
     const at = (y: number): V3 => {
       const t = (y - f[1]) / (k[1] - f[1]);
       return [f[0] + (k[0] - f[0]) * t, y, f[2] + (k[2] - f[2]) * t];
     };
-    for (const y of [top - 0.055 * sc, top - 0.135 * sc]) {
+    // the folded cuff
+    put(ctx, bandAt(at(top - 0.028 * sc), [0, 1, 0], 0.0665 * sc * wide, 0.05 * sc, 14), { bone: `shin_${sd}`, color: o.cuff, mat: o.mat, small: true });
+    for (const y of [top - 0.1 * sc, top - 0.175 * sc]) {
       const c = at(y);
-      put(ctx, bandAt(c, [0, 1, 0], 0.0585 * sc, 0.022 * sc, 12), { bone: `shin_${sd}`, color: o.strap, mat: o.mat, small: true });
-      put(ctx, new THREE.BoxGeometry(0.016 * sc, 0.02 * sc, 0.006 * sc).translate(c[0], c[1], c[2] + 0.062 * sc), { bone: `shin_${sd}`, color: o.buckle, mat: o.metalMat, small: true });
+      put(ctx, bandAt(c, [0, 1, 0], 0.0605 * sc * wide, 0.022 * sc, 14), { bone: `shin_${sd}`, color: o.strap, mat: o.mat, small: true });
+      put(ctx, new THREE.BoxGeometry(0.017 * sc, 0.021 * sc, 0.006 * sc).translate(c[0], c[1], c[2] + 0.064 * sc * wide), { bone: `shin_${sd}`, color: o.buckle, mat: o.metalMat, small: true });
     }
   }
 }
