@@ -84,7 +84,7 @@ function helmet(ctx: KindContext, b: number) {
   const trim = 0x1c1b1c;
   switch (b) {
     case 0:
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_POINTED, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 18, neck: 'plates', tilt: -0.1 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_POINTED, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.1 });
       hornPair(ctx, { color: 0xcbc3ac, length: 0.8, curl: 0.6, y: 0.18 });
       break;
     case 1: {
@@ -98,13 +98,13 @@ function helmet(ctx: KindContext, b: number) {
       break;
     }
     case 2: {
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_ROUND, finial: null, ridge: false, cheeks: true, nasal: true, rivets: 20, neck: 'plates', tilt: -0.08 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_ROUND, finial: null, ridge: false, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.08 });
       const u = P.headH;
       put(ctx, box(0.04 * u, 0.3 * u, 0.8 * u, [0, 0.0, 0]).translate(...P.h(0, 0.64, -0.08)), { bone: 'head', color: trim, mat: STEEL, small: true });
       break;
     }
     default:
-      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_CONICAL, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 18, neck: 'mail', tilt: -0.08 });
+      domeHelm(ctx, { color: dark, trim, trimMat: STEEL, mat: STEEL, profile: DOME_CONICAL, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 8, neck: 'mail', tilt: -0.08 });
   }
 }
 
@@ -146,8 +146,8 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   boneNecklace(ctx, { rng, n: 6 });
   // ── armour tiers: spiked pauldrons, then greaves / bracer spikes / the chest plate
   if (A >= 0.25) {
-    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 5, spikes: 7 });
-    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 5, spikes: 7 });
+    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 7 });
+    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 4, spikes: 7 });
   }
   if (ctx.helmet) helmet(ctx, b);
   // ── hair: long, loose, dark
@@ -206,7 +206,7 @@ export const gundabadDef: KindDef = {
   palette: GUNDABAD_PALETTE,
   anim: { hunch: 0.25, swagger: 0.5, aggression: 0.85, stance: devNum('stance', 1.25), lean: devNum('lean', 0.7) },
   variation: { height: 0.04, bulk: 0.08, skin: 0.35 },
-  detail: { res: devNum('res', 0.072), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
+  detail: { res: devNum('res', 0.078), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.75 },
   extras: gundabadExtras,
 };

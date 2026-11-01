@@ -118,9 +118,9 @@ function helmet(ctx: KindContext, look: Look['helm']) {
     case 'cap':
       return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: [[0.38, -0.05], [0.385, 0.02], [0.36, 0.14], [0.29, 0.26], [0.2, 0.36], [0.1, 0.42], [0.0, 0.45]], band: false, ridge: false, cheeks: false, rivets: 0, nasal: true, tilt: -0.05 });
     case 'dome':
-      return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: DOME_ROUND, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 14, neck: 'plates', tilt: -0.06 });
+      return domeHelm(ctx, { color: c, trim, trimMat: IRON, mat: IRON, profile: DOME_ROUND, finial: 'spike', ridge: true, cheeks: true, nasal: true, rivets: 6, neck: 'plates', tilt: -0.06 });
     case 'pointed':
-      return domeHelm(ctx, { color: shade(c, 0.85), trim, trimMat: IRON, mat: IRON, profile: DOME_POINTED, finial: 'spike', ridge: false, cheeks: true, nasal: true, rivets: 16, neck: 'plates', tilt: -0.08 });
+      return domeHelm(ctx, { color: shade(c, 0.85), trim, trimMat: IRON, mat: IRON, profile: DOME_POINTED, finial: 'spike', ridge: false, cheeks: true, nasal: true, rivets: 8, neck: 'plates', tilt: -0.08 });
     case 'band': {
       // an iron band with spikes round the head (a helmet allowed, but this orc wears just the band)
       const { P } = ctx;
@@ -220,7 +220,7 @@ export const orcDef: KindDef = {
   palette: ORC_PALETTE,
   anim: { hunch: devNum('hunch', 0.35), swagger: 0.6, aggression: 0.75, stance: devNum('stance', 1.25), cadence: 1.1, lean: devNum('lean', 0.85) },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
-  detail: { res: devNum('res', 0.056), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
+  detail: { res: devNum('res', 0.058), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.5 },
   extras: orcExtras,
 };
