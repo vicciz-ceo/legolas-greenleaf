@@ -96,7 +96,7 @@ const BELT_Y = 0.745;
 const BELT_RAISE = (BELT_Y - HIP_Y) / SC0 - 0.07;
 /** mail skirt hem ~0.40 m (sheet 0.42 m) and boot tops ~0.29 m (sheet 0.30 m) */
 const SKIRT_LEN = 0.57;
-const SKIRT_GROW = 0.012;
+const SKIRT_GROW = 0.022;
 const HEM_Y = HIP_Y - (HIP_Y - KNEE_Y) * SKIRT_LEN * 1.1;
 const BOOT_LEN = (0.29 - ANKLE_Y) / (KNEE_Y - ANKLE_Y);
 /** where the crossed straps meet on the chest/back (sheet ~1.06 m front, ~1.0 m back) */
@@ -480,7 +480,7 @@ function gimliBody(ctx: KindContext) {
   // everything sculpted: snapshot the surface for the gear that sits on it
   const proj = makeProjector(s, { min: [-0.45, 0.35, -0.35], max: [0.45, 1.3, 0.4] });
   // ── hair and beard ──
-  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.74 * sc, count: 230, width: 0.05, wave: 0.9, wild: 0.8, comb: 0.9, front: 0.27, back: -0.4, gravity: 3.5, segments: 5 }, new Rng(0x517));
+  if (!devNum('nohair', 0)) addHairdo(ctx, { color: C.hair, tip: C.hairTip, deep: mix(C.hair, 0x000000, 0.3), length: 0.74 * sc, count: 200, width: 0.05, wave: 0.9, wild: 0.8, comb: 0.9, front: 0.27, back: -0.4, gravity: 3.5, segments: 5 }, new Rng(0x517));
   if (!devNum('nobeard', 0)) {
     addBeard(
       ctx,
@@ -532,7 +532,7 @@ function gimliBody(ctx: KindContext) {
 export const gimliDef: KindDef = {
   label: 'Gimli',
   height: HEIGHT,
-  build: { shoulders: 1.46, hips: 2.2, bulk: 1.3, belly: 0.4, chest: 1.5, armLength: 1.0, legLength: LEG_LENGTH, headSize: HEAD_SIZE, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: FOOT_SIZE, muscle: 0.55 },
+  build: { shoulders: 1.46, hips: 2.2, bulk: 1.3, belly: 0.5, chest: 1.7, armLength: 1.0, legLength: LEG_LENGTH, headSize: HEAD_SIZE, neck: 0.4, neckThick: 1.4, handSize: 1.32, footSize: FOOT_SIZE, muscle: 0.55 },
   face: {
     jaw: 1.2, jawLength: 0.95, chin: 0.9, brow: 2.0, cheekbones: 1.2,
     nose: { length: 1.2, width: 1.5, bridge: 1.1, hook: 0.25, tip: 1.4 },
@@ -567,7 +567,7 @@ export const gimliDef: KindDef = {
   anim: { swagger: 0.5, aggression: 0.55, stance: 1.2, cadence: 1.05, armSwing: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
   // named character: a fine face region within the 45k budget
-  detail: { res: devNum('res', 0.034), headRes: devNum('headRes', 0.0095), faceRes: devNum('faceRes', 0.0056), refine: 1, hands: false, detailScale: devNum('ds', 0.55) },
+  detail: { res: devNum('res', 0.037), headRes: devNum('headRes', 0.0095), faceRes: devNum('faceRes', 0.0056), refine: 1, hands: false, detailScale: devNum('ds', 0.55) },
   sfx: { voice: 'dwarf', weight: 0.7 },
   extras: gimliExtras,
 };
