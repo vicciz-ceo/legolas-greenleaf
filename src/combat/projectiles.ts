@@ -563,6 +563,7 @@ export function createProjectiles(ctx: GameContext): ProjectilesExt {
     _dir.copy(a.vel).normalize();
     const amount = a.damage * hit.multiplier;
     const armor = hit.zone === 'armor';
+    const hp0 = c.hp;
     c.takeDamage({
       amount,
       type: 'arrow',
@@ -573,6 +574,13 @@ export function createProjectiles(ctx: GameContext): ProjectilesExt {
       knockback: a.speed * 0.02,
       stagger: hit.zone === 'head' && amount > c.maxHp * 0.3,
     });
+    if (!armor && c.team === 'player' && c.alive && c.hp >= hp0) {
+      // absorbed by the player's i-frames (dash / revive): no blood, no flesh hit, no stuck arrow;
+      // the arrow whooshes through (a.hitIds already stops a second hit on the same body)
+      ctx.audio.play('arrow_whoosh', { pos: hit.point, volume: 0.6, pitch: 1.2 });
+      a.pos.copy(hit.point).addScaledVector(_dir, 0.05);
+      return false;
+    }
     const blood = ((c as Combatant & { bloodKind?: BloodKind }).bloodKind ?? 'red') as BloodKind;
     if (armor) {
       ctx.fx.sparks(hit.point, hit.normal ?? _v.copy(_dir).negate(), 8);

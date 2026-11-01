@@ -68,7 +68,7 @@ export const BINDINGS: BindingRow[] = [
   { action: 'Aim', kbm: `${mouse('mouse_r')} Hold`, pad: `${padWide('LT')} Hold`, touch: 'Aim button' },
   { action: 'Twin knives', kbm: `${key('E')}${sep}${key('V')}`, pad: pad('X', 'x'), touch: 'Knives button' },
   { action: 'Jump (double jump)', kbm: key('Space'), pad: pad('A', 'a'), touch: 'Jump button' },
-  { action: 'Dash', kbm: `${key('Ctrl')}${sep}${key('C')}`, pad: pad('B', 'b'), touch: 'Dash button' },
+  { action: 'Dash', kbm: key('C'), pad: pad('B', 'b'), touch: 'Dash button' },
   { action: 'Sprint', kbm: `${key('Shift')} Hold`, pad: `${padWide('L3')}`, touch: 'Pull stick far' },
   { action: 'Focus', kbm: `${key('Q')} Hold`, pad: `${padWide('LB')} Hold`, touch: 'Focus button' },
   { action: 'Interact', kbm: key('F'), pad: pad('Y', 'y'), touch: 'Interact button' },
