@@ -195,15 +195,15 @@ export function warFootWraps(ctx: KindContext) {
   const parts = anatomyParts(P);
   const top = greaveBottom(ctx) + 0.04 * sc;
   s.group('union', 0.006 * sc, () => {
-    emitParts(s, parts, ['foot', 'toes'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.03 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
-    emitParts(s, parts, ['shin', 'calf'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.03 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
+    emitParts(s, parts, ['foot', 'toes'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.02 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
+    emitParts(s, parts, ['shin', 'calf'], { color: TROLL_PAL.wrap, mat: WRAP, inflate: 0.02 * sc, k: 0.03 * sc, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' } });
     s.mirrored(() => {
       const f = j.foot_l;
       const t = j.toe_l;
       const wrap = { color: TROLL_PAL.wrap, mat: WRAP, noise: { amp: 0.004 * sc, freq: 50 / sc, type: 'ridged' as const } };
-      s.cone([f[0], f[1] + 0.02 * sc, f[2]], [t[0] + 0.05 * sc, t[1] + 0.03 * sc, t[2] + 0.07 * sc + 0.1 * (t[2] - f[2])], 0.094 * sc + 0.03 * sc, 0.075 * sc + 0.03 * sc, { ...wrap, bone: 'foot_l', bone2: 'toe_l', blend: [0.45, 0.95], k: 0.04 * sc });
-      s.cone([j.shin_l[0], j.shin_l[1] - 0.2 * sc, j.shin_l[2] - 0.03 * sc], [f[0], f[1] + 0.04 * sc, f[2] + 0.01 * sc], 0.095 * sc * P.build.bulk + 0.03 * sc, 0.074 * sc * P.build.bulk + 0.03 * sc, { ...wrap, bone: 'shin_l', bone2: 'foot_l', blend: [0.4, 1], k: 0.07 * sc });
-      s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.12 * sc, j.shin_l[2] - 0.04 * sc], [0.095 * sc * P.build.bulk + 0.03 * sc, 0.13 * sc, 0.1 * sc * P.build.bulk + 0.03 * sc], { ...wrap, bone: 'shin_l', k: 0.07 * sc });
+      s.cone([f[0], f[1] + 0.02 * sc, f[2]], [t[0] + 0.05 * sc, t[1] + 0.02 * sc, t[2] + 0.07 * sc + 0.1 * (t[2] - f[2])], 0.094 * sc + 0.02 * sc, 0.075 * sc + 0.02 * sc, { ...wrap, bone: 'foot_l', bone2: 'toe_l', blend: [0.45, 0.95], k: 0.04 * sc });
+      s.cone([j.shin_l[0], j.shin_l[1] - 0.2 * sc, j.shin_l[2] - 0.03 * sc], [f[0], f[1] + 0.04 * sc, f[2] + 0.01 * sc], 0.07 * sc * P.build.bulk + 0.02 * sc, 0.052 * sc * P.build.bulk + 0.02 * sc, { ...wrap, bone: 'shin_l', bone2: 'foot_l', blend: [0.4, 1], k: 0.07 * sc });
+      s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.12 * sc, j.shin_l[2] - 0.04 * sc], [0.08 * sc * P.build.bulk + 0.02 * sc, 0.13 * sc, 0.085 * sc * P.build.bulk + 0.02 * sc], { ...wrap, bone: 'shin_l', k: 0.07 * sc });
     });
     s.plane([0, 1, 0], top, { op: 'intersect', k: 0.012 * sc });
     s.plane([0, 1, 0], top, { op: 'paint', seam: 0, k: 0.002 });
@@ -213,7 +213,7 @@ export function warFootWraps(ctx: KindContext) {
 /** boot-top height: the wrapped feet end here and the greaves start (sheet: about 0.45 m) */
 function greaveBottom(ctx: KindContext): number {
   const { P } = ctx;
-  return P.ankleH + 0.08 * P.s;
+  return P.ankleH + 0.2 * P.s;
 }
 
 export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
@@ -222,7 +222,7 @@ export function warGreaves(ctx: KindContext, gear: GearFn, proj: Projector) {
   const j = P.j;
   const y0 = greaveBottom(ctx) + 0.02 * sc;
   // from just under the wraps to well up under the kilt hem (sheet: greaves reach about the knee)
-  const y1 = j.shin_l[1] + 0.12 * sc;
+  const y1 = j.shin_l[1] + 0.03 * sc;
   for (const sd of ['l', 'r'] as const) {
     const f = V(...j[`foot_${sd}`]);
     const kn = V(...j[`shin_${sd}`]);

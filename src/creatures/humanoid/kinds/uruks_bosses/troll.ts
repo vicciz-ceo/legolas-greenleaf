@@ -61,7 +61,7 @@ const TROLL_FACE = {
 /** belt height (m): just above the hip joints for the cave troll, a hand's breadth higher for the war troll (sheet rows: cave 2.2 m,
  *  war 2.74 m over a leg of 2.0 / 2.25 m) */
 function beltHeight(ctx: KindContext, variant: TrollVariant): number {
-  return ctx.P.j.thigh_l[1] + (variant === 'war' ? 0.1 : 0.08) * ctx.P.s;
+  return ctx.P.j.thigh_l[1] + (variant === 'war' ? 0.17 : 0.0) * ctx.P.s;
 }
 
 function trollBody(ctx: KindContext, variant: TrollVariant) {
@@ -114,10 +114,10 @@ function trollBody(ctx: KindContext, variant: TrollVariant) {
     // thighs / calves (thick: the sheet legs are pillars)
     s.mirrored(() => {
       // (centred below the hip joint: a thigh mass reaching above it swings forward with the leg and pokes through the kilt)
-      s.ellipsoid([j.thigh_l[0] + 0.02 * sc, (j.thigh_l[1] + j.shin_l[1]) / 2 - 0.08 * sc, 0.02 * sc], [0.15 * sc * g, 0.19 * sc, 0.15 * sc * g], { bone: 'thigh_l', k: 0.08 * sc });
-      s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.14 * sc, j.shin_l[2] - 0.04 * sc], [0.115 * sc * g, 0.16 * sc, 0.12 * sc * g], { bone: 'shin_l', k: 0.07 * sc });
+      s.ellipsoid([j.thigh_l[0] + 0.02 * sc, (j.thigh_l[1] + j.shin_l[1]) / 2 - 0.08 * sc, 0.02 * sc], [0.105 * sc * g, 0.19 * sc, 0.105 * sc * g], { bone: 'thigh_l', k: 0.08 * sc });
+      s.ellipsoid([j.shin_l[0], j.shin_l[1] - 0.14 * sc, j.shin_l[2] - 0.04 * sc], [0.08 * sc * g, 0.16 * sc, 0.085 * sc * g], { bone: 'shin_l', k: 0.07 * sc });
       // lower leg: a thick, nearly straight column from the knee to the ankle (the sheets' legs are pillars, not stubs)
-      s.cone([j.shin_l[0], j.shin_l[1] - 0.2 * sc, j.shin_l[2] - 0.03 * sc], [j.foot_l[0], j.foot_l[1] + 0.04 * sc, j.foot_l[2] + 0.01 * sc], 0.095 * sc * g, 0.074 * sc * g, { bone: 'shin_l', bone2: 'foot_l', blend: [0.4, 1], k: 0.07 * sc });
+      s.cone([j.shin_l[0], j.shin_l[1] - 0.2 * sc, j.shin_l[2] - 0.03 * sc], [j.foot_l[0], j.foot_l[1] + 0.04 * sc, j.foot_l[2] + 0.01 * sc], 0.07 * sc * g, 0.052 * sc * g, { bone: 'shin_l', bone2: 'foot_l', blend: [0.4, 1], k: 0.07 * sc });
     });
   });
 }
@@ -215,7 +215,7 @@ function trollExtras(ctx: KindContext) {
     ankleShackle(ctx, gear, proj);
     trollBelt(ctx, gear, proj, beltY, { width: bucket === 1 ? 0.095 : 0.085 });
     // the club hangs at the side, shaft ~25 deg off vertical, with a big knobbly head (sheet: 2.5 m overall)
-    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.66, 1.1], out: bucket === 1 ? 24 : 28, fwd: bucket === 1 ? 10 : 6 });
+    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.58, 1.1], out: bucket === 1 ? 24 : 28, fwd: bucket === 1 ? 10 : 6 });
   } else {
     // all war metal goes through one sink that adds the rust patches
     const metal = rustGear(gear);
@@ -238,15 +238,15 @@ function trollExtras(ctx: KindContext) {
     }
     caveWarts(ctx, gear, proj, bucket + 10, 0.04);
     // the warhammer: a heavier haft, hanging at the side like the club
-    fitHeldWeapon(ctx, 'hand_r', ['warhammer'], { scale: [1, 0.75, 1], out: 22, fwd: 6 });
+    fitHeldWeapon(ctx, 'hand_r', ['warhammer'], { scale: [1, 0.62, 1], out: 22, fwd: 6 });
   }
 }
 
 export const trollKind: KindDef = {
   label: 'Troll',
   // crown height of the 4.5 m sheets once the hunch has taken its share (the war troll's helm rises to 4.95 m)
-  height: 4.52,
-  build: { shoulders: 1.6, hips: 1.45, bulk: 1.35, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 1.1, headSize: 1.38, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 2.0, footSize: 1.0, muscle: 0.6 },
+  height: 4.4,
+  build: { shoulders: 1.6, hips: 1.55, bulk: 1.35, belly: 0.5, chest: 1.1, armLength: 1.3, legLength: 1.1, headSize: 1.38, neck: 0.85, neckThick: 0.9, hunch: 0.3, handSize: 2.0, footSize: 1.0, muscle: 0.6 },
   face: TROLL_FACE,
   skin: { color: TROLL_PAL.skin, color2: TROLL_PAL.skin2, blotch: 0.45, blemish: 0.5, scars: 3, warts: 0.38, wrinkles: 1.0, lips: TROLL_PAL.lips, brows: 0x3a3a2c, surface: 'skin_troll', scatter: TROLL_PAL.scatter },
   eyes: { color: TROLL_PAL.eyes, glow: 0.2, sclera: 0xa8a070 },
@@ -254,13 +254,13 @@ export const trollKind: KindDef = {
   hair: null,
   // knee-length ragged kilt on a broad leather belt at the waist (both sheets)
   outfit: [
-    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.78, mat: 'rags', thickness: 0.2, tatter: 0.03 },
+    { type: 'skirt', color: TROLL_PAL.kilt, color2: TROLL_PAL.kilt2, length: 0.78, mat: 'rags', thickness: 0.14, tatter: 0.03 },
   ],
   armor: [],
   weapons: { right: 'club' },
   palette: TROLL_PAL,
   sfx: { voice: 'troll', roar: 'troll_roar', grunt: 'troll_hit', footstep: 'troll_step', weight: 1 },
-  anim: { hunch: 0.95, swagger: 0.7, aggression: 0.8, stance: 1.3, cadence: 0.9, armSwing: 1.2 },
+  anim: { hunch: 0.4, swagger: 0.7, aggression: 0.4, stance: 1.15, cadence: 0.9, armSwing: 1.2 },
   variation: { height: 0.03, bulk: 0.06, skin: 0.1 },
   detail: { faceRes: 0.0125, refine: 1, hands: false, res: 0.105, headRes: 0.03, detailScale: 2.4 },
   extras: trollExtras,
