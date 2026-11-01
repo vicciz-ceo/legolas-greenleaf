@@ -123,8 +123,6 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
     s.mirrored(() => s.cone(H(0.2, 0.01, 0.3), H(0.02, 0.03, 0.43), 0.07 * u, 0.065 * u, { k: 0.08 * u }));
     // cheek masses
     s.mirrored(() => s.ellipsoid(H(0.2, -0.2, 0.2), [0.12 * u, 0.1 * u, 0.12 * u], { k: 0.08 * u }));
-    // wide flat nose
-    s.ellipsoid(H(0, -0.2, 0.46), [0.12 * u, 0.08 * u, 0.05 * u], { k: 0.06 * u });
   });
   s.with({ ...sk, bone: 'jaw', k: 0.06 * u }, () => {
     // massive lower jaw jutting forward
@@ -142,7 +140,7 @@ function trollFace(ctx: KindContext, variant: TrollVariant) {
   s.mirrored(() => s.cone(H(0.14, -0.45, 0.46), H(0.155, -0.31, 0.5), 0.04 * u, 0.016 * u, { bone: 'jaw', color: TROLL_PAL.tusk, mat: 'teeth', k: 0.01 * u }));
   // nose, ears and the cheeks over the cheekbones are pinker than the hide (face sheet)
   const pink = { op: 'paint' as const, color: TROLL_PAL.nose, mat: HEAD_SKIN, bone: 'head', strength: 0.35 };
-  s.ellipsoid(H(0, -0.2, 0.48), [0.1 * u, 0.09 * u, 0.08 * u], { ...pink, k: 0.05 * u });
+  s.ellipsoid(H(0, -0.13, 0.5), [0.1 * u, 0.09 * u, 0.08 * u], { ...pink, k: 0.05 * u });
   s.mirrored(() => s.ellipsoid(H(0.38, -0.12, -0.03), [0.09 * u, 0.2 * u, 0.12 * u], { ...pink, color: TROLL_PAL.ear, strength: 0.7, k: 0.04 * u }));
   s.mirrored(() => s.ellipsoid(H(0.2, -0.2, 0.3), [0.09 * u, 0.07 * u, 0.06 * u], { ...pink, color: TROLL_PAL.ear, strength: 0.25, k: 0.06 * u }));
   if (variant === 'cave') {
@@ -205,7 +203,7 @@ function trollExtras(ctx: KindContext) {
     ankleShackle(ctx, gear, proj);
     trollBelt(ctx, gear, proj, beltY, { width: 0.085 });
     // the club hangs at the side, shaft ~25 deg off vertical, with a big knobbly head (sheet: 2.5 m overall)
-    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.6, 0.62, 1.6], out: 25, fwd: 8 });
+    fitHeldWeapon(ctx, 'hand_r', ['club'], { scale: [1.1, 0.58, 1.1], out: 28, fwd: 6 });
   } else {
     if (ctx.helmet) warHelm(ctx, gear, bucket);
     warMane(ctx, gear, proj, bucket);
@@ -226,7 +224,7 @@ function trollExtras(ctx: KindContext) {
     }
     caveWarts(ctx, gear, proj, bucket + 10, 0.08);
     // the warhammer: a heavier haft, hanging at the side like the club
-    fitHeldWeapon(ctx, 'hand_r', ['warhammer'], { scale: [2.2, 0.72, 2.2], out: 22, fwd: 8 });
+    fitHeldWeapon(ctx, 'hand_r', ['warhammer'], { scale: [1, 0.8, 1], out: 22, fwd: 6 });
   }
 }
 
