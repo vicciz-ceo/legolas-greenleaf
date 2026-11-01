@@ -74,6 +74,21 @@ for (const style of ['default', 'elven'] as WeaponStyle[]) {
   check('cleaver', 'cleaver', 'orc', [-0.119, -0.19, -0.027], [0.115, 0.66, 0.028], 0.66);
   check('gimli axe', 'dwarf_axe', 'gimli', [-0.301, -0.425, -0.047], [0.301, 0.762, 0.047], 0.74);
   check('rohan shield', 'shield', 'rohan', [-0.014, -0.463, -0.463], [0.143, 0.463, 0.463], 0.45);
+  // pass 5: falchion, Haradrim scimitar, berserker greatsword (same size as sword()), Tauriel's bow
+  check('falchion', 'sword', 'uruk', [-0.07, -0.152, -0.03], [0.09, 0.71, 0.03], 0.71);
+  check('haradrim scimitar', 'scimitar', 'haradrim', [-0.123, -0.228, -0.02], [0.117, 0.725, 0.02], 0.725);
+  check('sword', 'sword', 'default', [-0.085, -0.165, -0.026], [0.085, 0.95, 0.026], 0.95);
+  check('berserker sword', 'sword', 'berserker', [-0.085, -0.165, -0.03], [0.085, 0.95, 0.03], 0.95);
+  const bowBox = (style: WeaponStyle) => {
+    const b = new THREE.Box3();
+    for (const v of vertices(createWeapon('elven_bow', 1, style))) b.expandByPoint(v);
+    return b;
+  };
+  const a0 = bowBox('default'), a1 = bowBox('elven');
+  near(a1.min.y, a0.min.y, 0.03, 'elven bow bottom limb');
+  near(a1.max.y, a0.max.y, 0.03, 'elven bow top limb');
+  near(a1.min.z, a0.min.z, 0.04, 'elven bow brace side');
+  ok(a1.max.z - a0.max.z < 0.08, 'elven bow tips curl forward only a little more than the Galadhrim bow');
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

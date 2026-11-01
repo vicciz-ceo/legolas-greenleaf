@@ -29,8 +29,10 @@ type Part = THREE.BufferGeometry;
 
 /** optional look variant (KindDef.weapons.style): e.g. the Uruk-hai falchion and white-hand shield; 'elven' = Tauriel's
  *  brass-fitted, leather-hilted knives (elven_knives only; bows ignore it, Legolas keeps the default cream bone hilt);
+ *  'berserker' = the berserker's dark pitted greatsword (sword only, same size as the default sword);
+ *  'elven' also gives elven_bow Tauriel's dark brown, brass-bound bow;
  *  'gimli' = Gimli's signature knotwork double axe (dwarf_axe only; any other style is the plain dwarf double axe) */
-export type WeaponStyle = 'default' | 'uruk' | 'orc' | 'rohan' | 'gondor' | 'elven' | 'dwarf' | 'gimli' | 'easterling' | 'haradrim';
+export type WeaponStyle = 'default' | 'uruk' | 'orc' | 'rohan' | 'gondor' | 'elven' | 'dwarf' | 'gimli' | 'easterling' | 'haradrim' | 'berserker';
 interface PaintArgs {
   color: number;
   mat: SurfaceName | SurfaceSpec;
@@ -546,10 +548,37 @@ function withTip(obj: THREE.Object3D, y: number): THREE.Object3D {
   return obj;
 }
 
-function sword(kind: 'sword' | 'elven_sword', seed: number): THREE.Object3D {
+function sword(kind: 'sword' | 'elven_sword', seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   const k = new Kit();
   const elven = kind === 'elven_sword';
   const len = elven ? 0.82 : 0.86;
+  if (!elven && style === 'berserker') {
+    // The berserker's greatsword (docs/refs/berserker): the same length, guard, grip and tip as sword(), so
+    // the kind's per-character scale still fits, in dark pitted rust-spotted iron with a wide fuller.
+    const bw = 0.033;
+    const nz2 = noise2(seed + 13);
+    k.add(
+      blade({ len, width: bw, thick: 0.0058, shape: [[0, 1], [0.6, 0.94], [0.9, 0.8], [1, 0.55]], rings: 10, seed, tip: 0.1 }),
+      {
+        color: 0x424040,
+        mat: ORC_IRON(0.62, 0.3),
+        colorFn: (p, n, c) => {
+          oxide(seed, 0x424040, 0x3c2c24, 0x8c8a86, 0.3, 1.5)(p, n, c);
+          // rust spots and pits
+          c.lerp(lin(0x4a3022), smooth(0.7, 0.92, nz2(p.x * 90, p.y * 60) * 0.5 + 0.5) * 0.4);
+          // the wide fuller, darker, down the centre of both faces
+          if (Math.abs(p.x) < 0.011 && p.y < 0.82) c.multiplyScalar(0.7);
+        },
+      },
+      new THREE.Matrix4().makeTranslation(0, 0.09, 0),
+    );
+    k.add(new THREE.BoxGeometry(0.17, 0.02, 0.028).translate(0, 0.08, 0), { color: 0x3a3836, mat: ORC_IRON(0.6) });
+    for (const sx of [1, -1]) k.add(new THREE.CylinderGeometry(0.011, 0.013, 0.02, 5).rotateZ(Math.PI / 2).translate(sx * 0.075, 0.08, 0), { color: 0x34322f, mat: ORC_IRON(0.6) });
+    const wg = wrapGeo(0.0148, -0.12, 0.072, { rings: 14, seg: 8, turns: 7, ridge: 0.18 });
+    k.add(wg.geo, { color: 0x24201c, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x3a3028, 0x120e0a, seed) });
+    k.add(lathe([[0, -0.165], [0.018, -0.16], [0.024, -0.145], [0.02, -0.128], [0.012, -0.12]], 8), { color: 0x34322f, mat: ORC_IRON(0.6) });
+    return withTip(k.mesh(kind), len + 0.09);
+  }
   const w = elven ? 0.021 : 0.026;
   k.add(blade({ len, width: w, thick: 0.0042, shape: elven ? [[0, 0.8], [0.15, 0.85], [0.55, 1.08], [0.85, 0.75], [1, 0.45]] : [[0, 1], [0.6, 0.92], [0.9, 0.75], [1, 0.5]], seed, tip: elven ? 0.16 : 0.1 }), { color: 0xb8bcc4, mat: surface('metal', { rough: 0.22 }), colorFn: steel(0xa8aeb6, 0xf0f2f6, w * 1.05) }, new THREE.Matrix4().makeTranslation(0, 0.09, 0));
   if (elven) {
@@ -643,26 +672,32 @@ function band(r: number, y: number, h: number, seg = 10, flare = 1.0): Part {
 function falchion(seed: number): THREE.Object3D {
   const k = new Kit();
   const L = 0.66;
-  const l = (t: number) => -0.034 + 0.003 * t;
+  // a broad single-edged blade (about 0.11 m across), a notched belly, a hacked saw-tooth spine and a clipped point
+  const saw = (t: number) => (t > 0.22 && t < 0.82 ? 0.008 * ((t * 10) % 1) : 0);
+  const l = (t: number) => -0.04 + 0.003 * t - saw(t);
   const r = (t: number) => {
-    if (t < 0.08) return 0.016 + (t / 0.08) * 0.02;
-    if (t < 0.5) return 0.036 + ((t - 0.08) / 0.42) * 0.024;
-    if (t < 0.74) return 0.06 - ((t - 0.5) / 0.24) * 0.01;
-    if (t < 0.79) return 0.05 - ((t - 0.74) / 0.05) * 0.02; // notch
-    if (t < 0.84) return 0.03 + ((t - 0.79) / 0.05) * 0.022;
-    return 0.052 - ((t - 0.84) / 0.16) * 0.034;
+    if (t < 0.08) return 0.02 + (t / 0.08) * 0.026;
+    if (t < 0.5) return 0.046 + ((t - 0.08) / 0.42) * 0.028;
+    if (t < 0.74) return 0.074 - ((t - 0.5) / 0.24) * 0.012;
+    if (t < 0.79) return 0.062 - ((t - 0.74) / 0.05) * 0.024; // notch
+    if (t < 0.84) return 0.038 + ((t - 0.79) / 0.05) * 0.024;
+    return 0.062 - ((t - 0.84) / 0.16) * 0.04;
   };
   k.add(
-    blade({ len: L, width: 1, thick: 0.0058, single: true, edge: -1, shape: edgeStations(19, l, r), tipX: -0.02, tip: 0.12, bevel: 0.3, jag: 0.0018, seed }),
-    { color: 0x5a5a5c, mat: surface('metal_dark', { rough: 0.5, pat: { pores: 0.9 } }), colorFn: oxide(seed, 0x6a6b6e, 0x6e4a34, 0xb4b2ac, 0.2) },
+    blade({ len: L, width: 1, thick: 0.0066, single: true, edge: -1, shape: edgeStations(22, l, r), curve: 0.014, tipX: 0.0, tip: 0.12, bevel: 0.3, jag: 0.0022, seed }),
+    { color: 0x4a4a4c, mat: ORC_IRON(0.6, 0.25), colorFn: (p, n, c) => {
+      // dark pitted iron: grey-black with rust-brown pits and pale nicked edges
+      oxide(seed, 0x3e3f42, 0x3c2a20, 0x9a9890, 0.3, 1.6)(p, n, c);
+      c.multiplyScalar(0.85 + 0.25 * noise2(seed + 5)(p.x * 70, p.y * 55));
+    } },
     new THREE.Matrix4().makeTranslation(0, 0.05, 0),
   );
   // the curled quillons
   k.add(new THREE.BoxGeometry(0.075, 0.014, 0.022).translate(0, 0.04, 0), { color: 0x2e2c2a, mat: 'metal_dark' });
   for (const sx of [1, -1]) k.add(new THREE.ConeGeometry(0.009, 0.034, 5).rotateZ(-sx * Math.PI / 2).translate(sx * 0.047, 0.043, 0), { color: 0x2e2c2a, mat: 'metal_dark' });
-  const wg = wrapGeo(0.0155, -0.1, 0.035, { rings: 12, seg: 7, turns: 4, ridge: 0.2 });
+  const wg = wrapGeo(0.0155, -0.1, 0.035, { rings: 8, seg: 6, turns: 3, ridge: 0.2 });
   k.add(wg.geo, { color: 0x1c1816, mat: 'leather_worn', colorFn: wrapColor(wg.ph, 0x2a2420, 0x100e0c, seed) });
-  k.add(lathe([[0, -0.152], [0.006, -0.15], [0.018, -0.13], [0.02, -0.112], [0.015, -0.098], [0.0, -0.098]], 7), { color: 0x2e2c2a, mat: 'metal_dark' });
+  k.add(lathe([[0, -0.152], [0.006, -0.15], [0.018, -0.13], [0.02, -0.112], [0.015, -0.098], [0.0, -0.098]], 6), { color: 0x2e2c2a, mat: 'metal_dark' });
   return withTip(k.mesh('falchion'), 0.05 + L);
 }
 
@@ -731,16 +766,19 @@ function elvenKnife(seed: number, style: WeaponStyle = 'default'): THREE.Object3
  *  'cleaver' (a wide notched plate with a slanted point, a hole and a long wrapped haft) */
 /** orc iron: rust lives in the vertex colour (dark brown-black); pores stay low so the shader's own, much
  *  lighter orange rust does not bloom over it (it made the cleaver read as a salmon slab) */
-const ORC_IRON = (rough = 0.62) => surface('metal_rusty', { rough, metal: 0.6, pat: { pores: 0.3 } });
+const ORC_IRON = (rough = 0.62, metal = 0.6) => surface('metal_rusty', { rough, metal, pat: { pores: 0.3 } });
 
 function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponStyle = 'default'): THREE.Object3D {
   const k = new Kit();
   const orc = style === 'orc' || style === 'uruk';
+  // Haradrim: long, narrow, dark etched blade with only a slight curve (docs/refs/haradrim details)
+  const har = style === 'haradrim';
   if (kind === 'scimitar') {
     const L = 0.68;
     // the belly (edge) bulges to -X, the tip swings back toward the guard line
-    const hwf = (t: number) => 0.019 + 0.027 * Math.sin(Math.min(1, t * 1.7) * Math.PI * 0.5) - 0.034 * smooth(0.6, 1, t);
-    const cxf = (t: number) => 0.088 * Math.sin(Math.PI * Math.pow(t, 0.92)) - 0.02 * t;
+    const nw = har ? 0.58 : 1;
+    const hwf = (t: number) => (0.019 + 0.027 * Math.sin(Math.min(1, t * 1.7) * Math.PI * 0.5) - 0.034 * smooth(0.6, 1, t)) * nw;
+    const cxf = (t: number) => (har ? 0.036 : 0.088) * Math.sin(Math.PI * Math.pow(t, 0.92)) - (har ? 0.012 : 0.02) * t;
     const st: [number, number, number][] = [];
     for (let i = 0; i < 20; i++) {
       const t = i / 19;
@@ -750,7 +788,18 @@ function curvedBlade(kind: 'scimitar' | 'cleaver', seed: number, style: WeaponSt
       blade({ len: L, width: 1, thick: 0.0052, single: true, edge: -1, shape: st, tipX: -0.025, tip: 0.1, bevel: 0.32, seed, jag: orc ? 0.0034 : 0.0006 }),
       orc
         ? { color: 0x6a6866, mat: ORC_IRON(0.62), colorFn: oxide(seed, 0x464442, 0x4c2e1e, 0x8c8880, 0.35) }
-        : { color: 0x9a9a98, mat: surface('metal', { rough: 0.3 }), colorFn: steel(0x80827f, 0xd0d2d0, 0.04, 0.12, seed) },
+        : har
+          ? {
+              color: 0x3a3c40,
+              mat: surface('metal', { rough: 0.5, metal: 0.2 }),
+              colorFn: (p, n, c) => {
+                // dark etched steel: long fuller lines and fine acid etching, bright only on the bevels
+                steel(0x1c1e22, 0x4c4e54, 0.03, 0.1, seed)(p, n, c);
+                const e = 0.5 + 0.5 * Math.sin(p.y * 160 + p.x * 90);
+                c.multiplyScalar(0.8 + 0.3 * e);
+              },
+            }
+          : { color: 0x9a9a98, mat: surface('metal', { rough: 0.3 }), colorFn: steel(0x80827f, 0xd0d2d0, 0.04, 0.12, seed) },
       new THREE.Matrix4().makeTranslation(0, 0.045, 0),
     );
     // curled S-quillons and the guard block
@@ -979,20 +1028,29 @@ function gimliAxe(seed: number): THREE.Object3D {
   // pale worn steel faces (about #747274) with bright nicked bevels, per-vertex; no texture and no normal
   // map (the old knotwork map read as a coarse lattice and blew out in the sun), a satin metal finish
   const cols = new Float32Array(pos.length);
-  const steelC = lin(0x4a484a), edgeC = lin(0x84827e);
+  // value structure (lit about #747274 on the faces): a bright bevel band along the cutting edge, a mid face
+  // and a darker etched field near the socket. Albedo is low because the lab and game lighting lift it ~2.5x.
+  const faceC = lin(0x232123), edgeC = lin(0x5a5856), etchC = lin(0x151416);
   const cc = new THREE.Color();
   const nz = noise2(seed + 77);
   for (let v = 0; v < pos.length / 3; v++) {
+    const px = Math.abs(pos[v * 3]), py = pos[v * 3 + 1];
     const rim = 1 - Math.abs(nor[v * 3 + 2]); // bevels and the outline wall face sideways
-    cc.copy(steelC).multiplyScalar(0.85 + 0.25 * (nz(pos[v * 3] * 30, pos[v * 3 + 1] * 30) * 0.5 + 0.5));
-    cc.lerp(edgeC, smooth(0.3, 0.8, rim) * 0.8);
+    cc.copy(faceC).multiplyScalar(0.85 + 0.3 * (nz(px * 28, py * 28) * 0.5 + 0.5));
+    // etched darker field near the socket, with fine diagonal etching lines
+    const near = 1 - smooth(0.05, 0.17, px);
+    const etch = 0.5 + 0.5 * Math.sin((px + py) * 140);
+    cc.lerp(etchC, near * (0.55 + 0.25 * etch));
+    // bright worn band along the outer cutting edge
+    const outer = smooth(0.2, 0.27, px);
+    cc.lerp(edgeC, Math.max(smooth(0.3, 0.8, rim) * 0.85, outer * 0.7));
     cols[v * 3] = cc.r;
     cols[v * 3 + 1] = cc.g;
     cols[v * 3 + 2] = cc.b;
   }
   mergedHead.setAttribute('color', new THREE.BufferAttribute(cols, 3));
   mergedHead.translate(0, 0.49, 0);
-  const headMat = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, metalness: 0.3, roughness: 0.7, side: THREE.DoubleSide });
+  const headMat = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, metalness: 0.3, roughness: 0.6, side: THREE.DoubleSide });
   const head = new THREE.Mesh(mergedHead, headMat);
   head.name = 'dwarf_axe_head';
   head.castShadow = true;
@@ -1025,12 +1083,13 @@ function polearm(kind: 'pike' | 'spear', seed: number): THREE.Object3D {
 function morningStar(seed: number): THREE.Object3D {
   const k = new Kit();
   const rnd = new Rng(seed + 17);
-  const RUST = surface('iron_rusty', { rough: 0.62, metal: 0.6, pat: { pores: 0.35 } });
-  const ironC = lin(0x4a443e), rustC = lin(0x5e3e28);
+  // Bolg's mace is rust-brown like his armour (docs/refs/bolg): brown iron with orange-brown rust, a light shader rust
+  const RUST = surface('iron_rusty', { rough: 0.62, metal: 0.5, pat: { pores: 0.6 } });
+  const ironC = lin(0x5a4a3e), rustC = lin(0x7e4a28);
   const n2 = noise2(seed + 5);
   const iron = (hi = 0.34): ((p: THREE.Vector3, n: THREE.Vector3, c: THREE.Color) => void) => (p, _n, c) => {
     const f = n2(p.x * 38 + p.z * 21, p.y * 30 + p.z * 17) * 0.5 + 0.5;
-    c.copy(ironC).lerp(rustC, smooth(0.6, 0.98, f) * hi * 1.3).multiplyScalar(0.8 + 0.4 * n2(p.x * 120, p.y * 90 + p.z * 40));
+    c.copy(ironC).lerp(rustC, smooth(0.55, 0.98, f) * hi * 1.8).multiplyScalar(0.8 + 0.4 * n2(p.x * 120, p.y * 90 + p.z * 40));
   };
   // haft: dark wood core, wrapped leather, iron bands
   k.add(lathe([[0.0, -0.215], [0.02, -0.21], [0.02, -0.19], [0.0165, -0.17], [0.0165, 0.355], [0.0, 0.365]], 8), { color: 0x3a2a1e, mat: 'wood', colorFn: woodColor(0x3a2a1e, seed) });
@@ -1547,6 +1606,8 @@ function build(kind: WeaponKind, seed: number, style: WeaponStyle = 'default'): 
   if (kind === 'sword' && style === 'uruk') return falchion(seed);
   switch (kind) {
     case 'elven_bow':
+      // Tauriel's bow (style 'elven'): dark brown wood, brass binding rings, tips curling forward
+      if (style === 'elven') return buildBow({ half: 0.79, brace: 0.17, recurve: 0.16, width: 0.034, thick: 0.022, wood: 0x42281a, gripColor: 0x2a1c12, tipColor: 0x241608, stringColor: 0x3a2c1c, fletch: 0xf2f0ea, carved: true, seed });
       // Galadhrim recurve: golden polished wood, darker curled tips, dark leather grip wrap
       return buildBow({ half: 0.79, brace: 0.17, recurve: 0.12, width: 0.034, thick: 0.022, wood: 0x9a6c38, gripColor: 0x33251a, tipColor: 0x3a2616, stringColor: 0x4a3a28, fletch: 0xf2f0ea, carved: true, seed });
     case 'orc_bow':
@@ -1557,7 +1618,7 @@ function build(kind: WeaponKind, seed: number, style: WeaponStyle = 'default'): 
       return elvenKnife(seed, style);
     case 'sword':
     case 'elven_sword':
-      return sword(kind, seed);
+      return sword(kind, seed, style);
     case 'scimitar':
     case 'cleaver':
       return curvedBlade(kind, seed, style);
