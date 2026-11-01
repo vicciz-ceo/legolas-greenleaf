@@ -599,7 +599,7 @@ function bolgExtras(ctx: KindContext) {
   bolgBelt(ctx, parts, gear, proj);
 
   // a mace sized for a 2.6 m brute
-  scaleHeldWeapon(ctx, 'hand_r', ['mace'], [1.7, 1.55, 1.7]);
+  scaleHeldWeapon(ctx, 'hand_r', ['mace'], [0.95, 0.9, 0.95]); // the hand socket is already x1.44: world scale = 1.37 (measured 2.44 with [1.7,1.55,1.7], mace head ~1.8x the sheet's)
 
   // heavy spiked pauldrons over tattered leather on both shoulders (sheet)
   if (armor >= 0.5) {

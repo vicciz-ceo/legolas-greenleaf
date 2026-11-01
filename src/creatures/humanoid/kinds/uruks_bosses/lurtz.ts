@@ -187,9 +187,9 @@ export const lurtzKind: KindDef = {
   skin: { color: LURTZ_PAL.skin, color2: LURTZ_PAL.skin2, blotch: 0.5, blemish: 0.5, scars: 3, warts: 0.06, wrinkles: 0.5, lips: LURTZ_PAL.lips, brows: LURTZ_PAL.brows, surface: 'skin_orc', scatter: LURTZ_PAL.scatter },
   eyes: { color: LURTZ_PAL.eyes, glow: 0.45, sclera: 0xb8aa80 },
   // sheet: a loose black mane that frames the face, covers the neck and falls past the shoulders.
-  // `mane` is combed back (long_straight grew a straight fringe over the handprint); chunky side and
-  // back locks are added in lurtzHairLocks
-  hair: { style: 'mane', color: LURTZ_PAL.hair, tipColor: LURTZ_PAL.hair, length: 1.45, density: 1.4 },
+  // (pass-3 style: `mane` at 1.45 / 1.4 spread black strand tips over the shield seen from behind and
+  // read as skyline-shaped holes in it); chunky side locks are added in lurtzHairLocks
+  hair: { style: 'long_straight', color: LURTZ_PAL.hair, tipColor: LURTZ_PAL.hair, length: 1.2, density: 1.0 },
   outfit: [
     // wrapped boots to ≈ 0.44 m (the raised bands are sculpted in lurtz_parts); a bare calf shows above
     { type: 'boots', color: LURTZ_PAL.wrap, color2: 0x1c1712, length: LURTZ_BOOT_LENGTH },
