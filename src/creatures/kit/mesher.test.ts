@@ -119,12 +119,16 @@ const cal = (m: string) => CAL && console.log('  [cal]', m);
 }
 
 // ── the other meshes that came out wrong (partial patches in the knee / thigh band) ──
-test('man 1.72, elf 1.84 / 1.86, rohirrim 1.77: the mesh equals the exact one', () => {
+test('man 1.72, elf 1.84 / 1.86, rohirrim 1.77 / seed 2: the mesh equals the exact one', () => {
   const cases: { kind: HumanoidKind; seed: number }[] = [
     { kind: 'man', seed: 2 }, // 1.72 m
     { kind: 'elf', seed: 0 }, // 1.86 m, the canonical elf
     { kind: 'elf', seed: 3 }, // 1.84 m
     { kind: 'rohirrim', seed: 3 }, // 1.77 m
+    // the one of these kinds that the old neighbour seeding (a cached sample of the NEXT block seeding a skip) really got wrong: 6000 triangles
+    // against the exact mesh's 5996. The cases above have the right heights but their lattice phases happened to miss it, so only the two man
+    // tests above caught a reintroduction (mutation-checked: put `m = floor((ad - skipMargin) / (h * 1.3))` back without the `cached ? 0 :`)
+    { kind: 'rohirrim', seed: 2 },
   ];
   for (const c of cases) {
     const prep = prepareHumanoid({ kind: c.kind, seed: c.seed, armor: 0.5, helmet: true });
