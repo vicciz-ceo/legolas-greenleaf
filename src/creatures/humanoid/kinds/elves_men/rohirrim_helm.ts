@@ -61,22 +61,22 @@ export function rohirrimHelm(ctx: KindContext, o: RohirrimHelm) {
   // finial spike on the crown + the plume holder
   const top = domePoint(DOME, Math.PI, 0.0);
   const f0 = P.h(top[0], top[1] - 0.01, top[2]);
-  const f1 = P.h(top[0], top[1] + 0.09, top[2]);
+  const f1 = P.h(top[0], top[1] + 0.05, top[2]);
   put(ctx, taperedTube([f0, f1], 0.028 * u, 0.016 * u, { seg: 2, radial: 5 }), { bone: 'head', color: o.trim, mat: 'metal', small: true });
   // the horsehair: a fan of tapered bundles rising from the finial, arching back and falling over the nape
   const len = o.plume ?? 1;
   const n = 3;
   const list: THREE.BufferGeometry[] = [];
-  const base = new THREE.Vector3(...P.h(top[0], top[1] + 0.07, top[2]));
+  const base = new THREE.Vector3(...P.h(top[0], top[1] + 0.04, top[2]));
   for (let i = 0; i < n; i++) {
     const f = i / (n - 1) - 0.5;
     const w = (o.rng() - 0.5) * 0.04;
     const rel: [number, number, number][] = [
       [0, 0.0, 0.0],
-      [0.01 * f, 0.15, -0.015],
-      [0.02 * f, 0.25, -0.07],
-      [0.04 * f + w, 0.28, -0.18],
-      [0.07 * f + w, 0.2, -0.32],
+      [0.01 * f, 0.1, -0.015],
+      [0.02 * f, 0.17, -0.07],
+      [0.04 * f + w, 0.2, -0.18],
+      [0.07 * f + w, 0.12, -0.32],
       [0.12 * f + w, 0.0, -0.46],
       [0.17 * f + w, -0.45 * len, -0.56],
       [0.2 * f + w, -0.95 * len, -0.6],
