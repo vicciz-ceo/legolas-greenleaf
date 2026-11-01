@@ -53,7 +53,7 @@ Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dress
 | `beard` | `style` (`full braided forked stubble goatee mustache`), `color`, `length` (m) |
 | `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, offset?, chance?, tatter?, strips?}` (bracers: `length` = fraction of the forearm from the wrist, default 0.7; belt/sash: `offset` raises it (m); skirt: `thickness` adds clearance for bodies bigger than the anatomy, `mat: 'rags'` tears the hem; skirt/loincloth: `tatter` (m) cuts torn zig-zag points into the hem, `strips: { count, color, color2?, mat?, width, length, phase? }` hangs pointed leather strips over the cloth (Bolg's and Lurtz's layered kilts); jerkin/vest: `color2` mottles the leather; any layer: `mat: 'leather_tooled'` for embossed leaf work, `'twill'` for wool twill); types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
 | `armor` | pieces `{type, style, color?, minArmor?, chance?}`; types `helmet pauldrons breastplate vambraces greaves gorget tassets shoulder_spikes plates crown circlet gauntlets mask`; styles `elven orc uruk rohan gondor dwarf easterling haradrim gundabad goblin ranger king`. A piece appears when `spec.armor ≥ minArmor`; helmets only when `spec.helmet !== false` |
-| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look (`'uruk'` → falchion + white-hand shield, `'orc'` → the mace becomes a spiked morning star (Bolg, Gundabad), `'gondor'`, `'dwarf'`, `'easterling'` shields…). Bows always go to the left hand; a default bow not in hand is shown stowed on the back |
+| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look: `'uruk'` → serrated falchion + white-hand shield; `'orc'` → dark-iron cleaver/scimitar, the mace becomes a spiked morning star (Bolg, Gundabad); `'berserker'` → dark pitted greatsword on `sword`; `'gimli'` → Gimli's double-bit axe on `dwarf_axe`; `'elven'` → Tauriel's brass-hilted knives and dark recurve bow; `'haradrim'` → long narrow dark scimitar; `'rohan'` (horse), `'gondor'` (tree), `'dwarf'`, `'easterling'` (kite sunburst) shields. Bows always go to the left hand; a default bow not in hand is shown stowed on the back. Props are built at the weapons sheet's size (`docs/refs/weapons`; extents asserted in `weapons.test.ts`): to match a character sheet, scale the held prop per kind with `scaleHeldWeapon(ctx, 'hand_r', ['dwarf_axe'], [s, s, s])` (`kinds/uruks_bosses/common.ts`; Gimli 0.65, Bolg, berserker) rather than re-orienting it in the socket, which attack swings inherit |
 | `palette` | named colours for your own extras |
 | `sfx` | hints for gameplay/audio: `voice grunt hurt die roar footstep weight` |
 | `anim` | `hunch swagger aggression stance armSwing cadence grace crouch lean` — posture and gait character. Knee flexion in idle and walk is capped at 40° so no kind squats by accident (`MAX_STANCE_FLEX`); `crouch`, `lean` and `stance` are the deliberate ways to a different stance, in idle AND walk, feet planted. **`stance`** (default 1): above 1 the feet stand further apart in proportion, 1.4 = the reference sheets' width (shoulders + 15 %); the pelvis sinks a little so the legs keep their extension (at or below 1 only a tiny hint). **`crouch`** (0..1, default 0): lowers the pelvis toward a deep squat (1 ≈ the goblin sheet: head at ~78 % of the standing height, knees ~99°) and raises the knee limit from 40° to 100° with it; the torso pitches ~46° forward over the feet, neck and head counter-pitch so the gaze stays level (the head juts forward), arms hang forward, knees and toes turn out. **`lean`** (0..1, default 0): spine and chest pitch ~15° forward, head and neck compensate, arms hang forward; with or without `crouch`. Orc / Gundabad: `lean ≈ 0.7-1`, goblin: `crouch ≈ 0.8-1, lean 0.3, stance 1.4` (and a low `hunch`, which overlaps) |
@@ -175,6 +175,44 @@ dark curled tips, a leather grip wrap between two metal rings.
   rivets, a wide two-tier riveted belt with a front ring, a tattered kilt with leather strips
   (`tatter`, `strips`), strapped greaves with iron splints and a spiked knee cap over the shin wraps,
   sandals, and the `'orc'`-style morning star.
+
+## Refining a kind against its reference sheet
+
+Every humanoid has a reference folder `docs/refs/<id>/` (turnaround, details, face, `spec.json`, `notes.md`).
+The loop used for the whole cast (Nov 2026):
+
+1. **Calibrated compare** — the lab renders an orthographic turnaround at the sheet's own px/m and baseline,
+   then `scripts/sheet-compare.py` keys the silhouette and prints IoU per view, heights and widths every 0.1 m:
+   ```
+   node scripts/snap.mjs "/lab/?subject=<s>&view=turn&ref=<id>&anim=idle&t=0.5&bg=ff00ff&ground=0" --size 1536x1024 --timeout 300000 --out shots/<id>-cal.png
+   python3 scripts/sheet-compare.py <id> shots/<id>-cal.png --out shots/<id>-compare.png
+   ```
+   Repeat with `&anim=sheet` (the sheets' relaxed stance) to judge the body without the idle weapon pose, and
+   `&weapons=none` to judge it without props. Read both PNGs (`-compare` sheet above lab, `-overlay` red = sheet).
+2. **Face** — `&view=single&focus=head&portrait=1&zoom=0.15` against `<id>_face.jpg`.
+3. **Budgets are measured on the lab's VISIBLE count** (`__lab.tris`: hair, skinned extras and held props
+   included): heroes/bosses ≤ 45k, trolls ≤ 35k, crowd kinds ≤ 12k (never above 15k).
+4. **Review** — an independent panel compares before/after against the sheet; a *regression* means further
+   from the sheet than before (a change away from the old look that matches the sheet better is not one).
+
+Lessons that cost passes:
+
+* **Colour through AgX:** pale skin albedo renders as clay — go warmer and deeper than the sheet hex; greens
+  render minty under the sky light — desaturate and darken them; check lit medians in the compare against
+  `spec.json` `observed.samples` instead of trusting the hex.
+* **Layer gaps:** at 5–6 cm body cells, garment surfaces closer than ~4–6 mm blend their colours into pale
+  ragged patches (the Lake-town jacket/tunic hem). Keep layers apart or merge them.
+* **Paint must land on the finished sculpt:** template points (`facePoint`, …) can sit inside the real cheek,
+  so the paint never shows (Haradrim war paint). Project onto the finished surface (`makeProjector`,
+  `paintSnapped`/`snapPoint`) and paint last.
+* **Hair under helmets:** kit strand cards poke through domes; sculpt locks under the rim instead
+  (`rohirrim_gear.ts`), or cull cards inside the helm (elf guards).
+* **Shared caches:** never mutate a cached shared material (`hairMaterial(colour)`, weapon materials) for one
+  kind; clone or key it per kind.
+* **Shared helpers have contracts:** a change to an exported helper (`uruk.ts` `pauldron()`, `ORC_FACE`) needs a
+  0-pixel diff on every importer (Lurtz, Bolg, trolls) before it merges.
+* **Held props:** sizes are fixed by `weapons.test.ts`; scale per character with `scaleHeldWeapon`, and stow
+  copies by measuring the guard's wide axis (Tauriel's sheath roll) rather than a fixed angle.
 
 ## Performance rules of thumb
 
