@@ -5,7 +5,7 @@
  * rest every blade lay across the body and every shield lay flat like a flag. The rest pose (idle, walk, jump)
  * now carries what the hands hold (poses.ts `Carry`): blades, axes, maces, clubs and hammers hang point-down
  * beside the thigh, tilted forward and out; spears, pikes and torches stand; a shield stands vertical on the
- * forearm with its face out. Attacks blend from that rest and keep their own keys.
+ * forearm with its face turned toward the front-left, as the reference sheets hold it. Attacks blend from that rest and keep their own keys.
  *
  * Held to here, for every body the game can produce (every registered kind, any height, both hands, every LOD):
  *   placed      the item's axis, face and lowest point are what the carry promises, and the point of a hanging
@@ -51,6 +51,13 @@ const CAL = !!(globalThis as unknown as { process: { env: Record<string, string 
 const cal = (m: string) => CAL && console.log('  [cal]', m);
 
 const DEG = 180 / Math.PI;
+/**
+ * how far a shield's face looks out of straight ahead, toward the outside (deg): the sheets hold it turned toward the front-left, not
+ * straight out (poses.ts HOLDS.shield.face: the sheet-compare IoU of the shield bearers peaks at 15..30 deg, 40 is the turn that clears
+ * the walking thigh). The tests pin the hold to it, within FACE_TOL for the body's own sway.
+ */
+const SHIELD_FACE = 40;
+const FACE_TOL = 12;
 const SIDES = ['l', 'r'] as const;
 type Side = (typeof SIDES)[number];
 const ATTACKS: AttackAnim[] = ['slash', 'backslash', 'thrust', 'overhead', 'knife1', 'knife2', 'knife3', 'punch', 'slam', 'sweep', 'throw', 'bite', 'stomp'];
@@ -162,6 +169,9 @@ function sound(A: HumanoidAnimator, what: string) {
   ok(good, `${what}: every bone must stay finite with a unit rotation`);
 }
 
+/** the yaw of a direction out of straight ahead toward the outside (deg, seen from above): 0 = ahead, 90 = straight out, `outward` = +1 left, -1 right */
+const outYaw = (v: THREE.Vector3, outward: number) => Math.atan2(v.x * outward, v.z) * DEG;
+
 /** the numbers a carry promises, measured on the solved hand */
 function probe(P: Proportions, A: HumanoidAnimator, sd: Side, kind: WeaponKind, scale = 1, style?: string) {
   const fr = frame(P, A, sd);
@@ -177,6 +187,8 @@ function probe(P: Proportions, A: HumanoidAnimator, sd: Side, kind: WeaponKind, 
     fwd: fr.axis.z,
     out: fr.axis.x * outward,
     face: fr.face.x * outward,
+    /** where the face looks, out of straight ahead toward the outside (deg), seen from above in model space */
+    faceYaw: outYaw(fr.face, outward),
   };
 }
 
@@ -233,7 +245,7 @@ test('every kind carries its default loadout as promised (idle over time, in bot
             ok(pr.lowest >= 0, `${what}: the butt stays off the ground, ${(pr.lowest * 100).toFixed(1)} cm`);
           } else {
             ok(pr.tilt <= 15 && pr.up > 0, `${what}: a shield stands within 15 deg of vertical, got ${pr.tilt.toFixed(1)}`);
-            ok(pr.face > 0.9, `${what}: the shield's face looks outward, got ${pr.face.toFixed(2)}`);
+            ok(Math.abs(pr.faceYaw - SHIELD_FACE) <= FACE_TOL, `${what}: the shield's face looks ${SHIELD_FACE} deg out of straight ahead (+-${FACE_TOL}), got ${pr.faceYaw.toFixed(1)}`);
           }
           cal(`${what} tilt ${pr.tilt.toFixed(1)} fwd ${pr.fwd.toFixed(2)} out ${pr.out.toFixed(2)} lowest ${(pr.lowest * 100).toFixed(1)} cm`);
         }
@@ -269,14 +281,14 @@ test('a hanging item clears the ground however long (the carry tilts it further 
   }
 });
 
-test('shields and spears stand up, the shield faces out, in the left hand or the right', () => {
+test('shields and spears stand up, the shield faces forward and out, in the left hand or the right', () => {
   const { P, A } = make(resolveKind('man'));
   for (const sd of SIDES) {
     empty(A);
     give(P, A, sd, 'shield');
     idle(A, 0.5);
     let pr = probe(P, A, sd, 'shield');
-    ok(pr.tilt <= 15 && pr.up > 0.95 && pr.face > 0.9, `${sd} shield: upright (${pr.tilt.toFixed(1)} deg) and face out (${pr.face.toFixed(2)})`);
+    ok(pr.tilt <= 15 && pr.up > 0.95 && Math.abs(pr.faceYaw - SHIELD_FACE) <= FACE_TOL, `${sd} shield: upright (${pr.tilt.toFixed(1)} deg) and face ${pr.faceYaw.toFixed(1)} deg out of straight ahead`);
     empty(A);
     give(P, A, sd, 'spear');
     idle(A, 0.5);
@@ -300,6 +312,53 @@ test('left and right holds mirror each other', () => {
       ok(mirror(l.face).distanceTo(r.face) < 0.1 || k !== 'shield', `${k} t=${t}: a shield's faces mirror`);
     }
   }
+});
+
+// ── the shield's face, in the pelvis frame ───────────────────────────────────
+/** the item's face normal in the pelvis frame (x toward the character's left, y up, z ahead): the hips' own turn undone */
+const _hq = new THREE.Quaternion();
+function faceInPelvis(A: HumanoidAnimator, f: Frame) {
+  _hq.copy(A.ps.modelQ[A.ps.i('hips')]).invert();
+  return f.face.clone().applyQuaternion(_hq);
+}
+
+test('a shield faces forward and out, as the sheets hold it: the face in the pelvis frame, idle and walking, every height and LOD', () => {
+  const bodies: [string, ResolvedKind, number][] = [];
+  for (const h of [1.2, 1.5, 1.78, 2.4, 3.3]) bodies.push([`man ${h} m`, resolveKind('man'), h]);
+  // the kinds' own builds: tall, crouched, hunched, heavy
+  for (const k of ['rohirrim', 'gondor', 'uruk', 'easterling', 'dwarf', 'goblin', 'troll', 'gimli'] as const) bodies.push([k, resolveKind(k), resolveKind(k).height]);
+  const walk: [string, number][] = [0, 0.25, 0.5, 0.75].map((ph) => [`walk phase ${ph}`, ph]);
+  let n = 0, worst = 0;
+  for (const [name, def, h] of bodies) {
+    for (const lod of [0, 1, 2] as const) {
+      const { P, A } = make(def, h, lod);
+      // a crouched body (the goblin) keeps its shield out at the side: its knees stand forward where the turned shield would hang
+      const want = SHIELD_FACE + (90 - SHIELD_FACE) * Math.min(1, Math.max(0, def.anim.crouch ?? 0));
+      for (const sd of SIDES) {
+        empty(A);
+        give(P, A, sd, 'shield');
+        const outward = sd === 'l' ? 1 : -1;
+        const check = (what: string) => {
+          const fp = faceInPelvis(A, frame(P, A, sd));
+          const yaw = outYaw(fp, outward);
+          n++;
+          worst = Math.max(worst, Math.abs(yaw - want));
+          ok(Math.abs(yaw - want) <= FACE_TOL, `${name} LOD${lod} ${sd} ${what}: the face looks ${yaw.toFixed(1)} deg out of straight ahead in the pelvis frame, want ${want.toFixed(0)} +- ${FACE_TOL}`);
+          ok(Math.abs(fp.y) < 0.3, `${name} LOD${lod} ${sd} ${what}: and it stays level (y ${fp.y.toFixed(2)})`);
+        };
+        for (const t of [0, 0.7, 3.1, 8.8, 17.9]) {
+          idle(A, t);
+          check(`idle t=${t}`);
+        }
+        for (const [what, ph] of walk) {
+          step(A, { speed: 1.5, grounded: true, moveDir: { x: 0, z: 1 } }, 2.2, ph);
+          check(what);
+        }
+      }
+    }
+  }
+  cal(`shield face: ${n} poses, worst ${worst.toFixed(1)} deg from ${SHIELD_FACE}`);
+  ok(n >= 500, `shield poses probed (${n})`);
 });
 
 // ── the estimate the carry places the hands with equals the solver's ─────────
@@ -525,8 +584,8 @@ test('every LOD shows the same carry (the cheap solves keep hanging blades and s
 // right with the real, scaled prop. These build the real humanoids (~0.5 s a kind).
 
 const IDLE: AnimInput = { speed: 0, grounded: true };
-function real(kind: HumanoidKind, weapon?: WeaponKind, seed = 0): HumanoidExt {
-  const h = createHumanoid({ kind, seed, weapon });
+function real(kind: HumanoidKind, weapon?: WeaponKind, seed = 0, offhand?: WeaponKind): HumanoidExt {
+  const h = createHumanoid({ kind, seed, weapon, offhand });
   // the hooks act at the first matrix update: animate, update, animate again
   for (let i = 0; i < 4; i++) h.animate(1 / 60, IDLE);
   h.root.updateMatrixWorld(true);
@@ -575,7 +634,8 @@ test('every real humanoid carries its props as promised, with the kinds\' own sc
       } else if (c === 'upright') {
         ok(tilt <= 25 && f.axis.y > 0, `${what}: an upright haft stands within 25 deg of vertical, got ${tilt.toFixed(1)}`);
       } else {
-        ok(tilt <= 15 && f.axis.y > 0 && f.face.x * outward > 0.9, `${what}: a shield stands (${tilt.toFixed(1)} deg) face out (${(f.face.x * outward).toFixed(2)})`);
+        const yaw = outYaw(f.face, outward);
+        ok(tilt <= 15 && f.axis.y > 0 && Math.abs(yaw - SHIELD_FACE) <= FACE_TOL, `${what}: a shield stands (${tilt.toFixed(1)} deg) with its face ${yaw.toFixed(1)} deg out of straight ahead, want ${SHIELD_FACE} +- ${FACE_TOL}`);
       }
       // kinds that re-orient their prop in the socket (troll_weapon.ts fitHeldWeapon) fade out by how close the socket's +Y is to
       // the old forward carry (in the pelvis frame; their weight is smoothstep(dot, 0.82, 0.95)): at idle it must be zero, or
@@ -608,6 +668,86 @@ test('a walking humanoid keeps the point of its hanging prop off the ground (rea
     }
     cal(`${kind}${weapon ? `/${weapon}` : ''} walking: lowest point ${(lowest * 100).toFixed(1)} cm`);
     ok(lowest >= -0.02 * h.height, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking`);
+  }
+});
+
+/**
+ * How far the body reaches into a left-hand shield (mm, 0 = clear): for every skinned vertex that lies under a triangle of the shield, looking
+ * along its face normal, the depth beyond the BACK of the shield there. The hand and wrist around the grip bar (within 12 cm) are left out.
+ */
+function shieldCut(h: HumanoidExt): number {
+  const o = h.weaponObject('hand_l');
+  if (!o || o.userData.kind !== 'shield') return 0;
+  h.root.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(o.matrixWorld).invert();
+  const held = new Set<THREE.Object3D>();
+  for (const hand of ['hand_l', 'hand_r'] as const) h.weaponObject(hand)?.traverse((c) => held.add(c));
+  // the shield's triangles in its own frame (x the face normal, y up, z along the fingers): [y0, z0, x0, y1, z1, x1, y2, z2, x2]
+  const tris: number[][] = [];
+  let y0 = Infinity, y1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  o.traverse((c) => {
+    const m = c as THREE.Mesh;
+    if (!m.isMesh || !m.geometry) return;
+    const pos = m.geometry.getAttribute('position');
+    const ix = m.geometry.index;
+    const P: THREE.Vector3[] = [];
+    for (let i = 0; i < pos.count; i++) {
+      const p = new THREE.Vector3().fromBufferAttribute(pos, i).applyMatrix4(m.matrixWorld).applyMatrix4(inv);
+      P.push(p);
+      y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); z0 = Math.min(z0, p.z); z1 = Math.max(z1, p.z);
+    }
+    const n = ix ? ix.count : pos.count;
+    for (let i = 0; i < n; i += 3) {
+      const a = P[ix ? ix.getX(i) : i], b = P[ix ? ix.getX(i + 1) : i + 1], d = P[ix ? ix.getX(i + 2) : i + 2];
+      tris.push([a.y, a.z, a.x, b.y, b.z, b.x, d.y, d.z, d.x]);
+    }
+  });
+  const v = new THREE.Vector3();
+  let deepest = 0;
+  h.root.traverseVisible((c) => {
+    const m = c as THREE.Mesh;
+    if (!m.isMesh || !m.geometry || held.has(c) || (m as unknown as THREE.InstancedMesh).isInstancedMesh) return;
+    const pos = m.geometry.getAttribute('position');
+    for (let i = 0; i < pos.count; i++) {
+      m.getVertexPosition(i, v);
+      v.applyMatrix4(m.matrixWorld).applyMatrix4(inv);
+      if (v.x < 0.02 || v.y < y0 || v.y > y1 || v.z < z0 || v.z > z1 || Math.hypot(v.x, v.y, v.z) < 0.12) continue;
+      // the back of the shield under this point: the lowest x of the triangles that cover (y, z)
+      let back = Infinity;
+      for (const q of tris) {
+        const den = (q[4] - q[7]) * (q[0] - q[6]) + (q[6] - q[3]) * (q[1] - q[7]);
+        if (Math.abs(den) < 1e-12) continue;
+        const a = ((q[4] - q[7]) * (v.y - q[6]) + (q[6] - q[3]) * (v.z - q[7])) / den;
+        const b = ((q[7] - q[1]) * (v.y - q[6]) + (q[0] - q[6]) * (v.z - q[7])) / den;
+        if (a < 0 || b < 0 || a + b > 1) continue;
+        back = Math.min(back, a * q[2] + b * q[5] + (1 - a - b) * q[8]);
+      }
+      if (back !== Infinity) deepest = Math.max(deepest, v.x - back);
+    }
+  });
+  return deepest * 1000;
+}
+
+test('a shield stays clear of the body: real skin, real props, idle and a walk cycle', () => {
+  // the sheets' bearers with their own shields, and the crowd kinds given one
+  const cases: [HumanoidKind, WeaponKind | undefined][] = [['rohirrim', undefined], ['gondor', undefined], ['uruk', undefined], ['easterling', undefined], ['dwarf', 'shield'], ['orc', 'shield'], ['haradrim', 'shield'], ['goblin', 'shield']];
+  for (const [kind, off] of cases) {
+    const h = real(kind, undefined, 0, off);
+    const what = `${kind}${off ? `+${off}` : ''}`;
+    if (h.weaponObject('hand_l')?.userData.kind !== 'shield') {
+      ok(false, `${what}: expected a shield in the left hand`);
+      continue;
+    }
+    let worst = shieldCut(h);
+    const idleCut = worst;
+    for (const ph of [0, 0.25, 0.5, 0.75]) {
+      h.resetAnimation(0.5, ph);
+      for (let i = 0; i < 40; i++) h.animate(1 / 60, { speed: 1.5, grounded: true, moveDir: { x: 0, z: 1 } });
+      worst = Math.max(worst, shieldCut(h));
+    }
+    cal(`${what}: the body reaches ${idleCut.toFixed(0)} mm into the shield at idle, ${worst.toFixed(0)} mm at worst while walking`);
+    // cloth (a tunic skirt, a cloak) may brush the shield's back, as it did when the face looked straight out (28 mm); a thigh may not
+    ok(worst <= 30, `${what}: the body reaches ${worst.toFixed(0)} mm into the shield (idle ${idleCut.toFixed(0)} mm)`);
   }
 });
 
