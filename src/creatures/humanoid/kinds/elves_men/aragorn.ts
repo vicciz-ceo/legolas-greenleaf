@@ -37,9 +37,9 @@ const PAL = {
   shirt: 0x2c2a29, // observed #3c3837 dark charcoal
   jerkin: 0x5c3b2b, // reddish-brown stitched vest (observed #452e22 in shade)
   jerkinTrim: 0x3e281c,
-  coat: 0x4f4a3b, // weathered grey-olive/khaki wool (sheet #565b4b, observed #665c4b lit): it renders greener and lighter than the albedo, so warm and dark
+  coat: 0x4c4a38, // weathered grey-olive/khaki wool (sheet #565b4b, observed #665c4b lit): it renders greener and lighter than the albedo, so warm and dark
   coatTrim: 0x433f31,
-  coatFray: 0x6e6347, // tan frayed hem band and lapel cord
+  coatFray: 0x5a523a, // the hem is coat-coloured with only a soft ragged edge (low contrast)
   bracers: 0x5d4231, // tooled brown leather (the sheet's bracers are brown, not black; observed #67534e)
   bracersTrim: 0x3a291d,
   belt: 0x4a3322,
@@ -49,7 +49,7 @@ const PAL = {
 };
 
 /** faded green-grey coarse wool twill (coat) */
-const COAT = surface('twill', { rough: 0.95, sheen: 0.2, pat: { weave: -1.6, fur: 0.25 } });
+const COAT = surface('twill', { rough: 0.88, sheen: 0.2, pat: { weave: -1.8, fur: 0.25 } });
 /** stitched, creased brown leather (vest, belts, pouches) */
 const LEATHER = surface('leather_worn', { rough: 0.66, sheen: 0.1 });
 /** embossed brown leather (bracers, boots, scabbard) */
@@ -74,6 +74,7 @@ function hairLocks(ctx: KindContext) {
   const mat = surface('hair', { rough: 0.85, sheen: 0.08 });
   const sec = (y: number) => torsoSection(P, Math.min(y, ny - 0.01 * sc));
   const top = ny + 0.05 * sc;
+  const underTop = ny - 0.01 * sc;
   const n = 24;
   // a darker undercoat first: wide, shallow locks hugging the back, so neither skin nor coat shows between the locks
   for (let k = 0; k < 10; k++) {
@@ -83,7 +84,7 @@ function hairLocks(ctx: KindContext) {
     const pts: V3[] = [];
     for (let i = 0; i <= 6; i++) {
       const t = i / 6;
-      const y = top + (y1 - top) * t;
+      const y = underTop + (y1 - underTop) * t;
       pts.push([x0 * (1 + 0.05 * t), y, sec(y).zb - 0.02 * sc]);
     }
     put(ctx, taperedTube(pts, 0.022 * sc, 0.008 * sc, { seg: 8, radial: 4 }), { bone: 'chest', color: 0x2e1f16, mat, small: true });
@@ -91,7 +92,7 @@ function hairLocks(ctx: KindContext) {
   for (let k = 0; k < n; k++) {
     const f = k / (n - 1);
     const x0 = (-0.13 + 0.26 * f) * sc * (1 - 0.1 * Math.abs(f - 0.5));
-    const y1 = ny - (0.15 + 0.14 * rng.float()) * sc;
+    const y1 = ny - (0.15 + 0.14 * rng.float()) * sc * (0.85 + 0.15 * rng.float());
     const phase = k * 1.9;
     const wave = (0.008 + 0.005 * rng.float()) * sc;
     const depth = (0.03 + (k % 3) * 0.008) * sc;
@@ -103,8 +104,8 @@ function hairLocks(ctx: KindContext) {
       const x = x0 * (1 + 0.08 * t) + Math.sin(t * 8 + phase) * wave * t;
       pts.push([x, y, sec(y).zb - depth + Math.cos(t * 6 + phase) * 0.005 * sc * t]);
     }
-    const root = mix3(0x3d2a1e, 0x4e3524, rng.float());
-    const tip = mix3(0x5a402c, 0x6e4e36, rng.float());
+    const root = mix3(0x3d2a1e, 0x4a3022, rng.float());
+    const tip = mix3(0x4a3022, 0x5a402c, rng.float());
     // swells out of the hair above (dark root), then tapers to a lighter tip: two tapered halves
     put(ctx, taperedTube(pts.slice(0, 4), 0.006 * sc, 0.011 * sc, { seg: 6, radial: 5 }), { bone: 'chest', color: root, mat, small: true });
     put(ctx, taperedTube(pts.slice(3), 0.011 * sc, 0.002 * sc, { seg: 10, radial: 5 }), { bone: 'chest', color: tip, mat, small: true });
@@ -144,10 +145,10 @@ function aragornExtras(ctx: KindContext) {
   sculptTorso(ctx, { color: PAL.shirt, mat: LINEN, inflate: 0.0066 * sc, hem: 0.1, sleeve: 2, neck: true, seams: true });
 
   // ── the coat: knee-length, open down the front (vest and shirt show), long sleeves ──
-  sculptTorso(ctx, { color: PAL.coat, color2: PAL.coatTrim, mat: COAT, inflate: 0.0185 * sc, hem: 0.2, sleeve: 2, neck: false, seams: true, frontOpen: { top: 0.07 * sc, bottom: 0.03 * sc, y1: ny } });
+  sculptTorso(ctx, { color: PAL.coat, color2: PAL.coatTrim, mat: COAT, inflate: 0.024 * sc, hem: 0.2, sleeve: 2, neck: false, seams: true, frontOpen: { top: 0.09 * sc, bottom: 0.06 * sc, y1: ny } });
   if (!devSkip('skirt')) {
-    const skirtTop = beltY - 0.03 * sc;
-    const skirt = { top: skirtTop, bottom: COAT_HEM * sc, color: PAL.coat, color2: PAL.coatFray, mat: COAT, flare: 0.07 * sc, ragged: 0.008 * sc, tatter: 0.011 * sc, seed: spec.seed ?? 0 };
+    const skirtTop = beltY - 0.07 * sc;
+    const skirt = { top: skirtTop, bottom: COAT_HEM * sc, color: PAL.coat, color2: PAL.coatFray, mat: COAT, flare: 0.07 * sc, ragged: 0.008 * sc, tatter: 0.006 * sc, seed: spec.seed ?? 0 };
     // two long panels from the belt to the hem, the front open a little, plus a short patch closing the back vent down to 0.75 m
     attachSkinned(ctx, skirtGeometry(P, rig, { ...skirt, panels: [[-3.05, -0.3], [0.3, 3.05]] }), 'body', { small: false, name: 'skirt' });
     attachSkinned(ctx, skirtGeometry(P, rig, { ...skirt, bottom: 0.75 * sc, tatter: 0, panels: [[3.0, 3.28]] }), 'body', { small: false, name: 'skirt-back' });
@@ -211,7 +212,9 @@ function aragornExtras(ctx: KindContext) {
   const zf = 0.108 * sc * P.build.bulk * (1 + P.build.belly * 0.4) + 0.034 * sc;
   put(ctx, new THREE.BoxGeometry(0.044 * sc, 0.036 * sc, 0.008 * sc).translate(0, beltY, zf), { bone: 'hips', color: PAL.steel, mat: 'metal', small: true });
   // a second, narrower belt slung below the first
-  sculptBand(ctx, { color: PAL.belt, mat: LEATHER, y0: beltY - 0.085 * sc, y1: beltY - 0.045 * sc, inflate: 0.02 * sc, seams: true });
+  sculptBand(ctx, { color: PAL.belt, mat: LEATHER, y0: beltY - 0.085 * sc, y1: beltY - 0.045 * sc, inflate: 0.034 * sc, seams: true });
+  // the main belt as an overlay band, so it stands proud of the coat all the way round
+  sculptBand(ctx, { color: PAL.belt, mat: LEATHER, y0: beltY - 0.024 * sc, y1: beltY + 0.024 * sc, inflate: 0.034 * sc, seams: true });
   // pouches: a flapped one at the right front hip and a small one at the right back
   const pouch = (x: number, z: number, size: number) =>
     s.group('union', 0.004 * sc, () => {
@@ -226,7 +229,12 @@ function aragornExtras(ctx: KindContext) {
     pouch(x, z, 1.0);
     put(ctx, studs([[x, beltY - 0.043 * sc, z + 0.027 * sc]], 0.0045 * sc), { bone: 'hips', color: PAL.steel, mat: 'metal', small: true });
   }
-  pouch(-0.075 * sc, -0.135 * sc, 0.72);
+  {
+    // the rear pouch sits on the coat surface, about 1.3 x its old size
+    const x = -0.09 * sc;
+    const sec = torsoSection(P, beltY - 0.065 * sc);
+    pouch(x, sec.zb - 0.04 * sc, 0.94);
+  }
   sheathed(ctx, {
     kind: 'sword',
     hand: 'hand_r',
@@ -248,7 +256,7 @@ function aragornExtras(ctx: KindContext) {
 export const aragornDef: KindDef = {
   label: 'Aragorn',
   height: 1.88,
-  build: { shoulders: 1.04, hips: 0.98, bulk: 1.02, chest: 1.0, armLength: 1.01, legLength: 1.0, headSize: 0.98, neck: 1.0, neckThick: 1.12, handSize: 1.05, footSize: 1.03, muscle: 0.15 },
+  build: { shoulders: 1.01, hips: 0.98, bulk: 1.02, chest: 1.0, armLength: 1.01, legLength: 1.0, headSize: 0.98, neck: 1.0, neckThick: 1.12, handSize: 1.05, footSize: 0.95, muscle: 0.08 },
   face: {
     jaw: 1.08,
     jawLength: 1.03,
