@@ -30,7 +30,8 @@ Lab URL options for humanoid subjects:
 
 | Option | Effect |
 |---|---|
-| `&portrait=1&focus=head&zoom=0.15` | frame the face (quivers, bows and helmets no longer push the head-focus framing off the face) |
+| `&portrait=1&focus=head&zoom=0.15` | frame the face from the head bone's world position (works for hunched bosses, trolls and short dwarves/goblins; quivers, bows and helmets no longer push it off the face) |
+| `&anim=sheet` | lab-only reference-sheet stance (feet hip-to-shoulder apart, arms ~20° out, blades hanging down beside the thigh, bows/shields vertical, spears upright): use it with `view=turn&ref=<id>` so the calibrated silhouette compares body, not pose (`humanoid/sheetPose.ts`) |
 | `&weapons=none` | no held or stowed weapons (clean silhouettes / close-ups) |
 | `&weapon=crossbow&offhand=none` | override the held items |
 | `&lod=1` / `&lod=2` | preview the reduced geometry and the cheap animation path |
