@@ -835,6 +835,8 @@ export interface PlayerAPI extends Combatant {
    * `{ lunge: true, damage: true }` for the gameplay stroke.
    */
   playMelee?(hit: 1 | 2 | 3, opts?: { lunge?: boolean; damage?: boolean }): void;
+  /** abandon a bow draw without loosing it (pause, cinematic start); melee, dash and focus are untouched */
+  cancelDraw?(): void;
 }
 
 /** a timed player stat modifier (PlayerAPI.addModifier) */
