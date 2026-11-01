@@ -165,7 +165,11 @@ function paintRohan(ctx: Ctx, w: number, h: number) {
     ctx.fillStyle = 'rgba(8,14,8,0.65)';
     ctx.fillRect(x0 - 1, 0, 2.4, h);
   }
-  // the rearing horse (facing left), cream paint: built from thick round-capped strokes and ellipses
+  // the rearing horse (facing left), cream paint: built from thick round-capped strokes and ellipses.
+  // Drawn at its natural aspect (uniform scale) and centred, fully inside the rim, with the boss on its barrel.
+  ctx.save();
+  ctx.translate(w * 0.06, h * 0.084);
+  ctx.scale(0.8, 0.8);
   const cream = '#d2c294';
   ctx.fillStyle = cream;
   ctx.strokeStyle = cream;
@@ -231,6 +235,7 @@ function paintRohan(ctx: Ctx, w: number, h: number) {
   ctx.moveTo(S(0.5), S(0.43));
   ctx.quadraticCurveTo(S(0.6), S(0.5), S(0.66), S(0.55));
   ctx.stroke();
+  ctx.restore();
   // iron rim ring (the mesh rim covers the outer edge; the paint under it is dark iron)
   const rr = ctx.createRadialGradient(w / 2, h / 2, w * 0.455, w / 2, h / 2, w * 0.5);
   rr.addColorStop(0, 'rgba(40,34,28,0)');
