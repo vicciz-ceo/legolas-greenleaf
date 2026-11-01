@@ -1,31 +1,28 @@
 /**
- * Parts for the human kinds (easterling, haradrim): layered pauldrons, scale armour surfaces,
- * jewellery, plumes, forearm cuffs, skinned cloth sheets and a few shared sculpted pieces.
+ * Parts for the human kinds (easterling, haradrim): shoulder lames, scale armour surfaces, jewellery, plumes,
+ * forearm cuffs, a few-triangle skinned cloth sheet builder and some shared sculpted pieces.
  */
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import type { Rng } from '../../../../core/rng';
-import { makeSkinnedMesh } from '../../../kit/rig';
+import { noise2 } from '../../../../core/rng';
+import { makeSkinnedMesh, type RigDef } from '../../../kit/rig';
 import type { V3 } from '../../../kit/sdf';
-import { surface, type SurfaceName, type SurfaceSpec } from '../../../kit/surfaces';
+import { SURFACES, surface, type SurfaceName, type SurfaceSpec } from '../../../kit/surfaces';
 import { anatomyParts, emitParts } from '../../anatomy';
-import { skirtGeometry } from '../../cloth';
+import type { Proportions } from '../../proportions';
 import type { KindContext } from '../../types';
-import { put, ring, shell, spike, studs, taperedTube } from './armor';
+import { put, shell, spike, studs, taperedTube } from './armor';
 import { placeAlong, snapPoint, V, type Projector } from '../uruks_bosses/common';
 
-/** gilded bronze scale armour: dark stippled bronze, big overlapping scales (sheet: worn gilt scales) */
-export const GOLD_SCALES = surface('gold', { rough: 0.5, pat: { scales: 1.9, scratches: 0.6, pores: 0.45 } });
-export const BRONZE_SCALES = surface('gold', { rough: 0.55, pat: { scales: 1.9, scratches: 0.6, pores: 0.5 } });
-export const BLACK_SCALES = surface('metal_dark', { rough: 0.42, metal: 0.85, pat: { scales: 1.9, scratches: 0.5 } });
-export const LAMELLAR = surface('leather_worn', { rough: 0.6, pat: { scales: 1.6, leather: 0.8 } });
+/** gilded bronze scale armour: stippled dark bronze between big overlapping scales (sheet: worn gilt scales) */
+export const GOLD_SCALES = surface('gold', { rough: 0.5, pat: { scales: 3.2, scratches: 0.6, pores: 0.45 } });
+export const BLACK_SCALES = surface('metal_dark', { rough: 0.42, metal: 0.85, pat: { scales: 3.0, scratches: 0.5 } });
 /** worn gilt (helmets, rosettes, buckles) with hammered dents */
 export const GILT = surface('gold', { rough: 0.42, pat: { scales: -0.6, scratches: 0.7, pores: 0.4 } });
 /** woven wool/linen for the red cloth (soft sheen tinted by the albedo) */
 export const WOVEN = surface('cloth', { rough: 0.9, sheen: 0.35, pat: { weave: 1.2 } });
 
 /** layered, rounded shoulder plates with edge rings and an optional spike */
-export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; layers?: number; size?: number; spike?: number; sides?: ('l' | 'r')[]; drop?: number }) {
+export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: number; mat?: SurfaceName | SurfaceSpec; trimMat?: SurfaceName | SurfaceSpec; layers?: number; size?: number; spike?: number; sides?: ('l' | 'r')[]; drop?: number; tilt?: number }) {
   const { P } = ctx;
   const s = P.s;
   const g = Math.sqrt(P.build.bulk);
@@ -40,7 +37,7 @@ export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: nu
       const geo = shell(R, R * 0.75, R * 1.05, { th0: 0, th1: th, w: 10, h: 4 });
       const m = new THREE.Matrix4()
         .makeTranslation(sh[0] + sx * 0.018 * s, sh[1] + (0.032 - k * (o.drop ?? 0.032)) * s, sh[2])
-        .multiply(new THREE.Matrix4().makeRotationZ(-sx * (0.6 + k * 0.1)));
+        .multiply(new THREE.Matrix4().makeRotationZ(-sx * ((o.tilt ?? 0.6) + k * 0.1)));
       put(ctx, geo, { bone: `upperarm_${side}`, color: o.color, mat: o.mat ?? 'gold', matrix: m });
       const rg = new THREE.TorusGeometry(R * 0.99, 0.0045 * s * 1.3, 3, 12).rotateX(Math.PI / 2);
       rg.scale(Math.sin(th), 1, Math.sin(th) * 1.05).translate(0, Math.cos(th) * R * 0.75, 0);
@@ -50,24 +47,14 @@ export function layeredPauldrons(ctx: KindContext, o: { color: number; trim?: nu
   }
 }
 
-/** gold neck ring (torque), arm bangles and ear rings */
-export function jewelry(ctx: KindContext, o: { color?: number; neck?: boolean; arms?: number; ears?: boolean; rng?: Rng; armT?: number }) {
+/** gold neck ring (torque) and ear rings */
+export function jewelry(ctx: KindContext, o: { color?: number; neck?: boolean; ears?: boolean }) {
   const { P } = ctx;
   const s = P.s;
   const c = o.color ?? 0xb58d3d;
   if (o.neck) {
     const r = (0.066 * P.build.neckThick * Math.sqrt(P.build.bulk) + 0.012) * s;
     put(ctx, new THREE.TorusGeometry(r, 0.0075 * s, 6, 20).rotateX(Math.PI / 2 - 0.25).translate(0, P.j.neck[1] + 0.012 * s, 0.0), { bone: 'neck', color: c, mat: GILT, small: true });
-  }
-  for (let i = 0; i < (o.arms ?? 0); i++) {
-    for (const sd of ['l', 'r'] as const) {
-      const a = P.j[`forearm_${sd}`];
-      const w = P.j[`hand_${sd}`];
-      const t = (o.armT ?? 0.3) + i * 0.16;
-      const p: V3 = [a[0] + (w[0] - a[0]) * t, a[1] + (w[1] - a[1]) * t, a[2]];
-      const d: V3 = [w[0] - a[0], w[1] - a[1], 0];
-      put(ctx, ring(p, d, 0.037 * s * (1 - t * 0.35), 0.0055 * s, 10), { bone: `forearm_${sd}`, color: c, mat: GILT, small: true });
-    }
   }
   if (o.ears) {
     for (const sd of [1, -1]) put(ctx, new THREE.TorusGeometry(0.014 * s, 0.0025 * s, 4, 10).translate(...P.h(sd * 0.36, -0.2, -0.015)), { bone: 'head', color: c, mat: GILT, small: true });
@@ -88,9 +75,9 @@ export function plume(ctx: KindContext, o: { color: number; length?: number; y?:
   }
 }
 
-/** a short upright horsehair crest running front to back over a dome helmet (Easterling helm): rises from the brow to a
- *  peak behind the crown and falls to the nape */
-export function crest(ctx: KindContext, o: { color: number; height?: number; profile: [number, number][]; y?: number; zs?: number; mat?: SurfaceName; tail?: number }) {
+/** a low horsehair fin along the crown of a dome helmet (Easterling helm): about `height` m tall, a thin blade centred on the
+ *  ridge from just behind the brow to the back of the crown, highest toward the rear */
+export function crest(ctx: KindContext, o: { color: number; height: number; profile: [number, number][]; y?: number; zs?: number; mat?: SurfaceName }) {
   const { P } = ctx;
   const u = P.headH;
   const zs = o.zs ?? 1.28;
@@ -99,16 +86,28 @@ export function crest(ctx: KindContext, o: { color: number; height?: number; pro
   const ridge: [number, number][] = []; // (z, y) in head units along the dome's centre line, front to back
   for (let i = 1; i <= n - 2; i++) ridge.push([prof[i][0] * zs - 0.06, prof[i][1] + 0.075 + (o.y ?? 0)]);
   for (let i = n - 2; i >= 1; i--) ridge.push([-prof[i][0] * zs - 0.06, prof[i][1] + 0.075 + (o.y ?? 0)]);
-  const pts: V3[] = ridge.map(([z, y], i) => {
-    const t = i / (ridge.length - 1);
-    return P.h(0, y + 0.03 + (o.height ?? 0.2) * Math.pow(Math.sin(Math.PI * Math.min(1, t * 0.9 + 0.05)), 1.3), z);
+  const i0 = Math.floor(ridge.length * 0.3);
+  const i1 = Math.ceil(ridge.length * 0.84);
+  const seg = ridge.slice(i0, i1 + 1);
+  const pos: number[] = [];
+  const idx: number[] = [];
+  const w = 0.005 * P.s;
+  seg.forEach(([z, y], i) => {
+    const t = i / (seg.length - 1);
+    const h = o.height * Math.pow(t, 0.55) * Math.pow(1 - t, 0.45) * 2.0;
+    const base = P.h(0, y - 0.02, z);
+    const top: V3 = [base[0], base[1] + h + 0.02 * u, base[2]];
+    for (const [x, q] of [[-w, base], [w, base], [-w, top], [w, top]] as [number, V3][]) pos.push(q[0] + x, q[1], q[2]);
   });
-  // only the crown part of the ridge carries the horsehair
-  const crownPts = pts.slice(Math.floor(pts.length * 0.22), Math.ceil(pts.length * 0.9));
-  const last = crownPts[crownPts.length - 1];
-  crownPts.push([last[0], last[1] - (o.tail ?? 0.06) * u, last[2] - 0.05 * u]);
-  const g = taperedTube(crownPts, 0.08 * u, 0.05 * u, { seg: 12, radial: 5 });
-  g.scale(0.5, 1, 1); // a blade of horsehair, not a round rope
+  for (let i = 0; i + 1 < seg.length; i++) {
+    const a = i * 4;
+    const b = a + 4;
+    idx.push(a, a + 2, b, b, a + 2, b + 2, a + 1, b + 1, a + 3, b + 1, b + 3, a + 3, a + 2, a + 3, b + 2, b + 2, a + 3, b + 3);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
   put(ctx, g, { bone: 'head', color: o.color, mat: o.mat ?? 'hair', small: true });
 }
 
@@ -129,7 +128,8 @@ export function studdedBand(ctx: KindContext, o: { y: number; color: number; n?:
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// skinned cloth sheets (the kit's own skirt geometry with per-bucket panels and colours)
+// skinned cloth sheets: the kit's skirt weighting (hips / thighs / skirt_f, skirt_b) on a grid we control, so a skirt or a
+// coat costs a few hundred triangles (one or two divisions per colour column) instead of the kit's fixed 3.5 cm cells
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** attach a geometry carrying kit skin weights as a skinned mesh sharing the body material */
@@ -167,62 +167,157 @@ export function attachBodySkinned(ctx: KindContext, geo: THREE.BufferGeometry, n
   );
 }
 
-export interface SkirtOpts {
+/** one colour column of a sheet: from angle a0 to a1 (radians from +Z toward +X), `nu` divisions, pushed out by `out` m */
+export interface SheetCol {
+  a0: number;
+  a1: number;
   color: number;
-  color2?: number;
-  mat?: SurfaceName | SurfaceSpec;
-  /** hem height (m) */
+  nu?: number;
+  out?: number;
+}
+
+export interface SheetOpts {
+  cols: SheetCol[];
+  top: number;
   bottom: number;
-  /** top (m); default just above the hip joints */
-  top?: number;
-  panels: [number, number][];
-  flare?: number;
-  ragged?: number;
-  grow?: number;
-  tatter?: number;
-  strips?: { count: number; color: number; color2?: number; mat?: SurfaceName | SurfaceSpec; width: number; length: number; phase?: number };
-  name?: string;
+  /** radii at the waist (default: the kit skirt's) and at the hem */
+  rx0?: number;
+  rz0?: number;
+  rx1: number;
+  rz1: number;
+  /** radius(v) = r0 + (r1 - r0) * v^curve with v 0 at the top and 1 at the hem (the kit uses 0.5) */
+  curve?: number;
+  rows?: number;
+  mat?: SurfaceName | SurfaceSpec;
+  /** a hem band of `band` (fraction of the height) in another colour */
+  hem?: { color: number; band: number };
+  /** soft fold amplitude (m) */
+  fold?: number;
+  seed?: number;
 }
 
-/** skirt / coat-tail panels from the hips down (the outfit needs a `skirt` layer with `chance: 0` so the spring bones exist).
- *  Several sheets can be passed; they are merged into one skinned mesh (one draw call). */
-export function addSkirtCloth(ctx: KindContext, opts: SkirtOpts | SkirtOpts[]) {
-  const { P, rig, spec } = ctx;
-  const hipY = P.j.thigh_l[1];
-  const list = Array.isArray(opts) ? opts : [opts];
-  const geos = list.map((o) =>
-    skirtGeometry(P, rig, {
-      top: o.top ?? hipY + 0.035 * P.s,
-      bottom: o.bottom,
-      color: o.color,
-      color2: o.color2,
-      mat: o.mat ?? WOVEN,
-      panels: o.panels,
-      flare: o.flare,
-      ragged: o.ragged,
-      grow: o.grow,
-      tatter: o.tatter,
-      strips: o.strips,
-      seed: spec.seed ?? 0,
-    }),
-  );
-  const geo = geos.length === 1 ? geos[0] : mergeGeometries(geos, false);
-  if (geos.length > 1) for (const g of geos) g.dispose();
-  attachBodySkinned(ctx, geo, list[0].name ?? 'skirt');
-}
+const _c = new THREE.Color();
 
-/** radius (x, z) of the kit's skirt sheet at height y (mirrors `skirtGeometry`), to hang things on it */
-export function skirtRadius(P: KindContext['P'], top: number, bottom: number, y: number, flare?: number, grow = 0): { rx: number; rz: number } {
+/** default waist radii of the kit's skirt, for sheets that start at the hips */
+export function waistRadii(P: Proportions, grow = 0): { rx0: number; rz0: number } {
   const s = P.s;
-  const g = P.build.bulk;
-  const rx0 = 0.158 * s * P.build.hips * Math.sqrt(g) + 0.012 * s + grow;
-  const rz0 = 0.112 * s * Math.sqrt(g) + 0.012 * s + grow;
-  const legR = 0.08 * s * g;
-  const fl = flare ?? 0.04 * s;
-  const rx1 = Math.max(rx0, P.hipX + legR + 0.03 * s + grow) + fl;
-  const rz1 = Math.max(rz0, legR + 0.035 * s + grow) + fl * 0.8;
-  const vv = Math.min(1, Math.max(0, (top - y) / (top - bottom)));
-  return { rx: rx0 + (rx1 - rx0) * Math.sqrt(vv), rz: rz0 + (rz1 - rz0) * Math.sqrt(vv) - 0.01 * s };
+  const sg = Math.sqrt(P.build.bulk);
+  return { rx0: 0.158 * s * P.build.hips * sg + 0.012 * s + grow, rz0: 0.112 * s * sg + 0.012 * s + grow };
+}
+
+/** radius (x, z) of a sheet at height y, to hang things on it */
+export function sheetRadius(P: Proportions, o: SheetOpts, y: number): { rx: number; rz: number } {
+  const w = waistRadii(P);
+  const v = Math.min(1, Math.max(0, (o.top - y) / (o.top - o.bottom)));
+  const r = Math.pow(v, o.curve ?? 0.7);
+  const rx0 = o.rx0 ?? w.rx0;
+  const rz0 = o.rz0 ?? w.rz0;
+  return { rx: rx0 + (o.rx1 - rx0) * r, rz: rz0 + (o.rz1 - rz0) * r - 0.01 * P.s };
+}
+
+/** the sheets as one geometry with the kit's attribute layout (merged: one draw call) */
+export function sheetGeometry(P: Proportions, rig: RigDef, sheets: SheetOpts[]): THREE.BufferGeometry {
+  const pos: number[] = [];
+  const col: number[] = [];
+  const surf: number[] = [];
+  const pat0: number[] = [];
+  const pat1: number[] = [];
+  const seam: number[] = [];
+  const ao: number[] = [];
+  const si: number[] = [];
+  const sw: number[] = [];
+  const idx: number[] = [];
+  const s = P.s;
+  const iH = rig.boneIndex('hips');
+  const iTL = rig.boneIndex('thigh_l');
+  const iTR = rig.boneIndex('thigh_r');
+  const iSF = rig.boneIndex('skirt_f');
+  const iSB = rig.boneIndex('skirt_b');
+  const w: [number, number][] = [];
+  for (const o of sheets) {
+    const spec: SurfaceSpec = typeof o.mat === 'string' ? SURFACES[o.mat] : o.mat ?? SURFACES.cloth;
+    const H = o.top - o.bottom;
+    const band = o.hem?.band ?? 0;
+    const rows = o.rows ?? 6;
+    const vs: number[] = [];
+    for (let i = 0; i <= rows; i++) vs.push((i / rows) * (1 - band));
+    if (band > 0) vs.push(1);
+    const aMin = Math.min(...o.cols.map((c) => c.a0));
+    const aMax = Math.max(...o.cols.map((c) => c.a1));
+    const closed = aMax - aMin > Math.PI * 2 - 0.02;
+    const waist = waistRadii(P);
+    const rx0 = o.rx0 ?? waist.rx0;
+    const rz0 = o.rz0 ?? waist.rz0;
+    const curve = o.curve ?? 0.7;
+    const seed = o.seed ?? 3;
+    const n2 = noise2(seed);
+    for (const c of o.cols) {
+      const nu = c.nu ?? 1;
+      const start = pos.length / 3;
+      for (let iv = 0; iv < vs.length; iv++) {
+        const v = vs[iv];
+        const rr = Math.pow(v, curve);
+        const ease = v * v * (3 - 2 * v);
+        const hemmed = o.hem !== undefined && v >= 1;
+        _c.setHex(hemmed ? o.hem!.color : c.color, THREE.SRGBColorSpace);
+        for (let iu = 0; iu <= nu; iu++) {
+          const a = c.a0 + ((c.a1 - c.a0) * iu) / nu;
+          const rx = rx0 + (o.rx1 - rx0) * rr + (c.out ?? 0);
+          const rz = rz0 + (o.rz1 - rz0) * rr + (c.out ?? 0);
+          const fold = (o.fold ?? 0) * (n2(a * 3, seed) + Math.sin(a * 7 + seed)) * 0.5 * ease;
+          pos.push(Math.sin(a) * (rx + fold), o.top - H * v, Math.cos(a) * (rz + fold) - 0.01 * s);
+          col.push(_c.r, _c.g, _c.b);
+          surf.push(spec.rough, spec.metal, spec.sheen, spec.skin);
+          pat0.push(spec.pat[0], spec.pat[1], spec.pat[2], spec.pat[3]);
+          pat1.push(spec.pat[4], spec.pat[5], spec.pat[6], spec.pat[7]);
+          const edge = Math.min(H * (1 - v), closed ? 9 : (a - aMin) * rx, closed ? 9 : (aMax - a) * rx);
+          seam.push(-Math.min(0.03, edge), 1);
+          ao.push(0.55 + 0.45 * v);
+          // weights as the kit's skirt: hips at the top, thighs at the sides, skirt_f / skirt_b front and back
+          w.length = 0;
+          const side = Math.sin(a);
+          const front = Math.max(0, Math.cos(a));
+          const back = Math.max(0, -Math.cos(a));
+          const lower = Math.min(1, v * 1.25);
+          w.push([iH, Math.max(0.0001, 1 - lower * 0.9)], [iTL, side > 0 ? side * side * lower : 0], [iTR, side < 0 ? side * side * lower : 0]);
+          if (iSF >= 0) w.push([iSF, front * front * lower * 0.9]);
+          if (iSB >= 0) w.push([iSB, back * back * lower * 0.9]);
+          w.sort((x, y) => y[1] - x[1]);
+          let sum = 0;
+          for (let i = 0; i < 4; i++) sum += w[i]?.[1] ?? 0;
+          sum = sum || 1;
+          for (let i = 0; i < 4; i++) {
+            si.push(w[i]?.[0] ?? 0);
+            sw.push((w[i]?.[1] ?? 0) / sum);
+          }
+        }
+      }
+      for (let iv = 0; iv < vs.length - 1; iv++)
+        for (let iu = 0; iu < nu; iu++) {
+          const a = start + iv * (nu + 1) + iu;
+          const b = a + nu + 1;
+          idx.push(a, b, a + 1, a + 1, b, b + 1);
+        }
+    }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  g.setAttribute('surf', new THREE.Float32BufferAttribute(surf, 4));
+  g.setAttribute('pat0', new THREE.Float32BufferAttribute(pat0, 4));
+  g.setAttribute('pat1', new THREE.Float32BufferAttribute(pat1, 4));
+  g.setAttribute('seam', new THREE.Float32BufferAttribute(seam, 2));
+  g.setAttribute('ao', new THREE.Float32BufferAttribute(ao, 1));
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(si, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(sw, 4));
+  g.setIndex(new THREE.BufferAttribute(Uint32Array.from(idx), 1));
+  g.computeVertexNormals();
+  return g;
+}
+
+/** skirt / coat sheets from the hips down (the outfit needs a `skirt` layer with `chance: 0` so the spring bones exist) */
+export function addClothSheets(ctx: KindContext, sheets: SheetOpts[], name = 'cloth') {
+  attachBodySkinned(ctx, sheetGeometry(ctx.P, ctx.rig, sheets), name);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
