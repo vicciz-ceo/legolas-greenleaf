@@ -177,7 +177,7 @@ function shadowFace(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
   s.ellipsoid(P.h(0, -0.18, 0.22), [0.42 * u, 0.46 * u, 0.42 * u], { op: 'paint', color: 0x14100d, mat: 'skin', bone: 'head', k: 0.03 * u, strength: 1 });
-  s.ellipsoid(P.h(0, -0.8, -0.02), [0.32 * u, 0.3 * u, 0.32 * u], { op: 'paint', color: 0x1a1410, mat: 'skin', bone: 'neck', k: 0.03 * u, strength: 1 });
+  s.ellipsoid(P.h(0, -0.9, -0.02), [0.55 * u, 0.5 * u, 0.55 * u], { op: 'paint', color: 0x1a1410, mat: 'skin', bone: 'neck', k: 0.03 * u, strength: 1 });
 }
 
 function helmet(ctx: KindContext, look: Look) {

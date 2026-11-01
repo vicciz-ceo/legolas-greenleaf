@@ -12,13 +12,13 @@ import { surface } from '../../../kit/surfaces';
 import { anatomyParts, emitParts, type PartTag } from '../../anatomy';
 import { sculptHairCap } from '../../hairstyles';
 import type { KindContext, KindDef } from '../../types';
-import { makeProjector, snapPoint, V } from '../uruks_bosses/common';
+import { makeProjector, paintSnapped, snapPoint, V, type SnapPoint } from '../uruks_bosses/common';
 import { put, studs } from './armor';
 import { ctxBucket, devNum, recipeRng } from './common';
 import { limbCutBefore, sculptBand, slab } from './garments';
 import { addHairdo, withHair } from './hair';
 import { DOME_ROUND, domeHelm } from './headgear';
-import { faceStroke, scalpStroke } from './markings';
+import { scalpStroke } from './markings';
 import { GILT, addClothSheets, cowl, forearmBand, jewelry, layeredPauldrons, plume, surfaceMatrix, type SheetCol, type SheetOpts } from './menparts';
 
 /** sRGB albedos from docs/refs/haradrim/spec.json (outfit_layers, face, hair), cross-checked with the lit samples */
@@ -74,16 +74,37 @@ function browsAndFace(ctx: KindContext) {
   s.mirrored(() => s.ellipsoid(P.h(0.17, 0.09, 0.34), [0.13 * u, 0.035 * u, 0.07 * u], { op: 'paint', color: PALETTE.brows, mat: 'skin', bone: 'head', k: 0.03 * u, strength: 0.75 }));
 }
 
-/** war paint as thin soft strokes (anything thinner than the head mesh cell would vanish; anything stronger leaves white specks) */
-function paintStrokes(ctx: KindContext, strokes: [number, number][][], r: number) {
-  for (const st of strokes) faceStroke(ctx, st, { color: PALETTE.paint, r, mat: 'skin', strength: 0.85 });
+/** war-paint strokes (head units: x left+, y up) queued by the look and painted last, snapped onto the finished sculpt.
+ *  Painting them in head space at build time never showed: the cheek surface sits much further forward than the template
+ *  `facePoint` assumes, so the strokes ended up inside the head. */
+const pendingPaint = new WeakMap<object, [number, number][][]>();
+function queuePaint(ctx: KindContext, strokes: [number, number][][]) {
+  pendingPaint.set(ctx, [...(pendingPaint.get(ctx) ?? []), ...strokes]);
 }
 
-/** the sheet's paint: a short brow line and a chevron on each cheek (the forehead diamond sits under the turban) */
+/** paint the queued strokes: a snapped cast from the front onto the sculpt, 0.75 cm radius (a stroke thinner than the head mesh cell vanishes) */
+function paintQueued(ctx: KindContext) {
+  const strokes = pendingPaint.get(ctx);
+  if (!strokes) return;
+  const { P, sculpt: s } = ctx;
+  const a = P.h(-0.55, -0.7, -0.7);
+  const b = P.h(0.55, 0.6, 0.8);
+  const proj = makeProjector(s, { min: [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.min(a[2], b[2])], max: [Math.max(a[0], b[0]), Math.max(a[1], b[1]), Math.max(a[2], b[2])] });
+  if (!proj) return;
+  for (const st of strokes) {
+    const pts: SnapPoint[] = st.map(([x, y]) => {
+      const q = P.h(x, y, 0.5);
+      return [q[0], q[1], q[2], 'f'];
+    });
+    paintSnapped(s, proj, pts, 0.0075 * P.s, { color: PALETTE.paint, mat: 'skin', bone: 'head', k: 0.003 * P.s, strength: 0.75 });
+  }
+}
+
+/** the sheet's paint: a forehead line, brow ticks and a chevron on each upper cheek */
 function sheetPaint(ctx: KindContext) {
-  const strokes: [number, number][][] = [[[0, 0.12], [0, 0.0]]];
-  for (const sd of [1, -1]) strokes.push([[sd * 0.33, 0.0], [sd * 0.2, -0.1], [sd * 0.32, -0.22]], [[sd * 0.26, -0.3], [sd * 0.22, -0.36]]);
-  paintStrokes(ctx, strokes, 0.022);
+  const strokes: [number, number][][] = [[[0, 0.16], [0, 0.06]]];
+  for (const sd of [1, -1]) strokes.push([[sd * 0.3, -0.06], [sd * 0.2, -0.16], [sd * 0.3, -0.26]], [[sd * 0.1, 0.07], [sd * 0.26, 0.05]]);
+  queuePaint(ctx, strokes);
 }
 
 /** the short charcoal beard (chin, jaw, sideburns) built from overlapping ellipsoids, and a separate moustache bar over the closed mouth:
@@ -106,14 +127,14 @@ function shortBeard(ctx: KindContext) {
 function turban(ctx: KindContext, o: { color: number; color2: number; y?: number; tall?: number }) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
-  const y0 = o.y ?? 0.2;
-  const tall = o.tall ?? 0.85;
+  const y0 = o.y ?? 0.15;
+  const tall = o.tall ?? 1.05;
   s.with({ color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 20 / P.s, mat: RED_COAT, bone: 'head', noise: { amp: 0.0035 * P.s, freq: 36 / P.s, type: 'ridged', octaves: 2 } }, () => {
     s.group('union', 0.012 * u, () => {
-      s.ellipsoid(P.h(0, y0 + 0.22 * tall, -0.07), [0.43 * u, 0.36 * u * tall, 0.5 * u], { k: 0.03 * u });
-      for (let i = 0; i < 5; i++) {
-        const f = i / 4;
-        s.torus(P.h(0, y0 + 0.05 + f * 0.3 * tall, -0.07 - f * 0.012), 0.38 * u * (1 - f * 0.25), 0.085 * u * (1 - f * 0.2), { k: 0.02 * u, rot: [-0.3 + f * 0.25 + (i % 2 ? 0.18 : -0.12), 0, i % 2 ? 0.2 : -0.2] });
+      s.ellipsoid(P.h(0, y0 + 0.22 * tall, -0.07), [0.5 * u, 0.36 * u * tall, 0.55 * u], { k: 0.03 * u });
+      for (let i = 0; i < 6; i++) {
+        const f = i / 5;
+        s.torus(P.h(0, y0 + 0.05 + f * 0.3 * tall, -0.07 - f * 0.012), 0.45 * u * (1 - f * 0.3), 0.088 * u * (1 - f * 0.2), { k: 0.02 * u, rot: [-0.3 + f * 0.25 + (i % 2 ? 0.18 : -0.12), 0, i % 2 ? 0.2 : -0.2] });
       }
     });
     // keep the face open
@@ -131,6 +152,8 @@ function turbanScarf(ctx: KindContext, color: number, color2: number) {
     s.cone(P.h(0.42, 0.0, -0.2), P.h(0.38, -0.78, -0.05), 0.06 * u, 0.055 * u, { bone: 'head', bone2: 'neck', blend: [0.3, 1], k: 0.04 * u });
     s.cone(P.h(0.38, -0.78, -0.05), [0.1 * sc, cy + 0.17 * sc, 0.085 * sc], 0.055 * u, 0.036 * sc, { bone: 'neck', bone2: 'chest', blend: [0, 1], k: 0.03 * sc });
     s.cone([0.1 * sc, cy + 0.17 * sc, 0.085 * sc], [-0.075 * sc, cy + 0.0 * sc, 0.108 * sc], 0.036 * sc, 0.027 * sc, { bone: 'chest', k: 0.02 * sc });
+    // a second tail end hanging at the back left from the wrap
+    s.cone(P.h(0.2, 0.05, -0.55), [0.075 * sc, cy - 0.06 * sc, -0.125 * sc], 0.1 * u, 0.045 * u, { bone: 'head', bone2: 'chest', blend: [0.2, 0.95], k: 0.04 * u });
     // the back tail from the nape down between the shoulder blades
     s.cone(P.h(0, -0.25, -0.45), [0, cy + 0.04 * sc, -0.118 * sc], 0.2 * u, 0.14 * u, { bone: 'head', bone2: 'chest', blend: [0.2, 0.9], k: 0.05 * u });
   });
@@ -272,9 +295,7 @@ function head(ctx: KindContext, look: Look, rng: Rng) {
     case 'braided': {
       sculptHairCap(s, P, { style: 'short', color: 0x0e0a08, length: 1, density: 1 });
       addHairdo(ctx, { color: 0x100c0a, tip: 0x1e1814, deep: 0x080606, length: 0.4 * sc, count: 70, width: 0.03, wave: 0.9, wild: 0.6, comb: 0.8, front: 0.24, back: -0.4, gravity: 5, tail: 0.3 * sc, segments: 5 }, rng);
-      const strokes: [number, number][][] = [[[0, 0.22], [0, -0.05]]];
-      for (const sd of [1, -1]) strokes.push([[sd * 0.33, 0.0], [sd * 0.2, -0.1], [sd * 0.32, -0.22]], [[sd * 0.2, 0.08], [sd * 0.1, 0.04]]);
-      paintStrokes(ctx, strokes, 0.022);
+      sheetPaint(ctx);
       scalpStroke(ctx, [[0, 0.5], [0, 1.0]], { color: PALETTE.paint, r: 0.01 });
       shortBeard(ctx);
       jewelry(ctx, { color: PALETTE.gold, neck: true, ears: true });
@@ -294,7 +315,7 @@ function head(ctx: KindContext, look: Look, rng: Rng) {
     default:
       turban(ctx, { color: 0x1c1818, color2: 0x2e2220, y: 0.16, tall: 0.8 });
       turbanScarf(ctx, 0x1c1818, 0x2e2220);
-      paintStrokes(ctx, [[[0.28, -0.14], [0.1, -0.16]], [[-0.28, -0.14], [-0.1, -0.16]], [[0.22, -0.22], [0.08, -0.24]], [[-0.22, -0.22], [-0.08, -0.24]]], 0.014);
+      queuePaint(ctx, [[[0.28, -0.14], [0.1, -0.16]], [[-0.28, -0.14], [-0.1, -0.16]], [[0.22, -0.24], [0.08, -0.26]], [[-0.22, -0.24], [-0.08, -0.26]]]);
       cowl(ctx, { color: PALETTE.red, color2: PALETTE.redDeep, mat: RED_COAT, rings: 2, thick: 0.03, lift: 0.04 });
       shortBeard(ctx);
       jewelry(ctx, { color: PALETTE.gold, neck: true });
@@ -308,6 +329,7 @@ export function haradrimExtras(ctx: KindContext) {
     head(ctx, look, rng);
     dress(ctx, look);
     fittings(ctx, look.head === 'turban' || look.head === 'helm');
+    paintQueued(ctx);
   });
 }
 
