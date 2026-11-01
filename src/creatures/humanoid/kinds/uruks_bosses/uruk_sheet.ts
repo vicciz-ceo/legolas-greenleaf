@@ -13,7 +13,7 @@ import type { KindContext } from '../../types';
 import { emitParts, type Part } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
 import type { PrimOpts } from '../../../kit/sdf';
-import { V, Builder, surfaceStrip, frameAt, snapPoint, paintSnapped, ellipticalBand, rivet, ribbon, lerp, smooth, placeAlong, ringRadii, type GearFn, type Projector, type SnapMode, type SnapPoint } from './common';
+import { V, Builder, surfaceStrip, frameAt, snapPoint, paintSnapped, ellipticalBand, rivet, ribbon, lerp, smooth, placeAlong, type GearFn, type Projector, type SnapMode, type SnapPoint } from './common';
 
 export const URUK_SHEET_PAL = {
   // uruk sheet: skin_base #4d4033, lit face sample #673d2e -> a deep red-brown albedo
@@ -23,18 +23,17 @@ export const URUK_SHEET_PAL = {
   scatter: 0x7c3624,
   eyes: 0xb08c30, // iris #b29138
   // blackened_plates #454742 (lit #191512): dark brown-black iron, rust in the pits
-  iron: 0x1c1a18, // dark gunmetal
-  ironDark: 0x151311,
-  ironEdge: 0x7a736a, // worn bright edge of the lames
+  iron: 0x201a15, // blackened plate, a warm near-black (sheet lit #191512)
+  ironEdge: 0x4a2c1c, // rust on the rims only
   // black_kilt #302d27 (lit #2c2825), leather_belt #493828 (lit #1d1813), boots #352f28 (lit #27211e)
-  kilt: 0x1f1c19,
-  kilt2: 0x161412,
+  kilt: 0x24201c,
+  kilt2: 0x17140f, // hem grime
   strip: 0x231a13,
   strip2: 0x18110d,
   belt: 0x2a2018,
   boots: 0x211c18,
   boots2: 0x16120f,
-  trousers: 0x151311,
+  trousers: 0x2a241f, // near-black armoured trousers
   strap: 0x241b14,
   mail: 0x3d3d40,
   // berserker sheet: skin lit #684d44 (chest), kilt #201f20, belt #322822 (lit), wraps #241f1b, helmet #292724
@@ -49,17 +48,15 @@ export const URUK_SHEET_PAL = {
   bwrap2: 0x1c1713,
   bhelm: 0x3a3532, // rusty iron
   copper: 0x8a5a3a,
-  dirt: 0xcfc8bc, // handprints: dirty off-white (lit sheet #c8c4bf / #e7e8ea)
-  rustSword: 0x6d625a, // sword_iron lit #625955
+  dirt: 0xc8c4bf, // handprints: chalky off-white (lit sheet #c8c4bf / #e7e8ea)
 };
 
 /** blackened plate: dark gunmetal, hammered, with scratched edges (iron_rusty read as orange camouflage here) */
-export const SHEET_IRON = surface('metal_dark', { rough: 0.45, metal: 0.7, pat: { scratches: 1.2, pores: 0.4, scales: -0.4 } });
+export const SHEET_IRON = surface('metal_dark', { rough: 0.72, metal: 0.6, pat: { scratches: 1.2, pores: 0.4, scales: -0.4 } });
 export const SHEET_LEATHER = surface('leather_worn', { rough: 0.74 });
-export const SHEET_MAIL = surface('mail', { rough: 0.55 });
 
 /** distance from (cx, cz) to the first surface along (dx, dz) at height y (marching out of the leg) */
-export function exitDist(proj: Projector, cx: number, y: number, cz: number, dx: number, dz: number, max = 0.3): number {
+function exitDist(proj: Projector, cx: number, y: number, cz: number, dx: number, dz: number, max = 0.3): number {
   let t = 0;
   while (t < max && proj.dist(cx + dx * t, y, cz + dz * t) < 0) t += 0.004;
   return t;
@@ -71,7 +68,7 @@ const rimWear = (yBot: number, h: number, c0: number) => {
   return (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
     const t = 1 - smooth(0, 0.28, (p.y - yBot) / h);
     const m = 0.5 + 0.5 * Math.sin(p.x * 61 + p.z * 47) * Math.sin(p.y * 53 + p.x * 29);
-    c.lerp(edge, Math.min(0.8, 0.75 * t * (0.4 + 0.6 * m) + 0.12 * m * m));
+    c.lerp(edge, Math.min(0.85, 0.85 * t * (0.4 + 0.6 * m)));
   };
 };
 
@@ -113,7 +110,7 @@ export function greaveLames(ctx: KindContext, gear: GearFn, proj: Projector, o: 
       const h = 0.06 * sc;
       const yc = yTop - h / 2;
       const cz = j.shin_l[2];
-      const rx = (exitDist(proj, cx, yc, cz, 1, 0) + exitDist(proj, cx, yc, cz, -1, 0)) / 2;
+      const rx = Math.min(0.12 * sc, (exitDist(proj, cx, yc, cz, 1, 0) + exitDist(proj, cx, yc, cz, -1, 0)) / 2);
       const zf = exitDist(proj, cx, yc, cz, 0, 1);
       const zb = exitDist(proj, cx, yc, cz, 0, -1);
       const rz = (zf + zb) / 2;
@@ -137,12 +134,12 @@ export function beltAndFaulds(ctx: KindContext, gear: GearFn, proj: Projector, o
     [beltY - 0.054 * sc, 0.042 * sc],
   ];
   for (const [y, h] of straps) {
-    const r = ringRadii(proj, y);
+    const r = torso(proj, y);
     const m = new THREE.Matrix4().makeTranslation(0, y, 0);
     gear(ellipticalBand(r.rx + 0.014 * sc, (r.zf + r.zb) / 2 + 0.014 * sc, r.rx + 0.014 * sc, (r.zf + r.zb) / 2 + 0.014 * sc, h, 0.0065 * sc, 20, 0, Math.PI * 2, (r.zf - r.zb) / 2), { bone: 'hips', color: URUK_SHEET_PAL.belt, mat: SHEET_LEATHER, matrix: m, ao: 0.85 });
   }
   {
-    const r = ringRadii(proj, beltY - 0.02 * sc);
+    const r = torso(proj, beltY - 0.02 * sc);
     const zf = r.zf + 0.026 * sc;
     gear(new THREE.BoxGeometry(0.07 * sc, 0.09 * sc, 0.014 * sc), { bone: 'hips', color: iron, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(0, beltY - 0.022 * sc, zf), small: true });
     for (const sx of [1, -1]) for (const dy of [0.012, -0.056]) gear(rivet(0.0075 * sc, 5), { bone: 'hips', color: URUK_SHEET_PAL.ironEdge, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(sx * 0.024 * sc, beltY + dy * sc, zf + 0.007 * sc).multiply(new THREE.Matrix4().makeRotationX(Math.PI / 2)), small: true });
@@ -152,8 +149,8 @@ export function beltAndFaulds(ctx: KindContext, gear: GearFn, proj: Projector, o
   for (let k = 0; k < lames; k++) {
     const yT = top - k * 0.055 * sc;
     const h = 0.075 * sc;
-    const rt = ringRadii(proj, yT);
-    const rb = ringRadii(proj, yT - h);
+    const rt = torso(proj, yT);
+    const rb = torso(proj, yT - h);
     const out = (0.03 + k * 0.02) * sc;
     for (const sx of [1, -1]) {
       const a0 = sx > 0 ? 0.55 : -1.55;
@@ -166,7 +163,7 @@ export function beltAndFaulds(ctx: KindContext, gear: GearFn, proj: Projector, o
 
 /** torso half-widths at height y, measured out of the spine axis (not through the arms hanging beside it) */
 function torso(proj: Projector, y: number) {
-  return { rx: (exitDist(proj, 0, y, 0, 1, 0, 0.5) + exitDist(proj, 0, y, 0, -1, 0, 0.5)) / 2, zf: exitDist(proj, 0, y, 0, 0, 1, 0.5), zb: exitDist(proj, 0, y, 0, 0, -1, 0.5) };
+  return { rx: Math.min(0.34, (exitDist(proj, 0, y, 0, 1, 0, 0.5) + exitDist(proj, 0, y, 0, -1, 0, 0.5)) / 2), zf: exitDist(proj, 0, y, 0, 0, 1, 0.5), zb: exitDist(proj, 0, y, 0, 0, -1, 0.5) };
 }
 
 /** overlapping shingled lames over the chest/back of a plate cuirass (replaces the smooth blob) */
@@ -206,7 +203,7 @@ export function berserkerBelt(ctx: KindContext, gear: GearFn, proj: Projector, b
   const sc = P.s;
   const col = URUK_SHEET_PAL.bbelt;
   for (const [y, h] of [[beltY + 0.02 * sc, 0.06 * sc], [beltY - 0.045 * sc, 0.055 * sc]] as [number, number][]) {
-    const r = ringRadii(proj, y);
+    const r = torso(proj, y);
     gear(ellipticalBand(r.rx + 0.016 * sc, (r.zf + r.zb) / 2 + 0.016 * sc, r.rx + 0.016 * sc, (r.zf + r.zb) / 2 + 0.016 * sc, h, 0.007 * sc, 20, 0, Math.PI * 2, (r.zf - r.zb) / 2), {
       bone: 'hips',
       color: col,
@@ -215,7 +212,7 @@ export function berserkerBelt(ctx: KindContext, gear: GearFn, proj: Projector, b
       ao: 0.85,
     });
   }
-  const r = ringRadii(proj, beltY);
+  const r = torso(proj, beltY);
   const zf = r.zf + 0.03 * sc;
   gear(new THREE.TorusGeometry(0.034 * sc, 0.007 * sc, 6, 14), { bone: 'hips', color: URUK_SHEET_PAL.ironEdge, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(-0.01 * sc, beltY - 0.012 * sc, zf), small: true });
   // rivets along the upper strap
@@ -261,7 +258,7 @@ export function legWraps(ctx: KindContext, gear: GearFn, proj: Projector, n = 3)
     for (let k = 0; k < n; k++) {
       const yc = lerp(y0, y1, k / (n - 1));
       const h = 0.05 * sc;
-      const rx = (exitDist(proj, cx, yc, cz, 1, 0) + exitDist(proj, cx, yc, cz, -1, 0)) / 2;
+      const rx = Math.min(0.12 * sc, (exitDist(proj, cx, yc, cz, 1, 0) + exitDist(proj, cx, yc, cz, -1, 0)) / 2);
       const zf = exitDist(proj, cx, yc, cz, 0, 1);
       const zb = exitDist(proj, cx, yc, cz, 0, -1);
       const tilt = (k % 2 ? 1 : -1) * 0.012 * sc;
@@ -277,7 +274,7 @@ export function underSkirt(ctx: KindContext, parts: Part[], o: { topY: number; b
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   s.group('union', 0.004 * sc, () => {
-    emitParts(s, parts, ['pelvis', 'glutes', 'waist', 'belly', 'thigh'], {
+    emitParts(s, parts, ['pelvis', 'glutes', 'waist', 'belly'], {
       color: URUK_SHEET_PAL.bkilt,
       color2: URUK_SHEET_PAL.bkilt,
       colorNoise: 0,
@@ -292,8 +289,8 @@ export function underSkirt(ctx: KindContext, parts: Part[], o: { topY: number; b
 }
 
 /**
- * A dirty handprint (sheet: small, smudged, semi-translucent): thin splayed fingers, a thumb and two or three
- * drips, draped over the surface in strips. A noise mask lets the skin show through about 30 % of it.
+ * A chalky handprint (sheet): a solid palm with four thick splayed fingers, a thumb and a few short drips, draped over
+ * the surface in strips. A light noise mask lets the skin show through in about 12 % of it.
  */
 export function dirtyHand(
   ctx: KindContext,
@@ -316,19 +313,21 @@ export function dirtyHand(
     r = (Math.sin(r) * 43758.5453) % 1;
     return Math.abs(r) - 0.5;
   };
-  const Pt = (x: number, y: number): [number, number] => [(x + rnd() * 0.025) * S, (y + rnd() * 0.025) * S];
-  for (const [y, h] of [[-0.14, 0.1], [-0.04, 0.1], [0.05, 0.09]] as [number, number][]) surfaceStrip(proj, frame, Pt(-0.17, y), Pt(0.17, y), h * S, h * S, lift, 5, b);
+  const Pt = (x: number, y: number): [number, number] => [(x + rnd() * 0.02) * S, (y + rnd() * 0.02) * S];
+  // palm: three wide strips
+  for (const [y, h] of [[-0.17, 0.13], [-0.05, 0.13], [0.06, 0.12]] as [number, number][]) surfaceStrip(proj, frame, Pt(-0.22, y), Pt(0.22, y), h * S, h * S, lift, 5, b);
+  // four thick fingers
   const fingers: [number, number, number, number, number][] = [
-    [-0.14, 0.08, -0.31, 0.4, 0.056],
-    [-0.05, 0.09, -0.1, 0.53, 0.058],
-    [0.05, 0.09, 0.11, 0.51, 0.058],
-    [0.14, 0.07, 0.3, 0.38, 0.054],
+    [-0.16, 0.08, -0.31, 0.4, 0.105],
+    [-0.055, 0.1, -0.09, 0.53, 0.105],
+    [0.055, 0.1, 0.1, 0.51, 0.105],
+    [0.16, 0.08, 0.3, 0.38, 0.095],
   ];
-  for (const [x0, y0, x1, y1, w] of fingers) surfaceStrip(proj, frame, Pt(x0, y0), Pt(x1, y1), w * S, w * S * 0.55, lift, 4, b);
-  surfaceStrip(proj, frame, Pt(-0.16, -0.1), Pt(-0.38, 0.05), 0.064 * S, 0.044 * S, lift, 4, b);
-  surfaceStrip(proj, frame, Pt(0, -0.2), Pt(0, -0.44), 0.24 * S, 0.2 * S, lift, 4, b);
-  // drips: thin tapering runs down from the palm's lower edge and the wrist
-  for (const [x, len] of [[-0.15, 0.2], [0.0, 0.16], [0.15, 0.13]] as [number, number][]) surfaceStrip(proj, frame, Pt(x, -0.2), Pt(x + 0.008, -0.2 - len), 0.036 * S, 0.014 * S, lift, 3, b);
+  for (const [x0, y0, x1, y1, w] of fingers) surfaceStrip(proj, frame, Pt(x0, y0), Pt(x1, y1), w * S, w * S * 0.8, lift, 4, b);
+  surfaceStrip(proj, frame, Pt(-0.2, -0.13), Pt(-0.44, 0.03), 0.115 * S, 0.085 * S, lift, 4, b);
+  surfaceStrip(proj, frame, Pt(0, -0.22), Pt(0, -0.46), 0.3 * S, 0.26 * S, lift, 4, b);
+  // short drips down from the palm's lower edge
+  for (const [x, len] of [[-0.17, 0.14], [0.17, 0.1], [0.0, 0.2]] as [number, number][]) surfaceStrip(proj, frame, Pt(x, -0.3), Pt(x + 0.006, -0.3 - len), 0.055 * S, 0.025 * S, lift, 3, b);
   if (!b.idx.length) return;
   const white = new THREE.Color().setHex(URUK_SHEET_PAL.dirt, THREE.SRGBColorSpace);
   const skin = new THREE.Color().setHex(o.skin, THREE.SRGBColorSpace);
@@ -337,10 +336,10 @@ export function dirtyHand(
     color: URUK_SHEET_PAL.dirt,
     mat: surface('skin_orc', { rough: 0.85, skin: 0.2 }),
     colorFn: (q, _n, c) => {
-      // smudged paint: a blotchy mask lets the skin show through (about 30 %), plus an overall uneven tone
+      // chalky and opaque: a light blotch mask (about 12 %) lets the skin through, plus an uneven tone
       const m = 0.5 + 0.5 * Math.sin(q.x * 83 + seed) * Math.sin(q.y * 71 + q.z * 57 + seed * 2) + 0.3 * Math.sin(q.x * 190 + q.y * 170 + seed);
-      const through = smooth(0.62, 0.9, m);
-      c.copy(white).multiplyScalar(0.8 + 0.18 * Math.sin(q.x * 47 + q.y * 41 + seed * 3)).lerp(skin, 0.8 * through);
+      const through = smooth(0.92, 1.1, m);
+      c.copy(white).multiplyScalar(0.88 + 0.12 * Math.sin(q.x * 47 + q.y * 41 + seed * 3)).lerp(skin, 0.7 * through);
     },
   });
 }
@@ -367,4 +366,20 @@ export function muscleShade(ctx: KindContext, proj: Projector, o: { dark: number
   // lat grooves and the serratus edge down the sides
   stroke([[0.17 * sc * sh, dy - 0.07 * sc, 0, 'l'], [0.15 * sc * sh, cy - 0.04 * sc, 0, 'l'], [0.13 * sc * sh, cy - 0.12 * sc, 0, 'l']], 0.009 * sc, 'chest', 0.45);
   stroke([[-0.17 * sc * sh, dy - 0.07 * sc, 0, 'r'], [-0.15 * sc * sh, cy - 0.04 * sc, 0, 'r'], [-0.13 * sc * sh, cy - 0.12 * sc, 0, 'r']], 0.009 * sc, 'chest', 0.45);
+}
+
+/** near-black armoured trousers over the thighs (brawnBody's thigh muscle is added after the outfit, in skin colour) */
+export function thighTrousers(ctx: KindContext, parts: Part[], o: { topY: number; botY: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  s.group('union', 0.004 * sc, () => {
+    emitParts(s, parts, ['thigh', 'knee', 'glutes', 'pelvis'], {
+      color: URUK_SHEET_PAL.trousers,
+      mat: surface('leather_worn', { rough: 0.8 }),
+      inflate: 0.03 * sc,
+      k: 0.03 * sc,
+    });
+    s.plane([0, 1, 0], o.topY, { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, -1, 0], -o.botY, { op: 'intersect', k: 0.004 * sc });
+  });
 }
