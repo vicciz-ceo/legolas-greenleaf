@@ -76,7 +76,7 @@ export function sculptHelmHair(ctx: KindContext, o: { color: number; color2: num
   const sc = P.s;
   const u = P.headH;
   const len = o.length ?? 1;
-  const base = { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 60 / sc, mat: 'hair' as const, noise: { amp: 0.0035 * sc, freq: 70 / sc, type: 'ridged' as const, octaves: 2 } };
+  const base = { color: o.color, color2: o.color2, colorNoise: 0.55, colorFreq: 60 / sc, mat: 'hair' as const };
   const sec = torsoSection(P, P.j.neck[1] - 0.05 * sc);
   s.group('union', 0.02 * u, () => {
     s.with({ ...base, bone: 'head' }, () => {
