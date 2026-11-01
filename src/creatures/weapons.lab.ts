@@ -206,7 +206,14 @@ function shieldRow(): LabInstance {
   return sheetRow(items, 1.0);
 }
 
+/** the five props of pass 4, in a row at their held size (view=turn&yaws=0,90 for front and side) */
+function pass4Row(): LabInstance {
+  const pick = (n: string) => [...ROW1, ...ROW2].find((i) => i.name === n)!;
+  return sheetRow([pick('rohan_shield'), pick('cave_troll_club'), pick('war_hammer'), pick('orc_cleaver'), pick('gimli_axe')], 1.6);
+}
+
 export const subjects: LabSubject[] = [
+  { name: 'weapons_pass4', category: 'prop', create: pass4Row },
   { name: 'weapons_shields', category: 'prop', create: shieldRow },
   { name: 'weapons_knives', category: 'prop', create: () => sheetRow([{ name: 'k_default', kind: 'elven_knives', flip: true, count: 2, extent: 0.65 }, { name: 'k_elven', kind: 'elven_knives', style: 'elven', flip: true, count: 2, extent: 0.65 }], 0.5) },
   { name: 'weapons_lineup', category: 'prop', create: sheetAll },

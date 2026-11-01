@@ -29,7 +29,7 @@ function glaiveGeometry(blade: number, trim: number): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
   // the blade: a long leaf, single-edged, swept back toward its tip
   const len = 0.66;
-  const l = leaf(len, 0.052, { droop: 0.0, cup: 0.12, rib: 0.5, rows: 9, pointy: 0.9 });
+  const l = leaf(len, 0.083, { droop: 0.0, cup: 0.12, rib: 0.5, rows: 9, pointy: 0.9 });
   const p = l.attributes.position;
   for (let i = 0; i < p.count; i++) {
     const t = p.getY(i) / len;
@@ -41,7 +41,7 @@ function glaiveGeometry(blade: number, trim: number): THREE.BufferGeometry {
   parts.push(
     paintGeometry(l, {
       color: blade,
-      mat: surface('metal', { rough: 0.3, pat: { scratches: 0.8 } }),
+      mat: surface('metal', { rough: 0.3, pat: { scratches: 0.5 } }),
       bone: 0,
       colorFn: (pt, _n, c) => {
         // a darker fuller down the middle and a bright edge
@@ -53,6 +53,8 @@ function glaiveGeometry(blade: number, trim: number): THREE.BufferGeometry {
   // socket collar with gold rings where the blade meets the haft
   parts.push(paintGeometry(new THREE.CylinderGeometry(0.02, 0.024, 0.1, 8).translate(0, 1.37, 0), { color: trim, mat: 'gold', bone: 0 }));
   parts.push(paintGeometry(ring([0, 1.31, 0], [0, 1, 0], 0.021, 0.0045, 8, 3), { color: trim, mat: 'gold', bone: 0 }));
+  // gold bands down the shaft (sheet: dark haft with gilded bands)
+  for (const y of [1.18, 0.98, 0.7]) parts.push(paintGeometry(new THREE.CylinderGeometry(0.0185, 0.0185, 0.03, 8).translate(0, y, 0), { color: trim, mat: 'gold', bone: 0 }));
   g = mergeKitGeometries(parts);
   for (const x of parts) x.dispose();
   g.userData.shared = true;
