@@ -13,15 +13,15 @@
 import * as THREE from 'three';
 import type { Rng } from '../../../../core/rng';
 import type { KindContext, KindDef } from '../../types';
-import { box, put, ring, spike } from './armor';
-import { ctxBucket, devNum, mix, recipeRng, shade } from './common';
+import { put, spike } from './armor';
+import { ctxBucket, devNum, recipeRng, shade } from './common';
 import { createHairMaterial } from '../../../kit/hair';
 import { attachSkinned } from './common';
 import { makeHairdo } from './hair';
 import { DOME_POINTED, DOME_ROUND, IRON, domeHelm } from './headgear';
-import { faceStroke, paintBlob } from './markings';
-import { bodyMarks, crudePauldron, eyeRings, orcTeeth, scrapBreastplate, skinMottle, skinTint } from './orcparts';
-import { RAGS, STRAP, beltBand, longBracers, orcFittings, ragTunic, rustPauldron, shinWraps, strapBand } from './orc_gear';
+import { faceStroke } from './markings';
+import { eyeRings, orcTeeth, scrapBreastplate, skinMottle, skinTint } from './orcparts';
+import { RAGS, beltBand, longBracers, orcFittings, ragTunic, rustPauldron, shinWraps, strapBand } from './orc_gear';
 
 export const ORC_FACE = {
   jaw: 1.3, jawLength: 1.1, chin: 0.7, brow: 1.9, cheekbones: 1.3,
@@ -38,21 +38,23 @@ export const ORC_FACE = {
  * warmer than the hex values.
  */
 export const ORC_PALETTE = {
-  tunic: 0x4b3829, // design #554333; turnaround chest #523b2a
-  tunicTrim: 0x2a1e14, // torn edges, dirt
-  kilt: 0x3f2f22, // turnaround kilt #523e30
-  kiltUnder: 0x33231b, // the darker, redder inner panels / strips of the kilt (details image)
+  tunic: 0x654529, // design #554333; turnaround chest #523b2a (lit); a warmer, more orange albedo so the cloth stops reading as flat plastic
+  tunicTrim: 0x8a6a42, // ochre mottle
+  kilt: 0x5a3f2a, // turnaround kilt #523e30
+  kiltHem: 0x8a6a42, // lighter, worn hem edges
+  kiltUnder: 0x34241b, // the darker, redder inner panels / strips of the kilt (details image)
   leather: 0x47341f, // design #55412c
   leatherDark: 0x2e2116,
-  wrap: 0x45372a, // shin wraps (observed foot wraps #423125 .. #513e28)
+  wrap: 0x4a3828, // shin wraps (observed foot wraps #423125 .. #513e28)
   cord: 0x6a5238, // the paler cord spiralling round wraps and bracers
   iron: 0x6a5a46, // design #71614b
   rust: 0x7a4c2c, // orange rust blooms on the plates
   hair: 0x1d1612,
   hairTip: 0x2a2019,
   hairDeep: 0x120e0b,
-  eyes: 0xa8863a,
-  scar: 0x8a4a40, // old healed scars read pinkish-red on the sheet's face
+  eyes: 0xd19a2a, // sheet iris #a8863a lit; a saturated amber so the eyes read at distance
+  scar: 0x6a3c30, // old healed scars: dark and weak, they should not read as cracks
+  flush: 0xa05a4a, // pink-red flush on nose, cheeks, brow
 };
 
 interface Look {
@@ -71,18 +73,18 @@ interface Look {
 
 const LOOKS: Look[] = [
   // wiry / grey-green, long stringy hair
-  { skin: 0x645a3a, skin2: 0x463c28, mottle: [0x706c44, 0x504430, 0x5c4c36], hairLen: 0.85, hairCount: 80, wild: 0.55, wave: 0.9, comb: 0.5, front: 0.2, scars: 2, helm: 'cap' },
+  { skin: 0x766148, skin2: 0x56402c, mottle: [0x7e7048, 0x5a4630, 0x6a5238], hairLen: 0.85, hairCount: 80, wild: 0.55, wave: 0.9, comb: 0.8, front: 0.42, scars: 2, helm: 'cap' },
   // brown, heavy brow, short messy hair
-  { skin: 0x6c5838, skin2: 0x4c3c28, mottle: [0x7a6440, 0x5a4830, 0x66543a], hairLen: 0.17, hairCount: 60, wild: 0.85, wave: 0.5, comb: 0.3, front: 0.3, scars: 3, helm: 'dome' },
+  { skin: 0x7c5e42, skin2: 0x5a4028, mottle: [0x86684a, 0x5e4630, 0x6e543a], hairLen: 0.17, hairCount: 60, wild: 0.85, wave: 0.5, comb: 0.3, front: 0.44, scars: 3, helm: 'dome' },
   // scarred, pale mottle, shoulder-length hair
-  { skin: 0x766a48, skin2: 0x54482f, mottle: [0x8c8258, 0x624e38, 0x706040], hairLen: 0.4, hairCount: 70, wild: 0.7, wave: 0.8, comb: 0.4, front: 0.25, scars: 6, helm: 'band' },
+  { skin: 0x86704e, skin2: 0x5e4a32, mottle: [0x947a58, 0x664e38, 0x78643f], hairLen: 0.4, hairCount: 70, wild: 0.7, wave: 0.8, comb: 0.4, front: 0.42, scars: 6, helm: 'band' },
   // matted, long hair
-  { skin: 0x605838, skin2: 0x433c26, mottle: [0x6a6640, 0x4c4430, 0x584830], hairLen: 0.9, hairCount: 90, wild: 0.75, wave: 1.0, comb: 0.55, front: 0.2, scars: 3, helm: 'pointed' },
+  { skin: 0x6e5a40, skin2: 0x4e3e2a, mottle: [0x76684a, 0x544432, 0x62503a], hairLen: 0.9, hairCount: 90, wild: 0.75, wave: 1.0, comb: 0.85, front: 0.42, scars: 3, helm: 'pointed' },
 ];
 
 /** old scars across the brow and cheek (sheet: a diagonal gash over the forehead, nicks on the cheeks) */
 function faceScars(ctx: KindContext, rng: Rng, n: number) {
-  const hit = (pts: [number, number][], r: number) => faceStroke(ctx, pts, { color: ORC_PALETTE.scar, r, mat: 'skin_orc', strength: 0.85 });
+  const hit = (pts: [number, number][], r: number) => faceStroke(ctx, pts, { color: ORC_PALETTE.scar, r: r * 0.75, mat: 'skin_orc', strength: 0.6 });
   hit([[0.13, 0.27], [0.07, 0.19], [0.02, 0.12]], 0.011);
   if (n > 2) hit([[-0.2, -0.04], [-0.15, -0.14], [-0.12, -0.22]], 0.009);
   for (let i = 3; i < n; i++) {
@@ -92,9 +94,20 @@ function faceScars(ctx: KindContext, rng: Rng, n: number) {
   }
 }
 
+/** pink-red flush over the nose, cheeks, brow and ears (the sheet's skin_variation) */
+function flush(ctx: KindContext) {
+  const { P, sculpt: s } = ctx;
+  const u = P.headH;
+  const o = { op: 'paint' as const, color: ORC_PALETTE.flush, mat: 'skin_orc' as const, bone: 'head', k: 0.05 * u, strength: 0.5 };
+  s.ellipsoid(P.h(0, -0.1, 0.42), [0.08 * u, 0.07 * u, 0.06 * u], { ...o, strength: 0.6 });
+  s.mirrored(() => s.ellipsoid(P.h(0.2, -0.12, 0.3), [0.09 * u, 0.07 * u, 0.07 * u], o));
+  s.mirrored(() => s.ellipsoid(P.h(0.16, 0.08, 0.36), [0.1 * u, 0.04 * u, 0.06 * u], { ...o, strength: 0.4 }));
+  s.mirrored(() => s.ellipsoid(P.h(0.36, -0.05, -0.02), [0.06 * u, 0.14 * u, 0.1 * u], { ...o, strength: 0.55 }));
+}
+
 /** rusty plate over the character's LEFT shoulder (sheet) or both for heavy armour */
 function shoulderPlates(ctx: KindContext, rng: Rng, A: number) {
-  if (A >= 0.25) rustPauldron(ctx, 'l', { iron: ORC_PALETTE.iron, rust: ORC_PALETTE.rust, rng, size: 1.1 });
+  if (A >= 0.25) rustPauldron(ctx, 'l', { iron: ORC_PALETTE.iron, rust: ORC_PALETTE.rust, rng, size: 1.0 });
   if (A >= 0.75) rustPauldron(ctx, 'r', { iron: shade(ORC_PALETTE.iron, 0.9), rust: ORC_PALETTE.rust, rng, size: 0.85, lames: 1 });
 }
 
@@ -133,25 +146,29 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   // ── skin first, so every garment added after keeps its own colour
   skinTint(ctx, { color: look.skin, color2: look.skin2, noise: 0.6, torso: false, legs: true, legRange: [0.25, 0.92], sleeve: 0.5 });
   skinMottle(ctx, rng, look.mottle, { n: 12 });
-  eyeRings(ctx, 0x2a1a14, 0.6);
-  orcTeeth(ctx, rng, { n: 7, big: 1.25, thick: 1.6 });
+  eyeRings(ctx, 0x180e0a, 0.8);
+  flush(ctx);
+  orcTeeth(ctx, rng, { n: 7, big: 1.25, thick: 1.6, color: 0xd8c690 });
   faceScars(ctx, rng, look.scars);
-  void bodyMarks;
   // ── rag tunic: short torn sleeves, cowl at the throat, hem hidden under the belts and kilt
   ragTunic(ctx, { color: pal.tunic, color2: pal.tunicTrim, inflate: devNum('tun', 0.012) * sc, sleeve: 0.5, hemY: hipY - 0.03 * sc });
   // ── leather baldric from the left shoulder plate to the right hip
   const strap = strapBand(ctx, { color: pal.leather, color2: pal.leatherDark, width: 0.05 * sc, inflate: 0.021 * sc, sign: -1 });
-  // ── double belt: a wide upper one and a lower one that hides the kilt's top edge
+  // ── stacked belt bands: a wide upper one, a thin middle one with hanging rings, and a lower one
+  // that hides the kilt's top edge
   const lowerBeltY = hipY + 0.045 * sc;
-  const beltY = hipY + 0.115 * sc;
-  beltBand(ctx, { y: beltY, hw: 0.038 * sc, color: pal.leather, color2: pal.leatherDark, inflate: 0.0265 * sc });
-  beltBand(ctx, { y: lowerBeltY, hw: 0.022 * sc, color: pal.leatherDark, color2: pal.leather, inflate: 0.0295 * sc });
+  const midBeltY = hipY + 0.082 * sc;
+  const beltY = hipY + 0.12 * sc;
+  beltBand(ctx, { y: beltY, hw: 0.034 * sc, color: pal.leather, color2: pal.leatherDark, inflate: 0.0265 * sc });
+  beltBand(ctx, { y: midBeltY, hw: 0.011 * sc, color: pal.leatherDark, color2: pal.leather, inflate: 0.0285 * sc });
+  beltBand(ctx, { y: lowerBeltY, hw: 0.02 * sc, color: pal.leatherDark, color2: pal.leather, inflate: 0.0295 * sc });
   // ── long wrapped bracers and shin wraps
   const bracerLen = 0.78;
   longBracers(ctx, { color: pal.leather, color2: pal.leatherDark, length: bracerLen, inflate: 0.011 * sc });
   const shinBottom = P.ankleH - 0.004 * sc;
-  const shinTop = kneeY - 0.035 * sc;
-  shinWraps(ctx, { color: pal.wrap, color2: pal.tunicTrim, top: shinTop, bottom: shinBottom, inflate: 0.012 * sc });
+  const shinTop = kneeY - 0.012 * sc;
+  // wraps up to the knee, ~25 % thicker; the feet are wrapped in the same strap brown (sandals)
+  shinWraps(ctx, { color: pal.wrap, color2: pal.leatherDark, top: shinTop, bottom: shinBottom, inflate: 0.015 * sc, feet: true });
   // ── armour tiers
   shoulderPlates(ctx, rng, A);
   if (bucket === 3 && A >= 0.75) scrapBreastplate(ctx, { color: pal.iron, rng, half: 0.55, y0: P.j.chest[1] - 0.02 * sc, y1: P.j.chest[1] + 0.12 * sc, jag: 0.03, seed: 7, mat: IRON });
@@ -159,12 +176,12 @@ function dressOrc(ctx: KindContext, rng: Rng, look: Look, bucket: number) {
   // ── hair: long and stringy, parted over the brow
   const hairGeo = makeHairdo(
     ctx,
-    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.026, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6 },
+    { color: pal.hair, tip: pal.hairTip, deep: pal.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.024, wave: look.wave, wild: look.wild, comb: look.comb, front: look.front, back: -0.42, gravity: 7, segments: 6 },
     rng,
   );
   if (hairGeo) attachSkinned(ctx, hairGeo, orcHairMaterial());
   // ── rigid fittings go on the finished sculpt
-  orcFittings(ctx, { rng, beltY, lowerBeltY, cord: pal.cord, leather: pal.leather, iron: pal.iron, rust: pal.rust, shinTop, shinBottom, bracerLen, strap, plate: true, sleeve: 0.5, tunicEdge: pal.tunic });
+  orcFittings(ctx, { rng, beltY, lowerBeltY, cord: pal.cord, leather: pal.leather, iron: pal.iron, rust: pal.rust, shinTop, shinBottom, bracerLen, strap, plate: true, sleeve: 0.5, tunicEdge: pal.tunic, midBeltY, collar: true, shinR: 0.066 });
 }
 
 let hairMat: THREE.MeshPhysicalMaterial | null = null;
@@ -187,28 +204,23 @@ export function orcExtras(ctx: KindContext) {
 export const orcDef: KindDef = {
   label: 'Orc',
   height: devNum('h', 1.77),
-  build: { shoulders: devNum('sh', 1.2), hips: 1.02, bulk: devNum('bulk', 0.9), belly: devNum('belly', 0.0), chest: devNum('chest', 1.05), armLength: devNum('arm', 1.15), legLength: devNum('leg', 1.0), headSize: 1.02, neck: 0.6, neckThick: 1.2, hunch: 0.55, handSize: 1.3, footSize: 1.15, muscle: 0.8 },
-  face: ORC_FACE,
-  skin: { color: 0x645a3a, color2: 0x463c28, blotch: devNum('blotch', 0.9), blemish: devNum('blemish', 0.6), scars: 3, warts: 0.3, wrinkles: 0.7, lips: 0x5a3c34, brows: 0x1a1612, surface: 'skin_orc', scatter: 0x9a5a40 },
-  eyes: { color: 0xa8863a, glow: 0.18, sclera: 0x9a8a68 },
+  build: { shoulders: devNum('sh', 1.2), hips: 1.02, bulk: devNum('bulk', 0.9), belly: devNum('belly', 0.0), chest: devNum('chest', 1.05), armLength: devNum('arm', 1.15), legLength: devNum('leg', 1.0), headSize: 1.02, neck: 0.6, neckThick: 1.5, hunch: 0.55, handSize: 1.3, footSize: 1.35, muscle: 0.8 },
+  face: { ...ORC_FACE, earSize: 1.9, tusks: 0.75 },
+  skin: { color: 0x766148, color2: 0x56402c, blotch: devNum('blotch', 0.9), blemish: devNum('blemish', 0.6), scars: 3, warts: 0.3, wrinkles: 0.7, lips: 0x5a3c34, brows: 0x1a1612, surface: 'skin_orc', scatter: 0x9a5a40 },
+  eyes: { color: 0xd19a2a, glow: 0.25, sclera: 0x8a7a58 },
   hair: { style: 'stringy', color: 0x1d1612, density: 0 },
   beard: null,
   outfit: [
     // the kilt: tattered rag cloth with leather strips over it (sheet: layered, darker redder inner panels)
-    { type: 'skirt', color: ORC_PALETTE.kilt, color2: ORC_PALETTE.kiltUnder, mat: 'rags', length: devNum('kilt', 0.78), thickness: devNum('kgrow', 0.03), tatter: 0.07, strips: { count: 5, color: ORC_PALETTE.kiltUnder, color2: ORC_PALETTE.leatherDark, mat: RAGS, width: 0.1, length: 0.84, phase: 0.2 } },
+    // two layers: the long cloth with lighter worn hem, and shorter dark shreds over it at another hem height
+    { type: 'skirt', color: ORC_PALETTE.kilt, color2: ORC_PALETTE.kiltHem, mat: 'rags', length: devNum('kilt', 0.8), thickness: devNum('kgrow', 0.03), tatter: 0.07, strips: { count: 6, color: ORC_PALETTE.kiltUnder, color2: ORC_PALETTE.leatherDark, mat: RAGS, width: 0.14, length: 0.68, phase: 0.2 } },
   ],
   armor: [],
   weapons: { right: 'cleaver', style: 'orc' },
   palette: ORC_PALETTE,
   anim: { hunch: devNum('hunch', 0.9), swagger: 0.6, aggression: 0.75, stance: devNum('stance', 1.4), cadence: 1.1 },
   variation: { height: 0.06, bulk: 0.1, skin: 0.45 },
-  detail: { res: devNum('res', 0.05), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
+  detail: { res: devNum('res', 0.052), headRes: devNum('headRes', 0.0125), faceRes: 0, detailScale: 1.0 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.5 },
   extras: orcExtras,
 };
-
-void mix;
-void paintBlob;
-void ring;
-void box;
-void STRAP;

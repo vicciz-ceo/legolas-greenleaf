@@ -13,14 +13,14 @@ import type { Rng } from '../../../../core/rng';
 import type { V3 } from '../../../kit/sdf';
 import { createHairMaterial } from '../../../kit/hair';
 import type { KindContext, KindDef } from '../../types';
-import { box, put, ring, spike, studs, torsoShell } from './armor';
+import { box, put, spike } from './armor';
 import { attachSkinned, ctxBucket, devNum, mix, recipeRng } from './common';
 import { makeHairdo } from './hair';
 import { DOME_CONICAL, DOME_POINTED, DOME_ROUND, IRON, STEEL, domeHelm, hornPair } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
 import { ORC_FACE } from './orc';
-import { RAGS, STRAP, armSpikes, beltBand, greaves, longBracers, orcFittings, orcProjector, shinWraps, strapBand } from './orc_gear';
-import { boneNecklace, crudePauldron, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
+import { STRAP, armSpikes, beltBand, greaves, leafPauldron, longBracers, orcFittings, orcProjector, shinWraps, strapBand, thighCloth } from './orc_gear';
+import { boneNecklace, eyeRings, orcTeeth, skinMottle, skinTint } from './orcparts';
 
 /**
  * Colours from spec.json: kilt #514637 (observed #5e4436..#674e40, warmer), waist bindings #594d38
@@ -29,18 +29,19 @@ import { boneNecklace, crudePauldron, eyeRings, orcTeeth, skinMottle, skinTint }
  * (arm #8c7e7f, face #b7a9ae), iris #baa24f (the face crop shows amber-orange).
  */
 export const GUNDABAD_PALETTE = {
-  kilt: 0x4a392b,
-  kiltUnder: 0x372a21,
-  wrap: 0x453829,
+  kilt: 0x6a4e30, // outer burlap
+  kiltHem: 0x7e6240,
+  kiltUnder: 0x3e2e1f, // inner dark layer (thigh cloth) and the leather strips
+  wrap: 0x3c2c1e, // boots of wraps
   leather: 0x40322a, // waist bindings
   leatherDark: 0x2a2019,
-  iron: 0x3f362f, // scrap iron (design #726452 renders pale and tan under the sky light; the sheet's plates read dark brown-grey)
+  iron: 0x4a3b2f, // scrap iron (design #726452 renders pale and tan under the sky light; the sheet's plates read dark brown-grey)
   rust: 0x7a4a2c,
-  cord: 0x6a5238,
+  cord: 0x6b4a2c, // the lighter wrap bands
   hair: 0x1a1210,
   hairTip: 0x2a201c,
   hairDeep: 0x100b09,
-  eyes: 0xc88a2a,
+  eyes: 0xd08a1c,
   scar: 0x8a3a3a,
 };
 
@@ -118,7 +119,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   skinTint(ctx, { dim: 1, color: look.skin, color2: look.skin2, noise: 0.55, torso: true, legs: true, legRange: [0.25, 0.9], sleeve: 0 });
   skinMottle(ctx, rng, look.mottle, { n: 14, torso: true, strength: 0.4 });
   eyeRings(ctx, 0x4a2a30, 0.55);
-  orcTeeth(ctx, rng, { n: 8, big: 1.7, color: 0xd6c08a, thick: 2.2 });
+  orcTeeth(ctx, rng, { n: 8, big: 1.9, color: 0xdcc47c, thick: 2.6 });
   // scars: pink-red healed cuts across the face and chest (sheet), plus ink on the brutes
   const scar = (pts: [number, number][], r: number) => faceStroke(ctx, pts, { color: P_.scar, r, mat: 'skin_orc', strength: 0.85 });
   scar([[0.13, 0.26], [0.07, 0.17], [0.03, 0.1]], 0.011);
@@ -129,27 +130,30 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
     for (const sd of [1, -1]) scalpStroke(ctx, [[sd * 0.5, 0.3], [sd * 1.2, 0.5], [sd * 2.0, 0.4]], { color: ink, r: 0.011 });
   }
   // X harness over the bare chest, a belt over the kilt's top and bracers
-  const strapA = strapBand(ctx, { color: P_.leather, color2: P_.leatherDark, width: 0.052 * sc, inflate: 0.017 * sc, sign: 1 });
-  strapBand(ctx, { color: P_.leather, color2: P_.leatherDark, width: 0.052 * sc, inflate: 0.017 * sc, sign: -1 });
+  const strapA = strapBand(ctx, { color: P_.leather, color2: P_.leatherDark, width: 0.07 * sc, inflate: 0.022 * sc, sign: 1 });
+  strapBand(ctx, { color: P_.leather, color2: P_.leatherDark, width: 0.07 * sc, inflate: 0.022 * sc, sign: -1 });
   const lowerBeltY = hipY + 0.05 * sc;
   const beltY = hipY + 0.125 * sc;
   beltBand(ctx, { y: beltY, hw: 0.042 * sc, color: P_.leather, color2: P_.leatherDark, inflate: 0.0215 * sc });
   beltBand(ctx, { y: lowerBeltY, hw: 0.024 * sc, color: P_.leatherDark, color2: P_.leather, inflate: 0.025 * sc });
+  // inner layer of the kilt: dark cloth over the thighs, so no skin shows through the panels
+  const kiltBottom = hipY - (hipY - kneeY) * 0.86 * 1.1;
+  thighCloth(ctx, { color: P_.kiltUnder, color2: 0x2e2218, bottom: kiltBottom + 0.07 * sc, top: hipY + 0.05 * sc, inflate: 0.012 * sc });
   longBracers(ctx, { color: P_.leather, color2: P_.leatherDark, length: 0.8, inflate: 0.013 * sc });
   const shinBottom = P.ankleH - 0.004 * sc;
   const shinTop = kneeY - 0.03 * sc;
-  shinWraps(ctx, { color: P_.wrap, color2: P_.leatherDark, top: shinTop, bottom: shinBottom, inflate: 0.012 * sc, feet: true });
+  shinWraps(ctx, { color: P_.wrap, color2: P_.leatherDark, top: shinTop, bottom: shinBottom, inflate: 0.015 * sc, feet: true });
   boneNecklace(ctx, { rng, n: 6 });
   // ── armour tiers: spiked pauldrons, then greaves / bracer spikes / the chest plate
   if (A >= 0.25) {
-    crudePauldron(ctx, 'l', { color: P_.iron, mat: IRON, rng, layers: 3, size: 1.3, spikes: 5, trim: P_.rust });
-    crudePauldron(ctx, 'r', { color: P_.iron, mat: IRON, rng, layers: 3, size: 1.3, spikes: 5, trim: P_.rust });
+    leafPauldron(ctx, 'l', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 5, spikes: 7 });
+    leafPauldron(ctx, 'r', { iron: P_.iron, rust: P_.rust, rng, size: 1.15, layers: 5, spikes: 7 });
   }
   if (ctx.helmet) helmet(ctx, b);
   // ── hair: long, loose, dark
   const hg = makeHairdo(
     ctx,
-    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.8, front: 0.22, back: -0.4, gravity: 6, segments: 6 },
+    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? Math.round(look.hairCount * 0.3) : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.42, back: -0.4, gravity: 6, segments: 6 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, gundabadHairMaterial());
@@ -157,7 +161,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   const proj = orcProjector(ctx, 0.55);
   if (proj) {
     if (A >= 0.5) {
-      greaves(ctx, proj, { iron: P_.iron, rust: P_.rust, rng, top: shinTop - 0.01 * sc, bottom: shinBottom + 0.14 * sc, spikes: 3, size: 1.1 });
+      greaves(ctx, proj, { iron: P_.iron, rust: P_.rust, rng, top: shinTop - 0.01 * sc, bottom: shinBottom + 0.14 * sc, spikes: 3, size: 1.3, knee: true });
       armSpikes(ctx, proj, { iron: P_.iron, count: 3, from: 0.28, to: 0.78, len: 0.034 });
       // spiked plate on the breastbone where the harness crosses
       const hp = new THREE.Vector3(), hn = new THREE.Vector3();
@@ -170,7 +174,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
         put(ctx, sp, { bone: 'chest', color: shade2(P_.iron), mat: IRON, small: true });
       }
     }
-    orcFittings(ctx, { rng, proj, beltY, lowerBeltY, cord: P_.cord, leather: P_.leather, iron: P_.iron, rust: P_.rust, shinTop, shinBottom, bracerLen: 0.8, strap: strapA, plate: true, plateX: 0.0, plateScale: 1.5, noFringe: true, sleeve: 0, tunicEdge: P_.leather });
+    orcFittings(ctx, { rng, proj, beltY, lowerBeltY, cord: P_.cord, leather: P_.leather, iron: P_.iron, rust: P_.rust, shinTop, shinBottom, bracerLen: 0.8, strap: strapA, plate: true, plateX: 0.0, plateScale: 1.5, noFringe: true, sleeve: 0, tunicEdge: P_.leather, shinR: 0.07, shinTurns: 5 });
   }
 }
 
@@ -187,27 +191,22 @@ export function gundabadExtras(ctx: KindContext) {
 export const gundabadDef: KindDef = {
   label: 'Gundabad orc',
   height: devNum('h', 2.15),
-  build: { shoulders: devNum('sh', 1.3), hips: 1.04, bulk: devNum('bulk', 1.18), belly: 0.0, chest: 1.15, armLength: 1.14, legLength: devNum('leg', 1.02), headSize: 0.95, neck: 0.55, neckThick: 1.5, hunch: 0.28, handSize: 1.35, footSize: 1.2, muscle: 1.0 },
+  build: { shoulders: devNum('sh', 1.4), hips: 1.06, bulk: devNum('bulk', 1.3), belly: 0.0, chest: devNum('chest', 1.3), armLength: 1.14, legLength: devNum('leg', 1.02), headSize: 0.95, neck: 0.55, neckThick: 1.5, hunch: 0.28, handSize: 1.35, footSize: 1.25, muscle: 1.2 },
   face: { ...ORC_FACE, brow: 2.0, jaw: 1.4, tusks: 1.0, underbite: 0.85, ears: 'small', earSize: 1.1, eyeSize: 0.95, eyeOpen: 0.85, asym: 0.7 },
   skin: { color: 0x827a80, color2: 0x5e5862, blotch: 0.7, blemish: 0.5, scars: 4, warts: 0.2, wrinkles: 0.6, lips: 0x6a5458, brows: 0x1a1a20, surface: 'skin_orc', scatter: 0xa08090 },
-  eyes: { color: 0xc88a2a, glow: 0.2, sclera: 0xb0a89c },
+  eyes: { color: 0xd08a1c, glow: 0.3, sclera: 0x9a8e7c },
   hair: { style: 'stringy', color: 0x1a1210, density: 0 },
   beard: null,
   outfit: [
     // coarse brown kilt, ragged hem, with dark leather strips hanging over it (sheet)
-    { type: 'skirt', color: P_.kilt, color2: P_.kiltUnder, mat: 'rags', length: devNum('kilt', 0.86), thickness: devNum('kgrow', 0.03), tatter: 0.07, strips: { count: 5, color: P_.leatherDark, color2: P_.leather, mat: STRAP, width: 0.07, length: 0.9, phase: 0.2 } },
+    { type: 'skirt', color: P_.kilt, color2: P_.kiltHem, mat: 'rags', length: devNum('kilt', 0.86), thickness: devNum('kgrow', 0.045), tatter: 0.07, strips: { count: 5, color: P_.leatherDark, color2: P_.leather, mat: STRAP, width: 0.07, length: 0.9, phase: 0.2 } },
   ],
   armor: [],
   weapons: { right: 'mace', style: 'orc' },
   palette: GUNDABAD_PALETTE,
   anim: { hunch: 0.3, swagger: 0.5, aggression: 0.85, stance: 1.3 },
   variation: { height: 0.04, bulk: 0.08, skin: 0.35 },
-  detail: { res: devNum('res', 0.06), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
+  detail: { res: devNum('res', 0.064), headRes: devNum('headRes', 0.0165), faceRes: 0, detailScale: 1.2 },
   sfx: { voice: 'orc', grunt: 'orc_grunt', die: 'orc_die', roar: 'orc_roar', weight: 0.75 },
   extras: gundabadExtras,
 };
-
-void studs;
-void torsoShell;
-void ring;
-void RAGS;

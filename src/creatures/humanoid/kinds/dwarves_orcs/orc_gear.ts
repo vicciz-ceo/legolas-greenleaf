@@ -11,8 +11,8 @@ import type { Sculpt, V3 } from '../../../kit/sdf';
 import { surface, type SurfaceSpec } from '../../../kit/surfaces';
 import { anatomyParts, emitParts, type PartTag } from '../../anatomy';
 import type { KindContext } from '../../types';
-import { makeProjector, snapPoint, placeAlong, V, type Projector } from '../uruks_bosses/common';
-import { box, mat4, put, ring, spike, studs } from './armor';
+import { makeProjector, snapPoint, placeAlong, frameAt, V, type Projector } from '../uruks_bosses/common';
+import { put, spike, studs } from './armor';
 import { shade } from './common';
 
 /** woven rag cloth (tunic, kilt, wraps): coarse weave, matte, a little sheen from the albedo */
@@ -44,6 +44,8 @@ export interface TunicOpts {
   sleeve: number;
   /** hem height (m above the ground) */
   hemY: number;
+  /** the bunched cowl ring at the throat (default on) */
+  cowl?: boolean;
 }
 
 /**
@@ -74,9 +76,11 @@ export function ragTunic(ctx: KindContext, o: TunicOpts) {
       }),
     );
   });
+  // trapezius mass: the sinewy slope from the neck to the shoulders reads under the cloth
+  s.mirrored(() => s.ellipsoid([0.075 * sc * P.build.shoulders, P.j.neck[1] - 0.012 * sc, -0.022 * sc], [0.066 * sc, 0.04 * sc, 0.058 * sc], { ...base, bone: 'chest', k: 0.02 * sc }));
   // cowl: a bunched roll of cloth round the base of the neck, sagging in front
   const ny = P.j.neck[1];
-  if (o.sleeve > 0) s.group('union', 0.012 * sc, () => {
+  if (o.cowl ?? true) s.group('union', 0.012 * sc, () => {
     s.torus([0, ny + 0.002 * sc, 0.008 * sc], 0.088 * sc * Math.sqrt(P.build.bulk) * P.build.neckThick, 0.026 * sc, { ...base, bone: 'chest', rot: [0.34, 0, 0], k: 0.012 * sc });
   });
 }
@@ -178,7 +182,7 @@ function helixCord(proj: Projector, a: V3, b: V3, o: { turns: number; t0?: numbe
 
 
 /** a ring of ragged hanging points round a limb at `centre` (torn sleeve ends); hits the sculpt surface for the base */
-function fringe(proj: Projector, centre: V3, axis: THREE.Vector3, o: { radius: number; count: number; len: number; width: number; lift: number; rng: Rng }): THREE.BufferGeometry | null {
+function fringe(proj: Projector, centre: V3, axis: THREE.Vector3, o: { radius: number; count: number; len: number; lift: number; rng: Rng }): THREE.BufferGeometry | null {
   const C = new THREE.Vector3(...centre);
   let u = new THREE.Vector3(0, 0, 1);
   u.addScaledVector(axis, -u.dot(axis)).normalize();
@@ -219,7 +223,7 @@ function fringe(proj: Projector, centre: V3, axis: THREE.Vector3, o: { radius: n
 }
 
 /** colour a rusted plate by position: iron, orange rust blooms, pale worn edges */
-function rustFn(iron: number, rust: number, hi: number) {
+function rustFn(iron: number, rust: number, hi: number, rustThresh = 0.38) {
   const a = new THREE.Color(), b = new THREE.Color(), h = new THREE.Color();
   a.setHex(iron, THREE.SRGBColorSpace);
   b.setHex(rust, THREE.SRGBColorSpace);
@@ -237,22 +241,22 @@ function rustFn(iron: number, rust: number, hi: number) {
   };
   return (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
     const n1 = vnoise(p, 55) * 0.65 + vnoise(p, 140) * 0.35;
-    c.copy(a).lerp(b, Math.min(1, Math.max(0, (n1 - 0.38) * 3.2)));
+    c.copy(a).lerp(b, Math.min(1, Math.max(0, (n1 - rustThresh) * 3.2)));
     const w = vnoise(p, 260);
     if (w > 0.82) c.lerp(h, 0.45);
   };
 }
 
 /** a curved rectangular plate: an arc of angle [t0, t1] and radius R over the shoulder, extruded along z */
-function arcSheet(R: number, t0: number, t1: number, len: number, thick: number, sx: number, nu = 6): THREE.BufferGeometry {
+function arcSheet(R: number, t0: number, t1: number, len: number, thick: number, sx: number, nu = 6, nv = 2, jag = 0): THREE.BufferGeometry {
   const pos: number[] = [];
   const idx: number[] = [];
-  const nv = 2;
   for (const [r, flip] of [[R + thick, false], [R, true]] as [number, boolean][]) {
     const base = pos.length / 3;
     for (let iv = 0; iv <= nv; iv++)
       for (let iu = 0; iu <= nu; iu++) {
-        const th = t0 + (t1 - t0) * (iu / nu);
+        // `jag` drops every other column of the free edge into a leaf point
+        const th = t0 + (t1 - t0) * (iu / nu) + (iu === nu ? jag * (iv % 2 ? 1 : -0.3) : 0);
         pos.push(sx * r * Math.sin(th), r * Math.cos(th), -len / 2 + len * (iv / nv));
       }
     for (let iv = 0; iv < nv; iv++)
@@ -287,30 +291,84 @@ function arcSheet(R: number, t0: number, t1: number, len: number, thick: number,
   return ni;
 }
 
-/** the sheet's shoulder plate: two overlapping rusty lames riveted over the shoulder cap */
+/**
+ * The sheet's shoulder plate, seated on the deltoid: two overlapping rusty lames in a curved shell
+ * that hugs the shoulder cap (its arc is centred on the deltoid, so it cannot float off the back).
+ */
 export function rustPauldron(ctx: KindContext, side: 'l' | 'r', o: { iron: number; rust: number; size?: number; rng: Rng; lames?: number }) {
   const { P } = ctx;
   const sc = P.s;
   const sx = side === 'l' ? 1 : -1;
   const sh = P.j[`upperarm_${side}`];
+  const L = P.hand.l.L;
   const size = o.size ?? 1;
   const g = Math.sqrt(P.build.bulk);
-  const R = 0.074 * sc * g * size + 0.024 * sc;
+  // arc centre on the deltoid, a little down the arm; radius clears the (inflated) deltoid
+  const cx = sh[0] + sx * L.x * 0.025 * sc;
+  const cy = sh[1] + L.y * 0.025 * sc;
+  const R = (0.05 * g * size + 0.024) * sc;
   const col = rustFn(o.iron, o.rust, 0xa89a82);
   const lames = o.lames ?? 2;
   const pts: V3[] = [];
   for (let k = 0; k < lames; k++) {
-    const rr = R + k * 0.01 * sc;
-    const t0 = -0.5 + k * 1.25;
-    const t1 = 1.0 + k * 1.0;
-    const geo = arcSheet(rr, t0, t1, (0.15 - k * 0.025) * sc * size, 0.007 * sc, sx);
-    const m = new THREE.Matrix4().makeTranslation(sh[0] + sx * 0.004 * sc, sh[1] - (0.005 + k * 0.02) * sc, sh[2] + 0.004 * sc).multiply(new THREE.Matrix4().makeRotationY((o.rng.float() - 0.5) * 0.2));
+    const rr = R + k * 0.009 * sc;
+    const t0 = k === 0 ? -0.45 : 0.75;
+    const t1 = k === 0 ? 0.95 : 1.65;
+    const len = (0.12 - k * 0.015) * sc * size;
+    const geo = arcSheet(rr, t0, t1, len, 0.006 * sc, sx, 6, 2, 0.1);
+    const m = new THREE.Matrix4().makeTranslation(cx, cy - k * 0.012 * sc, sh[2] - 0.006 * sc);
     put(ctx, geo, { bone: `upperarm_${side}`, color: o.iron, mat: RUST, matrix: m, colorFn: col });
-    const th = k === 0 ? [-0.2, 0.45, 0.95] : [1.35, 1.75];
-    for (const tt of th) for (const zz of [-0.05, 0.05]) pts.push([sh[0] + sx * (0.004 * sc + (rr + 0.009 * sc) * Math.sin(tt)), sh[1] - (0.005 + k * 0.02) * sc + (rr + 0.009 * sc) * Math.cos(tt), sh[2] + 0.004 * sc + zz * sc * size]);
+    const th = k === 0 ? [-0.15, 0.4, 0.85] : [1.0, 1.45];
+    for (const tt of th) for (const zz of [-0.04, 0.04]) pts.push([cx + sx * (rr + 0.007 * sc) * Math.sin(tt), cy - k * 0.012 * sc + (rr + 0.007 * sc) * Math.cos(tt), sh[2] - 0.006 * sc + zz * sc * size * 1.2]);
   }
-  const st = studs(pts, 0.0058 * sc);
+  const st = studs(pts, 0.0052 * sc);
   if (st) put(ctx, st, { bone: `upperarm_${side}`, color: 0x9a8a72, mat: RUST, small: true });
+}
+
+/**
+ * Gundabad's shoulder armour: four or five overlapping flat leaf layers with jagged free edges
+ * stepping down the arm over the deltoid, dark grey-brown iron with rust only in patches, and a
+ * crown of spikes. Seated on top of and slightly behind the shoulder joint, so in profile it stays
+ * behind the jaw line.
+ */
+const IRON_DARK = surface('iron_rusty', { rough: 0.9, metal: 0.55 });
+export function leafPauldron(ctx: KindContext, side: 'l' | 'r', o: { iron: number; rust: number; rng: Rng; size?: number; layers?: number; spikes?: number }) {
+  const { P } = ctx;
+  const sc = P.s;
+  const sx = side === 'l' ? 1 : -1;
+  const sh = P.j[`upperarm_${side}`];
+  const L = P.hand.l.L;
+  const size = o.size ?? 1;
+  const g = Math.sqrt(P.build.bulk);
+  const cx = sh[0] + sx * L.x * 0.03 * sc;
+  const cy = sh[1] + L.y * 0.03 * sc;
+  const zc = sh[2] - 0.022 * sc;
+  const R = (0.052 * g * size + 0.026) * sc;
+  const col = rustFn(o.iron, o.rust, 0x8a7a64, 0.62);
+  const layers = o.layers ?? 5;
+  const spikeN = o.spikes ?? 7;
+  const rimPts: V3[] = [];
+  for (let k = 0; k < layers; k++) {
+    const rr = R + k * 0.011 * sc;
+    const t0 = -0.55 + k * 0.62;
+    const t1 = t0 + 1.0 + k * 0.05;
+    const len = (0.19 - k * 0.012) * sc * size;
+    const geo = arcSheet(rr, t0, t1, len, 0.008 * sc, sx, 5, 6, 0.28);
+    const m = new THREE.Matrix4().makeTranslation(cx, cy - k * 0.026 * sc, zc);
+    put(ctx, geo, { bone: `upperarm_${side}`, color: o.iron, mat: IRON_DARK, matrix: m, colorFn: col });
+    if (k < 3) for (const tt of [t0 + 0.25, t0 + 0.7]) for (const zz of [-0.07, 0.0, 0.07]) rimPts.push([cx + sx * (rr + 0.009 * sc) * Math.sin(tt), cy - k * 0.026 * sc + (rr + 0.009 * sc) * Math.cos(tt), zc + zz * sc * size]);
+  }
+  const st = studs(rimPts, 0.0058 * sc);
+  if (st) put(ctx, st, { bone: `upperarm_${side}`, color: 0x7a6a56, mat: RUST, small: true });
+  // crown of spikes along the top ridge and the outer shoulder
+  for (let i = 0; i < spikeN; i++) {
+    const f = spikeN === 1 ? 0.5 : i / (spikeN - 1);
+    const zz = (f - 0.5) * 0.17 * sc * size;
+    const th = 0.05 + 0.6 * ((i % 3) / 2) + (i % 2 ? 0.2 : 0);
+    const rb = R + 0.006 * sc;
+    const nx = sx * Math.sin(th), ny = Math.cos(th);
+    put(ctx, spike([cx + nx * rb, cy + ny * rb, zc + zz], [nx * 0.9, ny + 0.4, (f - 0.5) * 0.5], (0.05 + o.rng.float() * 0.035) * sc * size, 0.0125 * sc, 4), { bone: `upperarm_${side}`, color: shade(o.iron, 0.9), mat: IRON_DARK, small: true });
+  }
 }
 
 /** a snapshot of the sculpt for placing rigid fittings (build it at the END of the extras) */
@@ -321,7 +379,7 @@ export function orcProjector(ctx: KindContext, wide = 0.45): Projector | null {
 }
 
 /** spiked iron greaves strapped over the shin wraps: a curved front plate, a rim and leafy spikes */
-export function greaves(ctx: KindContext, proj: Projector, o: { iron: number; rust: number; rng: Rng; top: number; bottom: number; spikes?: number; size?: number }) {
+export function greaves(ctx: KindContext, proj: Projector, o: { iron: number; rust: number; rng: Rng; top: number; bottom: number; spikes?: number; size?: number; knee?: boolean }) {
   const { P } = ctx;
   const sc = P.s;
   const hp = V(), hn = V();
@@ -333,6 +391,15 @@ export function greaves(ctx: KindContext, proj: Projector, o: { iron: number; ru
     const cx = k[0] + (f[0] - k[0]) * ((k[1] - ymid) / Math.max(0.01, k[1] - f[1]));
     if (!snapPoint(proj, [cx, ymid, 0.5 * sc], 'f', hp, hn)) continue;
     const R = 0.066 * sc * (o.size ?? 1);
+    // dark kneepad with a spike over the knee joint
+    if (o.knee) {
+      const kp = V(), kn = V();
+      if (snapPoint(proj, [k[0], k[1] + 0.005 * sc, 0.5 * sc], 'f', kp, kn)) {
+        const dome = new THREE.SphereGeometry(0.052 * sc * (o.size ?? 1), 8, 4, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(Math.PI / 2);
+        put(ctx, dome, { bone: `shin_${sd}`, color: shade(o.iron, 0.8), mat: IRON_DARK, matrix: new THREE.Matrix4().makeTranslation(kp.x, kp.y, kp.z - 0.012 * sc), colorFn: col });
+        put(ctx, spike([kp.x, kp.y, kp.z + 0.032 * sc * (o.size ?? 1)], [0, 0.15, 1], 0.055 * sc, 0.013 * sc, 4), { bone: `shin_${sd}`, color: shade(o.iron, 0.9), mat: IRON_DARK, small: true });
+      }
+    }
     const h = o.top - o.bottom;
     const geo = new THREE.CylinderGeometry(R * 1.12, R * 0.86, h, 9, 1, true, -1.05, 2.1);
     // two layers (outer facing out, inner facing in)
@@ -345,7 +412,7 @@ export function greaves(ctx: KindContext, proj: Projector, o: { iron: number; ru
     }
     const plate = mergeLayers([geo, scaleGeo(inner, 0.94)]);
     const m = new THREE.Matrix4().makeTranslation(hp.x + hn.x * 0.004 * sc, ymid, hp.z - R * 0.95 + hn.z * 0.004 * sc);
-    put(ctx, plate, { bone: `shin_${sd}`, color: o.iron, mat: RUST, matrix: m, colorFn: col });
+    put(ctx, plate, { bone: `shin_${sd}`, color: o.iron, mat: IRON_DARK, matrix: m, colorFn: col });
     // rim and leaf spikes down the front
     const n = o.spikes ?? 4;
     for (let i = 0; i < n; i++) {
@@ -414,6 +481,13 @@ export interface GearOpts {
   /** the tunic's sleeve length (fraction of the upper arm) and the colour of its torn edges */
   sleeve: number;
   tunicEdge: number;
+  /** a third, middle belt band with its own hanging rings (height m) */
+  midBeltY?: number;
+  /** a torn fringe hanging from the cowl ring at the throat */
+  collar?: boolean;
+  /** expected surface radius of the shin wraps (m at s=1) and cord turns */
+  shinR?: number;
+  shinTurns?: number;
 }
 
 /**
@@ -422,7 +496,7 @@ export interface GearOpts {
  * Build it at the END of the extras (the projector snapshots everything sculpted so far).
  */
 export function orcFittings(ctx: KindContext, o: GearOpts) {
-  const { P, sculpt: s } = ctx;
+  const { P } = ctx;
   const sc = P.s;
   const j = P.j;
   const proj = o.proj ?? orcProjector(ctx);
@@ -433,7 +507,7 @@ export function orcFittings(ctx: KindContext, o: GearOpts) {
     const f = j[`foot_${sd}`];
     const a: V3 = [f[0], o.shinBottom, f[2] + 0.004 * sc];
     const b: V3 = [k[0], o.shinTop, k[2] - 0.01 * sc];
-    const g1 = helixCord(proj, a, b, { turns: 3.5, per: 8, radius: 0.062 * sc, lift: 0.001 * sc, rad: 0.0058 * sc, phase: sd === 'l' ? 0.4 : 2.7 });
+    const g1 = helixCord(proj, a, b, { turns: o.shinTurns ?? 3.5, per: 8, radius: (o.shinR ?? 0.062) * sc, lift: 0.001 * sc, rad: 0.0058 * sc, phase: sd === 'l' ? 0.4 : 2.7 });
     if (g1) put(ctx, g1, { bone: `shin_${sd}`, color: o.cord, mat: STRAP, small: true });
   }
   // ── torn sleeve ends
@@ -444,8 +518,13 @@ export function orcFittings(ctx: KindContext, o: GearOpts) {
     const tt = P.upperArm * o.sleeve;
     const c: V3 = [sh[0] + sx * Lh.x * tt, sh[1] + Lh.y * tt, sh[2]];
     const ax = V(sx * Lh.x, Lh.y, 0).normalize();
-    const g = fringe(proj, c, ax, { radius: 0.058 * sc, count: 11, len: 0.045 * sc, width: 0.034 * sc, lift: 0.002 * sc, rng: o.rng });
+    const g = fringe(proj, c, ax, { radius: 0.058 * sc, count: 11, len: 0.045 * sc, lift: 0.002 * sc, rng: o.rng });
     if (g) put(ctx, g, { bone: `upperarm_${sd}`, color: o.tunicEdge, mat: RAGS, small: true });
+  }
+  // ── torn fringe hanging from the cowl ring
+  if (o.collar) {
+    const g = fringe(proj, [0, j.neck[1] + 0.0, 0.008 * sc], V(0, -1, 0), { radius: 0.125 * sc * P.build.neckThick, count: 14, len: 0.034 * sc, lift: 0.002 * sc, rng: o.rng });
+    if (g) put(ctx, g, { bone: 'chest', color: o.tunicEdge, mat: RAGS, small: true });
   }
   // ── ring buckles where the baldric crosses the chest and on the belts
   const hp = V(), hn = V();
@@ -475,6 +554,10 @@ export function orcFittings(ctx: KindContext, o: GearOpts) {
   }
   // belt rings (centre-left and a hanging one on the character's left)
   ringAt(-0.045 * sc, o.lowerBeltY, 0.02 * sc, 0.0036 * sc, 'hips', V(1, 0, 0), o.iron);
+  if (o.midBeltY !== undefined) {
+    ringAt(0.07 * sc, o.midBeltY, 0.016 * sc, 0.003 * sc, 'hips', V(1, 0, 0), o.iron);
+    ringAt(-0.11 * sc, o.midBeltY, 0.014 * sc, 0.003 * sc, 'hips', V(1, 0, 0), o.iron);
+  }
   if (o.plate) {
     // an iron plate hanging from the lower belt at the front left, on a ring
     const px = (o.plateX ?? 0.12) * sc;
@@ -483,7 +566,7 @@ export function orcFittings(ctx: KindContext, o: GearOpts) {
       const nrm = hn.clone();
       const base = hp.clone().addScaledVector(nrm, 0.016 * sc);
       base.y -= 0.045 * sc * ps;
-      const m = new THREE.Matrix4().compose(base, new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), nrm), new THREE.Vector3(1, 1, 1));
+      const m = frameAt(base, nrm, V(0, 1, 0));
       const plate = new THREE.BoxGeometry(0.07 * sc * ps, 0.09 * sc * ps, 0.007 * sc);
       // a clipped lower corner
       const pos = plate.attributes.position;
@@ -497,7 +580,19 @@ export function orcFittings(ctx: KindContext, o: GearOpts) {
       ringAt(px, o.lowerBeltY - 0.005 * sc, 0.018 * sc, 0.0034 * sc, 'hips', V(1, 0, 0), o.iron);
     }
   }
-  void box;
-  void ring;
-  void mat4;
+}
+
+/**
+ * A dark under-layer of cloth over the thighs and hips (the inner layer of a two-layer kilt): the
+ * kilt's panels leave gaps and the hem lifts when the legs swing, and this stops pale skin showing
+ * through. It follows the thigh bones, so it moves with the legs.
+ */
+export function thighCloth(ctx: KindContext, o: { color: number; color2: number; bottom: number; top: number; inflate: number; mat?: SurfaceSpec }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const parts = anatomyParts(P);
+  s.group('union', 0.004 * sc, () => {
+    emitParts(s, parts, ['pelvis', 'glutes', 'thigh'], { color: o.color, color2: o.color2, colorNoise: 0.5, colorFreq: 22 / sc, mat: o.mat ?? RAGS, inflate: o.inflate, noise: { amp: 0.003 * sc, freq: 30 / sc, type: 'ridged' } });
+    slab(s, o.bottom, o.top, 0.008 * sc);
+  });
 }
