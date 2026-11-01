@@ -68,7 +68,7 @@ const KINDS_OF: Record<Carry, WeaponKind[]> = {
  * fitHeldWeapon in troll.ts): the model-only tests use it, and the real-humanoid test below checks it against the real props
  */
 const KIND_SCALE: Record<string, Partial<Record<WeaponKind, number>>> = {
-  goblin: { scimitar: 0.5 },
+  goblin: { scimitar: 0.5, cleaver: 0.58, club: 0.58 },
   gimli: { dwarf_axe: 0.65 },
   bolg: { mace: 0.9 },
   berserker: { sword: 1.12 },
