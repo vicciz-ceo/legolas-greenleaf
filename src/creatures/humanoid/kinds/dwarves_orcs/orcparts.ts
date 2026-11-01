@@ -12,13 +12,14 @@ import { IRON } from './headgear';
 import { devSkip, shade } from './common';
 
 /** uneven fangs showing over the lips (upper teeth hang down, lower ones jut up) */
-export function orcTeeth(ctx: KindContext, rng: Rng, o: { n?: number; big?: number; color?: number } = {}) {
+export function orcTeeth(ctx: KindContext, rng: Rng, o: { n?: number; big?: number; color?: number; /** radius multiplier (tusks that read at a distance) */ thick?: number } = {}) {
   const { P, sculpt: s } = ctx;
   const u = P.headH;
   const my = -0.4;
   const n = o.n ?? 6;
   const big = o.big ?? 1;
   const col = o.color ?? 0xc9b88a;
+  const th = o.thick ?? 1;
   for (let i = 0; i < n; i++) {
     const sd = i % 2 ? -1 : 1;
     const x = sd * (0.02 + rng.float() * 0.075);
@@ -26,9 +27,9 @@ export function orcTeeth(ctx: KindContext, rng: Rng, o: { n?: number; big?: numb
     const len = (0.025 + rng.float() * 0.05) * big;
     const lean = (rng.float() - 0.5) * 0.04;
     if (lower) {
-      s.cone(P.h(x, my - 0.022, 0.37 + rng.float() * 0.02), P.h(x + lean, my - 0.022 + len, 0.38 + rng.float() * 0.03), 0.0085 * u * (0.7 + big * 0.3), 0.0035 * u, { bone: 'jaw', color: col, mat: 'teeth', k: 0.003 * u });
+      s.cone(P.h(x, my - 0.022, 0.37 + rng.float() * 0.02), P.h(x + lean, my - 0.022 + len, 0.38 + rng.float() * 0.03), 0.0085 * u * th * (0.7 + big * 0.3), 0.0035 * u * th, { bone: 'jaw', color: col, mat: 'teeth', k: 0.003 * u });
     } else {
-      s.cone(P.h(x, my + 0.018, 0.375), P.h(x + lean, my + 0.018 - len, 0.385 + rng.float() * 0.03), 0.0085 * u * (0.7 + big * 0.3), 0.0035 * u, { bone: 'head', color: col, mat: 'teeth', k: 0.003 * u });
+      s.cone(P.h(x, my + 0.018, 0.375), P.h(x + lean, my + 0.018 - len, 0.385 + rng.float() * 0.03), 0.0085 * u * th * (0.7 + big * 0.3), 0.0035 * u * th, { bone: 'head', color: col, mat: 'teeth', k: 0.003 * u });
     }
   }
 }
