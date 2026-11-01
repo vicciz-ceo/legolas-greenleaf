@@ -88,7 +88,6 @@ function sheetPaint(ctx: KindContext) {
 /** the short black beard (jaw, chin, sideburns) and a moustache over the mouth, sculpted: hair cards read pale and stringy at crowd distance */
 function shortBeard(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
-  const sc = P.s;
   const u = P.headH;
   const h = P.h;
   s.with({ color: PALETTE.beard, mat: BEARD, bone: 'jaw' }, () => {
