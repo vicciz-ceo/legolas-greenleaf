@@ -13,7 +13,8 @@ import { quiverGear, type QuiverOpts } from '../../gear';
 import { surface } from '../../../kit/surfaces';
 import { sculptPouch, sculptShoulderCap, sculptStrap, slab } from './garments';
 import { devNum, shade } from './common';
-import { laceFront, sheathed } from './detail';
+import { laceFront } from './detail';
+import { sheathedStyled } from './tauriel_sheath';
 import { torsoCentreFront } from './geo';
 import { makeProjector, snapPoint, placeAlong as placeOn, V } from '../uruks_bosses/common';
 
@@ -194,8 +195,9 @@ function tauriExtras(ctx: KindContext) {
 
   // ── two curved knives in brass-collared sheaths at the hips (hidden while drawn) ──
   for (const side of [1, -1] as const) {
-    sheathed(ctx, {
+    sheathedStyled(ctx, {
       kind: 'elven_knives',
+      style: 'elven',
       hand: side > 0 ? 'hand_l' : 'hand_r',
       pos: [side * (P.hipX + 0.13 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.07 * sc],
       dir: [side * 0.07, -0.85, -0.52],
@@ -268,7 +270,7 @@ export const taurielDef: KindDef = {
     { type: 'belt', color: PAL.belt, offset: BELT_RAISE, mat: 'leather_worn' },
   ],
   armor: [],
-  weapons: { right: 'none', left: 'elven_bow' },
+  weapons: { right: 'none', left: 'elven_bow', style: 'elven' },
   palette: PAL,
   sfx: { voice: 'elf', hurt: 'hurt', die: 'player_death', footstep: 'footstep', weight: 0.3 },
   anim: { grace: 1, swagger: 0.05, aggression: 0.3, stance: 0.95, armSwing: 0.85, cadence: 1.02 },
