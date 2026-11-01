@@ -5,8 +5,8 @@
  *     into a leaf point at the centre front, with three tiers of overlapping leaf plates over the
  *     lower plate (Mirkwood: a chevron pointing down to the belt; Galadhrim: a fan), a raised midrib
  *     and dark angled vein grooves
- *   - `elfPauldrons`: four stacked leaf tiers stepping out and down the upper arm, each tier proud of
- *     the one above, darker in the recesses, plus a small collar leaf
+ *   - `elfPauldrons`: three flat overlapping leaf tiers per side lying along the upper arm, each a
+ *     little further out than the one above, darker in the recesses
  *   - `elfCrest`: the Mirkwood helm's tall crest of stacked leaf blades and hanging cheek leaves
  * The armour skirt of long leaf plates is `leafTassets` in elf_cloth.ts.
  */
@@ -34,6 +34,8 @@ export interface ElfCuirassOpts {
   fluted?: boolean;
   /** the lower leaf tiers point inward to a V (Mirkwood) instead of fanning out (Galadhrim) */
   chevron?: boolean;
+  /** half angle (rad) of the plate round the chest: wider wraps further round the ribs */
+  half?: number;
 }
 
 export function elfCuirass(ctx: KindContext, o: ElfCuirassOpts) {
@@ -49,10 +51,10 @@ export function elfCuirass(ctx: KindContext, o: ElfCuirassOpts) {
   const front = torsoShell(P, {
     y0,
     y1,
-    a0: -1.3,
-    a1: 1.3,
+    a0: -(o.half ?? 1.3),
+    a1: o.half ?? 1.3,
     off: 0.024 * s,
-    nA: o.fluted ? 22 : 16,
+    nA: o.fluted ? 18 : 16,
     nY: 6,
     edge0: lowEdge,
     // V-notch at the collar
@@ -68,8 +70,8 @@ export function elfCuirass(ctx: KindContext, o: ElfCuirassOpts) {
   // three tiers of overlapping leaf plates over the lower breastplate
   const lf = leaf(0.085 * s, 0.03 * s, { droop: 0.12, cup: 0.35, rows: 3, rib: 0.25 });
   const tiers: THREE.Matrix4[] = [];
-  const rowsN = [5, 7, 9];
-  for (let r = 0; r < 3; r++) {
+  const rowsN = o.fluted ? [5, 7] : [5, 7, 9];
+  for (let r = 0; r < rowsN.length; r++) {
     const n = rowsN[r];
     const rowY = y0 + (0.105 - r * 0.036) * s;
     for (let i = 0; i < n; i++) {
@@ -115,13 +117,13 @@ export function elfCuirass(ctx: KindContext, o: ElfCuirassOpts) {
   const edge: V3[] = [];
   for (let i = 0; i <= 18; i++) {
     const f = i / 18;
-    edge.push(torsoPoint(P, -1.28 + f * 2.56, y0 + lowEdge(f) + 0.003 * s, 0.028 * s));
+    edge.push(torsoPoint(P, -(o.half ?? 1.3) + 0.02 + f * 2 * ((o.half ?? 1.3) - 0.02), y0 + lowEdge(f) + 0.003 * s, 0.028 * s));
   }
   put(ctx, tube(edge, 0.0032 * s, { seg: 18, radial: 3 }), { bone: 'chest', color: o.trim, mat: o.mat, small: true });
 }
 
 /**
- * Shoulder armour of the sheets: four tiers of leaf plates stepping out and down the upper arm (each
+ * Shoulder armour of the sheets: three flat leaf plates per side stepping out and down the upper arm (each
  * tier a little further from the sleeve than the one above it, so the lower tiers stand proud),
  * darker in the recesses of the upper tiers, plus a small leaf at the collar. Outer reach is about
  * 0.12-0.14 m beyond the shoulder, like the sheets.
@@ -131,8 +133,8 @@ export function elfPauldrons(ctx: KindContext, o: { color: number; mat: SurfaceN
   const s = P.s;
   const g = Math.sqrt(P.build.bulk);
   const L = P.hand.l.L;
-  const tiers = o.tiers ?? 4;
-  const tone = [0.74, 0.86, 0.96, 1.04];
+  const tiers = o.tiers ?? 3;
+  const tone = [0.8, 0.92, 1.02];
   for (const side of ['l', 'r'] as const) {
     const sx = side === 'l' ? 1 : -1;
     const sh = P.j[`upperarm_${side}`];
@@ -140,25 +142,22 @@ export function elfPauldrons(ctx: KindContext, o: { color: number; mat: SurfaceN
     const up = new THREE.Vector3(0, 1, 0).addScaledVector(axis, -axis.y).normalize();
     const front = new THREE.Vector3(0, 0, 1);
     for (let k = 0; k < tiers; k++) {
-      const t = -0.01 + k * 0.047; // down the arm
-      const r = (0.055 * g + 0.006 * k) * s + 0.008 * s; // and a step further out each tier
-      const n = 4;
-      const len = (0.085 + 0.017 * k) * s;
+      const t = -0.005 + k * 0.05; // down the arm
+      const r = (0.047 * g + 0.005 * k) * s + 0.007 * s; // each tier a little further out than the one above
+      const n = 3;
+      const len = (0.09 + 0.016 * k) * s;
       const w = (0.036 + 0.003 * k) * s;
-      const lf = leaf(len, w, { droop: 0.14, cup: 0.4, rows: 3, rib: 0.28 });
+      const lf = leaf(len, w, { droop: 0.08, cup: 0.3, rows: 2, rib: 0.22 });
       const mats: THREE.Matrix4[] = [];
       for (let i = 0; i < n; i++) {
-        const phi = (i / (n - 1) - 0.5) * (1.7 + 0.1 * k);
+        const phi = (i / (n - 1) - 0.5) * (1.6 + 0.1 * k);
         const radial = up.clone().multiplyScalar(Math.cos(phi)).addScaledVector(front, Math.sin(phi));
         const pos = new THREE.Vector3(sh[0], sh[1], sh[2]).addScaledVector(axis, t * s).addScaledVector(radial, r);
-        const dir = axis.clone().addScaledVector(radial, 0.3).normalize();
+        const dir = axis.clone().addScaledVector(radial, 0.18).normalize();
         mats.push(along([pos.x, pos.y, pos.z], [dir.x, dir.y, dir.z], [radial.x, radial.y, radial.z], 1));
       }
       put(ctx, instances(lf, mats), { bone: `upperarm_${side}`, color: shade(o.color, tone[Math.min(k, tone.length - 1)]), mat: o.mat });
     }
-    // a small leaf at the collar, lying over the trapezius
-    const cl = leaf(0.07 * s, 0.026 * s, { droop: 0.2, cup: 0.4, rows: 3 });
-    put(ctx, instances(cl, [along([sx * 0.085 * s, P.j.neck[1] - 0.01 * s, -0.012 * s], [sx * 0.75, -0.5, 0], [0, 1, 0.35], 1)]), { bone: 'chest', color: shade(o.color, 0.9), mat: o.mat, small: true });
   }
 }
 

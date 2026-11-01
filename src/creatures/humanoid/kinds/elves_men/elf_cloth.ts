@@ -67,7 +67,6 @@ function pushVertex(b: Builder, p: THREE.Vector3, color: THREE.Color, spec: Surf
 const specOf = (m: SurfaceName | SurfaceSpec | undefined, d: SurfaceName): SurfaceSpec => (typeof m === 'string' ? SURFACES[m] : (m ?? SURFACES[d]));
 const _c = new THREE.Color();
 const _t = new THREE.Color();
-const _g = new THREE.Color();
 
 export interface ElfCloakOpts {
   color: number;
@@ -92,6 +91,10 @@ export interface ElfCloakOpts {
   tweed?: number;
   /** embroidered vine along both front edges and a leaf spray band at the hem, in this colour */
   vine?: number;
+  /** low-frequency colour mottling amplitude (felted wool) */
+  mottle?: number;
+  /** how much further back the lower cloak sweeps (m): the profile flare */
+  backFlare?: number;
   seed?: number;
 }
 
@@ -139,7 +142,9 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
     // the hem rises a little over each pleat crest
     if (v > 0.9) y += (ph * 0.5 + 0.5) * 0.02 * s * ((v - 0.9) / 0.1);
     // the top hangs further back, from the shoulder blades, so it does not swallow the shoulders
-    const back = (0.03 + 0.035 * (1 - Math.min(1, v * 4))) * s;
+    const sstep = Math.max(0, Math.min(1, (v - 0.45) / 0.55));
+    const flare = (o.backFlare ?? 0) * s * sstep * sstep * (3 - 2 * sstep) * Math.max(0, -Math.cos(a));
+    const back = (0.03 + 0.035 * (1 - Math.min(1, v * 4))) * s + flare;
     const p = new THREE.Vector3(Math.sin(a) * (rx + fold), y, Math.cos(a) * (rz + fold) - back);
     return { p, y, a, ph, back };
   };
@@ -169,7 +174,7 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
   vs.push(0.97, 0.976, 1);
   // columns: even steps across and a crisp trim strip at each front edge
   const us: number[] = [0, 0.03, 0.034, 0.966, 0.97, 1];
-  const NU = 26;
+  const NU = 22;
   for (let k = 1; k < NU; k++) {
     const u = k / NU;
     if (u > 0.05 && u < 0.95) us.push(u);
@@ -184,11 +189,11 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
       // pleat troughs show the lining / darker wool, crests catch the light; coarse tweed noise on top
       const fm = Math.min(1, v * 3);
       if (foldCol) _c.lerp(foldCol, (0.5 - 0.5 * ph) * 0.75 * fm);
-      _c.multiplyScalar(1 + 0.07 * ph * Math.min(1, v * 2.5) + (o.tweed ?? 0.05) * n2(u * 29, v * 17 + 1.3) + 0.04 * n2(u * 13, 2.7));
+      _c.multiplyScalar(1 + 0.12 * ph * Math.min(1, v * 2.5) + (o.tweed ?? 0.05) * n2(u * 29, v * 17 + 1.3) + 0.04 * n2(u * 13, 2.7) + (o.mottle ?? 0) * n2(u * 4.5, v * 3.5 + 6.1));
       const edge = u <= 0.0301 || u >= 0.9699;
       if (v > 0.9755 || edge) _c.lerp(trim, 0.7);
       _t.copy(_c);
-      pushVertex(b, p, _t, spec, aoFloor + (1 - aoFloor) * Math.min(1, v * 2) - 0.1 * (0.5 - 0.5 * ph) * Math.min(1, v * 2), weightsAt(y, a, v), Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
+      pushVertex(b, p, _t, spec, aoFloor + (1 - aoFloor) * Math.min(1, v * 2) - 0.16 * (0.5 - 0.5 * ph) * Math.min(1, v * 2), weightsAt(y, a, v), Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
     }
   }
   for (let iv = 0; iv < vs.length - 1; iv++)
@@ -198,7 +203,7 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
       b.idx.push(a, a + 1, c, a + 1, c + 1, c);
     }
 
-  // ── embroidery: small thread-gold leaves sewn onto the cloth surface (own vertices, same skin weights) ──
+  // ── embroidery: thread-gold vine and leaf sprigs sewn onto the cloth (own vertices, same skin weights) ──
   if (o.vine !== undefined) {
     const gold = new THREE.Color().setHex(o.vine, THREE.SRGBColorSpace);
     const thread = SURFACES.linen;
@@ -208,11 +213,11 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
     const side = new THREE.Vector3();
     const dir = new THREE.Vector3();
     const q = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+    const ws = (c: { y: number; a: number }, v: number) => weightsAt(c.y, c.a, v).map((x) => [x[0], x[1]] as [number, number]);
     /** a kite-shaped leaf with its base at (u, v) pointing `ang` radians from straight down toward +u (along the cloth) */
     const leaf = (u: number, v: number, ang: number, len: number, wid: number) => {
       const c = surf(u, v);
-      const dv = 0.02;
-      dDown.copy(surf(u, v + dv).p).sub(c.p).normalize();
+      dDown.copy(surf(u, v + 0.02).p).sub(c.p).normalize();
       dAcross.copy(surf(u + 0.01, v).p).sub(c.p).normalize();
       nrm.set(c.p.x, 0, c.p.z + c.back).normalize(); // outward from the cloak axis
       dir.copy(dDown).multiplyScalar(Math.cos(ang)).addScaledVector(dAcross, Math.sin(ang)).normalize();
@@ -223,45 +228,48 @@ export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.Bu
       q[2].copy(c.p).addScaledVector(dir, len).addScaledVector(nrm, lift);
       q[3].copy(c.p).addScaledVector(dir, len * 0.42).addScaledVector(side, -wid).addScaledVector(nrm, lift * 1.4);
       const i0 = b.pos.length / 3;
-      const ws = weightsAt(c.y, c.a, v).map((x) => [x[0], x[1]] as [number, number]);
-      for (const pt of q) pushVertex(b, pt, gold, thread, 0.95, ws.map((x) => [x[0], x[1]] as [number, number]), 0.03);
+      const w0 = ws(c, v);
+      for (const pt of q) pushVertex(b, pt, gold, thread, 0.95, w0.map((x) => [x[0], x[1]] as [number, number]), 0.03);
       b.idx.push(i0, i0 + 1, i0 + 2, i0, i0 + 2, i0 + 3);
     };
-    // a stem segment: a thin strip between two points down the cloth
+    /** a thin strip between two heights down the cloth (wound so its front faces out) */
     const stem = (u: number, v0: number, v1: number) => {
       const c0 = surf(u, v0);
       const c1 = surf(u, v1);
       nrm.set(c0.p.x, 0, c0.p.z + c0.back).normalize();
-      dAcross.copy(surf(u + 0.01, v0).p).sub(c0.p).normalize().multiplyScalar(0.0022 * s);
+      dAcross.copy(surf(u + 0.01, v0).p).sub(c0.p).normalize().multiplyScalar(0.0035 * s);
       const i0 = b.pos.length / 3;
       const lift = 0.0025 * s;
       const pts = [c0.p.clone().sub(dAcross), c0.p.clone().add(dAcross), c1.p.clone().add(dAcross), c1.p.clone().sub(dAcross)];
-      const ws0 = weightsAt(c0.y, c0.a, v0).map((x) => [x[0], x[1]] as [number, number]);
-      const ws1 = weightsAt(c1.y, c1.a, v1).map((x) => [x[0], x[1]] as [number, number]);
-      pts.forEach((pt, i) => pushVertex(b, pt.addScaledVector(nrm, lift), gold, thread, 0.95, (i < 2 ? ws0 : ws1).map((x) => [x[0], x[1]] as [number, number]), 0.03));
-      b.idx.push(i0, i0 + 1, i0 + 2, i0, i0 + 2, i0 + 3);
+      const w0 = ws(c0, v0);
+      const w1 = ws(c1, v1);
+      pts.forEach((pt, i) => pushVertex(b, pt.addScaledVector(nrm, lift), gold, thread, 0.95, (i < 2 ? w0 : w1).map((x) => [x[0], x[1]] as [number, number]), 0.03));
+      b.idx.push(i0, i0 + 2, i0 + 1, i0, i0 + 3, i0 + 2);
     };
-    // vine bands inset along both front edges: a stem with leaf pairs, broken here and there
-    const dvStep = Math.max(0.03, 0.055 / H);
-    for (const [uu, sgn] of [[0.115, 1], [0.885, -1]] as [number, number][]) {
-      let k = 0;
-      for (let v = 0.26; v < 0.93; v += dvStep, k++) {
-        const gap = n2(k * 1.7 + uu * 10, 4.1);
-        if (gap > 0.62) continue; // broken vine
-        stem(uu, v, v + dvStep * 0.9);
-        leaf(uu, v + dvStep * 0.15, sgn * 0.4, 0.04 * s, 0.009 * s);
-        leaf(uu, v + dvStep * 0.15, -sgn * 0.4, 0.04 * s, 0.009 * s);
+    const vHem = 0.955;
+    const vStart = Math.max(0.3, vHem - 0.6 / H); // the vine rises about 0.6 m from the hem
+    // front edges: one continuous thin strip with a column of six leaf-pair stamps, inset from the edge
+    for (const uu of [0.1, 0.9]) {
+      const seg = 8;
+      for (let i = 0; i < seg; i++) stem(uu, vStart + ((vHem - vStart) * i) / seg, vStart + ((vHem - vStart) * (i + 1)) / seg);
+      for (let k = 0; k < 6; k++) {
+        const v = vStart + ((vHem - vStart) * (k + 0.8)) / 6.2;
+        leaf(uu, v, Math.PI + 0.5, 0.05 * s, 0.013 * s);
+        leaf(uu, v, Math.PI - 0.5, 0.05 * s, 0.013 * s);
       }
     }
-    // leaf sprays along the hem band, pointing up
-    const sprays = 15;
-    for (let k = 0; k < sprays; k++) {
-      const u = 0.1 + (0.8 * (k + 0.5)) / sprays;
-      const v = 0.966;
-      leaf(u, v, Math.PI, 0.06 * s, 0.011 * s);
-      leaf(u, v, Math.PI - 0.6, 0.04 * s, 0.009 * s);
-      leaf(u, v, Math.PI + 0.6, 0.04 * s, 0.009 * s);
+    // hem band: eight evenly spaced three-leaf sprigs, and a larger motif at the back centre
+    const sprigs = 8;
+    for (let k = 0; k < sprigs; k++) {
+      const u = 0.18 + (0.64 * (k + 0.5)) / sprigs;
+      if (Math.abs(u - 0.5) < 0.04) continue;
+      leaf(u, 0.966, Math.PI, 0.055 * s, 0.011 * s);
+      leaf(u, 0.966, Math.PI - 0.6, 0.038 * s, 0.009 * s);
+      leaf(u, 0.966, Math.PI + 0.6, 0.038 * s, 0.009 * s);
     }
+    leaf(0.5, 0.966, Math.PI, 0.1 * s, 0.017 * s);
+    leaf(0.5, 0.966, Math.PI - 0.55, 0.07 * s, 0.013 * s);
+    leaf(0.5, 0.966, Math.PI + 0.55, 0.07 * s, 0.013 * s);
   }
   return finish(b);
 }
