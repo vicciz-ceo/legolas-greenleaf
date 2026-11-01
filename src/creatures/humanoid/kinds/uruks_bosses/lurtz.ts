@@ -9,8 +9,7 @@ import { surface } from '../../../kit/surfaces';
 import type { PrimOpts } from '../../../kit/sdf';
 import { gearOf, makeProjector, paintSnapped, carveSnapped, strapSnapped, scarTube, type SnapPoint, type Projector } from './common';
 import { brawnBody, bareTorso } from './body';
-import { URUK_PAL } from './uruk';
-import { LURTZ_PAL, lurtzBracers, lurtzBelt, lurtzBootWraps } from './lurtz_parts';
+import { LURTZ_PAL, LURTZ_KILT, lurtzBracers, lurtzBelt, lurtzBootWraps, lurtzBeltHangers, lurtzSoles, lurtzFangs } from './lurtz_parts';
 
 const WHITE_SKIN = surface('skin_orc', { rough: 0.8, skin: 0.25 });
 const LEATHER = surface('leather_worn', { rough: 0.74 });
@@ -29,7 +28,7 @@ export const LURTZ_FACE = {
   eyeSpacing: 1.02,
   eyeTilt: -0.08,
   eyeOpen: 0.75,
-  tusks: 0.5, // two short ivory fangs (sheet: uneven fangs over the lip)
+  tusks: 1.0, // plus two ivory cones sculpted in lurtzFangs (sheet: uneven fangs over the lip)
   underbite: 0.1, // a bigger one opened a black slot under the nose
   foreheadSlope: 0.5,
   asym: 0.35,
@@ -48,24 +47,25 @@ function lurtzFacePaint(ctx: KindContext, proj: Projector) {
   };
   // slightly translucent so the skin grain shows through (the sheet's paint is thin)
   const paint: PrimOpts = { color: 0xe4e0d4, color2: 0xa8a090, colorNoise: 0.45, colorFreq: 45 / P.s, mat: WHITE_SKIN, bone: 'head', k: 0.008 * u, strength: 0.88 };
-  // palm: two rows across the brow ridge (the hairline sits low: everything stays below y ≈ 0.3)
+  // palm: two rows across the brow ridge, solid; the fingers fan up from it with clear gaps between
   for (let r = 0; r < 2; r++) {
-    const y = 0.035 + r * 0.06;
-    paintSnapped(s, proj, [H(-0.14, y), H(0.14, y)], 0.03 * u, paint);
+    const y = 0.03 + r * 0.055;
+    paintSnapped(s, proj, [H(-0.14, y), H(0.14, y)], 0.032 * u, paint);
   }
-  // fingers fanned up from the palm: index → little (character's right → left), thumb to the side
   const fingers: [number, number, number, number][] = [
-    [-0.12, 0.1, -0.19, 0.25],
-    [-0.04, 0.11, -0.055, 0.29],
-    [0.045, 0.11, 0.065, 0.28],
-    [0.12, 0.1, 0.18, 0.23],
+    [-0.125, 0.11, -0.2, 0.26],
+    [-0.042, 0.12, -0.058, 0.3],
+    [0.045, 0.12, 0.068, 0.29],
+    [0.125, 0.11, 0.185, 0.24],
   ];
-  for (const [x0, y0, x1, y1] of fingers) paintSnapped(s, proj, [H(x0, y0), H((x0 + x1) / 2, (y0 + y1) / 2), H(x1, y1)], [0.018 * u, 0.017 * u, 0.011 * u], paint);
-  paintSnapped(s, proj, [H(-0.16, 0.05), H(-0.22, 0.1)], [0.02 * u, 0.012 * u], paint);
+  for (const [x0, y0, x1, y1] of fingers) paintSnapped(s, proj, [H(x0, y0), H((x0 + x1) / 2, (y0 + y1) / 2), H(x1, y1)], [0.017 * u, 0.016 * u, 0.01 * u], paint);
+  paintSnapped(s, proj, [H(-0.16, 0.06), H(-0.23, 0.11)], [0.02 * u, 0.012 * u], paint);
   // nose bridge, then the swoosh: wide at the inner eye, tapering to a point at the jaw
   paintSnapped(s, proj, [H(0, 0.0), H(0, -0.07)], 0.018 * u, paint);
   paintSnapped(s, proj, [H(-0.08, -0.11), H(-0.12, -0.23), H(-0.17, -0.34), H(-0.2, -0.43), H(-0.2, -0.5)], [0.03 * u, 0.028 * u, 0.022 * u, 0.012 * u, 0.005 * u], paint);
   paintSnapped(s, proj, [H(0.085, -0.12), H(0.115, -0.2)], [0.014 * u, 0.007 * u], { ...paint, strength: 0.6 });
+  // the mouth line and inside the lips: near-black, so it never reads as a grey-brown block
+  s.ellipsoid(P.h(0, -0.392, 0.385), [0.08 * u, 0.012 * u, 0.04 * u], { op: 'paint', color: 0x0e0807, mat: 'skin_orc', bone: 'head', k: 0.012 * u, strength: 0.95 });
   // grime around the eyes (opaque, tight: a translucent disc reads as a ghost ring)
   const dark: PrimOpts = { color: 0x2a1f19, mat: 'skin_orc', bone: 'head', k: 0.012 * u, strength: 0.7 };
   for (const sx of [1, -1]) paintSnapped(s, proj, [H(0.135 * sx, -0.075), H(0.17 * sx, -0.07)], 0.032 * u, dark);
@@ -80,9 +80,9 @@ function lurtzFaceScars(ctx: KindContext, proj: Projector) {
   };
   const o: PrimOpts = { color: 0x6a3a30, mat: 'skin_orc', bone: 'head', k: 0.006 * u };
   // diagonal slash across the brow and cheek (character's left)
-  carveSnapped(s, proj, [H(0.22, 0.1), H(0.17, -0.05), H(0.12, -0.2), H(0.1, -0.33)], 0.011 * u, 0.0075 * u, o);
+  carveSnapped(s, proj, [H(0.22, 0.1), H(0.17, -0.05), H(0.12, -0.2), H(0.1, -0.33)], 0.0065 * u, 0.0045 * u, o);
   // split lip
-  carveSnapped(s, proj, [H(-0.09, -0.35), H(-0.1, -0.43), H(-0.1, -0.52)], 0.009 * u, 0.006 * u, { ...o, bone: 'jaw' });
+  carveSnapped(s, proj, [H(-0.09, -0.35), H(-0.1, -0.43), H(-0.1, -0.52)], 0.006 * u, 0.0042 * u, { ...o, bone: 'jaw' });
 }
 
 function lurtzExtras(ctx: KindContext) {
@@ -139,6 +139,9 @@ function lurtzExtras(ctx: KindContext) {
   lurtzBracers(ctx, parts, gear);
   lurtzBelt(ctx, parts, gear, proj);
   lurtzBootWraps(ctx, parts);
+  lurtzSoles(ctx);
+  lurtzBeltHangers(ctx, gear);
+  lurtzFangs(ctx, gear);
   const strapMat = { bone: 'chest', color: 0x120d0a, mat: LEATHER } as const;
   // shield harness (sheet: bare chest, no front straps; they come over the top of the shoulders
   // and run down the back to the shield)
@@ -183,12 +186,13 @@ export const lurtzKind: KindDef = {
   outfit: [
     // wrapped boots to ≈ 0.44 m (the raised bands are sculpted in lurtz_parts); a bare calf shows above
     { type: 'boots', color: LURTZ_PAL.wrap, color2: 0x1c1712, length: 0.7 },
-    // charcoal kilt, grimy hem; the brown leather is a single central flap (sheet front/back)
-    { type: 'skirt', color: LURTZ_PAL.kilt, color2: LURTZ_PAL.kilt2, mat: 'rags', length: 0.85, thickness: 0.03, tatter: 0.04, strips: { count: 1, color: LURTZ_PAL.belt, color2: LURTZ_PAL.beltDark, mat: 'leather_worn', width: 0.09, length: 0.8, phase: 0 } },
+    // near-black charcoal kilt: sides to ≈ 0.55 m, the grimy brown central flap makes the V to ≈ 0.45 m
+    { type: 'skirt', color: LURTZ_PAL.kilt, color2: LURTZ_PAL.kilt2, mat: 'rags', length: LURTZ_KILT.length, thickness: LURTZ_KILT.thickness, tatter: 0.05, strips: { count: 1, color: LURTZ_PAL.flap, color2: LURTZ_PAL.beltDark, mat: 'rags', width: 0.09, length: 1.25, phase: 0 } },
   ],
   armor: [],
   weapons: { right: 'sword', left: 'uruk_bow', back: ['shield'], style: 'uruk' },
-  palette: { ...URUK_PAL, ...LURTZ_PAL },
+  // (explicit: no uruk colours leak in; `buckle` is what the base belt reads)
+  palette: { ...LURTZ_PAL, buckle: LURTZ_PAL.ironLt },
   sfx: { voice: 'uruk', grunt: 'orc_grunt', die: 'orc_die', roar: 'uruk_roar', weight: 0.8 },
   anim: { hunch: 0.16, swagger: 0.5, aggression: 1, stance: 1.18, armSwing: 1.05, cadence: 1.0 },
   variation: { height: 0, bulk: 0, skin: 0 },
