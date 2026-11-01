@@ -6,20 +6,22 @@
  * no `uv` attribute reads the white texel at uv (0,0), so only the shield faces see the paint. Regions
  * are painted lazily the first time a shield of that emblem is built.
  *
- * Layout (px, 1024²):  rohan 512,0,512,512 · gondor 0,400,256,584 · uruk 264,400,248,584 · white 0,992,32,32 (uv (0,0) is the bottom-left
+ * Layout (px, 1024²):  rohan 512,0,512,512 · gondor 0,400,256,584 · uruk 264,400,244,584 · orc 520,524,248,248 · easterling 776,524,244,480 · white 0,992,32,32 (uv (0,0) is the bottom-left
  * corner of the canvas, because the texture is flipped)
  */
 import * as THREE from 'three';
 import { Rng } from '../core/rng';
 
-export type Emblem = 'rohan' | 'gondor' | 'uruk';
+export type Emblem = 'rohan' | 'gondor' | 'uruk' | 'orc' | 'easterling';
 export interface AtlasRect { x: number; y: number; w: number; h: number }
 
 const SIZE = 1024;
 export const ATLAS_RECTS: Record<Emblem, AtlasRect> = {
   rohan: { x: 512, y: 0, w: 512, h: 512 },
   gondor: { x: 0, y: 400, w: 256, h: 584 },
-  uruk: { x: 264, y: 400, w: 248, h: 584 },
+  uruk: { x: 264, y: 400, w: 244, h: 584 },
+  orc: { x: 520, y: 524, w: 248, h: 248 },
+  easterling: { x: 776, y: 524, w: 244, h: 480 },
 };
 
 interface Atlas {
@@ -76,7 +78,9 @@ export function ensureEmblem(e: Emblem): void {
   ctx.translate(r.x, r.y);
   if (e === 'rohan') paintRohan(ctx, r.w, r.h);
   else if (e === 'gondor') paintGondor(ctx, r.w, r.h);
-  else paintUruk(ctx, r.w, r.h);
+  else if (e === 'uruk') paintUruk(ctx, r.w, r.h);
+  else if (e === 'orc') paintOrc(ctx, r.w, r.h);
+  else paintEasterling(ctx, r.w, r.h);
   ctx.restore();
   A.texture!.needsUpdate = true;
 }
@@ -324,6 +328,110 @@ function paintGondor(ctx: Ctx, w: number, h: number) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Easterlings: a dark kite with a bronze edge line and a golden sunburst round a boss
+// ─────────────────────────────────────────────────────────────────────────────
+function paintEasterling(ctx: Ctx, w: number, h: number) {
+  const rnd = new Rng(51);
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, '#2a2420');
+  g.addColorStop(1, '#1a1614');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  for (let i = 0; i < 90; i++) {
+    const x = rnd.range(0, w), y = rnd.range(0, h), r = rnd.range(6, 20);
+    const d = ctx.createRadialGradient(x, y, 0, x, y, r);
+    d.addColorStop(0, rnd.chance(0.5) ? 'rgba(90,70,44,0.2)' : 'rgba(0,0,0,0.3)');
+    d.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = d;
+    ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+  }
+  // sunburst: long and short rays fanning from the boss, low on the face
+  const cx = w * 0.5, cy = h * 0.5;
+  const gold = '#b8923a';
+  for (let i = 0; i < 24; i++) {
+    const a = (i / 24) * Math.PI * 2 + 0.07;
+    const long = i % 2 === 0;
+    const len = (long ? 0.46 : 0.3) * w * (0.85 + 0.2 * rnd.float()) * (Math.sin(a) < 0 ? 1.25 : 1.1);
+    const hw = (long ? 0.06 : 0.045) * w;
+    ctx.fillStyle = long ? gold : '#8a6a2a';
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a - 0.1) * w * 0.1, cy + Math.sin(a - 0.1) * w * 0.1);
+    ctx.lineTo(cx + Math.cos(a) * len, cy + Math.sin(a) * len);
+    ctx.lineTo(cx + Math.cos(a + 0.1) * w * 0.1, cy + Math.sin(a + 0.1) * w * 0.1);
+    ctx.closePath();
+    ctx.fill();
+    void hw;
+  }
+  ctx.fillStyle = '#6a4e1c';
+  ctx.beginPath();
+  ctx.arc(cx, cy, w * 0.1, 0, 7);
+  ctx.fill();
+  ctx.fillStyle = '#c8a24a';
+  ctx.beginPath();
+  ctx.arc(cx - 2, cy - 2, w * 0.075, 0, 7);
+  ctx.fill();
+  // bronze edge line
+  ctx.strokeStyle = 'rgba(176,140,60,0.7)';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(9, 9, w - 18, h - 18);
+  weather(ctx, w, h, 17, 'rgba(24,20,16,A)', 'rgba(170,140,90,1)', 0.8);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Orcs: crude dark planks, an iron band, a smeared red claw mark
+// ─────────────────────────────────────────────────────────────────────────────
+function paintOrc(ctx: Ctx, w: number, h: number) {
+  const rnd = new Rng(41);
+  ctx.fillStyle = '#1c1612';
+  ctx.fillRect(0, 0, w, h);
+  const planks = 5;
+  for (let i = 0; i < planks; i++) {
+    const x0 = (i / planks) * w, x1 = ((i + 1) / planks) * w;
+    const k = rnd.range(0.7, 1.25);
+    ctx.fillStyle = `rgb(${Math.round(44 * k)},${Math.round(34 * k)},${Math.round(26 * k)})`;
+    ctx.fillRect(x0 + 1, 0, x1 - x0 - 2, h);
+    ctx.strokeStyle = 'rgba(10,8,6,0.5)';
+    for (let g = 0; g < 9; g++) {
+      ctx.lineWidth = rnd.range(0.6, 1.8);
+      const gx = rnd.range(x0 + 2, x1 - 2);
+      ctx.beginPath();
+      ctx.moveTo(gx, 0);
+      ctx.lineTo(gx + rnd.range(-3, 3), h);
+      ctx.stroke();
+    }
+  }
+  // crude iron cross-bands
+  for (const y of [0.3, 0.72]) {
+    ctx.fillStyle = '#2e2b28';
+    ctx.fillRect(0, y * h - 7, w, 14);
+    ctx.fillStyle = '#5a554e';
+    for (let i = 0; i < 6; i++) {
+      ctx.beginPath();
+      ctx.arc((i + 0.5) * (w / 6) + rnd.range(-3, 3), y * h, 2.6, 0, 7);
+      ctx.fill();
+    }
+  }
+  // a smeared red claw mark
+  ctx.strokeStyle = '#7a1c12';
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 3; i++) {
+    ctx.lineWidth = rnd.range(9, 14);
+    ctx.beginPath();
+    ctx.moveTo(w * (0.34 + i * 0.14), h * 0.22);
+    ctx.quadraticCurveTo(w * (0.38 + i * 0.14), h * 0.5, w * (0.3 + i * 0.16), h * 0.8);
+    ctx.stroke();
+  }
+  // iron rim ring under the mesh rim
+  const rr = ctx.createRadialGradient(w / 2, h / 2, w * 0.44, w / 2, h / 2, w * 0.5);
+  rr.addColorStop(0, 'rgba(30,28,26,0)');
+  rr.addColorStop(0.4, 'rgba(30,28,26,1)');
+  rr.addColorStop(1, 'rgba(30,28,26,1)');
+  ctx.fillStyle = rr;
+  ctx.fillRect(0, 0, w, h);
+  weather(ctx, w, h, 14, 'rgba(14,10,8,A)', 'rgba(150,130,100,1)', 0.7);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Uruk-hai: black iron, a white hand daubed in paint with drips
 // ─────────────────────────────────────────────────────────────────────────────
 function paintUruk(ctx: Ctx, w: number, h: number) {
@@ -351,8 +459,9 @@ function paintUruk(ctx: Ctx, w: number, h: number) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.save();
-  ctx.translate(w * 0.5, h * 0.44);
+  ctx.translate(w * 0.5, h * 0.45);
   ctx.rotate(-0.1);
+  ctx.scale(0.72, 0.72);
   ctx.beginPath();
   ctx.ellipse(0, 0, w * 0.2, w * 0.19, 0, 0, Math.PI * 2);
   ctx.fill();

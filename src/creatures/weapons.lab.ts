@@ -97,7 +97,8 @@ const ROW2: SheetItem[] = [
   { name: 'war_hammer', kind: 'warhammer', extent: 2.5, held: 2.5 },
   { name: 'pike', kind: 'pike', extent: 3 },
   { name: 'rohan_shield', kind: 'shield', style: 'rohan', shield: true, extent: 0.9 },
-  { name: 'gondor_shield', kind: 'shield', style: 'gondor', shield: true, extent: 1.15 },
+  // the weapons sheet says 1.15 m; the Gondor turnaround shows the shield about 0.92 m in hand, so 0.95
+  { name: 'gondor_shield', kind: 'shield', style: 'gondor', shield: true, extent: 0.95 },
   { name: 'uruk_shield', kind: 'shield', style: 'uruk', shield: true, extent: 1 },
   { name: 'torch', kind: 'torch', extent: 0.75 },
 ];
@@ -167,7 +168,7 @@ function triCount(o: THREE.Object3D): number {
 
 /** both rows in one frame (row 2 above row 1) */
 function sheetAll(): LabInstance {
-  const a = sheetRow(ROW1, 1.0), b = sheetRow(ROW2, 1.25);
+  const a = sheetRow(ROW1, 1.0), b = sheetRow(ROW2, 2.4);
   b.object.position.y = 1.8;
   const g = new THREE.Group();
   g.add(a.object, b.object);
@@ -177,11 +178,14 @@ function sheetAll(): LabInstance {
 /** every shield style side by side (use view=quad for front / profile / back / 3/4) */
 function shieldRow(): LabInstance {
   const items: SheetItem[] = [
+    { name: 'default', kind: 'shield', shield: true, extent: 0.9 },
     { name: 'rohan', kind: 'shield', style: 'rohan', shield: true, extent: 0.9 },
-    { name: 'gondor', kind: 'shield', style: 'gondor', shield: true, extent: 1 },
+    { name: 'orc', kind: 'shield', style: 'orc', shield: true, extent: 0.84 },
+    { name: 'haradrim', kind: 'shield', style: 'haradrim', shield: true, extent: 0.76 },
+    { name: 'gondor', kind: 'shield', style: 'gondor', shield: true, extent: 0.95 },
     { name: 'uruk', kind: 'shield', style: 'uruk', shield: true, extent: 1 },
-    { name: 'dwarf', kind: 'shield', style: 'dwarf', shield: true, extent: 0.7 },
-    { name: 'easterling', kind: 'shield', style: 'easterling', shield: true, extent: 0.9 },
+    { name: 'dwarf', kind: 'shield', style: 'dwarf', shield: true, extent: 0.72 },
+    { name: 'easterling', kind: 'shield', style: 'easterling', shield: true, extent: 1.05 },
   ];
   return sheetRow(items, 1.0);
 }
@@ -191,7 +195,7 @@ export const subjects: LabSubject[] = [
   { name: 'weapons_knives', category: 'prop', create: () => sheetRow([{ name: 'k_default', kind: 'elven_knives', flip: true, count: 2, extent: 0.65 }, { name: 'k_elven', kind: 'elven_knives', style: 'elven', flip: true, count: 2, extent: 0.65 }], 0.5) },
   { name: 'weapons_lineup', category: 'prop', create: sheetAll },
   { name: 'weapons_row1', category: 'prop', create: () => sheetRow(ROW1, 1.0) },
-  { name: 'weapons_row2', category: 'prop', create: () => sheetRow(ROW2, 1.25) },
+  { name: 'weapons_row2', category: 'prop', create: () => sheetRow(ROW2, 2.4) },
   ...[...ROW1, ...ROW2].map((it): LabSubject => ({ name: `wp_${it.name}`, category: 'prop', create: () => sheetRow([it], 1) })),
   {
     name: 'weapons',
