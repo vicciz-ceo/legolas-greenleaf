@@ -38,7 +38,7 @@ export interface FocusController {
   update(dtReal: number, input: InputState, canUse: boolean): void;
   /** abort without firing; restores time */
   cancel(): void;
-  /** was c a target of a Focus volley (kills by the volley refill the meter at a quarter of the rate) */
+  /** is c currently the target of an in-flight Focus volley arrow (only the volley's own kill refills at a quarter rate; a survivor's later death refills in full) */
   wasVolleyTarget(c: Combatant): boolean;
 }
 
@@ -48,6 +48,10 @@ export const FOCUS_INTERVAL = 0.07;
 const FOCUS_DRAIN_SECONDS = 3.4; // full meter lasts this long in real time
 const MIN_TO_START = 8;
 const TRAIL_COLOR = 0xcfeeff;
+/** a Focus press made this long (real s) before the gate opens (swing, stun, cooldown) still starts Focus while Q is held */
+const PRESS_BUFFER = 0.3;
+/** a volley arrow that never lands stops counting as "volley credit" after this long (real s) */
+const VOLLEY_CREDIT_TTL = 1.5;
 
 const _v = new THREE.Vector3();
 const _o = new THREE.Vector3();
@@ -69,7 +73,10 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
   let spent = 0;
   /** "not enough Focus" feedback throttle (real seconds) */
   let deniedT = 0;
-  const volleyTargets = new WeakSet<Combatant>();
+  /** target -> real-time expiry of its in-flight volley arrow; cleared when that arrow lands */
+  const volleyTargets = new WeakMap<Combatant, number>();
+  let clock = 0;
+  let pressBuf = 0;
 
   function screenOf(c: Combatant, out: { x: number; y: number }): boolean {
     const cam = ctx.engine.camera;
@@ -115,6 +122,7 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
   function enter() {
     state = 'active';
     spent = 0;
+    pressBuf = 0;
     marks.length = 0;
     autoT = 0;
     ctx.time.setScale(FOCUS_SCALE, 0.25);
@@ -131,7 +139,6 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
 
   function startVolley() {
     state = 'volley';
-    for (const m of marks) volleyTargets.add(m);
     volleyIdx = 0;
     volleyT = 0; // first arrow immediately
   }
@@ -142,6 +149,7 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
     else t.aimPoint(_v);
     host.bowOrigin(_o);
     _d.copy(_v).sub(_o).normalize();
+    volleyTargets.set(target, clock + VOLLEY_CREDIT_TTL);
     const shot: ArrowShotExt = {
       origin: _o.clone(),
       dir: _d.clone(),
@@ -155,7 +163,11 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
       style: 'elven',
       trail: TRAIL_COLOR,
       homingRate: 14,
-      onHit: (c, hit) => host.onArrowHit(c, hit),
+      onHit: (c, hit) => {
+        host.onArrowHit(c, hit);
+        // the killing blow (credited inside takeDamage, before onHit) is the only +3 kill
+        volleyTargets.delete(c);
+      },
     };
     ctx.projectiles.fire(shot);
     ctx.audio.play('focus_fire', { volume: 0.8, pitch: 1 + volleyIdx * 0.04 });
@@ -211,11 +223,15 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
     },
     update(dtReal, input, canUse) {
       const dt = Math.min(dtReal, 0.1);
+      clock += dt;
+      pressBuf = input.focusPressed ? PRESS_BUFFER : Math.max(0, pressBuf - dt);
       cooldown = Math.max(0, cooldown - dt);
       drawPulse = Math.max(0, drawPulse - dt / 0.07);
       deniedT = Math.max(0, deniedT - dt);
       if (state === 'idle') {
-        if (canUse && input.focusPressed && cooldown <= 0) {
+        // a recent press still counts while Q is held (swing / stun / cooldown swallowed the edge)
+        if (canUse && (input.focusPressed || (pressBuf > 0 && input.focusHeld)) && cooldown <= 0) {
+          pressBuf = 0;
           if (host.focus >= MIN_TO_START) enter();
           else if (deniedT <= 0) {
             // tell the player why nothing happened
@@ -310,9 +326,11 @@ export function createFocus(ctx: GameContext, host: FocusHost): FocusController 
       }
     },
     wasVolleyTarget(c) {
-      return volleyTargets.has(c);
+      const until = volleyTargets.get(c);
+      return until !== undefined && until > clock;
     },
     cancel() {
+      pressBuf = 0;
       if (state === 'idle') return;
       state = 'idle';
       marks.length = 0;
