@@ -163,7 +163,7 @@ function dressGundabad(ctx: KindContext, rng: Rng, look: Look, b: number) {
   // ── hair: long, loose, dark
   const hg = makeOrcHair(
     ctx,
-    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.35, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: 0.0, maxY: 0.22, part: 0.03 },
+    { color: P_.hair, tip: P_.hairTip, deep: P_.hairDeep, length: look.hairLen * sc, count: ctx.helmet ? 8 : look.hairCount, width: 0.03, wave: 0.8, wild: 0.6, comb: 0.85, front: 0.6, back: -0.4, gravity: 6, segments: 6, maxZ: -0.08, part: 0.03 },
     rng,
   );
   if (hg) attachSkinned(ctx, hg, gundabadHairMaterial());
