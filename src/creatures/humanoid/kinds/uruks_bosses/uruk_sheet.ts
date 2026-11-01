@@ -12,7 +12,8 @@ import * as THREE from 'three';
 import type { KindContext } from '../../types';
 import { emitParts, type Part } from '../../anatomy';
 import { surface } from '../../../kit/surfaces';
-import { V, ellipticalBand, rivet, ribbon, lerp, smooth, placeAlong, ringRadii, type GearFn, type Projector } from './common';
+import type { PrimOpts } from '../../../kit/sdf';
+import { V, Builder, surfaceStrip, frameAt, snapPoint, paintSnapped, ellipticalBand, rivet, ribbon, lerp, smooth, placeAlong, ringRadii, type GearFn, type Projector, type SnapMode, type SnapPoint } from './common';
 
 export const URUK_SHEET_PAL = {
   // uruk sheet: skin_base #4d4033, lit face sample #673d2e -> a deep red-brown albedo
@@ -22,15 +23,15 @@ export const URUK_SHEET_PAL = {
   scatter: 0x7c3624,
   eyes: 0xb08c30, // iris #b29138
   // blackened_plates #454742 (lit #191512): dark brown-black iron, rust in the pits
-  iron: 0x2a2623,
-  ironDark: 0x25211e,
-  ironEdge: 0x5a5249, // worn bright edge of the lames
+  iron: 0x1c1a18, // dark gunmetal
+  ironDark: 0x151311,
+  ironEdge: 0x7a736a, // worn bright edge of the lames
   // black_kilt #302d27 (lit #2c2825), leather_belt #493828 (lit #1d1813), boots #352f28 (lit #27211e)
   kilt: 0x1f1c19,
   kilt2: 0x161412,
   strip: 0x231a13,
   strip2: 0x18110d,
-  belt: 0x30241a,
+  belt: 0x2a2018,
   boots: 0x211c18,
   boots2: 0x16120f,
   trousers: 0x151311,
@@ -42,15 +43,18 @@ export const URUK_SHEET_PAL = {
   bscatter: 0x6e3326,
   bkilt: 0x1b1a1a,
   bkilt2: 0x131212,
-  bbelt: 0x3b2c20,
-  bwrap: 0x2e261f,
-  bwrap2: 0x1f1913,
-  bhelm: 0x3a3631,
+  bbelt: 0x2a211b, // belt and wraps dark (lit sheet #322822 / #241f1b)
+  bstrap: 0x4a3524, // the hanging belt tongue is rusty brown
+  bwrap: 0x2a211b,
+  bwrap2: 0x1c1713,
+  bhelm: 0x3a3532, // rusty iron
+  copper: 0x8a5a3a,
+  dirt: 0xcfc8bc, // handprints: dirty off-white (lit sheet #c8c4bf / #e7e8ea)
   rustSword: 0x6d625a, // sword_iron lit #625955
 };
 
-/** blackened plate: dull hammered dark iron with scratched edges (iron_rusty read as orange camouflage here) */
-export const SHEET_IRON = surface('metal_dark', { rough: 0.6, metal: 0.55, pat: { scratches: 1.0, pores: 0.6, scales: -0.5 } });
+/** blackened plate: dark gunmetal, hammered, with scratched edges (iron_rusty read as orange camouflage here) */
+export const SHEET_IRON = surface('metal_dark', { rough: 0.45, metal: 0.7, pat: { scratches: 1.2, pores: 0.4, scales: -0.4 } });
 export const SHEET_LEATHER = surface('leather_worn', { rough: 0.74 });
 export const SHEET_MAIL = surface('mail', { rough: 0.55 });
 
@@ -61,10 +65,14 @@ export function exitDist(proj: Projector, cx: number, y: number, cz: number, dx:
   return t;
 }
 
-/** worn bright edge on the lower rim of a band: lifts the colour toward the plate's bare metal */
-const rimWear = (yBot: number, h: number, c0: number) => (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
-  const t = 1 - smooth(0, 0.35, (p.y - yBot) / h);
-  c.lerp(new THREE.Color().setHex(c0, THREE.SRGBColorSpace), 0.55 * t);
+/** worn bright edge on the lower rim of a band, with patchy scratches across the face */
+const rimWear = (yBot: number, h: number, c0: number) => {
+  const edge = new THREE.Color().setHex(c0, THREE.SRGBColorSpace);
+  return (p: THREE.Vector3, _n: THREE.Vector3, c: THREE.Color) => {
+    const t = 1 - smooth(0, 0.28, (p.y - yBot) / h);
+    const m = 0.5 + 0.5 * Math.sin(p.x * 61 + p.z * 47) * Math.sin(p.y * 53 + p.x * 29);
+    c.lerp(edge, Math.min(0.8, 0.75 * t * (0.4 + 0.6 * m) + 0.12 * m * m));
+  };
 };
 
 /** shin plates (greaves) over the boots, with a knee cop. Sculpted in the SDF so they follow the leg. */
@@ -110,7 +118,7 @@ export function greaveLames(ctx: KindContext, gear: GearFn, proj: Projector, o: 
       const zb = exitDist(proj, cx, yc, cz, 0, -1);
       const rz = (zf + zb) / 2;
       const m = new THREE.Matrix4().makeTranslation(cx, yc, cz);
-      const geo = ellipticalBand(rx + 0.008 * sc, rz + 0.008 * sc, rx + 0.014 * sc, rz + 0.014 * sc, h, 0.006 * sc, 12, 0, Math.PI * 2, (zf - zb) / 2);
+      const geo = ellipticalBand(rx + 0.008 * sc, rz + 0.008 * sc, rx + 0.014 * sc, rz + 0.014 * sc, h, 0.006 * sc, 7, -2.0, 2.0, (zf - zb) / 2);
       gear(geo, { bone, color, mat: o.mat ?? SHEET_IRON, matrix: m, ao: 0.85, colorFn: rimWear(yc - h / 2, h, URUK_SHEET_PAL.ironEdge) });
     }
   }
@@ -146,11 +154,11 @@ export function beltAndFaulds(ctx: KindContext, gear: GearFn, proj: Projector, o
     const h = 0.075 * sc;
     const rt = ringRadii(proj, yT);
     const rb = ringRadii(proj, yT - h);
-    const out = (0.03 + k * 0.012) * sc;
+    const out = (0.03 + k * 0.02) * sc;
     for (const sx of [1, -1]) {
       const a0 = sx > 0 ? 0.55 : -1.55;
       const a1 = sx > 0 ? 1.55 : -0.55;
-      const g = ellipticalBand(rt.rx + out, (rt.zf + rt.zb) / 2 + out, rb.rx + out + 0.016 * sc, (rb.zf + rb.zb) / 2 + out + 0.016 * sc, h, 0.007 * sc, 6, a0, a1, (rt.zf - rt.zb) / 2);
+      const g = ellipticalBand(rt.rx + out, (rt.zf + rt.zb) / 2 + out, rb.rx + out + 0.03 * sc, (rb.zf + rb.zb) / 2 + out + 0.03 * sc, h, 0.007 * sc, 6, a0, a1, (rt.zf - rt.zb) / 2);
       gear(g, { bone: 'hips', color: iron, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(0, yT - h / 2, 0), ao: 0.85, colorFn: rimWear(yT - h, h, URUK_SHEET_PAL.ironEdge) });
     }
   }
@@ -176,8 +184,15 @@ export function chestLames(ctx: KindContext, gear: GearFn, proj: Projector, botY
     const rt = torso(proj, yB + h);
     const rb = torso(proj, yB);
     const e = 0.01 * sc;
-    const g = ellipticalBand(rt.rx + e * 0.6, (rt.zf + rt.zb) / 2 + e * 0.6, rb.rx + e * 1.5, (rb.zf + rb.zb) / 2 + e * 1.5, h, 0.006 * sc, 14, 0, Math.PI * 2, (rt.zf - rt.zb) / 2);
+    const g = ellipticalBand(rt.rx + e * 0.6, (rt.zf + rt.zb) / 2 + e * 0.6, rb.rx + e * 1.5, (rb.zf + rb.zb) / 2 + e * 1.5, h, 0.006 * sc, 12, 0, Math.PI * 2, (rt.zf - rt.zb) / 2);
     gear(g, { bone: 'spine', color: iron, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(0, yB + h / 2, 0), ao: 0.85, colorFn: rimWear(yB, h, URUK_SHEET_PAL.ironEdge) });
+    if (k === 0) {
+      // the lowest lame ends in a pointed V over the belt (sheet front view)
+      const w = 0.056 * sc;
+      const shape = new THREE.Shape([new THREE.Vector2(-w, 0), new THREE.Vector2(w, 0), new THREE.Vector2(0, -0.1 * sc)]);
+      const tip = new THREE.ExtrudeGeometry(shape, { depth: 0.006 * sc, bevelEnabled: false });
+      gear(tip, { bone: 'spine', color: iron, mat: SHEET_IRON, matrix: new THREE.Matrix4().makeTranslation(0, yB + 0.012 * sc, rb.zf + e * 1.5 + 0.004 * sc), ao: 0.85, small: true, colorFn: rimWear(yB - 0.1 * sc, 0.1 * sc, URUK_SHEET_PAL.ironEdge) });
+    }
   }
 }
 
@@ -213,16 +228,16 @@ export function berserkerBelt(ctx: KindContext, gear: GearFn, proj: Projector, b
   // the long tongue of the belt: hangs from the buckle down the front of the kilt, a little to the left
   const x0 = 0.05 * sc;
   const y0 = beltY - 0.02 * sc;
-  const len = 0.5 * sc;
-  const zk = r.zf + 0.06 * sc;
+  const len = 0.86 * sc;
+  const zk = r.zf + 0.055 * sc;
   const pts: THREE.Vector3[] = [];
   const nrm: THREE.Vector3[] = [];
   for (let i = 0; i <= 6; i++) {
     const t = i / 6;
-    pts.push(V(x0 + 0.012 * sc * t, y0 - len * t, zk + 0.02 * sc * t));
+    pts.push(V(x0 + 0.012 * sc * t, y0 - len * t, zk + 0.05 * sc * t));
     nrm.push(V(0, 0.12, 1).normalize());
   }
-  gear(ribbon(pts, nrm, 0.036 * sc, 0.008 * sc, 1, { outerOnly: true, noInner: true }, 6), { bone: 'hips', color: col, mat: SHEET_LEATHER, small: true });
+  gear(ribbon(pts, nrm, 0.04 * sc, 0.008 * sc, 1, { outerOnly: true, noInner: true }, 6), { bone: 'hips', color: URUK_SHEET_PAL.bstrap, mat: SHEET_LEATHER, small: true });
 }
 
 /** berserker: leather wraps round the lower legs, a few bound rings from the ankle to under the knee */
@@ -248,4 +263,102 @@ export function legWraps(ctx: KindContext, gear: GearFn, proj: Projector, n = 3)
       gear(geo, { bone, color: k % 2 ? URUK_SHEET_PAL.bwrap : URUK_SHEET_PAL.bwrap2, mat: SHEET_LEATHER, matrix: new THREE.Matrix4().makeTranslation(cx, yc, cz), ao: 0.85 });
     }
   }
+}
+
+/** dark cloth under the berserker's kilt (waist, hips and the upper thighs down to just above the hem), so
+ *  the gaps between the kilt's panels show cloth, never bare skin */
+export function underSkirt(ctx: KindContext, parts: Part[], o: { topY: number; botY: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  s.group('union', 0.004 * sc, () => {
+    emitParts(s, parts, ['pelvis', 'glutes', 'waist', 'belly', 'thigh'], {
+      color: URUK_SHEET_PAL.bkilt,
+      color2: URUK_SHEET_PAL.bkilt,
+      colorNoise: 0,
+      colorFreq: 30 / sc,
+      mat: surface('rags', { rough: 0.95 }),
+      inflate: 0.004 * sc + 0.006 * sc * P.build.bulk,
+      k: 0.03 * sc,
+    });
+    s.plane([0, 1, 0], o.topY, { op: 'intersect', k: 0.004 * sc });
+    s.plane([0, -1, 0], -o.botY, { op: 'intersect', k: 0.004 * sc });
+  });
+}
+
+/**
+ * A dirty handprint (sheet: small, smudged, semi-translucent): thin splayed fingers, a thumb and two or three
+ * drips, draped over the surface in strips. A noise mask lets the skin show through about 30 % of it.
+ */
+export function dirtyHand(
+  ctx: KindContext,
+  gear: GearFn,
+  proj: Projector,
+  o: { pos: [number, number, number]; mode?: SnapMode; up?: [number, number, number]; size: number; bone: string; rot?: number; seed?: number; skin: number },
+) {
+  const { P } = ctx;
+  const p = V();
+  const n = V();
+  if (!snapPoint(proj, o.pos, o.mode ?? 'f', p, n)) return;
+  const frame = frameAt(p, n, o.up ? V(...o.up) : V(0, 1, 0));
+  if (o.rot) frame.multiply(new THREE.Matrix4().makeRotationZ(o.rot));
+  const seed = o.seed ?? 1;
+  const S = o.size;
+  const lift = 0.0022 * P.s;
+  const b = new Builder();
+  let r = seed * 12.9898;
+  const rnd = () => {
+    r = (Math.sin(r) * 43758.5453) % 1;
+    return Math.abs(r) - 0.5;
+  };
+  const Pt = (x: number, y: number): [number, number] => [(x + rnd() * 0.025) * S, (y + rnd() * 0.025) * S];
+  for (const [y, h] of [[-0.14, 0.1], [-0.04, 0.1], [0.05, 0.09]] as [number, number][]) surfaceStrip(proj, frame, Pt(-0.17, y), Pt(0.17, y), h * S, h * S, lift, 5, b);
+  const fingers: [number, number, number, number, number][] = [
+    [-0.14, 0.08, -0.31, 0.4, 0.056],
+    [-0.05, 0.09, -0.1, 0.53, 0.058],
+    [0.05, 0.09, 0.11, 0.51, 0.058],
+    [0.14, 0.07, 0.3, 0.38, 0.054],
+  ];
+  for (const [x0, y0, x1, y1, w] of fingers) surfaceStrip(proj, frame, Pt(x0, y0), Pt(x1, y1), w * S, w * S * 0.55, lift, 4, b);
+  surfaceStrip(proj, frame, Pt(-0.16, -0.1), Pt(-0.38, 0.05), 0.064 * S, 0.044 * S, lift, 4, b);
+  surfaceStrip(proj, frame, Pt(0, -0.2), Pt(0, -0.44), 0.24 * S, 0.2 * S, lift, 4, b);
+  // drips: thin tapering runs down from the palm's lower edge and the wrist
+  for (const [x, len] of [[-0.15, 0.2], [0.0, 0.16], [0.15, 0.13]] as [number, number][]) surfaceStrip(proj, frame, Pt(x, -0.2), Pt(x + 0.008, -0.2 - len), 0.036 * S, 0.014 * S, lift, 3, b);
+  if (!b.idx.length) return;
+  const white = new THREE.Color().setHex(URUK_SHEET_PAL.dirt, THREE.SRGBColorSpace);
+  const skin = new THREE.Color().setHex(o.skin, THREE.SRGBColorSpace);
+  gear(b.geometry(), {
+    bone: o.bone,
+    color: URUK_SHEET_PAL.dirt,
+    mat: surface('skin_orc', { rough: 0.85, skin: 0.2 }),
+    colorFn: (q, _n, c) => {
+      // smudged paint: a blotchy mask lets the skin show through (about 30 %), plus an overall uneven tone
+      const m = 0.5 + 0.5 * Math.sin(q.x * 83 + seed) * Math.sin(q.y * 71 + q.z * 57 + seed * 2) + 0.3 * Math.sin(q.x * 190 + q.y * 170 + seed);
+      const through = smooth(0.62, 0.9, m);
+      c.copy(white).multiplyScalar(0.8 + 0.18 * Math.sin(q.x * 47 + q.y * 41 + seed * 3)).lerp(skin, 0.8 * through);
+    },
+  });
+}
+
+/** painted muscle cavities on the finished torso: sternum, linea alba and ab grid, pec undersides, lat grooves */
+export function muscleShade(ctx: KindContext, proj: Projector, o: { dark: number; hair?: number }) {
+  const { P, sculpt: s } = ctx;
+  const sc = P.s;
+  const j = P.j;
+  const sh = P.build.shoulders;
+  const dark: PrimOpts = { color: o.dark, mat: 'skin_brute', bone: 'chest', k: 0.012 * sc, strength: 0.5 };
+  const stroke = (pts: SnapPoint[], radius: number, bone = 'chest', strength = 0.5) => paintSnapped(s, proj, pts, radius, { ...dark, bone, strength });
+  const cy = j.chest[1];
+  const dy = j.upperarm_l[1];
+  // sternum groove and linea alba
+  stroke([[0, dy - 0.02 * sc, 0.3 * sc, 'f'], [0, cy - 0.04 * sc, 0.3 * sc, 'f'], [0, cy - 0.13 * sc, 0.3 * sc, 'f']], 0.007 * sc);
+  // pec undersides
+  for (const sx of [1, -1]) stroke([[sx * 0.02 * sc, cy - 0.045 * sc, 0.3 * sc, 'f'], [sx * 0.06 * sc, cy - 0.05 * sc, 0.3 * sc, 'f'], [sx * 0.105 * sc * sh, cy - 0.035 * sc, 0.3 * sc, 'f']], 0.008 * sc, 'chest', 0.55);
+  // ab grid (three cross lines)
+  for (const k of [0, 1, 2]) {
+    const y = cy - (0.085 + k * 0.045) * sc;
+    stroke([[-0.045 * sc, y, 0.3 * sc, 'f'], [0.045 * sc, y, 0.3 * sc, 'f']], 0.0055 * sc, 'spine', 0.45);
+  }
+  // lat grooves and the serratus edge down the sides
+  stroke([[0.17 * sc * sh, dy - 0.07 * sc, 0, 'l'], [0.15 * sc * sh, cy - 0.04 * sc, 0, 'l'], [0.13 * sc * sh, cy - 0.12 * sc, 0, 'l']], 0.009 * sc, 'chest', 0.45);
+  stroke([[-0.17 * sc * sh, dy - 0.07 * sc, 0, 'r'], [-0.15 * sc * sh, cy - 0.04 * sc, 0, 'r'], [-0.13 * sc * sh, cy - 0.12 * sc, 0, 'r']], 0.009 * sc, 'chest', 0.45);
 }
