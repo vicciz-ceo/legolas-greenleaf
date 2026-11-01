@@ -837,7 +837,9 @@ test('a walking humanoid keeps the point of its hanging prop off the ground (rea
       lowest = Math.min(lowest, low);
     }
     cal(`${kind}${weapon ? `/${weapon}` : ''} walking: lowest point ${(lowest * 100).toFixed(1)} cm`);
-    ok(lowest >= 0, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking and running up`);
+    // the carry keeps the point 2.5 % of the body's height off the ground (CARRY_CLEAR), also where the tilt stops at its cap or the hand is
+    // mid-turn to the run's fist: it lifts the wrist. Not just above the floor: with that margin
+    ok(lowest >= 0.02 * h.height, `${kind}${weapon ? `/${weapon}` : ''}: the point dips to ${(lowest * 100).toFixed(1)} cm while walking and running up (the carry keeps ${(2.5 * h.height).toFixed(1)} cm)`);
   }
 });
 
