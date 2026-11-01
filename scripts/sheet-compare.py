@@ -80,7 +80,9 @@ def lab_mask_and_visual(lab):
     thresh = 60 if magenta else 14
     mask = dist > thresh
     alpha = np.clip(dist / (thresh * 2.5), 0, 1)[..., None] if magenta else mask[..., None].astype(np.float32)
-    vis = arr * alpha + GREY * (1 - alpha) if magenta else arr
+    # replace the background's share of each pixel with the sheet grey (un-premultiply), so anti-aliased edges
+    # (hair cards, bow strings) do not keep a magenta/violet fringe that reads as a colour defect
+    vis = arr + (1 - alpha) * (GREY - bg) if magenta else arr
     # fill pinholes, drop specks
     m = Image.fromarray((mask * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))
     m = m.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.MaxFilter(3))
