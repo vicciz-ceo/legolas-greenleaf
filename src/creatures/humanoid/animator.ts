@@ -240,7 +240,7 @@ export class HumanoidAnimator {
         draw = at < 0.7 ? Math.min(1, Math.max(0, (at - 0.12) / 0.5)) : Math.max(0, 1 - (at - 0.7) / 0.06);
       } else {
         this.tmp2.set(base);
-        attackOverlay(B, inp.attack.kind, Math.min(1, Math.max(0, inp.attack.t)), base, this.tmp2, held);
+        attackOverlay(B, inp.attack.kind, Math.min(1, Math.max(0, inp.attack.t)), base, this.tmp2);
       }
     }
     // ── bow aim stance (torso) ─────────────────────────────────────────────

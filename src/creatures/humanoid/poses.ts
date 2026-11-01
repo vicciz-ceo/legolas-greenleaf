@@ -489,9 +489,10 @@ export function turnHand(p: Pose, dd: number, tt: number, dx: number, dy: number
   orthoPair(_fa, p[dd], p[dd + 1], p[dd + 2], p[tt], p[tt + 1], p[tt + 2]);
   pairQuat(_qa, _fa);
   pairQuat(_qb, _fb);
-  // frame -> neutral -> pose's own hand: weights 1 - s on both legs: s = 1 is the frame, s = 0 the hand as it is
-  slerpQ(_qc, _qb, _qn[sx > 0 ? 0 : 1], 1 - s);
-  slerpQ(_qc, _qc, _qa, 1 - s);
+  // the pose's own hand toward the neutral hand by s, then from there to the frame by s: s = 0 is the hand as it is, s = 1 the frame
+  // (a neutral hand turns straight to the frame)
+  slerpQ(_qc, _qa, _qn[sx > 0 ? 0 : 1], s);
+  slerpQ(_qc, _qc, _qb, s);
   const x = _qc[0], y = _qc[1], z = _qc[2], q = _qc[3];
   // columns 0 and 1 of its matrix: the knuckles and the thumb
   p[dd] = 1 - 2 * (y * y + z * z); p[dd + 1] = 2 * (x * y + z * q); p[dd + 2] = 2 * (x * z - y * q);
@@ -1005,7 +1006,7 @@ export function specialPose(B: BodyMetrics, kind: Exclude<SpecialPose, null>, T:
 // Attacks (keyframed; t is 0..1 progress). Hands in chest space, reach units.
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface Key {
+export interface Key {
   t: number;
   py?: number; pp?: number; pyaw?: number; sp?: number; sy?: number; cp?: number; cy?: number; cr?: number; np?: number; hp?: number;
   rh?: [number, number, number];
@@ -1021,7 +1022,7 @@ interface Key {
 }
 
 // right-hand coordinates: x "outward" is to the character's right (written as positive)
-const ATTACKS: Record<AttackAnim, Key[]> = {
+export const ATTACKS: Record<AttackAnim, Key[]> = {
   slash: [
     { t: 0, cy: 0 },
     { t: 0.35, cy: -0.55, pyaw: -0.2, rh: [0.75, 0.2, -0.25], rd: [0.3, 0.6, -0.6], rt: [0.5, 0.5, 0.6], re: [0.6, -0.8, -0.2], lh: [0.25, -0.45, 0.45], cp: 0.02 },
@@ -1039,8 +1040,10 @@ const ATTACKS: Record<AttackAnim, Key[]> = {
   thrust: [
     { t: 0 },
     { t: 0.4, cy: -0.4, pyaw: -0.2, rh: [0.3, -0.35, -0.15], rd: [0, 0, 1], rt: [0, 1, 0.2], re: [0.5, -0.5, -1], cp: -0.05 },
-    { t: 0.58, cy: 0.15, pyaw: 0.15, rh: [0.1, -0.1, 0.98], rd: [0, 0, 1], rt: [0, 0.3, 1], re: [0.4, -1, 0], cp: 0.2, flz: 0.22, frz: -0.1 },
-    { t: 0.8, cy: 0.1, rh: [0.15, -0.15, 0.85], rd: [0, 0, 1], rt: [0, 0.3, 1], cp: 0.15, flz: 0.2 },
+    // the knuckles are perpendicular to the thumb (the blade, forward and a little up): the pair the solver reads is then the one authored.
+    // (They were given forward, parallel to the thumb, and the solver read the blade as straight up.)
+    { t: 0.58, cy: 0.15, pyaw: 0.15, rh: [0.1, -0.1, 0.98], rd: [0, -1, 0.3], rt: [0, 0.3, 1], re: [0.4, -1, 0], cp: 0.2, flz: 0.22, frz: -0.1 },
+    { t: 0.8, cy: 0.1, rh: [0.15, -0.15, 0.85], rd: [0, -1, 0.3], rt: [0, 0.3, 1], cp: 0.15, flz: 0.2 },
     { t: 1 },
   ],
   // knuckle (d) and thumb/blade (t) directions are authored perpendicular: the blade follows the
@@ -1122,15 +1125,53 @@ const ATTACKS: Record<AttackAnim, Key[]> = {
 };
 
 /**
- * Which hands' frames (knuckle and thumb directions) an attack's keys steer. The keys were authored against the neutral hand
- * (a key that gives no thumb gets the pose's own, which was the neutral one): for a hand that carries something and that the
- * keys steer, the overlay reads its keys against the neutral hand, exactly as they were authored, and turns the hand from the
- * carry to them (and back) by the short way. A hand the keys leave alone keeps its carry through the attack: a shield stays
- * on the forearm while the sword swings.
+ * Which hands' frames (knuckle and thumb directions) an attack's keys steer. The keys were authored against the neutral hand (a key
+ * that gives no thumb gets the neutral one): the overlay reads them that way and turns the hand to them from what the pose has it doing
+ * (a carry, a run's fist) and back. A hand the keys leave alone keeps that through the attack: a shield stays on the forearm while the
+ * sword swings.
  */
 const OWNS = {} as Record<AttackAnim, { l: boolean; r: boolean }>;
 for (const k of Object.keys(ATTACKS) as AttackAnim[]) OWNS[k] = { l: ATTACKS[k].some((key) => !!(key.ld || key.lt)), r: ATTACKS[k].some((key) => !!(key.rd || key.rt)) };
 export const attackOwns = (kind: AttackAnim): { l: boolean; r: boolean } => OWNS[kind] ?? { l: false, r: false };
+
+const _pa = new Float64Array(6), _pb = new Float64Array(6), _pk = new Float64Array(6), _sd = new Float64Array(3);
+/** o[off..off+2] = v turned about the unit axis a by `ang` (Rodrigues) */
+function turnAbout(o: Float64Array, off: number, vx: number, vy: number, vz: number, ax: number, ay: number, az: number, ang: number) {
+  const c = Math.cos(ang), sn = Math.sin(ang), k = (ax * vx + ay * vy + az * vz) * (1 - c);
+  o[off] = vx * c + (ay * vz - az * vy) * sn + ax * k;
+  o[off + 1] = vy * c + (az * vx - ax * vz) * sn + ay * k;
+  o[off + 2] = vz * c + (ax * vy - ay * vx) * sn + az * k;
+}
+/** the orthonormal pair [d, t] a key authors for a hand (key coordinates: x outward), the neutral hand for what the key leaves out */
+function keyPair(o: Float64Array, key: Key, kd: 'rd' | 'ld', kt: 'rt' | 'lt') {
+  const d = key[kd], t = key[kt];
+  orthoPair(o, d ? d[0] : 0.12, d ? d[1] : -1, d ? d[2] : 0.12, t ? t[0] : -0.15, t ? t[1] : 0.05, t ? t[2] : 1);
+}
+/**
+ * The hand pair between two orthonormal pairs a = [d, t] and b at f. Consecutive keys are authored 120-180 deg apart in most attacks,
+ * and a straight blend of two such pairs passes through "thumb along the knuckles": the thumb the solver reads flips by up to 180 deg
+ * in a frame. Here the thumb (the blade's axis, what the eye follows) swings along the shortest arc from a's to b's, the knuckles go
+ * with that swing and then turn the rest of the way about the thumb (the twist, the short way): a continuous rotation that passes
+ * through the keys' own frames (f = 0 and 1) exactly. o = [d, t].
+ */
+function swingTwist(o: Float64Array, a: Float64Array, b: Float64Array, f: number) {
+  // the swing: a.t -> b.t about a.t x b.t (about a's knuckles when they are opposite)
+  let ax = a[4] * b[5] - a[5] * b[4], ay = a[5] * b[3] - a[3] * b[5], az = a[3] * b[4] - a[4] * b[3];
+  const sin = Math.hypot(ax, ay, az), cos = a[3] * b[3] + a[4] * b[4] + a[5] * b[5];
+  let ang = Math.atan2(sin, cos);
+  if (sin < 1e-6) {
+    if (cos > 0) { ang = 0; ax = 1; ay = az = 0; } else { ax = a[0]; ay = a[1]; az = a[2]; }
+  } else { ax /= sin; ay /= sin; az /= sin; }
+  // the twist: how far the swung knuckles still are from b's, about b's thumb
+  turnAbout(_sd, 0, a[0], a[1], a[2], ax, ay, az, ang);
+  const px = _sd[0], py = _sd[1], pz = _sd[2];
+  const cx = py * b[2] - pz * b[1], cy = pz * b[0] - px * b[2], cz = px * b[1] - py * b[0]; // p x b.d
+  const twist = Math.atan2(cx * b[3] + cy * b[4] + cz * b[5], px * b[0] + py * b[1] + pz * b[2]);
+  // at f: swung part of the way, then twisted part of the way about the swung thumb
+  turnAbout(o, 3, a[3], a[4], a[5], ax, ay, az, f * ang);
+  turnAbout(_sd, 0, a[0], a[1], a[2], ax, ay, az, f * ang);
+  turnAbout(o, 0, _sd[0], _sd[1], _sd[2], o[3], o[4], o[5], f * twist);
+}
 
 const _ka: Key = { t: 0 };
 const _vecOut: [number, number, number] = [0, 0, 0];
@@ -1150,11 +1191,12 @@ function sampleKeys(keys: Key[], t: number): { a: Key; b: Key; f: number } {
 }
 
 /**
- * Blend an attack (layered over the base pose: upper body + optional foot shifts). `held` (what the hands carry, see
- * `Carry`): a hand that carries something and that the keys steer is turned from its carry to the keys and back; the keys
- * themselves are read against the neutral hand they were authored against.
+ * Blend an attack (layered over the base pose: upper body + optional foot shifts). The hands the keys steer (`attackOwns`) get their
+ * frame from the keys (swing and twist between them, read against the neutral hand the keys were authored for) and turn to it from
+ * whatever the pose has them doing, a carried blade or a run's fist, and back, by the envelope; a hand the keys leave alone keeps what
+ * the pose has it doing (a shield stays on the forearm while the sword swings).
  */
-export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Pose, base: Pose, held?: HeldCarry) {
+export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Pose, base: Pose) {
   const keys = ATTACKS[kind];
   if (!keys || keys.length < 2) return;
   const { a, b, f } = sampleKeys(keys, t);
@@ -1166,7 +1208,7 @@ export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Po
     const vb = (b[k] as number | undefined) ?? def;
     return va + (vb - va) * f;
   };
-  const vec = (k: 'rh' | 'rd' | 'rt' | 're' | 'lh' | 'ld' | 'lt' | 'le', d0: number, d1: number, d2: number): [number, number, number] => {
+  const vec = (k: 'rh' | 're' | 'lh' | 'le', d0: number, d1: number, d2: number): [number, number, number] => {
     const va = a[k], vb = b[k];
     const o = _vecOut;
     o[0] = va ? va[0] : d0; o[1] = va ? va[1] : d1; o[2] = va ? va[2] : d2;
@@ -1176,17 +1218,15 @@ export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Po
   };
   const blend = (idx: number, v: number) => (p[idx] += (v - p[idx]) * w);
   const add = (idx: number, v: number) => (p[idx] += v * w);
-  // a carried hand the keys steer: the keys are read against the neutral hand they were authored against (key coordinates: x outward), the
-  // old blend from that hand gives the frame, and the carried hand turns to it by the envelope (the spin finisher holds its keys from the
-  // first instant, a carried hand must not jump there). Both turns are far from half a revolution: carry -> neutral ~ 75 deg, and the
-  // frame stays near the neutral hand where the envelope is not 1
-  const own = held ? OWNS[kind] : null;
+  // the steered hand's frame (key coordinates: x outward, so the right hand's x is turned round), by the envelope even in the spin
+  // finisher, whose other channels hold their keys from the first instant: a hand must not jump from its carry there
+  const own = OWNS[kind];
   const wd = envelope(t, 0.12, 0.25);
   const turnTo = (kd: 'rd' | 'ld', kt: 'rt' | 'lt', dd: number, tt: number, sx: number) => {
-    let v = vec(kd, 0.12, -1, 0.12);
-    const dx = 0.12 + (v[0] - 0.12) * w, dy = -1 + (v[1] + 1) * w, dz = 0.12 + (v[2] - 0.12) * w;
-    v = vec(kt, -0.15, 0.05, 1);
-    turnHand(p, dd, tt, sx * dx, dy, dz, sx * (-0.15 + (v[0] + 0.15) * w), 0.05 + (v[1] - 0.05) * w, 1 + (v[2] - 1) * w, wd, sx);
+    keyPair(_pa, a, kd, kt);
+    keyPair(_pb, b, kd, kt);
+    swingTwist(_pk, _pa, _pb, f);
+    turnHand(p, dd, tt, sx * _pk[0], _pk[1], _pk[2], sx * _pk[3], _pk[4], _pk[5], wd, sx);
   };
   add(F.pyaw, num('pyaw', 0));
   add(F.cy, num('cy', 0) * ag);
@@ -1206,29 +1246,18 @@ export function attackOverlay(B: BodyMetrics, kind: AttackAnim, t: number, p: Po
   if (has('rh')) {
     let v = vec('rh', -base[F.hrx], base[F.hry], base[F.hrz]);
     blend(F.hrx, -v[0]); blend(F.hry, v[1]); blend(F.hrz, v[2]);
-    if (own && own.r && held!.r.carry !== 'none') turnTo('rd', 'rt', F.hrdx, F.hrtx, -1);
-    else {
-      v = vec('rd', -base[F.hrdx], base[F.hrdy], base[F.hrdz]);
-      blend(F.hrdx, -v[0]); blend(F.hrdy, v[1]); blend(F.hrdz, v[2]);
-      v = vec('rt', -base[F.hrtx], base[F.hrty], base[F.hrtz]);
-      blend(F.hrtx, -v[0]); blend(F.hrty, v[1]); blend(F.hrtz, v[2]);
-    }
     v = vec('re', -base[F.erx], base[F.ery], base[F.erz]);
     blend(F.erx, -v[0]); blend(F.ery, v[1]); blend(F.erz, v[2]);
   }
   if (has('lh')) {
     let v = vec('lh', base[F.hlx], base[F.hly], base[F.hlz]);
     blend(F.hlx, v[0]); blend(F.hly, v[1]); blend(F.hlz, v[2]);
-    if (own && own.l && held!.l.carry !== 'none') turnTo('ld', 'lt', F.hldx, F.hltx, 1);
-    else {
-      v = vec('ld', base[F.hldx], base[F.hldy], base[F.hldz]);
-      blend(F.hldx, v[0]); blend(F.hldy, v[1]); blend(F.hldz, v[2]);
-      v = vec('lt', base[F.hltx], base[F.hlty], base[F.hltz]);
-      blend(F.hltx, v[0]); blend(F.hlty, v[1]); blend(F.hltz, v[2]);
-    }
     v = vec('le', base[F.elx], base[F.ely], base[F.elz]);
     blend(F.elx, v[0]); blend(F.ely, v[1]); blend(F.elz, v[2]);
   }
+  // the steered hands' frames over the whole attack, also where the keys give the hand no position (a hand must not drop out of its turn)
+  if (own.r) turnTo('rd', 'rt', F.hrdx, F.hrtx, -1);
+  if (own.l) turnTo('ld', 'lt', F.hldx, F.hltx, 1);
   p[F.gr] = Math.max(p[F.gr], w);
   void _ka;
 }
