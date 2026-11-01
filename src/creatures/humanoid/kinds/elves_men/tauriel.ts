@@ -32,17 +32,17 @@ const DRAPE = surface('twill', { rough: 0.9, sheen: 0.3, pat: { weave: 0.4 } });
 const PAL = {
   hair: 0x652f17, // sheet root #703820 (observed lit #5c2c1b) — slightly deeper so the lab's sheen doesn't wash it orange
   hairTip: 0x8f4a28, // sheet tip #a35730
-  skin: 0xcf9879, // sheet #e0bfa5 (observed #d39e8a); warmer/deeper like Legolas
-  skin2: 0xbd8467,
+  skin: 0xe0bda2, // sheet #e0bfa5 (observed lit #d39e8a) // sheet #e0bfa5 (observed #d39e8a); warmer/deeper like Legolas
+  skin2: 0xd2a98e,
   lips: 0xa65e56,
-  brows: 0x5e2a16,
+  brows: 0x7a3a22,
   eyes: 0x6b8274, // sheet iris #738277 grey-green, a touch darker
   leggings: 0x292d21, // observed #3a3728 under wool sheen; design cloth #45553a
   tunic: 0x2d3427, // design cloth #45553a, desaturated
   tunicTrim: 0x242b1e, // darker hem band
   tunicPanel: 0x293024, // second layer of pointed hem panels
-  cowl: 0x3a4630, // pale green draped wool (turnaround reads lighter than the tunic)
-  capelet: 0x262f1f,
+  cowl: 0x4a5a3c, // pale green draped wool (turnaround reads lighter than the tunic)
+  capelet: 0x354229,
   corset: 0x573e2b, // design leather #624630 (observed #503b33)
   corsetTrim: 0x6b4d36, // lighter tooling / wear mottle
   bracers: 0x47362a, // observed #4e3c34
@@ -52,6 +52,8 @@ const PAL = {
   belt: 0x4a3626, // observed #5a433a (lit)
   strap: 0x5a4330,
   bronze: 0x9a8762, // design metal #9a8762
+  bootsCuff: 0x6a4f35, // folded boot cuff (lighter, worn)
+  hemBronze: 0x4d4228, // gold-bronze trim on the tunic hem points
   quiver: 0x5a4330,
   quiverTrim: 0x8a6a44,
   fletch: 0xdcd3be, // sheet: cream feathers on dark shafts
@@ -85,35 +87,32 @@ function corset(ctx: KindContext, o: { y0: number; y1: number; inflate: number }
       const f = i / n;
       const y = o.y1 + 0.02 * sc - f * 0.075 * sc;
       pts.push([0, y, torsoCentreFront(P, Math.min(y, P.j.chest[1] + 0.17 * sc)) + o.inflate * 0.6]);
-      radii.push(0.03 * sc * (1 - f));
+      radii.push(Math.max(0.004 * sc, 0.03 * sc * (1 - f)));
     }
     s.tube(pts, radii, { op: 'subtract', k: 0.006 * sc });
   });
 }
 
 
-/** a soft draped cowl: a wide roll resting on the collarbones and shoulders with a scooped V at the
- *  front and the hood bunched at the back (a gentler, lower copy of the shared sculptCowl) */
+/** a thin, smooth cowl: a slim roll on the collarbones, a small bunched hood on the back and a deep
+ *  scooped V at the front that ends at the corset top (a lighter copy of the shared sculptCowl) */
 function cowl(ctx: KindContext) {
   const { P, sculpt: s } = ctx;
   const sc = P.s;
   const g = Math.sqrt(P.build.bulk);
   const ny = P.j.neck[1];
   const z = -0.004 * sc;
-  const r = (0.07 * P.build.neckThick * g + 0.026) * sc;
-  const w = { color: PAL.cowl, color2: shade(PAL.cowl, 0.78), colorNoise: 0.5, colorFreq: 18 / sc, mat: DRAPE, bone: 'neck' };
-  const soft = { amp: 0.0028 * sc, freq: 22 / sc, type: 'ridged' as const, octaves: 2 };
+  const r = (0.07 * P.build.neckThick * g + 0.022) * sc;
+  const w = { color: PAL.cowl, color2: shade(PAL.cowl, 0.85), colorNoise: 0.35, colorFreq: 18 / sc, mat: DRAPE, bone: 'neck' };
   s.with(w, () => {
-    s.group('union', 0.022 * sc, () => {
-      // the roll, tilted down toward the chest so it lies over the collarbones
-      s.torus([0, ny - 0.004 * sc, z + 0.006 * sc], r + 0.014 * sc, 0.028 * sc, { k: 0.02 * sc, rot: [-0.32, 0, 0], noise: soft });
-      // second, lower fold across the chest
-      s.torus([0, ny - 0.03 * sc, z + 0.012 * sc], r + 0.03 * sc, 0.02 * sc, { k: 0.02 * sc, rot: [-0.5, 0, 0], noise: soft });
-      // the bunched hood on the upper back
-      s.ellipsoid([0, ny - 0.035 * sc, z - 0.07 * sc], [0.115 * sc * g, 0.07 * sc, 0.062 * sc], { bone: 'chest', k: 0.03 * sc, noise: soft });
-      s.mirrored(() => s.ellipsoid([0.1 * sc * g, ny - 0.03 * sc, z - 0.02 * sc], [0.055 * sc, 0.04 * sc, 0.06 * sc], { bone: 'chest', k: 0.025 * sc }));
-      // scooped V at the front throat
-      s.ellipsoid([0, ny - 0.02 * sc, z + r + 0.05 * sc], [0.04 * sc, 0.095 * sc, 0.05 * sc], { op: 'subtract', k: 0.022 * sc });
+    s.group('union', 0.02 * sc, () => {
+      s.torus([0, ny - 0.012 * sc, z + 0.008 * sc], r + 0.012 * sc, 0.019 * sc, { k: 0.015 * sc, rot: [-0.4, 0, 0] });
+      s.torus([0, ny - 0.04 * sc, z + 0.014 * sc], r + 0.026 * sc, 0.014 * sc, { k: 0.015 * sc, rot: [-0.55, 0, 0] });
+      // the hood bunched on the upper back
+      s.ellipsoid([0, ny - 0.035 * sc, z - 0.065 * sc], [0.09 * sc * g, 0.05 * sc, 0.045 * sc], { bone: 'chest', k: 0.025 * sc });
+      s.mirrored(() => s.ellipsoid([0.09 * sc * g, ny - 0.03 * sc, z - 0.015 * sc], [0.04 * sc, 0.03 * sc, 0.045 * sc], { bone: 'chest', k: 0.02 * sc }));
+      // deep scooped V: from the throat down to the corset top
+      s.ellipsoid([0, ny - 0.05 * sc, z + r + 0.05 * sc], [0.05 * sc, 0.082 * sc, 0.06 * sc], { op: 'subtract', k: 0.02 * sc });
     });
   });
 }
@@ -130,8 +129,8 @@ function tauriExtras(ctx: KindContext) {
   // ── garment layers beyond the kit outfit ──
   // the pale green cowl sits on the shoulders, a hood bunched at the back
   cowl(ctx);
-  // green wool capelets over both shoulders (sheet: both, with an embroidered edge)
-  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.016 * sc, reach: 0.5 });
+  // small green wool capelets over both shoulder points
+  sculptShoulderCap(ctx, { color: PAL.capelet, mat: DRAPE, side: 'both', inflate: 0.013 * sc, reach: 0.44 });
   // tooled corset from just under the belt to the bust
   corset(ctx, { y0: beltY - 0.05 * sc, y1: cy + 0.115 * sc, inflate: 0.0145 * sc });
   // baldric across the chest for the quiver (right shoulder to left hip)
@@ -143,8 +142,6 @@ function tauriExtras(ctx: KindContext) {
   sculptPouch(ctx, { x: 0.12 * sc, z: 0.04 * sc, size: 0.65, color: PAL.bracers, drop: 0.06 });
   // lacing down the corset front
   laceFront(ctx, { y0: beltY - 0.035 * sc, y1: cy + 0.06 * sc, inflate: 0.0165 * sc, color: PAL.lace, rows: 6, spread: 0.018 });
-
-  // ── tunic skirt: the second layer of pointed panels sits over the base skirt (outfit.skirt) ──
 
   // ── raised rolls at both bracer ends (tooled cuffs, like Legolas') ──
   const L = P.hand.l.L;
@@ -163,6 +160,19 @@ function tauriExtras(ctx: KindContext) {
   roll(fromB + 0.004, fromB + 0.045);
   const wristT = 1 - (0.008 * sc) / P.foreArm;
   roll(wristT - 0.06, wristT - 0.012);
+
+  // ── boots: a flared folded cuff in the trim colour at the knee and a heel block ──
+  {
+    const topY = j.shin_l[1];
+    s.group('union', 0.003 * sc, () => {
+      emitParts(s, parts, ['shin', 'calf'], { color: PAL.bootsCuff, mat: TOOLED, inflate: 0.021 * sc, k: 0.02 * sc });
+      slab(s, topY - 0.07 * sc, topY + 0.004 * sc, 0.004 * sc, true);
+    });
+    s.mirrored(() => {
+      const f = j.foot_l;
+      s.box([f[0] + 0.004 * sc, 0.024 * sc, f[2] - 0.042 * sc], [0.03 * sc, 0.024 * sc, 0.03 * sc], 0.006 * sc, { color: PAL.bootsTrim, mat: 'leather_worn', bone: 'foot_l', k: 0.005 * sc });
+    });
+  }
 
   // ── quiver on the right back (sheet: mouth over the right shoulder, cream fletchings) ──
   const q: QuiverOpts = {
@@ -187,7 +197,7 @@ function tauriExtras(ctx: KindContext) {
     sheathed(ctx, {
       kind: 'elven_knives',
       hand: side > 0 ? 'hand_l' : 'hand_r',
-      pos: [side * (P.hipX + 0.115 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.04 * sc],
+      pos: [side * (P.hipX + 0.13 * sc * Math.sqrt(P.build.bulk)), beltY + 0.045 * sc, -0.07 * sc],
       dir: [side * 0.07, -0.85, -0.52],
       len: 0.33,
       r: 0.021 * sc,
@@ -218,7 +228,7 @@ function tauriExtras(ctx: KindContext) {
 export const taurielDef: KindDef = {
   label: 'Tauriel',
   height: 1.78,
-  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.22 },
+  build: { shoulders: 0.84, hips: 1.1, bulk: 0.78, chest: 0.9, armLength: 0.99, legLength: 1.04, headSize: 0.95, neck: 1.06, neckThick: 0.78, handSize: 0.88, footSize: 0.9, muscle: 0.1 },
   face: {
     jaw: 0.8,
     jawLength: 0.96,
@@ -226,7 +236,7 @@ export const taurielDef: KindDef = {
     brow: 0.62,
     cheekbones: 1.2,
     nose: { length: 0.88, width: 0.84, bridge: 0.95, hook: 0, tip: 0.9 },
-    lips: { width: 0.98, fullness: 0.9 },
+    lips: { width: 0.9, fullness: 0.85 },
     ears: 'pointed',
     earSize: 0.96,
     eyeSize: 1.14,
@@ -235,24 +245,24 @@ export const taurielDef: KindDef = {
     eyeOpen: 1.1,
     foreheadSlope: 0.06,
   },
-  skin: { color: PAL.skin, color2: PAL.skin2, blotch: 0.08, blemish: 0.045, wrinkles: 0, lips: PAL.lips, brows: PAL.brows, scatter: 0xc87a68, surface: 'skin' },
+  skin: { color: PAL.skin, color2: PAL.skin2, blotch: 0.08, blemish: 0.07, wrinkles: 0, lips: PAL.lips, brows: PAL.brows, scatter: 0xc87a68, surface: 'skin' },
   eyes: { color: PAL.eyes, sclera: 0xefeae2 },
   // long enough to reach the small of the back (sheet), dense enough for clumped locks
   hair: { style: 'long_straight', color: PAL.hair, tipColor: PAL.hairTip, braids: 'temple', length: 1.22, density: devNum('density', 0.6), bounce: 0.8 },
   beard: null,
   outfit: [
     { type: 'leggings', color: PAL.leggings, mat: WOOL },
-    { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 0.93, mat: TOOLED },
+    { type: 'boots', color: PAL.boots, color2: PAL.bootsTrim, length: 1.0, mat: TOOLED },
     // long sleeves; the hem panels are the skirt layer below
     { type: 'tunic', color: PAL.tunic, color2: PAL.tunicTrim, length: 0, mat: TWILL },
     {
       type: 'skirt',
       color: PAL.tunic,
-      color2: PAL.tunicTrim,
+      color2: PAL.hemBronze,
       mat: TWILL,
       length: 0.3,
       thickness: -0.022,
-      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.tunicTrim, mat: TWILL, width: 0.15, length: 1.5, phase: 0 },
+      strips: { count: 8, color: PAL.tunicPanel, color2: PAL.hemBronze, mat: TWILL, width: 0.15, length: 1.5, phase: 0 },
     },
     { type: 'bracers', color: PAL.bracers, color2: PAL.bracersTrim, length: 0.86, thickness: 0.003, mat: TOOLED },
     { type: 'belt', color: PAL.belt, offset: BELT_RAISE, mat: 'leather_worn' },
