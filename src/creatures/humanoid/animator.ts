@@ -99,6 +99,11 @@ export class HumanoidAnimator {
       footLen: P.footLen,
       height: P.H,
       style,
+      // the leg chain as the IK sees it: true bone lengths and the rest ankle's horizontal offset from its hip joint
+      thighLen: Math.hypot(P.j.shin_l[0] - P.j.thigh_l[0], P.j.shin_l[1] - P.j.thigh_l[1], P.j.shin_l[2] - P.j.thigh_l[2]),
+      shinLen: Math.hypot(P.j.foot_l[0] - P.j.shin_l[0], P.j.foot_l[1] - P.j.shin_l[1], P.j.foot_l[2] - P.j.shin_l[2]),
+      ankleDX: P.j.foot_l[0] - P.j.thigh_l[0],
+      ankleDZ: P.j.foot_l[2] - P.j.thigh_l[2],
     };
     this.restL = { l: P.hand.l.L.clone(), r: P.hand.r.L.clone() };
     const n = rig.count;
