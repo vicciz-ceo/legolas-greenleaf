@@ -19,7 +19,7 @@ import { sculptBand, sculptTorsoGarment } from './garments';
 import { addHairdo, withHair } from './hair';
 import { DOME_ROUND, domeHelm, faceMask, sculptTurban } from './headgear';
 import { faceStroke, scalpStroke } from './markings';
-import { BLACK_SCALES, GILT, GOLD_SCALES, addClothSheets, cowl, crest, forearmBand, kneeCap, layeredPauldrons, plume, rosetteGeo, sheetRadius, shinBand, surfaceMatrix, type SheetCol, type SheetOpts } from './menparts';
+import { BLACK_SCALES, GILT, GOLD_SCALES, addClothSheets, cowl, crest, forearmBand, kneeCap, layeredPauldrons, plume, rosetteGeo, sheetRadius, shinBand, surfaceMatrix, thighPad, type SheetCol, type SheetOpts } from './menparts';
 
 /** sRGB albedos from docs/refs/easterling/spec.json (design.outfit_layers / armor), cross-checked with the lit samples */
 const PALETTE = {
@@ -113,8 +113,10 @@ function body(ctx: KindContext, look: Look) {
   if (A >= 0.25) forearmBand(ctx, { t0: 0.18, t1: 0.68, color: look.scale, color2: look.deep, mat: look.scaleMat, inflate: 0.0105 * sc });
   // blackened greaves from mid-shin to the knee over the boots, and a gilt cap on the front of each knee
   if (A >= 0.25) shinBand(ctx, { y0: 0.11 * k, y1: kneeY - 0.01 * sc, color: 0x2b2925, mat: BLACK_SCALES, inflate: 0.0235 * sc });
+  // padded outer thighs: full at the crotch, tapering off on the inner side toward the knee so the legs part above it
+  thighPad(ctx, { color: PALETTE.black, mat: BLACK_CLOTH, inflate: 0.022 * sc, top: P.j.thigh_l[1] + 0.02 * sc, taper: 0.23, y0: kneeY })
   // one gilt knee guard on the front of each knee (no full rings): the boots are slim, tall and dark
-  if (A >= 0.25) kneeCap(ctx, { y0: kneeY - 0.07 * sc, y1: kneeY + 0.015 * sc, color: PALETTE.giltKnee, mat: GILT, inflate: 0.035 * sc });
+  if (A >= 0.25) kneeCap(ctx, { y0: kneeY - 0.07 * sc, y1: kneeY + 0.015 * sc, color: PALETTE.giltKnee, mat: GILT, inflate: 0.024 * sc });
   // shoulders: four stacked, flared lames, each smaller than the one below
   if (A >= 0.25) layeredPauldrons(ctx, { color: look.scale, trim: look.trim, mat: look.scaleMat, trimMat: GILT, layers: 4, size: 1.02, shrink: 0.83, rise: 0.02, tilt: 0.55 });
   // wrapped red cowl: thick folds overlapping the helm's neck plates
@@ -244,7 +246,7 @@ export const easterlingDef: KindDef = {
   beard: null,
   outfit: [
     // padded, thick leggings: the sheet's legs are chunky under the skirt
-    { type: 'leggings', color: PALETTE.black, mat: BLACK_CLOTH, thickness: 0.011 },
+    { type: 'leggings', color: PALETTE.black, mat: BLACK_CLOTH, thickness: 0.003 },
     { type: 'boots', color: PALETTE.boots, color2: PALETTE.bootSole, length: 1.0, mat: BOOT, thickness: 0.01 },
     // black undersleeves (no skirt layer geometry: the pleated skirt is a cloth sheet, see `body`)
     { type: 'tunic', color: PALETTE.black, mat: BLACK_CLOTH, length: 0 },
