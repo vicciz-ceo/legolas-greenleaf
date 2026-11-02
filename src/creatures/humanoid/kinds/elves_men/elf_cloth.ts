@@ -1,0 +1,382 @@
+/**
+ * Cloth sheets for the elf guards, sculpted to the Mirkwood and Galadhrim turnarounds:
+ *   - `elfCloak`: a wide A-line cloak with deep pleats that grow toward the hem, a trimmed hem and
+ *     front edge and optional embroidered vertical lines (Galadhrim: gold leaf work on red velvet)
+ *   - `leafTassets`: the armour skirt, two staggered rows of long pointed leaf plates hanging from the
+ *     belt over the hips (sheet: overlapping gold leaves down to mid-thigh, a gap at the centre front
+ *     where the tunic shows)
+ * Both are skinned like the kit's own skirt and cloak (hips / thigh / skirt_f,b bones and the cloak
+ * spring chains) and carry the kit's surface attributes, so they share the body material.
+ * The builder is a copy of the kit's private one in `humanoid/cloth.ts` (not exported there).
+ */
+import * as THREE from 'three';
+import type { RigDef } from '../../../kit/rig';
+import { SURFACES, type SurfaceName, type SurfaceSpec } from '../../../kit/surfaces';
+import { noise2 } from '../../../../core/rng';
+import type { Proportions } from '../../proportions';
+import { torsoSection } from './geo';
+
+interface Builder {
+  pos: number[];
+  col: number[];
+  surf: number[];
+  pat0: number[];
+  pat1: number[];
+  ao: number[];
+  si: number[];
+  sw: number[];
+  idx: number[];
+  seam: number[];
+}
+const newBuilder = (): Builder => ({ pos: [], col: [], surf: [], pat0: [], pat1: [], seam: [], ao: [], si: [], sw: [], idx: [] });
+
+function finish(b: Builder): THREE.BufferGeometry {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(b.col, 3));
+  g.setAttribute('surf', new THREE.Float32BufferAttribute(b.surf, 4));
+  g.setAttribute('pat0', new THREE.Float32BufferAttribute(b.pat0, 4));
+  g.setAttribute('pat1', new THREE.Float32BufferAttribute(b.pat1, 4));
+  g.setAttribute('seam', new THREE.Float32BufferAttribute(b.seam, 2));
+  g.setAttribute('ao', new THREE.Float32BufferAttribute(b.ao, 1));
+  g.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(b.si, 4));
+  g.setAttribute('skinWeight', new THREE.Float32BufferAttribute(b.sw, 4));
+  g.setIndex(new THREE.BufferAttribute(Uint32Array.from(b.idx), 1));
+  g.computeVertexNormals();
+  return g;
+}
+
+function pushVertex(b: Builder, p: THREE.Vector3, color: THREE.Color, spec: SurfaceSpec, ao: number, weights: [number, number][], edge = 1) {
+  b.pos.push(p.x, p.y, p.z);
+  b.seam.push(-Math.min(0.03, edge), 1);
+  b.col.push(color.r, color.g, color.b);
+  b.surf.push(spec.rough, spec.metal, spec.sheen, spec.skin);
+  b.pat0.push(spec.pat[0], spec.pat[1], spec.pat[2], spec.pat[3]);
+  b.pat1.push(spec.pat[4], spec.pat[5], spec.pat[6], spec.pat[7]);
+  b.ao.push(ao);
+  weights.sort((x, y) => y[1] - x[1]);
+  let s = 0;
+  for (let i = 0; i < 4; i++) s += weights[i]?.[1] ?? 0;
+  s = s || 1;
+  for (let i = 0; i < 4; i++) {
+    b.si.push(weights[i]?.[0] ?? 0);
+    b.sw.push((weights[i]?.[1] ?? 0) / s);
+  }
+}
+
+const specOf = (m: SurfaceName | SurfaceSpec | undefined, d: SurfaceName): SurfaceSpec => (typeof m === 'string' ? SURFACES[m] : (m ?? SURFACES[d]));
+const _c = new THREE.Color();
+const _t = new THREE.Color();
+
+export interface ElfCloakOpts {
+  color: number;
+  /** hem band and front-edge trim */
+  trim: number;
+  /** colour in the pleat troughs (the lining shows in the folds) */
+  fold?: number;
+  mat?: SurfaceName | SurfaceSpec;
+  /** hem height above the ground (m) */
+  hem: number;
+  /** half width (m) of the hanging cloak at mid height and at the hem (scaled by the figure) */
+  rxMid?: number;
+  rxHem?: number;
+  /** half depth behind the back at the hem */
+  rzHem?: number;
+  /** number of pleats across the back and how deep they get at the hem (m) */
+  pleats?: number;
+  pleatDepth?: number;
+  /** ambient-occlusion floor at the shoulders (0..1): lower = darker folds */
+  aoFloor?: number;
+  /** coarse tweed noise amplitude on the colour */
+  tweed?: number;
+  /** embroidered vine along both front edges and a leaf spray band at the hem, in this colour */
+  vine?: number;
+  /** low-frequency colour mottling amplitude (felted wool) */
+  mottle?: number;
+  /** how much further back the lower cloak sweeps (m): the profile flare */
+  backFlare?: number;
+  seed?: number;
+}
+
+/** the cloak: shoulders to hem, wide and pleated, weighted to the chest and the cloak spring chains */
+export function elfCloak(P: Proportions, rig: RigDef, o: ElfCloakOpts): THREE.BufferGeometry {
+  const b = newBuilder();
+  const spec = specOf(o.mat, 'wool');
+  const s = P.s;
+  const g = P.build.bulk;
+  const top = P.j.neck[1] + 0.005 * s;
+  const bottom = o.hem;
+  const H = top - bottom;
+  const iC = rig.boneIndex('chest');
+  const chains = ['l', 'r'].map((sd) => [1, 2, 3].map((k) => rig.boneIndex(`cloak${k}_${sd}`)));
+  const ys = [1, 2, 3].map((k) => P.j[`cloak${k}_l`][1]);
+  const base = new THREE.Color().setHex(o.color, THREE.SRGBColorSpace);
+  const trim = new THREE.Color().setHex(o.trim, THREE.SRGBColorSpace);
+  const foldCol = o.fold !== undefined ? new THREE.Color().setHex(o.fold, THREE.SRGBColorSpace) : null;
+  const n2 = noise2(o.seed ?? 5);
+  const a0 = Math.PI * 0.4;
+  const a1 = Math.PI * 1.6;
+  const nv = Math.max(9, Math.round(H / (0.1 * s)));
+  const pleats = o.pleats ?? 7;
+  const aoFloor = o.aoFloor ?? 0.78;
+  const w: [number, number][] = [];
+  const rxTop = P.shoulderX * 0.5 + 0.02 * s; // narrow at the clasp
+  const rzTop = 0.105 * s * Math.sqrt(g) * P.build.chest + 0.025 * s;
+  const rxMid = (o.rxMid ?? 0.28) * s;
+  const rzMid = 0.17 * s * g;
+  const rxHem = (o.rxHem ?? 0.395) * s;
+  const rzHem = (o.rzHem ?? 0.25) * s;
+  const arcC = (a1 - a0) * (rxTop + rxHem) * 0.5;
+
+  /** the cloak surface at (u across 0..1, v down 0..1) */
+  const surf = (u: number, v: number) => {
+    const sh = Math.min(1, v * 3.4); // shoulders -> hanging
+    const lo = Math.pow(v, 1.15); // hanging -> flared hem
+    const rx = rxTop + (rxMid - rxTop) * Math.sqrt(sh) + (rxHem - rxMid) * lo;
+    const rz = rzTop + (rzMid - rzTop) * Math.sqrt(sh) + (rzHem - rzMid) * lo;
+    const amp = ((o.pleatDepth ?? 0.03) * Math.min(1, v * 1.6) + 0.005) * s;
+    const a = a0 + (a1 - a0) * u;
+    const ph = Math.sin(u * Math.PI * pleats);
+    const fold = ph * amp * Math.min(1, v * 3);
+    let y = top - H * v;
+    // the hem rises a little over each pleat crest
+    if (v > 0.9) y += (ph * 0.5 + 0.5) * 0.02 * s * ((v - 0.9) / 0.1);
+    // the top hangs further back, from the shoulder blades, so it does not swallow the shoulders
+    const sstep = Math.max(0, Math.min(1, (v - 0.45) / 0.55));
+    const flare = (o.backFlare ?? 0) * s * sstep * sstep * (3 - 2 * sstep) * Math.max(0, -Math.cos(a));
+    const back = (0.03 + 0.035 * (1 - Math.min(1, v * 4))) * s + flare;
+    const p = new THREE.Vector3(Math.sin(a) * (rx + fold), y, Math.cos(a) * (rz + fold) - back);
+    return { p, y, a, ph, back };
+  };
+  const weightsAt = (y: number, a: number, v: number) => {
+    w.length = 0;
+    const blendLR = 0.5 + 0.5 * Math.max(-1, Math.min(1, -Math.sin(a) * 2.5));
+    const chainW = (k: number) => {
+      const yk = ys[k];
+      const yPrev = k === 0 ? top : ys[k - 1];
+      const yNext = k === 2 ? bottom - 0.3 : ys[k + 1];
+      if (y >= yk) return Math.max(0, 1 - (y - yk) / Math.max(0.01, yPrev - yk));
+      return Math.max(0, 1 - (yk - y) / Math.max(0.01, yk - yNext));
+    };
+    const topW = Math.max(0, 1 - v * 6);
+    w.push([iC, topW + 0.0001]);
+    for (let k = 0; k < 3; k++) {
+      const cw = chainW(k) * (1 - topW);
+      if (chains[0][k] >= 0) w.push([chains[0][k], cw * (1 - blendLR)]);
+      if (chains[1][k] >= 0) w.push([chains[1][k], cw * blendLR]);
+    }
+    return w;
+  };
+
+  // rows: even steps down the cloak, then close rows at the hem so the trim band has a crisp edge
+  const vs: number[] = [];
+  for (let i = 0; i < nv - 1; i++) vs.push((i / (nv - 1)) * 0.96);
+  vs.push(0.97, 0.976, 1);
+  // columns: even steps across and a crisp trim strip at each front edge
+  const us: number[] = [0, 0.03, 0.034, 0.966, 0.97, 1];
+  const NU = 22;
+  for (let k = 1; k < NU; k++) {
+    const u = k / NU;
+    if (u > 0.05 && u < 0.95) us.push(u);
+  }
+  us.sort((x, y) => x - y);
+  const nu = us.length - 1;
+  for (const v of vs) {
+    for (let iu = 0; iu <= nu; iu++) {
+      const u = us[iu];
+      const { p, y, a, ph } = surf(u, v);
+      _c.copy(base);
+      // pleat troughs show the lining / darker wool, crests catch the light; coarse tweed noise on top
+      const fm = Math.min(1, v * 3);
+      if (foldCol) _c.lerp(foldCol, (0.5 - 0.5 * ph) * 0.75 * fm);
+      _c.multiplyScalar(1 + 0.12 * ph * Math.min(1, v * 2.5) + (o.tweed ?? 0.05) * n2(u * 29, v * 17 + 1.3) + 0.04 * n2(u * 13, 2.7) + (o.mottle ?? 0) * n2(u * 4.5, v * 3.5 + 6.1));
+      const edge = u <= 0.0301 || u >= 0.9699;
+      if (v > 0.9755 || edge) _c.lerp(trim, 0.7);
+      _t.copy(_c);
+      pushVertex(b, p, _t, spec, aoFloor + (1 - aoFloor) * Math.min(1, v * 2) - 0.16 * (0.5 - 0.5 * ph) * Math.min(1, v * 2), weightsAt(y, a, v), Math.min(H * (1 - v), arcC * u, arcC * (1 - u)));
+    }
+  }
+  for (let iv = 0; iv < vs.length - 1; iv++)
+    for (let iu = 0; iu < nu; iu++) {
+      const a = iv * (nu + 1) + iu;
+      const c = a + nu + 1;
+      b.idx.push(a, a + 1, c, a + 1, c + 1, c);
+    }
+
+  // ── embroidery: thread-gold vine and leaf sprigs sewn onto the cloth (own vertices, same skin weights) ──
+  if (o.vine !== undefined) {
+    const gold = new THREE.Color().setHex(o.vine, THREE.SRGBColorSpace);
+    const thread = SURFACES.linen;
+    const nrm = new THREE.Vector3();
+    const dDown = new THREE.Vector3();
+    const dAcross = new THREE.Vector3();
+    const side = new THREE.Vector3();
+    const dir = new THREE.Vector3();
+    const q = [new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3()];
+    const ws = (c: { y: number; a: number }, v: number) => weightsAt(c.y, c.a, v).map((x) => [x[0], x[1]] as [number, number]);
+    /** a kite-shaped leaf with its base at (u, v) pointing `ang` radians from straight down toward +u (along the cloth) */
+    const leaf = (u: number, v: number, ang: number, len: number, wid: number) => {
+      const c = surf(u, v);
+      dDown.copy(surf(u, v + 0.02).p).sub(c.p).normalize();
+      dAcross.copy(surf(u + 0.01, v).p).sub(c.p).normalize();
+      nrm.set(c.p.x, 0, c.p.z + c.back).normalize(); // outward from the cloak axis
+      dir.copy(dDown).multiplyScalar(Math.cos(ang)).addScaledVector(dAcross, Math.sin(ang)).normalize();
+      side.crossVectors(dir, nrm).normalize();
+      const lift = 0.003 * s;
+      q[0].copy(c.p).addScaledVector(nrm, lift);
+      q[1].copy(c.p).addScaledVector(dir, len * 0.42).addScaledVector(side, wid).addScaledVector(nrm, lift * 1.4);
+      q[2].copy(c.p).addScaledVector(dir, len).addScaledVector(nrm, lift);
+      q[3].copy(c.p).addScaledVector(dir, len * 0.42).addScaledVector(side, -wid).addScaledVector(nrm, lift * 1.4);
+      const i0 = b.pos.length / 3;
+      const w0 = ws(c, v);
+      for (const pt of q) pushVertex(b, pt, gold, thread, 0.95, w0.map((x) => [x[0], x[1]] as [number, number]), 0.03);
+      b.idx.push(i0, i0 + 1, i0 + 2, i0, i0 + 2, i0 + 3);
+    };
+    /** a thin strip between two heights down the cloth (wound so its front faces out) */
+    const stem = (u: number, v0: number, v1: number) => {
+      const c0 = surf(u, v0);
+      const c1 = surf(u, v1);
+      nrm.set(c0.p.x, 0, c0.p.z + c0.back).normalize();
+      dAcross.copy(surf(u + 0.01, v0).p).sub(c0.p).normalize().multiplyScalar(0.0035 * s);
+      const i0 = b.pos.length / 3;
+      const lift = 0.0025 * s;
+      const pts = [c0.p.clone().sub(dAcross), c0.p.clone().add(dAcross), c1.p.clone().add(dAcross), c1.p.clone().sub(dAcross)];
+      const w0 = ws(c0, v0);
+      const w1 = ws(c1, v1);
+      pts.forEach((pt, i) => pushVertex(b, pt.addScaledVector(nrm, lift), gold, thread, 0.95, (i < 2 ? w0 : w1).map((x) => [x[0], x[1]] as [number, number]), 0.03));
+      b.idx.push(i0, i0 + 2, i0 + 1, i0, i0 + 3, i0 + 2);
+    };
+    const vHem = 0.955;
+    const vStart = Math.max(0.3, vHem - 0.6 / H); // the vine rises about 0.6 m from the hem
+    // front edges: one continuous thin strip with a column of six leaf-pair stamps, inset from the edge
+    for (const uu of [0.1, 0.9]) {
+      const seg = 8;
+      for (let i = 0; i < seg; i++) stem(uu, vStart + ((vHem - vStart) * i) / seg, vStart + ((vHem - vStart) * (i + 1)) / seg);
+      for (let k = 0; k < 6; k++) {
+        const v = vStart + ((vHem - vStart) * (k + 0.8)) / 6.2;
+        leaf(uu, v, Math.PI + 0.5, 0.05 * s, 0.013 * s);
+        leaf(uu, v, Math.PI - 0.5, 0.05 * s, 0.013 * s);
+      }
+    }
+    // hem band: eight evenly spaced three-leaf sprigs, and a larger motif at the back centre
+    const sprigs = 8;
+    for (let k = 0; k < sprigs; k++) {
+      const u = 0.18 + (0.64 * (k + 0.5)) / sprigs;
+      if (Math.abs(u - 0.5) < 0.04) continue;
+      leaf(u, 0.966, Math.PI, 0.055 * s, 0.011 * s);
+      leaf(u, 0.966, Math.PI - 0.6, 0.038 * s, 0.009 * s);
+      leaf(u, 0.966, Math.PI + 0.6, 0.038 * s, 0.009 * s);
+    }
+    leaf(0.5, 0.966, Math.PI, 0.1 * s, 0.017 * s);
+    leaf(0.5, 0.966, Math.PI - 0.55, 0.07 * s, 0.013 * s);
+    leaf(0.5, 0.966, Math.PI + 0.55, 0.07 * s, 0.013 * s);
+  }
+  return finish(b);
+}
+
+export interface TassetLeaf {
+  /** azimuth about the vertical axis (0 = front, + = the character's left, π = back) */
+  a: number;
+  /** length down from `top` (m) */
+  len: number;
+  /** width at the shoulder of the leaf (m) */
+  w: number;
+  /** start height (m); defaults to the plate's `top` */
+  top?: number;
+  /** outward offset from the skirt (m): staggers overlapping rows */
+  off?: number;
+  /** tone multiplier */
+  tone?: number;
+}
+
+export interface TassetOpts {
+  /** belt height the plates hang from */
+  top: number;
+  /** where the tunic's own cloth skirt ends (so the plates clear it): the skirt's hem height */
+  skirtBottom: number;
+  color: number;
+  color2?: number;
+  mat?: SurfaceName | SurfaceSpec;
+  leaves: TassetLeaf[];
+  seed?: number;
+}
+
+/**
+ * Long pointed leaf plates hanging from the belt: a ridge down the middle (the centre vertex row is
+ * pushed out), edges curling back, tips flaring outward. Hung on the same ellipse as the kit's skirt
+ * panels so they clear the legs.
+ */
+export function leafTassets(P: Proportions, rig: RigDef, o: TassetOpts): THREE.BufferGeometry {
+  const b = newBuilder();
+  const spec = specOf(o.mat, 'gold');
+  const s = P.s;
+  const g = P.build.bulk;
+  const hips = P.build.hips;
+  const iH = rig.boneIndex('hips');
+  const iTL = rig.boneIndex('thigh_l');
+  const iTR = rig.boneIndex('thigh_r');
+  const iSF = rig.boneIndex('skirt_f');
+  const iSB = rig.boneIndex('skirt_b');
+  const hipY = P.j.thigh_l[1];
+  const skTop = hipY + 0.035 * s;
+  const n2 = noise2(o.seed ?? 4);
+  const base = new THREE.Color().setHex(o.color, THREE.SRGBColorSpace);
+  const c2 = new THREE.Color().setHex(o.color2 ?? o.color, THREE.SRGBColorSpace);
+  // the kit skirt's ellipse (rx0 -> rx1), see humanoid/cloth.ts skirtGeometry
+  const rx0 = 0.158 * s * hips * Math.sqrt(g) + 0.012 * s;
+  const rz0 = 0.112 * s * Math.sqrt(g) + 0.012 * s;
+  const legR = 0.08 * s * g;
+  const rx1 = Math.max(rx0, P.hipX + legR + 0.03 * s) + 0.04 * s;
+  const rz1 = Math.max(rz0, legR + 0.035 * s) + 0.04 * s * 0.8;
+  const H = skTop - o.skirtBottom;
+  const w: [number, number][] = [];
+  const nR = 5; // rows along the leaf
+  const lerp = (a: number, bb: number, t: number) => a + (bb - a) * t;
+  o.leaves.forEach((lf, li) => {
+    const topY = lf.top ?? o.top;
+    const start = b.pos.length / 3;
+    const tone = lf.tone ?? 1;
+    for (let ir = 0; ir <= nR; ir++) {
+      const t = ir / nR;
+      const y = topY - lf.len * t;
+      // ellipse at this height: torso above the skirt top, the kit skirt's flare below it
+      const sec = torsoSection(P, Math.min(y, topY));
+      const vv = Math.min(1, Math.max(0, (skTop - y) / Math.max(0.05, H)));
+      const rx = Math.max(sec.rx + 0.016 * s, lerp(rx0, rx1, Math.sqrt(vv))) + (lf.off ?? 0) + 0.05 * s * t * t;
+      const rz = Math.max((sec.zf - sec.zb) / 2 + 0.016 * s, lerp(rz0, rz1, Math.sqrt(vv))) + (lf.off ?? 0) + 0.04 * s * t * t;
+      const zc = -0.01 * s;
+      // leaf outline: broad shoulders, drawn to a point
+      const wid = lf.w * (0.72 + 0.28 * Math.sin(Math.min(1, t * 2) * Math.PI * 0.5)) * (1 - Math.pow(t, 2.8));
+      for (let ic = 0; ic < 3; ic++) {
+        const cx = ic - 1; // -1 edge, 0 ridge, +1 edge
+        const a = lf.a + (cx * wid * 0.5) / ((rx + rz) * 0.5);
+        const ridge = (1 - Math.abs(cx)) * 0.011 * s * Math.sin(Math.min(1, t * 1.3) * Math.PI * 0.6);
+        const sa = Math.sin(a);
+        const ca = Math.cos(a);
+        const p = new THREE.Vector3(sa * (rx + ridge), y, zc + ca * (rz + ridge));
+        _c.copy(base);
+        _c.lerp(c2, 0.35 * (1 - Math.abs(cx)) + 0.3 * t * n2(li * 3.1, ic));
+        _c.multiplyScalar(tone * (0.92 + 0.1 * (1 - Math.abs(cx))));
+        w.length = 0;
+        const side = sa;
+        const front = Math.max(0, ca);
+        const back = Math.max(0, -ca);
+        const lower = Math.min(1, ((skTop - y) / Math.max(0.05, H)) * 1.25 + 0.15);
+        const tl = side > 0 ? side * side * lower : 0;
+        const tr = side < 0 ? side * side * lower : 0;
+        w.push([iH, Math.max(0.0001, 1 - lower * 0.9)], [iTL, tl], [iTR, tr]);
+        if (iSF >= 0) w.push([iSF, front * front * lower * 0.9]);
+        if (iSB >= 0) w.push([iSB, back * back * lower * 0.9]);
+        pushVertex(b, p, _c, spec, 0.62 + 0.38 * t, w, ic === 1 ? 0.03 : 0.004 + 0.002 * t);
+      }
+    }
+    for (let ir = 0; ir < nR; ir++)
+      for (let ic = 0; ic < 2; ic++) {
+        const a = start + ir * 3 + ic;
+        const c = a + 3;
+        // front facing: wind so the outside is the front side (double-sided material anyway)
+        b.idx.push(a, c, a + 1, a + 1, c, c + 1);
+      }
+  });
+  return finish(b);
+}

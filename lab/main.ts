@@ -13,6 +13,10 @@
  *        turn   a turnaround strip laid out like the reference sheets (docs/refs/<name>/*_turnaround.jpg):
  *               FRONT, 3/4 FRONT, RIGHT PROFILE, BACK side by side at eye level. Use a wide size
  *               (e.g. --size 1536x1024) and bg=7f7f7f to match the sheets; yaws=0,-35,-90,180 (the default) overrides the angles
+ *               ref=<docs/refs id> (or ppm=<px per metre>&base=<baseline px>) makes `turn` orthographic and
+ *               calibrated to that sheet: same metres-per-pixel, feet on the sheet's baseline, each view's
+ *               silhouette centred on the sheet's panel centre, labels under the figures. Snap it at
+ *               --size 1536x1024 and compare with scripts/sheet-compare.py (silhouette IoU, widths, heights).
  *        sheet  contact sheet of every subject (or `subjects=a,b,c`, or `category=enemy`)
  *   anim=<name>&t=<sec>     pose the subject at time t of animation anim (static views)
  *   wire=1                  wireframe overlay
@@ -25,7 +29,8 @@
  *   node scripts/snap.mjs "/lab/?subject=spider&view=quad&anim=walk&t=0.35" --out shots/spider-quad.png
  *   node scripts/snap.mjs "/lab/?view=sheet&category=enemy" --size 1600x1000 --out shots/enemies.png
  *
- * Test hooks: window.__snapReady, window.__lab = { subjects, pose(anim, t), render() }.
+ * Test hooks: window.__snapReady, window.__lab = { subjects, pose(anim, t), render(), tris } (`tris` = visible
+ * triangles now, after pose() and LOD selection; the info line shows it next to the built total).
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -228,6 +233,19 @@ async function build(s: LabSubject): Promise<Built> {
   return { subject: s, inst, holder, ms, tris };
 }
 
+/** triangles of the meshes that are visible right now (LOD swaps, hidden hair/extras, instanced counts) */
+function visibleTris(root: THREE.Object3D): number {
+  let n = 0;
+  root.traverseVisible((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || !m.geometry || m.layers.mask === 0) return;
+    const g = m.geometry as THREE.BufferGeometry;
+    const t = g.index ? g.index.count / 3 : (g.attributes.position?.count ?? 0) / 3;
+    n += (m as THREE.InstancedMesh).isInstancedMesh ? t * (m as THREE.InstancedMesh).count : t;
+  });
+  return Math.round(n);
+}
+
 function applyWire(root: THREE.Object3D) {
   root.traverse((o) => {
     const m = o as THREE.Mesh;
@@ -238,6 +256,131 @@ function applyWire(root: THREE.Object3D) {
     );
     if ((m as THREE.SkinnedMesh).isSkinnedMesh) return; // skinned wireframe needs skeleton binding; skip
     m.add(wire);
+  });
+}
+
+// ── sheet-calibrated turnaround (view=turn&ref=<id>) ────────────────────────
+/** The reference sheets are 1536×1024: four views whose silhouette boxes are centred on fixed panel
+ *  centres, feet on a baseline, at a per-sheet scale (docs/refs/<id>/spec.json measured.turnaround). */
+type SheetCalib = { ref: string | null; ppm: number; base: number; centres: number[]; heightM: number | null };
+const SHEET_W = 1536;
+const SHEET_CENTRES = [318, 661.5, 1004, 1347.5];
+
+async function loadSheetCalibration(): Promise<SheetCalib | null> {
+  const ref = params.get('ref');
+  let ppm = Number(params.get('ppm') ?? 0);
+  let base = Number(params.get('base') ?? 940);
+  let centres = SHEET_CENTRES;
+  let heightM: number | null = null;
+  if (ref && !(ppm > 0)) {
+    try {
+      // dev tooling only: the Vite dev server serves the repo root, so the lab can read the sheet's calibration
+      const res = await fetch(`/docs/refs/${encodeURIComponent(ref)}/spec.json`);
+      const spec = await res.json();
+      const m = spec?.measured?.turnaround;
+      if (m && m.px_per_m > 0) {
+        ppm = m.px_per_m;
+        base = m.baseline_y_px ?? 940;
+        heightM = m.overall_height_m ?? null;
+        if (Array.isArray(m.views) && m.views.length === 4) {
+          centres = m.views.map((v: { sheet_bbox_px: number[] }) => (v.sheet_bbox_px[0] + v.sheet_bbox_px[2]) / 2);
+        }
+      } else console.error(`[lab] docs/refs/${ref}/spec.json has no humanoid turnaround calibration`);
+    } catch (e) {
+      console.error(`[lab] could not read docs/refs/${ref}/spec.json`, e);
+    }
+  }
+  return ppm > 0 ? { ref, ppm, base, centres, heightM } : null;
+}
+
+/** bounds of the visible meshes only (hidden LODs and stowed weapons excluded), with skinned vertex positions */
+const _bv = new THREE.Vector3();
+const _bb = new THREE.Box3();
+function visibleBounds(root: THREE.Object3D, out: THREE.Box3): THREE.Box3 {
+  out.makeEmpty();
+  root.updateMatrixWorld(true);
+  root.traverseVisible((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh || !m.geometry) return;
+    const pos = m.geometry.getAttribute('position');
+    if (!pos) return;
+    const im = m as unknown as THREE.InstancedMesh;
+    if (im.isInstancedMesh) {
+      im.computeBoundingBox();
+      if (im.boundingBox) out.union(_bb.copy(im.boundingBox).applyMatrix4(im.matrixWorld));
+      return;
+    }
+    for (let i = 0; i < pos.count; i++) {
+      m.getVertexPosition(i, _bv);
+      out.expandByPoint(_bv.applyMatrix4(m.matrixWorld));
+    }
+  });
+  if (out.isEmpty()) out.set(new THREE.Vector3(-0.3, 0, -0.3), new THREE.Vector3(0.3, 1.8, 0.3));
+  return out;
+}
+
+function renderCalibratedTurn(b: Built, calib: SheetCalib, info: string, animName: () => string): void {
+  const yaws = (params.get('yaws') ?? '0,-35,-90,180').split(',').map(Number);
+  const names = ['FRONT', '3/4 FRONT', 'RIGHT PROFILE', 'BACK'];
+  const k = innerWidth / SHEET_W; // sheet px → canvas px
+  const ppm = calib.ppm * k;
+  const basePx = calib.base * k;
+  const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.05, 200);
+  const box = new THREE.Box3();
+  const right = new THREE.Vector3();
+  const target = new THREE.Vector3();
+  renderer.setScissorTest(true);
+  const render = () => {
+    labels.innerHTML = '';
+    const centres = calib.centres.map((c) => c * k);
+    const measured: { view: string; heightM: number; widthM: number }[] = [];
+    b.holder.rotation.y = 0;
+    visibleBounds(b.holder, box).getCenter(target);
+    yaws.forEach((yawDeg, i) => {
+      const yaw = THREE.MathUtils.degToRad(yawDeg);
+      // the exact silhouette extent seen from this yaw: turn the subject by -yaw and take the precise
+      // (skinned) bounds, whose x then equals the camera's right-axis coordinate
+      b.holder.rotation.y = -yaw;
+      visibleBounds(b.holder, box);
+      const minS = box.min.x;
+      const maxS = box.max.x;
+      const minY = box.min.y;
+      measured.push({ view: names[i] ?? `yaw ${yawDeg}`, heightM: box.max.y - minY, widthM: maxS - minS });
+      b.holder.rotation.y = 0;
+      b.holder.updateMatrixWorld(true);
+      // level orthographic camera orbiting the subject (lighting stays fixed in the world, as in view=turn)
+      right.set(Math.cos(yaw), 0, -Math.sin(yaw));
+      cam.position.set(target.x + Math.sin(yaw) * 20, target.y, target.z + Math.cos(yaw) * 20);
+      cam.up.set(0, 1, 0);
+      cam.lookAt(target);
+      const c = centres[i] ?? centres[centres.length - 1];
+      const m = (minS + maxS) / 2; // silhouette centre on the camera's right axis
+      cam.left = -(c / ppm) - (right.dot(target) - m);
+      cam.right = cam.left + innerWidth / ppm;
+      cam.top = basePx / ppm - (target.y - minY);
+      cam.bottom = cam.top - innerHeight / ppm;
+      cam.near = 0.05;
+      cam.far = 60;
+      cam.updateProjectionMatrix();
+      const x0 = i === 0 ? 0 : (centres[i - 1] + c) / 2;
+      const x1 = i === yaws.length - 1 ? innerWidth : (c + centres[i + 1]) / 2;
+      renderer.setViewport(0, 0, innerWidth, innerHeight);
+      renderer.setScissor(x0, 0, x1 - x0, innerHeight);
+      renderer.render(scene, cam);
+      label(names[i] ?? `yaw ${yawDeg}`, c - 40, basePx + 30 * k);
+    });
+    const h = measured[0]?.heightM ?? 0;
+    label(
+      `${info}   anim=${animName()} t=${tParam}   calibrated to ${calib.ref ?? 'ppm'} (${calib.ppm.toFixed(1)} px/m, baseline ${calib.base})   height ${h.toFixed(3)} m${calib.heightM ? ` (sheet ${calib.heightM} m)` : ''}`,
+      6,
+      innerHeight - 24,
+    );
+    (window as unknown as { __labTurn?: unknown }).__labTurn = measured;
+  };
+  render();
+  requestAnimationFrame(() => {
+    render();
+    window.__snapReady = true;
   });
 }
 
@@ -315,8 +458,18 @@ async function main() {
   scene.add(pole);
   if (view === 'turn') pole.visible = false; // the sheets have a side scale, not a pole in frame
 
-  const info = `${subject.name}  ${Math.round(b.tris).toLocaleString()} tris  build ${b.ms.toFixed(0)} ms  size ${f0.size.x.toFixed(2)}×${f0.size.y.toFixed(2)}×${f0.size.z.toFixed(2)} m`;
+  const vis = visibleTris(b.holder);
+  const info = `${subject.name}  ${vis.toLocaleString()} tris (visible) / ${Math.round(b.tris).toLocaleString()} built  build ${b.ms.toFixed(0)} ms  size ${f0.size.x.toFixed(2)}×${f0.size.y.toFixed(2)}×${f0.size.z.toFixed(2)} m`;
   const pose = (a: string, t: number) => b.inst.pose?.(a, t);
+
+  if (view === 'turn') {
+    const calib = await loadSheetCalibration();
+    if (calib) {
+      renderCalibratedTurn(b, calib, info, () => anim);
+      window.__lab = { subjects: allSubjects.map((s) => s.name), pose, calib, get tris() { return visibleTris(b.holder); } };
+      return;
+    }
+  }
 
   if (view === 'quad' || view === 'single' || view === 'turn') {
     const f = frameOf(b.holder);
@@ -354,7 +507,7 @@ async function main() {
     };
     renderStatic();
     requestAnimationFrame(() => { renderStatic(); window.__snapReady = true; });
-    window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: renderStatic };
+    window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: renderStatic, get tris() { return visibleTris(b.holder); } };
     return;
   }
 
@@ -402,7 +555,7 @@ async function main() {
     renderer.render(scene, camera);
     if (++frames === 2) window.__snapReady = true;
   });
-  window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: () => renderer.render(scene, camera) };
+  window.__lab = { subjects: allSubjects.map((s) => s.name), pose, render: () => renderer.render(scene, camera), get tris() { return visibleTris(b.holder); } };
 }
 
 main().catch((e) => {

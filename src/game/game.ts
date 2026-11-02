@@ -777,6 +777,9 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
     if (!def || pendingResult) return;
     pendingResult = true;
     setMode('complete');
+    // whichever route led here, the results menu never sits over live input (movement, shots, mouse look,
+    // edge turning, pointer-lock requests on key presses)
+    input.enabled = false;
     input.unlockPointer();
     time.setScale(1, 0.3);
     const t = ctx.player.tally;
@@ -829,7 +832,11 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
 
   // ── pause ─────────────────────────────────────────────────────────────────
   function pause(): void {
-    if (mode !== 'playing') return;
+    // not during the victory beat (the delay between the last kill and the results screen): input is already
+    // cut and the results follow on their own, so a blur or a hidden tab there must not open the pause menu,
+    // whose Resume would switch input back on under the results
+    if (mode !== 'playing' || completeT >= 0) return;
+    ctx.player.cancelDraw?.(); // a draw in progress is abandoned, not loosed on resume
     setMode('paused');
     input.enabled = false;
     input.unlockPointer();
@@ -848,6 +855,7 @@ export function createGame(ctx: GameContext, deps: GameDeps): Game {
   function consumeFrameInput(s: InputState): void {
     s.lookX = s.lookY = 0;
     s.drawReleased = s.melee = s.jump = s.dash = s.interact = s.nextArrow = s.pause = false;
+    s.prevArrow = false;
     s.arrowSlot = 0;
     s.focusPressed = s.focusReleased = false;
   }

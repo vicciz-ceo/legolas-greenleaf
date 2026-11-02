@@ -201,7 +201,11 @@ export interface AnimStyle {
   swagger: number;
   /** 0..1 aggression: wider stance, raised weapon, bigger attack wind-ups */
   aggression: number;
-  /** stance width multiplier */
+  /**
+   * Stance width multiplier (1 = the default stance). Above 1 the feet stand further apart, in proportion:
+   * 1.4 puts them where the reference sheets stand (shoulder width + 15 %); the pelvis sinks a little so
+   * the legs keep their extension. At or below 1 only a tiny hint remains.
+   */
   stance: number;
   /** arm swing multiplier */
   armSwing: number;
@@ -209,6 +213,18 @@ export interface AnimStyle {
   cadence: number;
   /** 0..1 elegance: lighter steps, straighter back (elves) */
   grace: number;
+  /**
+   * 0..1 crouch (default 0), in idle and walk: lowers the pelvis toward a deep squat (1 ≈ the goblin
+   * sheet: head at ~78 % of the standing height, knees bent ~99 deg) and raises the knee-flexion limit
+   * from 40 deg to 100 deg with it; the torso pitches forward over the feet (~46 deg) while neck and
+   * head counter-pitch so the gaze stays level, arms hang forward, knees and toes turn out. Feet stay planted.
+   */
+  crouch: number;
+  /**
+   * 0..1 forward lean (default 0), with or without `crouch`: spine and chest pitch forward (~15 deg
+   * at 1), neck and head compensate (the head juts forward, the gaze stays level), the arms hang forward.
+   */
+  lean: number;
 }
 
 export interface KindWeapons {
@@ -285,6 +301,8 @@ export interface KindDef {
   anim?: Partial<AnimStyle>;
   variation?: VariationDef;
   detail?: DetailDef;
+  /** per seed-bucket overrides of `detail` (bucket 0 is the canonical look): e.g. a named captain inside a crowd kind gets a face region */
+  bucketDetail?: Partial<Record<0 | 1 | 2 | 3, DetailDef>>;
   /** custom sculpt primitives / attachments; runs after the standard body is sculpted */
   extras?: (ctx: KindContext) => void;
 }
@@ -307,6 +325,7 @@ export interface ResolvedKind {
   anim: AnimStyle;
   variation: Required<VariationDef>;
   detail: Required<Omit<DetailDef, 'refine' | 'hands'>> & Pick<DetailDef, 'refine' | 'hands'>;
+  bucketDetail?: KindDef['bucketDetail'];
   extras: ((ctx: KindContext) => void)[];
 }
 

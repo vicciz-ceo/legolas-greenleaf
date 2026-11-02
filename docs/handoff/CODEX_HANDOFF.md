@@ -69,7 +69,7 @@ All commands run from the repo root. Node 24 and Playwright's Chromium are alrea
 ```bash
 npm run typecheck                    # tsc --noEmit, strict
 npm run build                        # tsc + vite build
-node src/physics/run-tests.mjs       # 4 suites: physics 61, combat 54, shell 208, finishing 36 (359 total)
+node src/physics/run-tests.mjs       # 13 suites since 2026-11-01 (counts in docs/handoff/STATUS.md)
 ```
 **The unit tests do not cover the creature kit or the world builders.** After changing characters, the kit or
 world code, use the lab checks in §4.6 and smoke.

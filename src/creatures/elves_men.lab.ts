@@ -10,6 +10,10 @@
  * Seed-varied kinds (elf, man, rohirrim, gondor) take `&seed=N` and `&loadout=1` (apply
  * loadoutFor(kind, seed): weapon, helmet, armour level). Overrides: `&helmet=0|1 &armor=0..1
  * &weapon=<kind> &offhand=<kind> &weapons=none`; `&lod=1|2` previews the reduced geometry.
+ *
+ * Lab-only: `anim=sheet` poses the reference sheets' relaxed stance (see humanoid/sheetPose.ts and
+ * humanoids.lab.ts) and `&portrait=1&focus=head&zoom=0.15` frames the head bone's world position
+ * (also for `uruks_bosses`-style tall/hunched kinds; variants subjects keep the box framer).
  */
 import * as THREE from 'three';
 import type { HumanoidKind, LabInstance, LabSubject, WeaponKind } from '../core/types';
@@ -17,6 +21,7 @@ import { createHumanoid, type HumanoidExt } from './humanoid';
 import { resolveKind } from './humanoid/registry';
 import { seedBucket } from './humanoid/build';
 import { poseHumanoid } from './humanoids.lab';
+import { addHeadFraming } from './humanoid/sheetPose';
 import { loadoutFor, seedForBucket, type Loadout } from './humanoid/kinds/elves_men';
 
 /** the attack animations that suit a weapon (the lab's `attack` cycles through them) */
@@ -37,7 +42,7 @@ function attackSet(kind: HumanoidKind, w: WeaponKind, l: WeaponKind): string[] {
   }
 }
 
-const COMMON = ['idle', 'walk', 'run', 'attack', 'hit', 'death'];
+const COMMON = ['idle', 'walk', 'run', 'attack', 'hit', 'death', 'sheet'];
 const EXTRA: Partial<Record<HumanoidKind, string[]>> = {
   tauriel: ['aim', 'draw', 'shoot', 'knife_combo', 'jump', 'dash', 'crouch', 'cheer', 'block', 'stagger', 'rest'],
   elf: ['aim', 'draw', 'shoot', 'slash', 'thrust', 'block', 'cheer', 'stagger', 'rest'],
@@ -77,7 +82,10 @@ function makeEntry(kind: HumanoidKind, seed: number, lo0: Loadout, useUrl = true
   const h = createHumanoid({ kind, seed, weapon: lo.weapon, offhand: lo.offhand, helmet: lo.helmet, armor: lo.armor });
   // &lod=1|2 previews the reduced geometry and the cheap animation path
   const lodQ = typeof location !== 'undefined' ? Number(new URLSearchParams(location.search).get('lod') ?? 0) : 0;
-  if (lodQ === 1 || lodQ === 2) h.setLod(lodQ);
+  if (lodQ === 1 || lodQ === 2) {
+    h.assets.ensureLods?.(); // LOD1/2 are built lazily: make sure they exist before the swap
+    h.setLod(lodQ);
+  }
   const def = resolveKind(kind);
   const r = (lo.weapon ?? def.weapons.right ?? 'none') as WeaponKind;
   const l = (lo.offhand ?? def.weapons.left ?? 'none') as WeaponKind;
@@ -158,14 +166,19 @@ function subjectFor(kind: HumanoidKind, name: string, category: LabSubject['cate
       const e = makeEntry(kind, sd, lo);
       const holder = new THREE.Group();
       holder.add(e.lift);
-      addFramer(holder, e.h.height);
+      const portrait = q?.get('portrait') ? addHeadFraming(holder, e.h) : null;
+      if (!portrait) addFramer(holder, e.h.height);
+      portrait?.();
       const bucket = seedBucket(sd);
       console.info(`[lab] ${name}: ${e.h.triangles} tris (LOD0), assets ${e.h.buildMs.toFixed(0)} ms, bucket ${bucket}`, e.h.assets.lods.map((l) => l.tris));
       return {
         object: holder,
         height: e.h.height,
         animations: [...COMMON, ...(EXTRA[kind] ?? [])],
-        pose: (anim, t) => poseEntry(e, anim, t),
+        pose: (anim, t) => {
+          poseEntry(e, anim, t);
+          portrait?.();
+        },
         dispose: () => e.h.dispose(),
       };
     },

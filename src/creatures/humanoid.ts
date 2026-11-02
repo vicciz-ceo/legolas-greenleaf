@@ -16,6 +16,9 @@
  *  - special 'climb' | 'hang' | 'swing' | 'barrel': a bow in hand is stowed on the back for the
  *    pose and returned afterwards (weaponObject('hand_l') still returns it).
  *  - a crossbow in either hand: aim / 'shoot' shoulders it with both hands (no string draw).
+ *  - held items are carried at rest (idle, walk, jump): one-handed blades, axes, maces and clubs hang beside the
+ *    thigh, spears, pikes and torches stand, a shield rests on the forearm, its face turned toward the front-left; attacks blend from there
+ *    (humanoid/poses.ts `Carry`; this file keeps `anim.held` in step with the weapons and their reach).
  *  - setLod(1|2) also switches to the cheap animation path (no springs/look-at, swing-only IK).
  *  - bones are driven by quaternions: `bone.rotation` (Euler) is not kept in sync (fastBones).
  *  - loading screens: `await preloadHumanoids(kinds, { onProgress })` meshes every kind in
@@ -27,6 +30,7 @@ import { makeSkinnedMesh } from './kit/rig';
 import { cloneCreatureMaterial } from './kit/material';
 import { getHumanoidAssets, prebuildHumanoids, type HumanoidAssets } from './humanoid/build';
 import { HumanoidAnimator } from './humanoid/animator';
+import { carryOf } from './humanoid/poses';
 import { createWeapon, disposeWeapon } from './weapons';
 import { gaitFrequency as kitGaitFrequency, fastBones } from './kit/anim';
 import { resolveKind, ALL_KINDS } from './humanoid/registry';
@@ -60,6 +64,7 @@ const _m1 = new THREE.Matrix4();
 const _m2 = new THREE.Matrix4();
 const _v = new THREE.Vector3();
 const _one = new THREE.Vector3(1, 1, 1);
+const _box = new THREE.Box3();
 
 export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
   const t0 = performance.now();
@@ -168,6 +173,15 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     hand_l: { kind: 'none', obj: null },
   };
   const stowed: { kind: WeaponKind; obj: THREE.Object3D }[] = [];
+  // how far each held item reaches beyond the grip along its long axis (weapons.ts: grip at the origin, blade along +Y), in
+  // the weapon's own units: the rest pose tilts a hanging blade far enough that its point stays off the ground
+  const reach = { hand_r: { up: 0, down: 0 }, hand_l: { up: 0, down: 0 } };
+  // the reach in model units: the hand socket's scale and whatever a kind scaled the item by (scaleHeldWeapon, at its first matrix update)
+  const syncReach = (socket: THREE.Object3D, obj: THREE.Object3D | null, r: { up: number; down: number }, hc: { up: number; down: number }) => {
+    const k = socket.scale.y * (obj ? obj.scale.y : 1);
+    hc.up = r.up * k;
+    hc.down = r.down * k;
+  };
   const defaults = { right: spec.weapon ?? def.weapons.right ?? 'none', left: spec.offhand ?? def.weapons.left ?? 'none' };
   const anim = new HumanoidAnimator(A.rig, P, def.anim, inst.bones, body);
   let wseed = (spec.seed ?? 0) + 1;
@@ -201,6 +215,9 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
     anim.hasCrossbow = held.hand_r.kind === 'crossbow' || held.hand_l.kind === 'crossbow';
     anim.gripL = held.hand_l.kind !== 'none';
     anim.gripR = held.hand_r.kind !== 'none';
+    // what the hands hold: blades hang, spears and shields stand (the bow has its own carry in the animator)
+    anim.held.l.carry = carryOf(held.hand_l.kind);
+    anim.held.r.carry = carryOf(held.hand_r.kind);
   };
 
   const setWeapon = (hand: 'hand_r' | 'hand_l', w: WeaponKind) => {
@@ -225,9 +242,16 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
         const m = o as THREE.Mesh;
         if (m.isMesh) m.castShadow = castShadow;
       });
+      // its reach along the long axis, measured before it joins the hand (the box is in the weapon's own units)
+      _box.setFromObject(obj);
+      reach[hand].up = Math.max(0, _box.max.y);
+      reach[hand].down = Math.max(0, -_box.min.y);
       sockets[hand].add(obj);
       cur.obj = obj;
-    }
+      // a kind scales and fits what its hands hold when the socket's matrices update (scaleHeldWeapon, fitHeldWeapon: by default the first
+      // render): do it now, or the first pose is solved for the prop unscaled and the hand jumps a frame later (a goblin's scimitar x0.5: 41 deg)
+      sockets[hand].updateMatrixWorld(true);
+    } else reach[hand].up = reach[hand].down = 0;
     refreshStow();
   };
 
@@ -344,6 +368,8 @@ export function createHumanoid(spec: HumanoidSpec): HumanoidExt {
       // climbing / hanging / swinging / barrel-hopping: stow the bow on the back, restore after
       const wantStow = !!input.special && STOW_POSES.has(input.special) && BOWS.includes(held.hand_l.kind) && !!held.hand_l.obj;
       if (wantStow !== poseStowed) setPoseStow(wantStow);
+      syncReach(sockets.hand_l, held.hand_l.obj, reach.hand_l, anim.held.l);
+      syncReach(sockets.hand_r, held.hand_r.obj, reach.hand_r, anim.held.r);
       anim.update(dt, input);
       if (flashT > 0) {
         flashT = Math.max(0, flashT - dt);

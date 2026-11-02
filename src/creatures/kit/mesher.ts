@@ -51,6 +51,12 @@ export interface MeshOpts {
   clip?: { min: V3; max: V3 };
   /** split edges across material boundaries so seams (hems, belts, hairlines, lips) stay crisp */
   refine?: RefineOpts;
+  /**
+   * Evaluate every lattice sample instead of skipping the ones far from the surface. Slower, and the
+   * mesh must come out identical: it is the reference the tests compare the fast path against. Call
+   * `meshSdf` directly with it (the mesh cache key does not include it).
+   */
+  exact?: boolean;
 }
 
 export interface MeshData {
@@ -159,7 +165,7 @@ export function meshSdf(prog: SdfProgram, opts: MeshOpts): MeshData {
     const res = runPass(prog, ev, L.res, L.clipMin, L.clipMax, L.excl.map((r) => {
       const band = r.band ?? L.res * 3;
       return { min: [r.min[0] + band, r.min[1] + band, r.min[2] + band] as V3, max: [r.max[0] - band, r.max[1] - band, r.max[2] - band] as V3 };
-    }), insetOf, pushList, store, listStart, listEnd, projectIters);
+    }), insetOf, pushList, store, listStart, listEnd, projectIters, opts.exact ?? false);
     passes.push({ res, insetOf: insetOf ?? (() => 0) });
   }
 
@@ -550,6 +556,7 @@ function runPass(
   listStart: number[],
   listEnd: number[],
   projectIters: number,
+  exact: boolean,
 ): PassResult {
   const pad = 2 * h;
   const ox = clipMin[0] - pad, oy = clipMin[1] - pad, oz = clipMin[2] - pad;
@@ -604,8 +611,8 @@ function runPass(
 
   // Lipschitz-safe row skipping: a sample with |d| = D proves every sample within
   // (D - √3·h - noise)/1.3 has the same sign and no crossing in its cells, so we only need its sign.
-  const skipMargin = Math.sqrt(3) * h + prog.maxNoise * 1.5;
-  const evalBlock = (bx: number, by: number, bz: number, li: number) => {
+  const skipMargin = exact ? Infinity : Math.sqrt(3) * h + prog.maxNoise * 1.5;
+  const evalBlock =(bx: number, by: number, bz: number, li: number) => {
     const code = codeView();
     const s = listStart[li], e = listEnd[li];
     const i0 = bx * BLOCK, j0 = by * BLOCK, k0 = bz * BLOCK;
@@ -618,7 +625,12 @@ function runPass(
         while (i <= i1) {
           const si = i + row;
           let d: number;
-          if (done[si] === 1) d = vals[si];
+          // A sample cached by the NEIGHBOUR block (block faces are shared) was evaluated with that block's
+          // culled list, which leaves out primitives further than the cull margin from ITS box: its |d| can be
+          // far above the true distance on this side. It must not seed a skip into this block: it used to jump
+          // over thin parts such as a leg and left a hole that came and went with the lattice phase (the height).
+          const cached = done[si] === 1;
+          if (cached) d = vals[si];
           else {
             const x = ox + i * h;
             d = ev.dist(x, y, z, code, s, e);
@@ -627,7 +639,7 @@ function runPass(
             done[si] = 1;
           }
           const ad = d < 0 ? -d : d;
-          const m = Math.floor((ad - skipMargin) / (h * 1.3));
+          const m = cached ? 0 : Math.floor((ad - skipMargin) / (h * 1.3));
           if (m >= 1) {
             const sg = d < 0 ? -1 : 1;
             const last = Math.min(i + m, i1);

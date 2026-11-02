@@ -30,7 +30,8 @@ Lab URL options for humanoid subjects:
 
 | Option | Effect |
 |---|---|
-| `&portrait=1&focus=head&zoom=0.15` | frame the face (quivers, bows and helmets no longer push the head-focus framing off the face) |
+| `&portrait=1&focus=head&zoom=0.15` | frame the face from the head bone's world position (works for hunched bosses, trolls and short dwarves/goblins; quivers, bows and helmets no longer push it off the face) |
+| `&anim=sheet` | lab-only reference-sheet stance (feet hip-to-shoulder apart, arms ~20° out, blades hanging down beside the thigh, bows/shields vertical, spears upright): use it with `view=turn&ref=<id>` so the calibrated silhouette compares body, not pose (`humanoid/sheetPose.ts`) |
 | `&weapons=none` | no held or stowed weapons (clean silhouettes / close-ups) |
 | `&weapon=crossbow&offhand=none` | override the held items |
 | `&lod=1` / `&lod=2` | preview the reduced geometry and the cheap animation path |
@@ -52,12 +53,13 @@ Subject `kit_placeholder_troll` shows the kit's fallback troll even when a dress
 | `beard` | `style` (`full braided forked stubble goatee mustache`), `color`, `length` (m) |
 | `outfit` | ordered layers `{type, color, color2?, mat?, length?, thickness?, offset?, chance?, tatter?, strips?}` (bracers: `length` = fraction of the forearm from the wrist, default 0.7; belt/sash: `offset` raises it (m); skirt: `thickness` adds clearance for bodies bigger than the anatomy, `mat: 'rags'` tears the hem; skirt/loincloth: `tatter` (m) cuts torn zig-zag points into the hem, `strips: { count, color, color2?, mat?, width, length, phase? }` hangs pointed leather strips over the cloth (Bolg's and Lurtz's layered kilts); jerkin/vest: `color2` mottles the leather; any layer: `mat: 'leather_tooled'` for embossed leaf work, `'twill'` for wool twill); types: `tunic shirt jerkin vest leggings trousers boots shoes bracers gloves cloak robe skirt loincloth belt sash collar hood scarf wraps rags fur_mantle mail_shirt gambeson` |
 | `armor` | pieces `{type, style, color?, minArmor?, chance?}`; types `helmet pauldrons breastplate vambraces greaves gorget tassets shoulder_spikes plates crown circlet gauntlets mask`; styles `elven orc uruk rohan gondor dwarf easterling haradrim gundabad goblin ranger king`. A piece appears when `spec.armor ≥ minArmor`; helmets only when `spec.helmet !== false` |
-| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look (`'uruk'` → falchion + white-hand shield, `'orc'` → the mace becomes a spiked morning star (Bolg, Gundabad), `'gondor'`, `'dwarf'`, `'easterling'` shields…). Bows always go to the left hand; a default bow not in hand is shown stowed on the back |
+| `weapons` | `{ right?, left?, back?: WeaponKind[], style? }` — `style` picks a weapon look: `'uruk'` → serrated falchion + white-hand shield; `'orc'` → dark-iron cleaver/scimitar, the mace becomes a spiked morning star (Bolg, Gundabad); `'berserker'` → dark pitted greatsword on `sword`; `'gimli'` → Gimli's double-bit axe on `dwarf_axe`; `'elven'` → Tauriel's brass-hilted knives and dark recurve bow; `'haradrim'` → long narrow dark scimitar; `'rohan'` (horse), `'gondor'` (tree), `'dwarf'`, `'easterling'` (kite sunburst) shields. Bows always go to the left hand; a default bow not in hand is shown stowed on the back. Props are built at the weapons sheet's size (`docs/refs/weapons`; extents asserted in `weapons.test.ts`): to match a character sheet, scale the held prop per kind with `scaleHeldWeapon(ctx, 'hand_r', ['dwarf_axe'], [s, s, s])` (`kinds/uruks_bosses/common.ts`; Gimli 0.65, Bolg, berserker) rather than re-orienting it in the socket, which attack swings inherit |
 | `palette` | named colours for your own extras |
 | `sfx` | hints for gameplay/audio: `voice grunt hurt die roar footstep weight` |
-| `anim` | `hunch swagger aggression stance armSwing cadence grace` — posture and gait character |
+| `anim` | `hunch swagger aggression stance armSwing cadence grace crouch lean` — posture and gait character. Knee flexion in idle and walk is capped at 40° so no kind squats by accident (`MAX_STANCE_FLEX`); `crouch`, `lean` and `stance` are the deliberate ways to a different stance, in idle AND walk, feet planted. **`stance`** (default 1): above 1 the feet stand further apart in proportion, 1.4 = the reference sheets' width (shoulders + 15 %); the pelvis sinks a little so the legs keep their extension (at or below 1 only a tiny hint). **`crouch`** (0..1, default 0): lowers the pelvis toward a deep squat (1 ≈ the goblin sheet: head at ~78 % of the standing height, knees ~99°) and raises the knee limit from 40° to 100° with it; the torso pitches ~46° forward over the feet, neck and head counter-pitch so the gaze stays level (the head juts forward), arms hang forward, knees and toes turn out. **`lean`** (0..1, default 0): spine and chest pitch ~15° forward, head and neck compensate, arms hang forward; with or without `crouch`. Orc / Gundabad: `lean ≈ 0.7-1`, goblin: `crouch ≈ 0.8-1, lean 0.3, stance 1.4` (and a low `hunch`, which overlaps). **Held items need no param**: the rest pose (idle, walk, jump) carries them — one-handed blades, axes, maces, clubs and hammers hang point-down beside the thigh (tilted forward and out, further forward where the point would reach the ground), spears, pikes and torches stand, shields stand vertical on the bent forearm, the face turned 40° toward the front-left as the sheets hold it (a crouched body keeps it face out), bows keep the animator's bow carry; a run takes a hanging blade back to the fist ahead, attacks blend from the carry and keep their keys (`humanoid/poses.ts`, `Carry`). A kind that re-orients its held prop in the socket (`fitHeldWeapon`) should key on the socket's +Y: it points below the horizontal at idle |
 | `variation` | `height bulk skin` (± fractions) across the ≤4 seed buckets (bucket 0 is canonical) |
 | `detail` | `res headRes faceRes detailScale refine hands` — mesh resolution (m) and procedural detail scale. Heroes set `faceRes` (≈0.0048) to get a fine face region, fine ear and hand regions and two seam-refinement levels; crowds leave it unset (one refinement level, ≤ ~12k tris). Named NPCs take a face region within ~45k with `faceRes ≈ 0.0056, refine: 1, hands: false` (Tauriel, Thranduil, Aragorn, Gimli) |
+| `bucketDetail` | `{ 0: {faceRes, refine, hands, …}, … }` overrides `detail` for one seed bucket (bucket 0 = canonical): a named captain inside a crowd kind (Boromir in `gondor`) gets a hero face region while buckets 1-3 stay crowd cost. |
 | `extras(ctx)` | your hook: add sculpt primitives and attachments (below) |
 
 How clothing works: garments re-emit the body's anatomy parts slightly inflated with their own
@@ -174,6 +176,58 @@ dark curled tips, a leather grip wrap between two metal rings.
   (`tatter`, `strips`), strapped greaves with iron splints and a spiked knee cap over the shin wraps,
   sandals, and the `'orc'`-style morning star.
 
+## Refining a kind against its reference sheet
+
+Every humanoid has a reference folder `docs/refs/<id>/` (turnaround, details, face, `spec.json`, `notes.md`).
+The loop used for the whole cast (Nov 2026):
+
+1. **Calibrated compare** — the lab renders an orthographic turnaround at the sheet's own px/m and baseline,
+   then `scripts/sheet-compare.py` keys the silhouette and prints IoU per view, heights and widths every 0.1 m:
+   ```
+   node scripts/snap.mjs "/lab/?subject=<s>&view=turn&ref=<id>&anim=idle&t=0.5&bg=ff00ff&ground=0" --size 1536x1024 --timeout 300000 --out shots/<id>-cal.png
+   python3 scripts/sheet-compare.py <id> shots/<id>-cal.png --out shots/<id>-compare.png
+   ```
+   Repeat with `&anim=sheet` (the sheets' relaxed stance) to judge the body without the idle weapon pose, and
+   `&weapons=none` to judge it without props. Read both PNGs (`-compare` sheet above lab, `-overlay` red = sheet).
+2. **Face** — `&view=single&focus=head&portrait=1&zoom=0.15` against `<id>_face.jpg`.
+3. **Budgets are measured on the lab's VISIBLE count** (`__lab.tris`: hair, skinned extras and held props
+   included): heroes/bosses ≤ 45k, trolls ≤ 35k, crowd kinds ≤ 12k (never above 15k).
+4. **Review** — an independent panel compares before/after against the sheet; a *regression* means further
+   from the sheet than before (a change away from the old look that matches the sheet better is not one).
+
+Lessons that cost passes:
+
+* **Colour through AgX:** pale skin albedo renders as clay — go warmer and deeper than the sheet hex; greens
+  render minty under the sky light — desaturate and darken them; check lit medians in the compare against
+  `spec.json` `observed.samples` instead of trusting the hex.
+* **Layer gaps:** at 5–6 cm body cells, garment surfaces closer than ~4–6 mm blend their colours into pale
+  ragged patches (the Lake-town jacket/tunic hem). Keep layers apart or merge them.
+* **Paint must land on the finished sculpt:** template points (`facePoint`, …) can sit inside the real cheek,
+  so the paint never shows (Haradrim war paint). Project onto the finished surface (`makeProjector`,
+  `paintSnapped`/`snapPoint`) and paint last.
+* **Hair under helmets:** kit strand cards poke through domes; sculpt locks under the rim instead
+  (`rohirrim_gear.ts`), or cull cards inside the helm (elf guards).
+* **Shared caches:** never mutate a cached shared material (`hairMaterial(colour)`, weapon materials) for one
+  kind; clone or key it per kind.
+* **Shared helpers have contracts:** a change to an exported helper (`uruk.ts` `pauldron()`, `ORC_FACE`) needs a
+  0-pixel diff on every importer (Lurtz, Bolg, trolls) before it merges.
+* **Held props:** sizes are fixed by `weapons.test.ts`; scale per character with `scaleHeldWeapon`, and stow
+  copies by measuring the guard's wide axis (Tauriel's sheath roll) rather than a fixed angle. Every per-kind
+  prop scale is mirrored in `carry.test.ts` `KIND_SCALE`; update that row with the kind, or the test fails. Scale
+  crowd props to the body: a full-size cleaver on a 1.1 m goblin or a 1.4 m dwarf hangs diagonally into the floor.
+* **Fused legs:** close a crotch hole with a short bridge at the crotch only (a few cm). A bridge down the inner
+  thighs fuses the legs into one block (the dwarves' pass 4). The mesher hole fix made most bridges unnecessary.
+* **Smooth blends cross gaps:** parts emitted in one group with a large blend radius merge across the gap
+  between the legs (the Easterling's knee cops became one gold band). Emit per-leg parts in their own mirrored
+  group (`s.mirrored`, `oneSide`) with a small `k`.
+* **The idle style can kneel a kind:** `anim.hunch` / `aggression` / `stance` ask for a pelvis drop that the
+  40° stance cap clamps; at high values the cap is hit every idle and a big kind reads as kneeling (the trolls'
+  pass 4). Check the real idle knee flex before blaming leg length.
+* **Readability over IoU:** slimmer, separated legs or a hanging prop can cost IoU while reading closer to the
+  sheet; the panel's judgement wins, and a drop is fine when the reason is named.
+* **Lank hair:** `makeOrcHair` hugs the skull by default (`hug: 0`); the `free` option lets strands fall (the
+  goblin). Kit strand hair needs real length to clear the skull before gravity shows.
+
 ## Performance rules of thumb
 
 * Shared geometry is cached per (kind, seed bucket ≤ 4, armour level, helmet), so a crowd of 40
@@ -187,7 +241,8 @@ dark curled tips, a leather grip wrap between two metal rings.
   preload, the first `createHumanoid` of a kind meshes LOD0 synchronously and defers LOD1/2.
 * **LOD:** `setLod(1 | 2)` switches to reduced geometry *and* the cheap animation path: no spring
   bones (hair/skirt/cloak/quiver rest rigidly), no look-at, swing-only limb IK (`fastTwoBone`),
-  hand frames only at LOD1 (weapons still point right), fingers re-posed only when the grip
+  hand frames at LOD1, and at LOD2 for a hand that carries a blade, spear or shield (weapons still
+  point right), fingers re-posed only when the grip
   changes, and constant bones (fingers, toes, spring chains) skip their matrix recompose. Bow
   aiming always uses the full solve. 40 orcs: ≈ 0.5–0.6 ms per step to animate at LOD1/2 (node,
   was 1.7–1.9 ms), ≈ 1.2–1.4 ms including three's bone matrix update (was 2.7–2.9 ms).
